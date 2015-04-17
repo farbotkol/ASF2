@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>Dates Passed Workflow</name>
+    <style>none</style>
+    <subject>Salesforce - dates have passed in your opportunity ({!Opportunity.Name})</subject>
+    <textOnly>Dear {!Opportunity.Capture_Manager_User__c},
+
+Your Salesforce opportunity record contains out-of-date information. AECOM uses this data for monthly forecasts, pipeline analysis, and other purposes, so accurate data is important. Please review the information below and make the updates in Salesforce.
+
+Thank you!
+
+Opportunity ID#: {!Opportunity.Opportunity_ID__c}
+Opportunity Name: {!Opportunity.Name}
+Account Name: {!Opportunity.Account}
+Stage: {!Opportunity.StageName}
+Gross AECOM Contract Revenue: {!Opportunity.Amount}
+Estimated Award Date: {!Opportunity.CloseDate}
+Estimated Work Start Date: {!Opportunity.Estimated_work_start_date__c}
+Probability: {!Opportunity.Probability}
+
+
+Click here to open the opportunity in Salesforce: {!Opportunity.Link}
+If you do not have a Salesforce license, please forward this email with your updates to a license holder.</textOnly>
+    <type>custom</type>
+</EmailTemplate>

@@ -1,0 +1,145 @@
+<apex:page tabStyle="OrganizationString__c" standardController="ProjectOrganization__c" extensions="ECO_OrganizationFinderController" showHeader="true" sidebar="false">
+    <style>
+        .searchTable select{
+            min-width:250px;
+        }
+
+        .searchTable label{
+            font-weight:bold;
+            display:block;
+        }
+
+        .searchText{
+            text-align:center;
+            font-weight:bold;
+            font-size:20px;
+        }
+    </style>
+
+    <apex:sectionHeader title="Organization Finder" subtitle="Selecting Organizations for Project {!ProjectOrganization__c.Project__r.Name}" />
+    <apex:form >
+        <apex:outputPanel id="messages">
+            <apex:pageMessages />
+        </apex:outputPanel>
+
+        <apex:actionStatus id="selectStatus">
+            <apex:facet name="start">
+                <p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+            </apex:facet>
+            <apex:facet name="stop">
+                <apex:pageBlock rendered="{!NOT(ISNULL(ProjectOrganization__c.Project__c))}" id="organizationSection" title="Selected Organizations">
+                    <apex:pageBlockButtons location="top">
+                        <apex:commandButton action="{!SaveRecords}" value="Update Contribution" rerender="messages, organizationSection" status="selectStatus" disabled="{!bUpdateContributionDisabled}" />
+                        <apex:commandButton action="{!Cancel}" value="Return to Project" />
+                    </apex:pageBlockButtons>
+
+                    <apex:outputPanel rendered="{!if(lSelectedOrganizations.size > 0, false, true)}">
+                        <p style="padding-bottom:20px;">No Organizations have been selected</p>
+                    </apex:outputPanel>
+
+                    <apex:pageBlockTable rendered="{!if(lSelectedOrganizations.size > 0, true, false)}" value="{!lSelectedOrganizations}" var="organization">
+                        <apex:column >
+                            <apex:facet name="header">Action</apex:facet>
+                            <apex:commandLink action="{!SelectPrimary}" value="Make Primary" rerender="messages, organizationSection, searchSection" status="selectStatus">
+                                <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.OrganizationString__r.Id}" />
+                            </apex:commandLink>&nbsp;&nbsp;
+                            <apex:commandLink action="{!RemoveEntry}" value="Remove" rerender="messages, organizationSection, searchSection" status="selectStatus">
+                                <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.OrganizationString__r.Id}" />
+                            </apex:commandLink>
+                        </apex:column>
+                        <apex:column value="{!organization.Type__c}"/>
+                        <apex:column value="{!organization.OrganizationString__r.OrganizationName__c}"/>
+                        <apex:column value="{!organization.OrganizationString__r.GeographyName__c}"/> 
+                        <apex:column value="{!organization.OrganizationString__r.Region__c}"/> 
+                        <apex:column value="{!organization.OrganizationString__r.District__c}"/>
+                        <apex:column value="{!organization.OrganizationString__r.Department__c}"/>
+                        <apex:column style="text-align:right;">
+                            <apex:facet name="header">Contribution %</apex:facet>
+                            <apex:inputField style="width:4em;text-align:right;" value="{!organization.ContributionPercent__c}" />&nbsp;&#37;
+                        </apex:column> 
+                    </apex:pageBlockTable>
+                </apex:pageBlock>
+            </apex:facet>
+        </apex:actionStatus>
+
+        <apex:pageBlock rendered="{!NOT(ISNULL(ProjectOrganization__c.Project__c))}" id="searchSection" title="Search for Organization">
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton action="{!SearchOrganizations}" value="Search" rerender="messages, searchSection" status="searchStatus" />
+                <apex:commandButton action="{!Reset}" value="Reset" rerender="messages, searchSection" status="searchStatus" />
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection showHeader="false" columns="1">
+                <!-- Name -->
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="Name" value="Organization Name" />
+                    <apex:inputText id="Name" value="{!sOrganizationName}" />
+                </apex:pageBlockSectionItem>
+
+                <!-- Geography Name -->
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="GeographyName" value="Geography Name" />
+                    <apex:selectList size="1" id="GeographyName" value="{!sGeographyName}">
+                        <apex:selectOption itemValue="" itemLabel="Select"/>
+                        <apex:selectOptions value="{!loGeographies}"/>
+                        <apex:actionSupport event="onchange" action="{!SearchOrganizations}" rerender="messages, searchSection" status="searchStatus"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <!-- Region Name -->
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="Region" value="Region" />
+                    <apex:selectList size="1" id="Region" value="{!sRegion}">
+                        <apex:selectOption itemValue="" itemLabel="Select"/>
+                        <apex:selectOptions value="{!loRegions}"/>
+                        <apex:actionSupport event="onchange" action="{!SearchOrganizations}" rerender="messages, searchSection" status="searchStatus"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <!-- District Name -->
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="District" value="District" />
+                    <apex:selectList size="1" id="District" value="{!sDistrict}">
+                        <apex:selectOption itemValue="" itemLabel="Select"/>
+                        <apex:selectOptions value="{!loDistricts}"/>
+                        <apex:actionSupport event="onchange" action="{!SearchOrganizations}" rerender="messages, searchSection" status="searchStatus"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+
+                <!-- Department Name -->
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel for="Department" value="Department" />
+                    <apex:selectList size="1" id="Department" value="{!sDepartment}">
+                        <apex:selectOption itemValue="" itemLabel="Select"/>
+                        <apex:selectOptions value="{!loDepartments}"/>
+                        <apex:actionSupport event="onchange" action="{!SearchOrganizations}" rerender="messages, searchSection" status="searchStatus"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+            <apex:actionStatus id="searchStatus">
+                <apex:facet name="start">
+                    <p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Searching...</p>
+                </apex:facet>
+                <apex:facet name="stop">
+                    <apex:pageBlockSection rendered="{!bSearchInProgress}" title="Search Results" collapsible="false"></apex:pageBlockSection>
+                    <apex:pageBlockTable rendered="{!bSearchInProgress}" value="{!lOrganizations}" var="organization">
+                        <apex:column >
+                            <apex:facet name="header">Action</apex:facet>
+                            <apex:commandLink action="{!SelectPrimary}" value="Set Primary" rerender="messages, organizationSection, searchSection" status="selectStatus">
+                                <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.Id}" />
+                            </apex:commandLink>&nbsp;&nbsp;
+                            <apex:commandLink action="{!SelectSecondary}" value="Set Supporting" rerender="messages, organizationSection, searchSection" status="selectStatus">
+                                <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.Id}" />
+                            </apex:commandLink>
+                        </apex:column>
+                        <apex:column value="{!organization.OrganizationName__c}"/>
+                        <apex:column value="{!organization.GeographyName__c}"/> 
+                        <apex:column value="{!organization.Region__c}"/> 
+                        <apex:column value="{!organization.District__c}"/>
+                        <apex:column value="{!organization.Department__c}"/> 
+                    </apex:pageBlockTable>
+                </apex:facet>
+            </apex:actionStatus>
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

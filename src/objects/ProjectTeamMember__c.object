@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fieldSets>
+        <fullName>Clone_Project_Team_Member_Fields</fullName>
+        <description>Used when cloning a project. Fields contained in this fieldset will have their values copied over from the source project.</description>
+        <displayedFields>
+            <field>Project__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>StartDate__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>EndDate__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Contact__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>ProjectRole__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>Clone Project Team Member Fields</label>
+    </fieldSets>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Displays only PSA resouces</description>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Contact.RecordTypeId</field>
+                <operation>equals</operation>
+                <value>PSA Resource</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Project Team Members</relationshipLabel>
+        <relationshipName>ProjectTeamMembersContact</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.pse__Salesforce_User__r.Email</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Employee_number__c</fullName>
+        <description>should be deleted</description>
+        <externalId>false</externalId>
+        <inlineHelpText>should be deleted</inlineHelpText>
+        <label>Employee Number</label>
+        <length>30</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EndDate__c</fullName>
+        <externalId>false</externalId>
+        <label>End Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>OracleEmployeeNumber__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.pse__Salesforce_User__r.EmployeeNumber</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Oracle Employee Number</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OraclePersonId__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.pse__Salesforce_User__r.PersonId__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Oracle Person Id</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OracleProjectNumber__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.OracleProjectnumber__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Oracle Project Number</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OracleProjectTeamMember_Id__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>Oracle Project Team Member Id</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>OracleSyncErrorMessage__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Sync Error Message</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>OracleSyncStatus__c</fullName>
+        <description>P = Pending
+T = Transfer (Success)
+E = Error
+S = Successful</description>
+        <externalId>false</externalId>
+        <inlineHelpText>P = Pending
+T = Transfer (Success)
+E = Error
+S = Successful</inlineHelpText>
+        <label>Oracle Sync Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>E</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>P</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>S</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>T</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>PersonId__c</fullName>
+        <externalId>false</externalId>
+        <label>Person Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Phone__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.pse__Salesforce_User__r.Phone</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Phone</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectRoleTitle__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Role Title</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectRole__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project Role</label>
+        <referenceTo>ProjectRole__c</referenceTo>
+        <relationshipLabel>Project Team Members</relationshipLabel>
+        <relationshipName>ProjectTeamMembersRole</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Project_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Project ID</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project__c</fullName>
+        <externalId>false</externalId>
+        <label>Project</label>
+        <referenceTo>pse__Proj__c</referenceTo>
+        <relationshipLabel>Project Team Members</relationshipLabel>
+        <relationshipName>ProjectTeamMembers</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Role__c</fullName>
+        <externalId>false</externalId>
+        <label>Role</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Project Director</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Project Director 2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Project Accountant</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Project Accountant Alternate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Finance Lead</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Finance Lead 2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CFO or Delegate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Project Manager</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Discipline Lead</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>HS&amp;E Manager</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>StartDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>User must be active</description>
+        <externalId>false</externalId>
+        <inlineHelpText>User must be active</inlineHelpText>
+        <label>Name</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>User must be active</errorMessage>
+            <filterItems>
+                <field>User.IsActive</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </filterItems>
+            <infoMessage>User must be active</infoMessage>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>User</referenceTo>
+        <relationshipName>ProjectTeamMemberUser</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>xxOracleProjectNumber__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.OracleProjectnumber__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>xxOracle Project Number</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>xxProject_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>xxProject ID</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Project Team Member</label>
+    <nameField>
+        <displayFormat>PTM-{0000000}</displayFormat>
+        <label>Project Team Member</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Project Team Members</pluralLabel>
+    <recordTypes>
+        <fullName>KeyMember</fullName>
+        <active>true</active>
+        <label>Key Member</label>
+        <picklistValues>
+            <picklist>OracleSyncStatus__c</picklist>
+            <values>
+                <fullName>E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>P</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>S</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>T</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Role__c</picklist>
+            <values>
+                <fullName>CFO or Delegate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Finance Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Finance Lead 2</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Accountant</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Accountant Alternate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Director</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Director 2</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Manager</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Stakeholder</fullName>
+        <active>true</active>
+        <label>Stakeholder</label>
+        <picklistValues>
+            <picklist>OracleSyncStatus__c</picklist>
+            <values>
+                <fullName>E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>P</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>S</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>T</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Role__c</picklist>
+            <values>
+                <fullName>CFO or Delegate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Discipline Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Finance Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Finance Lead 2</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HS%26E Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Accountant</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Accountant Alternate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Director</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Director 2</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Manager</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>TeamMember</fullName>
+        <active>true</active>
+        <label>Team Member</label>
+        <picklistValues>
+            <picklist>OracleSyncStatus__c</picklist>
+            <values>
+                <fullName>E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>P</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>S</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>T</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Role__c</picklist>
+            <values>
+                <fullName>Discipline Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>HS%26E Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Manager</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

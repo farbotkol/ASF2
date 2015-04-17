@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Contact link to a project, one contact should be indentified as Primary</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>ChkUniqueContact__c</fullName>
+        <caseSensitive>true</caseSensitive>
+        <description>Field is used to insure a contact can only appear once in the PR Conact list.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Not to be viewed by other than Admins.</inlineHelpText>
+        <label>ChkUniqueContact</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>ContactID__c</fullName>
+        <description>Used to hold contact id so can delete from here if we delete contacts</description>
+        <externalId>false</externalId>
+        <formula>Contact__r.Id</formula>
+        <label>ContactID</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contact_Primary_Project_Reference__c</fullName>
+        <description>Default is &quot;N&quot;, &quot;Y&quot; indentifies the Primary reference</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Only 1 Primary reference can be selected</inlineHelpText>
+        <label>Contact Primary Project Reference</label>
+        <picklist>
+            <picklistValues>
+                <fullName>N</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Y</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>true</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Contact_Project_Role__c</fullName>
+        <externalId>false</externalId>
+        <label>Contact Project Role</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contact_Project_Seq__c</fullName>
+        <description>Display sequence</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The sequence in which the projects will display on the project record.</inlineHelpText>
+        <label>Contact Project Seq</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contact_Project__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Contact Project</label>
+        <referenceTo>Project__c</referenceTo>
+        <relationshipLabel>Contacts</relationshipLabel>
+        <relationshipName>PR_Contacts</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Contact_Reference_Comments__c</fullName>
+        <description>Comments about the reference about his status on the current project</description>
+        <externalId>false</externalId>
+        <label>Contact Reference Comments</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Contact_Reference_Quality__c</fullName>
+        <description>Use to qalify the reference</description>
+        <externalId>false</externalId>
+        <label>Contact Reference Quality</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Unknown</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Good</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Excellent</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Check before using</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Do not use</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Related Projects</relationshipLabel>
+        <relationshipName>PR_Contacts</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ContactsDsp__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.FirstName  &amp; &quot; &quot; &amp; Contact__r.LastName</formula>
+        <label>ContactsDsp</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Date_Contact_Last_Checked__c</fullName>
+        <externalId>false</externalId>
+        <label>Date Contact Last Checked</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <label>PR Contact</label>
+    <nameField>
+        <displayFormat>PRCon-{00000}</displayFormat>
+        <label>PRContactID</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>PR Contacts</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Contact__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Contact_Project_Role__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Date_Contact_Last_Checked__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Contact_Reference_Quality__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Contact__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Contact_Primary_Project_Reference__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Contact_Project_Role__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Date_Contact_Last_Checked__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Contact_Reference_Quality__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Contact__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Contact_Primary_Project_Reference__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Contact_Project_Role__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Date_Contact_Last_Checked__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Contact_Reference_Quality__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>Contact__c</searchFilterFields>
+        <searchFilterFields>Contact_Primary_Project_Reference__c</searchFilterFields>
+        <searchFilterFields>Contact_Project_Role__c</searchFilterFields>
+        <searchFilterFields>Date_Contact_Last_Checked__c</searchFilterFields>
+        <searchFilterFields>Contact_Reference_Quality__c</searchFilterFields>
+        <searchResultsAdditionalFields>Contact__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Contact_Primary_Project_Reference__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Contact_Project_Role__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Date_Contact_Last_Checked__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Contact_Reference_Quality__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>PR_Contact_Search</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>PR Contact Search</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!PR_Contact__c.Contact__c}{!PR_Contact__c.Contact_Project_Role__c}{!PR_Contact__c.Contact_Project_Seq__c}{!PR_Contact__c.Date_Contact_Last_Checked__c}{!PR_Contact__c.Contact_Reference_Quality__c}</url>
+    </webLinks>
+</CustomObject>

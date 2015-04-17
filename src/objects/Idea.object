@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <enableFeeds>false</enableFeeds>
+    <fields>
+        <fullName>Categories</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Finance &amp; Accounting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Human Resources</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Information Technology</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Quality</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Safety &amp; Health</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sales &amp; Marketing</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Salesforce</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Social Media</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>true</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Status</fullName>
+        <picklist>
+            <picklistValues>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>In review</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Under consideration</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Delivered</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <type>Picklist</type>
+    </fields>
+    <listViews>
+        <fullName>Ideas_Last_7_Days</fullName>
+        <columns>IDEA.CREATED_DATE</columns>
+        <columns>IDEA.TITLE</columns>
+        <columns>IDEA.CREATED_BY_NICKNAME</columns>
+        <columns>VOTE_STATS.WEIGHTED_SUM</columns>
+        <columns>IDEA.NUM_COMMENTS</columns>
+        <columns>IDEA.STATUS</columns>
+        <columns>IDEA.CATEGORIES</columns>
+        <columns>COMMUNITY.NAME</columns>
+        <columns>IDEA.IDEA_THEME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>IDEA.CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>LAST_N_DAYS:7</value>
+        </filters>
+        <label>Last 7 Days</label>
+    </listViews>
+    <recordTypes>
+        <fullName>InternalIdeasIdeaRecordType</fullName>
+        <active>true</active>
+        <description>Record Type used to associate ideas with a specific community</description>
+        <label>Internal Ideas: Idea Record Type</label>
+        <picklistValues>
+            <picklist>Categories</picklist>
+            <values>
+                <fullName>Finance %26 Accounting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Human Resources</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Information Technology</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Quality</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Safety %26 Health</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sales %26 Marketing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Salesforce</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Social Media</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Status</picklist>
+            <values>
+                <fullName>Delivered</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>In review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Under consideration</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>IDEA.TITLE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>IDEA.BODY</customTabListAdditionalFields>
+        <customTabListAdditionalFields>COMMUNITY.NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>IDEA.CREATED_DATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>IDEA.CREATED_BY_NICKNAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>IDEA.NUM_COMMENTS</customTabListAdditionalFields>
+        <customTabListAdditionalFields>VOTE.HAS_VOTED</customTabListAdditionalFields>
+        <customTabListAdditionalFields>IDEA.CATEGORIES</customTabListAdditionalFields>
+        <customTabListAdditionalFields>IDEA.STATUS</customTabListAdditionalFields>
+        <customTabListAdditionalFields>IDEA.LAST_COMMENT_DATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>IDEA.IDEA_THEME</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>IDEA.TITLE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>COMMUNITY.NAME</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>IDEA.TITLE</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>COMMUNITY.NAME</lookupPhoneDialogsAdditionalFields>
+        <searchResultsAdditionalFields>IDEA.TITLE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>IDEA.BODY</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>COMMUNITY.NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>IDEA.NUM_COMMENTS</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>IDEA.CREATED_BY_NICKNAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>IDEA.CATEGORIES</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>IDEA.STATUS</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>IDEA.CREATED_DATE</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

@@ -1,0 +1,294 @@
+<apex:page controller="ECO_ReportFinderController" showheader="false" sidebar="false" standardStylesheets="false" id="thePage"> 
+
+	<script>
+		$(document).ready(function() {
+			$('.form-control').keydown(function(event){
+		    	if(event.keyCode == 13) {
+		      		event.preventDefault();
+		      		$('.search').click();
+		      		return false;
+		    	}
+			});
+			
+			attachSortable();
+		});
+		
+		function attachSortable() {
+			if(console){
+				console.log('Attaching Sortable');
+			}
+			$('a[id$="linkWithId"]').each(function(){
+				$(this).closest('tr').attr('orderid', $(this).attr('orderid'));
+			});
+ 			$('tbody[id$="selectedReportTable:tb"').sortable();
+ 		}
+ 		
+ 		function updatePositions () {
+ 			var serializedIds = $('tbody[id$="selectedReportTable:tb"').sortable('serialize', { 
+ 				key: "id"
+ 				, attribute: "orderId" 
+ 			});
+ 			
+ 			if (console) {
+ 				console.log(serializedIds);
+ 			}
+ 			
+ 			updatePositionsInApex(serializedIds);
+ 		};
+ 		
+	</script>
+
+	<style>
+		.panel-heading h4{
+	 		padding:17px;
+	 	}
+	 	.panel-default .panel-heading{
+	 		background-color: #00B0E2 !important;
+			border-color: #18C3F3 !important;
+	 	}
+	 	.pbSubsection table.detailList{
+	 		width:100%;
+	 	}
+	 	.createdSince{
+	 		margin-top:8px;
+	 		position:absolute;
+	 	}
+	 	.col-sm-4 .pbSubsection .detailList tr{
+	 		height:45px;
+	 	}
+	 	.report-search-results .pbSubsection{
+	 		height:636px;
+	 		overflow-y:scroll;
+	 	}
+	 	.pbBottomButtons .pbButtonb{
+	 		position:absolute;
+	 		top:132px;
+	 	}
+	 	.pbBottomButtons .pbButtonb input{
+	 		margin-right:7px;
+	 	}
+	 	.pbHeader .pbButton{
+	 		position: absolute;
+			top: 175px;
+			left: 154px;
+	 	}
+	 	.pbHeader .pbButton input{
+	 		margin-right:7px;
+	 	}
+	 	.buttonsBottom input, .buttonsBottom button{
+	 		border: none !important;
+	 	}
+	 	.buttonsBottom{
+	 		padding-top:20px;
+	 	}
+	
+	
+	 	@media (max-width: 767px){
+	
+	 		.pbBottomButtons .pbButtonb{
+		 		position:absolute;
+		 		top:178px;
+		 	}
+	
+	 		.pbHeader .pbButton{
+		 		position: absolute;
+				top: 216px;
+				left: 36px;
+		 	}
+	 	}
+	</style>
+ 
+
+	<apex:composition template="ECO_Temp_Portalv2">
+	    
+	    <apex:define name="head">
+	    	
+	    </apex:define>
+	    
+		<apex:define name="content">
+
+
+
+		<!--NAVBAR-->
+		<!--===================================================-->
+		<header id="navbar">
+			<div id="navbar-container" class="boxed">
+
+				<!--Brand logo & name-->
+				<!--================================-->
+				<div class="navbar-header">
+					<a href="#" class="navbar-brand">
+						<div class="brand-title">
+							<span class="brand-text">ECOSYSTEM</span>
+						</div>
+					</a>
+				</div>
+				<!--================================-->
+				<!--End brand logo & name-->
+
+				<!--Navbar Dropdown-->
+				<!--================================-->
+				<div class="navbar-content clearfix">
+					<ul class="nav navbar-top-links pull-left">
+
+						<li class="dropdown hidden-xs">
+							<h3 style="margin:10px 0 0 8px;">Report Finder</h3>
+						</li>
+
+					</ul>
+					<ul class="nav navbar-top-links pull-right">
+						<!--User dropdown-->
+						<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+						<li id="dropdown-user" class="dropdown">
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle text-right" style="cursor: default !important;background: white !important;">
+								<span class="pull-right">
+									<!-- <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/av1.png')}" styleClass="img-circle img-user media-object"/> -->
+									<apex:image value="{!photoUrl}" styleClass="img-circle img-user media-object"/>
+								</span>
+								<div class="username hidden-xs"><strong><apex:outputText value="{!theUser.Name}'s" /></strong> Ecosystem</div>
+							</a>
+
+						
+						</li>
+						<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+						<!--End user dropdown-->
+
+						<li class="logo" style="padding:12px 15px 0 8px;">
+							<apex:image url="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'AECOMLogo.jpg')}" height="25px" />
+						</li>
+
+					</ul>
+				</div>
+				<!--================================-->
+				<!--End Navbar Dropdown-->
+
+			</div>
+		</header>
+
+
+		<apex:pageMessages id="pageMessages" />
+
+		<div class="portalPageWrapper">	
+
+			<div class="container reportFinder">
+		    	<div class="row">
+		    		<div class="col-sm-12" style="margin-top:90px;">
+		    			<div class="panel panel-default">
+							<div class="panel-heading">
+								<h4>Select and Remove Reports</h4>
+							</div>
+							
+							<div class="panel-body">
+								
+								<apex:form id="theForm" >
+									<apex:actionFunction action="{!save}" name="updatePositionsInApex" rerender="pageMessages, searchBlock">
+										<apex:param name="orderedReports" assignTo="{!orderedReports}" value="" />
+									</apex:actionFunction>
+									
+									<apex:pageBlock id="searchBlock"> 
+											<div class="col-sm-4">
+												<apex:pageBlockSection id="searchFieldsSection" >
+													<div class="form-group">
+														<apex:pageBlockSectionItem >
+															<apex:outputLabel value="Report Name" />
+															<apex:inputText value="{!searchReportName}" styleClass="form-control" />
+														</apex:pageBlockSectionItem>
+													</div>
+													
+													<div class="form-group">
+														<apex:pageBlockSectionItem labelStyleClass="createdSince">
+															<apex:outputLabel value="Created Since" />
+															<apex:inputField value="{!theUser.Date_of_Birth__c}" styleClass="form-control" />
+														</apex:pageBlockSectionItem>
+													</div>
+												</apex:pageBlockSection>
+											</div>
+
+											<apex:pageBlockButtons location="bottom" >
+												<apex:commandButton value="Search" action="{!doSearch}" rerender="resultsSection, pageMessages" styleClass="btn btn-primary search" />
+												<!-- <apex:commandButton value="Clear Search Terms" action="{!clearSearchTerms}" rerender="resultsBlock, pageMessages, searchBlock" styleClass="btn btn-warning"/> -->
+											</apex:pageBlockButtons>
+
+									</apex:pageBlock>
+
+
+									<div class="row reports">
+
+										<apex:pageBlock id="resultsBlock" >
+											
+											<div class="row">
+												<apex:pageBlockButtons location="top" styleClass="buttonsBottom">
+													<!-- <apex:commandButton action="{!save}" value="Save" styleClass="btn btn-primary" /> -->
+													<button type="button" class="btn btn-primary" onclick="updatePositions();">
+														Save
+													</button>
+													<apex:commandButton action="{!cancel}" value="Cancel" styleClass="btn btn-danger" />
+												</apex:pageBlockButtons>
+											</div>
+
+											<div class="row" style="padding-left:15px;"><div class="col-sm-12"><apex:pageMessages id="pageMessages" /></div></div>
+
+											<div class="col-sm-5">
+												<apex:pageBlockSection id="theSelectedReports" columns="1" collapsible="false" title="Selected Reports">
+													<apex:pageBlockTable value="{!orderedUserConfigItems}" var="configItem" styleClass="table table-striped table-bordered table-hover" id="selectedReportTable">
+														<apex:column >
+															<apex:facet name="header"></apex:facet>
+															<apex:commandButton action="{!removeItem}" value="Remove" rerender="theSelectedReports, pageMessages, resultsSection" onComplete="attachSortable();">
+																<apex:param assignTo="{!selectedReportId}" value="{!configItem.ReportId__c}" name="selectedReportId" />
+															</apex:commandButton>
+														</apex:column>
+														<apex:column >
+															<apex:facet name="header">Report Name </apex:facet>
+															<apex:outputLink value="/{!configItem.ReportId__c}" id="linkWithId" html-orderid="id_{!configItem.ReportId__c}" target="_newReportWindow">
+																<apex:outputText value="{!configItem.ReportName__c}"/>
+															</apex:outputLink>
+														</apex:column>
+													</apex:pageBlockTable>
+												</apex:pageBlockSection>
+											</div>
+											
+											<div class="col-sm-7 report-search-results" style="padding-right:35px;">
+												<apex:pageBlockSection id="resultsSection" columns="1" collapsible="false" title="Search Results" >
+													<apex:pageBlockTable value="{!configItemsOnPage}" var="configItem" id="theResultsTable" styleClass="table table-striped table-bordered table-hover" >
+														<apex:column >
+															<apex:facet name="header">
+																<apex:outputPanel layout="block" styleClass="prefaceText" style="display:inline-block; text-align:center; width:100%;">
+																	You may select up to 8 reports
+																</apex:outputPanel>
+															</apex:facet>
+															 
+															<apex:commandButton action="{!selectItem}" value="Select" rerender="theSelectedReports, pageMessages, resultsSection" rendered="{!!configItemsOnPage[configItem].selected}" oncomplete="attachSortable();">
+																<apex:param assignTo="{!selectedReportId}" value="{!configItemsOnPage[configItem].theConfigItem.ReportId__c}" name="selectedReportId" />
+															</apex:commandButton>
+															
+															<apex:commandButton action="{!removeItem}" value="Remove" rerender="theSelectedReports, pageMessages, resultsSection" rendered="{!configItemsOnPage[configItem].selected}" oncomplete="attachSortable();">
+																<apex:param assignTo="{!selectedReportId}" value="{!configItemsOnPage[configItem].theConfigItem.ReportId__c}" name="selectedReportId" />
+															</apex:commandButton>
+															
+														</apex:column>
+														
+														<apex:column >
+															<apex:facet name="header">Report Name</apex:facet>
+															
+															<apex:outputLink value="/{!configItemsOnPage[configItem].theConfigItem.ReportId__c}" target="_newReportWindow" >
+																<apex:outputText value="{!configItemsOnPage[configItem].theConfigItem.ReportName__c}"/>
+															</apex:outputLink>
+															 
+														</apex:column>
+														
+													</apex:pageBlockTable>
+												</apex:pageBlockSection>
+											</div>
+
+										</apex:pageBlock>
+									</div><!-- row -->
+								</apex:form>
+							</div><!-- panel-body -->
+						</div><!-- panel -->
+					</div><!-- col-sm-12 -->
+				</div><!-- row -->
+			</div><!-- container -->
+		</div><!-- .portalPageWrapper -->
+		</apex:define>
+	</apex:composition>
+</apex:page>

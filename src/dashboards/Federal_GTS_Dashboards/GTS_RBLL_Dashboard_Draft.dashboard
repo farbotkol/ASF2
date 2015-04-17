@@ -1,0 +1,490 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Dashboard xmlns="http://soap.sforce.com/2006/04/metadata">
+    <backgroundEndColor>#FFFFFF</backgroundEndColor>
+    <backgroundFadeDirection>Diagonal</backgroundFadeDirection>
+    <backgroundStartColor>#DDDDDD</backgroundStartColor>
+    <dashboardFilters>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Architecture</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Building Engineering</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>DP&amp;E</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Energy</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Environment</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>PCC</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Transportation</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Water</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Architecture,Building Engineering,DP&amp;E,PCC</values>
+        </dashboardFilterOptions>
+        <name>Business Line</name>
+    </dashboardFilters>
+    <dashboardFilters>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>US - North</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>US - South</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>US - West</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Canada</values>
+        </dashboardFilterOptions>
+        <name>Lead Region</name>
+    </dashboardFilters>
+    <dashboardFilters>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Defense - Air Force</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Defense - Army,Defense - Other</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Defense - Marines,Defense – Navy</values>
+        </dashboardFilterOptions>
+        <dashboardFilterOptions>
+            <operator>equals</operator>
+            <values>Education Agency / Services,Energy Agency / Services,Environmental/Climate Agency/Services,Justice/Prisons/Security Agency / Services,Other Agency,US Homeland Security,USPS</values>
+        </dashboardFilterOptions>
+        <name>Federal Sector</name>
+    </dashboardFilters>
+    <dashboardType>SpecifiedUser</dashboardType>
+    <description>This dashboard setup for National Government Regional Business Line Leads (RBLLs). Select the appropriate Sector, BL or Region you are interested. Government and Construction Services have been excluded from all graphs. Scales may vary with filters.</description>
+    <leftSection>
+        <columnSize>Wide</columnSize>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <chartSummary>
+                <axisBinding>y</axisBinding>
+                <column>FORMULA1</column>
+            </chartSummary>
+            <componentType>ColumnStacked</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity.Lead_Region_Formula__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Account.Client_Subgroup__c</column>
+            </dashboardFilterColumns>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>true</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>false</expandOthers>
+            <footer>Historical view of Salesforce pipeline showing current and previous fiscal year. Forecast values used for Projects and Task Orders.  Summary program estimated values and overall average probability used for Programs. Hunting Licenses excluded at Stage 5.</footer>
+            <groupingColumn>INTERVAL_DATE</groupingColumn>
+            <groupingColumn>BucketField_955194</groupingColumn>
+            <header>Chart 1</header>
+            <legendPosition>Bottom</legendPosition>
+            <report>Federal_GTS_Dashboard_Reports1/Federal_Pipeline_Trends</report>
+            <showPercentage>false</showPercentage>
+            <showValues>false</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Opportunity Pipeline by Quarter</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <chartSummary>
+                <axisBinding>y</axisBinding>
+                <column>FORMULA1</column>
+            </chartSummary>
+            <componentType>Pie</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity.Lead_Region_Formula__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Account.Client_Subgroup__c</column>
+            </dashboardFilterColumns>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>true</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>true</expandOthers>
+            <footer>Win-Loss Report date for Current Fiscal Year. Capture Rate is the VALUE of the oppty.  Chart shows all COMPETITIVE wins. For programs, it excludes hunting licenses.</footer>
+            <groupingColumn>Opportunity.Stage_Group__c</groupingColumn>
+            <header>Chart 4</header>
+            <legendPosition>Bottom</legendPosition>
+            <report>Federal_GTS_Dashboard_Reports1/Federal_Capture_Rate_Trends</report>
+            <showPercentage>true</showPercentage>
+            <showValues>true</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>FY Capture Rate</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <componentType>Pie</componentType>
+            <dashboardFilterColumns>
+                <column>FK_$Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>FK_$Opportunity.Lead_Region_Formula__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>FK_$Account.Client_Subgroup__c</column>
+            </dashboardFilterColumns>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>true</expandOthers>
+            <header>Chart 6</header>
+            <legendPosition>Bottom</legendPosition>
+            <report>Federal_GTS_Dashboard_Reports1/Federal_GNG_Decision_for_Federal</report>
+            <showPercentage>true</showPercentage>
+            <showValues>true</showValues>
+            <sortBy>RowValueAscending</sortBy>
+            <title>GNG Decision % for Current FY</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity.Lead_Region_Formula__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Account.Client_Subgroup__c</column>
+            </dashboardFilterColumns>
+            <dashboardTableColumn>
+                <column>Account.Hierarchy_Group__c</column>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>Opportunity.Lead_District_Formula__c</column>
+                <showTotal>false</showTotal>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>RowCount</column>
+                <showTotal>true</showTotal>
+            </dashboardTableColumn>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>true</drillToDetailEnabled>
+            <footer>Top account groups and the number of open opportunities and programs. Assumes account hierarchy is correct.  Includes Stages 1-3 &amp; 5.  Values depict gross value for projects/task orders and TO remaining value for all programs.</footer>
+            <header>Table 4</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Federal_GTS_Dashboard_Reports1/Federal_Open_Opps_by_Accounts</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <title>Top Accounts with Open Opptys</title>
+        </components>
+    </leftSection>
+    <middleSection>
+        <columnSize>Wide</columnSize>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <chartSummary>
+                <aggregate>Sum</aggregate>
+                <axisBinding>y</axisBinding>
+                <column>Opportunity.Forecast_Net_amount__c.CONVERT</column>
+            </chartSummary>
+            <componentType>ColumnStacked</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity.Lead_Region_Formula__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Account.Client_Subgroup__c</column>
+            </dashboardFilterColumns>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>true</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>false</expandOthers>
+            <footer>Values are weighted by probability. Includes Projects and Task Orders only in Stages 1-3 &amp;5.</footer>
+            <groupingColumn>Opportunity.Estimated_work_start_date__c</groupingColumn>
+            <groupingColumn>BucketField_82588813</groupingColumn>
+            <header>Chart 2</header>
+            <legendPosition>Bottom</legendPosition>
+            <report>Federal_GTS_Dashboard_Reports1/Federal_Bookings_Forecast</report>
+            <showPercentage>false</showPercentage>
+            <showValues>false</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Bookings Forecast - Current and Next FQ</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <componentType>Pie</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity.Lead_Region_Formula__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Account.Client_Subgroup__c</column>
+            </dashboardFilterColumns>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>true</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>true</enableHover>
+            <expandOthers>true</expandOthers>
+            <footer>Win-Loss Report date for Current Fiscal Year. Hit Rate is the QUANTITY of opptys won/lost.  Chart shows all COMPETITIVE wins. For programs, it excludes hunting licenses.</footer>
+            <header>Chart 5</header>
+            <legendPosition>Bottom</legendPosition>
+            <report>Federal_GTS_Dashboard_Reports1/Federal_Hit_Rate_Trend_YTD</report>
+            <showPercentage>true</showPercentage>
+            <showValues>true</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>FY Hit Rate</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <dashboardFilterColumns>
+                <column>FK_$Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>FK_$Opportunity.Lead_Region_Formula__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>FK_$Account.Client_Subgroup__c</column>
+            </dashboardFilterColumns>
+            <dashboardTableColumn>
+                <column>Go_No_Go_Conversation__c.Account__c</column>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>Go_No_Go_Conversation__c.Opportunity_Name__c</column>
+                <showTotal>false</showTotal>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <aggregateType>Sum</aggregateType>
+                <calculatePercent>false</calculatePercent>
+                <column>FK_OPP_AMOUNT.CONVERT</column>
+                <showTotal>false</showTotal>
+                <sortBy>RowValueDescending</sortBy>
+            </dashboardTableColumn>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>true</drillToDetailEnabled>
+            <footer>View limited to 10; shown in descending order. Excludes GNG entries flagged as Key Account.</footer>
+            <header>Table 2</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Federal_GTS_Dashboard_Reports1/Federal_GNG_50K_Detail</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <title>Current FY Go Decisions for Opptys &gt;$5M</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity.Lead_Region_Formula__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Account.Client_Subgroup__c</column>
+            </dashboardFilterColumns>
+            <dashboardTableColumn>
+                <column>Opportunity.Lead_District_Formula__c</column>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>FK_NAME</column>
+                <showTotal>false</showTotal>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>RowCount</column>
+                <showTotal>false</showTotal>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>FORMULA1</column>
+                <showTotal>true</showTotal>
+                <sortBy>RowValueDescending</sortBy>
+            </dashboardTableColumn>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <footer>Top 10 Capture Managers by value of open opportunities and programs. Includes Stages 1-3 &amp; 5.  Values depict gross value for projects/task orders and TO remaining value for all programs.</footer>
+            <header>Table 5</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Federal_GTS_Dashboard_Reports1/Federal_Open_Opps_by_Capture_Manager1</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <title>Top 10 Capture Managers</title>
+        </components>
+    </middleSection>
+    <rightSection>
+        <columnSize>Wide</columnSize>
+        <components>
+            <autoselectColumnsFromReport>false</autoselectColumnsFromReport>
+            <chartAxisRange>Auto</chartAxisRange>
+            <chartSummary>
+                <axisBinding>y</axisBinding>
+                <column>FORMULA1</column>
+            </chartSummary>
+            <componentType>LineGroupedCumulative</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity.Lead_Region_Formula__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Account.Client_Subgroup__c</column>
+            </dashboardFilterColumns>
+            <displayUnits>Millions</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>false</drillToDetailEnabled>
+            <enableHover>false</enableHover>
+            <expandOthers>false</expandOthers>
+            <footer>Results are cumulative.  Does not include hunting licenses or sole sourced task orders.  Compare total to your respective goals (when using filters).</footer>
+            <groupingColumn>Opportunity.WinDate__c</groupingColumn>
+            <groupingColumn>BucketField_3756961</groupingColumn>
+            <header>Chart 3</header>
+            <legendPosition>Bottom</legendPosition>
+            <report>Federal_GTS_Dashboard_Reports1/Federal_Wins_Total</report>
+            <showPercentage>false</showPercentage>
+            <showValues>false</showValues>
+            <sortBy>RowLabelAscending</sortBy>
+            <title>Wins Total</title>
+            <useReportChart>false</useReportChart>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity.Lead_Region_Formula__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Account.Client_Subgroup__c</column>
+            </dashboardFilterColumns>
+            <dashboardTableColumn>
+                <column>ACCOUNT_NAME</column>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>OPPORTUNITY_NAME</column>
+                <showTotal>false</showTotal>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>FORMULA1</column>
+                <showTotal>true</showTotal>
+                <sortBy>RowValueDescending</sortBy>
+            </dashboardTableColumn>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>true</drillToDetailEnabled>
+            <footer>Shows Current and Next Fiscal Quarter Must Win potential awards based on Estimated Award Date. Includes stages 1-3, all opportunities.</footer>
+            <header>Table 1</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>10</maxValuesDisplayed>
+            <report>Federal_GTS_Dashboard_Reports1/Federal_Must_Wins</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <title>Current and Next FQ Top 10 Must Wins</title>
+        </components>
+        <components>
+            <autoselectColumnsFromReport>true</autoselectColumnsFromReport>
+            <componentType>Table</componentType>
+            <dashboardFilterColumns>
+                <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Opportunity.Lead_Region_Formula__c</column>
+            </dashboardFilterColumns>
+            <dashboardFilterColumns>
+                <column>Account.Client_Subgroup__c</column>
+            </dashboardFilterColumns>
+            <dashboardTableColumn>
+                <column>ACCOUNT_NAME</column>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>OPPORTUNITY_NAME</column>
+                <showTotal>false</showTotal>
+            </dashboardTableColumn>
+            <dashboardTableColumn>
+                <calculatePercent>false</calculatePercent>
+                <column>FORMULA1</column>
+                <showTotal>true</showTotal>
+                <sortBy>RowValueDescending</sortBy>
+            </dashboardTableColumn>
+            <displayUnits>Auto</displayUnits>
+            <drillEnabled>false</drillEnabled>
+            <drillToDetailEnabled>true</drillToDetailEnabled>
+            <footer>Expected bookings include projects and task orders only.  These values are NOT weighted by probability.  Table represents same data presented in Chart 2. Limited to top 15 by value.</footer>
+            <header>Table 3</header>
+            <indicatorHighColor>#54C254</indicatorHighColor>
+            <indicatorLowColor>#C25454</indicatorLowColor>
+            <indicatorMiddleColor>#C2C254</indicatorMiddleColor>
+            <maxValuesDisplayed>15</maxValuesDisplayed>
+            <report>Federal_GTS_Dashboard_Reports1/Federal_Expected_Bookings</report>
+            <showPicturesOnTables>true</showPicturesOnTables>
+            <title>Expecting Bookings Current and Next FQ</title>
+        </components>
+    </rightSection>
+    <runningUser>pamela.anderson@aecom.com</runningUser>
+    <textColor>#000000</textColor>
+    <title>National Government RBLL Dashboard</title>
+    <titleColor>#000000</titleColor>
+    <titleSize>12</titleSize>
+</Dashboard>

@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<OpportunitySharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <criteriaBasedRules>
+        <fullName>AsiaD</fullName>
+        <sharedTo>
+            <roleAndSubordinates>APAC</roleAndSubordinates>
+        </sharedTo>
+        <criteriaItems>
+            <field>RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Task Order - APAC,Project - APAC,Program - APAC</value>
+        </criteriaItems>
+        <name>AsiaD</name>
+        <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    </criteriaBasedRules>
+    <criteriaBasedRules>
+        <fullName>EuropeD</fullName>
+        <sharedTo>
+            <roleAndSubordinates>EMEA</roleAndSubordinates>
+        </sharedTo>
+        <criteriaItems>
+            <field>RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Program - EMEA,Project - EMEA,Task Order - EMEA</value>
+        </criteriaItems>
+        <name>EuropeD</name>
+        <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    </criteriaBasedRules>
+    <criteriaBasedRules>
+        <fullName>NorthAmericaD</fullName>
+        <sharedTo>
+            <roleAndSubordinates>Americas</roleAndSubordinates>
+        </sharedTo>
+        <criteriaItems>
+            <field>RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Project - Americas,Task Order - Americas,Program - Americas</value>
+        </criteriaItems>
+        <name>North AmericaD</name>
+        <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    </criteriaBasedRules>
+    <criteriaBasedRules>
+        <fullName>WorldwideA</fullName>
+        <sharedTo>
+            <role>Worldwide</role>
+        </sharedTo>
+        <criteriaItems>
+            <field>RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Project - Americas,Task Order - Americas,Project - EMEA,Program - APAC,Task Order - APAC,Project - APAC</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Project - EMEA,Program - EMEA,Program - Americas,Task Order - EMEA</value>
+        </criteriaItems>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <name>WorldwideA</name>
+        <opportunityAccessLevel>Edit</opportunityAccessLevel>
+    </criteriaBasedRules>
+    <ownerRules>
+        <fullName>Admin_Opportunity_Sharing</fullName>
+        <sharedTo>
+            <roleAndSubordinatesInternal>Worldwide</roleAndSubordinatesInternal>
+        </sharedTo>
+        <sharedFrom>
+            <role>Admin</role>
+        </sharedFrom>
+        <description>Shares all Opps with the Admin Role</description>
+        <name>Admin Opportunity Sharing</name>
+        <opportunityAccessLevel>Read</opportunityAccessLevel>
+    </ownerRules>
+    <ownerRules>
+        <fullName>WorldwideD</fullName>
+        <sharedTo>
+            <roleAndSubordinates>Worldwide</roleAndSubordinates>
+        </sharedTo>
+        <sharedFrom>
+            <roleAndSubordinates>Worldwide</roleAndSubordinates>
+        </sharedFrom>
+        <name>WorldwideD</name>
+        <opportunityAccessLevel>Read</opportunityAccessLevel>
+    </ownerRules>
+</OpportunitySharingRules>

@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>PDD go/no go approval email</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>PDD go no go approval</name>
+    <style>none</style>
+    <subject>Approval required for opportunity - {!Opportunity.Name}</subject>
+    <textOnly>Your approval has been requested for {!Opportunity.Name} in Salesforce.
+
+Opportunity #: {!Opportunity.Opportunity_ID__c}
+Account name: {!Opportunity.Account}
+Capture manager: {!Opportunity.Capture_Manager__c}
+Record type: {!Opportunity.RecordType}
+Gross revenue: {!Opportunity.Amount}
+Net revenue
+(program): {!Opportunity.Net_Revenue_Program__c}
+Net revenue
+(non-program): {!Opportunity.Net_Revenue_TO_Project__c}
+
+Please indicate your approval by
+
+{!ApprovalRequest.Process_Name}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>For Market Segment leaders to be notified when a opp is in their Market Segment/Practice Area</description>
+    <encodingKey>ISO-8859-1</encodingKey>
+    <name>CS Market Sector Opp</name>
+    <style>none</style>
+    <subject>A new CS opp has been entered in Salesforce</subject>
+    <textOnly>The following opportunity has been entered in Salesforce that includes your Market Segment/Practice Area:
+
+OPP ID#: {!Opportunity.Opportunity_ID__c}
+Opportunity Name: {!Opportunity.Name}
+Account Name: {!Opportunity.Account}
+Stage: {!Opportunity.StageName}
+Gross Revenue: {!Opportunity.Amount}
+TO/Project Gross Revenue: {!Opportunity_Department__c.Revenue_Split_TO_Proj__c}
+TO/Project Net Revenue: {!Opportunity_Department__c.TO_Project_Net_Revenue__c}
+Ceiling amount if Program: {!Opportunity.Ceiling_Amount_ReadOnly__c}
+Gross Margin: {!Opportunity.CS_Gross_Margin_Percent__c}
+Capture manager: {!Opportunity.Capture_Manager_User__c}
+AECOM Primary Department: {!Opportunity.AECOM_Primary_Dept_Lookup__c}
+Estimated Award Date: {!Opportunity.CloseDate}
+CM Type: {!Opportunity.CM_Type__c}
+Delivery Method: {!Opportunity.Project_Delivery_Method__c}
+
+Click here to view the new opportunity: {!Opportunity.Link}</textOnly>
+    <type>custom</type>
+</EmailTemplate>

@@ -1,0 +1,40 @@
+<apex:page showHeader="true" sidebar="true" controller="rsAutoCompleteTestController">
+   
+    <apex:stylesheet value="{!URLFOR($Resource.jqueryui, '/jquery-ui.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.jqueryui, '/jquery-ui.theme.css')}"/>
+    
+    <apex:includeScript value="{!$Resource.jquery}"/>
+    <apex:includeScript value="{!$Resource.jqueryui}/jquery-ui.js"/>
+
+    <script>
+
+   
+	    $(function() {
+		    
+		    $( "[id$='tags']" ).autocomplete({
+		      source: function(request, response) {
+                        
+                        rsAutoCompleteTestController.getValues($( "[id$='tags']"  ).val(), function(result, event){
+                            if(event.type == 'exception') {
+                                  alert(event.message);
+                            } else {
+                                 console.log(result);
+                                 response(result);
+                            }
+                        });
+                   }
+		    });
+		 });
+
+
+         
+
+    </script>
+
+    <apex:form >
+        <apex:outputLabel for="tags" value="Tags: "/>
+		<apex:inputText id="tags"  value="{!someValue}"/>
+        <apex:commandButton action="{!save}" value="Save"/>
+	</apex:form>
+	
+</apex:page>
