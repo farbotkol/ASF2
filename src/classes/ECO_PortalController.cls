@@ -15,6 +15,7 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 	public ProjectTeamMember__c ptmPickListProvider		{ get; set; }
 	public String photoUrl								{ get; set; }
 	public List<PortalMessage__c> newsFeed				{ get; set; }
+	public String awanJSPath							{ get; set; }
 	
 	private class ECO_PortalControllerException extends Exception {}
 	private System.LoggingLevel debugLevel = LoggingLevel.INFO;
@@ -35,6 +36,8 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 		selectedOutputType = 'ECO_GeneralFields';
 		
 		changeProjectOutputType();
+		
+		awanJSPath = ECO_PortalSettings__c.getInstance().OnAWANJavascriptPath__c;
 		
 		showClosed = false;
 		
