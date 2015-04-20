@@ -653,7 +653,7 @@
 
                                         <apex:repeat value="{!applications}" var="app" >
                                             <apex:outputPanel rendered="{!!app.IsHidden__c}" layout="none">
-                                                <li class="{!app.Application__r.NetworkRequirement__c}">
+                                                <li class="{!app.Application__r.NetworkRequirement__c} {!IF(app.Application__r.MobileEnabled__c, '', 'hidden-xs')}">
                                                     <a target="_blank" href="{!app.Application__r.ApplicationURL__c}">
                                                         <div class="media-left">
                                                             <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" html-data-original="{!URLFOR($Resource.ECO_CustomGraphicAssets, app.Application__r.ImageName__c)}" styleClass="lazy" width="25px" height="25px" />

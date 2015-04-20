@@ -26,6 +26,7 @@ public without sharing class ECO_Service_Applications {
 		queryString			+= ' , Application__r.ApplicationURL__c';
 		queryString			+= ' , Application__r.ImageName__c';
 		queryString			+= ' , Application__r.NetworkRequirement__c';
+		queryString			+= ' , Application__r.MobileEnabled__c';
 		queryString			+= ' , RecordType.Name';
 		queryString			+= ' , ConfigurationTemplate__c';
 
@@ -145,14 +146,14 @@ public without sharing class ECO_Service_Applications {
 		queryString			+= ' , Application__r.ApplicationURL__c';
 		queryString			+= ' , Application__r.ImageName__c';
 		queryString			+= ' , Application__r.NetworkRequirement__c';
+		queryString			+= ' , Application__r.MobileEnabled__c';
 		queryString			+= ' , RecordType.Name';
 		queryString			+= ' , ConfigurationTemplate__c';
 
 		queryString			+= ' FROM Configuration__c';
 
 		// this block is for template records
-		queryString			+= ' WHERE (User__c = null';
-		queryString			+= ' AND IsActive__c = true';
+		queryString			+= ' WHERE (IsActive__c = true';
 		queryString			+= ' AND IsRemovable__c = true';
 		queryString			+= ' AND RecordType.Name = \'Application Template\')';
 		
