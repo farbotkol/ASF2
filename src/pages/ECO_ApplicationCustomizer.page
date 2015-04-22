@@ -1,6 +1,25 @@
 <apex:page controller="ECO_ApplicationCustomizerController" showheader="false" sidebar="false" title="Pick Applications" standardStylesheets="false" action="{!onLoad}">
  	
  	<script>
+ 		$(document).ready(function(){
+           $(".showAllApps").click(function(){
+                $(".hiddenOnMobile").toggle();
+            });
+
+           $(".showAllApps").click(function(){
+                $(".showHideSwap").toggleClass("hidden-xs");
+           });
+
+
+            $(".showAllApps").click(function(){
+              if ($("i").is('.fa-eye')) {
+                $("i.fa-eye").toggleClass("fa-eye-slash");
+              } else {
+                $("i.fa-eye-slash").toggleClass("fa-eye");
+              }
+            });
+        });
+
  		$(document).ready(function() {
 			
 	 		init();
@@ -304,6 +323,10 @@
 			}
 			.hiddenOnMobile{
 				opacity:0.65;
+				display:none;
+			}
+			.floatRight{
+				float:right;
 			}
 		}
  	</style>
@@ -401,17 +424,27 @@
 
 							<div class="panel-body">
 								<div class="row">
-									<div style="float:left;padding:10px;position:relative; width:150px;color:#fff; margin-bottom:15px;" class="visible-xs">
+									<div style="float:left;padding:10px;position:relative; width:100%;color:#fff; margin-bottom:5px;" class="visible-xs">
 										Applications that are <span style="opacity:0.65;font-weight:bold;">grayed out</span> are non-mobile accessible applications
 									</div>
-									<div style="float:right;padding:10px;position:relative;right:20px;">
+									<div style="float:right;padding:10px;position:relative;right:20px;width:100%;">
+
+										<button type="button" class="btn btn-default visible-xs btn-lrg showAllApps showHideSwap hidden-xs" style="margin:0 0 10px 10px; float:right;"><i class="fa fa-eye"></i> Hide non-mobile Apps</button>
+
+										<button type="button" class="btn btn-default visible-xs btn-lrg showAllApps showHideSwap" style="margin:0 0 10px 10px; float:right;"><i class="fa fa-eye-slash"></i> Show non-mobile Apps</button>
+
+										<apex:commandButton styleClass="btn btn-danger btn-lrg floatRight" value="Cancel" action="{!returnToPage}" immediate="true" />
+
 										<apex:outputPanel layout="none" rendered="{!!inSearchResultsMode}">
-											<button type="button" class="btn btn-primary btn-lrg" style="margin-right:10px;" onclick="savePositionsPageFunction();">
+											<button type="button" class="btn btn-primary btn-lrg" style="margin-right:10px; float:right;" onclick="savePositionsPageFunction();">
 												Save and Return
 											</button>
 										</apex:outputPanel>
 
-										<apex:commandButton styleClass="btn btn-danger btn-lrg" value="Cancel" action="{!returnToPage}" immediate="true" />
+										
+
+										
+
 									</div>
 									<div style="clear:both;"></div>
 								</div>
