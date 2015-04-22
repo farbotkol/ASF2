@@ -9,8 +9,44 @@
 
         $(window).bind("load", function() {
             var timeout = setTimeout(function() { $("img.lazy").trigger("sporty") }, 500);
-        });    
+        });   
+
+        $(document).ready(function(){
+           $(".showAllApps").click(function(){
+                $(".hiddenOnMobile").toggle();
+            });
+
+           $(".showAllApps").click(function(){
+                $(".showHideSwap").toggleClass("hidden-xs");
+           });
+
+
+            $(".showAllApps").click(function(){
+              if ($("i").is('.fa-eye')) {
+                $("i.fa-eye").toggleClass("fa-eye-slash");
+              } else {
+                $("i.fa-eye-slash").toggleClass("fa-eye");
+              }
+            });
+        });
+
     </script>
+
+    <style>
+
+        @media screen and (max-width:768px){
+            .hiddenOnMobile{
+                opacity:0.8;
+                display:none;
+                background-color:#333 !important;
+            }
+            .showHideSwap{
+                float: right;
+                width: 132px;
+                margin-top: -33px;
+            }
+        }
+    </style>
 
     <body class="nifty-ready">
 
@@ -22,7 +58,7 @@
         </apex:define>
 
         <apex:define name="content" >
-                            
+                        
 
             <!-- This is where I am storing all of the modals -->
             <div class="modal fade" id="modalAlerts" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -234,7 +270,12 @@
 
                         <!--Navigation toogle button-->
                         <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <li class="btn-hover-info add-tooltip" data-placement="bottom" data-toggle="tooltip" data-original-title="Expand Applications">
+                        <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="Expand Applications">
+                            <a class="mainnav-toggle" href="#">
+                                <i class="fa fa-th fa-lg"></i>
+                            </a>
+                        </li>
+                         <li class=" visible-xs">
                             <a class="mainnav-toggle" href="#">
                                 <i class="fa fa-th fa-lg"></i>
                             </a>
@@ -513,7 +554,7 @@
                                 </div>
                     
                                 <div class="panel-body myProjectsPortfolio">
-                                    <div class="table-responsive displayNone" id="portfolioTable">
+                                    <div class="table-responsive displayNone hidden-xs" id="portfolioTable">
                                         <table class="table table-striped table-hover">
                                             <thead>
                                                 <tr>
@@ -639,13 +680,27 @@
                                 <!-- THIS OUT FOR NOW 3/20/2015, FOR APP SCROLLING <div class="fixed-listcontainer"> -->
                                     <ul id="mainnav-menu" class="list-group">
 
+                                        <li class="visible-xs showAllApps">
+                                            <a href="#">
+                                                <div class="media-left">
+                                                    <i class="fa fa-eye" style="font-size:33px; padding-left:1px;"></i>
+                                                </div>
+                                                <div class="media-body menu-title showHideSwap visible-xs" style="height:35px;">
+                                                    Show Non-Mobile Applications
+                                                </div>
+                                                <div class="media-body menu-title showHideSwap hidden-xs" style="height:35px;">
+                                                    Hide Non-Mobile Applications
+                                                </div>
+                                            </a>
+                                        </li>
+
 
                                         <li class="editApps">
                                             <a href="#" onclick="goToApplicationConfiguration();">
                                                 <div class="media-left">
-                                                    <i class="fa fa-cog" style="font-size:24px; padding-left:1px;"></i>
+                                                    <i class="fa fa-cog" style="font-size:33px; padding-left:1px;"></i>
                                                 </div>
-                                                <div class="media-body menu-title" style="height:25px;">
+                                                <div class="media-body menu-title" style="height:35px;">
                                                     Edit AECOM APPs 
                                                 </div>
                                             </a>
@@ -653,12 +708,12 @@
 
                                         <apex:repeat value="{!applications}" var="app" >
                                             <apex:outputPanel rendered="{!!app.IsHidden__c}" layout="none">
-                                                <li class="{!app.Application__r.NetworkRequirement__c} {!IF(app.Application__r.MobileEnabled__c, '', 'hidden-xs')}">
+                                                <li class="{!app.Application__r.NetworkRequirement__c} {!IF(app.Application__r.MobileEnabled__c, '', 'hiddenOnMobile')} anApplication">
                                                     <a target="_blank" href="{!app.Application__r.ApplicationURL__c}">
                                                         <div class="media-left">
-                                                            <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" html-data-original="{!URLFOR($Resource.ECO_CustomGraphicAssets, app.Application__r.ImageName__c)}" styleClass="lazy" width="25px" height="25px" />
+                                                            <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" html-data-original="{!URLFOR($Resource.ECO_CustomGraphicAssets, app.Application__r.ImageName__c)}" styleClass="lazy" width="33px" height="33px" />
                                                         </div>
-                                                        <div class="media-body menu-title">
+                                                        <div class="media-body menu-title" style="height:35px;">
                                                             <apex:outputText value="{!app.Application__r.ApplicationName__c}" />
                                                         </div>
                                                     </a>
