@@ -1,7 +1,11 @@
 <apex:page controller="ECO_ApplicationCustomizerController" showheader="false" sidebar="false" title="Pick Applications" standardStylesheets="false" action="{!onLoad}">
     
+    
+    
     <script>
         $(document).ready(function(){
+			init();
+			
            $(".showAllApps").click(function(){
                 $(".hiddenOnMobile").toggle();
             });
@@ -18,15 +22,17 @@
                 $("i.fa-eye-slash").toggleClass("fa-eye");
               }
             });
-        });
-
-        $(document).ready(function() {
-            
-            init();
             
             $('img[id$="theImageHidden"]').closest('a').fadeTo(1, .45);
         });
-        
+/*  moved the guts to the existing doc.ready
+        $(document).ready(function() {
+            init();
+            
+            $('img[id$="theImageHidden"]').closest('a').fadeTo(1, .45);
+            
+        });
+*/      
         function attachSortable() {
             $( "#sortable" ).sortable({});
         }
@@ -58,7 +64,7 @@
 
             savePositions(serializedIds);
         };
-        
+/* Use 'toggleApp' instead
         function toggleApplication (theId) {
             if (console) {
                 console.log($("a[orderId='id_"+theId+"']").length);
@@ -71,17 +77,8 @@
                 $("a[orderId='id_"+theId+"hidden']").fadeTo(500, 1);
                 $("a[orderId='id_"+theId+"hidden']").attr('orderId', 'id_'+theId).find('.fa-check-circle').addClass('fa-times-circle').removeClass('fa-check-circle');
             }
-            /*
-            if ($('#id_'+theId).length) {
-                $('#id_'+theId).fadeTo(500, .25);
-                $('#id_'+theId).attr('id', 'id_'+theId+'hidden').find('.fa-times-circle').removeClass('fa-times-circle').addClass('fa-check-circle');
-            } else {
-                $('#id_'+theId+'hidden').fadeTo(500, 1);
-                $('#id_'+theId+'hidden').attr('id', 'id_'+theId).find('.fa-check-circle').addClass('fa-times-circle').removeClass('fa-check-circle');
-            }
-            */
         }
-
+*/
         function toggleApp (theId){
             if ($("#sortable div[orderId='id_"+theId+"']").length) {
                 $("div[orderId='id_"+theId+"']").appendTo('#availableApps').find('.fa-times-circle').removeClass('fa-times-circle').addClass('fa-check-circle');
@@ -91,11 +88,11 @@
                 $("div[orderId='id_"+theId+"']").find('*').removeAttr('id');
             }
         }
-
+/*
         function removeApplication (theId){
             
         }
-        
+*/      
         var timer;
         
         function applyFilter (theField) {
@@ -331,6 +328,14 @@
             }
             
         }
+        
+        .fa-times-circle {
+        	z-index: 99999;
+        }
+        
+        .fa-check-circle {
+        	z-index: 99999;
+        }
     </style>
     
     <apex:composition template="ECO_Temp_Portal">
@@ -472,6 +477,7 @@
                                                                 <apex:repeat value="{!selectedApplications}" var="configItem">
                                                                     <apex:outputpanel layout="none" >
                                                                         <div class="{!IF(configItem.Application__r.MobileEnabled__c, '', 'hiddenOnMobile')} ui-state-default appIcon" orderId="id_{!configItem.Application__c}">
+                                                                        <!-- <div class="ui-state-default appIcon" orderId="id_{!configItem.Application__c}"> -->
                                                                             <apex:outputpanel layout="inline" styleClass="appPanel">
                                                                                 <apex:image id="theImage" value="{!URLFOR($Resource.ECO_CustomGraphicAssets, configItem.Application__r.ImageName__c)}" width="45px" height="45px" />
                                                                                 <apex:outputPanel rendered="{!configItem.ConfigurationTemplate__r.IsRemovable__c}" layout="none" >
