@@ -6,4 +6,7 @@ public without sharing class ECO_Constants {
 	public static final String Configuration_ApplicationRecordTypeName = 'Application';
 	public static final String Configuration_ApplicationTemplateRecordTypeName = 'Application Template';
 	public static final String Configuration_ApplicationReportRecordTypeName = 'Report';
+	
+	public static final String Contact_PSAResourceRecordTypeName = 'PSA Resource';
+	
 }
