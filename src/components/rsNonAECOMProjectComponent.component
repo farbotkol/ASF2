@@ -224,7 +224,7 @@
 	                	<span class="glyphicon glyphicon-ok-circle"></span>              
 				    </apex:commandLink>
 	                &nbsp;
-	                <apex:commandLink styleClass="btn btn-success btn-sm sfbtnOverrideGreen" style="color:#fff; text-decoration:none;" action="{!saveAndApprove}" value="{!$Label.Save_And_Approve}" reRender="{!reRender}" onclick="if(inProgress) return false; setNonProjRequiredFields(); if(!checkRequiredFields()) return false; inProgress = true; showSectionSpinner('nonprojectsHeader');" oncomplete="resetProgress();removeSpacesFromId();restoreCollapsedSections();" rendered="{!isApprovable && CurrentProject.IsPendingOrInReview}">	 
+	                <apex:commandLink styleClass="btn btn-success btn-sm sfbtnOverrideGreen" style="color:#fff; text-decoration:none;" action="{!saveAndApprove}" value="{!$Label.Save_and_Approve}" reRender="{!reRender}" onclick="if(inProgress) return false; setNonProjRequiredFields(); if(!checkRequiredFields()) return false; inProgress = true; showSectionSpinner('nonprojectsHeader');" oncomplete="resetProgress();removeSpacesFromId();restoreCollapsedSections();" rendered="{!isApprovable && CurrentProject.IsPendingOrInReview}">	 
 	                	<apex:param value="{!CurrentProject.Id}" name="partId"/>
 	                	<span class="glyphicon glyphicon-ok-circle"></span>              
 				    </apex:commandLink>
@@ -381,14 +381,14 @@
 						                            </apex:commandLink>
 											    </li>
 											    <li role="presentation" >
-						                            <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!moveProjectUp}" id="moveProjectUp" value="{!$Label.Move_Project_Up}" reRender="{!reRender}" styleClass="{!numProjInGroup[group.Obj.projectGroup]-1} {!project.ProjectSequence}" onclick="if(inProgress) return false; showSectionSpinner('nonprojectsHeader'); inProgress = true;" oncomplete="resetProgress();restoreCollapsedSections();">
+						                            <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!moveProjectUp}" id="moveProjectUp" value="{!$Label.Move_Project_Up}" reRender="{!reRender}" styleClass="{!numProjInNonAECOMGroup[group.Obj.projectGroup]-1} {!project.ProjectSequence}" onclick="if(inProgress) return false; showSectionSpinner('nonprojectsHeader'); inProgress = true;" oncomplete="resetProgress();restoreCollapsedSections();">
 						                            	<apex:param value="{!group.Obj.projectGroup}" name="projectGroup" />
 						                            	<apex:param value="{!project.Id}" name="projectId"/>
 						                            	<apex:param value="{!project.RecordTypeId}" name="recordType" />
 						                            </apex:commandLink>
 											    </li>
 											    <li role="presentation" >
-						                            <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!moveProjectDown}" id="moveProjectDown" value="{!$Label.Move_Project_Down}" reRender="{!reRender}" styleClass="{!numProjInGroup[group.Obj.projectGroup]-1} {!project.ProjectSequence}" onclick="if(inProgress) return false; showSectionSpinner('nonprojectsHeader'); inProgress = true;" oncomplete="resetProgress();restoreCollapsedSections();">
+						                            <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!moveProjectDown}" id="moveProjectDown" value="{!$Label.Move_Project_Down}" reRender="{!reRender}" styleClass="{!numProjInNonAECOMGroup[group.Obj.projectGroup]-1} {!project.ProjectSequence}" onclick="if(inProgress) return false; showSectionSpinner('nonprojectsHeader'); inProgress = true;" oncomplete="resetProgress();restoreCollapsedSections();">
 						                            	<apex:param value="{!group.Obj.projectGroup}" name="projectGroup"/>
 						                            	<apex:param value="{!project.Id}" name="projectId"/>
 						                            	<apex:param value="{!project.RecordTypeId}" name="recordType" />

@@ -741,7 +741,7 @@ public class rsProfilePart extends rsModel{
 
         // ---- The following 4 methods (and 1 util method) are used on profile reviews ---- //
         //All 4 methods check BOTH the profile part status and the User status
-        public List<rs_Profile_Part__c> reviewUnassigned(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String superGeography)
+        public List<rs_Profile_Part__c> reviewUnassigned(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String superGeography, String sortDir)
         {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, User__r.Profile_Reviewer__c, User__r.Profile_Reviewer__r.Name, User__r.FirstName, User__r.Name, User__r.LastName, User__r.Manager.Name, User__r.Geography__c, User__r.Region__c, User__r.Country, User__r.Office__c, User__r.Business_Line__c, Previous_Part__c, Resume_Name__c, Resume_Title__c, Years_with_Other_Firms__c, Bio__c from rs_Profile_Part__c';
             String whereStr = ' where User__r.Profile_Reviewer__c = null AND Next_Part__c = null AND ( (Status__c =' + rsStringUtil.quote(rsProfilePart.S_INREVIEW) + ' OR Status__c = ' + rsStringUtil.quote(rsProfilePart.S_PENDING) + ') AND (User__r.Status__c =' + rsStringUtil.quote(rsProfile.S_INREVIEW) + ' OR User__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_PENDING) + ') )' ;
@@ -749,40 +749,51 @@ public class rsProfilePart extends rsModel{
                 whereStr += ' AND User__r.supergeography__c =' + rsStringUtil.quote(superGeography);
             }
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' LIMIT 100';
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir + ' LIMIT 100';
             System.debug('###whereStr ' + whereStr);
-            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr ));
+            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr));
             
         }
 
-        public List<rs_Profile_Part__c> reviewAssigned(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee)
+        public List<rs_Profile_Part__c> reviewAllPending(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir)
+        {
+            String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, User__r.Profile_Reviewer__c, User__r.Profile_Reviewer__r.Name, User__r.FirstName, User__r.Name, User__r.LastName, User__r.Manager.Name, User__r.Geography__c, User__r.Region__c, User__r.Country, User__r.Office__c, User__r.Business_Line__c, Previous_Part__c, Resume_Name__c, Resume_Title__c, Years_with_Other_Firms__c, Bio__c from rs_Profile_Part__c';
+            String whereStr = ' where Next_Part__c = null AND Status__c = ' + rsStringUtil.quote(rsProfilePart.S_PENDING);
+            whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir + ' LIMIT 100';
+            System.debug('###whereStr ' + whereStr);
+            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr));
+            
+        }
+
+        public List<rs_Profile_Part__c> reviewAssigned(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir)
         {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, User__r.Profile_Reviewer__c, User__r.Profile_Reviewer__r.Name, User__r.FirstName, User__r.Name, User__r.LastName, User__r.Manager.Name, User__r.Geography__c, User__r.Region__c, User__r.Country, User__r.Office__c, User__r.Business_Line__c, Previous_Part__c, Resume_Name__c, Resume_Title__c, Years_with_Other_Firms__c, Bio__c from rs_Profile_Part__c';
             String whereStr = ' where User__r.Profile_Reviewer__c != null AND Next_Part__c = null AND ( (Status__c =' + rsStringUtil.quote(rsProfilePart.S_INREVIEW) + ' OR Status__c = ' + rsStringUtil.quote(rsProfilePart.S_PENDING) + ') AND (User__r.Status__c =' + rsStringUtil.quote(rsProfile.S_INREVIEW) + ' OR User__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_PENDING) + ') )' ;
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' LIMIT 100';
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir + ' LIMIT 100';
             System.debug('###whereStr ' + whereStr);
-            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr ));
+            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr));
         }
 
-        public List<rs_Profile_Part__c> reviewAssignedToMe(String id, DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee)
+        public List<rs_Profile_Part__c> reviewAssignedToMe(String id, DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir)
         {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, User__r.Profile_Reviewer__c, User__r.Profile_Reviewer__r.Name, User__r.FirstName, User__r.Name, User__r.LastName, User__r.Manager.Name, User__r.Geography__c, User__r.Region__c, User__r.Country, User__r.Office__c, User__r.Business_Line__c, Previous_Part__c, Resume_Name__c, Resume_Title__c, Years_with_Other_Firms__c, Bio__c from rs_Profile_Part__c';
             String whereStr = ' where User__r.Profile_Reviewer__c = :id AND Next_Part__c = null AND ( (Status__c =' + rsStringUtil.quote(rsProfilePart.S_INREVIEW) + ' OR Status__c = ' + rsStringUtil.quote(rsProfilePart.S_PENDING) + ') AND (User__r.Status__c =' + rsStringUtil.quote(rsProfile.S_INREVIEW) + ' OR User__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_PENDING) + ') )' ;
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' LIMIT 100';
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir + ' LIMIT 100';
             System.debug('###whereStr ' + whereStr);
-            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr ));
+            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr));
         }
 
-        public List<rs_Profile_Part__c> reviewCompleted(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee)
+        public List<rs_Profile_Part__c> reviewCompleted(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir)
         {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, User__r.Profile_Reviewer__c, User__r.Profile_Reviewer__r.Name, User__r.FirstName, User__r.Name, User__r.LastName, User__r.Manager.Name, User__r.Geography__c, User__r.Region__c, User__r.Country, User__r.Office__c, User__r.Business_Line__c, Previous_Part__c, Resume_Name__c, Resume_Title__c, Years_with_Other_Firms__c, Bio__c from rs_Profile_Part__c';
             String whereStr = ' where Status__c = ' + rsStringUtil.quote(rsProfilePart.S_APPROVED) + 'AND Next_Part__c = null AND Date_Time_Sent_for_Review__c != null AND User__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_APPROVED);
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' LIMIT 100';
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir + ' LIMIT 100';
             System.debug('###whereStr ' + whereStr);
-            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr ));
+            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr));
         }
 
         private String buildFilterStrForReview(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee) {
