@@ -21,7 +21,7 @@ public with sharing class rsProfileReviewsController {
 	public rsProfileReviewsController() {
 		dummyUser = new User();
 		dummyUser2 = new User();
-		SortDir = 'desc';
+		SortDir = 'asc';
 		SortVal = 'Date_Time_Sent_for_Review__c';
 		ProfileReviewViewType = REV_ASSIGNEDTOME;
 	}
@@ -37,6 +37,7 @@ public with sharing class rsProfileReviewsController {
 	    mProfileReviewView.add(new SelectOption(REV_ASSIGNED, REV_ASSIGNED));
 	    mProfileReviewView.add(new SelectOption(REV_ASSIGNEDTOME, REV_ASSIGNEDTOME));
 	    mProfileReviewView.add(new SelectOption(REV_COMPLETED, REV_COMPLETED));
+	    mProfileReviewView.add(new SelectOption(REV_ALL_PENDING, REV_ALL_PENDING));
 	return mProfileReviewView;
 	}
 
@@ -44,16 +45,19 @@ public with sharing class rsProfileReviewsController {
 		if (ProfileReviewViewType == REV_UN_AMERICAS || ProfileReviewViewType == REV_UN_AMERICAS_CS
 			|| ProfileReviewViewType == REV_UN_APAC || ProfileReviewViewType == REV_UN_CORPORATE || ProfileReviewViewType == REV_UN_EMEA|| 
 			ProfileReviewViewType == REV_UN_GLOBAL_IT) {
-			mReviewProfiles = rsProfilePart.find.reviewUnassigned(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, ProfileReviewViewType);
+			mReviewProfiles = rsProfilePart.find.reviewUnassigned(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, ProfileReviewViewType, SortDir);
 		} 
 		else if (ProfileReviewViewType == REV_ASSIGNED) {
-			mReviewProfiles = rsProfilePart.find.reviewAssigned(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee);
+			mReviewProfiles = rsProfilePart.find.reviewAssigned(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, SortDir);
 		} else if (ProfileReviewViewType == REV_COMPLETED) {
-			mReviewProfiles = rsProfilePart.find.reviewCompleted(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee);
+			mReviewProfiles = rsProfilePart.find.reviewCompleted(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, SortDir);
+		} else if (ProfileReviewViewType == REV_ALL_PENDING) {
+			mReviewProfiles = rsProfilePart.find.reviewAllPending(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, SortDir);
 		} else {
 			ProfileReviewViewType = REV_ASSIGNEDTOME;
-			mReviewProfiles = rsProfilePart.find.reviewAssignedToMe(UserInfo.getUserId(),dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee);
+			mReviewProfiles = rsProfilePart.find.reviewAssignedToMe(UserInfo.getUserId(),dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, SortDir);
 		}
+
 		return mReviewProfiles;
 	}
 
@@ -61,14 +65,16 @@ public with sharing class rsProfileReviewsController {
 		if (ProfileReviewViewType == REV_UN_AMERICAS || ProfileReviewViewType == REV_UN_AMERICAS_CS
 			|| ProfileReviewViewType == REV_UN_APAC || ProfileReviewViewType == REV_UN_CORPORATE || ProfileReviewViewType == REV_UN_EMEA|| 
 			ProfileReviewViewType == REV_UN_GLOBAL_IT) {
-			mReviewProjects = rsPRTeamEmployee.find.reviewUnassigned(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, ProfileReviewViewType);
+			mReviewProjects = rsPRTeamEmployee.find.reviewUnassigned(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, ProfileReviewViewType, SortDir);
 		} else if (ProfileReviewViewType == REV_ASSIGNED) {
-			mReviewProjects = rsPRTeamEmployee.find.reviewAssigned(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee);
+			mReviewProjects = rsPRTeamEmployee.find.reviewAssigned(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, SortDir);
 		} else if (ProfileReviewViewType == REV_COMPLETED) {
-			mReviewProjects = rsPRTeamEmployee.find.reviewCompleted(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee);
+			mReviewProjects = rsPRTeamEmployee.find.reviewCompleted(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, SortDir);
+		} else if (ProfileReviewViewType == REV_ALL_PENDING) {
+			mReviewProjects = rsPRTeamEmployee.find.reviewAllPending(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, SortDir);
 		} else {
 			ProfileReviewViewType = REV_ASSIGNEDTOME;
-			mReviewProjects = rsPRTeamEmployee.find.reviewAssignedToMe(UserInfo.getUserId(),dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee);
+			mReviewProjects = rsPRTeamEmployee.find.reviewAssignedToMe(UserInfo.getUserId(),dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, SortDir);
 		}
 		return mReviewProjects;
 	}
@@ -88,6 +94,7 @@ public with sharing class rsProfileReviewsController {
 		return null;
 	}
 
+	public static final String REV_ALL_PENDING = Label.All_Pending;
 	public static final String REV_UNASSIGNED = Label.Unassigned_Profiles;
    	public static final String REV_UN_AMERICAS = Label.Unassigned_Profiles_Americas;
 	public static final String REV_UN_AMERICAS_CS = Label.Unassigned_Profiles_Americas_CS;
