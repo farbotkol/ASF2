@@ -69,6 +69,17 @@ public with sharing class rsAttachmentController {
 
 	    }
 
+	    //---Update last modified data on User, assume only done by the actual user, not a CM User
+        User targetUser = [Select Id, Last_User_Profile_Update__c from User where id = :mProfilePart.User__c];
+        targetUser.Last_User_Profile_Update__c = DateTime.now();
+ 
+        try {
+            update targetUser;
+        } catch (DmlException ex) { 
+            ApexPages.addMessages(ex);
+            System.debug ('!!Exception on profile part save, User DateTime update. ' + ex + ex.getStackTraceString());
+        }
+
 	    pg = new PageReference(mRetUrl);	
 
 	    return pg;
