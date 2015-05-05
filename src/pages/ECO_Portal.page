@@ -371,6 +371,10 @@
         .navbar-content .AWAN{
             //background-color:rgb(214, 214, 214) !important;
         }
+        .badge-header{
+            margin-top: 8px !important;
+            top:0 !important;
+        }
 
 
         /* PROJECT HOVER DETAILS */
@@ -739,21 +743,21 @@
                                 <thead>
                                     <tr>
                                     <th>Project No</th>
-                                    <th>Project Name</th>
-                                    <th>Type</th>
-                                    <th>Alert</th>
+                                    <th>Related to</th>
+                                    <th>Subject</th>
                                     <th>Due Date</th>
+                                    <th>Priority</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <apex:repeat value="{!tasks}" var="task" >
                                     
                                         <tr>
-                                            <td><a href="#"><apex:outputField value="{!task.Subject}" /></a></td>
-                                            <td><a href="#"><apex:outputField value="{!task.What.Name}" /></a></td>
-                                            <td><apex:outputField value="{!task.Status}" /></td>
-                                            <td><apex:outputField value="{!task.Description}" /></td>
-                                            <td>14-Aug-15</td>
+                                            <td><a href="/{!task.id}"><apex:outputField value="{!task.Subject}" /></a></td>
+                                            <td><a href="/{!task.id}"><apex:outputField value="{!task.What.Name}" /></a></td>
+                                            <td><apex:outputField value="{!task.Subject}" /></td>
+                                            <td><apex:outputField value="{!task.ActivityDate}" /></td>
+                                            <td><apex:outputField value="{!task.Priority}" /></td>
                                         </tr>
 
                                     </apex:repeat>
@@ -939,7 +943,7 @@
 
 
                         <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="Open Outlook">
-                            <a href="outlook:Inbox" style="cursor:pointer;" title="Opens Outlook Explorer">
+                            <a href="outlook:Inbox" style="cursor:pointer;" title="Open Outlook">
                                 <i class="fa fa-envelope fa-lg"></i>
                             </a>
                         </li>
@@ -951,7 +955,8 @@
                         </li>
 
                         <li class="dropdown hidden-xs">
-                            <a style="height:24px;" href="/setup/ui/recordtypeselect.jsp?ent=Opportunity" target="_blank"><button class="btn btn-success" style="margin:12px 0 0 0;">New Opportunity</button></a>
+                            <!--<a style="height:24px;" href="/setup/ui/recordtypeselect.jsp?ent=Opportunity" target="_blank"><button class="btn btn-success" style="margin:12px 0 0 0;">New Opportunity</button></a>-->
+                            <a style="height:24px;" href="{!URLFOR($action.opportunity.new, null)}" target="_blank"><button class="btn btn-success" style="margin:12px 0 0 0;">New Opportunity</button></a>
                         </li>
 
 
@@ -1329,7 +1334,7 @@
                                     <p class="text-uppercase mar-btm text-sm">Client Care Program - Monthly Net Promoter Score</p>
                                     <div id="demo-sparkline-pie" class="box-inline "></div>
                                     <hr />
-                                    <p class="h2 text-thin">March NPS: 38.7</p>
+                                    <p class="h2 text-thin">{!$Setup.ECO_Portal_Graph_Settings__c.Client_Care_NPS_Text__c}</p>
                                 </div>
                             </div>
                         </div>
@@ -1657,7 +1662,7 @@
     // -----------------------------------------------------------------
     // http://omnipotent.net/jquery.sparkline/#s-about
     // =================================================================
-    $("#demo-sparkline-pie").sparkline([52.6, 33.4, 13.9], {
+    $("#demo-sparkline-pie").sparkline(["{!$Setup.ECO_Portal_Graph_Settings__c.Client_Care_Promoter__c}", "{!$Setup.ECO_Portal_Graph_Settings__c.Client_Care_Passive__c}", "{!$Setup.ECO_Portal_Graph_Settings__c.Client_Care_Detractor__c}"], {
         type: 'pie',
         width: '120',
         height: '120',
@@ -1735,52 +1740,52 @@
         element: 'demo-morris-area',
         data: [{
             period: 'January',
-            dl: 99,
-            up: 1086 
+            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jan_DL__c},
+            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jan_DL__c} 
             }, {
             period: 'February',
-            dl: 104,
-            up: 1141
+            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Feb_DL__c},
+            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Feb_DL__c}
             }, {
             period: 'March',
-            dl: 194,
-            up: 1734
+            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Mar_DL__c},
+            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Mar_DL__c}
             }, {
             period: 'April',
-            dl: 0,
-            up: 0
+            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Apr_DL__c},
+            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Apr_DL__c}
             }, {
             period: 'May',
-            dl: 0,
-            up: 0
+            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_May_DL__c},
+            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_May_DL__c}
             }, {
             period: 'June',
-            dl: 0,
-            up: 0
+            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jun_DL__c},
+            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jun_DL__c}
             }, {
             period: 'July',
-            dl: 0,
-            up: 0
+            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jul_DL__c},
+            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jul_DL__c}
             }, {
             period: 'August',
-            dl: 0,
-            up: 0
+            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Aug_DL__c},
+            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Aug_DL__c}
             }, {
             period: 'September',
-            dl: 0,
-            up: 0
+            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Sep_DL__c},
+            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Sep_DL__c}
             }, {
             period: 'October',
-            dl: 0,
-            up: 0
+            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Oct_DL__c},
+            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Oct_DL__c}
             }, {
             period: 'November',
-            dl: 0,
-            up: 0
+            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Nov_DL__c},
+            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Nov_DL__c}
             }, {
             period: 'December',
-            dl: 0,
-            up: 0
+            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Dec_DL__c},
+            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Dec_DL__c}
             }],
         gridEnabled: false,
         gridLineColor: 'transparent',
@@ -1831,7 +1836,7 @@
     var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
     gauge.maxValue = 6; // set max gauge value
     gauge.animationSpeed = 32; // set animation speed (32 is default value)
-    gauge.set(0.1786); // set actual value
+    gauge.set({!$Setup.ECO_Portal_Graph_Settings__c.Incident_Rate_YTD_TCIR__c}); // set actual value
     gauge.setTextField(document.getElementById("demo-gauge-txt"));
 
 
