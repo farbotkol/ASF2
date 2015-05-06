@@ -41,9 +41,6 @@
             attachSortable();
             
             $('.form-control').keydown(function(event){
-                if(console){
-                    console.log('Captured!! '+event.keyCode);
-                }
                 if(event.keyCode == 13) {
                     event.preventDefault();
                     $('.search').click();
@@ -58,18 +55,11 @@
                 , attribute: "orderId" 
             });
             
-            if (console) {
-                console.log(serializedIds);
-            }
-
             savePositions(serializedIds);
         };
 /* Use 'toggleApp' instead
         function toggleApplication (theId) {
-            if (console) {
-                console.log($("a[orderId='id_"+theId+"']").length);
-            }
-            
+			
             if ($("a[orderId='id_"+theId+"']").length) {
                 $("a[orderId='id_"+theId+"']").fadeTo(500, .25);
                 $("a[orderId='id_"+theId+"']").attr('orderId', 'id_'+theId+'hidden').find('.fa-times-circle').removeClass('fa-times-circle').addClass('fa-check-circle');
@@ -98,10 +88,6 @@
         function applyFilter (theField) {
             clearTimeout(timer);
             timer=setTimeout(function validate(){
-                if (console) {
-                    console.log(theField.value);
-                }
-                
                 //applyFilterApex();
             },300);
         }
@@ -394,6 +380,7 @@
 
                         <li class="logo" style="padding:12px 15px 0 8px;">
                             <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'AECOMLogo.jpg')}" height="25px" class="hidden-xs" />
+
                             <img src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/EcosystemMark.jpg')}" class="visible-xs" height="25px" />
                         </li>
 
