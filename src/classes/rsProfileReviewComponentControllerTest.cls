@@ -18,9 +18,9 @@ private class rsProfileReviewComponentControllerTest {
 		cont.sortVal = 'LastName';
 		cont.sortDir = 'asc';
 		cont.ViewType = rsProfileReviewsController.REV_UN_AMERICAS;
-		cont.Profiles = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null, null);
+		cont.Profiles = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null, 'asc');
 
-		cont.Projects = rsPRTeamEmployee.find.reviewUnassigned(null, null, null, null, null, null, null, null, null);
+		cont.Projects = rsPRTeamEmployee.find.reviewUnassigned(null, null, null, null, null, null, null, null, 'asc');
 
 		Test.stopTest();
 		
@@ -32,7 +32,7 @@ private class rsProfileReviewComponentControllerTest {
 		System.assertEquals(cont.getUserList().get(0).getObj().LastName, 'lastName5');
 		cont.sortVal = 'Email';
 		cont.sortDir = 'asc';
-		System.assertEquals(cont.getUserList().get(1).getObj().Email, 'sfdctestcase1@aecom.com');
+		System.assertEquals(cont.getUserList().get(1).getObj().Email, 'test@test.com1');
 		System.assertEquals(cont.getProfileRtMap().get(cont.Profiles.get(0).Id), rsProfilePart.RT_TRAINING);
 		
 		//Test display booleans for unassigned viewType
@@ -82,8 +82,8 @@ private class rsProfileReviewComponentControllerTest {
 			cont.sortVal = 'LastName';
 			cont.sortDir = 'asc';
 			cont.ViewType = rsProfileReviewsController.REV_UN_AMERICAS;
-			cont.Profiles = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null, null);
-			cont.Projects = rsPRTeamEmployee.find.reviewUnassigned(null, null, null, null, null, null, null, null, null);
+			cont.Profiles = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null, 'asc');
+			cont.Projects = rsPRTeamEmployee.find.reviewUnassigned(null, null, null, null, null, null, null, null, 'asc');
 			cont.getProfileRtMap();
 			cont.getUserList();
 			cont.getUserProfilePartMap();
