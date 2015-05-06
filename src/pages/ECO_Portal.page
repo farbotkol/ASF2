@@ -153,19 +153,21 @@
                                 <thead>
                                     <tr>
                                     <th>Project No</th>
-                                    <th>Project Name</th>
-                                    <th>Type</th>
-                                    <th>Alert</th>
+                                    <th>Related to</th>
+                                    <th>Subject</th>
+                                    <th>Due Date</th>
+                                    <th>Priority</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <apex:repeat value="{!tasks}" var="task" >
                                     
                                         <tr>
-                                            <td><a href="#"><apex:outputField value="{!task.Subject}" /></a></td>
-                                            <td><a href="#"><apex:outputField value="{!task.What.Name}" /></a></td>
-                                            <td><apex:outputField value="{!task.Status}" /></td>
-                                            <td><apex:outputField value="{!task.Description}" /></td>
+                                            <td><a href="/{!task.id}"><apex:outputField value="{!task.Subject}" /></a></td>
+                                            <td><a href="/{!task.id}"><apex:outputField value="{!task.What.Name}" /></a></td>
+                                            <td><apex:outputField value="{!task.Subject}" /></td>
+                                            <td><apex:outputField value="{!task.ActivityDate}" /></td>
+                                            <td><apex:outputField value="{!task.Priority}" /></td>
                                         </tr>
 
                                     </apex:repeat>
@@ -342,7 +344,7 @@
 
 
                         <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="Open Outlook">
-                            <a href="outlook:Inbox" style="cursor:pointer;" title="Opens Outlook Explorer">
+                            <a href="outlook:Inbox" style="cursor:pointer;" title="Open Outlook">
                                 <i class="fa fa-envelope fa-lg"></i>
                             </a>
                         </li>
@@ -354,7 +356,8 @@
                         </li>
 
                         <li class="dropdown hidden-xs">
-                            <a style="height:24px;" href="/setup/ui/recordtypeselect.jsp?ent=Opportunity" target="_blank"><button class="btn btn-success" style="margin:12px 0 0 0;">New Opportunity</button></a>
+                            <!--<a style="height:24px;" href="/setup/ui/recordtypeselect.jsp?ent=Opportunity" target="_blank"><button class="btn btn-success" style="margin:12px 0 0 0;">New Opportunity</button></a>-->
+                            <a style="height:24px;" href="{!URLFOR($action.opportunity.new, null)}" target="_blank"><button class="btn btn-success" style="margin:12px 0 0 0;">New Opportunity</button></a>
                         </li>
 
                     </ul>
@@ -625,7 +628,7 @@
                                     <p class="text-uppercase mar-btm text-sm">Client Care Program - Monthly Net Promoter Score</p>
                                     <div id="client-care-program" class="box-inline "></div>
                                     <hr />
-                                    <p class="h2 text-thin">March NPS: 38.7</p>
+                                    <p class="h2 text-thin">{!$Setup.ECO_Portal_Graph_Settings__c.Client_Care_NPS_Text__c}</p>
                                 </div>
                             </div>
                         </div>
@@ -962,6 +965,7 @@
 
         ga('create', 'UA-33974532-22', 'auto'); 
         ga('send', 'pageview'); 
+
 
 
 
