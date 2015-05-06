@@ -51,16 +51,16 @@ private class TestCoverageSmokeTests6 {
 			fin.getByWhereNonDec(whereString, new Set<Id>(projIds) );
 			fin.getByFind('test');
 			fin.getByFindNonDec('test');
-			fin.reviewCompleted(DateTime.now(), DateTime.now(), 'test', 'test', 'test', 'test', 'test');
-			fin.reviewCompleted(DateTime.now(), null, 'test', 'test', 'test', 'test', 'test');
-			fin.reviewCompleted(null, DateTime.now(), 'test', 'test', 'test', 'test', 'test');
+			fin.reviewCompleted(DateTime.now(), DateTime.now(), 'test', 'test', 'test', 'test', 'test','test','asc');
+			fin.reviewCompleted(DateTime.now(), null, 'test', 'test', 'test', 'test', 'test','asc');
+			fin.reviewCompleted(null, DateTime.now(), 'test', 'test', 'test', 'test', 'test','asc');
 			
-			fin.reviewCompleted(null, null, 'test', 'test', 'test', 'test', 'test');
+			fin.reviewCompleted(null, null, 'test', 'test', 'test', 'test', 'test','asc');
 			
-			fin.reviewCompleted(null, null, null, 'test', 'test', 'test', 'test');
-			fin.reviewCompleted(null, null, null, null, 'test', 'test', 'test');
-			fin.reviewCompleted(null, null, null, null, null, 'test', 'test');
-			fin.reviewCompleted(null, null, null, null, null, null, 'test');
+			fin.reviewCompleted(null, null, null, 'test', 'test', 'test', 'test','asc');
+			fin.reviewCompleted(null, null, null, null, 'test', 'test', 'test','asc');
+			fin.reviewCompleted(null, null, null, null, null, 'test', 'test','asc');
+			fin.reviewCompleted(null, null, null, null, null, null, 'test','asc');
 			
 		}
 	}
@@ -108,7 +108,7 @@ private class TestCoverageSmokeTests6 {
 			rsProfileReviewComponentController cont = new rsProfileReviewComponentController();
 			
 			
-			cont.Profiles = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null);
+			cont.Profiles = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null, 'asc');
 			rsPRTeamEmployee.Finder fin = new rsPRTeamEmployee.Finder('PR_Team_Employee__c');
 			
 	//		cont.Projects = fin.getByFind('Super');
@@ -278,14 +278,14 @@ private class TestCoverageSmokeTests6 {
 		
 		finder.byFindStr('test');
 		
-		finder.reviewCompleted(Datetime.now(), Datetime.now(), 'test', 'test', 'test', 'test', 'test' );
-		finder.reviewCompleted(Datetime.now(), null, 'test', 'test', 'test', 'test', 'test' );
-		finder.reviewCompleted(null, Datetime.now(), 'test', 'test', 'test', 'test', 'test' );
-		finder.reviewCompleted(null, null, 'test', 'test', 'test', 'test', 'test' );
-		finder.reviewCompleted(null, null, null, 'test', 'test', 'test', 'test' );
-		finder.reviewCompleted(null, null, null, null, 'test', 'test', 'test' );
-		finder.reviewCompleted(null, null, null, null, null, 'test', 'test' );
-		finder.reviewCompleted(null, null, null, null, null, null, 'test' );
+		finder.reviewCompleted(Datetime.now(), Datetime.now(), 'test', 'test', 'test', 'test', 'test', 'asc' );
+		finder.reviewCompleted(Datetime.now(), null, 'test', 'test', 'test', 'test', 'test', 'asc' );
+		finder.reviewCompleted(null, Datetime.now(), 'test', 'test', 'test', 'test', 'test', 'asc' );
+		finder.reviewCompleted(null, null, 'test', 'test', 'test', 'test', 'test', 'asc' );
+		finder.reviewCompleted(null, null, null, 'test', 'test', 'test', 'test', 'asc' );
+		finder.reviewCompleted(null, null, null, null, 'test', 'test', 'test', 'asc' );
+		finder.reviewCompleted(null, null, null, null, null, 'test', 'test', 'asc' );
+		finder.reviewCompleted(null, null, null, null, null, null, 'test', 'asc' );
 		
 		
 		
