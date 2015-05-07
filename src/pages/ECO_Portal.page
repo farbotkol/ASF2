@@ -1,419 +1,11 @@
-<apex:page applyBodyTag="false" controller="ECO_PortalController" showheader="false" sidebar="false" standardStylesheets="false" action="{!onLoad}" id="portalPage" >
-    
-    <style>
-    
-        /* VARIOUS FIXES */
-        .slick-slider{
-            margin-bottom:0 !important;
-        }
-        .slick-list.draggable{
-            padding:0 35px !important;
-        }
-        .slick-prev{
-            left:0 !important;
-            opacity:0.3;
-        }
-        .slick-next{
-            opacity:0.3;
-        }
-        .slick-next:hover, .slick-prev:hover{
-            opacity:1;
-        }
-        .dropdown .btn-success{
-            background-color:#59ba47 !important;
-            color:#fff !important;
-        }
-        .dropdown .btn-success:hover{
-            background-color:#439E32 !important;
-        }
-        
-        .panel-control select{
-            margin-top:-33px;
-        }
-        
-        .feedcontainer .feeditemcommentplaceholder input{
-            height:2em !important;
-        }
-        .linkFix{
-            font-weight:bold;
-            color:#337ab7 !important;
-            line-height:250%;
-        }
-        .linkFix:hover{
-            color:#52a1e5 !important;
-        }
-        .nano-content .col-sm-2 img{
-            width:100%;
-            height:auto;
-        }
-        .tab-pane .list-group .media-body{
-            font-weight: 300;
-            color: #adb3b8;
-            opacity: 1;
-            -webkit-transition: all 1.5s ease 0.3s, color 0.3s;
-            transition: all 1.5s ease 0.3s, color 0.3s;
-            transition-timing-function: cubic-bezier(0.28, 1.02, 0.36, 1.145);
-        }
-        .tab-pane .list-group a:hover .media-body{
-            color:#fff;
-        }
-        .nav li a i{
-            font-size:17px !important;
-        }
-        .panel-body a{
-            color:#00729d !important;
-        }
-        .panel-body a:hover{
-            color:#00b0e2 !important;
-        }
-        .myProjectsPortfolio a{
-            font-weight:bold;
-        }
-        .editApps{
-           border-top:3px solid #59ba47;
-        }
-        .panel-colorful .panel-body img{
-            max-height:120px;
-        }
-
-    
-        @media screen and (max-width:768px){
-            .navbar-header{
-                display:none !important;
-            }
-            #content-container{
-                padding-top:50px !important;
-            }
-            .alert-dark{
-                height:92px;
-            }
-            #page-alert{
-                margin-bottom:15px;
-            }
-            .slick-list{
-                height:45px !important;
-                text-overflow:ellipsis !important;
-                overflow:hidden !important;
-                font-size:10px;
-            }
-            .bottomMenu{
-                position:fixed;
-                bottom:0;
-                width:100%;
-                padding:0;
-                margin:0;
-                height:35px;
-                z-index:9999;
-            }
-            .newsFeedLink{
-                height:35px;
-                color:#fff;
-                background-color:#00b0e2;
-                text-align:center;
-                padding-top:8px;
-            }
-            .newsFeedLink:hover{
-                opacity:0.6;
-            }
-            .chatterFeedLink{
-                height:35px;
-                color:#fff;
-                background-color:#00729d;
-                text-align:center;
-                padding-top:8px;
-            }
-            .chatterFeedLink:hover{
-                opacity:0.6;
-            }
-            .myPortfolioLink{
-                height:35px;
-                color:#fff;
-                background-color:#59ba47;
-                text-align:center;
-                padding-top:8px;
-            }
-            .myPortfolioLink:hover{
-                opacity:0.6;
-            }
-            .graphsLink{
-                height:35px;
-                color:#fff;
-                background-color:#c11a85;
-                text-align:center;
-                padding-top:8px;
-            }
-            .graphsLink:hover{
-                opacity:0.6;
-            }
-            .logo img{
-                height:20px;
-            }
-            .logo{
-                padding-top:15px !important;
-            }
-            .dropdown-menu-md{
-                min-width:205px !important;
-            }
-            #mainnav-menu-wrap{
-                padding-top:10px !important;
-            }
-            #navbar{
-                position:fixed !important;
-            }
-            .simply-scroll-btn-up{
-                display:none !important;
-            }
-            .simply-scroll-btn-down{
-                display:none !important;
-            }
-    
-        }
-    
-        @media screen and (max-width:460px){
-            .modal-content{
-                width:330px;
-            }
-            .modal-content .modal-body{
-                overflow-x:scroll;
-            }
-        }
-         @media screen and (max-width:320px){
-            .modal-content{
-                width:280px;
-            }
-            .modal-content .modal-body{
-                overflow-x:scroll;
-            }
-        }
-    
-        @media screen and (min-width:768px) and (max-width:1199px){
-            .dropdown .dropdown-toggle .pull-right{
-                margin-top:-15px;
-            }
-            .alert-dark{
-                height:65px !important;
-                text-overflow:ellipsis;
-                overflow:hidden;
-                font-size:11px;
-            }
-            .slick-list{
-                height:32px !important;
-            }
-        }
-    
-    
-        /* ALL CHATTER FIXES */
-        .feedDropDown {
-        display: none;
-        }
-        .feeditemActionMenu {
-        display: none;
-        }
-        .cxallfeedactions a span{
-            display:none;
-        }
-        .zen-select{
-            display:none !important;
-        }
-        h1, h2, h3, h4, h5, h6{
-            font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
-            display:block;
-            font-size: initial !important;
-        }
-        body{
-            font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
-            font-size:115% !important;
-            color:#515151 !important;
-        }
-        ul li, ol li{
-            list-style-type:none;
-            margin:0;
-            padding:0;
-        } 
-        a:hover{
-            text-decoration:none !important;
-        }
-        .btn, .button, .formulaButton, .btnWhatsNew, #publishersharebutton, .zen-btn{
-            font-family: 'Open Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif !important;
-            background-image: none !important;
-            border:none !important;
-            font-size:initial !important;
-            cursor: pointer !important;
-            background-color: transparent;
-            color: inherit !important;
-            padding: 6px 12px !important;
-            border-radius: 0 !important;
-            font-size: 12px !important;
-            line-height: 1.42857 !important;
-            vertical-align: middle !important;
-        }
-        .btn-primary, .btn-primary:focus, .btn-hover-primary:hover, .btn-hover-primary:active, .btn-hover-primary.active, .btn.btn-active-primary:active, .btn.btn-active-primary.active, .dropdown.open > .btn.btn-active-primary, .btn-group.open .dropdown-toggle.btn.btn-active-primary, #publishersharebutton, .zen-btn{
-            background-color: #00b0e2 !important;
-            border-color: #00b0e2 !important;;
-            color: #ffffff !important;;
-        }
-        .btn-primary:hover, #publishersharebutton:hover, .zen-btn:hover{
-            background-color:#00729d !important;
-        }
-        .publishertextarea{
-            font-size: 12px;
-            height: 100%;
-            border-radius: 0 !important;
-            box-shadow: none;
-            border: 1px solid #e9e9e9;
-            transition-duration: .5s;
-            display: block;
-            width: 100%;
-            height: 34px;
-            padding: 6px 12px;
-            font-size: 14px;
-            line-height: 1.42857143;
-            color: #555;
-            background-color: #fff;
-            background-image: none;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-            -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-            -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-            transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-        }
-        .publisherTextAreaInner{
-            background-image: none !important;
-            background-position: 0 0 !important;
-            width: 0;
-            height: 0;
-            width: auto;
-            height: auto;
-            background-color: #fff;
-            background-repeat: repeat-x;
-            position: relative;
-            border: 1px solid #e9e9e9 !important;
-            padding: 0 !important;
-            border-radius:0 !important;
-        }
-        .defaultState .publishertextarea{
-            height: 30px !important;
-        }
-        .publishercontainer .bottomBar{
-            border-color: #e9e9e9 !important;
-            height:45px;
-            border-radius:none !important;
-        }
-        .publishercontainer input[type="text"]{
-            font-size: 12px;
-            height: 100%;
-            border-radius: 0 !important;
-            box-shadow: none;
-            border: 1px solid #e9e9e9;
-            transition-duration: .5s;
-            display: block;
-            width: 102.8%;
-            height: 34px;
-            padding: 6px 12px;
-            font-size: 14px;
-            line-height: 1.42857143;
-            color: #555;
-            background-color: #fff;
-            background-image: none;
-            border: 1px solid #ccc;
-            border-radius: 4px;
-            -webkit-box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-            box-shadow: inset 0 1px 1px rgba(0,0,0,.075);
-            -webkit-transition: border-color ease-in-out .15s,-webkit-box-shadow ease-in-out .15s;
-            -o-transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-            transition: border-color ease-in-out .15s,box-shadow ease-in-out .15s;
-            border-color: #e9e9e9 !important;
-            margin-bottom:5px;
-        }
-        .pArrow{
-            background-image:('{!URLFOR($Resource.ECO_NiftyAssets, "ECO_NiftyAssets/img/carat-up.png")}') !important;
-            margin-bottom:-1px !important;
-            opacity:0.6;
-        }
-        .zen-inner{
-            background-color: #fff;
-            box-shadow: 0 0 10px;
-        }
-        .feedcontainer .feeditemcommentplaceholder input, .feedcontainer .feeditemcommentnew .foobar{
-            border-radius: 0 !important;
-        }
-        .docViewerContainer{
-            height:100%;
-        }
-        #docViewerOverlay{
-            background-color:#fff;
-        }
-        
-        .carouselItem {
-            padding-left: 30px
-        }
-        .carousel {
-            //padding-left: 0px !important
-        }
-        .reportsMenuButton{
-            padding:22px; 
-            background-color:#00729d;
-            color:#fff;
-            float:right;
-            width:65px;
-            height:65px;
-        }
-        .tempAlert{
-            text-align:center;
-            padding:10px 15px;
-            background-color:#fff996;
-            font-size:13px;
-            font-weight:bold;
-            border:1px solid #FFDC48;
-        }
-        .navbar-content .AWAN{
-            //background-color:rgb(214, 214, 214) !important;
-        }
-        .badge-header{
-            margin-top: 8px !important;
-            top:0 !important;
-        }
-
-
-        /* PROJECT HOVER DETAILS */
-        .lookupHoverDetail .bPageBlock .pbBody{
-            height:300px;
-        }
-        .lookupHoverDetailOverridable .topLeft, .lookupHoverDetailOverridable .bottomLeft{
-            background-image:none !important;
-        }
-        .lookupHoverDetail .bPageBlock{
-            background-color:#00b0e2;
-            color:#333;
-        }
-        .lookupHoverDetail .bPageBlock .pbHeader .pbButton{
-            padding-right:15px;
-        }
-        .lookupHoverDetail .bPageBlock .pbBody{
-            background-color:#eee;
-        }
-        .lookupHoverDetail .bPageBlock .detailList .labelCol, .lookupHoverDetail .bPageBlock .detailList .dataCol{
-            border-color:#DEDEDE !important;
-        }
-        .lookupHoverDetail .bPageBlock .pbBody{
-            width:auto !important;
-        }
-        .lookupHoverDetail .topLeft, .lookupHoverDetail .bottomLeft, .lookupHoverDetail .topRight, .lookupHoverDetail .bottomRight{
-            height:300px;
-        }
-        .lookupHoverDetail .bPageBlock{
-            height:300px;
-        }
-        .lookupHoverDetail .bPageBlock .pbBody{
-            height:300px;
-        }
-
-
-
-
-
+<apex:page applyBodyTag="false" controller="ECO_PortalController" showheader="false" sidebar="false" standardStylesheets="false" action="{!onLoad}" id="portalPage" title="Ecosystem">
+    <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/jquery.lazyload.min.js')}"></script>
+    <script>
+       $(function() {
+            $("img.lazy").lazyload({
+                event : "sporty"
+            });
+        });
 
         $(window).bind("load", function() {
             var timeout = setTimeout(function() { $("img.lazy").trigger("sporty") }, 500);
@@ -1251,268 +843,128 @@
     
     
 
-<script>
+    <script>
+        // CLIENT CARE PROGRAM
+        // =================================================================
+        $("#client-care-program").sparkline(["{!$Setup.ECO_Portal_Graph_Settings__c.Client_Care_Promoter__c}", "{!$Setup.ECO_Portal_Graph_Settings__c.Client_Care_Passive__c}", "{!$Setup.ECO_Portal_Graph_Settings__c.Client_Care_Detractor__c}"], {
+            type: 'pie',
+            width: '120',
+            height: '120',
+            tooltipChartTitle: 'Client Care Program - Monthly Net Promoter Score',
+            tooltipFormat: '{{offset:offset}} ({{percent.1}}%)',
+            tooltipValueLookups: {
+                'offset': {
+                    0: 'Promoter',
+                    1: 'Passive',
+                    2: 'Detractor',
+                }
+            },
+            sliceColors: ['#7ad689','#fec311','#fe2d11'],
+        });
 
-
-
-
-
-    // Visitor chart ( Sparkline chart )
-    // =================================================================
-    // Require Sparkline Chart
-    // -----------------------------------------------------------------
-    // http://omnipotent.net/jquery.sparkline/#s-about
-    // =================================================================
-    $("#demo-chart-visitors").sparkline([476,643,356,453,745,976,867,886,984,645,767,799], {
-        type: 'line',
-        width: '110',
-        height: '22',
-        spotRadius: 3,
-        lineWidth:1,
-        lineColor:'rgba(255,255,255,.9)',
-        fillColor: 'rgba(0,0,0,0.05)',
-        spotColor: 'rgba(255,255,255,.5)',
-        minSpotColor: 'rgba(255,255,255,.5)',
-        maxSpotColor: 'rgba(255,255,255,.5)',
-        highlightLineColor : '#ffffff',
-        highlightSpotColor: '#ffffff',
-        tooltipChartTitle: 'Earned Value',
-        tooltipSuffix:' k',
-    });
-
-
-
-
-
-    // Bounce rate chart ( Sparkline chart )
-    // =================================================================
-    // Require Sparkline Chart
-    // -----------------------------------------------------------------
-    // http://omnipotent.net/jquery.sparkline/#s-about
-    // =================================================================
-    $("#demo-chart-bounce-rate").sparkline([23,24,22,27,35,40,39,29,27,33,29,37], {
-        type: 'line',
-        width: '110',
-        height: '22',
-        spotRadius: 3,
-        lineWidth:1,
-        lineColor:'rgba(255,255,255,.9)',
-        fillColor: 'rgba(0,0,0,0.05)',
-        spotColor: 'rgba(255,255,255,.5)',
-        minSpotColor: 'rgba(255,255,255,.5)',
-        maxSpotColor: 'rgba(255,255,255,.5)',
-        highlightLineColor : '#ffffff',
-        highlightSpotColor: '#ffffff',
-        tooltipChartTitle: 'Total Expenses',
-        tooltipSuffix:' %'
-
-    });
-
-
-
-    // TOP MOVIE - SPARKLINE PIE CHART
-    // =================================================================
-    // Require sparkline
-    // -----------------------------------------------------------------
-    // http://omnipotent.net/jquery.sparkline/#s-about
-    // =================================================================
-    $("#demo-sparkline-pie").sparkline(["{!$Setup.ECO_Portal_Graph_Settings__c.Client_Care_Promoter__c}", "{!$Setup.ECO_Portal_Graph_Settings__c.Client_Care_Passive__c}", "{!$Setup.ECO_Portal_Graph_Settings__c.Client_Care_Detractor__c}"], {
-        type: 'pie',
-        width: '120',
-        height: '120',
-        tooltipChartTitle: 'Client Care Program - Monthly Net Promoter Score',
-        tooltipFormat: '{{offset:offset}} ({{percent.1}}%)',
-        tooltipValueLookups: {
-            'offset': {
-                0: 'Promoter',
-                1: 'Passive',
-                2: 'Detractor',
-            }
-        },
-        sliceColors: ['#7ad689','#fec311','#fe2d11'],
-    });
-
-
-
-
-    // SALES - SPARKLINE BAR CHART
-    // =================================================================
-    // Require sparkline
-    // -----------------------------------------------------------------
-    // http://omnipotent.net/jquery.sparkline/#s-about
-    // =================================================================
-    $("#demo-sparkline-bar").sparkline([ 0, 1086, 1141, 1734], {
-        type: 'bar',
-        height: '120',
-        barWidth: 15,
-        barSpacing: 5,
-        zeroAxis: false,
-        tooltipChartTitle: 'Avg Page Views/Day',
-        tooltipSuffix:' Jan-Mar 2015',
-        barColor: '#fff'}
-    );
-
-
-
-    // TOP MOVIE - SPARKLINE PIE CHART
-    // =================================================================
-    // Require sparkline
-    // -----------------------------------------------------------------
-    // http://omnipotent.net/jquery.sparkline/#s-about
-    // =================================================================
-    $("#demo-sparkline-bar2").sparkline([5, 12, 17 ,35, 20], {
-        type: 'pie',
-        width: '120',
-        height: '120',
-        tooltipChartTitle: 'Projects by Review Category',
-        tooltipFormat: '{{offset:offset}} ({{percent.1}}%)',
-        tooltipValueLookups: {
-            'offset': {
-                0: 'C-0',
-                1: 'C-1',
-                2: 'C-1+',
-                3: 'C-2',
-                4: 'C-3'
-            }
-        },
-        sliceColors: ['#2d4859','#fe7211','#7ad689','#128376','#d5d352'],
-    });
-
-
-
-
-
-
-    // MORRIS AREA CHART
-    // =================================================================
-    // Require MorrisJS Chart
-    // -----------------------------------------------------------------
-    // http://morrisjs.github.io/morris.js/
-    // =================================================================
-
-    Morris.Area({
-        element: 'demo-morris-area',
-        data: [{
-            period: 'January',
-            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jan_DL__c},
-            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jan_DL__c} 
-            }, {
-            period: 'February',
-            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Feb_DL__c},
-            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Feb_DL__c}
-            }, {
-            period: 'March',
-            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Mar_DL__c},
-            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Mar_DL__c}
-            }, {
-            period: 'April',
-            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Apr_DL__c},
-            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Apr_DL__c}
-            }, {
-            period: 'May',
-            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_May_DL__c},
-            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_May_DL__c}
-            }, {
-            period: 'June',
-            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jun_DL__c},
-            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jun_DL__c}
-            }, {
-            period: 'July',
-            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jul_DL__c},
-            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jul_DL__c}
-            }, {
-            period: 'August',
-            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Aug_DL__c},
-            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Aug_DL__c}
-            }, {
-            period: 'September',
-            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Sep_DL__c},
-            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Sep_DL__c}
-            }, {
-            period: 'October',
-            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Oct_DL__c},
-            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Oct_DL__c}
-            }, {
-            period: 'November',
-            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Nov_DL__c},
-            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Nov_DL__c}
-            }, {
-            period: 'December',
-            dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Dec_DL__c},
-            up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Dec_DL__c}
+        // TECHNICAL PRACTICE NETWORKS
+        // =================================================================
+        Morris.Area({
+            element: 'technical-practice-networks',
+            data: [{
+                period: 'January',
+                dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jan_DL__c},
+                up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jan_DL__c} 
+                }, {
+                period: 'February',
+                dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Feb_DL__c},
+                up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Feb_DL__c}
+                }, {
+                period: 'March',
+                dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Mar_DL__c},
+                up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Mar_DL__c}
+                }, {
+                period: 'April',
+                dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Apr_DL__c},
+                up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Apr_DL__c}
+                }, {
+                period: 'May',
+                dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_May_DL__c},
+                up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_May_DL__c}
+                }, {
+                period: 'June',
+                dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jun_DL__c},
+                up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jun_DL__c}
+                }, {
+                period: 'July',
+                dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jul_DL__c},
+                up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jul_DL__c}
+                }, {
+                period: 'August',
+                dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Aug_DL__c},
+                up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Aug_DL__c}
+                }, {
+                period: 'September',
+                dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Sep_DL__c},
+                up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Sep_DL__c}
+                }, {
+                period: 'October',
+                dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Oct_DL__c},
+                up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Oct_DL__c}
+                }, {
+                period: 'November',
+                dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Nov_DL__c},
+                up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Nov_DL__c}
+                }, {
+                period: 'December',
+                dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Dec_DL__c},
+                up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Dec_DL__c}
             }],
-        gridEnabled: false,
-        gridLineColor: 'transparent',
-        behaveLikeLine: true,
-        xkey: 'period',
-        ykeys: ['dl', 'up'],
-        labels: ['Visitors', 'Pageviews'],
-        lineColors: ['#00729d'],
-        pointSize: 0,
-        pointStrokeColors : ['#00729d'],
-        lineWidth: 0,
-        resize:true,
-        hideHover: 'auto',
-        fillOpacity: 0.7,
-        parseTime:false,
-        gridTextColor: ['#fff']
-    });
+            gridEnabled: false,
+            gridLineColor: 'transparent',
+            behaveLikeLine: true,
+            xkey: 'period',
+            ykeys: ['dl', 'up'],
+            labels: ['Visitors', 'Pageviews'],
+            lineColors: ['#00729d'],
+            pointSize: 0,
+            pointStrokeColors : ['#00729d'],
+            lineWidth: 0,
+            resize:true,
+            hideHover: 'auto',
+            fillOpacity: 0.7,
+            parseTime:false,
+            gridTextColor: ['#fff']
+        });
 
+        // CASE INDICENT RATE (Safety)
+        // =================================================================
+        var opts = {
+            lines: 10, // The number of lines to draw
+            angle: 0, // The length of each line
+            lineWidth: 0.3, // The line thickness
+            pointer: {
+                length: 0.45, // The radius of the inner circle
+                strokeWidth: 0.035, // The rotation offset
+                color: '#231f20' // Fill color
+            },
+            limitMax: 'true', // If true, the pointer will not go past the end of the gauge
+            colorStart: '#59ba47', // Colors
+            colorStop: '#59ba47', // just experiment with them
+            strokeColor: '#ddd', // to see which ones work best for you
+            generateGradient: true
+        };
 
+        var target = document.getElementById('case-incident-rate'); // your canvas element
+        var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+        gauge.maxValue = 6; // set max gauge value
+        gauge.animationSpeed = 32; // set animation speed (32 is default value)
+        gauge.set({!$Setup.ECO_Portal_Graph_Settings__c.Incident_Rate_YTD_TCIR__c}); // set actual value
+        gauge.setTextField(document.getElementById("case-incident-rate-txt"));
 
+        // GOOGLE ANALYTICS
+        (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ 
+        (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), 
+        m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) 
+        })(window,document,'script','//www.google-analytics.com/analytics.js','ga'); 
 
-
-
-    // GAUGE JS
-    // =================================================================
-    // Require GaugeJS
-    // -----------------------------------------------------------------
-    // http://bernii.github.io/gauge.js/
-    // =================================================================
-    var opts = {
-        lines: 10, // The number of lines to draw
-        angle: 0, // The length of each line
-        lineWidth: 0.3, // The line thickness
-        pointer: {
-            length: 0.45, // The radius of the inner circle
-            strokeWidth: 0.035, // The rotation offset
-            color: '#231f20' // Fill color
-        },
-        limitMax: 'true', // If true, the pointer will not go past the end of the gauge
-        colorStart: '#59ba47', // Colors
-        colorStop: '#59ba47', // just experiment with them
-        strokeColor: '#ddd', // to see which ones work best for you
-        generateGradient: true
-    };
-
-
-    var target = document.getElementById('demo-gauge'); // your canvas element
-    var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
-    gauge.maxValue = 6; // set max gauge value
-    gauge.animationSpeed = 32; // set animation speed (32 is default value)
-    gauge.set({!$Setup.ECO_Portal_Graph_Settings__c.Incident_Rate_YTD_TCIR__c}); // set actual value
-    gauge.setTextField(document.getElementById("demo-gauge-txt"));
-
-
-
-    // REALTIME SAMPLE
-    // =================================================================
-    var updateGauge;
-    var gaugeSwitch = document.getElementById('demo-auto-gauge');
-    gaugeSwitch.checked = false;
-    new Switchery(gaugeSwitch);
-
-    gaugeSwitch.onchange = function(){
-        if (gaugeSwitch.checked) {
-            updateGauge = setInterval(function(){
-                gauge.set(nifty.randomInt(1,1500));
-            },2000)
-        }else{
-            clearInterval(updateGauge);
-        }
-    };
-
-
+        ga('create', 'UA-33974532-22', 'auto'); 
+        ga('send', 'pageview'); 
 
 
 
