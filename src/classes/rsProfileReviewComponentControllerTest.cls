@@ -18,9 +18,9 @@ private class rsProfileReviewComponentControllerTest {
 		cont.sortVal = 'LastName';
 		cont.sortDir = 'asc';
 		cont.ViewType = rsProfileReviewsController.REV_UN_AMERICAS;
-		cont.Profiles = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null, null);
+		cont.Profiles = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null, 'asc');
 
-		cont.Projects = rsPRTeamEmployee.find.reviewUnassigned(null, null, null, null, null, null, null, null, null);
+		cont.Projects = rsPRTeamEmployee.find.reviewUnassigned(null, null, null, null, null, null, null, null, 'asc');
 
 		Test.stopTest();
 		
@@ -82,8 +82,8 @@ private class rsProfileReviewComponentControllerTest {
 			cont.sortVal = 'LastName';
 			cont.sortDir = 'asc';
 			cont.ViewType = rsProfileReviewsController.REV_UN_AMERICAS;
-			cont.Profiles = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null, null);
-			cont.Projects = rsPRTeamEmployee.find.reviewUnassigned(null, null, null, null, null, null, null, null, null);
+			cont.Profiles = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null, 'asc');
+			cont.Projects = rsPRTeamEmployee.find.reviewUnassigned(null, null, null, null, null, null, null, null, 'asc');
 			cont.getProfileRtMap();
 			cont.getUserList();
 			cont.getUserProfilePartMap();
