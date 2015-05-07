@@ -32,7 +32,7 @@ private class rsProfileReviewComponentControllerTest {
 		System.assertEquals(cont.getUserList().get(0).getObj().LastName, 'lastName5');
 		cont.sortVal = 'Email';
 		cont.sortDir = 'asc';
-		System.assertEquals(cont.getUserList().get(1).getObj().Email, 'test@test.com1');
+		System.assertEquals(cont.getUserList().get(1).getObj().Email, 'sfdctestcase1@aecom.com');
 		System.assertEquals(cont.getProfileRtMap().get(cont.Profiles.get(0).Id), rsProfilePart.RT_TRAINING);
 		
 		//Test display booleans for unassigned viewType
