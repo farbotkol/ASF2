@@ -51,7 +51,7 @@ private class TestCoverageSmokeTests6 {
 			fin.getByWhereNonDec(whereString, new Set<Id>(projIds) );
 			fin.getByFind('test');
 			fin.getByFindNonDec('test');
-			fin.reviewCompleted(DateTime.now(), DateTime.now(), 'test', 'test', 'test', 'test', 'test','test','asc');
+			fin.reviewCompleted(DateTime.now(), DateTime.now(), 'test', 'test', 'test', 'test', 'test','asc');
 			fin.reviewCompleted(DateTime.now(), null, 'test', 'test', 'test', 'test', 'test','asc');
 			fin.reviewCompleted(null, DateTime.now(), 'test', 'test', 'test', 'test', 'test','asc');
 			
