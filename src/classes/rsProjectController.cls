@@ -23,9 +23,11 @@ public with sharing class rsProjectController extends rsSectionController {
     private Boolean mNewNonAECOMProjectGroupAdded;
 
     //--PAGINATION VARIABLES
-    public Map<String, Integer> numProjInGroup {get; set;} // Tracks number of projects in a group
-                                                           // important when a group splits with pagination
-    private Set<Id> partIds {get; set;} // Makes sure we don't somehow add the same part twice to the map
+    public Map<String, Integer> numProjInAECOMGroup {get; set;} // Tracks number of projects in a group
+                                                                // important when a group splits with pagination
+    public Map<String, Integer> numProjInNonAECOMGroup {get; set;}
+    private Set<Id> AECOMPartIds {get; set;} // Makes sure we don't somehow add the same part twice to the map
+    private Set<Id> nonAECOMPartIds {get; set;}
     private List<rsProjectViewModel> allViewModels;
     private Map<String,Integer> projectKeyLocation;
 
@@ -45,13 +47,15 @@ public with sharing class rsProjectController extends rsSectionController {
 		profilePartKeyPrefix = rs_Profile_Part__c.SObjectType.getDescribe().getKeyPrefix();
 		CurrentProject = new rsPRTeamEmployee();
 		mRecordType = rsPRTeamEmployee.RT_AECOMPROJECT;
-        partIds = new Set<Id>();
+        AECOMPartIds = new Set<Id>();
+        nonAECOMPartIds = new Set<Id>();
         //--Pagination stuff
         if(PageNum == null){
             PageNum = 1;
         }
         projectKeyLocation = new Map<String,Integer>();
-        numProjInGroup = new Map<String, Integer>();
+        numProjInAECOMGroup = new Map<String, Integer>();
+        numProjInNonAECOMGroup = new Map<String, Integer>();
 
         //Country List population
         sObject sObj = Schema.getGlobalDescribe().get('rs_Profile_Part__c').newSObject() ;
@@ -157,6 +161,9 @@ public with sharing class rsProjectController extends rsSectionController {
 		existingAECOMProjectView();
         mOldProject = null;
         enableListMode();
+
+        updateUserProfileTimestamps();
+
         return null;
 	}
 
@@ -280,6 +287,7 @@ public with sharing class rsProjectController extends rsSectionController {
 
     // Moves Project Grouping one higher
     public PageReference moveGroupUp() {
+        reorderGrouping();
     	String projectGroup = ApexPages.currentPage().getParameters().get('projectGroup');
     	String recordTypeId = ApexPages.currentPage().getParameters().get('recordType');
     	Integer originalPlace = 0;
@@ -303,6 +311,7 @@ public with sharing class rsProjectController extends rsSectionController {
     			break;
     		}
     	}
+        if(originalPlace <= 0) originalPlace = 1;
     	// Updating Group Sequence for the two groups that are switching
     	for(rsPRTeamEmployee project : tempProjGroup.groupProjects) {
     		project.setGroupSequence(originalPlace - 1);
@@ -321,6 +330,7 @@ public with sharing class rsProjectController extends rsSectionController {
     		NonAECOMProjectGroups.clear();
     		NonAECOMProjectGroups.addall(projectGroups);
     	}
+        reorderGrouping();
         try {
 	       rsModel.save(getProfileProjectParts());
         } catch (DmlException ex) {
@@ -332,6 +342,7 @@ public with sharing class rsProjectController extends rsSectionController {
 
     // Moves Project Grouping one lower
     public PageReference moveGroupDown() {
+        reorderGrouping();
     	String projectGroup = ApexPages.currentPage().getParameters().get('projectGroup');
     	String recordTypeId = ApexPages.currentPage().getParameters().get('recordType');
     	Integer originalPlace = 0;
@@ -356,6 +367,7 @@ public with sharing class rsProjectController extends rsSectionController {
     		}
 
     	}
+        while((originalPlace+1) >= projectGroups.size() && originalPlace > 0) originalPlace--;
     	// Updating Group Sequence for the two groups that are switching
     	for(rsPRTeamEmployee project : tempProjGroup.groupProjects) {
     		project.setGroupSequence(originalPlace+1);
@@ -374,6 +386,7 @@ public with sharing class rsProjectController extends rsSectionController {
     		NonAECOMProjectGroups.clear();
     		NonAECOMProjectGroups.addall(projectGroups);
     	}
+        reorderGrouping();
         try {
            rsModel.save(getProfileProjectParts());
         } catch (DmlException ex) {
@@ -385,6 +398,7 @@ public with sharing class rsProjectController extends rsSectionController {
 
     //Moves a Project within a Project Group one higher
     public PageReference moveProjectUp() {
+        reorderGrouping();
     	String projectGroup = ApexPages.currentPage().getParameters().get('projectGroup');
     	String projectId = ApexPages.currentPage().getParameters().get('projectId');
     	String recordTypeId = ApexPages.currentPage().getParameters().get('recordType');
@@ -409,6 +423,7 @@ public with sharing class rsProjectController extends rsSectionController {
     					break;
     				}
     			}
+                if(originalPlace <= 0) originalPlace = 1;
     			//Updating Group Sequence
     			projectGroups.get(i).groupProjects.get(originalPlace).setProjectSequence(originalPlace-1);
     			projectGroups.get(i).groupProjects.get(originalPlace-1).setProjectSequence(originalPlace);
@@ -418,6 +433,7 @@ public with sharing class rsProjectController extends rsSectionController {
     			break;
     		}
     	}
+        reorderGrouping();
         try {
            rsModel.save(getProfileProjectParts());
         } catch (DmlException ex) {
@@ -429,6 +445,7 @@ public with sharing class rsProjectController extends rsSectionController {
 
     //Moves a Project within a Project Group one lower
     public PageReference moveProjectDown() {
+        reorderGrouping();
     	String projectGroup = ApexPages.currentPage().getParameters().get('projectGroup');
     	String projectId = ApexPages.currentPage().getParameters().get('projectId');
     	String recordTypeId = ApexPages.currentPage().getParameters().get('recordType');
@@ -453,6 +470,7 @@ public with sharing class rsProjectController extends rsSectionController {
     					break;
     				}
     			}
+                while((originalPlace+1) >= projectGroups.size() && originalPlace > 0) originalPlace--;
     			//Updating Group Sequence
     			projectGroups.get(i).groupProjects.get(originalPlace).setProjectSequence(originalPlace+1);
     			projectGroups.get(i).groupProjects.get(originalPlace+1).setProjectSequence(originalPlace);
@@ -462,6 +480,7 @@ public with sharing class rsProjectController extends rsSectionController {
     			break;
     		}
     	}
+        reorderGrouping();
         try {
            rsModel.save(getProfileProjectParts());
         } catch (DmlException ex) {
@@ -530,7 +549,8 @@ public with sharing class rsProjectController extends rsSectionController {
 		List<rsPRTeamEmployee> allProjects = getProfileProjectParts();
 		List<rsPRTeamEmployee> onlyAECOM = new List<rsPRTeamEmployee>();
 		for(rsPRTeamEmployee specificProject : allProjects) {
-			if (specificProject.getRecordTypeId() == rsPRTeamEmployee.getRecordTypeIdByName(rsPRTeamEmployee.RT_AECOMPROJECT) ) {
+			if (specificProject.getRecordTypeId() == rsPRTeamEmployee.getRecordTypeIdByName(rsPRTeamEmployee.RT_AECOMPROJECT) 
+                && specificProject.getStatus() != rsPRTeamEmployee.S_ARCHIVED) {
 				onlyAECOM.add(specificProject);
 			}
 		}
@@ -540,7 +560,8 @@ public with sharing class rsProjectController extends rsSectionController {
 		List<rsPRTeamEmployee> allProjects = getProfileProjectParts();
 		List<rsPRTeamEmployee> onlyNonAECOM = new List<rsPRTeamEmployee>();
 		for(rsPRTeamEmployee specificProject : allProjects) {
-			if (specificProject.getRecordTypeId() == rsPRTeamEmployee.getRecordTypeIdByName(rsPRTeamEmployee.RT_NONAECOMPROJECT) ) {
+			if (specificProject.getRecordTypeId() == rsPRTeamEmployee.getRecordTypeIdByName(rsPRTeamEmployee.RT_NONAECOMPROJECT) 
+                && specificProject.getStatus() != rsPRTeamEmployee.S_ARCHIVED) {
 				onlyNonAECOM.add(specificProject);
 			}
 		}
@@ -683,18 +704,17 @@ public with sharing class rsProjectController extends rsSectionController {
         projectKeyLocation = new Map<String,Integer>();
         if(sortField == null || pageChange == null){
             allViewModels = new List<rsProjectViewModel>();
-
+            numProjInAECOMGroup.clear();
+            AECOMPartIds.clear();
             for(rsPRTeamEmployee part : getAECOMProfileProjectParts()){
                 String projectGroup = rsStringUtil.toTitleCase((String)part.getObj().get('Project_Group_Editable__c'));
                 allViewModels.add(new rsProjectViewModel(new rsProjectGroup(projectGroup,new List<rsPRTeamEmployee>{part})));
-                System.debug('#### Proj Group: ' + projectGroup);
-                if(numProjInGroup.containsKey(projectGroup) && !partIds.contains(part.getId())) {
-                    numProjInGroup.put(projectGroup, numProjInGroup.get(projectGroup)+1);
-                } else {
-                    numProjInGroup.put(projectGroup,1);
-                    partIds.add(part.getId());
+                if(numProjInAECOMGroup.containsKey(projectGroup) && !AECOMPartIds.contains(part.getId())) {
+                    numProjInAECOMGroup.put(projectGroup, numProjInAECOMGroup.get(projectGroup)+1);
+                } else if(!numProjInAECOMGroup.containsKey(projectGroup)){
+                    numProjInAECOMGroup.put(projectGroup,1);
                 }
-
+                AECOMPartIds.add(part.getId());
             }
             allViewModels.sort();
         }    
@@ -716,9 +736,6 @@ public with sharing class rsProjectController extends rsSectionController {
         if(allViewModels != null && !allViewModels.isEmpty()){            
             for(Integer i = ViewIndex; i < getViewLimit(); i++){
                 String key = allViewModels[i].getObj().projectGroup;
-                System.debug('### key: ' + key);
-                System.debug('### ' + viewParts.size());
-                System.debug('### view limit ' + getViewLimit());
                 if(projectKeyLocation.containsKey(key)) {
                     viewParts.get(projectKeyLocation.get(key)).getObj().groupProjects.addAll(allViewModels[i].getObj().groupProjects);
                 } else {
@@ -737,15 +754,18 @@ public with sharing class rsProjectController extends rsSectionController {
         projectKeyLocation = new Map<String,Integer>();
         if(sortField == null || pageChange == null){
             allViewModels = new List<rsProjectViewModel>();
+            numProjInNonAECOMGroup.clear();
+            nonAECOMPartIds.clear();
             for(rsPRTeamEmployee part : getNonAECOMProfileProjectParts()){
                 String projectGroup = rsStringUtil.toTitleCase((String)part.getObj().get('Project_Group_Editable__c'));
                 allViewModels.add(new rsProjectViewModel(new rsProjectGroup(projectGroup,new List<rsPRTeamEmployee>{part})));
-                if(numProjInGroup.containsKey(projectGroup) && !partIds.contains(part.getId())) {
-                    numProjInGroup.put(projectGroup, numProjInGroup.get(projectGroup)+1);
-                } else {
-                    numProjInGroup.put(projectGroup,1);
-                    partIds.add(part.getId());
+                if(numProjInNonAECOMGroup.containsKey(projectGroup) && !nonAECOMPartIds.contains(part.getId())) {
+                    numProjInNonAECOMGroup.put(projectGroup, numProjInNonAECOMGroup.get(projectGroup)+1);
+                } else if(!numProjInNonAECOMGroup.containsKey(projectGroup)){
+                    numProjInNonAECOMGroup.put(projectGroup,1);
                 }
+                nonAECOMPartIds.add(part.getId());
+                System.debug(numProjInNonAECOMGroup.get(projectGroup));
             }
             allViewModels.sort();
         }    
@@ -767,9 +787,6 @@ public with sharing class rsProjectController extends rsSectionController {
         if(allViewModels != null && !allViewModels.isEmpty()){            
             for(Integer i = ViewIndex; i < getViewLimit(); i++){
                 String key = allViewModels[i].getObj().projectGroup;
-                System.debug('### key: ' + key);
-                System.debug('### ' + viewParts.size());
-                System.debug('### view limit ' + getViewLimit());
                 if(projectKeyLocation.containsKey(key)) {
                     viewParts.get(projectKeyLocation.get(key)).getObj().groupProjects.addAll(allViewModels[i].getObj().groupProjects);
                 } else {

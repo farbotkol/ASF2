@@ -6,7 +6,13 @@
     	j$('.date').datepicker({
     		autoclose: true
     	});
+
     	j$(function () {
+    		if({!isExistingAECOMProject}) {
+    			setProjRequiredFields();
+    		} else if ({!isNewAECOMProject}) {
+    			setNewProjRequiredFields();
+    		}
     		var j$ = jQuery.noConflict();
     		j$('a[id$=moveGroupUp]').each(function() {
     			if(j$(this).hasClass('0')) {
@@ -99,6 +105,13 @@
     						'[id$=ProjectRole]','[id$=RoleDescription]',
     						'[id$=projectGroupEdit]'];
     	}
+    	function setNewProjRequiredFields() {
+    		requiredFields = ['[id$=projectNameEdit]',
+    						'[id$=DateInvolvementStarted]','[id$=DateInvolvementEnded]',
+    						'[id$=ProjectRole]','[id$=RoleDescription]',
+    						'[id$=projectGroupEdit]', '[id$=clientNameEditable]', '[id$=projectGroupEdit]',
+    						'[id$=locationCountryEdit]'];
+    	}
 
 	    j$(document).ready(function() {
 			removeFloatover();
@@ -120,7 +133,7 @@
 
 		    
 			<h3 class="panel-title has-spinner" id="projectsHeader">{!$Label.Projects} &nbsp; <img height="15" width="15" class="spinner" src="{!$Resource.loading}" alt="loading" title="loading"/></h3>
-			<apex:commandLink value="" styleClass="{!IF(canEdit, '','disabled')} pull-right" reRender="{!reRender}" action="{!newPart}" onclick="if(inProgress) return false; showSectionSpinner('projectsHeader'); setProjRequiredFields(); inProgress = true;" oncomplete="resetProgress();focusField('ProjectIdin');setupFields('new');loadCountry('locationCountryEdit');stateChange($j('[id$=locationCountryEdit]').val(),'State','locationStateEdit');" rendered="{!IsListMode && canEdit}">
+			<apex:commandLink value="" styleClass="{!IF(canEdit, '','disabled')} pull-right" reRender="{!reRender}" action="{!newPart}" onclick="if(inProgress) return false; showSectionSpinner('projectsHeader'); inProgress = true;" oncomplete="resetProgress();focusField('ProjectIdin');setupFields('new');loadCountry('locationCountryEdit');stateChange($j('[id$=locationCountryEdit]').val(),'State','locationStateEdit');" rendered="{!IsListMode && canEdit}">
 	             <span title="{!$Label.Add}" class="glyphicon glyphicon-plus"></span>  
 			</apex:commandLink>
 			<div class="clearfix"/>
@@ -138,7 +151,7 @@
 	            		<td style="border-top:none;">
 	            			<div class="rsRequired">
                             	<div class="rsRequiredBlock"/>
-		                        <apex:inputField rendered="{! !isNewAECOMProject && !isNonAECOMProject}" id="ProjectIdin" value="{!CurrentProject.PRObj.Project_ID__c}" />
+		                        <apex:inputField rendered="{! !isNewAECOMProject && !isNonAECOMProject}" id="ProjectIdin" value="{!CurrentProject.PRObj.Project_Id__c}" />
 		                        <apex:inputText rendered="{!isNewAECOMProject || isNonAECOMProject}" value="{!CurrentProject.ProjectNameEditable}" id="projectNameEdit" />
 		                        <span class="rsError"><br/>{!$ObjectType['PR_Team_Employee__c'].fields['Project_Id__c'].Label} {!$Label.Is_Required}</span>
 		                    </div>
@@ -289,11 +302,11 @@
 	            	</apex:outputPanel>
 	        	</table>
 	        	<div class="text-center" style="padding-bottom:18px;"> 
-	                <apex:commandLink styleClass="btn btn-success btn-sm sfbtnOverrideGreen" style="color:#fff; text-decoration:none;" action="{!savePart}" value="{!$Label.Save}" reRender="{!reRender}" onclick="if(inProgress) return false; setProjRequiredFields(); if(!checkRequiredFields()) return false; inProgress = true; showSectionSpinner('projectsHeader');" oncomplete="resetProgress();removeSpacesFromId();restoreCollapsedSections();" >	 
+	                <apex:commandLink styleClass="btn btn-success btn-sm sfbtnOverrideGreen" style="color:#fff; text-decoration:none;" action="{!savePart}" value="{!$Label.Save}" reRender="{!reRender}" onclick="if(inProgress) return false; if(!checkRequiredFields()) return false; inProgress = true; showSectionSpinner('projectsHeader');" oncomplete="resetProgress();removeSpacesFromId();restoreCollapsedSections();" >	 
 	                	<span class="glyphicon glyphicon-ok-circle"></span>              
 				    </apex:commandLink>
 	                &nbsp;
-	                <apex:commandLink styleClass="btn btn-success btn-sm sfbtnOverrideGreen" style="color:#fff; text-decoration:none;" action="{!saveAndApprove}" value="{!$Label.Save_And_Approve}" reRender="{!reRender}" onclick="if(inProgress) return false; setProjRequiredFields(); if(!checkRequiredFields()) return false; inProgress = true; showSectionSpinner('projectsHeader');" oncomplete="resetProgress();removeSpacesFromId();restoreCollapsedSections();" rendered="{!isApprovable && CurrentProject.IsPendingOrInReview}">	 
+	                <apex:commandLink styleClass="btn btn-success btn-sm sfbtnOverrideGreen" style="color:#fff; text-decoration:none;" action="{!saveAndApprove}" value="{!$Label.Save_and_Approve}" reRender="{!reRender}" onclick="if(inProgress) return false; if(!checkRequiredFields()) return false; inProgress = true; showSectionSpinner('projectsHeader');" oncomplete="resetProgress();removeSpacesFromId();restoreCollapsedSections();" rendered="{!isApprovable && CurrentProject.IsPendingOrInReview}">	 
 	                	<apex:param value="{!CurrentProject.Id}" name="partId"/>
 	                	<span class="glyphicon glyphicon-ok-circle"></span>              
 				    </apex:commandLink>
@@ -441,7 +454,7 @@
 									    </li>
 									    <apex:outputPanel layout="none" rendered="{!canEdit}">
 										    <li role="presentation" >
-					                            <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!editPart}" value="{!$Label.Edit}" reRender="{!reRender}" onclick="if(inProgress) return false; showSectionSpinner('projectsHeader'); setProjRequiredFields(); inProgress = true;" oncomplete="resetProgress(); setupFields('edit');stateChange($j('[id$=locationCountryEdit]').val(),'State','locationStateEdit');removeSpacesFromId(); scrollToHeader('projectsHeader');restoreCollapsedSections();">
+					                            <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!editPart}" value="{!$Label.Edit}" reRender="{!reRender}" onclick="if(inProgress) return false; showSectionSpinner('projectsHeader'); inProgress = true;" oncomplete="resetProgress(); setupFields('edit');stateChange($j('[id$=locationCountryEdit]').val(),'State','locationStateEdit');removeSpacesFromId(); scrollToHeader('projectsHeader');restoreCollapsedSections();">
 					                            	<apex:param value="{!project.Id}" name="projectId"/> 
 					                            </apex:commandLink>
 										    </li>
@@ -459,14 +472,14 @@
 					                            </apex:commandLink>
 										    </li>
 										    <li role="presentation" >
-					                            <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!moveProjectUp}" id="moveProjectUp" value="{!$Label.Move_Project_Up}" reRender="{!reRender}" styleClass="{!numProjInGroup[group.Obj.projectGroup]-1} {!project.ProjectSequence}" onclick="if(inProgress) return false; showSectionSpinner('projectsHeader'); inProgress = true;" oncomplete="resetProgress();restoreCollapsedSections();">
+					                            <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!moveProjectUp}" id="moveProjectUp" value="{!$Label.Move_Project_Up}" reRender="{!reRender}" styleClass="{!numProjInAECOMGroup[group.Obj.projectGroup]-1} {!project.ProjectSequence}" onclick="if(inProgress) return false; showSectionSpinner('projectsHeader'); inProgress = true;" oncomplete="resetProgress();restoreCollapsedSections();">
 					                            	<apex:param value="{!group.Obj.projectGroup}" name="projectGroup" />
 					                            	<apex:param value="{!project.Id}" name="projectId"/>
 					                            	<apex:param value="{!project.RecordTypeId}" name="recordType" />
 					                            </apex:commandLink>
 										    </li>
 										    <li role="presentation" >
-					                            <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!moveProjectDown}" id="moveProjectDown" value="{!$Label.Move_Project_Down}" reRender="{!reRender}" styleClass="{!numProjInGroup[group.Obj.projectGroup]-1} {!project.ProjectSequence}" onclick="if(inProgress) return false; showSectionSpinner('projectsHeader'); inProgress = true;" oncomplete="resetProgress();restoreCollapsedSections();">
+					                            <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!moveProjectDown}" id="moveProjectDown" value="{!$Label.Move_Project_Down}" reRender="{!reRender}" styleClass="{!numProjInAECOMGroup[group.Obj.projectGroup]-1} {!project.ProjectSequence}" onclick="if(inProgress) return false; showSectionSpinner('projectsHeader'); inProgress = true;" oncomplete="resetProgress();restoreCollapsedSections();">
 					                            	<apex:param value="{!group.Obj.projectGroup}" name="projectGroup"/>
 					                            	<apex:param value="{!project.Id}" name="projectId"/>
 					                            	<apex:param value="{!project.RecordTypeId}" name="recordType" />

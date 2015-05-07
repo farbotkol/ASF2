@@ -89,6 +89,7 @@ public virtual with sharing class rsSectionController {
         mIsError = false;
         //First check if their profile has been locked while they were editing this part, unless they are a content manager that locked it, in which case they can save just fine
         User profileRequery = getUser();
+        String oldStatus = CurrentPart.getStatus();
 
         if(profileRequery.Profile_Reviewer__c != UserInfo.getUserId() && profileRequery.Is_Profile_Locked__c ) {      
             String lockerUrl = 'https://' + ApexPages.currentPage().getHeaders().get('Host') + '/' + profile.getUser().Profile_Reviewer__c;
@@ -119,6 +120,7 @@ public virtual with sharing class rsSectionController {
             CurrentPart.save();
         } catch (DmlException ex) { 
             ApexPages.addMessages(ex);
+            CurrentPart.setStatus(oldStatus);
             System.debug ('!!Exception on profile part save. ' + ex + ex.getStackTraceString());
             return null;
         }
@@ -148,8 +150,34 @@ public virtual with sharing class rsSectionController {
 
         mOldPart = null;
         enableListMode();
+
+        updateUserProfileTimestamps();
+        
         return null;
 	}
+
+    //---This will update the user timestamps
+    public void updateUserProfileTimestamps()
+    {
+        //---Update last modified data on User
+        User targetUser = [Select Id, Last_User_Profile_Update__c, Last_CM_Profile_Update__c from User where id = :profile.getId()];
+
+        if (profile.getId() == UserInfo.getUserId()) 
+        {
+            targetUser.Last_User_Profile_Update__c = DateTime.now();
+        }
+        else
+        {
+            targetUser.Last_CM_Profile_Update__c = DateTime.now();
+        }
+
+        try {
+            update targetUser;
+        } catch (DmlException ex) { 
+            ApexPages.addMessages(ex);
+            System.debug ('!!Exception on profile part save, User DateTime update. ' + ex + ex.getStackTraceString());
+        }
+    }
 
     public void setFieldsForSave(rsProfilePart profilePart, User currentUser) {
         setTrackingFields();
@@ -320,9 +348,11 @@ public virtual with sharing class rsSectionController {
         rs_Review_Exception__c cmException 
             = rs_Review_Exception__c.getValues(currentUser.Geography__c);
 
-        //If we found an exception in custom settings
+        //If we found an exception in custom settings OR if their geography is null and we have a custom setting with "null"
         //then we shouldn't force a review
-        if(cmException != null && String.isNotBlank(currentUser.Geography__c)) return false;
+        if( cmException != null || ( !String.isNotBlank(currentUser.Geography__c) && rs_Review_Exception__c.getInstance('null') != null ) ) {
+            return false;
+        } 
 
 
         rsProfile currUser = new rsProfile(currentUser);
