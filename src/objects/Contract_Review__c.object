@@ -1,6 +1,61 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <content>NewContractReview</content>
+        <skipRecordTypeSelect>true</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
     <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
     <fields>
         <fullName>Approval_Level_Required_Value__c</fullName>
         <externalId>false</externalId>
@@ -1277,6 +1332,18 @@
         <type>MultiselectPicklist</type>
         <visibleLines>6</visibleLines>
     </fields>
+    <label>Contract Review Request</label>
+   
+    <nameField>
+        <displayFormat>CR-{00000}</displayFormat>
+        <label>Contract Review ID</label>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Contract Reviews</pluralLabel>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <recordTypes>
         <fullName>Contract_Review_RT</fullName>
         <active>true</active>
@@ -1802,6 +1869,27 @@
             </values>
         </picklistValues>
     </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>Review_Request_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Client_Vendor__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Opportunity_Name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Contract_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status_Review__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Date_Required__c</customTabListAdditionalFields>
+        <listViewButtons>Search</listViewButtons>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Project_Director__c</searchFilterFields>
+        <searchFilterFields>Opportunity_Name__c</searchFilterFields>
+        <searchFilterFields>Project_Manager__c</searchFilterFields>
+        <searchFilterFields>Client_Vendor__c</searchFilterFields>
+        <searchFilterFields>Status_Review__c</searchFilterFields>
+        <searchResultsAdditionalFields>Client_Vendor__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Contract_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Opportunity_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Project_Manager__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status_Review__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Private</sharingModel>
     <validationRules>
         <fullName>External_Due_less_then_Date_Review</fullName>
         <active>true</active>
@@ -1817,12 +1905,26 @@
         <errorMessage>Federal Contract can only be selected when the country is &apos;United States&apos;</errorMessage>
     </validationRules>
     <validationRules>
+        <fullName>Gulf_Coast_Region_Only_temp_rule</fullName>
+        <active>false</active>
+        <errorConditionFormula>CONTAINS(&quot;AK:WA:OR:ID:MT:ND:SD:WY:BC:YT:NT:NU:AB:SK:MB:UT:AZ:NM:OK:TX:AR:MS:LA:CO&quot;,State_Province_Emirate__r.State_Code__c )==False</errorConditionFormula>
+        <errorDisplayField>State_Province_Emirate__c</errorDisplayField>
+        <errorMessage>Contract Reviews can currently only be submitted for the USA and Canada West / Gulf Coast Region.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>State_Required_for_AUS_US_CAN</fullName>
         <active>true</active>
         <description>Due to the queue assignment rules for Australian, US and Canaidian legal team queues being based off State/prov the state is required for these countries</description>
         <errorConditionFormula>CONTAINS(&quot;AU:CA:US&quot;,Country_Code__c) 
 &amp;&amp;   ISBLANK(State_Province_Emirate__c)</errorConditionFormula>
         <errorMessage>When the &apos;Country&apos; field is Australia, Canada or United States a &apos;State/Province/Emirate&apos; is required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>US_Canada_Only_temp_rule</fullName>
+        <active>false</active>
+        <errorConditionFormula>CONTAINS(&quot;US:CA&quot;,Country__r.Country_Code__c ) == FALSE</errorConditionFormula>
+        <errorDisplayField>Country__c</errorDisplayField>
+        <errorMessage>Contract Reviews can currently only be submitted for the USA and Canada West / Gulf Coast Region</errorMessage>
     </validationRules>
     <webLinks>
         <fullName>Search</fullName>
