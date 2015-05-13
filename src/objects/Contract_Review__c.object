@@ -1,0 +1,1990 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <content>NewContractReview</content>
+        <skipRecordTypeSelect>true</skipRecordTypeSelect>
+        <type>Visualforce</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>true</enableEnhancedLookup>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Approval_Level_Required_Value__c</fullName>
+        <externalId>false</externalId>
+        <label>Approval Level Required Value</label>
+        <summarizedField>Contract_Conditions_Of_Approval__c.Level_of_Condition_value__c</summarizedField>
+        <summaryForeignKey>Contract_Conditions_Of_Approval__c.Contract_Review_Request__c</summaryForeignKey>
+        <summaryOperation>max</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Approval_Level_Required__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE( Approval_Level_Required_Value__c , 1, &quot;Area&quot;, 2, &quot;Region&quot;, 3, &quot;Geography&quot;, 4, &quot;Group&quot;, 5, &quot;Enterprise&quot;,&quot;&quot;)</formula>
+        <label>Approval Level Required</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Business_Line__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>If there are multiple business lines, pick the majority business line delivering the work.</inlineHelpText>
+        <label>Business Line</label>
+        <referenceTo>Business_Line__c</referenceTo>
+        <relationshipLabel>Contract Reviews</relationshipLabel>
+        <relationshipName>Contract_Reviews</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Client_Vendor_State_of_Incorporation__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Client/Vendor - State of Incorporation</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>State/Province/Emirate does not exist or does not match for the select country.</errorMessage>
+            <filterItems>
+                <field>State_Province_Emirate__c.Country__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.Country_of_incorporation_of_the_client_v__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>State_Province_Emirate__c</referenceTo>
+        <relationshipLabel>Contract Reviews (Client/Vendor - State of Incorporation)</relationshipLabel>
+        <relationshipName>Contract_Reviews1</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Client_Vendor__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Project</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Client / Vendor name as exists in salesforce, leave blank if not in salesforce.</inlineHelpText>
+        <label>Client / Vendor</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Contract Reviews</relationshipLabel>
+        <relationshipName>Contract_Reviews</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Client_vendor_as_named_on_the_contract__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Client/vendor as named on the contract</inlineHelpText>
+        <label>Client/vendor as named on the contract</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Comments</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Compliant__c</fullName>
+        <externalId>false</externalId>
+        <label>Compliant</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Compliant</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Non-Compliant</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Partial Compliance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Conditions_complete__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Conditions complete</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Contract_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>If there are multiple documents to review, please nominate the main contract type.</inlineHelpText>
+        <label>Contract Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>AECOM Inter-Company Agreement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>AECOM Standard (no deviations)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>AECOM Standard with Deviations</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Alliance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>ANZ Industry Standard (AS4122, IPENZ/ACENZ)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Confidentiality Agreement/ Deed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Construction / EPC Contract</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Deed Poll</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>EPCM</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Interim Agreement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Joint Venture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Master Services Agreement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Memorandum of Understanding</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Novation Deed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other - Provide in comments</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Panel Agreement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Probity Deed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Services Contract/ Agreement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Standing Offer Agreement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Subs Agreement (Non Standard)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Task Order</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Teaming Agreement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Tender Services Agreement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Term Agreement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>true</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Country_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>Country__r.Country_Code__c</formula>
+        <label>Country Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Country__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Country where the project is managed</inlineHelpText>
+        <label>Country</label>
+        <lookupFilter>
+            <active>true</active>
+            <booleanFilter>1 OR 2</booleanFilter>
+            <filterItems>
+                <field>Country__c.Country_Code__c</field>
+                <operation>equals</operation>
+                <value>CA</value>
+            </filterItems>
+            <filterItems>
+                <field>Country__c.Country_Code__c</field>
+                <operation>equals</operation>
+                <value>US</value>
+            </filterItems>
+            <isOptional>true</isOptional>
+        </lookupFilter>
+        <referenceTo>Country__c</referenceTo>
+        <relationshipLabel>Contract Reviews</relationshipLabel>
+        <relationshipName>Contract_Reviews</relationshipName>
+        <required>true</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Country_of_incorporation_of_the_client_v__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <description>Country of incorporation of the client/vendor entity as it appears on the contract</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Country of incorporation of the client/vendor entity as it appears on the contract</inlineHelpText>
+        <label>Client/Vendor - Country of Incorporation</label>
+        <referenceTo>Country__c</referenceTo>
+        <relationshipLabel>Contract Reviews (Country of incorporation of the client/v)</relationshipLabel>
+        <relationshipName>Contract_Reviews_client_country</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Date_Required__c</fullName>
+        <defaultValue>Today() + 7</defaultValue>
+        <description>Allow at least 7 days for your request to be reviewed. More time is needed should DOA approvals be required</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Allow at least 7 days for your request to be reviewed. More time is needed should DOA approvals be required</inlineHelpText>
+        <label>Date Review is Required</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Date_received_by_Client__c</fullName>
+        <externalId>false</externalId>
+        <label>Date received by Client</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Description_Nature_of_Works__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Include a short paragraph describing the works we are doing for the Client</inlineHelpText>
+        <label>Description &amp; Nature of Works</label>
+        <length>1000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Estimated_Fee__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>The estimated Gross Fee of the project in the project currency</inlineHelpText>
+        <label>Estimated Fee</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>External_Due_Date__c</fullName>
+        <description>Date required by the Client</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Date required by the Client</inlineHelpText>
+        <label>External Due Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Federal_Contract__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Federal Contract</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Fee_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Fee Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Lump Sum</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time &amp; materials</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time &amp; materials with guaranteed max / upset price</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Discounted rate with success fee</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Incentivised fee structure</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other – please describe in comments field</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Folder_Referance_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Name &amp; &quot; - &quot; &amp;   Client_vendor_as_named_on_the_contract__c   &amp; &quot; - &quot; &amp;  Request_Name__c</formula>
+        <inlineHelpText>Used to assist in creating a consistent folder naming conversion</inlineHelpText>
+        <label>Folder Referance Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Go_No_Go_Status__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Opportunity_GNG__r.Decision__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Go/No Go Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Governing_Law__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Governing Law of the Contract - Country</label>
+        <referenceTo>Country__c</referenceTo>
+        <relationshipLabel>Contract Reviews (Governing Law of the Contract)</relationshipLabel>
+        <relationshipName>Contract_Reviews1</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Governing_Law_of_the_Contract_State__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Governing Law of the Contract - State</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>State/Province/Emirate does not exist or does not match for the select country.</errorMessage>
+            <filterItems>
+                <field>State_Province_Emirate__c.Country__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.Governing_Law__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>State_Province_Emirate__c</referenceTo>
+        <relationshipLabel>Contract Reviews (Governing Law of the Contract State)</relationshipLabel>
+        <relationshipName>Contract_Reviews2</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Insurance__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Is project specific insurance being considered for this project?</inlineHelpText>
+        <label>Project Insurance Contemplated</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Legal_Team__c</fullName>
+        <description>Used for sharing rules only</description>
+        <externalId>false</externalId>
+        <label>Legal Team</label>
+        <length>80</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Limitation_of_Liability__c</fullName>
+        <externalId>false</externalId>
+        <label>Limitation of Liability</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Unknown</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Capped in Accordance with DoA</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Capped in Excess of DoA</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Uncapped</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>My_Contract__c</fullName>
+        <description>A workaround to determine is user is a member of the request</description>
+        <externalId>false</externalId>
+        <formula>IF(CreatedBy.Id  = $User.Id, 1, 0) + IF( Project_Manager__r.Id   = $User.Id, 1, 0)+ IF(  Project_Director__r.Id    = $User.Id, 1, 0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>My Contract</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Next_Review_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Next Review Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ORM_Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>ORM Comments</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Opportunity_GNG__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>If an opportunity exists within Salesforce, please identify it and the following pages will be pre-filled for you.  If there is no Salesforce Opportunity created please leave blank.</inlineHelpText>
+        <label>Opportunity (Go/No Go)</label>
+        <referenceTo>Go_No_Go_Conversation__c</referenceTo>
+        <relationshipLabel>Contract Reviews</relationshipLabel>
+        <relationshipName>Contract_Reviews</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity_GNG__r.Opportunity_Name__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Opportunity Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>The real opportunity, used for referancing</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Only accessible by full CRM users</inlineHelpText>
+        <label>Opportunity</label>
+        <referenceTo>Opportunity</referenceTo>
+        <relationshipLabel>Contract Reviews</relationshipLabel>
+        <relationshipName>Contract_Reviews</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Other_project_member__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>An additional project member, eg RBLL</inlineHelpText>
+        <label>Other project member</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Contract_Reviews2</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>OwnersURL__c</fullName>
+        <description>Get the URL to the owner weather it be a user or a queue</description>
+        <externalId>false</externalId>
+        <formula>Left($Api.Enterprise_Server_URL_190,(find(&apos;/services&apos;,$Api.Enterprise_Server_URL_190))) &amp;  IF(LEFT( OwnerId , 3) = &quot;00G&quot;, &quot;_ui/common/ownership/group/GroupFullMembershipUi/d?id=&quot;,&quot;&quot;) &amp; OwnerId</formula>
+        <label>OwnersURL</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PI_Insurance_Amount__c</fullName>
+        <description>Professional Indemnity/ Liability Amount</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Professional Indemnity/ Liability Amount</inlineHelpText>
+        <label>Professional Indemnity/ Liability Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PL_Insurance_Amount__c</fullName>
+        <description>Public / General Liability Amount</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Public / General Liability Amount</inlineHelpText>
+        <label>Public / General Liability Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Preferred_Contract_Reviewer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>To assign this request to a particular reviewer and bypass the queue. Will be assigned to the relevant legal group if left blank.</inlineHelpText>
+        <label>Preferred Contract Reviewer</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>User.Legal__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Contract_Reviews_Preferred_Contract_Revi</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Previously_reviewed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Have the attached documents been previously reviewed through this process?  If YES, please provide relevant documents as attachments</inlineHelpText>
+        <label>Previously reviewed</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Project_Director__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project Director</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Contract_Reviews1</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Project_Manager__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Contract_Reviews</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Project_Number__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.Oracle_Project_Num__c</formula>
+        <label>Project Number</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Project name as exists in salesforce, leave blank if not in salesforce.</inlineHelpText>
+        <label>Project</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Project__c.Oracle_Project_Num__c</field>
+                <operation>notEqual</operation>
+                <value></value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Project__c</referenceTo>
+        <relationshipLabel>Contract Reviews</relationshipLabel>
+        <relationshipName>Contract_Reviews</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Registration_Number__c</fullName>
+        <externalId>false</externalId>
+        <formula>Client_Vendor__r.Registration_Business_Number__c</formula>
+        <label>Registration Number</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Request_Name__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>To be entered where project or opportunity are not within Salesforce.</inlineHelpText>
+        <label>Project/Opportunity Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Review_Request_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Review Request Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>High level review / holding statement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Detailed review</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other-provide in comments</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Risk_Level__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Refer to Project Delivery System (PDS) within the AECOM Integrated Management System (IMS).</inlineHelpText>
+        <label>Risk Level</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Medium</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>High</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Second_Legal_User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Nominate any other contract reviewers to be given access to this review if required.</inlineHelpText>
+        <label>Second Legal User</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Contract_Reviews3</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Service_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>List extracted from project profiles</inlineHelpText>
+        <label>Service Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Acoustics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Adv. Design/App. Research/Policy Advice</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Air Consulting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Architecture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Building Engineering</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Construction Administration</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Construction Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Construction Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost Consulting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost Estimating</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Dashboard Reporting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Demolition/Decommissioning</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Design</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Design-Build</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Design-Construct</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Economics &amp; Planning</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>EMIS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Engineering</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environmental + Ecological Planning</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environmental Assessments</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environmental Audits</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Facades</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Facilities Assessment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Facility Condition Assessment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Facility Planning</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Feasibility Study</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Financing</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fire Engineering</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Flood Mapping/Risk Mapping</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Geospatial Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Impact Assessment &amp; Analysis</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Information Technology/Audiovisual</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Inspection</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Intelligent Transportation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Interior Design</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Landscape Architecture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Life Safety</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Litigation Support</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Marine and Ports</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Masterplanning</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mechanical, Electrical, and Plumbing</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Medical Planning</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mobile</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Oil and Gas</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Operations and Maintenance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Permitting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pilot Testing</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Planning</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Program Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Project Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Quantity surveying</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Remedial Investigation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Remediation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Security</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Site Investigation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Smart City</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Smart Water</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Software Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Space Programming</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Strategy +</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Structural Engineering</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Study</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sustainability</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Traffic Analysis</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Training</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Value Engineering</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Vulnerability Assessments</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Web GIS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>true</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>State_Code__c</fullName>
+        <externalId>false</externalId>
+        <formula>State_Province_Emirate__r.State_Code__c</formula>
+        <label>State Code</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>State_Province_Emirate__c</fullName>
+        <deleteConstraint>Restrict</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>State/Province/Emirate only applies to the following countries (Australia, Canada, Untied States)</inlineHelpText>
+        <label>State/Province/Emirate</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>State/Province/Emirate does not exist or does not match for the select country.</errorMessage>
+            <filterItems>
+                <field>State_Province_Emirate__c.Country__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.Country__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>State_Province_Emirate__c</referenceTo>
+        <relationshipLabel>Contract Reviews</relationshipLabel>
+        <relationshipName>Contract_Reviews</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Status_Review__c</fullName>
+        <externalId>false</externalId>
+        <label>Review Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Pending Submit</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Outstanding Review</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Review Complete - Subject to Negotiation or DOA Approval</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Approved or Closed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Contract Signed and Executed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Submitted__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Used to determine if the request has been submitted to the contract reviewers</description>
+        <externalId>false</externalId>
+        <label>Submitted</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Time_Reviewed__c</fullName>
+        <externalId>false</externalId>
+        <label>Time Reviewed</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Time_Submitted__c</fullName>
+        <externalId>false</externalId>
+        <label>Time Submitted</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Time_To_Review__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( NOT(ISBLANK(Time_Reviewed__c)) &amp;&amp; NOT(ISBLANK( Time_Submitted__c )), Time_Reviewed__c - Time_Submitted__c, NULL )</formula>
+        <inlineHelpText>The number of days it took for the record to be reviewed after submission.</inlineHelpText>
+        <label>Time To Review</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>significant_risks_identified__c</fullName>
+        <externalId>false</externalId>
+        <label>Significant risks identified</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Consequential losses</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Heightened Standard of Care</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Liability not tied to negligence</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Liquidated damages</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other risks/DoA triggers-add to comments</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Responsibility for Construction Risk</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Third party reliance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Unfavorable commercial terms</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>true</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <label>Contract Review Request</label>
+    <nameField>
+        <displayFormat>CR-{00000}</displayFormat>
+        <label>Contract Review ID</label>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Contract Reviews</pluralLabel>
+    <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>Contract_Review_RT</fullName>
+        <active>true</active>
+        <description>Contract Review Record Type</description>
+        <label>Contract Review</label>
+        <picklistValues>
+            <picklist>Compliant__c</picklist>
+            <values>
+                <fullName>Compliant</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Non-Compliant</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Partial Compliance</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Contract_Type__c</picklist>
+            <values>
+                <fullName>AECOM Inter-Company Agreement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AECOM Standard %28no deviations%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AECOM Standard with Deviations</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ANZ Industry Standard %28AS4122%2C IPENZ%2FACENZ%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Alliance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Confidentiality Agreement%2F Deed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Construction %2F EPC Contract</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Deed Poll</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EPCM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interim Agreement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Joint Venture</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Master Services Agreement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Memorandum of Understanding</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Novation Deed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other - Provide in comments</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Panel Agreement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Probity Deed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Services Contract%2F Agreement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Standing Offer Agreement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Subs Agreement %28Non Standard%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Task Order</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Teaming Agreement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Tender Services Agreement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Term Agreement</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Fee_Type__c</picklist>
+            <values>
+                <fullName>Discounted rate with success fee</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Incentivised fee structure</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other %E2%80%93 please describe in comments field</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time %26 materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time %26 materials with guaranteed max %2F upset price</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Limitation_of_Liability__c</picklist>
+            <values>
+                <fullName>Capped in Accordance with DoA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Capped in Excess of DoA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Uncapped</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unknown</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Review_Request_Type__c</picklist>
+            <values>
+                <fullName>Detailed review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>High level review %2F holding statement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other-provide in comments</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Risk_Level__c</picklist>
+            <values>
+                <fullName>High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Medium</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Service_Type__c</picklist>
+            <values>
+                <fullName>Acoustics</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Adv%2E Design%2FApp%2E Research%2FPolicy Advice</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Air Consulting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Architecture</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Building Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Construction Administration</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Construction Management</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Construction Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Consulting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Estimating</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Dashboard Reporting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Demolition%2FDecommissioning</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Design</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Design-Build</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Design-Construct</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EMIS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Economics %26 Planning</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Environmental %2B Ecological Planning</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Environmental Assessments</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Environmental Audits</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Facades</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Facilities Assessment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Facility Condition Assessment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Facility Planning</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Feasibility Study</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Financing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fire Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Flood Mapping%2FRisk Mapping</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Geospatial Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Impact Assessment %26 Analysis</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Information Technology%2FAudiovisual</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inspection</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Intelligent Transportation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interior Design</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Landscape Architecture</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Life Safety</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Litigation Support</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Marine and Ports</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Masterplanning</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mechanical%2C Electrical%2C and Plumbing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Medical Planning</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mobile</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Oil and Gas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Operations and Maintenance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Permitting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pilot Testing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Planning</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Program Management</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Management</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Quantity surveying</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Remedial Investigation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Remediation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Security</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Site Investigation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Smart City</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Smart Water</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Software Development</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Space Programming</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Strategy %2B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Structural Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Study</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sustainability</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Traffic Analysis</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Training</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Value Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Vulnerability Assessments</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Web GIS</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Status_Review__c</picklist>
+            <values>
+                <fullName>Approved or Closed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contract Signed and Executed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Outstanding Review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pending Submit</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Review Complete - Subject to Negotiation or DOA Approval</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>significant_risks_identified__c</picklist>
+            <values>
+                <fullName>Consequential losses</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Heightened Standard of Care</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liability not tied to negligence</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Liquidated damages</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other risks%2FDoA triggers-add to comments</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Responsibility for Construction Risk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Third party reliance</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unfavorable commercial terms</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>Review_Request_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Client_Vendor__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Opportunity_Name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Contract_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status_Review__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Date_Required__c</customTabListAdditionalFields>
+        <listViewButtons>Search</listViewButtons>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Project_Director__c</searchFilterFields>
+        <searchFilterFields>Opportunity_Name__c</searchFilterFields>
+        <searchFilterFields>Project_Manager__c</searchFilterFields>
+        <searchFilterFields>Client_Vendor__c</searchFilterFields>
+        <searchFilterFields>Status_Review__c</searchFilterFields>
+        <searchResultsAdditionalFields>Client_Vendor__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Contract_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Opportunity_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Project_Manager__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status_Review__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Private</sharingModel>
+    <validationRules>
+        <fullName>External_Due_less_then_Date_Review</fullName>
+        <active>true</active>
+        <description>External Due Date can not be less then Date Review is Required</description>
+        <errorConditionFormula>External_Due_Date__c &lt;  Date_Required__c</errorConditionFormula>
+        <errorDisplayField>External_Due_Date__c</errorDisplayField>
+        <errorMessage>&apos;External Due Date&apos; can not be less then &apos;Date Review is Required&apos;</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Federal_Contract_US_Only</fullName>
+        <active>true</active>
+        <errorConditionFormula>Federal_Contract__c = True &amp;&amp; Country_Code__c &lt;&gt; &apos;US&apos;</errorConditionFormula>
+        <errorMessage>Federal Contract can only be selected when the country is &apos;United States&apos;</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Gulf_Coast_Region_Only_temp_rule</fullName>
+        <active>false</active>
+        <errorConditionFormula>CONTAINS(&quot;AK:WA:OR:ID:MT:ND:SD:WY:BC:YT:NT:NU:AB:SK:MB:UT:AZ:NM:OK:TX:AR:MS:LA:CO&quot;,State_Province_Emirate__r.State_Code__c )==False</errorConditionFormula>
+        <errorDisplayField>State_Province_Emirate__c</errorDisplayField>
+        <errorMessage>Contract Reviews can currently only be submitted for the USA and Canada West / Gulf Coast Region.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>State_Required_for_AUS_US_CAN</fullName>
+        <active>true</active>
+        <description>Due to the queue assignment rules for Australian, US and Canaidian legal team queues being based off State/prov the state is required for these countries</description>
+        <errorConditionFormula>CONTAINS(&quot;AU:CA:US&quot;,Country_Code__c) 
+&amp;&amp;   ISBLANK(State_Province_Emirate__c)</errorConditionFormula>
+        <errorMessage>When the &apos;Country&apos; field is Australia, Canada or United States a &apos;State/Province/Emirate&apos; is required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>US_Canada_Only_temp_rule</fullName>
+        <active>false</active>
+        <errorConditionFormula>CONTAINS(&quot;US:CA&quot;,Country__r.Country_Code__c ) == FALSE</errorConditionFormula>
+        <errorDisplayField>Country__c</errorDisplayField>
+        <errorMessage>Contract Reviews can currently only be submitted for the USA and Canada West / Gulf Coast Region</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Search</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Search</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/_ui/search/ui/UnifiedSearchResults?offset=0&amp;fpg=-7y2usgmu&amp;str=cr&amp;sen=&amp;fen=a1s&amp;initialViewMode=detail&amp;srtClmn=00Ne0000001BBE8&amp;srtOrd=1&amp;sFltrFields=NAMEContract_Review__c%2C00Ne0000001BBEJEA4Contract_Review__c%2C00Ne0000001BBE8EAOContract_Review__c%2C&amp;relatedListId=Contract_Review__c&amp;aId=_1416360456715&amp;setupid=CustomObjects</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Submit_to_Contract_Reviewer</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Submit Contract Review</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/connection.js&quot;)}
+
+if (&apos;{!Contract_Review__c.Status_Review__c}&apos; == &apos;Pending Submit&apos;){
+  
+    // CHECK IF THERE ARE ANY ATTACHMENTS
+  var resultcnt= sforce.connection.query(&quot;SELECT count() FROM Attachment WHERE ParentId = &apos;{!Contract_Review__c.Id}&apos;&quot;);
+  
+  var answer = true;
+  if (resultcnt.size == 0 ){
+      answer = confirm(&quot;You have not added any attachments, are you sure you wish to submit this review?&quot;);
+  }
+
+  if (answer){
+    var crObj = new sforce.SObject(&quot;Contract_Review__c&quot;);
+    crObj.id = &apos;{!Contract_Review__c.Id}&apos;; /* Need Id field to update Contract_Review*/
+    crObj.Submitted__c = true; /* Change status */
+
+    /* update method takes an array of Cases; init to 1 element - &apos;caseObj&apos; */
+    var result = sforce.connection.update([crObj]);
+
+    if (result[0].success == &apos;false&apos;) {
+      alert(&apos;There are validation errors, please edit and resave this contract review.&apos;);
+    }
+    else {
+      alert(&apos;Submission completed&apos;);
+      location.reload(true); /* redisplay the detail page */
+    }
+  }
+  
+}
+else{
+    alert(&apos;This Contract Review has already been submitted&apos;);
+}</url>
+    </webLinks>
+</CustomObject>
