@@ -68,7 +68,7 @@ public with sharing class ContractReviewTest {
     
     
     @isTest 
-    private static void TestLegalFlagTrigger() 
+    private static void TestLegalFlagTrigger1()
     {
     	
       StaticHelper.excludeIt = false;
@@ -76,42 +76,86 @@ public with sharing class ContractReviewTest {
         
         // Test a 'Salesforce' licence user 
       User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'salesforce' and Legal__c = false and isactive = true limit 1 ];
-      user.Legal__c = true;  
+      
+      Test.startTest();
+      user.Legal__c = false;  
       update user ;
+      Test.stopTest();
+
 
       Integer i = [SELECT COUNT()  From PermissionSetAssignment p
       where p.PermissionSet.Name = 'Contract_Reviewer_SF' and p.AssigneeId  = :user.Id];
       //There should be a Contract_Reviewer_SF PermissionSet for the user
-      System.assert(i == 1);
-
-      user.Legal__c = false; 
-      update user ;
-
-      i = [SELECT COUNT()  From PermissionSetAssignment p
-      where p.PermissionSet.Name = 'Contract_Reviewer_SF' and p.AssigneeId  = :user.Id];
-      //There should NOT be a Contract_Reviewer_SF PermissionSet for the user
       System.assert(i == 0);
 
+     
+
+    }
+
+
+    @isTest 
+    private static void TestLegalFlagTrigger2()
+    {
+      StaticHelper.excludeIt = false;
+
+      User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'salesforce' and Legal__c = true and isactive = true limit 1 ];
+
+      Test.startTest();
+
+      user.Nationality__c = 'Australia';
+      user.Legal__c = false; 
+      update user ;        
+      Test.stopTest();
+
+      Integer i = [SELECT COUNT()  From PermissionSetAssignment p
+      where p.PermissionSet.Name = 'Contract_Reviewer_SF' and p.AssigneeId  = :user.Id];
+      //There should NOT be a Contract_Reviewer_SF PermissionSet for the user
+      System.assert(i == 0, i);
+
+    }
+
+
+    @isTest 
+    private static void TestLegalFlagTrigger3()
+    {
+      StaticHelper.excludeIt = false;
       //Test a 'Force.com - App Subscription' licence user 
-      user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = false and isactive = true limit 1 ];
+      User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = false and isactive = true limit 1 ];
+      
+      Test.startTest();
       user.Legal__c = true; 
       update user ;
+      Test.stopTest();
 
-      i = [SELECT COUNT()  From PermissionSetAssignment p
+      Integer i = [SELECT COUNT()  From PermissionSetAssignment p
       where p.PermissionSet.Name = 'Contract_Reviewer' and p.AssigneeId  = :user.Id];
 
       //There should be a Contract_Reviewer_SF PermissionSet for the user
       System.assert(i == 1);
+    }
+
+    @isTest 
+    private static void TestLegalFlagTrigger4()
+    {
+      StaticHelper.excludeIt = false;
+      //Test a 'Force.com - App Subscription' licence user 
+      User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = true and isactive = true limit 1 ];
+   
+
+
+      Test.startTest();      
+      user.Nationality__c = 'Australia';
       user.Legal__c = false; 
       update user ;
 
-      i = [SELECT COUNT()  From PermissionSetAssignment p
+      Test.stopTest();
+
+      Integer i = [SELECT COUNT()  From PermissionSetAssignment p
       where p.PermissionSet.Name = 'Contract_Reviewer' and p.AssigneeId  = :user.Id];
       //There should NOT be a Contract_Reviewer_SF PermissionSet for the user
-      System.assert(i == 0);
-
+      System.assert(i == 0, i);
     }
-    
+
     
     @isTest 
     private static void TestInvocableMethodContractReviewAssign() 

@@ -15,7 +15,7 @@
   				     
   Date        :   17 Feb, 2015 
 
-  Update : 5 May 2015 - add eco permissions sets 
+  Update : 5 May 2015 - add eco permissions sets.
 
 ********************************************************************/
 trigger User_ContractReviewPermissionSet on User (after update) {
@@ -159,12 +159,10 @@ trigger User_ContractReviewPermissionSet on User (after update) {
 																     										 OR PermissionSetId = :permissionSetSF.Id
 																     										 ) and AssigneeId IN :userlistIdsRemove]);
 		
-		//try{
-			delete permissionSetAssignmentToRemove;
-			insert permissionSetAssignmentToUpdate;
-		//}
-		//catch(Exception e)
-		//{}
+		System.enqueueJob(new UserPermissionAssignmentUpdateQueue(permissionSetAssignmentToRemove,permissionSetAssignmentToUpdate));
+		//delete permissionSetAssignmentToRemove;
+		//insert permissionSetAssignmentToUpdate;
+		
 	}
 
 
