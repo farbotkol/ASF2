@@ -53,21 +53,6 @@
         .publishercontainer .bottomBar{
             height:45px !important;
         }
-        
-        /* added by ML */
-
-        .dropdown-menu-right.dropdown-menu.with-arrow:after {
-            margin: -6px 55px 0 0;
-        }
-
-        .dropdown-menu-right.dropdown-menu.with-arrow:before {
-            margin: -7px 55px 0 0;
-        }
-
-        .dropdown-menu-right {
-            right: -40px;
-        }
-
 
     </style>
 
@@ -112,7 +97,7 @@
                                             <td><a href="{!alert.LinkToRecord__c}"><apex:outputText value="60316205" /></a></td>
                                             <td><a href="{!alert.LinkToRecord__c}"><apex:outputField value="{!alert.Subject__c}" /></a></td>
                                             <td><apex:outputText value="Financial" /></td>
-                                            <td><apex:outputField value="{!alert.LongDescription__c}" /></td>
+                                            <td><apex:outputField value="{!alert.LongDescriptionMaxLength__c}" /></td>
                                             <td><apex:outputText value="Comment" /></td>
                                         </tr>                                       
 
@@ -352,7 +337,6 @@
                         </li>
 
                         <li class="dropdown hidden-xs">
-                            <!--<a style="height:24px;" href="/setup/ui/recordtypeselect.jsp?ent=Opportunity" target="_blank"><button class="btn btn-success" style="margin:12px 0 0 0;">New Opportunity</button></a>-->
                             <a style="height:24px;" href="{!URLFOR($action.opportunity.new, null)}" target="_blank"><button class="btn btn-success" style="margin:12px 0 0 0;">New Opportunity</button></a>
                         </li>
 
@@ -360,6 +344,9 @@
                     <ul class="nav navbar-top-links pull-right">
                         <!--User dropdown-->
                         <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                        <!--<li><a href="/apex/ECO_Portal"><img src="{!URLFOR($Resource.ECO_SmartSearchAssets, 'ss_homeIcon.png')}" /></a></li>
+                        <li><a href="/apex/ECO_SmartSearch"><img src="{!URLFOR($Resource.ECO_SmartSearchAssets, 'ss_searchIcon.png')}" /></a></li>-->
+
                         <li class="hidden-xs add-tooltip AWAN"  data-placement="bottom" data-toggle="tooltip" data-original-title="Help" >
                             <a href="http://my.aecomnet.com/Intranet/About/Delivery%20Excellence/Ecosystem/Training" target="_blank"><i class="fa fa-question-circle"></i></a>
                         </li>
@@ -442,7 +429,7 @@
                         <apex:repeat value="{!tickerMessages}" var="message" >
                           <figure class="item">
                             <h4 id="tickerHeader">{!message.Subject__c}</h4>
-                            <apex:outputText value="{!message.LongDescription__c}" />
+                            <apex:outputText value="{!message.LongDescriptionMaxLength__c}" />
                           </figure>
                         </apex:repeat>
 
@@ -490,7 +477,7 @@
                                                     <h2 style="line-height:200%;">
                                                         <apex:outputText value="{!feedItem.Subject__c}" />
                                                     </h2>
-                                                    <apex:outputText value="{!feedItem.LongDescription__c}" />
+                                                    <apex:outputText value="{!feedItem.LongDescriptionMaxLength__c}" />
                                                     <br />
                                                     <apex:outputPanel layout="none" rendered="{!feedItem.LinkToRecord__c != ''}">
                                                         <a href="{!feedItem.LinkToRecord__c}" class="linkFix hidden-xs" target="_newsFeedItem{!feedItem.Id}">

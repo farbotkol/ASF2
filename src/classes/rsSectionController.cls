@@ -1,5 +1,5 @@
 public virtual with sharing class rsSectionController {
-	
+    
     public rsProfile profile {get; set;}
 
     public rsProfilePart CurrentPart {get; set;}
@@ -7,15 +7,15 @@ public virtual with sharing class rsSectionController {
 
     protected String mRecordType;
     protected Boolean mIsError;
-	
-	private Boolean mEditMode;
-	private Boolean mListMode;
-	private Boolean mViewMode;
-	private Boolean mCanEdit;
+    
+    private Boolean mEditMode;
+    private Boolean mListMode;
+    private Boolean mViewMode;
+    private Boolean mCanEdit;
 
 
-	//--PAGINATION VARIABLES
-	private Integer mViewLimit;
+    //--PAGINATION VARIABLES
+    private Integer mViewLimit;
     private final Integer RESULT_LIMIT = 10;
     public Integer PageNum {get; set;}
     public Integer TotalParts {get; set;}
@@ -27,39 +27,39 @@ public virtual with sharing class rsSectionController {
     private String mLastSortedBy;
     private String mSortOrder;
 
-	public virtual PageReference editPart() {
-    	for(rsProfilePart part : profile.getProfileParts()) {
-           	if(part.getId() == ApexPages.currentPage().getParameters().get('partId')) {
-            	if(part.getObj().get('Status__c') != rsProfilePart.S_INREVIEW || (UserInfo.getUserId() == profile.getProfileReviewer() ) ){
-            		enableEditMode();
+    public virtual PageReference editPart() {
+        for(rsProfilePart part : profile.getProfileParts()) {
+            if(part.getId() == ApexPages.currentPage().getParameters().get('partId')) {
+                if(part.getObj().get('Status__c') != rsProfilePart.S_INREVIEW || (UserInfo.getUserId() == profile.getProfileReviewer() ) ){
+                    enableEditMode();
                     mOldPart = part;
-	            	CurrentPart = new rsProfilePart((rs_Profile_Part__c)part.getObj().clone(true,true,false,false));
-            	} else {
-    				ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'This record is under review and is not currently editable'));
-           		}
-           		break;
-    		}
-		}
+                    CurrentPart = new rsProfilePart((rs_Profile_Part__c)part.getObj().clone(true,true,false,false));
+                } else {
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'This record is under review and is not currently editable'));
+                }
+                break;
+            }
+        }
         System.assert(CurrentPart != null);
         return null;
-	}
+    }
 
-	public virtual PageReference newPart() {
+    public virtual PageReference newPart() {
         mIsError = false;
-		System.assert(mRecordType != null);
-		CurrentPart = new rsProfilePart(profile.getId(), mRecordType);
+        System.assert(mRecordType != null);
+        CurrentPart = new rsProfilePart(profile.getId(), mRecordType);
         CurrentPart.setInitialLocale(UserInfo.getLocale() );
         enableEditMode();
         return null;
-	}
+    }
 
-	public virtual PageReference cancelPart() {
+    public virtual PageReference cancelPart() {
         mIsError = false;
-		CurrentPart = null;
+        CurrentPart = null;
         mOldPart = null;
         enableListMode();
         return null;
-	}
+    }
     
     //Returns true if there is anything at all in
     //the sfone query paramter
@@ -85,7 +85,7 @@ public virtual with sharing class rsSectionController {
 
     }
 
-	public virtual PageReference savePart() {
+    public virtual PageReference savePart() {
         mIsError = false;
         //First check if their profile has been locked while they were editing this part, unless they are a content manager that locked it, in which case they can save just fine
         User profileRequery = getUser();
@@ -97,17 +97,17 @@ public virtual with sharing class rsSectionController {
             return null;
         }
 
-		//check to make sure this part isn't already in the list otherwise we get display duplicates on edit
-		Boolean isExistingPart = false;
-		Integer i = -1;		
-		for(rsProfilePart part : profile.getProfileParts()){
-			i++;
+        //check to make sure this part isn't already in the list otherwise we get display duplicates on edit
+        Boolean isExistingPart = false;
+        Integer i = -1;     
+        for(rsProfilePart part : profile.getProfileParts()){
+            i++;
             //If it's our current part OR it's our previous part (this case happens when we save and validation fails and our CurrentPart doesn't have an ID yet but is still should be existing part)
-			if(part.getId() == CurrentPart.getId() || (CurrentPart.getId() == null && mOldPart != null && part.getId() == mOldPart.getId()) ){
-				isExistingPart = true;				
-				break;
-			}
-		}
+            if(part.getId() == CurrentPart.getId() || (CurrentPart.getId() == null && mOldPart != null && part.getId() == mOldPart.getId()) ){
+                isExistingPart = true;              
+                break;
+            }
+        }
 
         //If the status is pending then we'll just save our changes on the old record, no reason to clone
         if(isExistingPart && !mOldPart.getIsPendingOrInReview() ){
@@ -116,7 +116,7 @@ public virtual with sharing class rsSectionController {
             CurrentPart = new rsProfilePart(clone);
         }
         setFieldsForSave(CurrentPart,profileRequery);
-		try {
+        try {
             CurrentPart.save();
         } catch (DmlException ex) { 
             ApexPages.addMessages(ex);
@@ -154,7 +154,7 @@ public virtual with sharing class rsSectionController {
         updateUserProfileTimestamps();
         
         return null;
-	}
+    }
 
     //---This will update the user timestamps
     public void updateUserProfileTimestamps()
@@ -165,10 +165,6 @@ public virtual with sharing class rsSectionController {
         if (profile.getId() == UserInfo.getUserId()) 
         {
             targetUser.Last_User_Profile_Update__c = DateTime.now();
-        }
-        else
-        {
-            targetUser.Last_CM_Profile_Update__c = DateTime.now();
         }
 
         try {
@@ -217,7 +213,7 @@ public virtual with sharing class rsSectionController {
         return null;
     }
 
-	public virtual PageReference deletePart() {
+    public virtual PageReference deletePart() {
         List<rsProfilePart> parts = profile.getProfileParts();
         rsProfilePart part = null;
         Boolean keepUserLocked = false;
@@ -254,7 +250,7 @@ public virtual with sharing class rsSectionController {
             getPreviousPage();
         }
         return null;
-	}
+    }
 
     public virtual PageReference viewPart(){
         for(rsProfilePart part : profile.getProfileParts()) {
@@ -268,69 +264,69 @@ public virtual with sharing class rsSectionController {
         return null;
     }
 
-	public List<rsProfilePart> getParts() {
-		return profile.getPartsByType(mRecordType);
-	}
+    public List<rsProfilePart> getParts() {
+        return profile.getPartsByType(mRecordType);
+    }
 
-	public rsSectionController() {
-		mEditMode = false;
-		mViewMode = false;
-		mListMode = true;
+    public rsSectionController() {
+        mEditMode = false;
+        mViewMode = false;
+        mListMode = true;
         mIsError = false;
 
-		//--Pagination stuff
-		ViewIndex = 0;
+        //--Pagination stuff
+        ViewIndex = 0;
         mViewLimit = RESULT_LIMIT;        
         if(PageNum == null){
             PageNum = 1;
         }
-	}
+    }
 
-	public void enableViewMode() {
-		mViewMode = true;
-		mEditMode = false;
-		mListMode = false;
-	}
+    public void enableViewMode() {
+        mViewMode = true;
+        mEditMode = false;
+        mListMode = false;
+    }
 
-	public void enableEditMode() {
-		mViewMode = false;
-		mEditMode = true;
-		mListMode = false;
-	}
+    public void enableEditMode() {
+        mViewMode = false;
+        mEditMode = true;
+        mListMode = false;
+    }
 
-	public void enableListMode() {
-		mViewMode = false;
-		mEditMode = false;
-		mListMode = true;
-	}
+    public void enableListMode() {
+        mViewMode = false;
+        mEditMode = false;
+        mListMode = true;
+    }
 
-	public Boolean getIsViewMode() {
-		return mViewMode;
-	}
+    public Boolean getIsViewMode() {
+        return mViewMode;
+    }
 
-	public Boolean getIsListMode() {
-		return mListMode;
-	}
+    public Boolean getIsListMode() {
+        return mListMode;
+    }
 
-	public Boolean getIsEditMode() {
-		return mEditMode;
-	}
+    public Boolean getIsEditMode() {
+        return mEditMode;
+    }
 
-	/* A user can edit if they are one of the following
+    /* A user can edit if they are one of the following
     - A Content Manager
-	- The user that this profile is for (self)
-	- The proxy for the user this profile is for (proxy)
+    - The user that this profile is for (self)
+    - The proxy for the user this profile is for (proxy)
     AND
     The profile isn't locked by a CM (Is_Profile_Locked__c)
 
     OR
     if the profile is locked and the current viewer is the current assignee
-	*/
-	public Boolean getCanEdit() {
+    */
+    public Boolean getCanEdit() {
         mCanEdit =  (   (
                             Profile_Info__c.getInstance().Is_Content_Manager__c 
-            				|| ( UserInfo.getUserId() == profile.getId()	)
-            				|| ( UserInfo.getUserId() == profile.getObj().get('Profile_Proxy__c') )
+                            || ( UserInfo.getUserId() == profile.getId()    )
+                            || ( UserInfo.getUserId() == profile.getObj().get('Profile_Proxy__c') )
                         ) 
                         &&
                         ( !profile.getUser().Is_Profile_Locked__c )
@@ -340,11 +336,11 @@ public virtual with sharing class rsSectionController {
                         profile.getUser().Is_Profile_Locked__c 
                         && (UserInfo.getUserId() == profile.getObj().get('Profile_Reviewer__c') )
                     );
-		return mCanEdit;
-	}
+        return mCanEdit;
+    }
 
     //If the user saving is a content manager then we don't need CM review
-	public Boolean isReviewable(String type, User currentUser) {
+    public Boolean isReviewable(String type, User currentUser) {
         rs_Review_Exception__c cmException 
             = rs_Review_Exception__c.getValues(currentUser.Geography__c);
 
@@ -354,6 +350,7 @@ public virtual with sharing class rsSectionController {
             return false;
         } 
 
+        if (Profile_Info__c.getInstance().Is_Content_Manager__c) return false;  //---Skip Review if they are a Content Manager
 
         rsProfile currUser = new rsProfile(currentUser);
         Boolean val = false;
@@ -426,7 +423,7 @@ public virtual with sharing class rsSectionController {
         return viewParts;
     }
 
-    public Integer getNumberOfPages(){    	               
+    public Integer getNumberOfPages(){                     
         return (Integer)Math.ceil((1.0*TotalParts)/RESULT_LIMIT);
     }
 
