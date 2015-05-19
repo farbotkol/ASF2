@@ -1,5 +1,5 @@
 public virtual with sharing class rsSectionController {
-    
+
     public rsProfile profile {get; set;}
 
     public rsProfilePart CurrentPart {get; set;}
@@ -7,7 +7,7 @@ public virtual with sharing class rsSectionController {
 
     protected String mRecordType;
     protected Boolean mIsError;
-    
+
     private Boolean mEditMode;
     private Boolean mListMode;
     private Boolean mViewMode;
@@ -28,14 +28,15 @@ public virtual with sharing class rsSectionController {
     private String mSortOrder;
 
     public virtual PageReference editPart() {
-        for(rsProfilePart part : profile.getProfileParts()) {
-            if(part.getId() == ApexPages.currentPage().getParameters().get('partId')) {
-                if(part.getObj().get('Status__c') != rsProfilePart.S_INREVIEW || (UserInfo.getUserId() == profile.getProfileReviewer() ) ){
+        for (rsProfilePart part : profile.getProfileParts()) {
+            if (part.getId() == ApexPages.currentPage().getParameters().get('partId')) {
+                if (part.getObj().get('Status__c') != rsProfilePart.S_INREVIEW || (UserInfo.getUserId() == profile.getProfileReviewer() ) ) {
                     enableEditMode();
                     mOldPart = part;
-                    CurrentPart = new rsProfilePart((rs_Profile_Part__c)part.getObj().clone(true,true,false,false));
-                } else {
-                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR,'This record is under review and is not currently editable'));
+                    CurrentPart = new rsProfilePart((rs_Profile_Part__c)part.getObj().clone(false, true, false, false));
+                }
+                else {
+                    ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'This record is under review and is not currently editable'));
                 }
                 break;
             }
@@ -60,28 +61,28 @@ public virtual with sharing class rsSectionController {
         enableListMode();
         return null;
     }
-    
+
     //Returns true if there is anything at all in
     //the sfone query paramter
     /*public static Boolean getIsSF1(){
         return !rsStringUtil.isNullOrEmpty(
                     ApexPages.currentPage().getParameters().get('sfone')
-                ); 
-       
+                );
+
     }*/
 
-    public Boolean getIsSF1(){
+    public Boolean getIsSF1() {
         return !rsStringUtil.isNullOrEmpty(
-                    ApexPages.currentPage().getParameters().get('sfone')
-                ); 
-       
+                   ApexPages.currentPage().getParameters().get('sfone')
+               );
+
     }
 
     protected virtual User getUser() {
 
         return [Select Id, Is_Profile_Locked__c, Geography__c,
-                       Date_Time_Sent_for_Review__c, Profile_Reviewer__c, Status__c 
-                       from User where id = :profile.getId()].get(0);
+                Date_Time_Sent_for_Review__c, Profile_Reviewer__c, Status__c
+                from User where id = :profile.getId()].get(0);
 
     }
 
@@ -91,34 +92,35 @@ public virtual with sharing class rsSectionController {
         User profileRequery = getUser();
         String oldStatus = CurrentPart.getStatus();
 
-        if(profileRequery.Profile_Reviewer__c != UserInfo.getUserId() && profileRequery.Is_Profile_Locked__c ) {      
+        if (profileRequery.Profile_Reviewer__c != UserInfo.getUserId() && profileRequery.Is_Profile_Locked__c ) {
             String lockerUrl = 'https://' + ApexPages.currentPage().getHeaders().get('Host') + '/' + profile.getUser().Profile_Reviewer__c;
-            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.WARNING, Label.Profile_Locked_By_CM + ' <a target="_blank" href="' + lockerUrl + '">' + profile.getUser().Profile_Reviewer__r.Name +' </a>'));
+            ApexPages.addMessage(new ApexPages.message(ApexPages.severity.WARNING, Label.Profile_Locked_By_CM + ' <a target="_blank" href="' + lockerUrl + '">' + profile.getUser().Profile_Reviewer__r.Name + ' </a>'));
             return null;
         }
 
         //check to make sure this part isn't already in the list otherwise we get display duplicates on edit
         Boolean isExistingPart = false;
-        Integer i = -1;     
-        for(rsProfilePart part : profile.getProfileParts()){
+        Integer i = -1;
+        for (rsProfilePart part : profile.getProfileParts()) {
             i++;
             //If it's our current part OR it's our previous part (this case happens when we save and validation fails and our CurrentPart doesn't have an ID yet but is still should be existing part)
-            if(part.getId() == CurrentPart.getId() || (CurrentPart.getId() == null && mOldPart != null && part.getId() == mOldPart.getId()) ){
-                isExistingPart = true;              
+            if (part.getId() == CurrentPart.getId() || (CurrentPart.getId() == null && mOldPart != null && part.getId() == mOldPart.getId()) ) {
+                isExistingPart = true;
                 break;
             }
         }
 
         //If the status is pending then we'll just save our changes on the old record, no reason to clone
-        if(isExistingPart && !mOldPart.getIsPendingOrInReview() ){
-            rs_Profile_Part__c clone = (rs_Profile_Part__c)CurrentPart.getObj().clone(false,true,false,false);
-            clone.Previous_Part__c = CurrentPart.getId();   
+        if (isExistingPart && !mOldPart.getIsPendingOrInReview() ) {
+            rs_Profile_Part__c clone = (rs_Profile_Part__c)CurrentPart.getObj().clone(false, true, false, false);
+            clone.Previous_Part__c = CurrentPart.getId();
             CurrentPart = new rsProfilePart(clone);
         }
-        setFieldsForSave(CurrentPart,profileRequery);
+        setFieldsForSave(CurrentPart, profileRequery);
         try {
             CurrentPart.save();
-        } catch (DmlException ex) { 
+        }
+        catch (DmlException ex) {
             ApexPages.addMessages(ex);
             CurrentPart.setStatus(oldStatus);
             System.debug ('!!Exception on profile part save. ' + ex + ex.getStackTraceString());
@@ -126,50 +128,53 @@ public virtual with sharing class rsSectionController {
         }
 
         //Now that we've saved it, we want to put the forward pointer on the old part (if it already existed)
-        if(isExistingPart && !mOldPart.getIsPendingOrInReview()) {
+        if (isExistingPart && !mOldPart.getIsPendingOrInReview()) {
             profile.getProfileParts().remove(i);
-            mOldPart.setNextPart(CurrentPart.getId() );
-            //if we have already approved our current part (either CM saved it or non reviewable, then archive the old one)
-            if(CurrentPart.getStatus() == rsProfilePart.S_APPROVED) {
-                mOldPart.setStatus(rsProfilePart.S_ARCHIVED);
+            if (mOldPart.getId() != CurrentPart.getId()) {
+                mOldPart.setNextPart(CurrentPart.getId() );
+                //if we have already approved our current part (either CM saved it or non reviewable, then archive the old one)
+                if (CurrentPart.getStatus() == rsProfilePart.S_APPROVED) {
+                    mOldPart.setStatus(rsProfilePart.S_ARCHIVED);
+                }
             }
             try {
                 mOldPart.save();
-            } catch (DmlException ex) { 
+            }
+            catch (DmlException ex) {
                 ApexPages.addMessages(ex);
                 System.debug ('!!Exception on old profile part save. ' + ex + ex.getStackTraceString());
                 return null;
             }
         }
 
-        if(!isExistingPart || (isExistingPart && !mOldPart.getIsPendingOrInReview() ) ) {
+        if (!isExistingPart || (isExistingPart && !mOldPart.getIsPendingOrInReview() ) ) {
             profile.getProfileParts().add(CurrentPart);
-        } else { //Else we'll just replace the object in the list with updated object
-            profile.getProfileParts().set(i,CurrentPart);
+        }
+        else {   //Else we'll just replace the object in the list with updated object
+            profile.getProfileParts().set(i, CurrentPart);
         }
 
         mOldPart = null;
         enableListMode();
 
         updateUserProfileTimestamps();
-        
+
         return null;
     }
 
     //---This will update the user timestamps
-    public void updateUserProfileTimestamps()
-    {
+    public void updateUserProfileTimestamps() {
         //---Update last modified data on User
         User targetUser = [Select Id, Last_User_Profile_Update__c, Last_CM_Profile_Update__c from User where id = :profile.getId()];
 
-        if (profile.getId() == UserInfo.getUserId()) 
-        {
+        if (profile.getId() == UserInfo.getUserId()) {
             targetUser.Last_User_Profile_Update__c = DateTime.now();
         }
 
         try {
             update targetUser;
-        } catch (DmlException ex) { 
+        }
+        catch (DmlException ex) {
             ApexPages.addMessages(ex);
             System.debug ('!!Exception on profile part save, User DateTime update. ' + ex + ex.getStackTraceString());
         }
@@ -179,13 +184,14 @@ public virtual with sharing class rsSectionController {
         setTrackingFields();
         if (isReviewable(mRecordType, currentUser)) {
             profilePart.setDateTimeSentForReview( Datetime.now() );
-            if(currentUser.Date_Time_Sent_for_Review__c == null) {
+            if (currentUser.Date_Time_Sent_for_Review__c == null) {
                 profile.setDateTimeSentforReview(Datetime.now());
                 profile.setStatus(rsProfile.S_PENDING);
                 profile.save();
             }
             profilePart.setStatus(rsProfilePart.S_PENDING);
-        } else {
+        }
+        else {
             rsApprovalUtil.approvePart((rs_Profile_Part__c)profilePart.getObj(), profile);
         }
     }
@@ -193,13 +199,15 @@ public virtual with sharing class rsSectionController {
     public void setTrackingFields() {
         profile.setProfileUpdated(true);
         profile.setDateTimeLastUpdated(DateTime.now());
-        if(UserInfo.getUserId() == profile.getId() ) {
+        if (UserInfo.getUserId() == profile.getId() ) {
             profile.setLastUpdatedBy(Label.Owner);
-        } else if (UserInfo.getUserId() == profile.getProfileProxy()) {
+        }
+        else if (UserInfo.getUserId() == profile.getProfileProxy()) {
             profile.setLastUpdatedBy(Label.Profile_Proxy);
-        } else if (Profile_Info__c.getInstance().Is_Content_Manager__c) {
+        }
+        else if (Profile_Info__c.getInstance().Is_Content_Manager__c) {
             profile.setLastUpdatedBy(Label.Content_Manager);
-        } 
+        }
         profile.save();
     }
 
@@ -207,7 +215,7 @@ public virtual with sharing class rsSectionController {
     public PageReference saveAndApprove() {
         savePart();
         //only continue if there hasn't been an error
-        if(!mIsError) {  
+        if (!mIsError) {
             approvePart();
         }
         return null;
@@ -218,10 +226,10 @@ public virtual with sharing class rsSectionController {
         rsProfilePart part = null;
         Boolean keepUserLocked = false;
         Integer partIndex = null;
-        for(Integer i = 0; i < parts.size(); i++) {
-            if(parts[i].getId() == ApexPages.currentPage().getParameters().get('partId')) {
+        for (Integer i = 0; i < parts.size(); i++) {
+            if (parts[i].getId() == ApexPages.currentPage().getParameters().get('partId')) {
                 partIndex = i;
-                if(profile.getStatus() == rsProfile.S_INREVIEW || profile.getStatus() == rsProfile.S_PENDING) {
+                if (profile.getStatus() == rsProfile.S_INREVIEW || profile.getStatus() == rsProfile.S_PENDING) {
                     keepUserLocked = profile.shouldProfileStayLocked( parts[i].getId() );
                 }
                 break;
@@ -238,7 +246,7 @@ public virtual with sharing class rsSectionController {
         }
 
         //If this part is (pending or in review) and it has a previously approved part, before we delete this one, we archive the old one, so neither will show up in the list.
-        if( (part.getStatus() == rsProfilePart.S_PENDING || part.getStatus() == rsProfilePart.S_INREVIEW) && (part.getPreviousPart() != null) ) {
+        if ( (part.getStatus() == rsProfilePart.S_PENDING || part.getStatus() == rsProfilePart.S_INREVIEW) && (part.getPreviousPart() != null) ) {
             rsProfilePart previousPart = new rsProfilePart( (rs_Profile_Part__c)rsProfilePart.find.byId(part.getPreviousPart()).getObj());
             previousPart.setStatus(rsProfilePart.S_ARCHIVED);
             previousPart.save();
@@ -246,17 +254,17 @@ public virtual with sharing class rsSectionController {
         part.destroy();
         enableListMode();
         //Go back to Previous Page if current page has all parts deleted
-        if(getViewParts().size() == 0) {
+        if (getViewParts().size() == 0) {
             getPreviousPage();
         }
         return null;
     }
 
-    public virtual PageReference viewPart(){
-        for(rsProfilePart part : profile.getProfileParts()) {
-            if(part.getId() == ApexPages.currentPage().getParameters().get('partId')) {
-                    enableViewMode();
-                    CurrentPart = part;        
+    public virtual PageReference viewPart() {
+        for (rsProfilePart part : profile.getProfileParts()) {
+            if (part.getId() == ApexPages.currentPage().getParameters().get('partId')) {
+                enableViewMode();
+                CurrentPart = part;
                 break;
             }
         }
@@ -276,8 +284,8 @@ public virtual with sharing class rsSectionController {
 
         //--Pagination stuff
         ViewIndex = 0;
-        mViewLimit = RESULT_LIMIT;        
-        if(PageNum == null){
+        mViewLimit = RESULT_LIMIT;
+        if (PageNum == null) {
             PageNum = 1;
         }
     }
@@ -324,16 +332,16 @@ public virtual with sharing class rsSectionController {
     */
     public Boolean getCanEdit() {
         mCanEdit =  (   (
-                            Profile_Info__c.getInstance().Is_Content_Manager__c 
+                            Profile_Info__c.getInstance().Is_Content_Manager__c
                             || ( UserInfo.getUserId() == profile.getId()    )
                             || ( UserInfo.getUserId() == profile.getObj().get('Profile_Proxy__c') )
-                        ) 
+                        )
                         &&
                         ( !profile.getUser().Is_Profile_Locked__c )
                     )
                     ||
                     (
-                        profile.getUser().Is_Profile_Locked__c 
+                        profile.getUser().Is_Profile_Locked__c
                         && (UserInfo.getUserId() == profile.getObj().get('Profile_Reviewer__c') )
                     );
         return mCanEdit;
@@ -341,28 +349,30 @@ public virtual with sharing class rsSectionController {
 
     //If the user saving is a content manager then we don't need CM review
     public Boolean isReviewable(String type, User currentUser) {
-        rs_Review_Exception__c cmException 
+        rs_Review_Exception__c cmException
             = rs_Review_Exception__c.getValues(currentUser.Geography__c);
 
         //If we found an exception in custom settings OR if their geography is null and we have a custom setting with "null"
         //then we shouldn't force a review
-        if( cmException != null || ( !String.isNotBlank(currentUser.Geography__c) && rs_Review_Exception__c.getInstance('null') != null ) ) {
+        if ( cmException != null || ( !String.isNotBlank(currentUser.Geography__c) && rs_Review_Exception__c.getInstance('null') != null ) ) {
             return false;
-        } 
+        }
 
-        if (Profile_Info__c.getInstance().Is_Content_Manager__c) return false;  //---Skip Review if they are a Content Manager
+        if (Profile_Info__c.getInstance().Is_Content_Manager__c) {
+            return false;    //---Skip Review if they are a Content Manager
+        }
 
         rsProfile currUser = new rsProfile(currentUser);
         Boolean val = false;
         val =   (
                     type == rsProfilePart.RT_EDUCATION || type == rsProfilePart.RT_PROF_AFFILIATION ||
-                    type == rsProfilePart.RT_TRAINING || type == rsProfilePart.RT_AWARD || 
+                    type == rsProfilePart.RT_TRAINING || type == rsProfilePart.RT_AWARD ||
                     type == rsProfilePart.RT_PUBLICATION || type == rsProfilePart.RT_REGISTRATION ||
                     type == rsProfilePart.RT_CERTIFICATION ||  type == rsProfilePart.RT_PERSONAL ||
                     type == rsProfilePart.RT_REFERENCE ||
                     type == rsPRTeamEmployee.RT_AECOMPROJECT || type == rsPRTeamEmployee.RT_NONAECOMPROJECT
-                ) && 
-                (   
+                ) &&
+                (
                     //If they're a CM saving, then it is not reviewable UNLESS the entire profile is in status in review or pending
                     !Profile_Info__c.getInstance().Is_Content_Manager__c || ( Profile_Info__c.getInstance().Is_Content_Manager__c && (currUser.getStatus() == rsProfile.S_INREVIEW || currUser.getStatus() == rsProfile.S_PENDING) )
                 );
@@ -377,7 +387,7 @@ public virtual with sharing class rsSectionController {
     public virtual PageReference approvePart() {
         String partId = ApexPages.currentPage().getParameters().get('partId');
         for (rsProfilePart profilePart : profile.getProfileParts() ) {
-            if(profilePart.getId() == partId) {
+            if (profilePart.getId() == partId) {
                 rsApprovalUtil.approvePart((rs_Profile_Part__c)profilePart.getObj(), profile);
                 break;
             }
@@ -388,34 +398,34 @@ public virtual with sharing class rsSectionController {
 
     //--PAGINATION METHODS
 
-    public List<rsViewModel> getViewParts(){
+    public List<rsViewModel> getViewParts() {
         String sortField = ApexPages.currentPage().getParameters().get('sortField');
         String pageChange = ApexPages.currentPage().getParameters().get('pageChange');
-        if(sortField == null && pageChange == null){
+        if (sortField == null && pageChange == null) {
             allViewModels = new List<rsViewModel>();
 
-            for(rsProfilePart part : profile.getPartsByType(mRecordType)){
+            for (rsProfilePart part : profile.getPartsByType(mRecordType)) {
                 allViewModels.add(new rsViewModel(part));
             }
-        }    
+        }
 
-        if(TotalParts != null && TotalParts < allViewModels.size()){
+        if (TotalParts != null && TotalParts < allViewModels.size()) {
             //new record was added, update ViewLimit
-            if(TotalParts > 0 && mViewLimit > 0 && mViewLimit < RESULT_LIMIT * PageNum){
-                if( (Math.mod(TotalParts, mViewLimit) < RESULT_LIMIT && Math.mod(TotalParts, mViewLimit) > 0) || (PageNum == getNumberOfPages() && Math.mod(TotalParts, RESULT_LIMIT) > 0) ){  
+            if (TotalParts > 0 && mViewLimit > 0 && mViewLimit < RESULT_LIMIT * PageNum) {
+                if ( (Math.mod(TotalParts, mViewLimit) < RESULT_LIMIT && Math.mod(TotalParts, mViewLimit) > 0) || (PageNum == getNumberOfPages() && Math.mod(TotalParts, RESULT_LIMIT) > 0) ) {
                     ++mViewLimit;
                 }
             }
-        } 
+        }
 
         TotalParts = allViewModels.size();
-        if(TotalParts < mViewLimit || (TotalParts > 0 && mViewLimit == 0) ){
+        if (TotalParts < mViewLimit || (TotalParts > 0 && mViewLimit == 0) ) {
             mViewLimit = TotalParts;
         }
         List<rsViewModel> viewParts = new List<rsViewModel>();
 
-        if(allViewModels != null && !allViewModels.isEmpty()){            
-            for(Integer i = ViewIndex; i < mViewLimit; i++){
+        if (allViewModels != null && !allViewModels.isEmpty()) {
+            for (Integer i = ViewIndex; i < mViewLimit; i++) {
                 viewParts.add(allViewModels[i]);
             }
         }
@@ -423,49 +433,55 @@ public virtual with sharing class rsSectionController {
         return viewParts;
     }
 
-    public Integer getNumberOfPages(){                     
-        return (Integer)Math.ceil((1.0*TotalParts)/RESULT_LIMIT);
+    public Integer getNumberOfPages() {
+        return (Integer)Math.ceil((1.0 * TotalParts) / RESULT_LIMIT);
     }
 
-    public PageReference getNextPage(){
-        
-        if(PageNum < getNumberOfPages()){
+    public PageReference getNextPage() {
+
+        if (PageNum < getNumberOfPages()) {
             PageNum++;
-            if(PageNum == getNumberOfPages()){
-                ViewIndex += RESULT_LIMIT;                                               
-                mViewLimit += (mViewLimit + Math.mod(TotalParts,mViewLimit)); 
-            }else{
+            if (PageNum == getNumberOfPages()) {
                 ViewIndex += RESULT_LIMIT;
-                mViewLimit += RESULT_LIMIT;                
+                mViewLimit += (mViewLimit + Math.mod(TotalParts, mViewLimit));
+            }
+            else {
+                ViewIndex += RESULT_LIMIT;
+                mViewLimit += RESULT_LIMIT;
             }
         }
 
         return null;
     }
 
-    public PageReference getPreviousPage(){            
+    public PageReference getPreviousPage() {
         Integer lastPageNum = PageNum;
-        
-        if(PageNum > 1){
+
+        if (PageNum > 1) {
             PageNum--;
-            if(PageNum > 1 && PageNum < getNumberOfPages()){
-                if(lastPageNum == getNumberOfPages()){
-                    //mViewLimit -= RESULT_LIMIT-1;  
-                    if(Math.mod(TotalParts,mViewLimit) > 0){          
-                        mViewLimit -= (Math.mod(TotalParts,mViewLimit)+1);            
-                    }else if(Math.mod(TotalParts, RESULT_LIMIT) > 0){
-                        mViewLimit -= Math.mod(TotalParts, RESULT_LIMIT);
-                    }else{
-                        mViewLimit -= RESULT_LIMIT;                        
+            if (PageNum > 1 && PageNum < getNumberOfPages()) {
+                if (lastPageNum == getNumberOfPages()) {
+                    //mViewLimit -= RESULT_LIMIT-1;
+                    if (Math.mod(TotalParts, mViewLimit) > 0) {
+                        mViewLimit -= (Math.mod(TotalParts, mViewLimit) + 1);
                     }
-                }else{
-                    mViewLimit -= RESULT_LIMIT;                                        
+                    else if (Math.mod(TotalParts, RESULT_LIMIT) > 0) {
+                        mViewLimit -= Math.mod(TotalParts, RESULT_LIMIT);
+                    }
+                    else {
+                        mViewLimit -= RESULT_LIMIT;
+                    }
+                }
+                else {
+                    mViewLimit -= RESULT_LIMIT;
                 }
                 ViewIndex -= RESULT_LIMIT;
-            }else if(PageNum > 1 && PageNum == getNumberOfPages()){
+            }
+            else if (PageNum > 1 && PageNum == getNumberOfPages()) {
                 ViewIndex -= RESULT_LIMIT;
-                mViewLimit -= (RESULT_LIMIT + Math.mod(TotalParts,mViewLimit));
-            }else if(PageNum == 1){
+                mViewLimit -= (RESULT_LIMIT + Math.mod(TotalParts, mViewLimit));
+            }
+            else if (PageNum == 1) {
                 ViewIndex = 0;
                 mViewLimit = RESULT_LIMIT;
             }
@@ -474,17 +490,17 @@ public virtual with sharing class rsSectionController {
         return null;
     }
 
-    public Integer getViewLimit(){
+    public Integer getViewLimit() {
         return this.mViewLimit;
     }
 
-    public void setViewLimit(Integer viewLimit){
+    public void setViewLimit(Integer viewLimit) {
         mViewLimit = viewLimit;
     }
 
-    public PageReference getFirstPage(){
+    public PageReference getFirstPage() {
 
-        if(PageNum > 1){
+        if (PageNum > 1) {
             ViewIndex = 0;
             mViewLimit = RESULT_LIMIT;
             PageNum = 1;
@@ -493,13 +509,14 @@ public virtual with sharing class rsSectionController {
         return null;
     }
 
-    public PageReference getLastPage(){
+    public PageReference getLastPage() {
 
-        if( PageNum < getNumberOfPages() && (TotalParts - Math.mod(TotalParts,mViewLimit) > 0) ){
-            if(Math.mod(TotalParts,mViewLimit) == 0){
+        if ( PageNum < getNumberOfPages() && (TotalParts - Math.mod(TotalParts, mViewLimit) > 0) ) {
+            if (Math.mod(TotalParts, mViewLimit) == 0) {
                 ViewIndex = TotalParts - RESULT_LIMIT;
-            }else{
-                ViewIndex = TotalParts - Math.mod(TotalParts,mViewLimit);
+            }
+            else {
+                ViewIndex = TotalParts - Math.mod(TotalParts, mViewLimit);
             }
             mViewLimit = TotalParts;
             PageNum = getNumberOfPages();
@@ -508,33 +525,34 @@ public virtual with sharing class rsSectionController {
         return null;
     }
 
-    public Integer getResultLimit(){
+    public Integer getResultLimit() {
         return RESULT_LIMIT;
     }
 
     //--END PAGINATION METHODS
 
     //--START SORTING LOGIC
-    public PageReference sortParts(){
-        String sortField = ApexPages.currentPage().getParameters().get('sortField');        
-        if(sortField != null){
+    public PageReference sortParts() {
+        String sortField = ApexPages.currentPage().getParameters().get('sortField');
+        if (sortField != null) {
 
-            if(this.mSortOrder == null || sortField != this.mLastSortedBy){
-                this.mSortOrder = 'asc'; 
+            if (this.mSortOrder == null || sortField != this.mLastSortedBy) {
+                this.mSortOrder = 'asc';
                 rsViewModel.SortOrder = 'asc';
             }
 
-            rsViewModel.SortField = sortField; 
-            if(this.mLastSortedBy != null){                
-                if(sortField == this.mLastSortedBy){
-                    if(this.mSortOrder == 'asc'){
+            rsViewModel.SortField = sortField;
+            if (this.mLastSortedBy != null) {
+                if (sortField == this.mLastSortedBy) {
+                    if (this.mSortOrder == 'asc') {
                         this.mSortOrder = 'desc';
                         rsViewModel.SortOrder = 'desc';
-                    }else{
+                    }
+                    else {
                         this.mSortOrder = 'asc';
                         rsViewModel.SortOrder = 'asc';
                     }
-                }          
+                }
             }
             allViewModels.sort();
             this.mLastSortedBy = sortField;
@@ -543,21 +561,21 @@ public virtual with sharing class rsSectionController {
     }
     //--END SORTING LOGIC
 
-    public PageReference deleteAttachment(){
+    public PageReference deleteAttachment() {
         String attachmentId = ApexPages.currentPage().getParameters().get('attachmentId');
         String partId = ApexPages.currentPage().getParameters().get('partId');
-        if(attachmentId != null && partId != null){
+        if (attachmentId != null && partId != null) {
             delete [select Id from Attachment where Id = :attachmentId];
-            for(rsProfilePart part : profile.getProfileParts()){
-                if(part.getId() == partId){
+            for (rsProfilePart part : profile.getProfileParts()) {
+                if (part.getId() == partId) {
                     part.setAttachmentId(null);
                     part.setAttachmentName(null);
                     part.save();
                     break;
                 }
-            }            
+            }
         }
-        
+
         return null;
     }
 
