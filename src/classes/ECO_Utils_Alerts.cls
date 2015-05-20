@@ -5,7 +5,7 @@ public without sharing class ECO_Utils_Alerts {
 		List<PortalMessage__c> returnMessages = [SELECT Id 
 														, EndDate__c
 														, LinkToRecord__c
-														, LongDescription__c
+														, LongDescriptionMaxLength__c
 														, StartDate__c
 														, User__c
 														, Name
@@ -30,7 +30,7 @@ public without sharing class ECO_Utils_Alerts {
 						, User__r.Name
 						, Subject__c
 						, StartDate__c
-						, LongDescription__c
+						, LongDescriptionMaxLength__c
 						, LinkToRecord__c
 						, FullImageUrl__c
 						, EndDate__c
@@ -46,10 +46,14 @@ public without sharing class ECO_Utils_Alerts {
 	}
 	
 	public static List<PortalMessage__c> getTickerMessages (Date theDate) {
-		List<PortalMessage__c> returnMessages = [SELECT Id 
+		List<PortalMessage__c> returnMessages = new List<PortalMessage__c>(); 
+		
+		Integer iOrder = 1;
+		
+		for (PortalMessage__c pm : [SELECT Id 
 														, EndDate__c
 														, LinkToRecord__c
-														, LongDescription__c
+														, LongDescriptionMaxLength__c
 														, StartDate__c
 														, User__c
 														, Name
@@ -60,7 +64,11 @@ public without sharing class ECO_Utils_Alerts {
 												WHERE EndDate__c >= :theDate
 													AND StartDate__c <= :theDate
 													AND RecordType.Name = :ECO_Constants.PortalMessage_NewsTickerRecordTypeName
-												ORDER BY CreatedDate DESC];
+												ORDER BY CreatedDate DESC]){
+			pm.Order__c = iOrder;
+			returnMessages.add(pm);
+			iOrder++;
+		}
 		
 		return returnMessages;
 	}

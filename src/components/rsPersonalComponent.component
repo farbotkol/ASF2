@@ -82,8 +82,8 @@
 	            	<tr>
 						<td><apex:outputLabel for="yearsWithOtherFirmsEdit" styleClass="helpButton" value="{!$ObjectType['User'].fields['Years_with_Other_Firms__c'].Label}" ><img src="/s.gif" class="helpOrb" title="{!$ObjectType['User'].fields['Years_with_Other_Firms__c'].inlineHelpText}"/></apex:outputLabel></td> 
 						<td><apex:inputText id="yearsWithOtherFirmsEdit" value="{!ListHead.YearsWithOtherFirms}"/></td>
-						<td></td>						
-						<td></td>						
+						<td><apex:outputLabel for="hrLastCMProfileUpdateEdit" rendered="{!IsContentManager || $ObjectType['User'].fields['Last_CM_Profile_Update__c'].Accessible}" value="{!$ObjectType['User'].fields['Last_CM_Profile_Update__c'].Label}"></apex:outputLabel></td>						
+						<td><apex:inputField id="hrLastCMProfileUpdateEdit" rendered="{!IsContentManager || $ObjectType['User'].fields['Last_CM_Profile_Update__c'].Accessible}" value="{!profile.Obj['Last_CM_Profile_Update__c']}"></apex:inputField></td>						
 	            	</tr>
 	            	<tr>
 	            		<td><apex:outputLabel for="bioEdit" value="{!$ObjectType['User'].fields['Bio__c'].Label}"/></td>	                 			
@@ -149,6 +149,22 @@
 	        				<apex:outputText id="personalEmployeeNumber" rendered="{!IsOwnerOrContentManager || $ObjectType['User'].fields['EmployeeNumber'].Accessible}" value="{!profile.EmployeeNumber}"></apex:outputText>
 	        			</td>
 	        		</tr>
+	        		<apex:outputPanel layout="none" rendered="{!IsContentManager}">
+	        		<tr>
+	        			<td>
+	                        <apex:outputLabel for="hrLastUserProfileUpdate" rendered="{!IsContentManager || $ObjectType['User'].fields['Last_User_Profile_Update__c'].Accessible}" value="{!$ObjectType['User'].fields['Last_User_Profile_Update__c'].Label}"></apex:outputLabel>
+	                    </td>
+	                    <td >
+	                        <apex:outputText id="hrLastUserProfileUpdate" rendered="{!IsContentManager || $ObjectType['User'].fields['Last_User_Profile_Update__c'].Accessible}" value="{!profile.LastUserProfileUpdate}"></apex:outputText>
+	                    </td>
+	        			<td>
+	                        <apex:outputLabel for="hrLastCMProfileUpdate" rendered="{!IsContentManager || $ObjectType['User'].fields['Last_CM_Profile_Update__c'].Accessible}" value="{!$ObjectType['User'].fields['Last_CM_Profile_Update__c'].Label}"></apex:outputLabel>
+	                    </td>
+	                    <td >
+	                        <apex:outputText id="hrLastCMProfileUpdate" rendered="{!IsContentManager || $ObjectType['User'].fields['Last_CM_Profile_Update__c'].Accessible}" value="{!profile.LastCMProfileUpdate}"></apex:outputText>
+	                    </td>
+		        		</tr>
+		        	</apex:outputPanel>
 					</tbody>
 				</table> 
 			
