@@ -33,9 +33,8 @@ public virtual with sharing class rsSectionController {
                 if (part.getObj().get('Status__c') != rsProfilePart.S_INREVIEW || (UserInfo.getUserId() == profile.getProfileReviewer() ) ) {
                     enableEditMode();
                     mOldPart = part;
-                    CurrentPart = new rsProfilePart((rs_Profile_Part__c)part.getObj().clone(false, true, false, false));
-                }
-                else {
+                    CurrentPart = new rsProfilePart((rs_Profile_Part__c)part.getObj().clone(true, true, false, false));
+                } else {
                     ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, 'This record is under review and is not currently editable'));
                 }
                 break;
