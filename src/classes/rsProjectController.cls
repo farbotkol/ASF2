@@ -249,7 +249,7 @@ public with sharing class rsProjectController extends rsSectionController {
             if (tempProject.getId() == ApexPages.currentPage().getParameters().get('projectId')) {
                 enableEditMode();
                 mOldProject = tempProject;
-                CurrentProject = new rsPRTeamEmployee((PR_Team_Employee__c)tempProject.getObj().clone(false, true, false, false));
+                CurrentProject = new rsPRTeamEmployee((PR_Team_Employee__c)tempProject.getObj().clone(true, true, false, false));
 
                 if ( (CurrentProject.getRecordTypeId() == rsPRTeamEmployee.getRecordTypeIdByName(rsPRTeamEmployee.RT_AECOMPROJECT) && CurrentProject.getProjectId() != null || (CurrentProject.getPRObj().Previous_Project_Part__c != null && CurrentProject.getPRObj().Previous_Project_Part__r.Project_Id__c != null) ) ) {
                     existingAECOMProjectView();
