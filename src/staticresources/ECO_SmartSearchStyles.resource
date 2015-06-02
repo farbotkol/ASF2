@@ -12,7 +12,7 @@
 .blueBlock {
     background-color: #02BCE5;
     padding: 20px 30px !important;
-    min-height: 147px;
+    min-height: 153px;
 }
 .blueBlock span.smart {
     color: #CCECF7;
@@ -67,6 +67,8 @@
     background-position: 93% 50%;
     background-repeat: no-repeat;
     border-radius: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 /*target Internet Explorer 9 and Internet Explorer 10:*/
@@ -101,6 +103,7 @@
     border: 2px solid #e3e3e3;
     border-left: none;
     border-radius: 0;
+    cursor: pointer;
 }
 .CoveoSearchButton:hover {
     background: #59ba47;
@@ -152,6 +155,44 @@
     margin-top: -31px;
 }
 
+/* - - TYPE AHEAD STYLES - - */
+.coveo-omnibox {
+    border: 2px solid #e3e3e3;
+    border-top: none;
+    border-radius: 0;
+    margin-top: 50px;
+}
+.coveo-omnibox .coveo-text, .coveo-omnibox .coveo-omnibox-selectable {
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif !important;
+    font-size: 13px;
+}
+.coveo-omnibox .coveo-text {
+    color: #59BA47;
+}
+.coveo-omnibox .coveo-omnibox-selectable {
+    color: #00729D;
+}
+.coveo-omnibox .coveo-omnibox-section {
+    margin-left: 10px;
+}
+.coveo-omnibox .coveo-caption {
+    font-size: 15px;
+    color: #808080;
+    line-height: 15px;
+    display: block;
+    padding: 5px;
+}
+.coveo-omnibox .coveo-omnibox-selected {
+    background-color: #E7EBEE;
+}
+.coveo-top-suggestion-header, .coveo-top-field-suggestion-header, .coveo-top-analytics-suggestion-header, .coveo-omnibox-result-list-header {
+    background-color: #e3e3e3;
+    margin-left: -10px;
+}
+.coveo-top-field-suggestion-header span.coveo-icon-top-field {
+    display: none;
+}
+
 
 /* - - MODULE SECTION STYLES - - */
 
@@ -193,6 +234,15 @@
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - */
 /* - - - - - - - - - - SEARCH RESULTS STYLES - - - - - - - - - - */
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - */
+@media only screen 
+  and (min-device-width: 320px) 
+  and (max-device-width: 568px)
+  and (-webkit-min-device-pixel-ratio: 2) {
+    .resultsModules, .resultTotal {
+        width: 100%;
+        /* fixes width issue on iOS 7 & 8.3 */
+    }
+}
 
 .CoveoSearchInterface {
     background-color: transparent;
@@ -202,10 +252,12 @@
     margin-bottom: 10px;
 }
 .resultTotal span {
-    font-size: 25px;
-    font-weight: bold;
+    font-size: 20px;
+    font-weight: normal;
 }
-.coveo-settings, .coveo-icon.sfaccountname, .coveo-icon.objecttype, .coveo-icon.sysfiletype, .coveo-icon.sfownername, .coveo-icon.sfopportunitystagename {
+.coveo-settings, .coveo-icon.syssource, .coveo-icon.sfaccountname, .coveo-icon.objecttype, 
+.coveo-icon.sysfiletype, .coveo-icon.sfownername, .coveo-icon.sfopportunitystagename,
+.coveo-icon.sysyear, .coveo-icon.sysmonth {
     display: none !important;
     /* hide icons in the header of the facets */
 }
@@ -215,6 +267,23 @@
 .coveo-results-column {
     background: white;
     /*padding: 25px;*/
+}
+.CoveoQuerySummary .coveo-highlight {
+    font-weight: normal;
+}
+.coveo-next a:hover, .coveo-next a > span:hover, .coveo-previous a:hover, .coveo-previous a > span:hover  {
+    border: none !important;
+    background-color: transparent !important;
+}
+.coveo-next a > span[title="Next"], .CoveoPager ul li.coveo-next > a > span {
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_nextArrow.png") !important;
+    background-size: 11px 11px;
+    background-position: 0 0;
+}
+.coveo-previous a > span[title="Previous"], .CoveoPager ul li.coveo-previous > a > span {
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_lastArrow.png") !important;
+    background-size: 11px 11px;
+    background-position: 0 0;
 }
 .coveo-footer {
     border-top: 1px solid #cccccc;
@@ -229,22 +298,35 @@
 .CoveoResult .coveo-icon {
     display: block;
 }
+.resultImg img {
+    border: 2px solid #e3e3e3;
+    margin-top: 15%;
+    max-height: 100px;
+    max-width: 150px;
+    min-height: 64px;
+    min-width: 64px;
+}
+@media (max-width:987px) {
+    .resultImg img {
+        margin-top: 15px;
+    }
+}
 
 /* - - NO RESULTS/DID YOU MEAN STYLES - - */
 
 .CoveoQuerySummary .coveo-cancel-last {
-    background-color: #59ba47;
+   /* background-color: #59ba47;
     color: white;
     padding: 8px 10px;
     width: 124px;
     float: left;
-    margin-left: 4%;
+    margin-left: 4%;*/
+    display: none;
 }
 .CoveoQuerySummary .coveo-no-results-string {
-    float: left;
-    font-size: 20px;
-
-    position:;
+    /*float: left;
+    font-size: 20px;*/
+    display: none;
 }
 .CoveoQuerySummary .coveo-search-tips-info {
     float: left;
@@ -255,6 +337,9 @@
 .CoveoQuerySummary ul {
     float: left;
     padding-left: 20px;
+}
+.CoveoQuerySummary .coveo-search-tips-info, .CoveoQuerySummary ul {
+    margin-top: 15px;
 }
 .CoveoQuerySummary ul li {
     font-size: 13px;
@@ -273,9 +358,9 @@
     color: #02BCE5;
     font-size: 18px;
 }
-.CoveoSearchInterface .CoveoDidYouMean .coveo-no-results-for {
+/*.CoveoSearchInterface .CoveoDidYouMean .coveo-no-results-for {
     display: none;
-}
+}*/
 
 /* - - SORTING/PAGINATION STYLES - - */
 
@@ -283,7 +368,7 @@
     text-align: left;
     float: left;
 }
-.coveo-next {
+.coveo-next, .coveo-previous {
     background: none !important;
 }
 .coveo-sort-section, .resultsSpacer {
@@ -377,8 +462,14 @@
 .coveo-slider-caption {
     left: 25%;
 }
-
-/* - - - - - - - - - - PEOPLE RESULTS STYLES - - - - - - - - - - */
+.coveo-value.coveo-selectable.coveo-selected label {
+    background-color: #00b0e2;
+}
+.coveo-value.coveo-selectable.coveo-selected label .coveo-label .coveo-caption, .coveo-value.coveo-selectable.coveo-selected label .coveo-label .coveo-count {
+    color: white;
+    font-weight: normal;
+}
+/* - - - - - - - - - - RESULTS STYLES - - - - - - - - - - */
 
 .CoveoResult {
     display: table;
@@ -403,8 +494,15 @@
 .CoveoResultLink:link {
     color: #00709D;
 }
+
 .resultDetail {
     font-size: 15px;
+}
+.resultDescription {
+    height: 50px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 13px !important;
 }
 .resultDetail span {
     line-height: 23px;
@@ -413,8 +511,11 @@
 .resultDetail span.phoneType {
     color: #a1a1a1;
 }
-.resultDetail span.country, .resultDetail span.modifiedDate {
+.resultDetail span.country, .resultDetail span.modifiedDate, 
+.resultDetail span.repositoryType, .resultDetail span.businessLine,
+.resultDetail span.region {
     font-size: 13px;
+    line-height: 16px;
     color: #a1a1a1;
 }
 .resultDetail span.email a {
@@ -424,7 +525,7 @@
     color: #00709D;
 }
 .resultDetail div {
-    max-width: 70%;
+    /*max-width: 70%;*/
     word-wrap: break-word;
 }
 .resultDetail span.PMdetails {
