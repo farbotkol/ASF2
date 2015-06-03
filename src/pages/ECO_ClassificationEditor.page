@@ -1,0 +1,18 @@
+<apex:page standardController="pse__Proj__c" extensions="ECO_ClassificationEditorController" showHeader="true" sidebar="true">
+	<apex:sectionHeader title="Classification Editor" subtitle="{!pse__Proj__c.Name}" />
+
+	<apex:form >
+	    <apex:pageMessages />
+		<apex:pageBlock title="Classfication Manager">
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!Save}" value="Save" />
+				<apex:commandButton action="{!Cancel}" value="Cancel" />
+			</apex:pageBlockButtons>
+			<apex:pageBlockSection title="Section Title" columns="2">
+				<apex:repeat value="{!lClassifications}" var="fsm">
+					<apex:inputField value="{!oProject[fsm.fieldPath]}" required="{!OR(fsm.required, fsm.dbrequired)}"/>
+				</apex:repeat>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+	</apex:form>	
+</apex:page>
