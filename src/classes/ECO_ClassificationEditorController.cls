@@ -1,11 +1,16 @@
 public with sharing class ECO_ClassificationEditorController {
 
 	public pse__Proj__c oProject {get; set;}
-    public List<FieldSetMember> lClassifications {get; set;}
+    public List<FieldSetMemberWrapper> lClassifications {get; set;}
 
+	public class FieldSetMemberWrapper {
+		public FieldSetMember fsm { get; set; }
+		public Boolean isRequired { get; set; }
+	}
+	
     public ECO_ClassificationEditorController(ApexPages.StandardController stdController) {
         List<String> lClassificationPathNames = new List<String>();
-        lClassificationPathNames.add('PrimaryOrganization__c');
+        lClassificationPathNames.add('CarryingOutOrganization__c');
         for (FieldSetMember oFSM : SObjectType.pse__Proj__c.FieldSets.Project_Classifications.getFields()) {
             lClassificationPathNames.add(oFSM.getFieldPath());
         }
@@ -16,13 +21,13 @@ public with sharing class ECO_ClassificationEditorController {
         List<OrganizationString__c> lOrganizationStrings = new List<OrganizationString__c>();
         OrganizationString__c oOrganizationString = new OrganizationString__c();
         
-		if (this.oProject.PrimaryOrganization__c != NULL) {
+		if (this.oProject.CarryingOutOrganization__c != NULL) {
 	        String sSOQL = 'SELECT id';
 	        for (FieldSetMember oFSM : SObjectType.pse__Proj__c.FieldSets.Project_Classifications.getFields()) {
 	            sSOQL += ', ' + oFSM.getFieldPath();
 	        }
 	        sSOQL += ' FROM OrganizationString__c';
-	        sSOQL += ' WHERE Id = \'' + this.oProject.PrimaryOrganization__c + '\''; 
+	        sSOQL += ' WHERE Id = \'' + this.oProject.CarryingOutOrganization__c + '\''; 
 	        System.debug(sSOQL);
 	        lOrganizationStrings = Database.query(sSOQL);
 		}
@@ -30,7 +35,7 @@ public with sharing class ECO_ClassificationEditorController {
         if (lOrganizationStrings.size() > 0) {
             oOrganizationString = lOrganizationStrings.get(0);
         } else {
-        	ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'No Organization String Found!'));
+        	ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'No Primary Organization found, cannot edit classifications!'));
             /*
             ApexPages.addMessages(new ECO_DBExceptionNamespace.NoDataException('Opening Project Classifications Editor', 
             												 '1_1_1',
@@ -39,16 +44,21 @@ public with sharing class ECO_ClassificationEditorController {
             return;
         }
 
-        lClassifications = new List<FieldSetMember>();
+        lClassifications = new List<FieldSetMemberWrapper>();
         for (FieldSetMember oFSM : SObjectType.pse__Proj__c.FieldSets.Project_Classifications.getFields()) {
             String sOrganizationStringValue = (String) oOrganizationString.get(oFSM.getFieldPath());
-
+			FieldSetMemberWrapper fsmWrapper = new FieldSetMemberWrapper();
+			fsmWrapper.fsm = oFSM;
+			fsmWrapper.isRequired = false;
             if (sOrganizationStringValue == 'Include') {
-                lClassifications.add(oFSM);
-            } else if (sOrganizationStringValue == 'Required') {
-                lClassifications.add(oFSM);
-            } else if (sOrganizationStringValue != 'Exclude') {
-                lClassifications.add(oFSM);
+                lClassifications.add(fsmWrapper);
+            } else if (sOrganizationStringValue == 'Require') {
+                lClassifications.add(fsmWrapper);
+                fsmWrapper.isRequired = true;
+            } else if (sOrganizationStringValue != NULL && sOrganizationStringValue != 'Exclude') {
+                lClassifications.add(fsmWrapper);
+                // Cannot use isEmpty method of the String class as getFieldPath can return a boolean value
+                // Comparing to a string does an implicit conversion to a string
                 if (oProject.get(oFSM.getFieldPath()) == NULL || oProject.get(oFSM.getFieldPath()) == '') {
                     oProject.put(oFSM.getFieldPath(), sOrganizationStringValue);
                 }
