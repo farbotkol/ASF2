@@ -12,6 +12,7 @@
         });   
 
         $(document).ready(function(){
+          
            $(".showAllApps").click(function(){
                 $(".hiddenOnMobile").toggle();
             });
@@ -28,6 +29,14 @@
                 $("i.fa-eye-slash").toggleClass("fa-eye");
               }
             });
+            
+            // Plugin used: http://jedfoster.com/Readmore.js, part of ECONiftyResources static resource
+            $('div.nf').readmore({
+			  speed: 75,
+			  collapsedHeight: 20,
+			  moreLink: '<a href="#">{!$Label.ECOPortalMore}</a>',
+			  lessLink: '<a href="#">{!$Label.ECOPortalLess}</a>'
+			});
         });
 
     </script>
@@ -76,27 +85,25 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="myModalLabel">Alerts</h4>
+                            <h4 class="modal-title" id="myModalLabel">{!$Label.ECOPortalAlerts}</h4>
                         </div>
                         
                         <div class="modal-body">
-                            <table class="table table-striped table-hover displayNone">
+                            <table class="table table-striped table-hover">
                                 <thead>
                                     <tr>
-                                    <th>Project No</th>
-                                    <th>Project Name</th>
-                                    <th>Type</th>
-                                    <th>Alert</th>
-                                    <th>Response</th>
+                                    <th>{!$Label.ECOPortalProjectNo}</th>
+                                    <th>{!$Label.ECOPortalProjectName}</th>
+                                    <th>{!$Label.ECOPortalAlert}</th>
+                                    <th>{!$Label.ECOPortalResponse}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
                                     <apex:repeat value="{!alerts}" var="alert" >
                                     
                                         <tr>
-                                            <td><a href="{!alert.LinkToRecord__c}"><apex:outputText value="60316205" /></a></td>
+                                            <td><a href="{!alert.LinkToRecord__c}"><apex:outputText value="{!alert.Project_Number__c}" /></a></td>
                                             <td><a href="{!alert.LinkToRecord__c}"><apex:outputField value="{!alert.Subject__c}" /></a></td>
-                                            <td><apex:outputText value="Financial" /></td>
                                             <td><apex:outputField value="{!alert.LongDescriptionMaxLength__c}" /></td>
                                             <td><apex:outputText value="Comment" /></td>
                                         </tr>                                       
@@ -104,19 +111,16 @@
                                     </apex:repeat>
                                     <apex:outputPanel rendered="{!alerts.size = 0}" layout="none">
                                         <tr>
-                                            <td colspan="5" style="text-align:center;"><h3>You have no alerts</h3></td>
+                                            <td colspan="5" style="text-align:center;"><h3>{!$Label.ECOPortalNoAlerts}</h3></td>
                                         </tr>
                                     </apex:outputPanel>
                                 </tbody>
                             </table>
 
-                            <div class="tempAlert">
-                                Alerts will be added to Ecosystem progressively. The core of this functionality will be in the final release (roll out beginning in Q1 FY16)
-                            </div>
                         </div>
                         
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">{!$Label.ECOOK}</button>
                         </div>
                     </div>
                 </div>
@@ -129,7 +133,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="myModalLabel">Tasks</h4>
+                            <h4 class="modal-title" id="myModalLabel">{!$Label.ECOPortalTasks}</h4>
                         </div>
                         
                         <div class="modal-body">
@@ -137,11 +141,11 @@
                             <table class="table table-striped table-hover">
                                 <thead>
                                     <tr>
-                                    <th>Project No</th>
-                                    <th>Related to</th>
-                                    <th>Subject</th>
-                                    <th>Due Date</th>
-                                    <th>Priority</th>
+                                    <th>{!$Label.ECOPortalProjectNo}</th>
+                                    <th>{!$Label.ECOPortalRelatedto}</th>
+                                    <th>{!$Label.ECOPortalSubject}</th>
+                                    <th>{!$Label.ECOPortalDueDate}</th>
+                                    <th>{!$Label.ECOPortalPriority}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -159,7 +163,7 @@
 
                                     <apex:outputPanel rendered="{!tasks.size = 0}" layout="none">
                                         <tr>
-                                            <td colspan="5" style="text-align:center;"><h3>You have no tasks</h3></td>
+                                            <td colspan="5" style="text-align:center;"><h3>{!$Label.ECOPortalNoTasks}</h3></td>
                                         </tr>
                                     </apex:outputPanel>
 
@@ -169,7 +173,7 @@
                         </div>
                         
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">{!$Label.ECOOK}</button>
                         </div>
                     </div>
                 </div>
@@ -182,7 +186,7 @@
                             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                 <span aria-hidden="true">&times;</span>
                             </button>
-                            <h4 class="modal-title" id="myModalLabel">Approvals</h4>
+                            <h4 class="modal-title" id="myModalLabel">{!$Label.ECOPortalApprovals}</h4>
                         </div>
                         
                         <div class="modal-body">
@@ -190,13 +194,13 @@
                             <table class="table table-striped table-hover displayNone">
                                 <thead>
                                     <tr>
-                                    <th>Project No</th>
-                                    <th>Project Name</th>
-                                    <th>Type</th>
-                                    <th>Alert</th>
-                                    <th>Request Info</th>
-                                    <th>Approve</th>
-                                    <th>Reject</th>
+                                    <th>{!$Label.ECOPortalProjectNo}</th>
+                                    <th>{!$Label.ECOPortalProjectName}</th>
+                                    <th>{!$Label.ECOPortalType}</th>
+                                    <th>{!$Label.ECOPortalAlert}</th>
+                                    <th>{!$Label.ECOPortalRequestInfo}</th>
+                                    <th>{!$Label.ECOPortalApprove}</th>
+                                    <th>{!$Label.ECOPortalReject}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -216,7 +220,7 @@
 
                                     <apex:outputPanel rendered="{!approvals.size = 0}" layout="none">
                                         <tr>
-                                            <td colspan="7" style="text-align:center;"><h3>You have no approvals</h3></td>
+                                            <td colspan="7" style="text-align:center;"><h3>{!$Label.ECOPortalNoApprovals}</h3></td>
                                         </tr>
                                     </apex:outputPanel>
 
@@ -224,13 +228,13 @@
                             </table>
 
                             <div class="tempAlert">
-                                Workflows from various AECOM systems will be included in Ecosystem as development progresses. Keep an eye on the News Feed for timing updates
+                                {!$Label.ECOPortalApprovalMessage}
                             </div>
 
                         </div>
                         
                         <div class="modal-footer">
-                            <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                            <button type="button" class="btn btn-primary" data-dismiss="modal">{!$Label.ECOOK}</button>
                         </div>
                     </div>
                 </div>
@@ -276,7 +280,7 @@
 
                         <!--Navigation toogle button-->
                         <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="Expand Applications">
+                        <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="{!$Label.ECOPortalExpandApp}">
                             <a class="mainnav-toggle" href="#">
                                 <i class="fa fa-th fa-lg"></i>
                             </a>
@@ -292,8 +296,8 @@
 
                         <!--Alerts Modal-->
                         <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="Alerts">
-                            <a onclick="$('#modalAlerts').modal('show')" style="cursor:pointer;" title="Alerts">
+                        <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="{!$Label.ECOPortalAlerts}">
+                            <a onclick="$('#modalAlerts').modal('show')" style="cursor:pointer;" title="{!$Label.ECOPortalAlerts}">
                                 <i class="fa fa-warning fa-lg"></i>
                                 <apex:outputPanel layout="block" styleClass="badge badge-header badge-danger" rendered="{!alerts.size > 0}">
                                     <apex:outputText value="{!alerts.size}" />
@@ -303,8 +307,8 @@
 
                         <!--Task Modal -->
                         <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="Tasks">
-                            <a onclick="$('#modalTasks').modal('show')" style="cursor:pointer;" title="Tasks">
+                        <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="{!$Label.ECOPortalTasks}">
+                            <a onclick="$('#modalTasks').modal('show')" style="cursor:pointer;" title="{!$Label.ECOPortalTasks}">
                                 <i class="fa fa-tasks fa-lg"></i>
                                 <apex:outputPanel layout="block" styleClass="badge badge-header badge-danger" rendered="{!tasks.size > 0}">
                                     <apex:outputText value="{!tasks.size}" />
@@ -314,8 +318,8 @@
 
                         <!--Approval Modal -->
                         <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="Approvals">
-                            <a onclick="$('#modalApprovals').modal('show')" style="cursor:pointer;" title="Approvals">
+                        <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="{!$Label.ECOPortalApprovals}">
+                            <a onclick="$('#modalApprovals').modal('show')" style="cursor:pointer;" title="{!$Label.ECOPortalApprovals}">
                                 <i class="fa fa-check-square fa-lg"></i>
                                 <apex:outputPanel layout="block" styleClass="badge badge-header badge-danger" rendered="{!approvals.size > 0}">
                                     <apex:outputText value="{!approvals.size}" />
@@ -324,20 +328,20 @@
                         </li>
 
 
-                        <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="Open Outlook">
-                            <a href="outlook:Inbox" style="cursor:pointer;" title="Open Outlook">
+                        <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="{!$Label.ECOPortalOutlook}">
+                            <a href="outlook:Inbox" style="cursor:pointer;" title="{!$Label.ECOPortalOutlook}">
                                 <i class="fa fa-envelope fa-lg"></i>
                             </a>
                         </li>
 
                         <li class="dropdown hidden-xs">
-                            <a style="height:24px;" href="javascript:alert('A consolidated project delivery tool which enables the creation of new projects will be included in the final Ecosystem release. The roll-out of this release will commence in Q1 FY16 and continue progressively for the DCS business. Other business groups will be added to the roadmap in the near future')">
-                                <button class="btn btn-primary" style="margin:12px 0 0 0;">New Project</button>
+                            <a style="height:24px;" href="javascript:alert('{!$Label.ECOPortalProjectMessage}')">
+                                <button class="btn btn-primary" style="margin:12px 0 0 0;">{!$Label.ECOPortalProject}</button>
                             </a>
                         </li>
 
                         <li class="dropdown hidden-xs">
-                            <a style="height:24px;" href="{!URLFOR($action.opportunity.new, null)}" target="_blank"><button class="btn btn-success" style="margin:12px 0 0 0;">New Opportunity</button></a>
+                            <a style="height:24px;" href="{!URLFOR($action.opportunity.new, null)}" target="_blank"><button class="btn btn-success" style="margin:12px 0 0 0;">{!$Label.ECOPortalOpportunity}</button></a>
                         </li>
 
                     </ul>
@@ -347,7 +351,7 @@
                         <li class="add-tooltip" data-placement="bottom" data-toggle="tooltip" data-original-title="Home"><a href="/apex/ECO_Portal"><img src="{!URLFOR($Resource.ECO_SmartSearchAssets, 'ss_homeIcon.png')}" /></a></li>
                         <li class="add-tooltip" data-placement="bottom" data-toggle="tooltip" data-original-title="SmartSearch"><a href="/apex/ECO_SmartSearch"><img src="{!URLFOR($Resource.ECO_SmartSearchAssets, 'ss_searchIcon.png')}" /></a></li>
 
-                        <li class="hidden-xs add-tooltip AWAN"  data-placement="bottom" data-toggle="tooltip" data-original-title="Help" >
+                        <li class="hidden-xs add-tooltip AWAN"  data-placement="bottom" data-toggle="tooltip" data-original-title="{!$Label.ECOPortalHelp}" >
                             <a href="http://my.aecomnet.com/Intranet/About/Delivery%20Excellence/Ecosystem/Training" target="_blank"><i class="fa fa-question-circle"></i></a>
                         </li>
 
@@ -378,6 +382,11 @@
                                     <li>
                                         <a href="/ui/setup/Setup?setupid=PersonalSetup" target="_settingsPage">
                                             <i class="fa fa-gear fa-fw fa-lg"></i> Settings
+                                        </a>
+                                    </li>
+                                    <li>
+                                        <a href="https://aecom.okta.com/" target="_ssoPage">
+                                            <i class="fa fa-gear fa-fw fa-lg"></i> {!$Label.ECOSSO}
                                         </a>
                                     </li>
                                 </ul>
@@ -414,13 +423,14 @@
             <!--===================================================-->
             <div id="content-container">
 
-                <a class="aside-toggle hidden-xs" href="#" title="show/hide Reports"> 
-                    <div class="reportsMenuButton" title="show/hide Reports">
+                <a class="aside-toggle hidden-xs" href="#" title="{!$Label.ECOPortalshowhideReports}"> 
+                    <div class="reportsMenuButton" title="{!$Label.ECOPortalshowhideReports}">
                         <i class="fa fa-file" style="font-size:20px; color:#fff;"></i>
                     </div>
                 </a>
 
-                <apex:outputPanel layout="none" rendered="{!tickerMessages.size > 0}" >
+
+                <apex:outputPanel layout="none" rendered="{!AND(tickerMessages != NULL, tickerMessages.size > 0)}" >
                     <div class="gallery autoplay items-{!tickerMessages.size}">
                         <apex:repeat value="{!tickerMessages}" var="message" >
                             <div id="item-{!message.Order__c}" class="control-operator"></div>
@@ -428,8 +438,10 @@
   
                         <apex:repeat value="{!tickerMessages}" var="message" >
                           <figure class="item">
-                            <h4 id="tickerHeader">{!message.Subject__c}</h4>
-                            <apex:outputText value="{!message.LongDescriptionMaxLength__c}" />
+                          	<apex:outputPanel layout="block" rendered="{!AND(message.NewsFeedTranslations__r != NULL, message.NewsFeedTranslations__r.size>0)}">
+                            	<h4 id="tickerHeader">{!message.NewsFeedTranslations__r[0].Subject__c}</h4>
+                            	<apex:outputText value="{!message.NewsFeedTranslations__r[0].LongDescription__c}" />
+                            </apex:outputPanel>
                           </figure>
                         </apex:repeat>
 
@@ -461,7 +473,7 @@
                                         
                                     </div>
                                     <a name="newsFeed" style="height:0;"></a>
-                                    <h3 class="panel-title">News Feed</h3>
+                                    <h3 class="panel-title">{!$Label.ECOPortalNewsFeed}</h3>
                                 </div>
 
                                 <div class="panel-body collapse in nano"  style="max-height:372px; min-height:372px;">
@@ -474,20 +486,26 @@
                                                     <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" html-data-original="{!$Resource.ECO_DELogo}" styleClass="media-object hidden-xs lazy" rendered="{!feedItem.FullImageUrl__c == ''}"/>
                                                 </div>
                                                 <div class="col-sm-10" style="line-height:165%;">
-                                                    <h2 style="line-height:200%;">
-                                                        <apex:outputText value="{!feedItem.Subject__c}" />
-                                                    </h2>
-                                                    <apex:outputText value="{!feedItem.LongDescriptionMaxLength__c}" />
-                                                    <br />
-                                                    <apex:outputPanel layout="none" rendered="{!feedItem.LinkToRecord__c != ''}">
-                                                        <a href="{!feedItem.LinkToRecord__c}" class="linkFix hidden-xs" target="_newsFeedItem{!feedItem.Id}">
-                                                            Read More
+                                                	<apex:outputPanel layout="none" rendered="{!AND(feedItem.NewsFeedTranslations__r != NULL, feedItem.NewsFeedTranslations__r.size>0, feedItem.NewsFeedTranslations__r[0].LinkToRecord__c != '')}">
+                                                        <a href="{!feedItem.NewsFeedTranslations__r[0].LinkToRecord__c}" class="linkFix hidden-xs" target="_newsFeedItem{!feedItem.Id}">
+                                                            {!feedItem.NewsFeedTranslations__r[0].Subject__c}
                                                         </a>
                                                     </apex:outputPanel>
+                                                    <apex:outputPanel layout="none" rendered="{!AND(feedItem.NewsFeedTranslations__r != NULL, feedItem.NewsFeedTranslations__r.size>0, feedItem.NewsFeedTranslations__r[0].LinkToRecord__c == '')}">
+                                                        <h2 style="line-height:200%;">
+                                                        	<apex:outputText value="{!feedItem.NewsFeedTranslations__r[0].Subject__c}" />
+                                                    	</h2>
+                                                    </apex:outputPanel>
                                                     <br />
+                                                    <apex:outputPanel layout="none" rendered="{!AND(feedItem.NewsFeedTranslations__r != NULL, feedItem.NewsFeedTranslations__r.size>0)}">
+													<div class="nf">
+														<p>{!feedItem.NewsFeedTranslations__r[0].LongDescription__c}</p>
+													</div>
+													</apex:outputPanel>
+													<br />
                                                     <span style="color:#c6c6c6; font-size:10px; margin-top:5px; display:block;">
                                                         <!-- Posted on Feb. 26th, 2015 | By: This Person -->
-                                                        <apex:outputText value="Posted On {!feedItem.StartDate__c} | By:  {!feedItem.User__r.Name} "/>
+                                                        <apex:outputText value="{!$Label.ECOPortalPostedOn} {!feedItem.StartDate__c} | {!$Label.ECOPortalBy}:  {!feedItem.User__r.Name} "/>
                                                     </span>
                                                 </div>
                                                 <div class="col-sm-12">
@@ -519,7 +537,7 @@
                                         </div>
                                     </div>
                                     <a name="chatterFeed" style="height:0;"></a>
-                                    <h3 class="panel-title">Chatter</h3>
+                                    <h3 class="panel-title">{!$Label.ECOPortalChatter}</h3>
                                     </a>
                                 </div>
                     
@@ -559,7 +577,7 @@
                                         </apex:form>
                                     </div>
                                     <a name="myProjects" style="height:0;"></a>
-                                    <h3 class="panel-title">My Projects Portfolio</h3>
+                                    <h3 class="panel-title">{!$Label.ECOPortalMyProjectsPortfolio}</h3>
                                 </div>
                     
                                 <div class="panel-body myProjectsPortfolio">
@@ -591,7 +609,7 @@
                                     </div>
 
                                     <div class="tempAlert">
-                                        As part of the final Ecosystem release this space will display a list of your Projects and key financial and KPI Information. The roll-out of this release will commence in Q1 FY16 and continue progressively for the DCS business. Other business groups will be added to the roadmap in the near future
+                                        {!$Label.ECOPortalMyProjectsPortfolioMessage}
                                     </div>
 
                                 </div>
@@ -608,10 +626,10 @@
                         <div class="col-md-4">
                             <div class="panel panel-dark panel-colorful">
                                 <div class="panel-body text-center">
-                                    <p class="text-uppercase mar-btm text-sm">Client Care Program - Monthly Net Promoter Score</p>
+                                    <p class="text-uppercase mar-btm text-sm">{!$Label.ECOPortalClientCareProgram}</p>
                                     <div id="client-care-program" class="box-inline "></div>
                                     <hr />
-                                    <p class="h2 text-thin">{!$Setup.ECO_Portal_Graph_Settings__c.Client_Care_NPS_Text__c}</p>
+                                    <p class="h2 text-thin">{!$Label[clientCareNpsTextLabel]}</p>
                                 </div>
                             </div>
                         </div>
@@ -621,7 +639,7 @@
                         <div class="col-md-4">
                             <div class="panel panel-danger panel-colorful">
                                 <div class="panel-body text-center">
-                                    <p class="text-uppercase mar-btm text-sm">Total Case Incident Rate - All AECOM</p>
+                                    <p class="text-uppercase mar-btm text-sm">{!$Label.ECOPortalTotalCaseIncidentRate}</p>
                                     <!-- Dynamic graph out <div id="demo-sparkline-bar" class="box-inline "></div> -->
 
                                     <!--Gauge placeholder-->
@@ -632,7 +650,7 @@
                                     </p>
                                     <hr />
 
-                                    <p class="h2 text-thin">{!$Setup.ECO_Portal_Graph_Settings__c.Incident_Rate_Text__c}</p>
+                                    <p class="h2 text-thin">{!$Label[incidentRateTextLabel]}</p>
                                 </div>
                             </div>
                         </div>
@@ -641,10 +659,10 @@
                         <div class="col-md-4">
                             <div class="panel panel-primary panel-colorful">
                                 <div class="panel-body text-center">
-                                    <p class="text-uppercase mar-btm text-sm">Technical Practice Networks</p>
+                                    <p class="text-uppercase mar-btm text-sm">{!$Label.ECOPortalTechincalPracticeNetworks}</p>
                                     <div id="technical-practice-networks" style="height:120px"></div>
                                     <hr />
-                                    <p class="h2 text-thin">Visitor Data</p>
+                                    <p class="h2 text-thin">{!$Label.ECOPortalVisitorData}</p>
                                 </div>
                             </div>
                         </div>
@@ -657,7 +675,7 @@
 
                         <div class="col-sm-6" style="text-align:center;">
                             <div class="tempAlert">
-                                These are currently static images of key business metrics - once the final Ecosystem release is rolled out (starting Q1 FY16), these will show the performance of your projects and provide drill-down capability
+                                {!$Label.ECOPortalAlertMessage}
                             </div>
                         </div>
 
@@ -710,7 +728,7 @@
                                                     <i class="fa fa-cog" style="font-size:33px; padding-left:1px;"></i>
                                                 </div>
                                                 <div class="media-body menu-title" style="height:35px;">
-                                                    Edit AECOM APPs 
+                                                    {!$Label.ECOEditAecomApps} 
                                                 </div>
                                             </a>
                                         </li>
@@ -723,7 +741,7 @@
                                                             <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" html-data-original="{!URLFOR($Resource.ECO_CustomGraphicAssets, app.Application__r.ImageName__c)}" styleClass="lazy" width="33px" height="33px" />
                                                         </div>
                                                         <div class="media-body menu-title" style="height:35px;">
-                                                            <apex:outputText value="{!app.Application__r.ApplicationName__c}" />
+                                                            <apex:outputText value="{!$Label[app.Application__r.ApplicationName__c]}" />
                                                         </div>
                                                     </a>
                                                     
@@ -756,8 +774,8 @@
                         <div class="nano-content">
                             <div class="tab-pane fade in active" id="demo-asd-tab-1" style="margin-top:15px;">
                                 <h4 class="pad-hor text-thin">
-                                    <a onclick="goToReportsBuilder()" title="hide Reports" style="margin:0 25px 0 5px; cursor:pointer; float:right;">Reports</a>
-                                    <i class="fa fa-gear" onclick="goToReportsBuilder()" style="float:right; cursor:pointer;" title="Edit Reports"></i>
+                                    <a onclick="goToReportsBuilder()" title="{!$Label.ECOPortalHideReports}" style="margin:0 25px 0 5px; cursor:pointer; float:right;">{!$Label.ECOPortalReports}</a>
+                                    <i class="fa fa-gear" onclick="goToReportsBuilder()" style="float:right; cursor:pointer;" title="{!$Label.ECOPortalEditReports}"></i>
                                 </h4>
                                 
                                 <div>
@@ -823,6 +841,7 @@
     -->
     <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/gauge.min.js')}"></script>
     <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/ECO_PortalSpecificJS.min.js')}"></script>
+    <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/readmore.min.js')}"></script>
     
     
 
@@ -833,13 +852,13 @@
             type: 'pie',
             width: '120',
             height: '120',
-            tooltipChartTitle: 'Client Care Program - Monthly Net Promoter Score',
+            tooltipChartTitle: '{!$Label.ECOPortalClientCareProgram}',
             tooltipFormat: '{{offset:offset}} ({{percent.1}}%)',
             tooltipValueLookups: {
                 'offset': {
-                    0: 'Promoter',
-                    1: 'Passive',
-                    2: 'Detractor',
+                    0: '{!$Label.ECOPortalPromoter}',
+                    1: '{!$Label.ECOPortalPassive}',
+                    2: '{!$Label.ECOPortalDetractor}',
                 }
             },
             sliceColors: ['#7ad689','#fec311','#fe2d11'],
@@ -850,51 +869,51 @@
         Morris.Area({
             element: 'technical-practice-networks',
             data: [{
-                period: 'January',
+                period: '{!$Label.ECOPortalJanuary}',
                 dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jan_DL__c},
                 up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jan_UP__c} 
                 }, {
-                period: 'February',
+                period: '{!$Label.ECOPortalFebruary}',
                 dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Feb_DL__c},
                 up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Feb_UP__c}
                 }, {
-                period: 'March',
+                period: '{!$Label.ECOPortalMarch}',
                 dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Mar_DL__c},
                 up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Mar_UP__c}
                 }, {
-                period: 'April',
+                period: '{!$Label.ECOPortalApril}',
                 dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Apr_DL__c},
                 up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Apr_UP__c}
                 }, {
-                period: 'May',
+                period: '{!$Label.ECOPortalMay}',
                 dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_May_DL__c},
                 up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_May_UP__c}
                 }, {
-                period: 'June',
+                period: '{!$Label.ECOPortalJune}',
                 dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jun_DL__c},
                 up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jun_UP__c}
                 }, {
-                period: 'July',
+                period: '{!$Label.ECOPortalJuly}',
                 dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jul_DL__c},
                 up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Jul_UP__c}
                 }, {
-                period: 'August',
+                period: '{!$Label.ECOPortalAugust}',
                 dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Aug_DL__c},
                 up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Aug_UP__c}
                 }, {
-                period: 'September',
+                period: '{!$Label.ECOPortalSeptember}',
                 dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Sep_DL__c},
                 up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Sep_UP__c}
                 }, {
-                period: 'October',
+                period: '{!$Label.ECOPortalOctober}',
                 dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Oct_DL__c},
                 up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Oct_UP__c}
                 }, {
-                period: 'November',
+                period: '{!$Label.ECOPortalNovember}',
                 dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Nov_DL__c},
                 up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Nov_UP__c}
                 }, {
-                period: 'December',
+                period: '{!$Label.ECOPortalDecember}',
                 dl: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Dec_DL__c},
                 up: {!$Setup.ECO_Portal_Graph_Settings__c.Visitor_Date_Dec_UP__c}
             }],
@@ -903,7 +922,7 @@
             behaveLikeLine: true,
             xkey: 'period',
             ykeys: ['dl', 'up'],
-            labels: ['Visitors', 'Pageviews'],
+            labels: ['{!$Label.ECOPortalVisitors}', '{!$Label.ECOPortalPageviews}'],
             lineColors: ['#00729d'],
             pointSize: 0,
             pointStrokeColors : ['#00729d'],
