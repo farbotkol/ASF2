@@ -16,6 +16,8 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 	public String photoUrl								{ get; set; }
 	public List<PortalMessage__c> newsFeed				{ get; set; }
 	public String awanJSPath							{ get; set; }
+	public String clientCareNpsTextLabel                { get; set; }
+	public String incidentRateTextLabel                { get; set; }
 	
 	private class ECO_PortalControllerException extends Exception {}
 	private System.LoggingLevel debugLevel = LoggingLevel.INFO;
@@ -39,6 +41,9 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 		
 		awanJSPath = ECO_PortalSettings__c.getInstance().OnAWANJavascriptPath__c;
 		
+		clientCareNpsTextLabel = ECO_Portal_Graph_Settings__c.getInstance().Client_Care_NPS_Text__c;
+		incidentRateTextLabel = ECO_Portal_Graph_Settings__c.getInstance().Incident_Rate_Text__c;
+		
 		showClosed = false;
 		
 		theUser = ECO_Service_Users.getUserInfoById(UserInfo.getUserId());
@@ -48,7 +53,15 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 		tickerMessages = ECO_Utils_Alerts.getTickerMessages();
 		refreshProjects();
 		reports = ECO_Service_Reports.getReportsForUser(theUser.Id);
+		
 		newsFeed = ECO_Utils_Alerts.getNewsFeedForPortal();
+		// TODO: Remove this temporary change to use only 1 news feed item - Sujit
+		/*
+		List<PortalMessage__c>  myNewsFeed = new List<PortalMessage__c>();
+		myNewsFeed.add(ECO_Utils_Alerts.getNewsFeedForPortal()[0]);
+		newsFeed = myNewsFeed;
+		*/
+		
 		if (!Test.isRunningTest()) {
 			photoUrl = ConnectApi.ChatterUsers.getPhoto(null, theUser.Id).smallPhotoUrl;
 		}

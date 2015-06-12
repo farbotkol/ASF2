@@ -1,11 +1,11 @@
-<apex:page controller="ECO_ApplicationCustomizerController" showheader="false" sidebar="false" title="Pick Applications" standardStylesheets="false" action="{!onLoad}">
+<apex:page controller="ECO_ApplicationCustomizerController" showheader="false" sidebar="false" title="{!$Label.ECOAppCusPickApplications}" standardStylesheets="false" action="{!onLoad}">
     
     
     
     <script>
         $(document).ready(function(){
-			init();
-			
+            init();
+            
            $(".showAllApps").click(function(){
                 $(".hiddenOnMobile").toggle();
             });
@@ -41,6 +41,7 @@
             attachSortable();
             
             $('.form-control').keydown(function(event){
+
                 if(event.keyCode == 13) {
                     event.preventDefault();
                     $('.search').click();
@@ -55,11 +56,15 @@
                 , attribute: "orderId" 
             });
             
+
             savePositions(serializedIds);
         };
 /* Use 'toggleApp' instead
         function toggleApplication (theId) {
-			
+            if (console) {
+                console.log($("a[orderId='id_"+theId+"']").length);
+            }
+            
             if ($("a[orderId='id_"+theId+"']").length) {
                 $("a[orderId='id_"+theId+"']").fadeTo(500, .25);
                 $("a[orderId='id_"+theId+"']").attr('orderId', 'id_'+theId+'hidden').find('.fa-times-circle').removeClass('fa-times-circle').addClass('fa-check-circle');
@@ -88,6 +93,7 @@
         function applyFilter (theField) {
             clearTimeout(timer);
             timer=setTimeout(function validate(){
+                
                 //applyFilterApex();
             },300);
         }
@@ -316,11 +322,11 @@
         }
         
         .fa-times-circle {
-        	z-index: 99999;
+            z-index: 99999;
         }
         
         .fa-check-circle {
-        	z-index: 99999;
+            z-index: 99999;
         }
     </style>
     
@@ -344,7 +350,7 @@
                 <div class="navbar-header">
                     <a href="#" class="navbar-brand">
                         <div class="brand-title">
-                            <span class="brand-text">ECOSYSTEM</span>
+                            <span class="brand-text">{!$Label.ECOAppCusECOSYSTEM}</span>
                         </div>
                     </a>
                 </div>
@@ -357,7 +363,7 @@
                     <ul class="nav navbar-top-links pull-left">
 
                         <li class="dropdown hidden-xs">
-                            <h3 style="margin:10px 0 0 8px;">Application Customizer</h3>
+                            <h3 style="margin:10px 0 0 8px;">{!$Label.ECOAppCusApplicationCustomizer}</h3>
                         </li>
 
                     </ul>
@@ -380,7 +386,6 @@
 
                         <li class="logo" style="padding:12px 15px 0 8px;">
                             <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'AECOMLogo.jpg')}" height="25px" class="hidden-xs" />
-
                             <img src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/EcosystemMark.jpg')}" class="visible-xs" height="25px" />
                         </li>
 
@@ -412,7 +417,7 @@
                     <div class="col-sm-12">
                         <div class="panel panel-default appPanel">
                             <div class="panel-heading">
-                                <h4>Edit Visible Apps and Order</h4>
+                                <h4>{!$Label.ECOAppCusEditVisibleApps}</h4>
                             </div>
                             
 
@@ -429,11 +434,11 @@
 
                                     <div style="float:right;padding:0 10px 10px 0;position:relative;right:20px;width:100%;">
 
-                                        <apex:commandButton style="float:right;" styleClass="btn btn-danger btn-lrg floatRight" value="Cancel" action="{!returnToPage}" immediate="true" />
+                                        <apex:commandButton style="float:right;" styleClass="btn btn-danger btn-lrg floatRight" value="{!$Label.ECOCancel}" action="{!returnToPage}" immediate="true" />
 
                                         <apex:outputPanel layout="none" rendered="{!!inSearchResultsMode}">
                                             <button type="button" class="btn btn-primary btn-lrg floatRight" style="margin-right:10px;" onclick="savePositionsPageFunction();">
-                                                Save and Return
+                                                {!$Label.ECOSaveandReturn}
                                             </button>
                                         </apex:outputPanel>
 
@@ -458,7 +463,7 @@
                                                 <div class="col-sm-6">
                                                     <apex:pageBlockSection id="theSelectedApps" columns="1"></apex:pageBlockSection>
 
-                                                        <h2>Selected Applications</h2>
+                                                        <h2>{!$Label.ECOAppCusSelectedApplications}</h2>
                                                         <apex:outputPanel styleClass="iconMatrix">
                                                             <div id="sortable" class="row">
                                                                 <apex:repeat value="{!selectedApplications}" var="configItem">
@@ -471,7 +476,7 @@
                                                                                     <apex:outputPanel layout="inline" styleClass="fa fa-times-circle removeApp hoverHand" onClick="toggleApp('{!configItem.Application__c}');"/>
                                                                                 </apex:outputPanel>
                                                                             </apex:outputpanel>
-                                                                            <apex:outputText value="{!configItem.Application__r.ApplicationName__c}" styleClass="smallText" />
+                                                                            <apex:outputText value="{!$Label[configItem.Application__r.ApplicationName__c]}" styleClass="smallText" />
                                                                         </div>
                                                                     </apex:outputpanel>
                                                                 </apex:repeat>
@@ -481,15 +486,15 @@
                                                     </div>
                                             
                                                     <apex:outputPanel id="availableAppsSection" styleClass="col-sm-6">
-                                                        <h2>Available Applications</h2>
+                                                        <h2>{!$Label.ECOAppCusAvailableApplications}</h2>
 
-                                                        <div class="searchBox"><span class="header">Search Criteria</span><br/>
-                                                            <apex:inputText html-placeholder="Name Search" style="width:180px;display:inline;margin-right:20px" value="{!searchTerm}" styleClass="categoryFilterInput form-control" />
+                                                        <div class="searchBox"><span class="header">{!$Label.ECOAppCusSearchCriteria}</span><br/>
+                                                            <apex:inputText html-placeholder="{!$Label.ECOAppCusNameSearch}" style="width:180px;display:inline;margin-right:20px" value="{!searchTerm}" styleClass="categoryFilterInput form-control" />
 
                                                             <apex:selectList styleClass="categoryFilterInput form-control" style="width:180px;display:inline;margin-right:20px" size="1" value="{!selectedCategory}">
                                                                 <apex:selectOptions value="{!categories}" />
                                                             </apex:selectList>
-
+															
                                                             <apex:outputPanel layout="none" rendered="{!inSearchResultsMode}" id="clearButton" styleClass="hidden-xs">
                                                                 <apex:commandButton style="width:85px;" styleClass="hidden-xs btn btn-primary btn-lrg" value="Clear Filter" action="{!clearSearchTerm}" rerender="pageMessages, availableAppsSection" oncomplete="init();" />
                                                             </apex:outputPanel>
@@ -503,7 +508,7 @@
                                                             </apex:selectList>
 
                                                             <button class="btn btn-primary btn-lrg search" style="width:85px;" type="button" onclick="applySearchFilter();" >
-                                                                Search
+                                                                {!$Label.ECOSearch}
                                                             </button>
 
                                                             
@@ -523,7 +528,7 @@
                                                                                     <apex:outputPanel layout="inline" styleClass="fa fa-check-circle selectApp hoverHand" onClick="toggleApp('{!configItem.Application__c}');"/>
                                                                                 </apex:outputPanel>
                                                                             </apex:outputpanel>
-                                                                            <apex:outputText value="{!configItem.Application__r.ApplicationName__c}" styleClass="smallText" />
+                                                                            <apex:outputText value="{!$Label[configItem.Application__r.ApplicationName__c]}" styleClass="smallText" />
                                                                         </div>
                                                                     </apex:outputpanel>
                                                                 </apex:repeat>
