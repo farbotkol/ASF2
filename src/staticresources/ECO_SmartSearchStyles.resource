@@ -257,7 +257,7 @@
 }
 .coveo-settings, .coveo-icon.syssource, .coveo-icon.sfaccountname, .coveo-icon.objecttype, 
 .coveo-icon.sysfiletype, .coveo-icon.sfownername, .coveo-icon.sfopportunitystagename,
-.coveo-icon.sysyear, .coveo-icon.sysmonth {
+.coveo-icon.sysyear, .coveo-icon.sysmonth, .coveo-icon.sysconcepts {
     display: none !important;
     /* hide icons in the header of the facets */
 }
@@ -300,7 +300,7 @@
 }
 .resultImg img {
     border: 2px solid #e3e3e3;
-    margin-top: 15%;
+    margin-top: 5%;
     max-height: 100px;
     max-width: 150px;
     min-height: 64px;
@@ -414,6 +414,219 @@
 
 }
 
+/* - - - - - - - - - - RESULTS STYLES - - - - - - - - - - */
+
+.CoveoResult {
+    display: table;
+    width: 100%;
+    margin: 0;
+    padding: 20px;
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif !important;
+}
+.CoveoResult:last-child {
+    border: none;
+}
+.CoveoResult .coveo-title {
+    font-weight: bold;
+}
+.CoveoResult a:hover {
+    color: #59BA47;
+}
+.CoveoResultList {
+    /*padding: 20px;*/
+    margin-top: 0;
+}
+.CoveoResultLink:link {
+    color: #00709D;
+}
+
+.resultDetail {
+    font-size: 15px;
+}
+.resultDescription {
+    /*height: 50px;*/
+    text-overflow: ellipsis;
+    overflow: hidden;
+    font-size: 13px !important;
+}
+.resultDetail span {
+    line-height: 23px;
+}
+.resultDetail span.userTitle {
+    font-weight: normal;
+}
+.resultDetail span.phoneType {
+    color: #a1a1a1;
+}
+.resultDetail span.country, .resultDetail span.modifiedDate, 
+.resultDetail .repositoryType, .resultDetail span.businessLine,
+.resultDetail span.region, .resultDetail span.TPNuser, .resultDetail span.user,
+.resultDetail span.group {
+    font-size: 13px;
+    line-height: 16px;
+    color: #a1a1a1;
+}
+.resultDetail .repositoryType {
+    margin-top: 10px;
+}
+.resultDetail span.email a {
+    color: #00B0E2;
+}
+.resultDetail span.email a:hover {
+    color: #00709D;
+}
+.resultDetail div {
+    /*max-width: 70%;*/
+    word-wrap: break-word;
+}
+.resultDetail span.PMdetails {
+    font-size: 13px;
+}
+.CoveoFieldTable.table {
+    margin-bottom: 0;
+    margin-top: 10px;
+}
+.CoveoFieldTable td, .CoveoFieldTable th {
+    font-size: 13px !important;
+    border: none !important;
+    vertical-align: middle !important;
+}
+.resultDetail table th.CoveoCaption {
+    border-bottom: 1px solid #e3e3e3;
+}
+
+/* - - - DOCUMENT TYPE ICON STYLES - - - */
+
+table.documentTable td div {
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_docTypeIcons.png");
+    height: 40px;
+    width: 40px;
+    background-size: 40px;
+    margin-right: 8px;
+}
+table.documentTable div.doc {
+    background-position: 0 278px;
+}
+table.documentTable div.html {
+    background-position: 0 184px;
+}
+table.documentTable div.xls {
+    background-position: 0 -96px;
+}
+table.documentTable td div.ppt {
+    background-position: 0 324px;
+}
+table.documentTable td div.rtf, table.documentTable td div.txt {
+    background-position: 0 231px;
+}
+table.documentTable td div.msg {
+    background-position: 0 372px;
+}
+table.documentTable td div.pdf {
+    background-position: 0 -3px;
+}
+table.documentTable td div.zip {
+    background-position: 0 92px;
+}
+table.documentTable td div.swf {
+    background-position: 0 45px;
+}
+/* TO HIDE ICON ON DEFAULT TEMPLATE FOR SHAREPOINT SEARCH RESULTS - DONT NEED THIS AFTER TEMPLATE FOR RESULT IS BUILT*/
+.documentTable.repositoryType div[class=""], .documentTable.repositoryType div[class="sppublishingpageslibrarylist"],
+.documentTable.repositoryType div[class="spsite"], .documentTable.repositoryType div[class="spdocumentlibrarylist"], 
+.documentTable.repositoryType div[class="sppublishingimageslibrarylist"], .documentTable.repositoryType div[class="spuserprofile"]
+ {
+    display: none;
+}
+
+/* - - - OPPORTUNITY STAGE ICON STYLES - - - */
+.oppStage {
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_oppStageIcons.png");
+    height: 30px;
+    width: 30px;
+    background-size: 270px auto;
+}
+
+.oppStage[title="1 Lead"]{
+    background-position: -3px -4px;
+}
+.oppStage[title="1A Lead - Scout"] {
+    background-position: -3px -4px;
+}
+.oppStage[title="1B Lead - Engage"] {
+    background-position: -3px -4px;
+}
+.oppStage[title="1C Lead - Position"] {
+    background-position: -3px -4px;
+}
+
+.oppStage[title="2 Capture"] {
+    background-position: -29px -4px;
+}
+.oppStage[title="2A Capture - LOI"] {
+    background-position: -29px -4px;
+}
+.oppStage[title="2B Capture - EOI"] {
+    background-position: -29px -4px;
+}
+.oppStage[title="2C Capture - SOQ"] {
+    background-position: -29px -4px;
+}
+.oppStage[title="2D Capture - RFI"] {
+    background-position: -29px -4px;
+}
+.oppStage[title="2E Capture - RFP"] {
+    background-position: -29px -4px;
+}
+
+.oppStage[title="3 Submitted"] {
+    background-position: -55px -4px;
+}
+.oppStage[title="3A Capture - Proposal Submitted"] {
+    background-position: -55px -4px;
+}
+.oppStage[title="3B Capture - Short List"] {
+    background-position: -55px -4px;
+}
+.oppStage[title="3C Capture - Interview"] {
+    background-position: -55px -4px;
+}
+
+.oppStage[title="4 Project on hold"] {
+    background-position: -82px -4px;
+}
+
+.oppStage[title="5A Program in Negotiation"] {
+    background-position: -108px -4px;
+}
+.oppStage[title="5B Program Signed and Active"] {
+    background-position: -108px -4px;
+}
+.oppStage[title="5 SNB/Win/Award"] {
+    background-position: -108px -4px;
+}
+
+
+.oppStage[title="6A Program Closed/Completed"] {
+    background-position: -133px -4px;
+}
+.oppStage[title="6 Contracted/Booked/Won"] {
+    background-position: -133px -4px;
+}
+
+.oppStage[title="7 Canceled by Client"] {
+    background-position: -161px -4px;
+}
+
+.oppStage[title="8 No-Go"] {
+    background-position: -214px -4px;
+}
+
+.oppStage[title="9 Lost"] {
+    background-position: -241px -4px;
+}
+
+
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - */
 /* - - - - - - - - - - SEARCH FACET STYLES - - - - - - - - - - - */
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - */
@@ -468,66 +681,4 @@
 .coveo-value.coveo-selectable.coveo-selected label .coveo-label .coveo-caption, .coveo-value.coveo-selectable.coveo-selected label .coveo-label .coveo-count {
     color: white;
     font-weight: normal;
-}
-/* - - - - - - - - - - RESULTS STYLES - - - - - - - - - - */
-
-.CoveoResult {
-    display: table;
-    width: 100%;
-    margin: 0;
-    padding: 20px;
-    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif !important;
-}
-.CoveoResult:last-child {
-    border: none;
-}
-.CoveoResult .coveo-title {
-    font-weight: bold;
-}
-.CoveoResult a:hover {
-    color: #59BA47;
-}
-.CoveoResultList {
-    /*padding: 20px;*/
-    margin-top: 0;
-}
-.CoveoResultLink:link {
-    color: #00709D;
-}
-
-.resultDetail {
-    font-size: 15px;
-}
-.resultDescription {
-    height: 50px;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    font-size: 13px !important;
-}
-.resultDetail span {
-    line-height: 23px;
-}
-
-.resultDetail span.phoneType {
-    color: #a1a1a1;
-}
-.resultDetail span.country, .resultDetail span.modifiedDate, 
-.resultDetail span.repositoryType, .resultDetail span.businessLine,
-.resultDetail span.region {
-    font-size: 13px;
-    line-height: 16px;
-    color: #a1a1a1;
-}
-.resultDetail span.email a {
-    color: #00B0E2;
-}
-.resultDetail span.email a:hover {
-    color: #00709D;
-}
-.resultDetail div {
-    /*max-width: 70%;*/
-    word-wrap: break-word;
-}
-.resultDetail span.PMdetails {
-    font-size: 13px;
 }
