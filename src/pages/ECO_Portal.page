@@ -1,4 +1,4 @@
-<apex:page applyBodyTag="false" controller="ECO_PortalController" showheader="false" sidebar="false" standardStylesheets="false" action="{!onLoad}" id="portalPage" title="Ecosystem" >
+<apex:page applyBodyTag="false" controller="ECO_PortalController" showheader="false" sidebar="false" standardStylesheets="false" action="{!onLoad}" id="portalPage" title="{!$Label.Ecosystem}" >
     <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/jquery.lazyload.min.js')}"></script>
     <script>
        $(function() {
@@ -33,7 +33,7 @@
             // Plugin used: http://jedfoster.com/Readmore.js, part of ECONiftyResources static resource
             $('div.nf').readmore({
 			  speed: 75,
-			  collapsedHeight: 20,
+			  collapsedHeight: 40,
 			  moreLink: '<a href="#">{!$Label.ECOPortalMore}</a>',
 			  lessLink: '<a href="#">{!$Label.ECOPortalLess}</a>'
 			});
@@ -62,36 +62,7 @@
         .publishercontainer .bottomBar{
             height:45px !important;
         }
-        
-        .newOpptyPopup {
-            background-color: white;
-            border-width: 2px;
-            border-style: solid;
-            z-index: 9999;
-            left: 50%;
-            padding:10px;
-            /* position: absolute; */
-            /* These are the 3 css properties you will need to change so the popup 
-            displays in the center of the screen. First set the width. Then set 
-            margin-left to negative half of what the width is. You can add 
-            the height property for a fixed size pop up if you want.*/
-            width: 500px;
-            margin-left: -250px;
-            top:100px;
-        }
-        
-        .newOpptyPopupBackground {
-            background-color:black;
-            opacity: 0.20;
-            filter: alpha(opacity = 20);
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            top: 0;
-            left: 0;
-            z-index: 9998;
-        }
-
+ 
     </style>
 
     <body class="nifty-ready">
@@ -279,14 +250,7 @@
                 <apex:actionFunction name="goToApplicationConfiguration" action="{!goToApplicationConfiguration}" />
                 <apex:actionFunction name="goToNewProject" action="{!goToNewProject}" />
                 <apex:actionFunction name="goToNewOpportunity" action="{!goToNewOpportunity}" />
-                
-                <apex:outputPanel id="newOpptyPopup">
-        			<apex:outputPanel styleClass="popupBackground" layout="block" rendered="{!displayNewOpptyPopup}"/>
-            			<apex:outputPanel styleClass="custPopup" layout="block" rendered="{!displayNewOpptyPopup}">
-                		{!$Label.ECOPortalNoOppAlert}<br/><br/><br/>
-                		<apex:commandButton value="{!$Label.ECOOK}" action="{!closeNewOpptyPopup}" rerender="newOpptyPopup"/>
-            		</apex:outputPanel>
-        		</apex:outputPanel>
+
             </apex:form>
 
 
@@ -378,20 +342,18 @@
                         </li>
 
                         <li class="dropdown hidden-xs">
-						<!--  
-                        	<apex:outputLink style="height:24px;" onClick="goToNewOpportunity();return false;">
+                        	<apex:outputLink style="height:24px;" onClick="goToNewOpportunityWithPermCheck();return false;">
     							<button class="btn btn-success" style="margin:12px 0 0 0;">{!$Label.ECOPortalOpportunity}</button>
 							</apex:outputLink>
-						-->
-                            <a style="height:24px;" href="{!URLFOR($action.opportunity.new, null)}" target="_blank"><button class="btn btn-success" style="margin:12px 0 0 0;">{!$Label.ECOPortalOpportunity}</button></a>
+                            <!--<a style="height:24px;" href="{!URLFOR($action.opportunity.new, null)}" target="_blank"><button class="btn btn-success" style="margin:12px 0 0 0;">{!$Label.ECOPortalOpportunity}</button></a>-->
                         </li>
 
                     </ul>
                     <ul class="nav navbar-top-links pull-right">
                         <!--User dropdown-->
                         <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <li class="add-tooltip" data-placement="bottom" data-toggle="tooltip" data-original-title="Home"><a href="/apex/ECO_Portal"><img src="{!URLFOR($Resource.ECO_SmartSearchAssets, 'ss_homeIcon.png')}" /></a></li>
-                        <li class="add-tooltip" data-placement="bottom" data-toggle="tooltip" data-original-title="SmartSearch"><a href="/apex/ECO_SmartSearch"><img src="{!URLFOR($Resource.ECO_SmartSearchAssets, 'ss_searchIcon.png')}" /></a></li>
+                        <li class="add-tooltip" data-placement="bottom" data-toggle="tooltip" data-original-title="{!$Label.ECOPortalHome}"><a href="/apex/ECO_Portal"><img src="{!URLFOR($Resource.ECO_SmartSearchAssets, 'ss_homeIcon.png')}" /></a></li>
+                        <li class="add-tooltip" data-placement="bottom" data-toggle="tooltip" data-original-title="{!$Label.ECOPortalSmartSearch}"><a href="/apex/ECO_SmartSearch"><img src="{!URLFOR($Resource.ECO_SmartSearchAssets, 'ss_searchIcon.png')}" /></a></li>
 
                         <li class="hidden-xs add-tooltip AWAN"  data-placement="bottom" data-toggle="tooltip" data-original-title="{!$Label.ECOPortalHelp}" >
                             <a href="http://my.aecomnet.com/Intranet/About/Delivery%20Excellence/Ecosystem/Training" target="_blank"><i class="fa fa-question-circle"></i></a>
@@ -403,7 +365,7 @@
                                     <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" html-data-original="{!photoUrl}" styleClass="img-circle img-user media-object lazy"/>
                                     
                                 </span>
-                                <div class="username visible-lg"><strong><apex:outputText value="{!theUser.Name}'s" /></strong> Ecosystem</div>
+                                <div class="username visible-lg"><strong><apex:outputText value="{!theUser.Name}'s" /></strong> {!$Label.Ecosystem}</div>
                             </a>
 
                             <div class="dropdown-menu dropdown-menu-md dropdown-menu-right with-arrow panel-default">
@@ -816,7 +778,7 @@
                         <div class="nano-content">
                             <div class="tab-pane fade in active" id="demo-asd-tab-1" style="margin-top:15px;">
                                 <h4 class="pad-hor text-thin">
-                                    <a onclick="goToReportsBuilder()" title="{!$Label.ECOPortalHideReports}" style="margin:0 25px 0 5px; cursor:pointer; float:right;">{!$Label.ECOPortalReports}</a>
+                                    <a onclick="goToReportsBuilder()" style="margin:0 25px 0 5px; cursor:pointer; float:right;">{!$Label.ECOPortalReports}</a>
                                     <i class="fa fa-gear" onclick="goToReportsBuilder()" style="float:right; cursor:pointer;" title="{!$Label.ECOPortalEditReports}"></i>
                                 </h4>
                                 
@@ -1010,14 +972,18 @@
         ga('create', 'UA-33974532-22', 'auto'); 
         ga('send', 'pageview'); 
 
-
-
+        function goToNewOpportunityWithPermCheck() {
+          	var hasOpptyAccess = {!hasAccessToOpportunities};
+           	// alert('hasOpptyAccess: ' + hasOpptyAccess);
+           	if (!hasOpptyAccess) {
+           		// alert('No access to opportunities');
+           		alert('{!$Label.ECOPortalNoOppAlert}');
+           	} else {
+           		goToNewOpportunity();
+           	}
+		}
 
     </script>
-
-
-
-
 
         </apex:define>
     </apex:composition>
