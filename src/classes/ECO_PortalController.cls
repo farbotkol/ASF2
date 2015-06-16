@@ -17,7 +17,8 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 	public List<PortalMessage__c> newsFeed				{ get; set; }
 	public String awanJSPath							{ get; set; }
 	public String clientCareNpsTextLabel                { get; set; }
-	public String incidentRateTextLabel                { get; set; }
+	public String incidentRateTextLabel                 { get; set; }
+	public Integer hasAccessToOpportunities				{ get; set; }
 	
 	private class ECO_PortalControllerException extends Exception {}
 	private System.LoggingLevel debugLevel = LoggingLevel.INFO;
@@ -55,15 +56,16 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 		reports = ECO_Service_Reports.getReportsForUser(theUser.Id);
 		
 		newsFeed = ECO_Utils_Alerts.getNewsFeedForPortal();
-		// TODO: Remove this temporary change to use only 1 news feed item - Sujit
-		/*
-		List<PortalMessage__c>  myNewsFeed = new List<PortalMessage__c>();
-		myNewsFeed.add(ECO_Utils_Alerts.getNewsFeedForPortal()[0]);
-		newsFeed = myNewsFeed;
-		*/
 		
 		if (!Test.isRunningTest()) {
 			photoUrl = ConnectApi.ChatterUsers.getPhoto(null, theUser.Id).smallPhotoUrl;
+		}
+		
+		opportunity o = [select Id from Opportunity limit 1];
+		if (o != NULL) {
+			hasAccessToOpportunities = 1;
+		} else {
+			hasAccessToOpportunities = 0;
 		}
 	}
 	
@@ -113,7 +115,6 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 	}
 	
 	public PageReference goToNewProject () {
-		
 		//PageReference pageRef = Page.ECO_ProjectSetup;
 		PageReference pageRef = new PageReference('/'+pse__Proj__c.sObjectType.getDescribe().getKeyPrefix()+'/e');
 		pageRef.getParameters().put('retURL', EncodingUtil.urlEncode('/apex/ECO_Portal', 'UTF-8'));
@@ -121,8 +122,9 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 	}
 	
 	public PageReference goToNewOpportunity () {
-		//PageReference pageRef = new PageReference('/setup/ui/recordtypeselect.jsp?ent=Opportunity&retURL=%2F006%2Fo&save_new_url=%2F006%2Fe%3FretURL%3D%252F006%252Fo');
-		PageReference pageRef = new PageReference('/'+Opportunity.sObjectType.getDescribe().getKeyPrefix()+'/e');
+		PageReference pageRef = new PageReference('/setup/ui/recordtypeselect.jsp?ent=Opportunity&retURL=%2F006%2Fo&save_new_url=%2F006%2Fe%3FretURL%3D%252F006%252Fo');
+		// PageReference pageRef = new PageReference('/'+Opportunity.sObjectType.getDescribe().getKeyPrefix()+'/e');
+		pageRef.getParameters().put('retURL', EncodingUtil.urlEncode('/apex/ECO_Portal', 'UTF-8'));
 		return pageRef;
 	}
 
