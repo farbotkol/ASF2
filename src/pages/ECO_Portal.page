@@ -298,7 +298,7 @@
                         <!--Alerts Modal-->
                         <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
                         <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="{!$Label.ECOPortalAlerts}">
-                            <a onclick="$('#modalAlerts').modal('show')" style="cursor:pointer;" title="{!$Label.ECOPortalAlerts}">
+                            <a onclick="$('#modalAlerts').modal('show')" style="cursor:pointer;">
                                 <i class="fa fa-warning fa-lg"></i>
                                 <apex:outputPanel layout="block" styleClass="badge badge-header badge-danger" rendered="{!alerts.size > 0}">
                                     <apex:outputText value="{!alerts.size}" />
@@ -309,7 +309,7 @@
                         <!--Task Modal -->
                         <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
                         <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="{!$Label.ECOPortalTasks}">
-                            <a onclick="$('#modalTasks').modal('show')" style="cursor:pointer;" title="{!$Label.ECOPortalTasks}">
+                            <a onclick="$('#modalTasks').modal('show')" style="cursor:pointer;">
                                 <i class="fa fa-tasks fa-lg"></i>
                                 <apex:outputPanel layout="block" styleClass="badge badge-header badge-danger" rendered="{!tasks.size > 0}">
                                     <apex:outputText value="{!tasks.size}" />
@@ -320,7 +320,7 @@
                         <!--Approval Modal -->
                         <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
                         <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="{!$Label.ECOPortalApprovals}">
-                            <a onclick="$('#modalApprovals').modal('show')" style="cursor:pointer;" title="{!$Label.ECOPortalApprovals}">
+                            <a onclick="$('#modalApprovals').modal('show')" style="cursor:pointer;">
                                 <i class="fa fa-check-square fa-lg"></i>
                                 <apex:outputPanel layout="block" styleClass="badge badge-header badge-danger" rendered="{!approvals.size > 0}">
                                     <apex:outputText value="{!approvals.size}" />
@@ -330,7 +330,7 @@
 
 
                         <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="{!$Label.ECOPortalOutlook}">
-                            <a href="outlook:Inbox" style="cursor:pointer;" title="{!$Label.ECOPortalOutlook}">
+                            <a href="outlook:Inbox" style="cursor:pointer;">
                                 <i class="fa fa-envelope fa-lg"></i>
                             </a>
                         </li>
@@ -451,7 +451,7 @@
 
                         <div class="controls">
                             <apex:repeat value="{!tickerMessages}" var="message" >
-                                <a href="#item-{!message.Order__c}" class="control-button">?</a>
+                                <a href="#item-{!message.Order__c}" class="control-button">&bull;</a>
                             </apex:repeat>
                         </div>
                     </div>
@@ -974,9 +974,7 @@
 
         function goToNewOpportunityWithPermCheck() {
           	var hasOpptyAccess = {!hasAccessToOpportunities};
-           	// alert('hasOpptyAccess: ' + hasOpptyAccess);
            	if (!hasOpptyAccess) {
-           		// alert('No access to opportunities');
            		alert('{!$Label.ECOPortalNoOppAlert}');
            	} else {
            		goToNewOpportunity();
