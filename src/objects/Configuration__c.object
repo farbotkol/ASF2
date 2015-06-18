@@ -46,7 +46,7 @@
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
-    <description>Used to arrange icons on EcoSystem Portal landing page.</description>
+    <description>Used to arrange icons on Ecosystem Portal landing page.</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
@@ -60,6 +60,17 @@
         <formula>Application__r.ImageName__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Application Image Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ApplicationName__c</fullName>
+        <externalId>false</externalId>
+        <formula>Application__r.ApplicationName__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Application Name</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -114,7 +125,7 @@
         </picklist>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
-        <visibleLines>6</visibleLines>
+        <visibleLines>4</visibleLines>
     </fields>
     <fields>
         <fullName>ConfigurationTemplate__c</fullName>
@@ -188,7 +199,7 @@
         </picklist>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
-        <visibleLines>6</visibleLines>
+        <visibleLines>4</visibleLines>
     </fields>
     <fields>
         <fullName>IsActive__c</fullName>
@@ -368,24 +379,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Type__c</fullName>
-        <externalId>false</externalId>
-        <label>Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Application</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Report</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-    </fields>
-    <fields>
         <fullName>UserSortOrder__c</fullName>
         <externalId>false</externalId>
         <label>User Sort Order</label>
@@ -412,11 +405,15 @@
     <listViews>
         <fullName>All</fullName>
         <columns>NAME</columns>
-        <columns>RECORDTYPE</columns>
         <columns>Application__c</columns>
+        <columns>ApplicationName__c</columns>
+        <columns>User__c</columns>
+        <columns>RECORDTYPE</columns>
         <columns>GeographiesAvailableTo__c</columns>
         <columns>RegionsAvailableTo__c</columns>
         <columns>BusinessLinesAvailableTo__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>
@@ -448,35 +445,77 @@
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>AppConfigs</fullName>
+        <fullName>Application_Templates</fullName>
         <columns>NAME</columns>
-        <columns>User__c</columns>
-        <columns>RECORDTYPE</columns>
+        <columns>ApplicationName__c</columns>
+        <columns>IsActive__c</columns>
+        <columns>IsDefault__c</columns>
+        <columns>IsHidden__c</columns>
+        <columns>IsRemovable__c</columns>
+        <columns>IsTemplateActive__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>RECORDTYPE</field>
-            <operation>notEqual</operation>
-            <value>Configuration__c.ReportTemplate</value>
+            <operation>equals</operation>
+            <value>Configuration__c.ApplicationTemplate</value>
         </filters>
-        <label>App Configs</label>
+        <label>Application Templates</label>
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>Application_Entries</fullName>
+        <fullName>Brian_s_Apps</fullName>
         <columns>NAME</columns>
-        <columns>Application__c</columns>
-        <columns>User__c</columns>
+        <columns>ApplicationName__c</columns>
+        <columns>IsActive__c</columns>
+        <columns>IsHidden__c</columns>
+        <columns>IsRemovable__c</columns>
+        <columns>IsTemplateActive__c</columns>
+        <columns>IsDefault__c</columns>
+        <columns>BusinessLinesAvailableTo__c</columns>
+        <columns>GeographiesAvailableTo__c</columns>
+        <columns>UserSortOrder__c</columns>
         <filterScope>Everything</filterScope>
+        <filters>
+            <field>User__c</field>
+            <operation>equals</operation>
+            <value>Brian Jacobi</value>
+        </filters>
         <filters>
             <field>RECORDTYPE</field>
             <operation>equals</operation>
             <value>Configuration__c.Application</value>
         </filters>
-        <label>Application Entries</label>
+        <label>Brian&apos;s Apps</label>
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>Michaels_Apps</fullName>
+        <fullName>Michael_s_Apps</fullName>
+        <columns>NAME</columns>
+        <columns>ApplicationName__c</columns>
+        <columns>IsActive__c</columns>
+        <columns>IsHidden__c</columns>
+        <columns>IsRemovable__c</columns>
+        <columns>IsTemplateActive__c</columns>
+        <columns>IsDefault__c</columns>
+        <columns>BusinessLinesAvailableTo__c</columns>
+        <columns>GeographiesAvailableTo__c</columns>
+        <columns>UserSortOrder__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>User__c</field>
+            <operation>equals</operation>
+            <value>Michael Lawrence</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Configuration__c.Application</value>
+        </filters>
+        <label>Michael&apos;s Apps</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Tree_s_Apps</fullName>
         <columns>NAME</columns>
         <columns>RECORDTYPE</columns>
         <columns>Application__c</columns>
@@ -491,9 +530,9 @@
         <filters>
             <field>User__c</field>
             <operation>equals</operation>
-            <value>Michael Lawrence</value>
+            <value>Trieste LaPorte</value>
         </filters>
-        <label>Michael&apos;s Apps</label>
+        <label>Trieste&apos;s Apps</label>
         <language>en_US</language>
     </listViews>
     <nameField>
@@ -513,7 +552,27 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>Building Construction</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Corporate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Design Consulting Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Energy %26 Construction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Management Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Oil %26 Gas</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -545,6 +604,10 @@
             </values>
             <values>
                 <fullName>EMEA - Europe</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EMEA - India</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -660,17 +723,6 @@
             </values>
             <values>
                 <fullName>West%2FGulf Coast</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Type__c</picklist>
-            <values>
-                <fullName>Application</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Report</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -860,17 +912,6 @@
                 <default>false</default>
             </values>
         </picklistValues>
-        <picklistValues>
-            <picklist>Type__c</picklist>
-            <values>
-                <fullName>Application</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Report</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
     </recordTypes>
     <recordTypes>
         <fullName>Report</fullName>
@@ -883,7 +924,27 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>Building Construction</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Corporate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Design Consulting Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Energy %26 Construction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Management Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Oil %26 Gas</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -915,6 +976,10 @@
             </values>
             <values>
                 <fullName>EMEA - Europe</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EMEA - India</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1030,17 +1095,6 @@
             </values>
             <values>
                 <fullName>West%2FGulf Coast</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Type__c</picklist>
-            <values>
-                <fullName>Application</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Report</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -1056,7 +1110,27 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>Building Construction</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Corporate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Design Consulting Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Energy %26 Construction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Management Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Oil %26 Gas</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -1088,6 +1162,10 @@
             </values>
             <values>
                 <fullName>EMEA - Europe</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EMEA - India</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1206,19 +1284,35 @@
                 <default>false</default>
             </values>
         </picklistValues>
-        <picklistValues>
-            <picklist>Type__c</picklist>
-            <values>
-                <fullName>Application</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Report</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
     </recordTypes>
-    <searchLayouts/>
+    <searchLayouts>
+        <customTabListAdditionalFields>ApplicationName__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>User__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>IsActive__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>IsRemovable__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>BusinessLinesAvailableTo__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>GeographiesAvailableTo__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>RegionsAvailableTo__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>LAST_UPDATE</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>ApplicationName__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>User__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>IsActive__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>IsHidden__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>BusinessLinesAvailableTo__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>RegionsAvailableTo__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>GeographiesAvailableTo__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>LAST_UPDATE</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>ApplicationName__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>User__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>IsActive__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>IsRemovable__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>GeographiesAvailableTo__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>RegionsAvailableTo__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>BusinessLinesAvailableTo__c</searchResultsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <validationRules>
         <fullName>If_Type_Application_Require_Application</fullName>
