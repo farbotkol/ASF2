@@ -286,16 +286,17 @@ public with sharing class ECO_ApplicationCustomizerController extends ECO_PageCo
 				Configuration__c newConfigItem = configFromPage.clone(false, false, false, false);
 				
 				newConfigItem.UserSortOrder__c = newSortOrder;
-	
-				/* This won't be necessary now that the apps are added on first visit
+
 				if(ECO_Utils_String.NullCheck(newConfigItem.ConfigurationTemplate__c) == ''){
 					newConfigItem.ConfigurationTemplate__c = selectedAndAvailableAppMap.get(s.replace('id=', '')).Id;
 					newConfigItem.User__c = UserInfo.getUserId();
 					newConfigItem.RecordTypeId = applicationRecordTypeId;
 				}
-				*/
+				
 				newConfigItem.IsHidden__c = false; // Now this serialized list only conains nonhidden stuff, so let's hardcode it.
 				newConfigItem.IsActive__c = true;
+
+				system.debug('Config Item: ' + newConfigItem);
 				
 				system.debug('newConfigItem.UserSortOrder__c:  '+newConfigItem.UserSortOrder__c);
 				
