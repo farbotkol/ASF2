@@ -17,6 +17,9 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
 	public List<PortalMessage__c> newsFeed				{ get; set; }
 	public String awanJSPath							{ get; set; }
     
+    public String coveoToken							{get; set;}
+    public String endPointURL							{get; set;}
+    
     private class ECO_SmartSearchControllerException extends Exception {}    
     private System.LoggingLevel debugLevel = LoggingLevel.INFO;
     
@@ -56,22 +59,45 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
     
     public PageReference getSearchToken() {
         applications = ECO_Service_Applications.getSortedList(theUser);
+        ECO_Smart_Search_Settings__c smartSearchSetting = ECO_Smart_Search_Settings__c.getInstance('SmartSearch');
+        endPointURL = smartSearchSetting.endPointURL__c;
+        String randomKey = smartsearchSetting.Key__c;
         
+        // Make endpointURL and key passed to the server configurable.
     	Http http = new Http();
-        String json = '{"userIds": [{"' + UserInfo.getUserEmail() + '", "provider" : "Email Security Provider", "type" : "User"}]}';
-        String endPoint = 'https://smartsearchrest.aecom.com:8443/rest/search/token';
+        String jsonReq = '{"userIds": [{"name":"' + UserInfo.getUserEmail() + '", "provider" : "Email Security Provider", "type" : "User"}]}';
+        String endPoint = endPointURL + 'token';
+        //String endPoint = 'https://smartsearchrest.aecom.com:8443/rest/search/token';
+        
         //https://smartsearchrest.aecom.com/rest/search
-        String url = endPoint  + '?' + json;
+        //String url = endPoint  + '?' + json;
+        
         HttpRequest request = new HttpRequest();
         
         request.setMethod('POST');
         
         request.setHeader('content-type', 'application/json');
-        request.setHeader('Authorization', 'Bearer anyrandomstringffjkfajl;akf0452098234790dklqer098923498aslsdk2340');
-        request.setEndpoint(url);
+        request.setHeader('Authorization', 'Bearer ' + randomKey);
+        //request.setHeader('Authorization', 'Bearer anyrandomstringffjkfajl;akf0452098234790dklqer098923498aslsdk2340');
+        request.setEndpoint(endPoint);
+        request.setBody(jsonReq);
         
-        //HTTPResponse response = http.send(request);
-        //system.debug('Response: ' + response.getBody());
+        HTTPResponse response = http.send(request);
+        system.debug('Response: ' + response.getBody());
+        
+        System.debug('response.getStatusCode(): ' + response.getStatusCode());
+		if(response.getStatusCode() == 200) {
+            System.debug('parsing record');
+            JSONParser parser = JSON.createParser(response.getBody());
+            parser.nextToken();
+			parser.nextValue();
+            coveoToken = parser.getText();
+        }
+        else {
+            coveoToken = null;
+        }
+        system.debug('coveoToken: ' + coveoToken);
+        
         return null;
     }
     
