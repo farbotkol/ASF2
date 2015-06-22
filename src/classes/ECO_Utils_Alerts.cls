@@ -25,7 +25,7 @@ public without sharing class ECO_Utils_Alerts {
 	public static List<PortalMessage__c> getNewsFeedForPortal () {
 		Date theDate = Date.today();
 		
-		return [SELECT Id
+		List<PortalMessage__c> portalMessages = [SELECT Id
 						, User__c
 						, User__r.Name
 						, Subject__c
@@ -34,11 +34,20 @@ public without sharing class ECO_Utils_Alerts {
 						, LinkToRecord__c
 						, FullImageUrl__c
 						, EndDate__c
+						, (select Id
+						   , Language__c
+						   , subject__c
+						   , LongDescription__c
+						   , LinkToRecord__c  
+                           from NewsFeedTranslations__r 
+                           where Language__c = :UserInfo.getLanguage()) 
 				FROM PortalMessage__c
 				WHERE RecordType.Name = :ECO_Constants.PortalMessage_FeedItemRecordTypeName
 					AND (EndDate__c >= :theDate OR EndDate__c = null)
 					AND StartDate__c <= :theDate
 				ORDER BY StartDate__c DESC, CreatedDate DESC];
+		// System.debug('portal messages: ' + portalMessages);
+		return portalMessages;
 	}
 	
 	public static List<PortalMessage__c> getPortalMessagesForUser (Id userId) {
@@ -60,6 +69,12 @@ public without sharing class ECO_Utils_Alerts {
 														, RecordTypeId
 														, RecordType.Name
 														, Subject__c 
+														, (select Id
+														   , Language__c
+														   , subject__c
+														   , LongDescription__c 
+								                           from NewsFeedTranslations__r 
+								                           where Language__c = :UserInfo.getLanguage()) 
 												FROM PortalMessage__c 
 												WHERE EndDate__c >= :theDate
 													AND StartDate__c <= :theDate
