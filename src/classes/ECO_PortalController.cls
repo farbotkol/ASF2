@@ -18,7 +18,6 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 	public String awanJSPath							{ get; set; }
 	public String clientCareNpsTextLabel                { get; set; }
 	public String incidentRateTextLabel                 { get; set; }
-	public Integer hasAccessToOpportunities				{ get; set; }
 	
 	private class ECO_PortalControllerException extends Exception {}
 	private System.LoggingLevel debugLevel = LoggingLevel.INFO;
@@ -59,13 +58,6 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 		
 		if (!Test.isRunningTest()) {
 			photoUrl = ConnectApi.ChatterUsers.getPhoto(null, theUser.Id).smallPhotoUrl;
-		}
-		
-		opportunity o = [select Id from Opportunity limit 1];
-		if (o != NULL) {
-			hasAccessToOpportunities = 1;
-		} else {
-			hasAccessToOpportunities = 0;
 		}
 	}
 	
