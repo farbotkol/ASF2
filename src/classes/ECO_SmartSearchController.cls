@@ -20,6 +20,8 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
     public String coveoToken							{get; set;}
     public String endPointURL							{get; set;}
     
+    public String collaborationGroups					{get; set;}
+
     private class ECO_SmartSearchControllerException extends Exception {}    
     private System.LoggingLevel debugLevel = LoggingLevel.INFO;
     
@@ -55,6 +57,17 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
 		if (!Test.isRunningTest()) {
 			photoUrl = ConnectApi.ChatterUsers.getPhoto(null, theUser.Id).smallPhotoUrl;
 		}
+        setCollaborationGroups();
+    }
+    
+    public void setCollaborationGroups(){
+        List<CollaborationGroupMember> cgmList = [select CollaborationGroupId from CollaborationGroupMember where MemberId=:UserInfo.getUserId()];
+
+		List<Id> cgmIdsList = new List<Id>();
+        for (CollaborationGroupMember cgm : cgmList){
+        	cgmIdsList.add(cgm.CollaborationGroupId);
+        }
+		collaborationGroups = String.join(cgmIdsList, ',');
     }
     
     public PageReference getSearchToken() {
@@ -62,15 +75,14 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
         ECO_Smart_Search_Settings__c smartSearchSetting = ECO_Smart_Search_Settings__c.getInstance('SmartSearch');
         endPointURL = smartSearchSetting.endPointURL__c;
         String randomKey = smartsearchSetting.Key__c;
+        String orgId = UserInfo.getOrganizationId();
         
         // Make endpointURL and key passed to the server configurable.
     	Http http = new Http();
-        String jsonReq = '{"userIds": [{"name":"' + UserInfo.getUserEmail() + '", "provider" : "Email Security Provider", "type" : "User"}]}';
+        String orgIdFilter = '(@sforganizationid=('+orgId.substring(0, 15)+') OR NOT @sforganizationid)';//every saleforce document from current org  + everything  that is not Salesforce conent
+        String jsonReq = '{"userIds": [{"name":"' + UserInfo.getUserEmail() + '", "provider" : "Email Security Provider", "type" : "User"}],"filter": "'+orgIdFilter+'"}';
+        System.debug('jsonReq: ' + jsonReq);
         String endPoint = endPointURL + 'token';
-        //String endPoint = 'https://smartsearchrest.aecom.com:8443/rest/search/token';
-        
-        //https://smartsearchrest.aecom.com/rest/search
-        //String url = endPoint  + '?' + json;
         
         HttpRequest request = new HttpRequest();
         
@@ -78,7 +90,6 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
         
         request.setHeader('content-type', 'application/json');
         request.setHeader('Authorization', 'Bearer ' + randomKey);
-        //request.setHeader('Authorization', 'Bearer anyrandomstringffjkfajl;akf0452098234790dklqer098923498aslsdk2340');
         request.setEndpoint(endPoint);
         request.setBody(jsonReq);
         
