@@ -103,7 +103,7 @@ public without sharing class ECO_Utils_Meta {
 		// Add these values to the selectoption list.
 		for (Schema.PicklistEntry a : values)
 		{ 
-			options.add(new SelectOption(a.getLabel(), a.getValue())); 
+			options.add(new SelectOption(a.getValue(), a.getLabel())); 
 		}
 		return options;
    }
