@@ -19,6 +19,14 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
     
     public String coveoToken							{get; set;}
     public String endPointURL							{get; set;}
+    public String analyticsEndPoint						{get; set;}
+    public String tpnSearchExpression					{get; set;}
+    public String searchCoveoSearchInterfaceExpression 	{get; set;}
+    public String coveoTabAllExpression					{get; set;}
+    public String coveoTabPeopleExpression				{get; set;}
+    public String coveoTabProjectsExpression			{get; set;}
+    public String coveoTabPracticeExpression			{get; set;}
+    public String filterByFileTypeAllowedValues			{get; set;}
     
     public String collaborationGroups					{get; set;}
 
@@ -71,16 +79,49 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
     }
     
     public PageReference getSearchToken() {
+        setCollaborationGroups();
+        
         applications = ECO_Service_Applications.getSortedList(theUser);
         ECO_Smart_Search_Settings__c smartSearchSetting = ECO_Smart_Search_Settings__c.getInstance('SmartSearch');
         endPointURL = smartSearchSetting.endPointURL__c;
+        analyticsEndPoint = smartSearchSetting.Analytics_End_Point__c;
+        tpnSearchExpression = smartSearchSetting.TPN_Search_Expression1__c;
+        if(smartSearchSetting.TPN_Search_Expression_2__c != null && smartSearchSetting.TPN_Search_Expression_2__c != '') {
+            tpnSearchExpression = tpnSearchExpression + ' OR ' + smartSearchSetting.TPN_Search_Expression_2__c;            
+        }
+        tpnSearchExpression = tpnSearchExpression.replace('{!collaborationGroups}', collaborationGroups);
+        
+        searchCoveoSearchInterfaceExpression = smartSearchSetting.Search_CoveoSearchInterface_Expression__c;
+        
+        coveoTabAllExpression = smartSearchSetting.CoveoTab_All_Expression1__c;
+        if(smartSearchSetting.CoveoTab_All_Expression2__c != null && smartSearchSetting.CoveoTab_All_Expression2__c != '') {
+            coveoTabAllExpression = coveoTabAllExpression + ' OR ' + smartSearchSetting.CoveoTab_All_Expression2__c;
+        }
+        
+        coveoTabAllExpression = coveoTabAllExpression.replace('{!collaborationGroups}', collaborationGroups);
+        
+        coveoTabPeopleExpression = smartSearchSetting.CoveoTab_People_Expression__c;
+        coveoTabProjectsExpression = smartSearchSetting.CoveoTab_Projects_Expression__c;
+        coveoTabPracticeExpression = smartSearchSetting.CoveoTab_Practice_Expression_1__c;
+		if(smartSearchSetting.CoveoTab_Practice_Expression_2__c != null && smartSearchSetting.CoveoTab_Practice_Expression_2__c != '') {
+            coveoTabPracticeExpression = coveoTabPracticeExpression + ' OR ' + smartSearchSetting.CoveoTab_Practice_Expression_2__c;
+        }       
+        coveoTabPracticeExpression = coveoTabPracticeExpression.replace('{!collaborationGroups}', collaborationGroups);
+        
+        filterByFileTypeAllowedValues = smartSearchSetting.Filter_By_File_Type_Allowed_Values__c;
+        
         String randomKey = smartsearchSetting.Key__c;
         String orgId = UserInfo.getOrganizationId();
+        
+        
+        
+        Id profileId = UserInfo.getProfileId();
+		String profileName = [SELECT Id, Name FROM Profile WHERE Id=:profileId].Name;
         
         // Make endpointURL and key passed to the server configurable.
     	Http http = new Http();
         String orgIdFilter = '(@sforganizationid=('+orgId.substring(0, 15)+') OR NOT @sforganizationid)';//every saleforce document from current org  + everything  that is not Salesforce conent
-        String jsonReq = '{"userIds": [{"name":"' + UserInfo.getUserEmail() + '", "provider" : "Email Security Provider", "type" : "User"}],"filter": "'+orgIdFilter+'"}';
+        String jsonReq = '{"userIds": [{"name":"' + UserInfo.getUserEmail() + '", "provider" : "Email Security Provider", "type" : "User"}],"filter": "'+orgIdFilter+'","userGroups": ["' + profileName + '"]}';
         System.debug('jsonReq: ' + jsonReq);
         String endPoint = endPointURL + 'token';
         
@@ -111,6 +152,37 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
         
         return null;
     }
+    /*
+    @RemoteAction
+    public static void DocumentSearchPush(String documentTitle, String documentURL, String sysurihash) {
+        String documentDetailToStore = documentTitle + '@@@' + documentURL + '@@@' + sysurihash;
+        List<String> recentlyViewed = new List<String>(); 
+        
+        User usr = [SELECT Id, smartSearchMyRecentlyViewed__c FROM User WHERE Id =: UserInfo.getUserId()];
+        
+        if(usr.smartSearchMyRecentlyViewed__c != null && usr.smartSearchMyRecentlyViewed__c != '') {
+            recentlyViewed = usr.smartSearchMyRecentlyViewed__c.split(',');
+        
+            if(recentlyViewed.size() >= 10) {
+                recentlyViewed.remove(0);
+            }
+        }
+        
+        recentlyViewed.add(documentDetailToStore);
+        
+        String smartSearchMyRecentlyViewed = String.join(recentlyViewed, ',');
+        
+        usr.smartSearchMyRecentlyViewed__c = smartSearchMyRecentlyViewed;
+        
+        update usr;
+    }
+    
+    @RemoteAction
+    public static String DocumentSearchPull() {
+        User usr = [SELECT Id, smartSearchMyRecentlyViewed__c FROM User WHERE Id =: UserInfo.getUserId()];
+        
+        return usr.smartSearchMyRecentlyViewed__c;
+    }*/
     
     public PageReference refreshProjects () {
 		projects = ECO_Service_Projects.getProdjectsForUser(theUser.Id, showClosed, ptmPickListProvider.Role__c);
