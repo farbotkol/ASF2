@@ -8,20 +8,23 @@
 
 .container.Search, .container.SearchResults {
     width: 100%;
+    font-family: "Open Sans", Arial, sans-serif !important;
+}
+.CoveoSearchInterface{
+    font-family: "Open Sans", Arial, sans-serif;
 }
 .blueBlock {
     background-color: #02BCE5;
     padding: 20px 30px !important;
     min-height: 153px;
+    max-height: 164px;
 }
-.blueBlock span.smart {
-    color: #CCECF7;
-    text-transform: initial;
+.blueBlock span.search{
+    color: white;
 }
 .blueBlock h1 {
-    color: white;
+    color: #CCECF7;
     font-size: 24px !important;
-    text-transform: uppercase;
     margin-top: 5px;
 }
 .blueBlock p {
@@ -47,9 +50,10 @@
 
 .searchBlock {
     padding: 0 !important;
+    max-height: 164px;
 }
 .searchBar {
-    margin: 5% 20px;
+    margin: 50px 20px 0;
 }
 .searchBlock .searchBar.row div {
     padding: 0 !important;
@@ -157,6 +161,11 @@
 
 /* - - TYPE AHEAD STYLES - - */
 
+input.CoveoQueryBox::-ms-clear {
+    display: none;
+/* gets rid of double x in search box when typing ahead */
+}
+
 .coveo-omnibox {
     border: 2px solid #e3e3e3;
     border-top: none;
@@ -186,7 +195,8 @@
 .coveo-omnibox .coveo-omnibox-selected {
     background-color: #E7EBEE;
 }
-.coveo-top-suggestion-header, .coveo-top-field-suggestion-header, .coveo-top-analytics-suggestion-header, .coveo-omnibox-result-list-header {
+.coveo-top-suggestion-header, .coveo-top-field-suggestion-header, .coveo-top-analytics-suggestion-header, 
+.coveo-omnibox-result-list-header {
     background-color: #e3e3e3;
     margin-left: -10px;
 }
@@ -241,11 +251,9 @@
 }
 .sectHead h2 {
     font-size: 20px !important;
-    margin: 20px 0 20px 20px;
+    margin: 15px 0 15px 14px;
 }
-.subModules {
 
-}
 .sectBody {
     padding: 20px;
     background-color: white;
@@ -255,6 +263,33 @@
 }
 .sectFilter {
     margin-top: 20px;
+}
+.CoveoErrorReport[data-pop-up="false"] {
+    display: none;
+    /* hides gray box that appears when no results found */
+}
+.resultsModules .CoveoResult .resultDetail {
+    padding: 0;
+}
+.resultsModules.recentViewLinks .CoveoResult {
+    border-bottom: none;
+    padding: 5px 15px;
+}
+.resultsModules.recentViewLinks .CoveoResult:first-child {
+    padding: 0px 20px 5px 15px;
+}
+.resultsModules.recentViewLinks .CoveoResult .coveo-title {
+    font-size: 14px !important;
+    line-height: 19px !important;
+}
+.Search .CoveoResult:first-child {
+    padding-top: 0;
+}
+.coveo-show-if-no-results {
+    color: #515151;
+    font-family: "Open Sans", Arial, sans-serif;
+    font-size: 12px;
+    padding: 0 20px 20px;
 }
 
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - */
@@ -270,10 +305,43 @@
         /* fixes width issue on iOS 7 & 8.3 */
     }
 }
+/* - - - - FILTER STYLES - - - - */
+
+/* - CLEAR-ALL-FILTER STYLES - */
+.CoveoBreadcrumb {
+    margin: 0 0 20px;
+}
+.CoveoBreadcrumb .coveo-clear-all {
+    background-color: #fff;
+}
+.CoveoBreadcrumb .coveo-separator {
+    color: #515151;
+}
+.CoveoBreadcrumb .coveo-caption {
+    color: #00729d;
+}
+.coveo-facet-breadcrumb .coveo-values .coveo-value .coveo-clear {
+    margin: 4px 2px 0 5px;
+}
+.coveo-facet-breadcrumb .coveo-values .coveo-value:hover .coveo-clear {
+    color: #02BCE5;
+}
+.CoveoBreadcrumb .item {
+    overflow: visible;
+    white-space: initial !important;
+    text-overflow: initial;
+}
+.coveo-facet-breadcrumb .coveo-values .coveo-value .coveo-multi-icon.coveo-selected {
+    background-position: -439px -83px;
+    height: 15px;
+}
+
 
 .CoveoSearchInterface {
     background-color: transparent;
 }
+
+/* - SEARCH RESULT AMOUNT STYLES - */
 .resultTotal {
     font-size: 20px;
     margin-bottom: 10px;
@@ -282,9 +350,11 @@
     font-size: 20px;
     font-weight: normal;
 }
+
+/* - FACET STYLES - */
 .coveo-settings, .coveo-icon.syssource, .coveo-icon.sfaccountname, .coveo-icon.objecttype, 
 .coveo-icon.sysfiletype, .coveo-icon.sfownername, .coveo-icon.sfopportunitystagename,
-.coveo-icon.sysyear, .coveo-icon.sysmonth, .coveo-icon.sysconcepts {
+.coveo-icon.sysyear, .coveo-icon.sysmonth, .coveo-icon.sysconcepts, .coveo-icon.sfaccounttype {
     display: none !important;
     /* hide icons in the header of the facets */
 }
@@ -295,23 +365,7 @@
     background: white;
     /*padding: 25px;*/
 }
-.CoveoQuerySummary .coveo-highlight {
-    font-weight: normal;
-}
-.coveo-next a:hover, .coveo-next a > span:hover, .coveo-previous a:hover, .coveo-previous a > span:hover  {
-    border: none !important;
-    background-color: transparent !important;
-}
-.coveo-next a > span[title="Next"], .CoveoPager ul li.coveo-next > a > span {
-    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_nextArrow.png") !important;
-    background-size: 11px 11px;
-    background-position: 0 0;
-}
-.coveo-previous a > span[title="Previous"], .CoveoPager ul li.coveo-previous > a > span {
-    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_lastArrow.png") !important;
-    background-size: 11px 11px;
-    background-position: 0 0;
-}
+
 .coveo-footer {
     border-top: 1px solid #cccccc;
     padding-top: 5px;
@@ -333,11 +387,7 @@
     min-height: 64px;
     min-width: 64px;
 }
-@media (max-width:987px) {
-    .resultImg img {
-        margin-top: 15px;
-    }
-}
+
 
 /* - - NO RESULTS/DID YOU MEAN STYLES - - */
 
@@ -391,6 +441,23 @@
 
 /* - - SORTING/PAGINATION STYLES - - */
 
+.CoveoQuerySummary .coveo-highlight {
+    font-weight: normal;
+}
+.coveo-next a:hover, .coveo-next a > span:hover, .coveo-previous a:hover, .coveo-previous a > span:hover  {
+    border: none !important;
+    background-color: transparent !important;
+}
+.coveo-next a > span[title="Next"], .CoveoPager ul li.coveo-next > a > span {
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_nextArrow.png") !important;
+    background-size: 11px 11px;
+    background-position: 0 0;
+}
+.coveo-previous a > span[title="Previous"], .CoveoPager ul li.coveo-previous > a > span {
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_lastArrow.png") !important;
+    background-size: 11px 11px;
+    background-position: 0 0;
+}
 .coveo-sort-section {
     text-align: left;
     float: left;
@@ -449,6 +516,7 @@
     margin: 0;
     padding: 20px;
     font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif !important;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.1);
 }
 .CoveoResult:last-child {
     border: none;
@@ -564,39 +632,45 @@ table.documentTable td div {
     width: 40px;
     background-size: 40px;
     margin-right: 8px;
+    background-position: -4px 44px;
 }
 table.documentTable div.doc {
-    background-position: 0 370px;
+    background-position: -4px 414px;
 }
 table.documentTable div.html {
-    background-position: 0 276px;
+    background-position: -4px 330px;
 }
 table.documentTable div.xls, table.documentTable div.xlsx {
-    background-position: 0 -96px;
+    background-position: -4px -96px;
 }
 table.documentTable td div.ppt {
-    background-position: 0 416px;
+    background-position: -4px 460px;
 }
 table.documentTable td div.rtf, table.documentTable td div.txt {
-    background-position: 0 323px;
+    background-position: -4px 367px;
 }
 table.documentTable td div.msg {
-    background-position: 0 464px;
+    background-position: -4px 507px;
 }
 table.documentTable td div.pdf {
-    background-position: 0 -3px;
+    background-position: -4px -3px;
 }
 table.documentTable td div.zip {
-    background-position: 0 184px;
+    background-position: -3px 227px;
 }
 table.documentTable td div.wav {
-    background-position: 0 45px;
+    background-position: -3px 88px;
 }
 table.documentTable td div.exe {
-    background-position: 0 89px;
+    background-position: -3px 133px;
 }
 table.documentTable td div.swf {
-    background-position: 0 138px;
+/* video files */
+    background-position: -3px 181px;
+}
+table.documentTable td div.vsd {
+/* image files */
+    background-position: -4px 601px;
 }
 /* TO HIDE ICON ON DEFAULT TEMPLATE FOR SHAREPOINT SEARCH RESULTS - DONT NEED THIS AFTER TEMPLATE FOR RESULT IS BUILT */
 .documentTable.repositoryType div[class=""], .documentTable.repositoryType div[class="sppublishingpageslibrarylist"],
@@ -714,7 +788,7 @@ table.documentTable td div.swf {
     margin-bottom: 15px;
 }
 .CoveoFacet .coveo-title, .CoveoFacetRange .coveo-title {
-    color: white;
+    color: white !important;
     font-size: 17px;
 }
 
@@ -775,19 +849,41 @@ table.documentTable td div.swf {
         padding: 5px 7px;
         font-size: 13px;
     }
+    .searchBar {
+        margin: 50px 20px 0;
+    }
 }
 
 /* SMALLER THAN MD */
 @media (max-width:992px){
-
+    .searchBar {
+        margin: 20px 8%;
+    }
+    .searchBar select {
+        width: 100%;
+    }
+    .searchBar .searchBtn, .CoveoSearchButton {
+        display: block;
+        width: 100%;
+        padding: 10px 2%;
+    }
+    .resultImg img {
+        margin-top: 15px;
+    }
 }
 
 /* TARGET SM SIZE */
 @media (min-width: 768px) and (max-width: 992px) {
-
+    .searchBar .searchBtn, .CoveoSearchButton {
+        font-size: 21px;
+    }
 }
 
 /* TARGET XS SIZE */
 @media (max-width: 766px) {
-
+    .searchBar .searchBtn, .CoveoSearchButton {
+        font-size: 16px;
+    }
+    .blueBlock {
+        max-height: 100%;
 }
