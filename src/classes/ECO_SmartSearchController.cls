@@ -111,9 +111,11 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
         filterByFileTypeAllowedValues = smartSearchSetting.Filter_By_File_Type_Allowed_Values__c;
         
         String randomKey = smartsearchSetting.Key__c;
-        String orgId = UserInfo.getOrganizationId();
         
-        
+        String orgId = smartSearchSetting.OrganizationId__c;
+        if(String.isBlank(orgId) || orgId.length() != 15){
+        	orgId = UserInfo.getOrganizationId();
+        }        
         
         Id profileId = UserInfo.getProfileId();
 		String profileName = [SELECT Id, Name FROM Profile WHERE Id=:profileId].Name;
@@ -152,37 +154,36 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
         
         return null;
     }
-    /*
+    
     @RemoteAction
-    public static void DocumentSearchPush(String documentTitle, String documentURL, String sysurihash) {
-        String documentDetailToStore = documentTitle + '@@@' + documentURL + '@@@' + sysurihash;
-        List<String> recentlyViewed = new List<String>(); 
+    public static String getMyRecentSearch() {
+        User usr = [SELECT Id, smartSearchMyRecentSearch__c FROm User WHERE Id =: UserInfo.getUserId()];
         
-        User usr = [SELECT Id, smartSearchMyRecentlyViewed__c FROM User WHERE Id =: UserInfo.getUserId()];
-        
-        if(usr.smartSearchMyRecentlyViewed__c != null && usr.smartSearchMyRecentlyViewed__c != '') {
-            recentlyViewed = usr.smartSearchMyRecentlyViewed__c.split(',');
-        
-            if(recentlyViewed.size() >= 10) {
-                recentlyViewed.remove(0);
-            }
-        }
-        
-        recentlyViewed.add(documentDetailToStore);
-        
-        String smartSearchMyRecentlyViewed = String.join(recentlyViewed, ',');
-        
-        usr.smartSearchMyRecentlyViewed__c = smartSearchMyRecentlyViewed;
+        return usr.smartSearchMyRecentSearch__c;
+    }
+    
+    @RemoteAction
+    public static void pushMyRecentSearch(String smartSearchMyRecentSearch) {
+        User usr = [SELECT Id, smartSearchMyRecentSearch__c FROm User WHERE Id =: UserInfo.getUserId()];
+        usr.smartSearchMyRecentSearch__c = smartSearchMyRecentSearch;
         
         update usr;
     }
     
     @RemoteAction
-    public static String DocumentSearchPull() {
-        User usr = [SELECT Id, smartSearchMyRecentlyViewed__c FROM User WHERE Id =: UserInfo.getUserId()];
+    public static String getMyRecentlyViewed() {
+        User usr = [SELECT Id, smartSearchMyRecentlyViewed__c FROm User WHERE Id =: UserInfo.getUserId()];
         
         return usr.smartSearchMyRecentlyViewed__c;
-    }*/
+    }
+    
+    @RemoteAction
+    public static void pushMyRecentlyViewed(String smartSearchMyRecentlyViewed) {
+        User usr = [SELECT Id, smartSearchMyRecentlyViewed__c FROm User WHERE Id =: UserInfo.getUserId()];
+        usr.smartSearchMyRecentlyViewed__c = smartSearchMyRecentlyViewed;
+        
+        update usr;
+    }
     
     public PageReference refreshProjects () {
 		projects = ECO_Service_Projects.getProdjectsForUser(theUser.Id, showClosed, ptmPickListProvider.Role__c);
