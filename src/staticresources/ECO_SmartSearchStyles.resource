@@ -4,6 +4,10 @@
 /* - - - - - - - - - - SEARCH LANDING PAGE STYLES - - - - - - - - - - */
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - */
 
+.navbar-top-links > li[data-original-title="SmartSearch"] {
+        display: none;
+    }
+
 /* - - SEARCH BOX ROW STYLES - - */
 
 .container.Search, .container.SearchResults {
@@ -77,13 +81,13 @@
 
 /*target Internet Explorer 9 and Internet Explorer 10:*/
 @media screen and (min-width:0\0) { 
-    .searchBar select {
-        background:none;
-        padding-right: 0 !important;
-    }
     .searchBar {
         margin: 3.5% 20px 0;
     }
+}
+.ie8or9 .searchBar select {
+    background-image:none;
+    padding-right: 0 !important;
 }
 
 .searchBlock .CoveoSearchBox {
@@ -211,6 +215,15 @@ input.CoveoQueryBox::-ms-clear {
     border-right: none;
     width: 80%;
     padding: 2px 5px;
+}
+/* targeting IE9 */
+iframe .ie8or9 .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
+    padding: 2px 10px !important;
+}
+@media screen and (min-width:0\0) { 
+    iframe .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
+        padding: 2px 10px;
+    }
 }
 .ecoFrameSearch .CoveoSearchButton {
     font-size: 14px;
@@ -638,7 +651,7 @@ table.documentTable div.doc {
     background-position: -4px 414px;
 }
 table.documentTable div.html {
-    background-position: -4px 330px;
+    background-position: -4px 320px;
 }
 table.documentTable div.xls, table.documentTable div.xlsx {
     background-position: -4px -96px;
@@ -829,6 +842,26 @@ table.documentTable td div.vsd {
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - */
 /* - - - - - - - - - - MEDIA QUERIES - - - - - - - - - - - - - - */
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - */
+/* searchbar in header */
+@media (min-width: 992px) and (max-width: 1232px){
+    .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
+        width: 120px;
+    }
+    .ecoFrameSearch .CoveoSearchButton {
+        padding: 5px 7px;
+        font-size: 13px;
+    }
+}
+@media (min-width: 768px) and (max-width: 991px){
+    .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
+        width: 80px !important;
+    }
+    .ecoFrameSearch .CoveoSearchButton {
+        padding: 5px 7px;
+        font-size: 13px;
+    }
+}
+
 
 /* TARGET LG SIZE */
 @media (min-width: 1200px) {
@@ -870,6 +903,9 @@ table.documentTable td div.vsd {
     .resultImg img {
         margin-top: 15px;
     }
+     .navbar-top-links > li[data-original-title="SmartSearch"] {
+        display: block;
+    }
 }
 
 /* TARGET SM SIZE */
@@ -886,4 +922,6 @@ table.documentTable td div.vsd {
     }
     .blueBlock {
         max-height: 100%;
+    }
+   
 }
