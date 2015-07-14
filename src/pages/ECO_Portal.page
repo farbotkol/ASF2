@@ -211,6 +211,9 @@
         box-shadow:0 0px 5px #777777;
         position:fixed;
       }
+      body #mainnav .nano > .nano-pane::after{
+        bottom:20px;
+      }
 
     </style>
     <script>
@@ -218,7 +221,13 @@
          var w_height = $(window).height();
          var width = $(window).width();
             $('.mainnav-height').css('height', w_height)
+
          });
+        // for the window resize
+        $(window).resize(function() {
+            var bodyheight = $(window).height();
+            $('.mainnav-height').css('height', bodyheight);
+        });
     </script>
 
 
@@ -770,7 +779,7 @@
                     
                             <div class="panel">
                                 <div class="panel-heading">
-                                    <div class="panel-control hidden-xs">
+                                   <!-- <div class="panel-control hidden-xs">
                                         <apex:form id="selecterForm">
                                             <apex:actionFunction name="changeProjectOutputType" action="{!changeProjectOutputType}" />
                                             
@@ -784,7 +793,7 @@
                                             
                                              Show for Roles&nbsp;<apex:inputField value="{!ptmPickListProvider.Role__c}" onchange="apexRefreshProjects();" />
                                         </apex:form>
-                                    </div>
+                                    </div>-->
                                     <a name="myProjects" style="height:0;"></a>
                                     <h3 class="panel-title">{!$Label.ECOPortalMyProjectsPortfolio}</h3>
                                 </div>
@@ -796,7 +805,7 @@
    
                                 <div class="panel-body myProjectsPortfolio nano has-scrollbar">
                                     <div class="table-responsive hidden-xs nano-content" id="portfolioTable">
-                                        <table id="projectsTable" class="table table-striped table-hover tablesorter">
+                                       <!-- <table id="projectsTable" class="table table-striped table-hover tablesorter">
                                             <thead>
                                                 <tr>
                                                     <apex:repeat: value="{!fieldSetFields}" var="field" id="headerRepeater" >
@@ -817,7 +826,7 @@
                                                     </tr>
                                                 </apex:repeat>
                                             </tbody>
-                                        </table>
+                                        </table>-->
                                     </div>
 
                                 </div>
@@ -985,7 +994,7 @@
                                 <div class="navbar-header">
                                     <a class="navbar-brand" style="cursor:default;">
                                         <div class="brand-title" style="text-align:center;">
-                                            <span class="brand-text"><span style="color:#D2D2D2; display:inline;">SELECTED</span> REPORTS</span>
+                                            <span class="brand-text">{!$Label.ECOPortalReports}</span>
                                         </div>
                                     </a>
                                 </div>
@@ -1001,7 +1010,7 @@
                                         <div class="editReports editApps" style="float:left; display:block">
                                             <a style="cursor:pointer" onclick="goToReportsBuilder()" class="list-group-item">
                                                 <div class="media-left">
-                                                    <i class="fa fa-cog" style="font-size:22px;" title="{!$Label.ECOPortalEditReports}"></i>
+                                                    <i class="fa fa-cog" style="font-size:22px; color:#adb3b8;" title="{!$Label.ECOPortalEditReports}"></i>
                                                 </div>
                                                 <div class="media-body menu-title">
                                                     Edit Reports
