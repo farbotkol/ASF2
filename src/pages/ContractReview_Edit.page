@@ -1,24 +1,21 @@
 <apex:page standardController="Contract_Review__c" extensions="ContractReview_EditController">
-	<apex:sectionHeader title="Contract Review Request Edit" subtitle="{!Contract_Review__c.Name}"/>
+	<apex:sectionHeader title="{!$Label.CRS_Contract_Review_Request_Edit_Title}" subtitle="{!Contract_Review__c.Name}"/>
 	<apex:form >
 
-		<apex:pageBlock title="Contract Review Request Edit" mode="edit">
+		<apex:pageBlock title="{!$Label.CRS_Contract_Review_Request_Edit_Title}" mode="edit">
 
 			<apex:pageBlockButtons >
-				<apex:commandButton value="Next" action="{!Next}"/>
+				<apex:commandButton value="{!$Label.CRS_Next_Button}" action="{!Next}"/>
 				<!--<apex:commandButton value="Cancel" action="{!cancel}"/>-->
 			</apex:pageBlockButtons>
 			<apex:pageMessages />
 
-			<apex:pageBlockSection title="Instructions" columns="1" rendered="{!IF(Contract_Review__c.Status_Review__c ='Pending Submit' || Contract_Review__c.Status_Review__c =''  ,true,false)}">
+			
+			<apex:pageMessage title="{!$Label.CRS_edit_page_helptext}" severity="INFO" escape="false"/>
 				
-				Please complete the below fields, those noted with a red line are mandatory, others are optional.<br/>
-				Once you have completed all of the fields, click on the 'Next' button to proceed to the next step and attach your contract documents and Submit the Request
+				
 
-			</apex:pageBlockSection>
-
-
-			<apex:pageBlockSection title="Information" columns="2">
+			<apex:pageBlockSection title="{!$Label.CRS_Edit_Information_Section}" columns="2">
 				<apex:inputField value="{!Contract_Review__c.Name}" required="false"/>
 				<apex:inputField value="{!Contract_Review__c.OwnerId}" required="false"/>
 				<apex:inputField value="{!Contract_Review__c.Country__c}" required="true"/>
@@ -65,7 +62,7 @@
 			</apex:pageBlockSection>
 
 
-			<apex:pageBlockSection title="Service Type & Risks" columns="1">
+			<apex:pageBlockSection title="{!$Label.CRS_Edit_Page_Service_Type_Risks}" columns="1">
 
 
 				<apex:inputField value="{!Contract_Review__c.Service_Type__c}" required="true"/>
@@ -73,19 +70,19 @@
 			</apex:pageBlockSection>
 
 
-			<apex:pageBlockSection title="America’s only" columns="2">
+			<apex:pageBlockSection title="{!$Label.CRS_Edit_Page_America_only}" columns="2">
 				<apex:inputField value="{!Contract_Review__c.Federal_Contract__c}" required="false"/>
 			</apex:pageBlockSection>
 
 
-			<apex:pageBlockSection title="Contract Reviewer Only" columns="2">
+			<apex:pageBlockSection title="{!$Label.CRS_Edit_Page_Contract_Reviewer_Only}" columns="2">
 				<apex:inputField value="{!Contract_Review__c.Status_Review__c}" required="false"/>
 
 				<apex:inputField value="{!Contract_Review__c.Submitted__c}" required="false"/>
 			</apex:pageBlockSection>
 
 
-			<apex:pageBlockSection title="ORM Compliance" columns="1">
+			<apex:pageBlockSection title="{!$Label.CRS_Edit_Page_ORM_Compliance}" columns="1">
 				<apex:inputField value="{!Contract_Review__c.Compliant__c}" required="false"/>
 				<apex:inputField value="{!Contract_Review__c.ORM_Comments__c}" required="false"/>
 				<apex:inputField value="{!Contract_Review__c.Next_Review_Date__c}" required="false"/>
@@ -93,7 +90,7 @@
 			</apex:pageBlockSection>
 
 
-			<apex:pageBlockSection title="System Information" columns="2">
+			<apex:pageBlockSection title="{!$Label.CRS_Edit_Page_System_Information}" columns="2">
 				<apex:inputField value="{!Contract_Review__c.Time_Submitted__c}" required="false"/>
 				<apex:inputField value="{!Contract_Review__c.Time_Reviewed__c}" required="false"/>
 			</apex:pageBlockSection>
