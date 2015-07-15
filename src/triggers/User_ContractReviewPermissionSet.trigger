@@ -25,6 +25,13 @@ trigger User_ContractReviewPermissionSet on User (after update) {
 			
 			StaticHelper.runME = !StaticHelper.excludeIt;
 		}
+
+		UserRole role;
+		try
+		{
+		 role = [SELECT id from UserRole where name = 'Worldwide'];
+		}
+		catch(Exception e){} //no worldwide role
 	    // one query to reduce the number of SOQL Hits
 		list<PermissionSet>  permissionSets = [Select id, Name From PermissionSet 
 								where name in ('Contract_Reviewer','Contract_Reviewer_SF'
@@ -57,6 +64,8 @@ trigger User_ContractReviewPermissionSet on User (after update) {
 		//List<Id> userlistIdsRemove = new List<Id>();
 	
 		List<PermissionSetAssignment>  permissionSetAssignmentToUpdate = new List<PermissionSetAssignment>{};
+
+		List<Id> usersToUpdate = new List<Id>{};
 		
 		
 		for(User user: Trigger.new){
@@ -66,7 +75,14 @@ trigger User_ContractReviewPermissionSet on User (after update) {
 			//{
 				if (user.Legal__c == true )
 	   			{
+	   				// make sure the world role is selected
 	   				userListIdsInsert.add(user.Id);
+	   				if (role <> null && user.UserRole.Id <> role.Id)
+	   				{
+	   					//user.UserRole = role;
+						usersToUpdate.add(user.Id);
+	   				}
+
 	   			}
 	   			else
 	   			{
@@ -159,7 +175,7 @@ trigger User_ContractReviewPermissionSet on User (after update) {
 																     										 OR PermissionSetId = :permissionSetSF.Id
 																     										 ) and AssigneeId IN :userlistIdsRemove]);
 		
-		System.enqueueJob(new UserPermissionAssignmentUpdateQueue(permissionSetAssignmentToRemove,permissionSetAssignmentToUpdate));
+		System.enqueueJob(new UserPermissionAssignmentUpdateQueue(permissionSetAssignmentToRemove,permissionSetAssignmentToUpdate, usersToUpdate, role));
 		//delete permissionSetAssignmentToRemove;
 		//insert permissionSetAssignmentToUpdate;
 		
