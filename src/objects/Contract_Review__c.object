@@ -241,11 +241,15 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>License Agreement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Master Services Agreement</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Memorandum of Understanding</fullName>
+                <fullName>Memorandum of Understanding/Agreement</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -266,6 +270,10 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Services Contract/ Agreement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Site Access Agreement</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -314,22 +322,23 @@
         <fullName>Country__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <externalId>false</externalId>
-        <inlineHelpText>Country where the project is managed</inlineHelpText>
+        <inlineHelpText>Country where the project is managed - Currently Country can only be Australia, Brazil, Canada,  Mexico, New Zealand, United States or Venezuela</inlineHelpText>
         <label>Country</label>
         <lookupFilter>
             <active>true</active>
             <booleanFilter>1 OR 2</booleanFilter>
+            <errorMessage>Country not available for selection</errorMessage>
             <filterItems>
                 <field>Country__c.Country_Code__c</field>
                 <operation>equals</operation>
-                <value>CA</value>
+                <value>CA,US,AU,NZ,BR,VE,MX,SP,ES,RO,GR,CZ,HU,AL,BA,BG,HR,CS,MK,ME,SI,IT,FR,PL,DE,AT,CH,BE,NL,LU,EE,LV,LT,DK,NO,SE,RU,AZ,TR,KZ,GE,UA,GB,IE,ZA,AE,BH,OM,IQ,QW,QA,IN</value>
             </filterItems>
             <filterItems>
                 <field>Country__c.Country_Code__c</field>
                 <operation>equals</operation>
-                <value>US</value>
+                <value>DZ,AO,SH,BJ,BW,BF,BI,CM,CV,CF,TD,KM,CG,DJ,EG,GQ,ER,ET,GA,GM,GH,GW,GN,CI,KE,LS,LR,LY,MG,MW,ML,MR,MU,YT,MA,MZ,NA,NE,NG,ST,RE,RW,ST,SN,SC,SL,SO,SH,SD,SZ,TZ,TG,TN,UG,CD,ZM,TZ,ZW,SS,CD</value>
             </filterItems>
-            <isOptional>true</isOptional>
+            <isOptional>false</isOptional>
         </lookupFilter>
         <referenceTo>Country__c</referenceTo>
         <relationshipLabel>Contract Reviews</relationshipLabel>
@@ -535,6 +544,30 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>LegacyId__c</fullName>
+        <externalId>true</externalId>
+        <label>LegacyId</label>
+        <length>80</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Legal_Reviewer_Comments__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>The legal reviewers comments to project members, will appear on email when the review status changes.</inlineHelpText>
+        <label>Legal Reviewer Comments</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
     </fields>
     <fields>
         <fullName>Legal_Team__c</fullName>
@@ -794,7 +827,7 @@
                 <operation>notEqual</operation>
                 <value></value>
             </filterItems>
-            <isOptional>false</isOptional>
+            <isOptional>true</isOptional>
         </lookupFilter>
         <referenceTo>Project__c</referenceTo>
         <relationshipLabel>Contract Reviews</relationshipLabel>
@@ -1203,6 +1236,11 @@
                 <operation>equals</operation>
                 <valueField>$Source.Country__c</valueField>
             </filterItems>
+            <filterItems>
+                <field>State_Province_Emirate__c.State_Code__c</field>
+                <operation>notEqual</operation>
+                <value></value>
+            </filterItems>
             <isOptional>false</isOptional>
         </lookupFilter>
         <referenceTo>State_Province_Emirate__c</referenceTo>
@@ -1237,6 +1275,14 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Contract Signed and Executed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>On Hold</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Withdraw and Closed</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -1290,6 +1336,17 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Withdraw__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Used to flag that the item is to be Withdrawn. When set the review status should change to &apos;Withdraw and close&apos;</description>
+        <externalId>false</externalId>
+        <label>Withdraw</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>significant_risks_identified__c</fullName>
@@ -1414,11 +1471,15 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>License Agreement</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Master Services Agreement</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Memorandum of Understanding</fullName>
+                <fullName>Memorandum of Understanding%2FAgreement</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1439,6 +1500,10 @@
             </values>
             <values>
                 <fullName>Services Contract%2F Agreement</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Site Access Agreement</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1828,6 +1893,10 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>On Hold</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Outstanding Review</fullName>
                 <default>false</default>
             </values>
@@ -1837,6 +1906,10 @@
             </values>
             <values>
                 <fullName>Review Complete - Subject to Negotiation or DOA Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Withdraw and Closed</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -1889,7 +1962,11 @@
         <searchFilterFields>Opportunity_Name__c</searchFilterFields>
         <searchFilterFields>Project_Manager__c</searchFilterFields>
         <searchFilterFields>Client_Vendor__c</searchFilterFields>
-        <searchFilterFields>Status_Review__c</searchFilterFields>
+        <searchFilterFields>Client_vendor_as_named_on_the_contract__c</searchFilterFields>
+        <searchFilterFields>Business_Line__c</searchFilterFields>
+        <searchFilterFields>Country__c</searchFilterFields>
+        <searchFilterFields>OWNER.LAST_NAME</searchFilterFields>
+        <searchFilterFields>OWNER.FIRST_NAME</searchFilterFields>
         <searchResultsAdditionalFields>Client_Vendor__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Contract_Type__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Opportunity_Name__c</searchResultsAdditionalFields>
@@ -1908,8 +1985,8 @@
     <validationRules>
         <fullName>Federal_Contract_US_Only</fullName>
         <active>true</active>
-        <errorConditionFormula>Federal_Contract__c = True &amp;&amp; Country_Code__c &lt;&gt; &apos;US&apos;</errorConditionFormula>
-        <errorMessage>Federal Contract can only be selected when the country is &apos;United States&apos;</errorMessage>
+        <errorConditionFormula>Federal_Contract__c = True &amp;&amp; (Country_Code__c &lt;&gt; &apos;US&apos; &amp;&amp; Country_Code__c &lt;&gt; &apos;CA&apos;)</errorConditionFormula>
+        <errorMessage>Federal Contract can only be selected when the country is &apos;United States&apos; or &apos;Canada&apos;</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>Gulf_Coast_Region_Only_temp_rule</fullName>
@@ -1922,9 +1999,9 @@
         <fullName>State_Required_for_AUS_US_CAN</fullName>
         <active>true</active>
         <description>Due to the queue assignment rules for Australian, US and Canaidian legal team queues being based off State/prov the state is required for these countries</description>
-        <errorConditionFormula>CONTAINS(&quot;AU:CA:US&quot;,Country_Code__c) 
+        <errorConditionFormula>CONTAINS(&quot;AU:CA:US:GB&quot;,Country_Code__c) 
 &amp;&amp;   ISBLANK(State_Province_Emirate__c)</errorConditionFormula>
-        <errorMessage>When the &apos;Country&apos; field is Australia, Canada or United States a &apos;State/Province/Emirate&apos; is required</errorMessage>
+        <errorMessage>When the &apos;Country&apos; field is Australia, Canada, United Kingdom or United States a &apos;State/Province/Emirate&apos; is required</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>US_Canada_Only_temp_rule</fullName>
@@ -1943,7 +2020,7 @@
         <openType>replace</openType>
         <protected>false</protected>
         <requireRowSelection>false</requireRowSelection>
-        <url>/_ui/search/ui/UnifiedSearchResults?offset=0&amp;fpg=-7y2usgmu&amp;str=cr&amp;sen=&amp;fen=a1s&amp;initialViewMode=detail&amp;srtClmn=00Ne0000001BBE8&amp;srtOrd=1&amp;sFltrFields=NAMEContract_Review__c%2C00Ne0000001BBEJEA4Contract_Review__c%2C00Ne0000001BBE8EAOContract_Review__c%2C&amp;relatedListId=Contract_Review__c&amp;aId=_1416360456715&amp;setupid=CustomObjects</url>
+        <url>https://aecom.my.salesforce.com/_ui/search/ui/UnifiedSearchResults?searchType=2&amp;sen=a0Q&amp;sen=a06&amp;sen=a07&amp;sen=a4j&amp;sen=005&amp;sen=701&amp;sen=a4U&amp;sen=001&amp;sen=003&amp;sen=0F9&amp;sen=a0g&amp;str=CR-#!/fen=a4j&amp;initialViewMode=detail&amp;str=CR-</url>
     </webLinks>
     <webLinks>
         <fullName>Submit_to_Contract_Reviewer</fullName>
@@ -1986,5 +2063,38 @@ if (&apos;{!Contract_Review__c.Status_Review__c}&apos; == &apos;Pending Submit&a
 else{
     alert(&apos;This Contract Review has already been submitted&apos;);
 }</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Withdraw</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Withdraw Request</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/connection.js&quot;)}
+
+
+  
+  var answer = true;
+  answer = confirm(&quot;Are you sure you want to withdraw this request.&quot;);
+  
+
+  if (answer){
+    var crObj = new sforce.SObject(&quot;Contract_Review__c&quot;);
+    crObj.id = &apos;{!Contract_Review__c.Id}&apos;; /* Need Id field to update Contract_Review*/
+    crObj.Withdraw__c = true; /* Change status */
+
+    /* update method takes an array of Cases; init to 1 element - &apos;caseObj&apos; */
+    var result = sforce.connection.update([crObj]);
+
+    if (result[0].success == &apos;false&apos;) {
+      alert(&apos;There are validation errors, please edit and re-save this contract review.&apos;);
+    }
+    else {
+      alert(&apos;Withdrawal completed&apos;);
+      location.reload(true); /* redisplay the detail page */
+    }
+  }</url>
     </webLinks>
 </CustomObject>

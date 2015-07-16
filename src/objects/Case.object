@@ -223,6 +223,27 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Language_Type__c</fullName>
+        <description>Default language type for the case worker.</description>
+        <externalId>false</externalId>
+        <label>Language Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>EN</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>FR</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Location__c</fullName>
         <description>Location for use in the ER web form</description>
         <externalId>false</externalId>
@@ -419,18 +440,6 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Category</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>SS_Contact_Language__c</fullName>
-        <externalId>false</externalId>
-        <formula>TEXT(Contact.SS_Language__c)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Contact Language</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -1190,6 +1199,20 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
         <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>Private</sharingModel>
+    <validationRules>
+        <fullName>SS_AP_Close_Case_Queue_Esc_Owner</fullName>
+        <active>true</active>
+        <description>Do not allow to close case if Case Owner is the SS-AP Cases Escalation Queue.</description>
+        <errorConditionFormula>AND(Owner:Queue.QueueName = &quot;SS-AP Cases Escalation&quot;, TEXT(Status) = &quot;Closed&quot;)</errorConditionFormula>
+        <errorMessage>You must take ownership of the Case prior to closing!</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>SS_AP_Close_Case_Queue_Owner</fullName>
+        <active>true</active>
+        <description>Do not allow to close case if Case Owner is the SS-AP Cases Queue.</description>
+        <errorConditionFormula>AND(Owner:Queue.QueueName = &quot;SS-AP Cases&quot;, TEXT(Status) = &quot;Closed&quot;)</errorConditionFormula>
+        <errorMessage>You must take ownership of the Case prior to closing!</errorMessage>
+    </validationRules>
     <webLinks>
         <fullName>APXT_CMSL_B__Conga_SL_Basic</fullName>
         <availability>online</availability>

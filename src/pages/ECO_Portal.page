@@ -1,4 +1,5 @@
 <apex:page applyBodyTag="false" controller="ECO_PortalController" showheader="false" sidebar="false" standardStylesheets="false" action="{!onLoad}" id="portalPage" title="{!$Label.Ecosystem}" >
+    <title>{!$Label.Ecosystem}</title>
     <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/jquery.lazyload.min.js')}"></script>
     <script>
        $(function() {
@@ -98,6 +99,9 @@
         .list-group{
             margin-bottom:0;
         }
+        #mainnav-menu a{
+            padding:12px;
+        }
         body .nano > .nano-pane::before{
             content:" ";
             width: 0; 
@@ -125,6 +129,7 @@
             margin-left:2px;
         }
         #portfolioTable{
+            min-height:250px;
             max-height:250px;
             width:auto;
             margin:0 20px;
@@ -132,7 +137,7 @@
             overflow:hidden;
         }
         .myProjectsPortfolio{
-            height:;
+            height:250px;
         }
 
         /* PUSHING LEFT NAV OVER */
@@ -159,11 +164,6 @@
         }
         body #mainnav-container{
             position:fixed;
-        }
-        .brand-text{
-          font-size: 14px;
-          font-weight: 600;
-          text-transform: uppercase;
         }
 
         @media screen and (max-width:767px){
@@ -215,9 +215,6 @@
         box-shadow:0 0px 5px #777777;
         position:fixed;
       }
-      body #mainnav .nano > .nano-pane::after{
-        bottom:20px;
-      }
       #aside .brand-text{
         text-transform:uppercase;
       }
@@ -232,19 +229,51 @@
         padding:0;
       }
 
+      /* NEW ADDITIONS FOR STANDARD SCROLL BAR - ANDREW SMITH - 7/16/2015 */
+      .myProjectsPortfolio {
+        height:0;
+      }
+      #mainnav-container{
+        overflow-y:scroll;
+        overflow-x:hidden;
+        direction:rtl;
+        margin-top:50px;
+        padding-top:0;
+        margin-bottom:0 !important;
+        height:auto !important;
+        min-height: 100px !important;
+      }
+      #mainnav{
+        direction:ltr;
+        height:auto !important;
+      }
+      #mainnav .brand-text{
+        width:195px !important;
+      }
+      #mainnav-menu-wrap{
+        margin: 0 !important;
+        padding:0 !important;
+      }
+      .brand-text{
+        font-size: 14px;
+        font-weight: 600;
+        text-transform: uppercase;
+      }
+      .editReports .fa-cog{
+        color:#adb3b8;
+      }
+
     </style>
     <script>
         $(document).ready(function(){
          var w_height = $(window).height();
          var width = $(window).width();
             $('.mainnav-height').css('height', w_height)
-
-         });
-        // for the window resize
-        $(window).resize(function() {
+            // for the window resize
+            $(window).resize(function() {
             var bodyheight = $(window).height();
             $('.mainnav-height').css('height', bodyheight);
-        });
+         });
     </script>
 
 
@@ -299,6 +328,11 @@
                                     </apex:outputPanel>
                                 </tbody>
                             </table>
+
+
+                            <div class="tempAlert">
+                                {!$Label.ECOPortalApprovalMessage}
+                            </div>
 
                         </div>
                         
@@ -453,7 +487,7 @@
                    <!-- <a style="cursor:default;" class="navbar-brand">
                         <img src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" data-original="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/my-aecom-apps.jpg')}" class="brand-icon lazy" />
                         <div class="brand-title" style="padding:0; margin:0; width:100%;">
-                            <span class="brand-text">SELECTED APPS</span>
+                            <span class="brand-text"><span style="color:#D2D2D2; display:inline;">SELECTED</span> APPS</span>
                         </div>
                     </a> -->
                 </div>
@@ -796,7 +830,7 @@
                     
                             <div class="panel">
                                 <div class="panel-heading">
-                                   <!-- <div class="panel-control hidden-xs">
+                                    <!-- <div class="panel-control hidden-xs">
                                         <apex:form id="selecterForm">
                                             <apex:actionFunction name="changeProjectOutputType" action="{!changeProjectOutputType}" />
                                             
@@ -822,7 +856,7 @@
    
                                 <div class="panel-body myProjectsPortfolio nano has-scrollbar">
                                     <div class="table-responsive hidden-xs nano-content" id="portfolioTable">
-                                       <!-- <table id="projectsTable" class="table table-striped table-hover tablesorter">
+                                        <!--<table id="projectsTable" class="table table-striped table-hover tablesorter">
                                             <thead>
                                                 <tr>
                                                     <apex:repeat: value="{!fieldSetFields}" var="field" id="headerRepeater" >
@@ -936,9 +970,9 @@
 
                     <!--Menu-->
                     <!--================================-->
-                    <div id="mainnav-menu-wrap" class="mainnav-height">
-                        <div class="nano has-scrollbar">
-                            <div class="nano-content has-scrollbar"> <!-- took out classes:  ui-widget-content hoverscroll vertical" style="height:85vh !important;" -->
+                    <div id="mainnav-menu-wrap">
+
+                            <div class="mainnav-height"> <!-- took out classes:  ui-widget-content hoverscroll vertical" style="height:85vh !important;" -->
                                 <!-- THIS OUT FOR NOW 3/20/2015, FOR APP SCROLLING <div class="fixed-listcontainer"> -->
                                     <ul id="mainnav-menu" class="list-group">
 
@@ -956,6 +990,7 @@
                                             </a>
                                         </li>
 
+
                                         <li class="visible-lg">
                                             <div class="navbar-header">
                                                <a style="cursor:default;" class="navbar-brand">
@@ -965,6 +1000,7 @@
                                                 </a>
                                             </div>
                                         </li>
+
 
                                         <li class="editApps">
                                             <a href="#" onclick="goToApplicationConfiguration();">
@@ -992,14 +1028,10 @@
                                                 </li>
                                             </apex:outputPanel>
                                         </apex:repeat>
-                                        
-
 
                                     </ul>
-                                <!-- END THIS OUT FOR NOW 3/20/2015 </div> -->
-
                             </div>
-                        </div>
+
                     </div>
                     <!--================================-->
                     <!--End menu-->
@@ -1036,7 +1068,7 @@
                                         <div class="editReports editApps" style="float:left; display:block">
                                             <a style="cursor:pointer" onclick="goToReportsBuilder()" class="list-group-item">
                                                 <div class="media-left">
-                                                    <i class="fa fa-cog" style="font-size:22px; color:#adb3b8;" title="{!$Label.ECOPortalEditReports}"></i>
+                                                    <i class="fa fa-cog" style="font-size:22px;" title="{!$Label.ECOPortalEditReports}"></i>
                                                 </div>
                                                 <div class="media-body menu-title">
                                                     Edit Reports

@@ -2,20 +2,24 @@
 																	 
 <apex:form >
 
-		<apex:pageBlock title="Contract Review Request" id="ContractReviewRequestDetails">
+		<apex:pageBlock title="{!$Label.CRS_Contract_Review_Request_Edit_Title}" id="ContractReviewRequestDetails">
 			
 			  <apex:pageBlockButtons location="both">
-	                <apex:commandButton value="Next" action="{!Next}"/>
-	                <apex:commandButton value="Cancel" action="{!Cancel}"/> 
+	                <apex:commandButton value="{!$Label.CRS_Next_Button}" action="{!Next}"/>
+	                <apex:commandButton value="{!$Label.CRS_Cancel_Button}" action="{!Cancel}"/> 
 	                    
 	          </apex:pageBlockButtons>
 	          <apex:pageMessages />
-			 <apex:pageBlockSection title="Geographic/Opportunity(Go/NoGo) Information"  
+			 <apex:pageBlockSection title="{!$Label.CRS_New_VF_section_title}"  
 			 				id="information" 
 			 				columns="1">
+			 				<apex:pageMessage title="{!$Label.CRS_new_page_helptext}" severity="INFO" escape="false"/>
+
+
+			 				<!-- {!$Label.CRS_new_page_helptext}
 					<p>Please enter the Country and State/Province/Emirate in which your contract will be managed.  This will determine the review group your request is assigned to.</p>
 						
-					<p>If an opportunity exists within Salesforce, please identify it and the following pages will be pre-filled for you.  If there is no Salesforce Opportunity created please leave blank.</p>
+					<p>If an opportunity exists within Salesforce, please identify it and the following pages will be pre-filled for you.  If there is no Salesforce Opportunity created please leave blank.</p>-->
 						
 				 		 <apex:inputField value="{!Contract_Review__c.Country__c}"/> 
 					 	 <apex:inputField value="{!Contract_Review__c.State_Province_Emirate__c}"  /> 
