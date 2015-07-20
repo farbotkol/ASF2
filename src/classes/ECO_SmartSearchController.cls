@@ -19,7 +19,17 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
     
     public String coveoToken							{get; set;}
     public String endPointURL							{get; set;}
+    public String analyticsEndPoint						{get; set;}
+    public String tpnSearchExpression					{get; set;}
+    public String searchCoveoSearchInterfaceExpression 	{get; set;}
+    public String coveoTabAllExpression					{get; set;}
+    public String coveoTabPeopleExpression				{get; set;}
+    public String coveoTabProjectsExpression			{get; set;}
+    public String coveoTabPracticeExpression			{get; set;}
+    public String filterByFileTypeAllowedValues			{get; set;}
     
+    public String collaborationGroups					{get; set;}
+
     private class ECO_SmartSearchControllerException extends Exception {}    
     private System.LoggingLevel debugLevel = LoggingLevel.INFO;
     
@@ -55,22 +65,67 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
 		if (!Test.isRunningTest()) {
 			photoUrl = ConnectApi.ChatterUsers.getPhoto(null, theUser.Id).smallPhotoUrl;
 		}
+        setCollaborationGroups();
+    }
+    
+    public void setCollaborationGroups(){
+        List<CollaborationGroupMember> cgmList = [select CollaborationGroupId from CollaborationGroupMember where MemberId=:UserInfo.getUserId()];
+
+		List<Id> cgmIdsList = new List<Id>();
+        for (CollaborationGroupMember cgm : cgmList){
+        	cgmIdsList.add(cgm.CollaborationGroupId);
+        }
+		collaborationGroups = String.join(cgmIdsList, ',');
     }
     
     public PageReference getSearchToken() {
+        setCollaborationGroups();
+        
         applications = ECO_Service_Applications.getSortedList(theUser);
         ECO_Smart_Search_Settings__c smartSearchSetting = ECO_Smart_Search_Settings__c.getInstance('SmartSearch');
         endPointURL = smartSearchSetting.endPointURL__c;
+        analyticsEndPoint = smartSearchSetting.Analytics_End_Point__c;
+        tpnSearchExpression = smartSearchSetting.TPN_Search_Expression1__c;
+        if(smartSearchSetting.TPN_Search_Expression_2__c != null && smartSearchSetting.TPN_Search_Expression_2__c != '') {
+            tpnSearchExpression = tpnSearchExpression + ' OR ' + smartSearchSetting.TPN_Search_Expression_2__c;            
+        }
+        tpnSearchExpression = tpnSearchExpression.replace('{!collaborationGroups}', collaborationGroups);
+        
+        searchCoveoSearchInterfaceExpression = smartSearchSetting.Search_CoveoSearchInterface_Expression__c;
+        
+        coveoTabAllExpression = smartSearchSetting.CoveoTab_All_Expression1__c;
+        if(smartSearchSetting.CoveoTab_All_Expression2__c != null && smartSearchSetting.CoveoTab_All_Expression2__c != '') {
+            coveoTabAllExpression = coveoTabAllExpression + ' OR ' + smartSearchSetting.CoveoTab_All_Expression2__c;
+        }
+        
+        coveoTabAllExpression = coveoTabAllExpression.replace('{!collaborationGroups}', collaborationGroups);
+        
+        coveoTabPeopleExpression = smartSearchSetting.CoveoTab_People_Expression__c;
+        coveoTabProjectsExpression = smartSearchSetting.CoveoTab_Projects_Expression__c;
+        coveoTabPracticeExpression = smartSearchSetting.CoveoTab_Practice_Expression_1__c;
+		if(smartSearchSetting.CoveoTab_Practice_Expression_2__c != null && smartSearchSetting.CoveoTab_Practice_Expression_2__c != '') {
+            coveoTabPracticeExpression = coveoTabPracticeExpression + ' OR ' + smartSearchSetting.CoveoTab_Practice_Expression_2__c;
+        }       
+        coveoTabPracticeExpression = coveoTabPracticeExpression.replace('{!collaborationGroups}', collaborationGroups);
+        
+        filterByFileTypeAllowedValues = smartSearchSetting.Filter_By_File_Type_Allowed_Values__c;
+        
         String randomKey = smartsearchSetting.Key__c;
+        
+        String orgId = smartSearchSetting.OrganizationId__c;
+        if(String.isBlank(orgId) || orgId.length() != 15){
+        	orgId = UserInfo.getOrganizationId();
+        }        
+        
+        Id profileId = UserInfo.getProfileId();
+		String profileName = [SELECT Id, Name FROM Profile WHERE Id=:profileId].Name;
         
         // Make endpointURL and key passed to the server configurable.
     	Http http = new Http();
-        String jsonReq = '{"userIds": [{"name":"' + UserInfo.getUserEmail() + '", "provider" : "Email Security Provider", "type" : "User"}]}';
+        String orgIdFilter = '(@sforganizationid=('+orgId.substring(0, 15)+') OR NOT @sforganizationid)';//every saleforce document from current org  + everything  that is not Salesforce conent
+        String jsonReq = '{"userIds": [{"name":"' + UserInfo.getUserEmail() + '", "provider" : "Email Security Provider", "type" : "User"}],"filter": "'+orgIdFilter+'","userGroups": ["' + profileName + '"]}';
+        System.debug('jsonReq: ' + jsonReq);
         String endPoint = endPointURL + 'token';
-        //String endPoint = 'https://smartsearchrest.aecom.com:8443/rest/search/token';
-        
-        //https://smartsearchrest.aecom.com/rest/search
-        //String url = endPoint  + '?' + json;
         
         HttpRequest request = new HttpRequest();
         
@@ -78,7 +133,6 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
         
         request.setHeader('content-type', 'application/json');
         request.setHeader('Authorization', 'Bearer ' + randomKey);
-        //request.setHeader('Authorization', 'Bearer anyrandomstringffjkfajl;akf0452098234790dklqer098923498aslsdk2340');
         request.setEndpoint(endPoint);
         request.setBody(jsonReq);
         
@@ -99,6 +153,36 @@ public with sharing class ECO_SmartSearchController extends ECO_PageControllerBa
         system.debug('coveoToken: ' + coveoToken);
         
         return null;
+    }
+    
+    @RemoteAction
+    public static String getMyRecentSearch() {
+        User usr = [SELECT Id, smartSearchMyRecentSearch__c FROm User WHERE Id =: UserInfo.getUserId()];
+        
+        return usr.smartSearchMyRecentSearch__c;
+    }
+    
+    @RemoteAction
+    public static void pushMyRecentSearch(String smartSearchMyRecentSearch) {
+        User usr = [SELECT Id, smartSearchMyRecentSearch__c FROm User WHERE Id =: UserInfo.getUserId()];
+        usr.smartSearchMyRecentSearch__c = smartSearchMyRecentSearch;
+        
+        update usr;
+    }
+    
+    @RemoteAction
+    public static String getMyRecentlyViewed() {
+        User usr = [SELECT Id, smartSearchMyRecentlyViewed__c FROm User WHERE Id =: UserInfo.getUserId()];
+        
+        return usr.smartSearchMyRecentlyViewed__c;
+    }
+    
+    @RemoteAction
+    public static void pushMyRecentlyViewed(String smartSearchMyRecentlyViewed) {
+        User usr = [SELECT Id, smartSearchMyRecentlyViewed__c FROm User WHERE Id =: UserInfo.getUserId()];
+        usr.smartSearchMyRecentlyViewed__c = smartSearchMyRecentlyViewed;
+        
+        update usr;
     }
     
     public PageReference refreshProjects () {

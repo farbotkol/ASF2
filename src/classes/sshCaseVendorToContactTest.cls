@@ -1,17 +1,22 @@
 @isTest
 private class sshCaseVendorToContactTest {
 
-	public static void setupTest(){
+	public static void setupTest() {
 		Account acct = new Account(Name = 'Uncategorized Vendor');
 		insert acct;
+
+		Account acct2 = new Account(Name = 'AECOM Internal Account');
+		insert acct2;
 
 		ssh_User_Contact_Settings__c custSetting = new ssh_User_Contact_Settings__c();
 		custSetting.Name = 'Default';
 		custSetting.External_Vendor_Uncategorized_Account__c = 'Uncategorized Vendor';
 		custSetting.External_Vendor_Record_Type__c = 'Vendor';
+		custSetting.Employee_Record_Type__c = 'AECOM Employee';
+		custSetting.Internal_User_Account__c = 'AECOM Internal Account';
 		insert custSetting;
 	}
-	
+
 	@isTest static void testVendorToContact() {
 
 		setupTest();
@@ -28,7 +33,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John');
 		System.assertEquals(vendorContact.LastName, 'Doe');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -49,7 +54,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John');
 		System.assertEquals(vendorContact.LastName, 'Doe');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -70,7 +75,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John');
 		System.assertEquals(vendorContact.LastName, 'Doe');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -91,7 +96,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John William');
 		System.assertEquals(vendorContact.LastName, 'Doe');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -112,7 +117,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John William');
 		System.assertEquals(vendorContact.LastName, 'Doe');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -133,7 +138,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John William');
 		System.assertEquals(vendorContact.LastName, 'Doe');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -154,7 +159,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John William');
 		System.assertEquals(vendorContact.LastName, 'Doe III');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -175,7 +180,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John');
 		System.assertEquals(vendorContact.LastName, 'Doe III');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -196,7 +201,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John William');
 		System.assertEquals(vendorContact.LastName, 'Doe III');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -218,7 +223,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John');
 		System.assertEquals(vendorContact.LastName, 'UNKNOWN');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -240,7 +245,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John');
 		System.assertEquals(vendorContact.LastName, 'UNKNOWN');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -262,7 +267,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John');
 		System.assertEquals(vendorContact.LastName, 'UNKNOWN');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -284,7 +289,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John');
 		System.assertEquals(vendorContact.LastName, 'UNKNOWN');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -306,7 +311,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'UNKNOWN');
 		System.assertEquals(vendorContact.LastName, 'UNKNOWN');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -328,7 +333,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John');
 		System.assertEquals(vendorContact.LastName, 'Doe');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -350,7 +355,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John');
 		System.assertEquals(vendorContact.LastName, 'Doe');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -372,7 +377,7 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'John_Doe');
 		System.assertEquals(vendorContact.LastName, 'UNKNOWN');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);		
+		System.assertEquals(vendorContact.AccountId, acct.Id);
 
 	}
 
@@ -394,8 +399,8 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName, 'ACLSG -');
 		System.assertEquals(vendorContact.LastName, 'A/P Helpdesk/Bureau d\'Assistance CAP');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);	
-		System.assertEquals(vendorContact.Case_Web_Name__c, c1.SuppliedName);	
+		System.assertEquals(vendorContact.AccountId, acct.Id);
+		System.assertEquals(vendorContact.Case_Web_Name__c, c1.SuppliedName);
 
 	}
 
@@ -418,9 +423,9 @@ private class sshCaseVendorToContactTest {
 		System.assertEquals(vendorContact.FirstName.length(), 39);
 		System.assertEquals(vendorContact.LastName, 'Tonda');
 		System.assertEquals(vendorContact.Email, c1.SuppliedEmail);
-		System.assertEquals(vendorContact.AccountId, acct.Id);	
-		System.assertEquals(vendorContact.Case_Web_Name__c, c1.SuppliedName);	
+		System.assertEquals(vendorContact.AccountId, acct.Id);
+		System.assertEquals(vendorContact.Case_Web_Name__c, c1.SuppliedName);
 
 	}
-	
+
 }
