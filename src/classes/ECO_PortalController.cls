@@ -69,6 +69,7 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 	
 	public PageReference refreshProjects () {
 		projects = ECO_Service_Projects.getProdjectsForUser(theUser.Id, showClosed, ptmPickListProvider.Role__c);
+		system.debug('number of projects: ' + projects.size());
 		return null;
 	}
 	
