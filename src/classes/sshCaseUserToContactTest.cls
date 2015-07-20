@@ -1,16 +1,20 @@
 @isTest
 private class sshCaseUserToContactTest {
-	
+
 	@isTest static void testUserToContact() {
+
 		Account acct = new Account(Name = 'AECOM Internal Account');
 		insert acct;
 
-		Profile p = [SELECT Id FROM Profile WHERE Name='Standard User'];
+		Account acct2 = new Account(Name = 'Uncategorized Vendor');
+		insert acct2;
 
-		User u = new User(Alias = 'tboone', Email='sfdctestcase@aecom.com', 
-                        EmailEncodingKey='UTF-8', FirstName = 'Tony', LastName='Boone', LanguageLocaleKey='en_US', 
-                        LocaleSidKey='en_US', ProfileId = p.Id, Department = 'Fake Department',
-                        TimeZoneSidKey='America/Los_Angeles', UserName= 'tboone@ssh.com.test', Shared_Services_Is_Executive__c = true);
+		Profile p = [SELECT Id FROM Profile WHERE Name = 'Standard User'];
+
+		User u = new User(Alias = 'tboone', Email = 'sfdctestcase@aecom.com',
+		                  EmailEncodingKey = 'UTF-8', FirstName = 'Tony', LastName = 'Boone', LanguageLocaleKey = 'en_US',
+		                  LocaleSidKey = 'en_US', ProfileId = p.Id, Department = 'Fake Department',
+		                  TimeZoneSidKey = 'America/Los_Angeles', UserName = 'tboone@ssh.com.test', Shared_Services_Is_Executive__c = true);
 
 		insert u;
 
@@ -30,8 +34,8 @@ private class sshCaseUserToContactTest {
 		System.assertEquals(ct.Name, c1.SuppliedName);
 		System.assertEquals(ct.Email, c1.SuppliedEmail);
 		System.assertEquals(ct.AccountId, acct.Id);
-		System.assertEquals(ct.User__c, u.Id);		
+		System.assertEquals(ct.User__c, u.Id);
 		System.assertEquals(ct.Shared_Services_Is_Executive__c, u.Shared_Services_Is_Executive__c);
 	}
-	
+
 }
