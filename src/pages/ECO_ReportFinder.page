@@ -114,71 +114,13 @@
 	<apex:composition template="ECO_Temp_Portal">
 	    
 	    <apex:define name="head">
-	    	
+            <script>var AWAN_online = false;</script>
+            <script src="{!awanJSPath}"></script>	    	
 	    </apex:define>
 	    
-		<apex:define name="content">
+		<apex:define name="mainContent">
 
 
-
-		<!--NAVBAR-->
-		<!--===================================================-->
-		<header id="navbar">
-			<div id="navbar-container" class="boxed">
-
-				<!--Brand logo & name-->
-				<!--================================-->
-				<div class="navbar-header">
-					<a href="#" class="navbar-brand">
-						<div class="brand-title">
-							<span class="brand-text">{!$Label.ECORepFindECOSYSTEM}</span>
-						</div>
-					</a>
-				</div>
-				<!--================================-->
-				<!--End brand logo & name-->
-
-				<!--Navbar Dropdown-->
-				<!--================================-->
-				<div class="navbar-content clearfix">
-					<ul class="nav navbar-top-links pull-left">
-
-						<li class="dropdown hidden-xs">
-							<h3 style="margin:10px 0 0 8px;">{!$Label.ECORepFindReportFinder}</h3>
-						</li>
-
-					</ul>
-					<ul class="nav navbar-top-links pull-right">
-						<!--User dropdown-->
-						<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-						<li id="dropdown-user" class="dropdown">
-							<a href="#" data-toggle="dropdown" class="dropdown-toggle text-right" style="cursor: default !important;background: white !important;">
-								<span class="pull-right">
-									<!-- <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/av1.png')}" styleClass="img-circle img-user media-object"/> -->
-									<apex:image value="{!photoUrl}" styleClass="img-circle img-user media-object"/>
-								</span>
-								<div class="username hidden-xs"><strong><apex:outputText value="{!theUser.Name}'s" /></strong> {!$Label.ECOAppCusECOSYSTEM}</div>
-							</a>
-
-						
-						</li>
-						<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-						<!--End user dropdown-->
-
-						<li class="logo" style="padding:12px 15px 0 8px;">
-							<apex:image url="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'AECOMLogo.jpg')}" height="25px" />
-						</li>
-
-					</ul>
-				</div>
-				<!--================================-->
-				<!--End Navbar Dropdown-->
-
-			</div>
-		</header>
-
-
-		<apex:pageMessages id="pageMessages" />
 
 		<div class="portalPageWrapper">	
 
@@ -192,7 +134,7 @@
 							
 							<div class="panel-body">
 								
-								<apex:form id="theForm" >
+								<apex:form id="reportsForm" >
 									<apex:actionFunction action="{!save}" name="updatePositionsInApex" rerender="pageMessages, searchBlock">
 										<apex:param name="orderedReports" assignTo="{!orderedReports}" value="" />
 									</apex:actionFunction>
@@ -302,5 +244,10 @@
 			</div><!-- container -->
 		</div><!-- .portalPageWrapper -->
 		</apex:define>
+	
+		<apex:define name="rightNav">
+
+        </apex:define>
+        
 	</apex:composition>
 </apex:page>
