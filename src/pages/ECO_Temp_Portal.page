@@ -655,83 +655,85 @@
             <apex:insert name="mainContent" />
             <!--===================================================-->
             
-            <!--AECOM APPS: Edit and List all apps-->
-            <!--===================================================-->
-            <nav id="mainnav-container">
-                <div id="mainnav" >
+            <apex:outputPanel rendered="{!IF(OR($CurrentPage.Name == 'ECO_Portal',$CurrentPage.Name == 'ECO_SmartSearch'),true,false)}">
+                <!--AECOM APPS: Edit and List all apps-->
+                <!--===================================================-->
+                <nav id="mainnav-container">
+                    <div id="mainnav" >
 
-                    <!--Menu-->
-                    <!--================================-->
-                    <div id="mainnav-menu-wrap">
+                        <!--Menu-->
+                        <!--================================-->
+                        <div id="mainnav-menu-wrap">
 
-                            <div class="mainnav-height"> <!-- took out classes:  ui-widget-content hoverscroll vertical" style="height:85vh !important;" -->
-                                <!-- THIS OUT FOR NOW 3/20/2015, FOR APP SCROLLING <div class="fixed-listcontainer"> -->
-                                    <ul id="mainnav-menu" class="list-group">
+                                <div class="mainnav-height"> <!-- took out classes:  ui-widget-content hoverscroll vertical" style="height:85vh !important;" -->
+                                    <!-- THIS OUT FOR NOW 3/20/2015, FOR APP SCROLLING <div class="fixed-listcontainer"> -->
+                                        <ul id="mainnav-menu" class="list-group">
 
-                                        <li class="visible-xs showAllApps">
-                                            <a href="#">
-                                                <div class="media-left">
-                                                    <i class="fa fa-eye" style="font-size:33px; padding-left:1px;"></i>
-                                                </div>
-                                                <div class="media-body menu-title showHideSwap visible-xs" style="height:35px;">
-                                                    Show Non-Mobile Applications
-                                                </div>
-                                                <div class="media-body menu-title showHideSwap hidden-xs" style="height:35px;">
-                                                    Hide Non-Mobile Applications
-                                                </div>
-                                            </a>
-                                        </li>
-
-
-                                        <li class="visible-lg">
-                                            <div class="navbar-header">
-                                               <a style="cursor:default;" class="navbar-brand">
-                                                    <div class="brand-title" style="padding:0; margin:0; width:100%;">
-                                                        <span class="brand-text">{!$Label.ECOAppCusSelectedApplications}</span>
+                                            <li class="visible-xs showAllApps">
+                                                <a href="#">
+                                                    <div class="media-left">
+                                                        <i class="fa fa-eye" style="font-size:33px; padding-left:1px;"></i>
+                                                    </div>
+                                                    <div class="media-body menu-title showHideSwap visible-xs" style="height:35px;">
+                                                        Show Non-Mobile Applications
+                                                    </div>
+                                                    <div class="media-body menu-title showHideSwap hidden-xs" style="height:35px;">
+                                                        Hide Non-Mobile Applications
                                                     </div>
                                                 </a>
-                                            </div>
-                                        </li>
+                                            </li>
 
 
-                                        <li class="editApps">
-                                            <a href="#" onclick="goToApplicationConfiguration();">
-                                                <div class="media-left">
-                                                    <i class="fa fa-cog" style="font-size:33px; padding-left:1px;"></i>
-                                                </div>
-                                                <div class="media-body menu-title" style="height:35px;">
-                                                    {!$Label.ECOEditAecomApps} 
-                                                </div>
-                                            </a>
-                                        </li>
-
-                                        <apex:repeat value="{!applications}" var="app" >
-                                            <apex:outputPanel rendered="{!!app.IsHidden__c}" layout="none">
-                                                <li class="{!app.Application__r.NetworkRequirement__c} {!IF(app.Application__r.MobileEnabled__c, '', 'hiddenOnMobile')} anApplication">
-                                                    <a target="_blank" href="{!app.Application__r.ApplicationURL__c}">
-                                                        <div class="media-left">
-                                                            <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" html-data-original="{!URLFOR($Resource.ECO_CustomGraphicAssets, app.Application__r.ImageName__c)}" styleClass="lazy" width="33px" height="33px" />
-                                                        </div>
-                                                        <div class="media-body menu-title" style="height:35px;">
-                                                            <apex:outputText value="{!$Label[app.Application__r.ApplicationName__c]}" />
+                                            <li class="visible-lg">
+                                                <div class="navbar-header">
+                                                   <a style="cursor:default;" class="navbar-brand">
+                                                        <div class="brand-title" style="padding:0; margin:0; width:100%;">
+                                                            <span class="brand-text">{!$Label.ECOAppCusSelectedApplications}</span>
                                                         </div>
                                                     </a>
-                                                    
-                                                </li>
-                                            </apex:outputPanel>
-                                        </apex:repeat>
+                                                </div>
+                                            </li>
 
-                                    </ul>
-                            </div>
+
+                                            <li class="editApps">
+                                                <a href="#" onclick="goToApplicationConfiguration();">
+                                                    <div class="media-left">
+                                                        <i class="fa fa-cog" style="font-size:33px; padding-left:1px;"></i>
+                                                    </div>
+                                                    <div class="media-body menu-title" style="height:35px;">
+                                                        {!$Label.ECOEditAecomApps} 
+                                                    </div>
+                                                </a>
+                                            </li>
+
+                                            <apex:repeat value="{!applications}" var="app" >
+                                                <apex:outputPanel rendered="{!!app.IsHidden__c}" layout="none">
+                                                    <li class="{!app.Application__r.NetworkRequirement__c} {!IF(app.Application__r.MobileEnabled__c, '', 'hiddenOnMobile')} anApplication">
+                                                        <a target="_blank" href="{!app.Application__r.ApplicationURL__c}">
+                                                            <div class="media-left">
+                                                                <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" html-data-original="{!URLFOR($Resource.ECO_CustomGraphicAssets, app.Application__r.ImageName__c)}" styleClass="lazy" width="33px" height="33px" />
+                                                            </div>
+                                                            <div class="media-body menu-title" style="height:35px;">
+                                                                <apex:outputText value="{!$Label[app.Application__r.ApplicationName__c]}" />
+                                                            </div>
+                                                        </a>
+                                                        
+                                                    </li>
+                                                </apex:outputPanel>
+                                            </apex:repeat>
+
+                                        </ul>
+                                </div>
+
+                        </div>
+                        <!--================================-->
+                        <!--End menu-->
 
                     </div>
-                    <!--================================-->
-                    <!--End menu-->
-
-                </div>
-            </nav>
-            <!--===================================================-->
-            <!--END MAIN NAVIGATION-->
+                </nav>
+                <!--===================================================-->
+                <!--END MAIN NAVIGATION-->
+            </apex:outputPanel>
 
             <apex:insert name="rightNav" />
 

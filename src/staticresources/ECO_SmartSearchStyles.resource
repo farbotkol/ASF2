@@ -3,6 +3,9 @@
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - */
 /* - - - - - - - - - - SEARCH LANDING PAGE STYLES - - - - - - - - - - */
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - */
+.CoveoErrorReport .coveo-options {
+    display:none;
+}
 
 /* - - ECOSYSTEM FRAME SEARCH BOX/ICON STYLES - - */
 
