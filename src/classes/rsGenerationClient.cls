@@ -11,6 +11,7 @@ public with sharing class rsGenerationClient {
     public static final String AECOM_FORMAT = 'aecom_format';
     public static final String AECOM_330 = 'aecom_330';
     public static final String AECOM_PLAIN = 'aecom_plain';
+    public static final String XML_OUTPUT = 'xml_output';
 
     private static final Integer MAX_POLL = 5; 
 
@@ -27,6 +28,20 @@ public with sharing class rsGenerationClient {
 	    mDebug = debug ? '1' : '0'; 
 	}
 
+	public String getXml(String jsonStr) {
+		HttpRequest req = new HttpRequest();
+		req.setEndpoint(mBaseUrl + '/convertJsonToXml');
+		req.setMethod('POST');
+		req.setBody(jsonStr);
+		req.setHeader('Content-Type', 'application/json; charset=utf-8'); 
+
+		Http http = new Http();
+	    HttpResponse res = new HttpResponse();
+		res = http.send(req);
+
+		String xml = res.getBody();
+		return xml;
+	}
 	public String getEndpoint() {
 		return mBaseUrl;
 	}
