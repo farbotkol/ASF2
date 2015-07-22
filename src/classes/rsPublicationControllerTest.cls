@@ -27,4 +27,40 @@ private class rsPublicationControllerTest {
 
 	}
 	
+	@isTest static void testMovePart() {
+		User u = [Select Id from User where Id = : UserInfo.getUserId()];
+		rsProfile profile = new rsProfile(u);
+
+		rsProfilePart pub1 = new rsProfilePart(UserInfo.getUserId(), rsProfilePart.RT_PUBLICATION);
+		pub1.setPublicationTitle('Test Title');
+		pub1.setPublication('test Pub');
+		pub1.setPublicationDate('12/12/2013');
+		pub1.setPublicationAuthor('Test Author');
+		pub1.setPartSequence(0);
+		pub1.save();
+
+		rsProfilePart pub2 = new rsProfilePart(UserInfo.getUserId(), rsProfilePart.RT_PUBLICATION);
+		pub2.setPublicationTitle('Test Titlezzzzzzzzzzz');
+		pub2.setPublication('test Pubzzzzzzzzzz');
+		pub2.setPublicationDate('12/15/2013');
+		pub2.setPublicationAuthor('Test Authorzzzzzzz');
+		pub2.setPartSequence(1);
+		pub2.save();
+
+		rsPublicationController part1 = new rsPublicationController();
+		part1.profile = profile;
+
+		Test.startTest();
+		ApexPages.currentPage().getParameters().put('partId', pub2.getId());
+		part1.movePartUp();
+		part1.movePartDown();
+		part1.movePartUp();
+		Test.stopTest();
+
+		rs_Profile_Part__c requery = [Select Publication_Title__c, Part_Sequence__c from rs_Profile_Part__c where Publication_Title__c = 'Test Title'];
+		rs_Profile_Part__c requery2 = [Select Publication_Title__c, Part_Sequence__c from rs_Profile_Part__c where Publication_Title__c = 'Test Titlezzzzzzzzzzz'];
+		System.assertEquals(1, requery.Part_Sequence__c);
+		System.assertEquals(0, requery2.Part_Sequence__c);
+	}
+
 }

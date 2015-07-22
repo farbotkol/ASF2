@@ -1,16 +1,16 @@
 /*************************************************************************
 *
 * PURPOSE: Decorator for PR Team Employee (Junction between user and project database)
-*          
+*
 *
 * CREATED: 2014 Ethos Solutions - www.ethos.com
 * AUTHOR: Alex Molina
 ***************************************************************************/
 public class rsPRTeamEmployee extends rsModel {
-    
-    public static Finder find = new Finder('PR_Team_Employee__c');
 
-    private static final Map<String,Schema.RecordTypeInfo> mRtInfo;
+    public static Finder find = new Finder('PR_Team_Employee__c');
+    private static final Integer SEARCH_RESULT_SIZE = 1000;
+    private static final Map<String, Schema.RecordTypeInfo> mRtInfo;
     static {
         mRtInfo = PR_Team_Employee__c.SObjectType.getDescribe().getRecordTypeInfosByName();
     }
@@ -24,9 +24,9 @@ public class rsPRTeamEmployee extends rsModel {
     }
 
     public rsPRTeamEmployee(Id userId, String type) {
-        super(new PR_Team_Employee__c(EmployeeUser__c = userId, 
-                RecordTypeId = mRtInfo.get(type).getRecordTypeId(), OwnerId = userId)
-        );
+        super(new PR_Team_Employee__c(EmployeeUser__c = userId,
+                                      RecordTypeId = mRtInfo.get(type).getRecordTypeId(), OwnerId = userId)
+             );
     }
 
     public PR_Team_Employee__c getPRObj() {
@@ -48,7 +48,7 @@ public class rsPRTeamEmployee extends rsModel {
         return mObj.get('Date_Involvement_Started__c') != null ? Date.valueOf(mObj.get('Date_Involvement_Started__c')).format() : null ;
     }
     public void setDateInvolvementStarted(String dateStarted) {
-        if(String.isNotBlank(dateStarted)) {
+        if (String.isNotBlank(dateStarted)) {
             mObj.put('Date_Involvement_Started__c', Date.parse(dateStarted));
         } else {
             mObj.put('Date_Involvement_Started__c', null);
@@ -60,7 +60,7 @@ public class rsPRTeamEmployee extends rsModel {
     }
 
     public void setDateInvolvementEnded(String dateEnded) {
-        if(String.isNotBlank(dateEnded)) {
+        if (String.isNotBlank(dateEnded)) {
             mObj.put('Date_Involvement_Ended__c', Date.parse(dateEnded));
         } else {
             mObj.put('Date_Involvement_Ended__c', null);
@@ -88,19 +88,19 @@ public class rsPRTeamEmployee extends rsModel {
         mObj.put('Output_on_Resume__c', output);
     }
 
-    public Id getNextProjectPart(){
+    public Id getNextProjectPart() {
         return (Id)this.mObj.get('Next_Project_Part__c');
     }
 
-    public void setNextProjectPart(Id partId){
+    public void setNextProjectPart(Id partId) {
         mObj.put('Next_Project_Part__c', partId);
     }
 
-    public Id getPreviousProjectPart(){
+    public Id getPreviousProjectPart() {
         return (Id)this.mObj.get('Previous_Project_Part__c');
     }
 
-    public void setPreviousProjectPart(Id partId){
+    public void setPreviousProjectPart(Id partId) {
         mObj.put('Previous_Project_Part__c', partId);
     }
 
@@ -122,7 +122,7 @@ public class rsPRTeamEmployee extends rsModel {
     public String getProjectName() {
         return (String) mObj.get('Project_Name__c');
     }
-    
+
     public String getLocationCountry() {
         return (String) mObj.get('Location_Country__c');
     }
@@ -224,13 +224,13 @@ public class rsPRTeamEmployee extends rsModel {
         return Integer.valueOf(mObj.get('Group_Sequence__c'));
     }
     public void setGroupSequence(Integer seq) {
-        mObj.put('Group_Sequence__c',seq);
+        mObj.put('Group_Sequence__c', seq);
     }
     public Integer getProjectSequence() {
-        return Integer.valueOf(mObj.get('Project_Sequence__c')); 
+        return Integer.valueOf(mObj.get('Project_Sequence__c'));
     }
     public void setProjectSequence(Integer seq) {
-        mObj.put('Project_Sequence__c',seq);
+        mObj.put('Project_Sequence__c', seq);
     }
 
     public Boolean getIsPendingOrInReview() {
@@ -244,8 +244,8 @@ public class rsPRTeamEmployee extends rsModel {
     public override Integer compareTo(Object compareTo) {
         rsPRTeamEmployee compareItem = (rsPRTeamEmployee)compareTo;
 
-        if(compareItem.getProjectSequence() != null) {
-            if(compareItem.getProjectSequence() > getProjectSequence()) {
+        if (compareItem.getProjectSequence() != null) {
+            if (compareItem.getProjectSequence() > getProjectSequence()) {
                 return -1;
             } else {
                 return 1;
@@ -259,20 +259,20 @@ public class rsPRTeamEmployee extends rsModel {
 
         public Finder(String sObjectName) {
             super(sObjectName);
-            Set<String> fieldSet = new Set<String>{'RecordTypeId,Initial_Locale__c, Client__c, Client_Name_Editable__c, Date_Involvement_Ended__c, Date_Involvement_Started__c, Date_Time_Sent_for_Review__c, Group_Sequence__c, Location_City__c, Location_City_Editable__c, Location_Country__c, Location_State_Prov_Emirate__c, Next_Project_Part__c, Output_on_Resume__c, Previous_Project_Part__c, Project_ID__c, Project_Name__c, Project_Name_Editable__c, Project_Group_Editable__c, Project_Number_Calculated__c, Project_Number_Editable__c, Project_Sequence__c, Description__c, Status__c, EmployeeUser__c, Added_By_Employee__c, Work_History__c, Non_AECOM_Project__c, Project_Id__r.Name, Project_ID__r.Project_Country__c, Previous_Project_Part__r.Project_ID__r.Name, Work_History__r.Company_Name__c, Project_Role__c, Location_Country_Editable__c, Location_State_Prov_Emirate_Editable__c'};
+            Set<String> fieldSet = new Set<String> {'RecordTypeId,Initial_Locale__c, Client__c, Client_Name_Editable__c, Date_Involvement_Ended__c, Date_Involvement_Started__c, Date_Time_Sent_for_Review__c, Group_Sequence__c, Location_City__c, Location_City_Editable__c, Location_Country__c, Location_State_Prov_Emirate__c, Next_Project_Part__c, Output_on_Resume__c, Previous_Project_Part__c, Project_ID__c, Project_Name__c, Project_Name_Editable__c, Project_Group_Editable__c, Project_Number_Calculated__c, Project_Number_Editable__c, Project_Sequence__c, Description__c, Status__c, EmployeeUser__c, Added_By_Employee__c, Work_History__c, Non_AECOM_Project__c, Project_Id__r.Name, Project_ID__r.Project_Country__c, Previous_Project_Part__r.Project_ID__r.Name, Work_History__r.Company_Name__c, Project_Role__c, Location_Country_Editable__c, Location_State_Prov_Emirate_Editable__c'};
             setFieldSet(fieldSet);
         }
 
         public override rsModel byId(Id recId) {
-             return new rsModel(Database.query(getSelect() + 'where Id =: recId'));
+            return new rsModel(Database.query(getSelect() + 'where Id =: recId'));
         }
 
         public List<rsPRTeamEmployee> byIdAsSelfOrProxyOrCM(Id userId) {
-             return getByWhere('EmployeeUser__c = ' + rsStringUtil.quote(userId) + ' AND Next_Project_Part__c = null AND Status__c != ' + rsStringUtil.quote(rsPRTeamEmployee.S_ARCHIVED) + ' LIMIT 500');
+            return getByWhere('EmployeeUser__c = ' + rsStringUtil.quote(userId) + ' AND Next_Project_Part__c = null AND Status__c != ' + rsStringUtil.quote(rsPRTeamEmployee.S_ARCHIVED) + ' LIMIT 500');
         }
 
         public List<rsPRTeamEmployee> byIdAsEmployee(Id userId) {
-             return getByWhere('EmployeeUser__c = ' + rsStringUtil.quote(userId) + ' AND Status__c = ' + rsStringUtil.quote(rsPRTeamEmployee.S_APPROVED) + ' LIMIT 500');
+            return getByWhere('EmployeeUser__c = ' + rsStringUtil.quote(userId) + ' AND Status__c = ' + rsStringUtil.quote(rsPRTeamEmployee.S_APPROVED) + ' LIMIT 500');
         }
 
         public List<rsPRTeamEmployee> byIdList(List<Id> projIds) {
@@ -283,12 +283,28 @@ public class rsPRTeamEmployee extends rsModel {
             return getByWhereNonDec('Id IN (\'' + String.join(projIds, '\',\'') + '\')');
         }
 
+        public List<rsPRTeamEmployee> byUsers(Set<Id> userIds) {
+            List<rsPRTeamEmployee> projects = new List<rsPRTeamEmployee>();
+            for (PR_Team_Employee__c project : Database.query(getSelect() + 'where EmployeeUser__c IN: userIds')) {
+                projects.add(new rsPRTeamEmployee(project));
+            }
+            return projects;
+        }
+
+        public List<rsPRTeamEmployee> byUsersWhereAndOrder(Set<Id> userIds, String whereStr, String sortVal, String sortDir) {
+            List<rsPRTeamEmployee> projects = new List<rsPRTeamEmployee>();
+            String whereClause = String.isNotBlank(whereStr) ? '(' + whereStr + ') AND ' : '';
+            for (PR_Team_Employee__c project : Database.query(getSelect() + 'where ' + whereClause + ' EmployeeUser__c IN: userIds ORDER BY ' + sortVal + ' ' + sortDir)) {
+                projects.add(new rsPRTeamEmployee(project));
+            }
+            return projects;
+        }
 
         public List<rsPRTeamEmployee> getByWhereAndSelect(String whereStr, String selectStr) {
             System.debug('###' + whereStr);
             List<rsPRTeamEmployee> returnList = new List<rsPRTeamEmployee>();
             List<PR_Team_Employee__c> emps = (List<PR_Team_Employee__c>)Database.query(selectStr + ' where ' + whereStr);
-            for(PR_Team_Employee__c pte : emps) {
+            for (PR_Team_Employee__c pte : emps) {
                 returnList.add(new rsPRTeamEmployee(pte));
             }
             return returnList;
@@ -298,7 +314,7 @@ public class rsPRTeamEmployee extends rsModel {
             System.debug('###' + whereStr);
             List<rsPRTeamEmployee> returnList = new List<rsPRTeamEmployee>();
             List<PR_Team_Employee__c> emps = (List<PR_Team_Employee__c>)Database.query(getSelect() + ' where ' + whereStr);
-            for(PR_Team_Employee__c pte : emps) {
+            for (PR_Team_Employee__c pte : emps) {
                 returnList.add(new rsPRTeamEmployee(pte));
             }
             return returnList;
@@ -318,17 +334,17 @@ public class rsPRTeamEmployee extends rsModel {
 
         public List<rsPRTeamEmployee> getByFind(String findStr) {
             List<rsPRTeamEmployee> returnList = new List<rsPRTeamEmployee>();
-            String queryString = 'FIND '+rsStringUtil.quote(findStr)+' IN ALL FIELDS RETURNING PR_Team_Employee__c('+getFields()+')';
+            String queryString = 'FIND ' + rsStringUtil.quote(findStr) + ' IN ALL FIELDS RETURNING PR_Team_Employee__c(' + getFields() + ')';
             List<List<SObject>> resultList = search.query(queryString);
             System.debug('#### queryString getByFind rsPRTeamEmployee: ' + queryString);
-            for(PR_Team_Employee__c pte : (List<PR_Team_Employee__c>)resultList[0]) {
+            for (PR_Team_Employee__c pte : (List<PR_Team_Employee__c>)resultList[0]) {
                 returnList.add(new rsPRTeamEmployee(pte));
             }
             return returnList;
         }
 
         public List<PR_Team_Employee__c> getByFindNonDec(String findStr) {
-            String queryString = 'FIND '+rsStringUtil.quote(findStr)+' IN ALL FIELDS RETURNING PR_Team_Employee__c('+getFields()+')';
+            String queryString = 'FIND ' + rsStringUtil.quote(findStr) + ' IN ALL FIELDS RETURNING PR_Team_Employee__c(' + getFields() + ')';
             List<List<SObject>> resultList = search.query(queryString);
             System.debug('#### queryString getByFind rsPRTeamEmployee: ' + queryString);
             return (List<PR_Team_Employee__c>)resultList[0];
@@ -337,131 +353,130 @@ public class rsPRTeamEmployee extends rsModel {
 
         // ---- The following 4 methods (and 1 util method) are used on profile reviews ---- //
         //All 4 methods check BOTH the project approval status and the User approval status
-        public List<rsPRTeamEmployee> reviewUnassigned(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String superGeography, String sortDir)
-        {
+        public List<rsPRTeamEmployee> reviewUnassigned(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String superGeography, String sortDir) {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, EmployeeUser__r.Profile_Reviewer__c, EmployeeUser__r.Profile_Reviewer__r.Name, EmployeeUser__r.FirstName, EmployeeUser__r.Name, EmployeeUser__r.LastName, EmployeeUser__r.Manager.Name, EmployeeUser__r.Geography__c, EmployeeUser__r.Region__c, EmployeeUser__r.Country, EmployeeUser__r.Office__c, EmployeeUser__r.Business_Line__c, Previous_Project_Part__c from PR_Team_Employee__c';
             String whereStr = ' EmployeeUser__r.Profile_Reviewer__c = null AND Next_Project_Part__c = null AND ( (Status__c =' + rsStringUtil.quote(rsPRTeamEmployee.S_INREVIEW) + ' OR Status__c = ' + rsStringUtil.quote(rsPRTeamEmployee.S_PENDING) + ') AND (EmployeeUser__r.Status__c =' + rsStringUtil.quote(rsProfile.S_INREVIEW) + ' OR EmployeeUser__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_PENDING) + ') )' ;
-            if( !String.isBlank(superGeography) ) {
-                whereStr += ' AND EmployeeUser__r.Supergeography__c =' + rsStringUtil.quote(superGeography);
+            if ( !String.isBlank(superGeography) ) {
+                if (rs_Additional_Geography_Countries__c.getInstance(superGeography) != null) {
+                    whereStr += ' AND (EmployeeUser__r.Supergeography__c =' + rsStringUtil.quote(superGeography) + ' OR EmployeeUser__r.Country IN ' + createStringInSet(rs_Additional_Geography_Countries__c.getInstance(superGeography).Countries__c) + ') ';
+                } else {
+                    whereStr += ' AND (EmployeeUser__r.Supergeography__c =' + rsStringUtil.quote(superGeography) + ')';
+                }
             }
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir + ' LIMIT 100';
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir;
             return getByWhereAndSelect(whereStr, selectStr);
-            
+
         }
 
-        public List<rsPRTeamEmployee> reviewAllPending(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir)
-        {
+        public List<rsPRTeamEmployee> reviewAllPending(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir) {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, EmployeeUser__r.Profile_Reviewer__c, EmployeeUser__r.Profile_Reviewer__r.Name, EmployeeUser__r.FirstName, EmployeeUser__r.Name, EmployeeUser__r.LastName, EmployeeUser__r.Manager.Name, EmployeeUser__r.Geography__c, EmployeeUser__r.Region__c, EmployeeUser__r.Country, EmployeeUser__r.Office__c, EmployeeUser__r.Business_Line__c, Previous_Project_Part__c from PR_Team_Employee__c';
-            String whereStr = ' Next_Project_Part__c = null AND Status__c = ' + rsStringUtil.quote(rsPRTeamEmployee.S_PENDING);
+            String whereStr = ' EmployeeUser__r.Profile_Reviewer__c = null AND Next_Project_Part__c = null AND Status__c = ' + rsStringUtil.quote(rsPRTeamEmployee.S_PENDING);
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir + ' LIMIT 100';
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir;
             return getByWhereAndSelect(whereStr, selectStr);
-            
+
         }
 
-        public List<rsPRTeamEmployee> reviewAssigned(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir)
-        {
+        public List<rsPRTeamEmployee> reviewAssigned(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir) {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, EmployeeUser__r.Profile_Reviewer__c, EmployeeUser__r.Profile_Reviewer__r.Name, EmployeeUser__r.FirstName, EmployeeUser__r.Name, EmployeeUser__r.LastName, EmployeeUser__r.Manager.Name, EmployeeUser__r.Geography__c, EmployeeUser__r.Region__c, EmployeeUser__r.Country, EmployeeUser__r.Office__c, EmployeeUser__r.Business_Line__c, Previous_Project_Part__c from PR_Team_Employee__c';
             String whereStr = ' EmployeeUser__r.Profile_Reviewer__c != null AND Next_Project_Part__c = null AND ( (Status__c =' + rsStringUtil.quote(rsPRTeamEmployee.S_INREVIEW) + ' OR Status__c = ' + rsStringUtil.quote(rsPRTeamEmployee.S_PENDING) + ') AND (EmployeeUser__r.Status__c =' + rsStringUtil.quote(rsProfile.S_INREVIEW) + ' OR EmployeeUser__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_PENDING) + ') )' ;
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir + ' LIMIT 100';
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir;
             return getByWhereAndSelect(whereStr, selectStr);
         }
 
-        public List<rsPRTeamEmployee> reviewAssignedToMe(String id, DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir)
-        {
+        public List<rsPRTeamEmployee> reviewAssignedToMe(String id, DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir) {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, EmployeeUser__r.Profile_Reviewer__c, EmployeeUser__r.Profile_Reviewer__r.Name, EmployeeUser__r.FirstName, EmployeeUser__r.Name, EmployeeUser__r.LastName, EmployeeUser__r.Manager.Name, EmployeeUser__r.Geography__c, EmployeeUser__r.Region__c, EmployeeUser__r.Country, EmployeeUser__r.Office__c, EmployeeUser__r.Business_Line__c, Previous_Project_Part__c from PR_Team_Employee__c';
             String whereStr = ' EmployeeUser__r.Profile_Reviewer__c = ' + rsStringUtil.quote(id) + ' AND Next_Project_Part__c = null AND ( (Status__c =' + rsStringUtil.quote(rsPRTeamEmployee.S_INREVIEW) + ' OR Status__c = ' + rsStringUtil.quote(rsPRTeamEmployee.S_PENDING) + ') AND (EmployeeUser__r.Status__c =' + rsStringUtil.quote(rsProfile.S_INREVIEW) + ' OR EmployeeUser__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_PENDING) + ') )' ;
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir + ' LIMIT 100';
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir;
             return getByWhereAndSelect(whereStr, selectStr);
         }
 
-        public List<rsPRTeamEmployee> reviewCompleted(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir)
-        {
+        public List<rsPRTeamEmployee> reviewCompleted(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir) {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, EmployeeUser__r.Profile_Reviewer__c, EmployeeUser__r.Profile_Reviewer__r.Name, EmployeeUser__r.FirstName, EmployeeUser__r.Name, EmployeeUser__r.LastName, EmployeeUser__r.Manager.Name, EmployeeUser__r.Geography__c, EmployeeUser__r.Region__c, EmployeeUser__r.Country, EmployeeUser__r.Office__c, EmployeeUser__r.Business_Line__c, Previous_Project_Part__c from PR_Team_Employee__c';
             String whereStr = ' Status__c = ' + rsStringUtil.quote(rsPRTeamEmployee.S_APPROVED) + 'AND Next_Project_Part__c = null AND Date_Time_Sent_for_Review__c != null AND EmployeeUser__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_APPROVED);
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir + ' LIMIT 100';
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir;
             return getByWhereAndSelect(whereStr, selectStr);
         }
 
         private String buildFilterStrForReview(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee) {
             String filterStr = '';
             Boolean isAndAdded = false;
-            if(searchDateTimeSentForReviewStart != null && searchDateTimeSentForReviewStop != null ) {
-                if(!isAndAdded) {
+            if (searchDateTimeSentForReviewStart != null && searchDateTimeSentForReviewStop != null ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' (EmployeeUser__r.Date_Time_Sent_for_Review__c >= ' + searchDateTimeSentForReviewStart.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'') + ' AND EmployeeUser__r.Date_Time_Sent_for_Review__c <= ' + searchDateTimeSentForReviewStop.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'') + ')'; 
-            } else if(searchDateTimeSentForReviewStart != null ) {
-                if(!isAndAdded) {
+                filterStr += ' (EmployeeUser__r.Date_Time_Sent_for_Review__c >= ' + searchDateTimeSentForReviewStart.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'') + ' AND EmployeeUser__r.Date_Time_Sent_for_Review__c <= ' + searchDateTimeSentForReviewStop.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'') + ')';
+            } else if (searchDateTimeSentForReviewStart != null ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' EmployeeUser__r.Date_Time_Sent_for_Review__c >= ' + searchDateTimeSentForReviewStart.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\''); 
-            } else if(searchDateTimeSentForReviewStop != null ) {
-                if(!isAndAdded) {
+                filterStr += ' EmployeeUser__r.Date_Time_Sent_for_Review__c >= ' + searchDateTimeSentForReviewStart.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'');
+            } else if (searchDateTimeSentForReviewStop != null ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' EmployeeUser__r.Date_Time_Sent_for_Review__c <= ' + searchDateTimeSentForReviewStop.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\''); 
+                filterStr += ' EmployeeUser__r.Date_Time_Sent_for_Review__c <= ' + searchDateTimeSentForReviewStop.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'');
             }
 
-            if(String.isNotBlank(searchLastName) ) {
-                if(!isAndAdded) {
+            if (String.isNotBlank(searchLastName) ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' EmployeeUser__r.LastName LIKE ' + rsStringUtil.likeQueryQuote(searchLastName); 
+                filterStr += ' EmployeeUser__r.LastName LIKE ' + rsStringUtil.likeQueryQuote(searchLastName);
             }
-            if(String.isNotBlank(searchFirstName) ) {
-                if(!isAndAdded) {
+            if (String.isNotBlank(searchFirstName) ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' EmployeeUser__r.FirstName LIKE ' + rsStringUtil.likeQueryQuote(searchFirstName); 
+                filterStr += ' EmployeeUser__r.FirstName LIKE ' + rsStringUtil.likeQueryQuote(searchFirstName);
             }
-            if(String.isNotBlank(searchGeography) ) {
-                if(!isAndAdded) {
+            if (String.isNotBlank(searchGeography) ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' EmployeeUser__r.Geography__c LIKE ' + rsStringUtil.likeQueryQuote(searchGeography); 
+                filterStr += ' EmployeeUser__r.Geography__c LIKE ' + rsStringUtil.likeQueryQuote(searchGeography);
             }
-            if(String.isNotBlank(searchCountry) ) {
-                if(!isAndAdded) {
+            if (String.isNotBlank(searchCountry) ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' EmployeeUser__r.Country LIKE ' + rsStringUtil.likeQueryQuote(searchCountry); 
+                filterStr += ' EmployeeUser__r.Country LIKE ' + rsStringUtil.likeQueryQuote(searchCountry);
             }
-            if(String.isNotBlank(searchAssignee) ) {
-                if(!isAndAdded) {
+            if (String.isNotBlank(searchAssignee) ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' ( EmployeeUser__r.Profile_Reviewer__r.FirstName LIKE ' + rsStringUtil.likeQueryQuote(searchAssignee) + 'OR EmployeeUser__r.Profile_Reviewer__r.LastName LIKE ' + rsStringUtil.likeQueryQuote(searchAssignee) + ')'; 
+                filterStr += ' ( EmployeeUser__r.Profile_Reviewer__r.FirstName LIKE ' + rsStringUtil.likeQueryQuote(searchAssignee) + 'OR EmployeeUser__r.Profile_Reviewer__r.LastName LIKE ' + rsStringUtil.likeQueryQuote(searchAssignee) + ')';
             }
-            if(isAndAdded) {
+            if (isAndAdded) {
                 filterStr += ')';
             }
             return filterStr;
