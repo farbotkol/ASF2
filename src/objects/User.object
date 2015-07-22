@@ -9,6 +9,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>DeletePhotoAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>EditUserAction</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -41,7 +45,15 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>UpdatePhotoAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>UserActivationAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewPhotoAction</actionName>
         <type>Default</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
@@ -78,12 +90,50 @@
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>AffectedByAECOM__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check if updated by AECOM HR file</description>
+        <externalId>false</externalId>
+        <label>AffectedByAECOM</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AffectedByURS__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check if updated by URS HR file</description>
+        <externalId>false</externalId>
+        <label>AffectedByURS</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Allocation_Subcategory__c</fullName>
         <description>Used by geography if they allocate costs.</description>
         <externalId>false</externalId>
         <inlineHelpText>Enter geographic-specific allocation group</inlineHelpText>
         <label>Allocation Subcategory</label>
         <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AssignmentCategory__c</fullName>
+        <externalId>false</externalId>
+        <label>Assignment Category</label>
+        <length>240</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AssignmentUserStatus__c</fullName>
+        <externalId>false</externalId>
+        <label>Assignment User Status</label>
+        <length>80</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
@@ -172,6 +222,20 @@
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
+        <fullName>Certified_PM__c</fullName>
+        <externalId>false</externalId>
+        <label>Certified PM</label>
+        <picklist>
+            <picklistValues>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Cisco_IP_Phone__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The number for this user&apos;s Cisco IP Phone</inlineHelpText>
@@ -232,6 +296,16 @@
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
+        <fullName>CostRate__c</fullName>
+        <externalId>false</externalId>
+        <label>Cost Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Date_Proxy_Added__c</fullName>
         <description>Date when the current Profile Proxy was added to this user</description>
         <externalId>false</externalId>
@@ -239,15 +313,6 @@
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Date</type>
-    </fields>
-    <fields>
-        <fullName>Date_Time_Last_Updated__c</fullName>
-        <description>The most recent date and time when this profile was last updated.</description>
-        <externalId>false</externalId>
-        <label>Date Time profile last updated</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <type>DateTime</type>
     </fields>
     <fields>
         <fullName>Date_Time_Sent_for_Review__c</fullName>
@@ -298,6 +363,16 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>ECO_OUID__c</fullName>
+        <externalId>false</externalId>
+        <label>ECO_OUID</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>ECO_OrganizationName__c</fullName>
         <externalId>false</externalId>
         <label>ECO Organization Name</label>
@@ -318,24 +393,14 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>EMEA_Commercial_Team__c</fullName>
-        <defaultValue>false</defaultValue>
-        <description>Checkbox if User is an EMEA Commercial Team</description>
+        <fullName>EcoBusinessGroup__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Checkbox if User is an EMEA Commercial Team</inlineHelpText>
-        <label>EMEA Commercial Team</label>
+        <label>Eco Business Group</label>
+        <length>255</length>
+        <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>EMEA_GNG_Approver__c</fullName>
-        <defaultValue>false</defaultValue>
-        <description>Checkbox if User is an EMEA GNG Approver</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Checkbox if User is an EMEA GNG Approver</inlineHelpText>
-        <label>EMEA GNG Approver</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <type>Checkbox</type>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Education_Summary__c</fullName>
@@ -348,16 +413,20 @@
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
-        <fullName>Email_Domain__c</fullName>
-        <description>Formula Field that calculates email domain of user for reporting purposes.</description>
+        <fullName>EffectiveEndDate__c</fullName>
         <externalId>false</externalId>
-        <formula>MID(Email, FIND(&apos;@&apos;, Email, 1)+1, (LEN(Email) - FIND(&apos;@&apos;, Email, 1)+1))</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Formula Field that calculates email domain of user for reporting purposes.</inlineHelpText>
-        <label>Email Domain</label>
+        <label>Effective End Date</label>
         <required>false</required>
-        <type>Text</type>
-        <unique>false</unique>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>EffectiveStartDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Effective Start Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>Employee_Category__c</fullName>
@@ -365,6 +434,16 @@
         <inlineHelpText>Exempt, Salaried, Temporary, Permanent, etc.</inlineHelpText>
         <label>Employee Category</label>
         <length>80</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ExpenditureType__c</fullName>
+        <externalId>false</externalId>
+        <label>Expenditure Type</label>
+        <length>255</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
@@ -481,6 +560,16 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>HasDefaultApplicationsSet__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>When checked the user trigger no longer attempts to create default applications.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>When checked the user trigger no longer attempts to create default applications.</inlineHelpText>
+        <label>Has Default Applications Set</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>IDReport__c</fullName>
         <externalId>false</externalId>
         <formula>CASESAFEID(Id)</formula>
@@ -594,6 +683,16 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>JobName__c</fullName>
+        <externalId>false</externalId>
+        <label>Job Name</label>
+        <length>240</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Job_Family_Meaning__c</fullName>
         <externalId>false</externalId>
         <label>Job Family Meaning</label>
@@ -649,27 +748,24 @@
         <type>DateTime</type>
     </fields>
     <fields>
-        <fullName>Last_Updated_By__c</fullName>
+        <fullName>LeadVerifier__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>A user will submit an application to become a lead verifier.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Status of the overall profile</inlineHelpText>
-        <label>Last updated by</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Owner</fullName>
-                <default>true</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Profile Proxy</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Content Manager</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
+        <label>Lead Verifier</label>
         <trackFeedHistory>false</trackFeedHistory>
-        <type>Picklist</type>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>LegalEntity__c</fullName>
+        <description>The users default legal entity.</description>
+        <externalId>false</externalId>
+        <label>Legal Entity</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Legal__c</fullName>
@@ -870,6 +966,76 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>OfficeAddress1__c</fullName>
+        <externalId>false</externalId>
+        <label>Office Address 1</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OfficeAddress2__c</fullName>
+        <externalId>false</externalId>
+        <label>Office Address2</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OfficeAddress3__c</fullName>
+        <externalId>false</externalId>
+        <label>Office Address3</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OfficeCity__c</fullName>
+        <externalId>false</externalId>
+        <label>Office City</label>
+        <length>80</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OfficeCountry__c</fullName>
+        <externalId>false</externalId>
+        <label>Office Country</label>
+        <length>60</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OfficePostalCode__c</fullName>
+        <externalId>false</externalId>
+        <label>Office Postal Code</label>
+        <length>40</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OfficeState__c</fullName>
+        <externalId>false</externalId>
+        <label>Office State</label>
+        <length>40</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Office__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Employee&apos;s Office Name</inlineHelpText>
@@ -881,6 +1047,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>OracleEmployeeId__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>Oracle Employee Number</label>
+        <length>10</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
         <fullName>Original_Hire_Date__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Date first hired at AECOM</inlineHelpText>
@@ -890,10 +1067,58 @@
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>PL_Manager__c</fullName>
+        <externalId>false</externalId>
+        <label>PL Manager</label>
+        <picklist>
+            <picklistValues>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>PMAccredited__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>If the PM is accredited this box should be checked. Drives project setup notification for non-accredited PMs</description>
+        <externalId>false</externalId>
+        <inlineHelpText>If the PM is accredited this box should be checked.</inlineHelpText>
+        <label>PM Accredited</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>PM__c</fullName>
+        <externalId>false</externalId>
+        <label>PM</label>
+        <picklist>
+            <picklistValues>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>PersonId__c</fullName>
         <externalId>false</externalId>
         <label>Person ID</label>
         <length>20</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PersonType__c</fullName>
+        <externalId>false</externalId>
+        <label>Person Type</label>
+        <length>80</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
@@ -948,12 +1173,32 @@
         <type>Hierarchy</type>
     </fields>
     <fields>
-        <fullName>Profile_Updated__c</fullName>
-        <defaultValue>false</defaultValue>
+        <fullName>Project_Approver__c</fullName>
         <externalId>false</externalId>
-        <label>Has this profile been updated?</label>
+        <label>Project Approver</label>
+        <picklist>
+            <picklistValues>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackFeedHistory>false</trackFeedHistory>
-        <type>Checkbox</type>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Project_Director__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Director</label>
+        <picklist>
+            <picklistValues>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>Publication_Summary__c</fullName>
@@ -1114,6 +1359,15 @@
         <trackFeedHistory>false</trackFeedHistory>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>ssh_AECOM_Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Shared Services AECOM Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Status__c</fullName>
@@ -1304,14 +1558,25 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>frm_Name__c</fullName>
+        <fullName>smartSearchMyRecentSearch__c</fullName>
+        <description>This field is used by the SmartSearch app to store the last 10 searches that were done by this user.</description>
         <externalId>false</externalId>
-        <formula>FirstName + &apos; &apos; + LastName</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Full Name</label>
-        <required>false</required>
-        <type>Text</type>
-        <unique>false</unique>
+        <inlineHelpText>This field is used by the SmartSearch app to store the last 10 searches that were done by this user.</inlineHelpText>
+        <label>smartSearchMyRecentSearch</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>smartSearchMyRecentlyViewed__c</fullName>
+        <description>This field is used by the SmartSearch app to store the last 10 documents that were clicked by the user</description>
+        <externalId>false</externalId>
+        <label>smartSearchMyRecentlyViewed</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <listViews>
         <fullName>AECOM_Standard_User_APAC</fullName>
@@ -1345,30 +1610,6 @@
             <value>Australia</value>
         </filters>
         <label>ANZ - CRM Lite</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>AME_CRM_Lite</fullName>
-        <columns>CORE.USERS.ADDRESS_COUNTRY</columns>
-        <columns>Geography_Allocation__c</columns>
-        <columns>FULL_NAME</columns>
-        <columns>CORE.USER_ROLE.NAME</columns>
-        <columns>CORE.PROFILE.NAME</columns>
-        <columns>LOCALE</columns>
-        <columns>TIMEZONE</columns>
-        <columns>DEFAULT_CURRENCY</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CORE.USERS.ACTIVE</field>
-            <operation>equals</operation>
-            <value>1</value>
-        </filters>
-        <filters>
-            <field>CORE.PROFILE.NAME</field>
-            <operation>equals</operation>
-            <value>CRM Lite - Americas</value>
-        </filters>
-        <label>AME - CRM Lite</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -1441,7 +1682,7 @@
         <filters>
             <field>CORE.USERS.LAST_LOGIN</field>
             <operation>lessThan</operation>
-            <value>LAST_N_MONTHS:4</value>
+            <value>LAST_N_MONTHS:6</value>
         </filters>
         <filters>
             <field>CORE.USERS.LAST_LOGIN</field>
@@ -1450,14 +1691,14 @@
         <filters>
             <field>CREATED_DATE</field>
             <operation>lessThan</operation>
-            <value>LAST_N_MONTHS:4</value>
+            <value>LAST_N_MONTHS:6</value>
         </filters>
         <filters>
             <field>CORE.PROFILE.NAME</field>
             <operation>notContain</operation>
-            <value>Chatter,Lite</value>
+            <value>Chatter</value>
         </filters>
-        <label>Active but not used in four months</label>
+        <label>Active but not used in six months</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -1508,6 +1749,30 @@
             <value>1</value>
         </filters>
         <label>Africa Active Users</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Active_Full_Users</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>CORE.PROFILE.NAME</columns>
+        <columns>CORE.USERS.USERNAME</columns>
+        <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.USERS.LAST_LOGIN</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CORE.PROFILE.USERTYPE</columns>
+        <columns>EMPLOYEE_NUMBER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ACTIVE</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CORE.PROFILE.USERTYPE</field>
+            <operation>equals</operation>
+            <value>S</value>
+        </filters>
+        <label>All Active Full Users</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -1811,67 +2076,6 @@
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>Ellen_Nancy_Users</fullName>
-        <columns>Confidentiality_Agreement_Complete__c</columns>
-        <columns>FULL_NAME</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>CORE.USERS.USERNAME</columns>
-        <columns>CORE.USERS.LAST_LOGIN</columns>
-        <columns>CORE.USER_ROLE.NAME</columns>
-        <columns>CORE.PROFILE.NAME</columns>
-        <columns>MANAGER</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Confidentiality_Agreement_Complete__c</field>
-            <operation>equals</operation>
-            <value>0</value>
-        </filters>
-        <filters>
-            <field>CORE.PROFILE.NAME</field>
-            <operation>contains</operation>
-            <value>Standard</value>
-        </filters>
-        <filters>
-            <field>CORE.USERS.ACTIVE</field>
-            <operation>equals</operation>
-            <value>1</value>
-        </filters>
-        <label>Ellen &amp; Nancy Users</label>
-        <language>en_US</language>
-        <sharedTo>
-            <group>Admin_users</group>
-        </sharedTo>
-    </listViews>
-    <listViews>
-        <fullName>Employee_number_50</fullName>
-        <booleanFilter>1 AND 2</booleanFilter>
-        <columns>FULL_NAME</columns>
-        <columns>CORE.USERS.LAST_LOGIN</columns>
-        <columns>LAST_UPDATE</columns>
-        <columns>CREATED_DATE</columns>
-        <columns>CREATED_BY_NAME</columns>
-        <columns>EMPLOYEE_NUMBER</columns>
-        <columns>URS_Employee__c</columns>
-        <columns>URS_Employee_Number__c</columns>
-        <columns>CORE.PROFILE.NAME</columns>
-        <columns>CORE.USERS.USERNAME</columns>
-        <columns>CORE.USER_ROLE.NAME</columns>
-        <columns>CORE.USERS.ACTIVE</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CORE.USERS.ACTIVE</field>
-            <operation>equals</operation>
-            <value>1</value>
-        </filters>
-        <filters>
-            <field>CORE.PROFILE.NAME</field>
-            <operation>notContain</operation>
-            <value>Chatter,Lite,External</value>
-        </filters>
-        <label>Employees Active CRM</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
         <fullName>Employee_number_not_specified_and_ACTIVe</fullName>
         <columns>CORE.USERS.LAST_NAME</columns>
         <columns>CORE.USERS.FIRST_NAME</columns>
@@ -2000,16 +2204,21 @@
         <columns>MANAGER</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Geography_Allocation__c</field>
+            <field>CORE.USER_ROLE.NAME</field>
             <operation>equals</operation>
             <value>Europe</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.DIVISION</field>
+            <operation>equals</operation>
+            <value>building engineering</value>
         </filters>
         <filters>
             <field>CORE.USERS.ACTIVE</field>
             <operation>equals</operation>
             <value>1</value>
         </filters>
-        <label>Europe Users</label>
+        <label>BdgEng Europe Users</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -2058,6 +2267,30 @@
             <value>Canda</value>
         </filters>
         <label>Inactive Canada Users</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Key_User_Session_Testers</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CORE.USERS.USERNAME</columns>
+        <columns>CORE.USERS.LAST_LOGIN</columns>
+        <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.USERS.ACTIVE</columns>
+        <columns>CORE.PROFILE.NAME</columns>
+        <columns>MANAGER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ACTIVE</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>LAST_UPDATE</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>Key User Session Testers</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -2113,9 +2346,6 @@
         <booleanFilter>(1 OR 4)AND 2 AND 3 AND 5</booleanFilter>
         <columns>CORE.USERS.ACTIVE</columns>
         <columns>Status__c</columns>
-        <columns>Non_employee__c</columns>
-        <columns>CORE.PROFILE.NAME</columns>
-        <columns>CORE.USER_ROLE.NAME</columns>
         <columns>FULL_NAME</columns>
         <columns>EMPLOYEE_NUMBER</columns>
         <columns>CORE.USERS.LAST_LOGIN</columns>
@@ -2403,24 +2633,24 @@
     </listViews>
     <searchLayouts>
         <lookupDialogsAdditionalFields>FULL_NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CORE.USERS.FIRST_NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CORE.USERS.LAST_NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CORE.USER_ROLE.NAME</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>CORE.USERS.EMAIL</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>CORE.USERS.PHONE</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>CORE.USERS.ACTIVE</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Region__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Business_Line__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>URS_Employee__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CORE.USERS.DEPARTMENT</lookupDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>FULL_NAME</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CORE.USER_ROLE.NAME</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.PHONE</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.EXTENSION</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.CELL</lookupPhoneDialogsAdditionalFields>
         <searchFilterFields>FULL_NAME</searchFilterFields>
-        <searchFilterFields>CORE.USERS.EMAIL</searchFilterFields>
-        <searchFilterFields>CORE.USERS.ACTIVE</searchFilterFields>
-        <searchFilterFields>Region__c</searchFilterFields>
-        <searchFilterFields>Business_Line__c</searchFilterFields>
         <searchFilterFields>CORE.USERS.FIRST_NAME</searchFilterFields>
         <searchFilterFields>CORE.USERS.LAST_NAME</searchFilterFields>
+        <searchFilterFields>CORE.USERS.EMAIL</searchFilterFields>
+        <searchFilterFields>CORE.USERS.ACTIVE</searchFilterFields>
+        <searchFilterFields>CORE.USERS.ADDRESS_COUNTRY</searchFilterFields>
         <searchResultsAdditionalFields>FULL_NAME</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CORE.USERS.ACTIVE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>CORE.PROFILE.NAME</searchResultsAdditionalFields>
