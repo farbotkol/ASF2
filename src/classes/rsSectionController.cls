@@ -86,6 +86,11 @@ public virtual with sharing class rsSectionController {
     }
 
     public virtual PageReference savePart() {
+        savePart(false);
+        return null;
+    }
+
+    public virtual PageReference savePart(Boolean saveAndApprove) {
         mIsError = false;
         //First check if their profile has been locked while they were editing this part, unless they are a content manager that locked it, in which case they can save just fine
         User profileRequery = getUser();
@@ -115,11 +120,10 @@ public virtual with sharing class rsSectionController {
             clone.Previous_Part__c = CurrentPart.getId();
             CurrentPart = new rsProfilePart(clone);
         }
-        setFieldsForSave(CurrentPart, profileRequery);
+        setFieldsForSave(CurrentPart, profileRequery, saveAndApprove);
         try {
             CurrentPart.save();
-        }
-        catch (DmlException ex) {
+        } catch (DmlException ex) {
             ApexPages.addMessages(ex);
             CurrentPart.setStatus(oldStatus);
             System.debug ('!!Exception on profile part save. ' + ex + ex.getStackTraceString());
@@ -138,8 +142,7 @@ public virtual with sharing class rsSectionController {
             }
             try {
                 mOldPart.save();
-            }
-            catch (DmlException ex) {
+            } catch (DmlException ex) {
                 ApexPages.addMessages(ex);
                 System.debug ('!!Exception on old profile part save. ' + ex + ex.getStackTraceString());
                 return null;
@@ -148,11 +151,10 @@ public virtual with sharing class rsSectionController {
 
         if (!isExistingPart || (isExistingPart && !mOldPart.getIsPendingOrInReview() ) ) {
             profile.getProfileParts().add(CurrentPart);
-        }
-        else {   //Else we'll just replace the object in the list with updated object
+        } else { //Else we'll just replace the object in the list with updated object
             profile.getProfileParts().set(i, CurrentPart);
         }
-
+        reorderProjectParts();
         mOldPart = null;
         enableListMode();
 
@@ -172,16 +174,15 @@ public virtual with sharing class rsSectionController {
 
         try {
             update targetUser;
-        }
-        catch (DmlException ex) {
+        } catch (DmlException ex) {
             ApexPages.addMessages(ex);
             System.debug ('!!Exception on profile part save, User DateTime update. ' + ex + ex.getStackTraceString());
         }
     }
 
-    public void setFieldsForSave(rsProfilePart profilePart, User currentUser) {
+    public void setFieldsForSave(rsProfilePart profilePart, User currentUser, Boolean saveAndApprove) {
         setTrackingFields();
-        if (isReviewable(mRecordType, currentUser)) {
+        if (isReviewable(mRecordType, currentUser) || (!saveAndApprove && profilePart.getIsPendingOrInReview())) {
             profilePart.setDateTimeSentForReview( Datetime.now() );
             if (currentUser.Date_Time_Sent_for_Review__c == null) {
                 profile.setDateTimeSentforReview(Datetime.now());
@@ -189,8 +190,7 @@ public virtual with sharing class rsSectionController {
                 profile.save();
             }
             profilePart.setStatus(rsProfilePart.S_PENDING);
-        }
-        else {
+        } else {
             rsApprovalUtil.approvePart((rs_Profile_Part__c)profilePart.getObj(), profile);
         }
     }
@@ -200,11 +200,9 @@ public virtual with sharing class rsSectionController {
         profile.setDateTimeLastUpdated(DateTime.now());
         if (UserInfo.getUserId() == profile.getId() ) {
             profile.setLastUpdatedBy(Label.Owner);
-        }
-        else if (UserInfo.getUserId() == profile.getProfileProxy()) {
+        } else if (UserInfo.getUserId() == profile.getProfileProxy()) {
             profile.setLastUpdatedBy(Label.Profile_Proxy);
-        }
-        else if (Profile_Info__c.getInstance().Is_Content_Manager__c) {
+        } else if (Profile_Info__c.getInstance().Is_Content_Manager__c) {
             profile.setLastUpdatedBy(Label.Content_Manager);
         }
         profile.save();
@@ -212,11 +210,7 @@ public virtual with sharing class rsSectionController {
 
 
     public PageReference saveAndApprove() {
-        savePart();
-        //only continue if there hasn't been an error
-        if (!mIsError) {
-            approvePart();
-        }
+        savePart(true);
         return null;
     }
 
@@ -235,7 +229,7 @@ public virtual with sharing class rsSectionController {
             }
         }
         part = parts.remove(partIndex);
-
+        reorderProjectParts((Integer)part.getPartSequence());
         if (!keepUserLocked) {
             profile.setLock(false);
             profile.setDateTimeSentforReview(null);
@@ -443,8 +437,7 @@ public virtual with sharing class rsSectionController {
             if (PageNum == getNumberOfPages()) {
                 ViewIndex += RESULT_LIMIT;
                 mViewLimit += (mViewLimit + Math.mod(TotalParts, mViewLimit));
-            }
-            else {
+            } else {
                 ViewIndex += RESULT_LIMIT;
                 mViewLimit += RESULT_LIMIT;
             }
@@ -463,24 +456,19 @@ public virtual with sharing class rsSectionController {
                     //mViewLimit -= RESULT_LIMIT-1;
                     if (Math.mod(TotalParts, mViewLimit) > 0) {
                         mViewLimit -= (Math.mod(TotalParts, mViewLimit) + 1);
-                    }
-                    else if (Math.mod(TotalParts, RESULT_LIMIT) > 0) {
+                    } else if (Math.mod(TotalParts, RESULT_LIMIT) > 0) {
                         mViewLimit -= Math.mod(TotalParts, RESULT_LIMIT);
-                    }
-                    else {
+                    } else {
                         mViewLimit -= RESULT_LIMIT;
                     }
-                }
-                else {
+                } else {
                     mViewLimit -= RESULT_LIMIT;
                 }
                 ViewIndex -= RESULT_LIMIT;
-            }
-            else if (PageNum > 1 && PageNum == getNumberOfPages()) {
+            } else if (PageNum > 1 && PageNum == getNumberOfPages()) {
                 ViewIndex -= RESULT_LIMIT;
                 mViewLimit -= (RESULT_LIMIT + Math.mod(TotalParts, mViewLimit));
-            }
-            else if (PageNum == 1) {
+            } else if (PageNum == 1) {
                 ViewIndex = 0;
                 mViewLimit = RESULT_LIMIT;
             }
@@ -513,8 +501,7 @@ public virtual with sharing class rsSectionController {
         if ( PageNum < getNumberOfPages() && (TotalParts - Math.mod(TotalParts, mViewLimit) > 0) ) {
             if (Math.mod(TotalParts, mViewLimit) == 0) {
                 ViewIndex = TotalParts - RESULT_LIMIT;
-            }
-            else {
+            } else {
                 ViewIndex = TotalParts - Math.mod(TotalParts, mViewLimit);
             }
             mViewLimit = TotalParts;
@@ -546,8 +533,7 @@ public virtual with sharing class rsSectionController {
                     if (this.mSortOrder == 'asc') {
                         this.mSortOrder = 'desc';
                         rsViewModel.SortOrder = 'desc';
-                    }
-                    else {
+                    } else {
                         this.mSortOrder = 'asc';
                         rsViewModel.SortOrder = 'asc';
                     }
@@ -555,6 +541,11 @@ public virtual with sharing class rsSectionController {
             }
             allViewModels.sort();
             this.mLastSortedBy = sortField;
+            Integer i = 0;
+            for (rsViewModel model : allViewModels) {
+                model.getProfilePart().setPartSequence(i);
+                i++;
+            }
         }
         return null;
     }
@@ -576,6 +567,118 @@ public virtual with sharing class rsSectionController {
         }
 
         return null;
+    }
+
+    //Moves a profile part one higher
+    public PageReference movePartUp() {
+        reorderProjectParts();
+        String partId = ApexPages.currentPage().getParameters().get('partId');
+        Integer originalPlace = 0;
+        rsProfilePart tempProfilePart;
+
+        List<rsProfilePart> profileParts = profile.getPartsByType(mRecordType);
+
+        for (Integer i = 0; i < profileParts.size(); i++) {
+            rsProfilePart part = profileParts.get(i);
+            if (part.getId() == partId) {
+                originalPlace = i;
+                tempProfilePart = part;
+                break;
+            }
+        }
+        if (originalPlace <= 0) {
+            return null;
+        }
+        //Updating Part Sequence
+        profileParts.get(originalPlace).setPartSequence(originalPlace - 1);
+        profileParts.get(originalPlace - 1).setPartSequence(originalPlace);
+
+        profileParts.set(originalPlace, profileParts.get(originalPlace - 1));
+        profileParts.set(originalPlace - 1, tempProfilePart);
+
+        //reorderGrouping();
+        try {
+            rsModel.save(profileParts);
+        } catch (DmlException ex) {
+            System.debug('!! Exception saving project parts :' + ex);
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, Label.Past_Record_Exception));
+        }
+        return null;
+    }
+
+    //Moves a Project within a profile part one lower
+    public PageReference movePartDown() {
+        reorderProjectParts();
+        String partId = ApexPages.currentPage().getParameters().get('partId');
+        Integer originalPlace = 0;
+        rsProfilePart tempProfilePart;
+
+        List<rsProfilePart> profileParts = profile.getPartsByType(mRecordType);
+
+        for (Integer i = 0; i < profileParts.size(); i++) {
+            rsProfilePart part = profileParts.get(i);
+            if (part.getId() == partId) {
+                originalPlace = i;
+                tempProfilePart = part;
+                break;
+            }
+        }
+        while ((originalPlace + 1) >= profileParts.size() && originalPlace > 0) {
+            originalPlace--;
+        }
+        //Updating Part Sequence
+        profileParts.get(originalPlace).setPartSequence(originalPlace + 1);
+        profileParts.get(originalPlace + 1).setPartSequence(originalPlace);
+
+        profileParts.set(originalPlace, profileParts.get(originalPlace + 1));
+        profileParts.set(originalPlace + 1, tempProfilePart);
+
+        try {
+            rsModel.save(profileParts);
+        } catch (DmlException ex) {
+            System.debug('!! Exception saving project parts :' + ex);
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, Label.Past_Record_Exception));
+        }
+        return null;
+    }
+
+    private void reorderProjectParts() {
+        List<rsProfilePart> profileParts = profile.getPartsByType(mRecordType);
+        Integer nullCount = 0;
+        Set<Id> partIds = new Set<Id>();
+        for (rsProfilePart part : profileParts) {
+            if (part.getPartSequence() == null) {
+                part.setPartSequence(nullCount);
+                nullCount++;
+                partIds.add(part.getId());
+            }
+        }
+        for (rsProfilePart part : profileParts) {
+            if (!partIds.contains(part.getId())) {
+                part.setPartSequence(part.getPartSequence() + nullCount);
+            }
+        }
+        try {
+            rsModel.save(profileParts);
+        } catch (DmlException ex) {
+            System.debug('!! Exception saving project parts :' + ex);
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, ex.getMessage()));
+        }
+    }
+
+    private void reorderProjectParts(Integer removeIndex) {
+        List<rsProfilePart> profileParts = profile.getPartsByType(mRecordType);
+        for (rsProfilePart part : profileParts) {
+            if (part.getPartSequence() > removeIndex) {
+                part.setPartSequence(part.getPartSequence() - 1);
+            }
+        }
+        try {
+            rsModel.save(profileParts);
+        } catch (DmlException ex) {
+            System.debug('!! Exception saving project parts :' + ex);
+            ApexPages.addmessage(new ApexPages.message(ApexPages.severity.ERROR, ex.getMessage()));
+        }
     }
 
 }

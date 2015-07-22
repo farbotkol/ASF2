@@ -1,12 +1,14 @@
 <apex:component controller="rsProfileReviewComponentController" allowDML="true">
-	<apex:attribute name="profilesList" assignTo="{!Profiles}" description="" type="rs_Profile_Part__c[]" required="true"/>
-	<apex:attribute name="projectsList" assignTo="{!Projects}" description="" type="rsPRTeamEmployee[]" required="true"/>
+	<apex:attribute name="ProfileIdsList" assignTo="{!ProfileIds}" description="" type="Id[]" required="true"/>
+	<apex:attribute name="ProjectIdsList" assignTo="{!ProjectIds}" description="" type="Id[]" required="true"/>
 	<apex:attribute name="profileViewType" assignTo="{!ViewType}" description="" type="String" required="true"/>
 	<apex:attribute name="SortingDirection" assignTo="{!sortDir}" description="Either ascending or descending" type="String" required="true"/>
 	<apex:attribute name="SortingValue" assignTo="{!sortVal}" description="The value that we are sorting by" type="String" required="true"/>
+	<apex:attribute name="ProjectWhereClause" assignTo="{!projWhere}" description="Additional where clause needed for approvals" type="String" required="true"/>
+	<apex:attribute name="PartWhereClause" assignTo="{!partWhere}" description="Addtional where clause needed for approvals" type="String" />
 <apex:form id="profileForm">
 	<apex:actionFunction action="{!resetCounter}" name="resetCounter" reRender="results"/>
-	<apex:outputPanel layout="none" rendered="{!Profiles.size>0 || Projects.size>0}" >
+	<apex:outputPanel layout="none" rendered="{!ProfileIds.size>0 || ProjectIds.size>0}" >
 		<table width="100%">
 			<apex:repeat value="{!viewResults}" var="currUser">
 				<tr>
@@ -131,10 +133,10 @@
 									</td>
 								</apex:outputPanel>
 									<td width="20%"> 
-										<apex:commandLink action="{!navToPart}" target="_blank" value="{!profileRTMap[part.Id]}" >
+										<apex:commandLink action="{!navToPart}" target="_blank" value="{!profileRTMap[part.RecordTypeId]}" >
 											<apex:param value="{!currUser.Obj.Id}" name="userId"/>
 											<apex:param value="{!part.Id}" name="partId"/>
-											<apex:param value="{!profileRTMap[part.Id]}" name="recordTypeName"/>
+											<apex:param value="{!profileRTMap[part.RecordTypeId]}" name="recordTypeName"/>
 					                    </apex:commandLink>
 									</td>
 						    	<apex:outputPanel layout="none" rendered="{!showStatus}">
@@ -165,10 +167,10 @@
 									</td>
 								</apex:outputPanel>
 									<td width="20%"> 
-										<apex:commandLink action="{!navToPart}" target="_blank" value="{!profileRTMap[project.Id]}" >
+										<apex:commandLink action="{!navToPart}" target="_blank" value="{!profileRTMap[project.RecordTypeId]}" >
 											<apex:param value="{!currUser.Obj.Id}" name="userId"/>
 											<apex:param value="{!project.Id}" name="partId"/>
-											<apex:param value="{!profileRTMap[project.Id]}" name="recordTypeName"/>
+											<apex:param value="{!profileRTMap[project.RecordTypeId]}" name="recordTypeName"/>
 					                    </apex:commandLink>
 									</td>
 						    	<apex:outputPanel layout="none" rendered="{!showStatus}">
@@ -196,7 +198,7 @@
 	</apex:outputPanel>
 </apex:form>
 
-<apex:outputPanel layout="none" rendered="{!Profiles.size<1 && Projects.size<1}">
+<apex:outputPanel layout="none" rendered="{!ProfileIds.size<1 && ProjectIds.size<1}">
 	<apex:outputText value="{!$Label.No_Records_To_Display}" />
 </apex:outputPanel>
 </apex:component>
