@@ -24,7 +24,7 @@ public class rsProfilePart extends rsModel {
     public override Integer compareTo(Object compareTo) {
         rsProfilePart compareItem = (rsProfilePart)compareTo;
 
-        if (compareItem.getPartSequence() != null) {
+        if (compareItem.getPartSequence() != null && getPartSequence() != null) {
             if (compareItem.getPartSequence() > getPartSequence()) {
                 return -1;
             } else {
