@@ -132,9 +132,15 @@
 
 		    
 			<h3 class="panel-title has-spinner" id="projectsHeader">{!$Label.Projects} &nbsp; <img height="15" width="15" class="spinner" src="{!$Resource.loading}" alt="loading" title="loading"/></h3>
-			<apex:commandLink value="" styleClass="{!IF(canEdit, '','disabled')} pull-right" reRender="{!reRender}" action="{!newPart}" onclick="if(inProgress) return false; showSectionSpinner('projectsHeader'); inProgress = true;" oncomplete="resetProgress();focusField('ProjectIdin');setupFields('new');loadCountry('locationCountryEdit');stateChange($j('[id$=locationCountryEdit]').val(),'State','locationStateEdit');" rendered="{!IsListMode && canEdit}">
-	             <span title="{!$Label.Add}" class="glyphicon glyphicon-plus"></span>  
-			</apex:commandLink>
+			<apex:outputPanel styleClass="{!IF(canEdit, '','disabled')} pull-right">
+				<apex:commandLink value="" action="{!newPart}" onclick="if(inProgress) return false; showSectionSpinner('projectsHeader'); inProgress = true;" oncomplete="resetProgress(); focusField('projectNameEdit'); setupFields('save');loadCountry('locationCountryEdit');stateChange($j('[id$=locationCountryEdit]').val(),'State','locationStateEdit');removeSpacesFromId();" rendered="{!IsListMode && canEdit && IsContentManager}" reRender="{!reRender}">
+					<img style="width: 15px; height:15px; padding-bottom:1px;" title="{!$Label.Project_Not_In_System}" src="{!URLFOR($Resource.bootstrap, 'icons/cmPlusIcon.png')}"/>
+		    		<apex:param name="cmNewPart" value="true"/>
+	    		</apex:commandLink> &nbsp;
+				<apex:commandLink value="" reRender="{!reRender}" action="{!newPart}" onclick="if(inProgress) return false; showSectionSpinner('projectsHeader'); inProgress = true;" oncomplete="resetProgress();focusField('ProjectIdin');setupFields('new');loadCountry('locationCountryEdit');stateChange($j('[id$=locationCountryEdit]').val(),'State','locationStateEdit');" rendered="{!IsListMode && canEdit}">
+		            <span title="{!$Label.Add}" class="glyphicon glyphicon-plus"></span>  
+				</apex:commandLink>
+			</apex:outputPanel>
 			<div class="clearfix"/>
 			
 		</div>
