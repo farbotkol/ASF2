@@ -1,0 +1,1467 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>This object tracks the Tech Service Catalog Entry records.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AVGCB__c</fullName>
+        <externalId>false</externalId>
+        <formula>(CPMC_1__c + MMMC_c_1__c + STMC_c_1__c)</formula>
+        <label>zAVG Capability metric calc</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Approval_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Approval Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>In Progress</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Approval_Submission_date__c</fullName>
+        <externalId>false</externalId>
+        <label>Approval Submission date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Business_Line__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Where in the AECOM organization is this team located?</inlineHelpText>
+        <label>Business Line</label>
+        <referenceTo>Business_Line__c</referenceTo>
+        <relationshipLabel>Technology Service Catalog Entries</relationshipLabel>
+        <relationshipName>Technology_Service_Catalog_Entries</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CPMC_1__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Tracks the numerical indicator given to # Of client projects question.</inlineHelpText>
+        <label>zCPMC 1</label>
+        <precision>1</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Capability_Description__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter a 1 sentence description of the Capability.</inlineHelpText>
+        <label>Description</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Capability_Indicator_Description__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(AVGCB__c&lt;= 2, &quot;In development or not ready for client use. A project in the pilot phase, possibly with a Client.&quot;, 
+IF((AVGCB__c = 3), &quot;In use by no more than 1 client, past performance and marketing materials either do not exist or are incomplete. One off type of solution, unique to Client needs. Not yet a repeatable solution.&quot;, 
+IF((AVGCB__c = 4), &quot;In use by at least 1 client but no more than 5 clients with solid past performance writeup and some marketing materials available. A repeatable solution.&quot;, 
+IF(AVGCB__c &gt;= 5, &quot;In use by at least 5 clients with solid past performance writeups available and well documented marketing materials. A repeatable solution.&quot;, &quot;&quot;))))</formula>
+        <label>Capability Description</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Capability_Indicator_Questions__c</fullName>
+        <externalId>false</externalId>
+        <formula>&quot;Answer the following questions for the &apos;Capability Indicator&apos; field&quot;</formula>
+        <label>Capability Indicator Questions:</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Capability_Indicator__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(AVGCB__c &lt;= 2, IMAGE(&quot;/resource/1433789415000/SmallRedDot&quot;, &quot;RED&quot;), 
+IF((AVGCB__c = 3),IMAGE(&quot;/resource/1433791069000/SmallAmberDots&quot;, &quot;AMBER&quot;), 
+IF((AVGCB__c = 4),IMAGE(&quot;/resource/1433790861000/SmallGreenDot&quot;, &quot;GREEN&quot;),
+IF(AVGCB__c &gt;= 5, IMAGE(&quot;/resource/1433791210000/SmallBlueDot&quot;,&quot;BLUE&quot;), &quot;&quot;))))</formula>
+        <label>Capability</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Capability_Type__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Is this capability for internal use, external use, or both</inlineHelpText>
+        <label>Who would use this?</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Used internally at AECOM</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Used externally on client projects</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Capacity_Description__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(How_soon_is_team_expansion_possible__c, 
+&quot;Unable to expand without an investment&quot;, &quot;Team is fully engaged and unable to expand to additional clients without an investment or significant lead time.&quot;, 
+&quot;&gt;30 days&quot;, &quot;Expansion is possible but time (&gt;30 days) will be needed to move people around to ensure proper support.&quot;, 
+&quot;&lt;30 days&quot;, &quot;Expansion is possible (&lt;30 days) with little impact to existing clients.&quot;, 
+&quot;Immediately&quot;, &quot;Capacity is available and ready to expand to additional clients immediately.&quot;, 
+&quot;&quot;)</formula>
+        <label>Capacity Description</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Capacity_Indicator_Questions__c</fullName>
+        <externalId>false</externalId>
+        <formula>&quot;Answer the following questions for the &apos;Capacity Indicator&apos; field&quot;</formula>
+        <label>Capacity Indicator Questions:</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Capacity_Indicator__c</fullName>
+        <externalId>false</externalId>
+        <formula>IMAGE( 
+CASE(How_soon_is_team_expansion_possible__c, 
+&quot;Unable to expand without an investment&quot;, &quot;/servlet/servlet.FileDownload?file=015M0000000cVbZ&quot;, 
+&quot;&gt;30 days&quot;, &quot;/servlet/servlet.FileDownload?file=015M0000000cVbU&quot;, 
+&quot;&lt;30 days&quot;, &quot;/servlet/servlet.FileDownload?file=015M0000000cVbe&quot;, 
+&quot;Immediately&quot;, &quot;/servlet/servlet.FileDownload?file=015M0000000cVal&quot;, 
+&quot;/s.gif&quot;), 
+&quot;Capacity Indicator&quot;)</formula>
+        <inlineHelpText>Note: Not just about people</inlineHelpText>
+        <label>Capacity</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Category_Other__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>If you choose “Other” as a category, please tell us what that is here.</inlineHelpText>
+        <label>Category Other</label>
+        <length>200</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Category__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Please choose all the appropriate categories for this catalog entry.</inlineHelpText>
+        <label>Category</label>
+        <picklist>
+            <picklistValues>
+                <fullName>AECOM Intellectual Property</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Application Development &amp; Mobile</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Asset Management solutions</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>BIM</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Certifications</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cloud &amp; Infrastructure services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Converged Resilience</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Immersive Technologies &amp; Visualization</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Information &amp; Data Management services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>IT Operations &amp; Support services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sensors, Remote Monitoring, Smart Cities</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>true</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Cost_and_Pricing_Models__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>If you want to share costing information with projects or pricing information with clients, please describe it here.  If not, simply write, “Available upon request.”</inlineHelpText>
+        <label>Cost and Pricing Models</label>
+        <length>12000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Customer_Rating_Count__c</fullName>
+        <externalId>false</externalId>
+        <formula>&quot;(&quot; &amp; TEXT(Rating_Count__c) &amp; &quot;)&quot;</formula>
+        <label>Number of Reviews</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DBFO_Strategy__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Where in the Project Lifecycle does this capability apply?  If multiple, please describe all.</inlineHelpText>
+        <label>Project Lifecycle</label>
+        <length>12000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Department__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Department</formula>
+        <label>Department</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Do_you_have_project_references__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Answer this question to determine &quot;Capability Indicator&quot;</inlineHelpText>
+        <label>Do you have project references?</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No references</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Limited references</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Solid references</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Does_Solution_comply_w_Industry_Std__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Answer this question to assist in determining &quot;Standards Indicator&quot;</inlineHelpText>
+        <label>Does Solution comply w/ Industry Std?</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Solution complies with the only recognized industry standard</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Solution uses a single standard which is not necessarily the industry standard</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Multiple standards in use and there is no single industry standard</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No standards in use</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Geography__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Geography__c</formula>
+        <label>Geography</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Gold_Details_del__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter the details of the Gold level offering.</inlineHelpText>
+        <label>Service Offering Gold</label>
+        <length>12000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>How_many_client_projects__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Answer this question to determine &quot;Capability Indicator&quot;</inlineHelpText>
+        <label>How many client projects?</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No clients</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>At least 1 client</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>More than 1 but less than 5</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>More than 5</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>How_soon_is_team_expansion_possible__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Answer this question to determine &quot;Capacity Indicator&quot;</inlineHelpText>
+        <label>How soon is team expansion possible?</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Immediately</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>&lt;30 days</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>&gt;30 days</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Unable to expand without an investment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Is_Approved__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Tracks approval of the record.</description>
+        <externalId>false</externalId>
+        <label>Is Approved</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_Rejected__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Rejected</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_there_a_solution_support_team__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Answer this question to determine &quot;Capability Indicator&quot;</inlineHelpText>
+        <label>Is there a solution support team?</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No support team</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Limited support team</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Strong support team</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>MMMC_c_1__c</fullName>
+        <externalId>false</externalId>
+        <label>zMMMC__c 1</label>
+        <precision>1</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Marketing_materials_case_studies__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Answer this question to determine &quot;Capability Indicator&quot;</inlineHelpText>
+        <label>Marketing materials &amp; case studies?</label>
+        <picklist>
+            <picklistValues>
+                <fullName>None exist</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Limited documentation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Well documented</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Name_of_Group_providing_Capability__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Name of the technology group providing this capability</inlineHelpText>
+        <label>Name of Group providing Capability</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Number_of_Reviews__c</fullName>
+        <externalId>false</externalId>
+        <label>Number of Customer Reviews</label>
+        <summaryForeignKey>Service_Catalog_Entry_Ratings__c.Technology_Service_Catalog_Entry__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Overall_Rating__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Rating_Sum__c &gt; 0, Rating_Sum__c / Rating_Count__c, 0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Overall Rating</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PRMC_c_1__c</fullName>
+        <externalId>false</externalId>
+        <label>zPRMC__c 1</label>
+        <precision>1</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Rating_Count__c</fullName>
+        <externalId>false</externalId>
+        <label>Rating Count</label>
+        <summaryForeignKey>Service_Catalog_Entry_Ratings__c.Technology_Service_Catalog_Entry__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Rating_Sum__c</fullName>
+        <externalId>false</externalId>
+        <label>Rating Sum</label>
+        <summarizedField>Service_Catalog_Entry_Ratings__c.Rating_Sum_Hold__c</summarizedField>
+        <summaryForeignKey>Service_Catalog_Entry_Ratings__c.Technology_Service_Catalog_Entry__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Rating__c</fullName>
+        <externalId>false</externalId>
+        <formula>IMAGE( 
+CASE(ROUND(Overall_Rating__c,0),
+0, &quot;/img/samples/stars_000.gif&quot;,
+1, &quot;/img/samples/stars_100.gif&quot;, 
+2, &quot;/img/samples/stars_200.gif&quot;, 
+3, &quot;/img/samples/stars_300.gif&quot;, 
+4, &quot;/img/samples/stars_400.gif&quot;, 
+5, &quot;/img/samples/stars_500.gif&quot;, 
+&quot;/img/samples/stars_000.gif&quot;), 
+&quot;rating&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Customer Rating Summary</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Recommended_Proposal_Language__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This is meant to support direct client engagement on the capability/service. This will enable bid teams to quickly respond to Request for Information. This language is not to be used in proposals. For exact proposal language and pricing, contact the SME.</inlineHelpText>
+        <label>Recommended Proposal Language</label>
+        <length>12000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>SME__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/&quot; &amp; Owner:User.Id, Owner:User.frm_Name__c,&quot;_self&quot;)</formula>
+        <label>Subject Matter Expert</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>STMC_c_1__c</fullName>
+        <externalId>false</externalId>
+        <label>zSTMC__c 1</label>
+        <precision>1</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Secondary_SME__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>These are the other people who can be contacted for this capability.</inlineHelpText>
+        <label>Secondary Subject Matter Expert</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Technology_Service_Catalog_Entries</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Service_Offering_Details__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Provide details &amp; explain the difference between each tiered (Platinum, Gold, Silver, Bronze )service levels?</inlineHelpText>
+        <label>Service Offering Details</label>
+        <length>12000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Service_Offering_Level__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Is your capability mature enough to be called a service offering? Do you offer various levels of support packages and pricing depending on project/client needs? Do you offer a tiered service solution (e.g. Platinum is best, bronze is basic.)?</inlineHelpText>
+        <label>Service Offering Level</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Bronze</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Silver</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Gold</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Platinum</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Standards_Description__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(Does_Solution_comply_w_Industry_Std__c, 
+&quot;No standards in use&quot;, &quot;No standard is in use.&quot;, 
+&quot;Multiple standards in use and there is no single industry standard&quot;, &quot;Multiple standards are in use with no single standard showing as predominant.&quot;, 
+&quot;Solution uses a single standard which is not necessarily the industry standard&quot;, &quot;Industry standard(s) exist, but AECOM has standardized on a single standard, not necessarily a recognized industry standard.&quot;, 
+&quot;Solution complies with the only recognized industry standard&quot;, &quot;AECOM is using and endorsing only a recognized industry standard.&quot;, 
+&quot;&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Standards Description</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Standards_Indicator_Questions__c</fullName>
+        <externalId>false</externalId>
+        <formula>&quot;Answer the following questions for the &apos;Standards Indicator&apos; field&quot;</formula>
+        <label>Standards Indicator Questions:</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Standards_Indicator__c</fullName>
+        <externalId>false</externalId>
+        <formula>IMAGE( 
+CASE(Does_Solution_comply_w_Industry_Std__c, 
+&quot;No standards in use&quot;, &quot;/resource/1433789415000/SmallRedDot&quot;, 
+&quot;Multiple standards in use and there is no single industry standard&quot;, &quot;/resource/1433791069000/SmallAmberDots&quot;, 
+&quot;Solution uses a single standard which is not necessarily the industry standard&quot;, &quot;/resource/1433790861000/SmallGreenDot&quot;, 
+&quot;Solution complies with the only recognized industry standard&quot;, &quot;/resource/1433791210000/SmallBlueDot&quot;, 
+&quot;/s.gif&quot;), 
+&quot;Standards Indicator&quot;)</formula>
+        <inlineHelpText>SME does a self-assessment of their own capability when submitting their catalog entry 
+This would then need to be reviewed &amp; approved by Team TaaS ( workflow for review &amp; approval process)</inlineHelpText>
+        <label>Standards</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Standards__c</fullName>
+        <externalId>false</externalId>
+        <label>Standards</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Red</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Amber</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Green</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Blue</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Status of the Service Catalog entry.</inlineHelpText>
+        <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Draft</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>In Review</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Published</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Revisions Needed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Strategic_Initiative_Indicator__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL(Strategic_Investment__c, &quot;Yes&quot;), IMAGE(&quot;/servlet/servlet.FileDownload?file=015M0000000cVcr&quot;, &quot;&quot;, 40, 40) &amp; &quot;  &quot; &amp; &quot;   &quot; &amp; &quot;AECOM is investing in this Capability&quot;, &quot;&quot;)</formula>
+        <label>Strategic Initiative Indicator</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Strategic_Investment__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This is an indicator which shows AECOM is currently investing in developing/growing this capability.</inlineHelpText>
+        <label>Strategic Investment</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Team_Location__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>List all the locations for your team</inlineHelpText>
+        <label>Team Location</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Team_Size__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Indicate the team size in quantity including the breakout by type (AECOM FTE, backup, subcontractors)</inlineHelpText>
+        <label>Team Size</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Tertiary_SME__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>These are the other people who can be contacted for this capability.</inlineHelpText>
+        <label>Tertiary Subject Matter Expert</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Technology_Service_Catalog_Entries1</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Value_Proposition__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>&quot;Value Proposition catches the readers attention and outlines the highlights of the Capability.&quot;</inlineHelpText>
+        <label>Value Proposition &amp; Service Description</label>
+        <length>12000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Web_Links__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Please insert all links to additional materials you want available for discovery during a search of the catalog.  Remember that you, as the SME, are responsible for maintaining this information.</inlineHelpText>
+        <label>External Materials</label>
+        <length>1000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <label>Technology Service Catalog Entry</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>TaaS_Catalog_approval</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>All_Published_Catalog_Entries</fullName>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Published</value>
+        </filters>
+        <label>All Published Catalog Entries</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Category_AECOM_Intellectual_Property</fullName>
+        <booleanFilter>1</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Category__c</field>
+            <operation>includes</operation>
+            <value>AECOM Intellectual Property</value>
+        </filters>
+        <label>Category- AECOM Intellectual Property</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Category_Application_Dev_Mobile</fullName>
+        <booleanFilter>1</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Category__c</field>
+            <operation>includes</operation>
+            <value>Application Development &amp; Mobile</value>
+        </filters>
+        <label>Category- Application Dev. &amp; Mobile</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Category_Asset_Management_solutions</fullName>
+        <booleanFilter>1</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Category__c</field>
+            <operation>includes</operation>
+            <value>Asset Management solutions</value>
+        </filters>
+        <label>Category- Asset Management solutions</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Category_BIM</fullName>
+        <booleanFilter>1</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Category__c</field>
+            <operation>includes</operation>
+            <value>BIM</value>
+        </filters>
+        <label>Category- BIM</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Category_Certifications</fullName>
+        <booleanFilter>1</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Category__c</field>
+            <operation>includes</operation>
+            <value>Certifications</value>
+        </filters>
+        <label>Category- Certifications</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Category_Cloud_Infrastructure_Services</fullName>
+        <booleanFilter>1</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Category__c</field>
+            <operation>includes</operation>
+            <value>Cloud &amp; Infrastructure services</value>
+        </filters>
+        <label>Category-Cloud &amp; Infrastructure Services</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Category_Converged_Resillience</fullName>
+        <booleanFilter>1</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Category__c</field>
+            <operation>includes</operation>
+            <value>Converged Resilience</value>
+        </filters>
+        <label>Category- Converged Resillience</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Category_IT_Ops_Support_Services</fullName>
+        <booleanFilter>1</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Category__c</field>
+            <operation>includes</operation>
+            <value>IT Operations &amp; Support services</value>
+        </filters>
+        <label>Category- IT Ops. &amp; Support Services</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Category_Immersive_Technologies</fullName>
+        <booleanFilter>1</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Category__c</field>
+            <operation>includes</operation>
+            <value>Immersive Technologies &amp; Visualization</value>
+        </filters>
+        <label>Category-Immersive Tech. &amp; Visualization</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Category_Info_Data_Management_Service</fullName>
+        <booleanFilter>1</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Category__c</field>
+            <operation>includes</operation>
+            <value>Information &amp; Data Management services</value>
+        </filters>
+        <label>Category-Info. &amp; Data Management Service</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Category_Other</fullName>
+        <booleanFilter>1</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Category__c</field>
+            <operation>includes</operation>
+            <value>Other</value>
+        </filters>
+        <label>Category- Other</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Category_Sensors_Remote_Monitoring</fullName>
+        <booleanFilter>1</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Category__c</field>
+            <operation>includes</operation>
+            <value>&quot;Sensors, Remote Monitoring, Smart Cities&quot;</value>
+        </filters>
+        <label>Category- Sensors, Remote Monitoring</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>My_Draft_Service_Catalog_Entries</fullName>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Draft</value>
+        </filters>
+        <label>My Draft Service Catalog Entries</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>My_In_Review_Service_Catalog_Entries</fullName>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>In Review</value>
+        </filters>
+        <label>My In Review Service Catalog Entries</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>My_Published_Service_Catalog_Entries</fullName>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Published</value>
+        </filters>
+        <label>My Published Service Catalog Entries</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>My_Revisions_Needed_Catalog_Entries</fullName>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Revisions Needed</value>
+        </filters>
+        <label>My Revisions Needed Catalog Entries</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>My_Service_Catalog_Entries</fullName>
+        <columns>NAME</columns>
+        <columns>Category__c</columns>
+        <columns>Capability_Description__c</columns>
+        <columns>SME__c</columns>
+        <columns>Capability_Indicator__c</columns>
+        <columns>Capacity_Indicator__c</columns>
+        <columns>Standards_Indicator__c</columns>
+        <columns>Status__c</columns>
+        <columns>Rating__c</columns>
+        <columns>Customer_Rating_Count__c</columns>
+        <filterScope>Mine</filterScope>
+        <label>My Service Catalog Entries</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>Title</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Technology Service Catalog Entries</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Category__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Capability_Description__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>SME__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Capability_Indicator__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Capacity_Indicator__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Standards_Indicator__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Rating__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Customer_Rating_Count__c</customTabListAdditionalFields>
+        <searchResultsAdditionalFields>Category__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Capability_Description__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>SME__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Capability_Indicator__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Capacity_Indicator__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Standards_Indicator__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Rating__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Customer_Rating_Count__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Service_Catalog_CustomRatingButton</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Rate it!</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>{!URLFOR( $Action.Service_Catalog_Entry_Ratings__c.New , null, [saveURL=Service_Catalog_Entry__c.Link, CF00NM0000001LySB_lkid=Service_Catalog_Entry__c.Id , CF00NM0000001LySB=Service_Catalog_Entry__c.Name])}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Update_SME</fullName>
+        <availability>online</availability>
+        <description>Mass Update SME field</description>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Update SME</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/connection.js&quot;)}
+{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/apex.js&quot;)}
+var url = parent.location.href;
+var records = {!GETRECORDIDs($ObjectType.Service_Catalog_Entry__c)};
+var updateRecords = [];
+if (records.length == 0) {
+ alert(Please select at least one record from the list to update.&quot;);
+} else {
+var r = confirm(&quot;You are about to change the SME on &quot; + records.length + &quot;Catalog Entries. Do you wish to continue?);
+if (r == true) {
+for (var a=0; a&lt;records.length; a++){
+var update_Capability = new sforce.SObject (&quot;Technology_Service_Catalog__c&quot;);
+update_Capability.Id = records[a];
+update_SME_lookup__c = value;
+updateRecords.push(update_Capability);
+}
+result = sforce.connection.update(updateRecords);
+var numSuccess = 0;
+var numFails = 0;
+var failMessage = &quot;&quot;;
+for (var i=0; i&lt;records.length; i++) {
+if (result[i].getBollean(&quot;success&quot;)) {
+numSuccess = numsuccess +1;
+} else {
+numFails = numFails + 1;
+ if (numFails==1){
+ failMessage=result[i].errors.message;
+ }
+ }
+}
+if (numFails &gt; 0) {
+alert(&quot;Successes: &quot; + numSuccess + &quot; Failures: &quot; + numFails + &quot;\nFirst Error: &quot; + failMessage);
+} else {
+alert(&quot;Successes: &quot; + numSuccess + &quot; Failures: &quot; + numFails);
+}
+}
+parent.location.href = url;
+}</url>
+    </webLinks>
+</CustomObject>
