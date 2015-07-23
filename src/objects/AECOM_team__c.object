@@ -142,6 +142,20 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Catalog_Entry__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Links the AECOM Team member record with the Catalog Entry.</description>
+        <externalId>false</externalId>
+        <label>Catalog Entry</label>
+        <referenceTo>Service_Catalog_Entry__c</referenceTo>
+        <relationshipLabel>AECOM Team</relationshipLabel>
+        <relationshipName>AECOM_Team</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Community_Involvement__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>Link to the Community Involvement Event</description>
@@ -609,6 +623,10 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Marketing Lead</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Marketing Support</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -1423,6 +1441,10 @@
                 <default>false</default>
             </values>
             <values>
+                <fullName>Marketing Support</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>PCC BD Lead</fullName>
                 <default>false</default>
             </values>
@@ -1616,6 +1638,535 @@
             </values>
         </picklistValues>
     </recordTypes>
+    <recordTypes>
+        <fullName>Service_Catalog_Person_Record</fullName>
+        <active>true</active>
+        <description>Tracks the AECOM Team member user record associated with the Catalog Entry.</description>
+        <label>Service Catalog Person Record</label>
+        <picklistValues>
+            <picklist>Role__c</picklist>
+            <values>
+                <fullName>AECOM Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AECOM Contact %E2%80%93 Priority 1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AECOM Contact %E2%80%93 Priority 2</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AECOM Contact %E2%80%93 Priority 3</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Account Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Additional CRM Admin</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Architect</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Executive</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Lead %E2%80%93 PCC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Lead - Building Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Lead - CAM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Lead - Construction Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Lead - Energy</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Lead - Environment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Lead - Government</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Lead - PDD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Lead - Program Management</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Lead - SPG</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Lead - Transportation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BD Lead - Water</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>BTS Support</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Business Line Dir</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Business Line Dir - Client Sector</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Business Line Dir - Market Segment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Business Line Liaison</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Business Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Business Stream Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Buyer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Capital Projects Delivery - Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Capture Executive</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Capture Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Client Account Leader %28inform%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Client Director</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Client Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Consultant</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contracts Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contracts%2FSubcontracts Mgmt</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Country Business Line Leader %28Recommend%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Country Managing Director %28Approve%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Deal Shaper</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Deputy Project Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>EMEA Chief Exec %28Decision%2C see DOA%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Editor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>End Markets Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>End Markets Monitoring</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>End Markets Support</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Engineer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Engineering Discipline Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Engineering Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Estimator</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Evaluator</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Executive in Charge</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Global Exec %28Decision%2C see DOA%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Government Technical Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Graphic Artist</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Human Resources Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>IT Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>IT Support</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interview Coach</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Legal Counsel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MBC - Bid Specialist</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MBC - Finance %2F Commercial</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MBC - Governance %2FRisk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MBC - Interview Coach</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MBC - Specialist Contributor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MBC - Talent Acquisition</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MBC - Technical Bid Director</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MBC - Technical Bid Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MBC - Technical Contributor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MBC - Technical Reviewer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ME Business Line Leader %28Decision%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ME Region Market Sector Leader %28inform%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Market Segment Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Marketing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Marketing Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Marketing Support</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PCC BD Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PCC Win Principal</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PMA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Peer Reviewer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pricing Execution</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pricing Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pricing Support</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prior Team Member</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Cost%2FSchedule Controls</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Engineer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Staff</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project%2FProgram Director</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Proposal Coordinator</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Proposal Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Proposal Team Member</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pursuit Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Quality</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Quality Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Regional Liaison</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Resident Project Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Resume Writer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Review Team</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SME - Contracts</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SME - HR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SME - Safety</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SME - Security</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SME - Tax</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SME - Technical</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Safety</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Safety Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Scientist</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Solution Architect</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sponsor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Team Member</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Technical Proposal Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Technical Writer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Volume Lead</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Volume Writer</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Win Principal - Building Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Win Principal - CAM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Win Principal - Construction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Win Principal - DPE</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Win Principal - Energy</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Win Principal - Environment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Win Principal - Government</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Win Principal - PCC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Win Principal - PDD</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Win Principal - Program Management</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Win Principal - Transportation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Win Principal - Water</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
     <searchLayouts>
         <searchFilterFields>NAME</searchFilterFields>
     </searchLayouts>
@@ -1628,6 +2179,19 @@
         <errorDisplayField>CAM_Relationship_Status__c</errorDisplayField>
         <errorMessage>CAM Relationship Status must be 0, 1, 2, or 3. Hover over the orange ? dot for definitions of each level.</errorMessage>
     </validationRules>
+    <webLinks>
+        <fullName>Links_to_AECOM_People</fullName>
+        <availability>online</availability>
+        <description>Link to AECOM People from Catalog Entry.</description>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>New Link to AECOM People</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>/a0C/e?CF00NM0000001MYfc={!Service_Catalog_Entry__c.Name}&amp;CF00NM0000001MYfc_lkid={!Service_Catalog_Entry__c.Id}&amp;retURL=/{!Service_Catalog_Entry__c.Id}&amp;saveURL=/{!Service_Catalog_Entry__c.Id}&amp;RecordType=012M00000000lK6&amp;ent=01I300000013Piu</url>
+    </webLinks>
     <webLinks>
         <fullName>New_Account_Team_Member</fullName>
         <availability>online</availability>
