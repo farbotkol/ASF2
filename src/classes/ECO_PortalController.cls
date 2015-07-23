@@ -2,7 +2,6 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 	
 	public List<pse__Proj__c> projects					{ get; set; }
 	public List<Configuration__c> reports				{ get; set; }
-	public List<Configuration__c> applications			{ get; set; }
 	public User theUser									{ get; set; }
 	public List<ProcessInstanceWorkitem> approvals		{ get; set; }
 	public List<Task> tasks								{ get; set; }
@@ -59,12 +58,6 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 		if (!Test.isRunningTest()) {
 			photoUrl = ConnectApi.ChatterUsers.getPhoto(null, theUser.Id).smallPhotoUrl;
 		}
-	}
-	
-	public PageReference onLoad () {
-		
-		applications = ECO_Service_Applications.getSortedList(theUser);
-		return null;
 	}
 	
 	public PageReference refreshProjects () {

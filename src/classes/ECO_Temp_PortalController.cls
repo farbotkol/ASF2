@@ -33,7 +33,8 @@ public with sharing class ECO_Temp_PortalController {
 	} 
 	
 	public PageReference onLoad() {
-		applications = ECO_Service_Applications.getSortedList(theHeaderUser);
+		// applications = ECO_Service_Applications.getSortedList(theHeaderUser);
+		ECO_Service_Applications.upsertApplicationsForUser();
 		System.debug('applications size: ' + applications.size());
 		return null;
 	}
