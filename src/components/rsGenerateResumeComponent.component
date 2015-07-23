@@ -27,6 +27,7 @@
 	                <apex:selectOption itemValue="aecom_format" itemLabel="{!$Label.AECOM_Format}"/>
 	                <apex:selectOption itemValue="aecom_plain" itemLabel="{!$Label.Plain_Format}"/>
 	                <apex:selectOption itemValue="aecom_330" itemLabel="{!$Label.Format_330}"/>
+	                <apex:selectOption itemValue="xml_output" itemLabel="{!$Label.XML_Output}"/>
 
 	                <apex:actionSupport event="onchange" rerender="dlPanel" action="{!clearDownload}" status="AddStatus"/>
 
@@ -42,11 +43,14 @@
 						<apex:facet name="stop">
 							  
 							    <apex:outputPanel >
-									<apex:commandLink style="color:#fff; text-decoration:none;" onclick="if(!isValidTemplate()) return false;" id="generateLink" action="{!generateResume}" value="" status="AddStatus" reRender="dlPanel,messages" styleClass="btn btn-primary btn-sm sfbtnOverrideBlue">
+									<apex:commandLink style="color:#fff; text-decoration:none;" onclick="if(!isValidTemplate()) return false;" id="generateLink" action="{!generateResume}" value="" status="AddStatus" reRender="dlPanel,messages" styleClass="btn btn-primary btn-sm sfbtnOverrideBlue" rendered="{!!IsXMLDownload}">
 									    {!$Label.Generate_CV_Resume} &nbsp; <span class="glyphicon glyphicon glyphicon-refresh"></span>
-					                    
 							        </apex:commandLink>
-
+										
+									<apex:outputLink target="_blank" style="color:#fff; text-decoration:none;" value="{!XMLDownloadLink}" id="generateXML" styleClass="btn btn-success btn-sm sfbtnOverrideGreen" rendered="{!IsXMLDownload}">
+									    {!$Label.Click_To_Download} &nbsp; <span class="glyphicon glyphicon-cloud-download"></span>
+							        </apex:outputLink>
+								
 							        <apex:outputLink target="_blank" id="dlLink" rendered="{!ShowDownloadLink}" value="{!DownloadLink}" styleClass="btn btn-success btn-sm sfbtnOverrideGreen">
 									{!$Label.Click_To_Download} &nbsp;<span style="font-size: 1.2em;" class="glyphicon glyphicon-cloud-download"/>
 							    	</apex:outputLink>

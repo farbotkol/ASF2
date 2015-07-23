@@ -293,7 +293,7 @@ global with sharing class rsSearch extends rsModel {
     	mUserConditions.put('geography',new Condition(geo,' = ', 'Geography__c'));
     } 
 
-    public List<SelectOption> getGeographyList() {
+     public List<SelectOption> getGeographyList() {
     	List<SelectOption> geos = new List<SelectOption>();
     	geos.add(new SelectOption('','--None--'));
     	geos.add(new SelectOption('AECOM TECHNOLOGY CORP','AECOM TECHNOLOGY CORP'));
@@ -912,8 +912,8 @@ global with sharing class rsSearch extends rsModel {
 		busLineList.add(new SelectOption('AID','AID'));
 		busLineList.add(new SelectOption('Architecture','Architecture'));
 		busLineList.add(new SelectOption('Building Engineering','Building Engineering'));
-		busLineList.add(new SelectOption('Construction Services','Construction Services'));
-		busLineList.add(new SelectOption('DP&E','DP&E'));
+    	busLineList.add(new SelectOption('Construction Services','Construction Services'));
+    	busLineList.add(new SelectOption('DP&E','DP&E'));
 		busLineList.add(new SelectOption('Design-Build','Design-Build'));
 		busLineList.add(new SelectOption('Energy','Energy'));
 		busLineList.add(new SelectOption('Environment','Environment'));
@@ -923,8 +923,8 @@ global with sharing class rsSearch extends rsModel {
 		busLineList.add(new SelectOption('Mining & Metals','Mining & Metals'));
 		busLineList.add(new SelectOption('PCC','PCC'));
 		busLineList.add(new SelectOption('Planning Design & Dev','Planning Design & Dev'));
-		busLineList.add(new SelectOption('Transportation','Transportation'));
-		busLineList.add(new SelectOption('Water','Water'));
+    	busLineList.add(new SelectOption('Transportation','Transportation'));
+    	busLineList.add(new SelectOption('Water','Water'));
 		return busLineList;
     }
 
@@ -1250,7 +1250,8 @@ global with sharing class rsSearch extends rsModel {
 		|| t == Schema.DisplayType.TextArea
 		|| t == Schema.DisplayType.Picklist
 		|| t == Schema.DisplayType.String
-		|| t == Schema.DisplayType.Phone;
+		|| t == Schema.DisplayType.Phone
+		|| FORCE_SEARCHABLE_FIELDS.contains(f.getName());
 
 	}
 
@@ -1299,7 +1300,16 @@ global with sharing class rsSearch extends rsModel {
 				if(dispType == Schema.DisplayType.TextArea) {
 					operators.add(new SelectOption('c','contains'));
 					operators.add(new SelectOption('dnc','does not contain'));
-				} else if (dispType == Schema.DisplayType.String || dispType == Schema.DisplayType.Picklist 
+				} 
+				else if (dispType == Schema.DisplayType.Date || dispType == Schema.DisplayType.DateTime) {
+					operators.add(new SelectOption('e','equals'));
+					operators.add(new SelectOption('ne','not equal to'));
+					operators.add(new SelectOption('lt','less than'));
+					operators.add(new SelectOption('gt','greater than'));
+					operators.add(new SelectOption('loe','less or equal'));
+					operators.add(new SelectOption('goe','greater or equal'));
+				}
+				else if (dispType == Schema.DisplayType.String || dispType == Schema.DisplayType.Picklist 
 					|| dispType == Schema.DisplayType.Email || dispType == Schema.DisplayType.Phone) {
 					operators.add(new SelectOption('e','equals'));
 					operators.add(new SelectOption('ne','not equal to'));
@@ -1371,6 +1381,13 @@ global with sharing class rsSearch extends rsModel {
 	public static final Map<String, Schema.SObjectField> USER_FIELDS = Schema.getGlobalDescribe().get('User').getDescribe().fields.getMap();
 	public static final Map<String, Schema.SObjectField> PROFILE_PART_FIELDS = Schema.getGlobalDescribe().get('rs_Profile_Part__c').getDescribe().fields.getMap();
 	public static final Map<String, Schema.SObjectField> PR_TEAM_EMPLOYEE_FIELDS = Schema.getGlobalDescribe().get('PR_Team_Employee__c').getDescribe().fields.getMap();
+
+	// Fields which would not ordinarily be searchable (due to datatype, etc) but we want to explicity override/set as searchable 
+	private static final Set<String> FORCE_SEARCHABLE_FIELDS = new Set<String> {
+		'Last_User_Profile_Update__c',
+		'Last_CM_Profile_Update__c'
+	};
+
 	private static final Set<String> IGNORED_FIELDS = new Set<String>{  'ChkUniqueEmp__c',
 																		'Client__c',
 																		'Client_Name__c',

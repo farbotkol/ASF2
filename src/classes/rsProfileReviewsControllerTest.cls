@@ -7,7 +7,7 @@
 ***************************************************************************/
 @isTest
 private class rsProfileReviewsControllerTest {
-	
+
 	private static testmethod void testUnassignedViewType() {
 		Test.startTest();
 		rsTestUtil.createTestProfileParts(6, 4, 3);
@@ -19,8 +19,8 @@ private class rsProfileReviewsControllerTest {
 		Test.stopTest();
 
 		System.assert(cont.getprofileReviewView().size() != 0);
-		System.assertEquals(cont.getReviewProfiles().size(), 24);
-		System.assertEquals(cont.getReviewProjects().size(), 18);
+		System.assertEquals(cont.getReviewProfiles().size(), 6);
+		System.assertEquals(cont.getReviewProjects().size(), 6);
 		System.assertEquals(cont.getShowAssignee(), false);
 		System.assert(cont.ProfileReviewViewType == rsProfileReviewsController.REV_UN_AMERICAS);
 	}

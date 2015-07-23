@@ -9,11 +9,38 @@
 
 		j$(document).ready(function() {
 			setSF330RequiredFields();
+			setUpSf330Parts();
 		});
 
 		function setSF330RequiredFields() {
     		//Required Fields for this component
 			requiredFields = ['[id$=sf330_disc]'];
+    	}
+
+    	function setUpSf330Parts() {
+    		j$('a[id$=moveSf330PartUp]').each(function() {
+				if(j$(this).hasClass('0')) {
+					j$(this).removeAttr('onclick href').parent().addClass('disabled');
+					j$(this).click(function(e) {
+						e.preventDefault();
+					});
+				}
+			});
+			j$('a[id$=moveSf330PartDown]').each(function() {
+				var arr = j$(this).attr('class').split(" ");
+				if((arr.length == 1 && arr[0] == '0')) {
+					j$(this).removeAttr('onclick href').parent().addClass('disabled');
+					j$(this).click(function(e) {
+						e.preventDefault();
+					});
+				}
+				else if (arr[0] == arr[1] || (arr[0] == '0' && arr[1].length == 0)) {
+					j$(this).removeAttr('onclick href').parent().addClass('disabled');
+					j$(this).click(function(e) {
+						e.preventDefault();
+					});
+				}
+			});
     	}
 	</script>
     <div class="panel panel-default">
@@ -28,7 +55,7 @@
 	    <div class="panel-body">
 
 	        <apex:outputPanel rendered="{!IsEditMode}">
-	        <apex:actionRegion >
+	        <apex:actionRegion>
 
 				<table class="table">
 	            	<tr>	            			
@@ -57,7 +84,7 @@
 	                     <span class="glyphicon glyphicon-ok-circle"></span> 
 				    </apex:commandLink>
                     &nbsp;
-	                <apex:commandLink action="{!saveAndApprove}" value="{!$Label.Save_And_Approve}" styleClass="btn btn-success btn-sm sfbtnOverrideGreen" reRender="{!reRender}" onclick="if(inProgress) return false; setSF330RequiredFields();if(!checkRequiredFields()) return false; showSectionSpinner('sf330Header'); inProgress = true;" oncomplete="resetProgress();" rendered="{!isApprovable && CurrentPart.IsPendingOrInReview}">
+	                <apex:commandLink action="{!saveAndApprove}" value="{!$Label.Save_and_Approve}" styleClass="btn btn-success btn-sm sfbtnOverrideGreen" reRender="{!reRender}" onclick="if(inProgress) return false; setSF330RequiredFields();if(!checkRequiredFields()) return false; showSectionSpinner('sf330Header'); inProgress = true;" oncomplete="resetProgress();" rendered="{!isApprovable && CurrentPart.IsPendingOrInReview}">
 	                     <apex:param value="{!CurrentPart.Id}" name="partId"/>
 	                     <span class="glyphicon glyphicon-ok-circle"></span> 
 				    </apex:commandLink>
@@ -105,14 +132,14 @@
 				    <tr>
 				        <th>{!$Label.Action}</th>
 				        <th>
-				        	<apex:commandLink action="{!sortParts}" reRender="{!reRender}" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);" value="{!$Label.SF330_Disc}">
+				        	<apex:commandLink action="{!sortParts}" reRender="{!reRender}" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);setUpSf330Parts();" value="{!$Label.SF330_Disc}">
 				        		<apex:param name="sortField" value="SF330_Discipline__c"/>
 				        		<span class="toggleClassDown glyphicon glyphicon-chevron-down"></span>
 				        		<span class="toggleClassUp glyphicon glyphicon-chevron-up"></span>  
 			        		</apex:commandLink>
 			        	</th>
 			        	<th>
-					        <apex:commandLink action="{!sortParts}" reRender="{!reRender}" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);" value="{!$ObjectType['rs_Profile_Part__c'].fields['SF330_Is_Primary__c'].Label}">		        				        			       
+					        <apex:commandLink action="{!sortParts}" reRender="{!reRender}" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);setUpSf330Parts();" value="{!$ObjectType['rs_Profile_Part__c'].fields['SF330_Is_Primary__c'].Label}">		        				        			       
 				        		<apex:param name="sortField" value="SF330_Is_Primary__c"/>
 				        		<span class="toggleClassDown glyphicon glyphicon-chevron-down"></span>
 				        		<span class="toggleClassUp glyphicon glyphicon-chevron-up"></span>  
@@ -142,8 +169,19 @@
 	                                            </apex:commandLink>
 										    </li>
 										    <li role="presentation" class="divider"></li>
+										    <li>
+												<apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!movePartUp}" value="{!$Label.Move_Part_Up}" styleClass="{!part.ProfilePart.PartSequence}" reRender="{!reRender}" oncomplete="resetProgress();" onclick="if(inProgress) return false; showSectionSpinner('sf330Header'); inProgress = true;" id="moveSf330PartUp">
+	                                                <apex:param value="{!part.ProfilePart.Id}" name="partId"/>
+	                                            </apex:commandLink>	
+	                                        </li>	
+	                                        <li>
+												<apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!movePartDown}" value="{!$Label.Move_Part_Down}" styleClass="{!ViewParts.size - 1} {!part.ProfilePart.PartSequence}" reRender="{!reRender}" oncomplete="resetProgress();" onclick="if(inProgress) return false; showSectionSpinner('sf330Header'); inProgress = true;" id="moveSf330PartDown">
+	                                                <apex:param value="{!part.ProfilePart.Id}" name="partId"/>
+	                                            </apex:commandLink>	
+	                                        </li>	
+										    <li role="presentation" class="divider"></li>
 										    <li role="presentation">
-										        <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!deletePart}" value="{!$Label.Delete}" reRender="{!reRender}" onclick="if(inProgress) return false; if(!confirmDeletePart()) return false; inProgress = true; showSectionSpinner('sf330Header');" oncomplete="resetProgress();">
+										        <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!deletePart}" value="{!$Label.Delete}" reRender="{!reRender}" onclick="if(inProgress) return false; if(!confirmDeletePart()) return false; inProgress = true; showSectionSpinner('sf330Header');" oncomplete="resetProgress();setUpSf330Parts();">
 	                                                <apex:param value="{!part.ProfilePart.Id}" name="partId"/>
 	                                            </apex:commandLink>
 										    </li>
