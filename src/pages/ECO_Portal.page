@@ -1,5 +1,4 @@
-<apex:page applyBodyTag="false" controller="ECO_PortalController" showheader="false" sidebar="false" standardStylesheets="false" action="{!onLoad}" id="portalPage" title="{!$Label.Ecosystem}" >
-    <title>{!$Label.Ecosystem}</title>
+<apex:page applyBodyTag="false" controller="ECO_PortalController" showheader="false" sidebar="false" standardStylesheets="false" id="portalPage" title="{!$Label.Ecosystem}" >
 
     <script>
         $(document).ready(function(){
@@ -38,8 +37,6 @@
         .publishercontainer .bottomBar{
             height:45px !important;
         }
-
-
  
     </style>
 
@@ -57,8 +54,7 @@
 
                 <a class="aside-toggle hidden-xs" href="#" title="{!$Label.ECOPortalshowhideReports}"> 
                     <div class="reportsMenuButton" title="{!$Label.ECOPortalshowhideReports}">
-                        <i class="fa fa-file" style="font-size:20px; color:#fff; margin:-5px 0 0 3px"></i><br />
-                        <div class="menuText" style="bottom:7px;">Reports</div>
+                        <i class="fa fa-file" style="font-size:20px; color:#fff;"></i>
                     </div>
                 </a>
 
@@ -335,47 +331,25 @@
             <!--===================================================-->
             <aside id="aside-container">
                 <div id="aside">
-                    <div class="nano has-scrollbar">
+                    <div class="nano">
                         <div class="nano-content">
-                            <div class="tab-pane fade in active" id="demo-asd-tab-1">
-                                <div class="navbar-header">
-                                    <a class="navbar-brand" style="cursor:default;">
-                                        <div class="brand-title" style="text-align:center;">
-                                            <span class="brand-text">{!$Label.ECORepFindSelectedReports}</span>
-                                        </div>
-                                    </a>
-                                </div>
-
-                            <!-- OLD TITLE OUT FOR NOW, 7/7/2015, ANDREW SMITH
+                            <div class="tab-pane fade in active" id="demo-asd-tab-1" style="margin-top:15px;">
                                 <h4 class="pad-hor text-thin">
-                                    <a style="margin:0 25px 0 5px; cursor:pointer; float:right;">Selected {!$Label.ECOPortalReports}</a>
+                                    <a onclick="goToReportsBuilder()" style="margin:0 25px 0 5px; cursor:pointer; float:right;">{!$Label.ECOPortalReports}</a>
+                                    <i class="fa fa-gear" onclick="goToReportsBuilder()" style="float:right; cursor:pointer;" title="{!$Label.ECOPortalEditReports}"></i>
                                 </h4>
-                            -->
                                 
                                 <div>
                                     <div class="list-group bg-trans">
-                                        <div class="editReports editApps" style="float:left; display:block">
-                                            <a style="cursor:pointer" onclick="goToReportsBuilder()" class="list-group-item">
-                                                <div class="media-left">
-                                                    <i class="fa fa-cog" style="font-size:22px; color:#adb3b8;" title="{!$Label.ECOPortalEditReports}"></i>
-                                                </div>
-                                                <div class="media-body menu-title">
-                                                    Edit Reports
-                                                </div>
-                                            </a>
-                                        </div>
-
                                         <apex:repeat value="{!reports}" var="report" >
-                                            <div style="float:left; display:block">
-                                                <apex:outputLink value="/{!report.ReportId__c}" styleClass="list-group-item" target="_Report-{!report.ReportId__c}">
-                                                    <div class="media-left">
-                                                        <i class="fa fa-file" style="font-size:20px; padding-top:5px;"></i>
-                                                    </div>
-                                                    <div class="media-body">
-                                                        <apex:outputText value="{!report.ReportName__c}" />
-                                                    </div>
-                                                </apex:outputLink>
+                                        <apex:outputLink value="/{!report.ReportId__c}" styleClass="list-group-item" target="_Report-{!report.ReportId__c}">
+                                            <div class="media-left">
+                                                <i class="fa fa-file" style="font-size:20px; padding-top:5px;"></i>
                                             </div>
+                                            <div class="media-body">
+                                                <apex:outputText value="{!report.ReportName__c}" />
+                                            </div>
+                                        </apex:outputLink>
                                         </apex:repeat>
                                     </div>
                                 </div>
