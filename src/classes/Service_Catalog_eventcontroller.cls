@@ -2,7 +2,6 @@ public class Service_Catalog_eventcontroller
 {
    
         public String CalendarUrl {get; set;}
-        public String catalogEntryUrlConst {get; set;}
 
          List<cEvent> getEvents = new List<cEvent>();
         public class cEvent
@@ -13,7 +12,6 @@ public class Service_Catalog_eventcontroller
             public DateTime nStartDateTime {get; set;}
             public String nSubject {get; set;}
             public DateTime nEndDateTime {get; set;}
-            public String catalogEntryUrlConst {get; set;}
 
             public cEvent(Event n)
             {
@@ -23,9 +21,6 @@ public class Service_Catalog_eventcontroller
                 this.nEndDateTime=n.EndDateTime;
                 this.nMonthName = n.StartDateTime.format('MMM');
                 this.nDay=n.StartDateTime.format('dd');
-                
-                List<Service_Catalog_Settings__c> cal = Service_Catalog_Settings__c.getall().values();
-                this.catalogEntryUrlConst = cal[0].catalogEntryUrlConst__c;
 
             }
         }
@@ -35,14 +30,12 @@ public class Service_Catalog_eventcontroller
         List<Service_Catalog_Settings__c> cal = Service_Catalog_Settings__c.getall().values();
         String calendarId = cal[0].CalendarId__c;
 
-        for(Event e: [SELECT Id,Subject, StartDateTime, EndDateTime FROM Event where OwnerId  = :calendarId and StartDateTime > Yesterday order by StartDateTime Desc])
+        for(Event e: [SELECT Id,Subject, StartDateTime, EndDateTime FROM Event where OwnerId  = :calendarId and EndDateTime <= Today ])
         {
             getEvents.add(new cEvent(e));
             List<Service_Catalog_Settings__c> calLink = Service_Catalog_Settings__c.getall().values();
             CalendarUrl = calLink[0].CalendarUrl__c;
         } 
-        
-        catalogEntryUrlConst = cal[0].catalogEntryUrlConst__c;
     }    
     
     public List <cEvent> geteventData() 
