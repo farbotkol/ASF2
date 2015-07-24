@@ -18,7 +18,7 @@ public class UserPermissionAssignmentUpdateQueue implements Queueable {
         delete permissionSetAssignmentToRemove;
 		insert permissionSetAssignmentToUpdate;
 
-	    List<User> usersToUpdate  =	[SELECT id, UserRoleId
+	    /*List<User> usersToUpdate  =	[SELECT id, UserRoleId
 			     										 FROM User
 			     										 WHERE id IN :userIdsToUpdate];
 
@@ -27,6 +27,6 @@ public class UserPermissionAssignmentUpdateQueue implements Queueable {
 			user.UserRoleId = userRole.Id;
 		}								 
 
-		update usersToUpdate;
+		update usersToUpdate;*/
     }
 }
