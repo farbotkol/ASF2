@@ -10,6 +10,7 @@ public class rsProfilePart extends rsModel {
 
     public static Finder find = new Finder('rs_Profile_Part__c');
     private static final Integer SEARCH_RESULT_SIZE = 1000;
+    private static final Integer LIST_SIZE_LIMIT = 10000;
     private static final Map<String, Schema.RecordTypeInfo> mRtInfo;
     static {
         mRtInfo = rs_Profile_Part__c.SObjectType.getDescribe().getRecordTypeInfosByName();
@@ -820,7 +821,7 @@ public class rsProfilePart extends rsModel {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, User__r.Profile_Reviewer__c, User__r.Profile_Reviewer__r.Name, User__r.FirstName, User__r.Name, User__r.LastName, User__r.Manager.Name, User__r.Geography__c, User__r.Region__c, User__r.Country, User__r.Office__c, User__r.Business_Line__c, Previous_Part__c, Resume_Name__c, Resume_Title__c, Years_with_Other_Firms__c, Bio__c from rs_Profile_Part__c';
             String whereStr = ' where Status__c = ' + rsStringUtil.quote(rsProfilePart.S_APPROVED) + 'AND Next_Part__c = null AND Date_Time_Sent_for_Review__c != null AND User__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_APPROVED);
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir;
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir + ' LIMIT ' + LIST_SIZE_LIMIT;
             System.debug('###whereStr ' + whereStr);
             return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr));
         }
