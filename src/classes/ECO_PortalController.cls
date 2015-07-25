@@ -67,15 +67,13 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 	}
 	
 	public PageReference changeProjectOutputType () {
-		
 		Schema.DescribeSObjectResult d = pse__Proj__c.sObjectType.getDescribe();
 		Schema.FieldSet fs = d.fieldSets.getMap().get(selectedOutputType);
-		
 		fieldSetFields = fs.getFields();
-		
 		return null;
 	}
 	
+	/*
 	public PageReference goToApplicationConfiguration () {
 		PageReference returnPR = Page.ECO_ApplicationCustomizer;
 		returnPR.getParameters().put('retURL', EncodingUtil.urlEncode('/apex/ECO_Portal', 'UTF-8'));
@@ -113,7 +111,8 @@ public with sharing class ECO_PortalController extends ECO_PageControllerBase {
 		pageRef.getParameters().put('retURL', EncodingUtil.urlEncode('/apex/ECO_Portal', 'UTF-8'));
 		return pageRef;
 	}
-
+	*/
+	
 	public PageReference goToHome () {
 		PageReference pageRef = new PageReference('/home/');
 		return pageRef;

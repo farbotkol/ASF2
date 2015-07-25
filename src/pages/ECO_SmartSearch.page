@@ -27,6 +27,16 @@
       	ga('create', 'UA-33974532-24', 'auto');
       	ga('send', 'pageview');    
     </script>
+    <style>
+    @media screen and (max-width:768px){
+        .add-tooltip.visible-xs{
+            display:block !important;
+        }
+        .toggleMainNav{
+            display:block !important;
+        }
+    }
+    </style>
     
     <script src="{!URLFOR($Resource.ECO_RespondJs, 'dest/respond.min.js')}"></script>
     <!-- end iframe IE compatibility -->
@@ -68,10 +78,6 @@
                         }
     
                         Coveo.$(function () {
-                            String["toLocaleString"].call(this, {"en":{"ProblemPersists": "This information is temporarily unavailable. We'll be restoring regular service as soon as possible. Thanks for your patience.  If you have any questions, please contact the AECOM IT Helpdesk",
-                												 "OopsError": "This information is temporarily unavailable."
-           					}});
-                            
                         	Coveo.$('#search').on('afterComponentsInitialization', function(){
                             	if(isPageInframe () && (navigator.appName == 'Microsoft Internet Explorer')) { 
                                 	Coveo.$('#mainSearchBox .coveo-query-box-clear').css('marginTop', '-24px');
@@ -255,11 +261,11 @@
                             // Hide the searchResults section on load
                             Coveo.$('#searchResults').hide();
                             
-                            Coveo.$("#CoveoSearchButton2").on("click", function() {
+                            Coveo.$("#CoveoSearchButton").on("click", function() {
                                 Coveo.$("#CoveoQueryBox").coveo('close')
                             });
             
-                            Coveo.$("#CoveoSearchButton2").on('click', function(){
+                            Coveo.$("#CoveoSearchButton").on('click', function(){
                                 Coveo.$("#search").coveo('state', 'q', Coveo.$("#CoveoQueryBox").val());
             
                             });
@@ -812,6 +818,7 @@
                             </table>
                         </div>
                     </script>
+
                     <script id="Sharepoint" type="text/x-underscore-template"> 
                         <div class="col-lg-12 resultDetail">
                             <div class="coveo-title">
@@ -919,7 +926,7 @@
                                                     <input type="search" placeholder="ENTER SEARCH TERMS" class="CoveoOmniBox" id='CoveoQueryBox' tabindex="2"/>
                                                 </div>
                                                 <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
-                                                    <span type="button" class="CoveoSearchButton" id='CoveoSearchButton2'>Go</span>
+                                                    <span type="button" class="CoveoSearchButton" id='CoveoSearchButton'>Go</span>
                                                 </div>
                                             </div>
                                         </div>
@@ -960,7 +967,7 @@
                                                     
                                                     <div class="CoveoResultList" data-wait-animation="fade">
                                                         <div class="coveo-show-if-no-results">
-                                                            Each time you search, SmartSearch remembers your query. This area will be populated with results that may interest you in based on your most recent searches.
+                                                            Each time you search, SmartSearch remembers your query. This area will be populated with results that may interest you based on your most recent searches.
                                                         </div>
                                                         <script class="result-template" type="text/x-underscore-template">
                                                             <div class="coveo-icon objecttype <%-raw.objecttype%>"><%-raw.objecttype%></div>
