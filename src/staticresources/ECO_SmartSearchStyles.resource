@@ -7,8 +7,30 @@
     display:none;
 }
 
-/* - - ECOSYSTEM FRAME SEARCH BOX/ICON STYLES - - */
+/* - - ECOSYSTEM FRAME HEADER SEARCH BOX/ICON STYLES - - */
 
+.ecoFrameSearch .coveo-searchBox-column input[type="search"] {
+    font-size: 12px;
+    border-right: none;
+    width: 80%;
+    padding: 2px 5px;
+}
+.ecoFrameSearch .CoveoSearchButton {
+    font-size: 14px;
+    padding: 5px 10px;
+    border: none;
+    width: 20%;
+    display: inline-block;
+}
+.ecoFrameSearch .CoveoSearchButton, .ecoFrameSearch .coveo-searchBox-column input[type="search"]  {
+    margin-top: 11px;
+    height: 30px;
+}
+.ecoFrameSearch .col-lg-3 {
+    padding: 0 !important;
+    max-width: 200px;
+    margin-left: 10px;
+}
 .navbar-top-links > li[data-original-title="SmartSearch"] {
     display: none;
 }
@@ -20,6 +42,9 @@
 }
 #newProjectModal .modal-dialog .modal-content {
     padding: 40px;
+}
+.pull-right .coveo-query-box-clear {
+    display: none !important;
 }
 
 /* - - SEARCH BOX ROW STYLES - - */
@@ -102,7 +127,7 @@
     /*background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_selectArrow.png");
     background-position: 93% 50%;
     background-repeat: no-repeat;
-    MOVED THIS TO THE ID TO TARGET IT IN AN IFRAME */
+    MOVED THIS TO THE #scopeselector ID TO TARGET IT IN AN IFRAME */
     border-radius: 0;
     overflow: hidden;
     text-overflow: ellipsis;
@@ -113,8 +138,8 @@
     background-position: 93% 50%;
     background-repeat: no-repeat;
 }
+/* IE10+ STYLE */
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {  
-   /* IE10+ specific styles go here */  
    #scopeselector {
     background-image: none;
     }
@@ -122,11 +147,8 @@
         padding-right: 0 !important;
     }
 }
-/*target Internet Explorer 9 and Internet Explorer 10:*/
+/* IE9, IE10 STYLE */
 @media screen and (min-width:0\0) { 
-    /*.searchBar {
-        margin: 3.5% 20px 0;
-    }*/
     #scopeselector {
     background-image: none;
     }
@@ -221,12 +243,14 @@ input.CoveoQueryBox::-ms-clear {
     display: none;
 /* gets rid of double x in search box when typing ahead */
 }
+/* IE10+ STYLE */
 @media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {  
     input.CoveoQueryBox::-ms-clear {
     display: none;
     /* gets rid of double x in search box when typing ahead */
     }
 }
+/* IE9, IE10 STYLE */
 @media screen and (min-width:0\0) { 
     input.CoveoQueryBox::-ms-clear {
     display: none;
@@ -271,32 +295,6 @@ input.CoveoQueryBox::-ms-clear {
 .coveo-top-field-suggestion-header span.coveo-icon-top-field {
     display: none;
 }
-
-/* - - ECOSYSTEM FRAME SEARCH BOX STYLES - - */
-
-.ecoFrameSearch .coveo-searchBox-column input[type="search"] {
-    font-size: 12px;
-    border-right: none;
-    width: 80%;
-    padding: 2px 5px;
-}
-.ecoFrameSearch .CoveoSearchButton {
-    font-size: 14px;
-    padding: 5px 10px;
-    border: none;
-    width: 20%;
-    display: inline-block;
-}
-.ecoFrameSearch .CoveoSearchButton, .ecoFrameSearch .coveo-searchBox-column input[type="search"]  {
-    margin-top: 11px;
-    height: 30px;
-}
-.ecoFrameSearch .col-lg-3 {
-    padding: 0 !important;
-    max-width: 200px;
-    margin-left: 10px;
-}
-
 
 /* - - MODULE SECTION STYLES - - */
 
@@ -370,7 +368,7 @@ input.CoveoQueryBox::-ms-clear {
   and (-webkit-min-device-pixel-ratio: 2) {
     .resultsModules, .resultTotal {
         width: 100%;
-        /* fixes width issue on iOS 7 & 8.3 */
+        /* fixes result width issue on iOS 7 & 8.3 */
     }
 }
 /* - - - - FILTER STYLES - - - - */
@@ -397,14 +395,14 @@ input.CoveoQueryBox::-ms-clear {
 }
 .CoveoBreadcrumb .item {
     overflow: visible;
-    white-space: initial !important;
+    white-space: normal;
     text-overflow: initial;
+    word-break: break-word;
 }
 .coveo-facet-breadcrumb .coveo-values .coveo-value .coveo-multi-icon.coveo-selected {
     background-position: -439px -83px;
     height: 15px;
 }
-
 
 .CoveoSearchInterface {
     background-color: transparent;
@@ -754,6 +752,7 @@ table.documentTable td div {
     background-size: 40px;
     margin-right: 8px;
     background-repeat: no-repeat;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/generic.png");
 }
 table.documentTable div.doc {
     background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_doc.png");
@@ -785,31 +784,33 @@ table.documentTable td div.wav {
 table.documentTable td div.exe {
     background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_exe.png");
 }
-table.documentTable td div.swf {
+table.documentTable td div.swf, table.documentTable td div.mp4 {
 /* video files */
     background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_vid.png");
 }
-table.documentTable td div.vsd {
+table.documentTable td div.vsd, table.documentTable td div.jpg, table.documentTable td div.png, table.documentTable td div.Image {
 /* image files */
     background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_img.png");
 }
-/* TO HIDE ICON ON DEFAULT TEMPLATE FOR SHAREPOINT SEARCH RESULTS - DONT NEED THIS AFTER TEMPLATE FOR RESULT IS BUILT */
+/* TO HIDE ICON ON DEFAULT TEMPLATE FOR SHAREPOINT SEARCH RESULTS - DONT NEED THIS AFTER TEMPLATE FOR RESULT IS BUILT 
 .documentTable.repositoryType div[class=""], .documentTable.repositoryType div[class="sppublishingpageslibrarylist"],
 .documentTable.repositoryType div[class="spsite"], .documentTable.repositoryType div[class="spdocumentlibrarylist"], 
 .documentTable.repositoryType div[class="sppublishingimageslibrarylist"], .documentTable.repositoryType div[class="spuserprofile"]
  {
     display: none;
-}
+}*/
 
 /* - - - OPPORTUNITY STAGE ICON STYLES - - - */
 
 .oppStage {
     height: 30px;
     width: 30px;
+    padding: 15px !important;
 }
 
 .oppStage[title="1 Lead"]{
     background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_one.png");
+
 }
 .oppStage[title="1A Lead - Scout"] {
     background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_one.png");
@@ -868,6 +869,7 @@ table.documentTable td div.vsd {
 }
 
 
+
 .oppStage[title="6A Program Closed/Completed"] {
     background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_six.png");
 }
@@ -880,7 +882,7 @@ table.documentTable td div.vsd {
 }
 
 .oppStage[title="8 No-Go"] {
-    b background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_eight.png");
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_eight.png");
 }
 
 .oppStage[title="9 Lost"] {

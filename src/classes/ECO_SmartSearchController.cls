@@ -17,6 +17,7 @@ global class ECO_SmartSearchController extends ECO_PageControllerBase {
     private String orgId								{get; set;}
     
     public String collaborationGroups					{get; set;}
+    public String userProfile							{get; set;}
     
     private class ECO_SmartSearchControllerException extends Exception {}    
     private System.LoggingLevel debugLevel = LoggingLevel.INFO;
@@ -96,6 +97,9 @@ global class ECO_SmartSearchController extends ECO_PageControllerBase {
         Id profileId = UserInfo.getProfileId();
         
 		String profileName = [SELECT Id, Name FROM Profile WHERE Id=:profileId].Name;
+        
+        //Coveo UA: provide profilename to VF page, so it can forward it to UA database.
+        userProfile = profileName;
         
         // Make endpointURL and key passed to the server configurable.
     	Http http = new Http();

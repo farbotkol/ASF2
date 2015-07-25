@@ -45,11 +45,13 @@ public with sharing class ECO_Temp_PortalController {
 		return returnPR;
 	}
  
+ 	/*
 	public PageReference goToApplicationConfigurationv2 () {
 		PageReference returnPR = Page.ECO_ApplicationCustomizer;
 		returnPR.getParameters().put('retURL', EncodingUtil.urlEncode('/apex/ECO_Portalv2', 'UTF-8'));
 		return returnPR; 
 	}
+	*/
 	
 	public PageReference goToReportBuilder () {
 		PageReference returnPR = Page.ECO_ReportFinder;
@@ -57,11 +59,13 @@ public with sharing class ECO_Temp_PortalController {
 		return returnPR;
 	}
 
+	/*
 	public PageReference goToReportBuilderv2 () {
 		PageReference returnPR = Page.ECO_ReportFinder;
 		returnPR.getParameters().put('retURL', EncodingUtil.urlEncode('/apex/ECO_Portalv2', 'UTF-8'));
 		return returnPR;
 	}
+	*/
 	
 	public PageReference goToNewProject () {
 		//PageReference pageRef = Page.ECO_ProjectSetup;
