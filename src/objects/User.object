@@ -9,10 +9,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>DeletePhotoAction</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>EditUserAction</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -45,15 +41,7 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>UpdatePhotoAction</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>UserActivationAction</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>ViewPhotoAction</actionName>
         <type>Default</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
@@ -236,6 +224,21 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>Chatter_Group__c</fullName>
+        <description>For Reporting</description>
+        <externalId>false</externalId>
+        <label>Chatter Group</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Buildings + Places</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Cisco_IP_Phone__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>The number for this user&apos;s Cisco IP Phone</inlineHelpText>
@@ -313,6 +316,15 @@
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Date_Time_Last_Updated__c</fullName>
+        <description>The most recent date and time when this profile was last updated.</description>
+        <externalId>false</externalId>
+        <label>Date Time profile last updated</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>DateTime</type>
     </fields>
     <fields>
         <fullName>Date_Time_Sent_for_Review__c</fullName>
@@ -393,6 +405,26 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>EMEA_Commercial_Team__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Checkbox if User is an EMEA Commercial Team</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Checkbox if User is an EMEA Commercial Team</inlineHelpText>
+        <label>EMEA Commercial Team</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EMEA_GNG_Approver__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Checkbox if User is an EMEA GNG Approver</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Checkbox if User is an EMEA GNG Approver</inlineHelpText>
+        <label>EMEA GNG Approver</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>EcoBusinessGroup__c</fullName>
         <externalId>false</externalId>
         <label>Eco Business Group</label>
@@ -427,6 +459,18 @@
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Email_Domain__c</fullName>
+        <description>Formula Field that calculates email domain of user for reporting purposes.</description>
+        <externalId>false</externalId>
+        <formula>MID(Email, FIND(&apos;@&apos;, Email, 1)+1, (LEN(Email) - FIND(&apos;@&apos;, Email, 1)+1))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Formula Field that calculates email domain of user for reporting purposes.</inlineHelpText>
+        <label>Email Domain</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Employee_Category__c</fullName>
@@ -713,6 +757,15 @@
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
+        <fullName>Last_CM_Profile_Update__c</fullName>
+        <description>This will be the last date/time the CM updated their profile. This is updated through the Profile VF Pages only. Any direct (SF interface) changes may not be caught.</description>
+        <externalId>false</externalId>
+        <label>Last CM Profile Update</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
         <fullName>Last_Processed_Payroll_Run__c</fullName>
         <externalId>false</externalId>
         <label>Last Processed Payroll Run</label>
@@ -728,6 +781,38 @@
         <restrictedAdminField>false</restrictedAdminField>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Hierarchy</type>
+    </fields>
+    <fields>
+        <fullName>Last_Updated_By__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Status of the overall profile</inlineHelpText>
+        <label>Last updated by</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Owner</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Profile Proxy</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Content Manager</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Last_User_Profile_Update__c</fullName>
+        <description>This will be the last date/time the user updated their profile.  This is updated through the Profile VF Pages only.  Any direct (SF interface) changes may not be caught.</description>
+        <externalId>false</externalId>
+        <label>Last User Profile Update</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>DateTime</type>
     </fields>
     <fields>
         <fullName>LeadVerifier__c</fullName>
@@ -1155,6 +1240,14 @@
         <type>Hierarchy</type>
     </fields>
     <fields>
+        <fullName>Profile_Updated__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Has this profile been updated?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Project_Approver__c</fullName>
         <externalId>false</externalId>
         <label>Project Approver</label>
@@ -1531,6 +1624,16 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>frm_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>FirstName + &apos; &apos; + LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Full Name</label>
+        <required>false</required>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>smartSearchMyRecentSearch__c</fullName>
         <description>This field is used by the SmartSearch app to store the last 10 searches that were done by this user.</description>
         <externalId>false</externalId>
@@ -1550,6 +1653,15 @@
         <trackFeedHistory>false</trackFeedHistory>
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>ssh_AECOM_Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Shared Services AECOM Email</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Email</type>
+        <unique>false</unique>
     </fields>
     <listViews>
         <fullName>AECOM_Standard_User_APAC</fullName>
@@ -1583,6 +1695,30 @@
             <value>Australia</value>
         </filters>
         <label>ANZ - CRM Lite</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>AME_CRM_Lite</fullName>
+        <columns>CORE.USERS.ADDRESS_COUNTRY</columns>
+        <columns>Geography_Allocation__c</columns>
+        <columns>FULL_NAME</columns>
+        <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.PROFILE.NAME</columns>
+        <columns>LOCALE</columns>
+        <columns>TIMEZONE</columns>
+        <columns>DEFAULT_CURRENCY</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ACTIVE</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CORE.PROFILE.NAME</field>
+            <operation>equals</operation>
+            <value>CRM Lite - Americas</value>
+        </filters>
+        <label>AME - CRM Lite</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -2049,6 +2185,67 @@
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>Ellen_Nancy_Users</fullName>
+        <columns>Confidentiality_Agreement_Complete__c</columns>
+        <columns>FULL_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CORE.USERS.USERNAME</columns>
+        <columns>CORE.USERS.LAST_LOGIN</columns>
+        <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.PROFILE.NAME</columns>
+        <columns>MANAGER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Confidentiality_Agreement_Complete__c</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <filters>
+            <field>CORE.PROFILE.NAME</field>
+            <operation>contains</operation>
+            <value>Standard</value>
+        </filters>
+        <filters>
+            <field>CORE.USERS.ACTIVE</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>Ellen &amp; Nancy Users</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Admin_users</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Employee_number_50</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>FULL_NAME</columns>
+        <columns>CORE.USERS.LAST_LOGIN</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATED_BY_NAME</columns>
+        <columns>EMPLOYEE_NUMBER</columns>
+        <columns>URS_Employee__c</columns>
+        <columns>URS_Employee_Number__c</columns>
+        <columns>CORE.PROFILE.NAME</columns>
+        <columns>CORE.USERS.USERNAME</columns>
+        <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.USERS.ACTIVE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ACTIVE</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>CORE.PROFILE.NAME</field>
+            <operation>notContain</operation>
+            <value>Chatter,Lite,External</value>
+        </filters>
+        <label>Employees Active CRM</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Employee_number_not_specified_and_ACTIVe</fullName>
         <columns>CORE.USERS.LAST_NAME</columns>
         <columns>CORE.USERS.FIRST_NAME</columns>
@@ -2455,6 +2652,36 @@
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>Nancy_URS_no_emp_num</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>URS_Employee_Number__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CORE.USERS.USERNAME</columns>
+        <columns>CORE.USERS.LAST_LOGIN</columns>
+        <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.USERS.ACTIVE</columns>
+        <columns>CORE.PROFILE.NAME</columns>
+        <columns>MANAGER</columns>
+        <columns>CORE.USERS.FIRST_NAME</columns>
+        <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>CORE.USERS.EMAIL</columns>
+        <columns>CORE.USERS.SAML_SUBJECT</columns>
+        <columns>EMPLOYEE_NUMBER</columns>
+        <columns>URS_FIM_GUID__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>URS_Employee__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>URS_Employee_Number__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Nancy URS no emp num</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Nancy_Zero</fullName>
         <columns>EMPLOYEE_NUMBER</columns>
         <columns>Non_employee__c</columns>
@@ -2650,5 +2877,13 @@ ISBLANK(EmployeeNumber) =FALSE)</errorConditionFormula>
         <description>Owners cannot edit their own HR Data records</description>
         <errorConditionFormula>( ISCHANGED(FirstName) || ISCHANGED(LastName) || ISCHANGED(Title) || ISCHANGED(ManagerId) || ISCHANGED(Email) || ISCHANGED(Phone) || ISCHANGED( MobilePhone ) || ISCHANGED( Fax ) || ISCHANGED( Street ) || ISCHANGED( City ) || ISCHANGED( State ) || ISCHANGED( PostalCode ) || ISCHANGED( Country ) ) &amp;&amp; Id == $User.Id &amp;&amp;   NOT($Setup.Profile_Info__c.Is_Content_Manager__c)</errorConditionFormula>
         <errorMessage>The data in these fields is controlled by Human Resources. Please contact your HR representative to have it corrected. http://my.aecomnet.com/Intranet/Support/Technology/IT+Support/Service+desk/Updates+to+PeopleSearch</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>PreventEmailChange</fullName>
+        <active>true</active>
+        <description>This Validation rule is to prevent users from changing their email address</description>
+        <errorConditionFormula>AND(ISCHANGED(Email), AND($Profile.Name &lt;&gt; &quot;System Administrator&quot;,$Profile.Name &lt;&gt; &quot;API Access&quot;, $Profile.Name &lt;&gt; &quot;API Access Restricted&quot; ))</errorConditionFormula>
+        <errorDisplayField>Email</errorDisplayField>
+        <errorMessage>Please contact your local IT Service Desk to request an email change.</errorMessage>
     </validationRules>
 </CustomObject>

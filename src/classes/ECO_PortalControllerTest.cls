@@ -13,13 +13,20 @@ private class ECO_PortalControllerTest {
 		insert testProject;
 		
 		Test.startTest();
+
 		ECO_PortalController controller = new ECO_PortalController();
-		controller.onLoad();
-		
+		controller.refreshProjects();
+		controller.changeProjectOutputType();
+		/*
 		controller.goToApplicationConfiguration();
+		controller.goToApplicationConfigurationv2();
 		controller.goToReportBuilder();
+		controller.goToReportBuilderv2();
 		controller.goToNewProject();
 		controller.goToNewOpportunity();
+		*/
+		controller.goToHome();
+		
 		Test.stopTest();
     }
 }
