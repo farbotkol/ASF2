@@ -92890,6 +92890,28 @@ ISNULL( Total_Prime_Contract_Value__c)
 )</errorConditionFormula>
         <errorMessage>Total Prime Contract Value is required for EIC opportunities.</errorMessage>
     </validationRules>
+    <validationRules>
+        <fullName>Program_Est_Revenue_Validations_CS</fullName>
+        <active>true</active>
+        <description>Can&apos;t be &gt; Ceiling
+Cant be &lt; sum of task orders</description>
+        <errorConditionFormula>AND(NOT(CONTAINS( $User.CommunityNickname, &apos;SystemNA&apos;)) ,
+NOT(CONTAINS( $Profile.Name, &apos;API Access&apos;)), 
+NOT(CONTAINS( $User.CommunityNickname, &apos;APIC&apos;)), 
+CONTAINS( $RecordType.Name , &quot;Program - CS&quot;)
+,
+ PRIORVALUE( RecordTypeText__c ) = &quot;Program - CS&quot;
+,
+OR( 
+ Program_Estimated_Revenue__c &gt;  Ceiling_Amount_ReadOnly__c 
+,
+ Program_Estimated_Revenue__c  &lt;  Task_Orders_Booked_Revenue__c 
+)
+,
+NOT(ISBLANK(Program_Estimated_Revenue__c))
+)</errorConditionFormula>
+        <errorMessage>The program estimated revenue can not be Greater Than the ceiling amount or Less Than the total of booked task orders</errorMessage>
+    </validationRules>
     <webLinks>
         <fullName>New_Task_Order_On_Program</fullName>
         <availability>online</availability>
