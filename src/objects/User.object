@@ -9,6 +9,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>DeletePhotoAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>EditUserAction</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -41,28 +45,20 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>UpdatePhotoAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>UserActivationAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewPhotoAction</actionName>
         <type>Default</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>true</enableFeeds>
     <externalSharingModel>Private</externalSharingModel>
-    <fields>
-        <fullName>AD_MobilePhone__c</fullName>
-        <externalId>false</externalId>
-        <label>AD MobilePhone</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <type>Phone</type>
-    </fields>
-    <fields>
-        <fullName>AD_WorkPhone__c</fullName>
-        <externalId>false</externalId>
-        <label>AD WorkPhone</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <type>Phone</type>
-    </fields>
     <fields>
         <fullName>AECOM_Projects_Summary__c</fullName>
         <description>Summary of User&apos;s AECOM Projects</description>
@@ -1432,15 +1428,14 @@
     </fields>
     <fields>
         <fullName>TrackingID__c</fullName>
-        <caseSensitive>false</caseSensitive>
-        <externalId>true</externalId>
+        <externalId>false</externalId>
         <inlineHelpText>Employee Tracking ID</inlineHelpText>
         <label>TrackingID</label>
         <length>150</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
-        <unique>true</unique>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Training_Summary__c</fullName>
@@ -1766,7 +1761,6 @@
         <columns>CREATED_DATE</columns>
         <columns>CORE.PROFILE.USERTYPE</columns>
         <columns>EMPLOYEE_NUMBER</columns>
-        <columns>MANAGER</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>CORE.USERS.ACTIVE</field>
@@ -2276,6 +2270,30 @@
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>Key_User_Session_Testers</fullName>
+        <columns>FULL_NAME</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>CORE.USERS.USERNAME</columns>
+        <columns>CORE.USERS.LAST_LOGIN</columns>
+        <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.USERS.ACTIVE</columns>
+        <columns>CORE.PROFILE.NAME</columns>
+        <columns>MANAGER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.ACTIVE</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>LAST_UPDATE</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>Key User Session Testers</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Middle_East</fullName>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -2627,8 +2645,6 @@
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.PHONE</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.EXTENSION</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.CELL</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>00Ne0000001U3NH</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>00Ne0000001U3N7</lookupPhoneDialogsAdditionalFields>
         <searchFilterFields>FULL_NAME</searchFilterFields>
         <searchFilterFields>CORE.USERS.FIRST_NAME</searchFilterFields>
         <searchFilterFields>CORE.USERS.LAST_NAME</searchFilterFields>
@@ -2661,13 +2677,5 @@ ISBLANK(EmployeeNumber) =FALSE)</errorConditionFormula>
         <description>Owners cannot edit their own HR Data records</description>
         <errorConditionFormula>( ISCHANGED(FirstName) || ISCHANGED(LastName) || ISCHANGED(Title) || ISCHANGED(ManagerId) || ISCHANGED(Email) || ISCHANGED(Phone) || ISCHANGED( MobilePhone ) || ISCHANGED( Fax ) || ISCHANGED( Street ) || ISCHANGED( City ) || ISCHANGED( State ) || ISCHANGED( PostalCode ) || ISCHANGED( Country ) ) &amp;&amp; Id == $User.Id &amp;&amp;   NOT($Setup.Profile_Info__c.Is_Content_Manager__c)</errorConditionFormula>
         <errorMessage>The data in these fields is controlled by Human Resources. Please contact your HR representative to have it corrected. http://my.aecomnet.com/Intranet/Support/Technology/IT+Support/Service+desk/Updates+to+PeopleSearch</errorMessage>
-    </validationRules>
-    <validationRules>
-        <fullName>PreventEmailChange</fullName>
-        <active>true</active>
-        <description>This Validation rule is to prevent users from changing their email address</description>
-        <errorConditionFormula>AND(ISCHANGED(Email), AND($Profile.Name &lt;&gt; &quot;System Administrator&quot;,$Profile.Name &lt;&gt; &quot;API Access&quot;, $Profile.Name &lt;&gt; &quot;API Access Restricted&quot; ))</errorConditionFormula>
-        <errorDisplayField>Email</errorDisplayField>
-        <errorMessage>Please contact your local IT Service Desk to request an email change.</errorMessage>
     </validationRules>
 </CustomObject>
