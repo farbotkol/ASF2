@@ -1,6 +1,6 @@
-<apex:page showheader="false" sidebar="false" standardStylesheets="false" controller="ECO_Temp_PortalController" id="portalTemplate">
-	
-	<CoveoSolutions:CoveoJsSearch stylesheet="CoveoFullSearch.css" debug="true" />
+<apex:page showheader="false" sidebar="false" standardStylesheets="false" controller="ECO_Temp_PortalController" action="{!onLoad}" id="portalTemplate">
+    
+    <CoveoSolutions:CoveoJsSearch stylesheet="CoveoFullSearch.css" debug="true" />
    
     <script>
         // FOR WHEN PAGE IS LOADED IN AN IFRAME...
@@ -49,6 +49,7 @@
             });
         });*/
     </script>
+
     <script>var AWAN_online = false;</script>
     <script src="{!awanJSPath}"></script>
 
@@ -431,7 +432,7 @@
                             </a>
                         </li>
                         -->
-                        <li class=" visible-xs">
+                        <li class="toggleMainNav visible-xs">
                             <a class="mainnav-toggle" href="#">
                                 <i class="fa fa-th fa-lg"></i>
                             </a>
@@ -444,7 +445,7 @@
                         <li class="btn-hover-info hidden-xs" data-placement="bottom" data-original-title="{!$Label.ECOPortalAlerts}">
                             <a onclick="$('#modalAlerts').modal('show')" style="cursor:pointer;">
                                 <i class="fa fa-warning fa-lg"></i><br />
-                                <div class="menuText">Alerts</div>
+                                <div class="menuText">{!$Label.ECOPortalAlerts}</div>
                                 <apex:outputPanel layout="block" styleClass="badge badge-header badge-danger" rendered="{!alerts.size > 0}">
                                     <apex:outputText value="{!alerts.size}" />
                                 </apex:outputPanel>
@@ -456,7 +457,7 @@
                         <li class="btn-hover-info hidden-xs" data-placement="bottom" data-original-title="{!$Label.ECOPortalTasks}">
                             <a onclick="$('#modalTasks').modal('show')" style="cursor:pointer;">
                                 <i class="fa fa-tasks fa-lg"></i><br />
-                                <div class="menuText">Tasks</div>
+                                <div class="menuText">{!$Label.ECOPortalTasks}</div>
                                 <apex:outputPanel layout="block" styleClass="badge badge-header badge-danger" rendered="{!tasks.size > 0}">
                                     <apex:outputText value="{!tasks.size}" />
                                 </apex:outputPanel>
@@ -468,7 +469,7 @@
                         <li class="btn-hover-info hidden-xs" data-placement="bottom" data-original-title="{!$Label.ECOPortalApprovals}">
                             <a onclick="$('#modalApprovals').modal('show')" style="cursor:pointer;">
                                 <i class="fa fa-check-square fa-lg"></i><br />
-                                <div class="menuText">Approvals</div>
+                                <div class="menuText">{!$Label.ECOPortalApprovals}</div>
                                 <apex:outputPanel layout="block" styleClass="badge badge-header badge-danger" rendered="{!approvals.size > 0}">
                                     <apex:outputText value="{!approvals.size}" />
                                 </apex:outputPanel>
@@ -479,7 +480,7 @@
                         <li class="btn-hover-info hidden-xs" data-placement="bottom" data-original-title="{!$Label.ECOPortalOutlook}">
                             <a href="outlook:Inbox" style="cursor:pointer; padding:0 37px;">
                                 <i class="fa fa-envelope fa-lg"></i><br />
-                                <div class="menuText">Open Outlook</div>
+                                <div class="menuText">{!$Label.ECOPortalOutlook}</div>
                             </a>
                         </li>
 
@@ -524,13 +525,14 @@
                                   function isOnSearchPage() {
                                     return Coveo.$('#search').length > 0;
                                   }
+
                             </script>
                             <div class="coveo-search-section hidden-sm hidden-xs ecoFrameSearch">
                                 <div class="coveo-searchBox-column">
                                     <div class="coveo-search-section-wrapper">
                                         <div id="headerSearchBox">
                                             <div id="searchBox">
-                                            <input type="search" placeholder="SEARCH..." class="CoveoQueryBox" /><span type="button" class="CoveoSearchButton" id='CoveoSearchButton'>Go</span>
+                                            <input type="search" placeholder="SmartSearch" class="CoveoQueryBox" data-placeholder-submit="false" data-placeholder-bound="false"/><span type="button" class="CoveoSearchButton" id='CoveoSearchButton' data-placeholder-submit="false" data-placeholder-bound="false">Go</span>
                                                 
                                             </div>
                                         </div>
@@ -569,7 +571,7 @@
                         <li class="hidden-xs AWAN" data-placement="bottom" data-original-title="{!$Label.ECOPortalHelp}" >
                             <a href="http://my.aecomnet.com/Intranet/About/Delivery%20Excellence/Ecosystem/Training" target="_blank">
                                 <i class="fa fa-question-circle"></i><br />
-                                <div class="menuText">Help</div>
+                                <div class="menuText">{!$Label.ECOPortalHelp}</div>
                             </a>
                         </li>
 
@@ -655,83 +657,85 @@
             <apex:insert name="mainContent" />
             <!--===================================================-->
             
-            <!--AECOM APPS: Edit and List all apps-->
-            <!--===================================================-->
-            <nav id="mainnav-container">
-                <div id="mainnav" >
+            <apex:outputPanel rendered="{!IF(OR($CurrentPage.Name == 'ECO_Portal',$CurrentPage.Name == 'ECO_SmartSearch'),true,false)}">
+                <!--AECOM APPS: Edit and List all apps-->
+                <!--===================================================-->
+                <nav id="mainnav-container">
+                    <div id="mainnav" >
 
-                    <!--Menu-->
-                    <!--================================-->
-                    <div id="mainnav-menu-wrap">
+                        <!--Menu-->
+                        <!--================================-->
+                        <div id="mainnav-menu-wrap">
 
-                            <div class="mainnav-height"> <!-- took out classes:  ui-widget-content hoverscroll vertical" style="height:85vh !important;" -->
-                                <!-- THIS OUT FOR NOW 3/20/2015, FOR APP SCROLLING <div class="fixed-listcontainer"> -->
-                                    <ul id="mainnav-menu" class="list-group">
+                                <div class="mainnav-height"> <!-- took out classes:  ui-widget-content hoverscroll vertical" style="height:85vh !important;" -->
+                                    <!-- THIS OUT FOR NOW 3/20/2015, FOR APP SCROLLING <div class="fixed-listcontainer"> -->
+                                        <ul id="mainnav-menu" class="list-group">
 
-                                        <li class="visible-xs showAllApps">
-                                            <a href="#">
-                                                <div class="media-left">
-                                                    <i class="fa fa-eye" style="font-size:33px; padding-left:1px;"></i>
-                                                </div>
-                                                <div class="media-body menu-title showHideSwap visible-xs" style="height:35px;">
-                                                    Show Non-Mobile Applications
-                                                </div>
-                                                <div class="media-body menu-title showHideSwap hidden-xs" style="height:35px;">
-                                                    Hide Non-Mobile Applications
-                                                </div>
-                                            </a>
-                                        </li>
-
-
-                                        <li class="visible-lg">
-                                            <div class="navbar-header">
-                                               <a style="cursor:default;" class="navbar-brand">
-                                                    <div class="brand-title" style="padding:0; margin:0; width:100%;">
-                                                        <span class="brand-text">{!$Label.ECOAppCusSelectedApplications}</span>
+                                            <li class="visible-xs showAllApps">
+                                                <a href="#">
+                                                    <div class="media-left">
+                                                        <i class="fa fa-eye" style="font-size:33px; padding-left:1px;"></i>
+                                                    </div>
+                                                    <div class="media-body menu-title showHideSwap visible-xs" style="height:35px;">
+                                                        Show Non-Mobile Applications
+                                                    </div>
+                                                    <div class="media-body menu-title showHideSwap hidden-xs" style="height:35px;">
+                                                        Hide Non-Mobile Applications
                                                     </div>
                                                 </a>
-                                            </div>
-                                        </li>
+                                            </li>
 
 
-                                        <li class="editApps">
-                                            <a href="#" onclick="goToApplicationConfiguration();">
-                                                <div class="media-left">
-                                                    <i class="fa fa-cog" style="font-size:33px; padding-left:1px;"></i>
-                                                </div>
-                                                <div class="media-body menu-title" style="height:35px;">
-                                                    {!$Label.ECOEditAecomApps} 
-                                                </div>
-                                            </a>
-                                        </li>
-
-                                        <apex:repeat value="{!applications}" var="app" >
-                                            <apex:outputPanel rendered="{!!app.IsHidden__c}" layout="none">
-                                                <li class="{!app.Application__r.NetworkRequirement__c} {!IF(app.Application__r.MobileEnabled__c, '', 'hiddenOnMobile')} anApplication">
-                                                    <a target="_blank" href="{!app.Application__r.ApplicationURL__c}">
-                                                        <div class="media-left">
-                                                            <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" html-data-original="{!URLFOR($Resource.ECO_CustomGraphicAssets, app.Application__r.ImageName__c)}" styleClass="lazy" width="33px" height="33px" />
-                                                        </div>
-                                                        <div class="media-body menu-title" style="height:35px;">
-                                                            <apex:outputText value="{!$Label[app.Application__r.ApplicationName__c]}" />
+                                            <li class="visible-lg">
+                                                <div class="navbar-header">
+                                                   <a style="cursor:default;" class="navbar-brand">
+                                                        <div class="brand-title" style="padding:0; margin:0; width:100%;">
+                                                            <span class="brand-text">{!$Label.ECOAppCusSelectedApplications}</span>
                                                         </div>
                                                     </a>
-                                                    
-                                                </li>
-                                            </apex:outputPanel>
-                                        </apex:repeat>
+                                                </div>
+                                            </li>
 
-                                    </ul>
-                            </div>
+
+                                            <li class="editApps">
+                                                <a href="#" onclick="goToApplicationConfiguration();">
+                                                    <div class="media-left">
+                                                        <i class="fa fa-cog" style="font-size:33px; padding-left:1px;"></i>
+                                                    </div>
+                                                    <div class="media-body menu-title" style="height:35px;">
+                                                        {!$Label.ECOEditAecomApps} 
+                                                    </div>
+                                                </a>
+                                            </li>
+
+                                            <apex:repeat value="{!applications}" var="app" >
+                                                <apex:outputPanel rendered="{!!app.IsHidden__c}" layout="none">
+                                                    <li class="{!app.Application__r.NetworkRequirement__c} {!IF(app.Application__r.MobileEnabled__c, '', 'hiddenOnMobile')} anApplication">
+                                                        <a target="_blank" href="{!app.Application__r.ApplicationURL__c}">
+                                                            <div class="media-left">
+                                                                <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" html-data-original="{!URLFOR($Resource.ECO_CustomGraphicAssets, app.Application__r.ImageName__c)}" styleClass="lazy" width="33px" height="33px" />
+                                                            </div>
+                                                            <div class="media-body menu-title" style="height:35px;">
+                                                                <apex:outputText value="{!$Label[app.Application__r.ApplicationName__c]}" />
+                                                            </div>
+                                                        </a>
+                                                        
+                                                    </li>
+                                                </apex:outputPanel>
+                                            </apex:repeat>
+
+                                        </ul>
+                                </div>
+
+                        </div>
+                        <!--================================-->
+                        <!--End menu-->
 
                     </div>
-                    <!--================================-->
-                    <!--End menu-->
-
-                </div>
-            </nav>
-            <!--===================================================-->
-            <!--END MAIN NAVIGATION-->
+                </nav>
+                <!--===================================================-->
+                <!--END MAIN NAVIGATION-->
+            </apex:outputPanel>
 
             <apex:insert name="rightNav" />
 
@@ -761,6 +765,7 @@
     <!--===================================================-->
     <!-- END OF CONTAINER -->
 
+    
 
     
     <apex:includeScript value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/jquery.sparkline.min.js')}" />
@@ -916,6 +921,34 @@
         function showNewProjectMessage() {
             alert("{!$Label.ECOPortalProjectMessage}");
         }
+    </script>
+    <script type="text/javascript">
+        /* Placeholders.js v4.0.1 */
+        /*!
+         * The MIT License
+         *
+         * Copyright (c) 2012 James Allardice
+         *
+         * Permission is hereby granted, free of charge, to any person obtaining a copy
+         * of this software and associated documentation files (the "Software"), to
+         * deal in the Software without restriction, including without limitation the
+         * rights to use, copy, modify, merge, publish, distribute, sublicense, and/or
+         * sell copies of the Software, and to permit persons to whom the Software is
+         * furnished to do so, subject to the following conditions:
+         *
+         * The above copyright notice and this permission notice shall be included in
+         * all copies or substantial portions of the Software.
+         *
+         * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+         * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+         * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+         * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+         * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+         * FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS
+         * IN THE SOFTWARE.
+         */
+         Coveo.$(
+        !function(a){"use strict";function b(){}function c(){try{return document.activeElement}catch(a){}}function d(a,b){for(var c=0,d=a.length;d>c;c++)if(a[c]===b)return!0;return!1}function e(a,b,c){return a.addEventListener?a.addEventListener(b,c,!1):a.attachEvent?a.attachEvent("on"+b,c):void 0}function f(a,b){var c;a.createTextRange?(c=a.createTextRange(),c.move("character",b),c.select()):a.selectionStart&&(a.focus(),a.setSelectionRange(b,b))}function g(a,b){try{return a.type=b,!0}catch(c){return!1}}function h(a,b){if(a&&a.getAttribute(B))b(a);else for(var c,d=a?a.getElementsByTagName("input"):N,e=a?a.getElementsByTagName("textarea"):O,f=d?d.length:0,g=e?e.length:0,h=f+g,i=0;h>i;i++)c=f>i?d[i]:e[i-f],b(c)}function i(a){h(a,k)}function j(a){h(a,l)}function k(a,b){var c=!!b&&a.value!==b,d=a.value===a.getAttribute(B);if((c||d)&&"true"===a.getAttribute(C)){a.removeAttribute(C),a.value=a.value.replace(a.getAttribute(B),""),a.className=a.className.replace(A,"");var e=a.getAttribute(I);parseInt(e,10)>=0&&(a.setAttribute("maxLength",e),a.removeAttribute(I));var f=a.getAttribute(D);return f&&(a.type=f),!0}return!1}function l(a){var b=a.getAttribute(B);if(""===a.value&&b){a.setAttribute(C,"true"),a.value=b,a.className+=" "+z;var c=a.getAttribute(I);c||(a.setAttribute(I,a.maxLength),a.removeAttribute("maxLength"));var d=a.getAttribute(D);return d?a.type="text":"password"===a.type&&g(a,"text")&&a.setAttribute(D,"password"),!0}return!1}function m(a){return function(){P&&a.value===a.getAttribute(B)&&"true"===a.getAttribute(C)?f(a,0):k(a)}}function n(a){return function(){l(a)}}function o(a){return function(){i(a)}}function p(a){return function(b){return v=a.value,"true"===a.getAttribute(C)&&v===a.getAttribute(B)&&d(x,b.keyCode)?(b.preventDefault&&b.preventDefault(),!1):void 0}}function q(a){return function(){k(a,v),""===a.value&&(a.blur(),f(a,0))}}function r(a){return function(){a===c()&&a.value===a.getAttribute(B)&&"true"===a.getAttribute(C)&&f(a,0)}}function s(a){var b=a.form;b&&"string"==typeof b&&(b=document.getElementById(b),b.getAttribute(E)||(e(b,"submit",o(b)),b.setAttribute(E,"true"))),e(a,"focus",m(a)),e(a,"blur",n(a)),P&&(e(a,"keydown",p(a)),e(a,"keyup",q(a)),e(a,"click",r(a))),a.setAttribute(F,"true"),a.setAttribute(B,T),(P||a!==c())&&l(a)}var t=document.createElement("input"),u=void 0!==t.placeholder;if(a.Placeholders={nativeSupport:u,disable:u?b:i,enable:u?b:j},!u){var v,w=["text","search","url","tel","email","password","number","textarea"],x=[27,33,34,35,36,37,38,39,40,8,46],y="#ccc",z="placeholdersjs",A=new RegExp("(?:^|s)"+z+"(?!S)"),B="data-placeholder-value",C="data-placeholder-active",D="data-placeholder-type",E="data-placeholder-submit",F="data-placeholder-bound",G="data-placeholder-focus",H="data-placeholder-live",I="data-placeholder-maxlength",J=100,K=document.getElementsByTagName("head")[0],L=document.documentElement,M=a.Placeholders,N=document.getElementsByTagName("input"),O=document.getElementsByTagName("textarea"),P="false"===L.getAttribute(G),Q="false"!==L.getAttribute(H),R=document.createElement("style");R.type="text/css";var S=document.createTextNode("."+z+" {color:"+y+";}");R.styleSheet?R.styleSheet.cssText=S.nodeValue:R.appendChild(S),K.insertBefore(R,K.firstChild);for(var T,U,V=0,W=N.length+O.length;W>V;V++)U=V<N.length?N[V]:O[V-N.length],T=U.attributes.placeholder,T&&(T=T.nodeValue,T&&d(w,U.type)&&s(U));var X=setInterval(function(){for(var a=0,b=N.length+O.length;b>a;a++)U=a<N.length?N[a]:O[a-N.length],T=U.attributes.placeholder,T?(T=T.nodeValue,T&&d(w,U.type)&&(U.getAttribute(F)||s(U),(T!==U.getAttribute(B)||"password"===U.type&&!U.getAttribute(D))&&("password"===U.type&&!U.getAttribute(D)&&g(U,"text")&&U.setAttribute(D,"password"),U.value===U.getAttribute(B)&&(U.value=T),U.setAttribute(B,T)))):U.getAttribute(C)&&(k(U),U.removeAttribute(B));Q||clearInterval(X)},J);e(a,"beforeunload",function(){M.disable()})}}(this));
     </script>
 
 </apex:page>
