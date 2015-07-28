@@ -606,6 +606,9 @@ input.CoveoQueryBox::-ms-clear {
 .CoveoResultLink:link {
     color: #00709D;
 }
+.CoveoResult .coveo-title .CoveoResultLink {
+    word-break: break-word;
+}
 /*.CoveoResult .coveo-title .CoveoResultLink {
     display: block;
     overflow: hidden;
