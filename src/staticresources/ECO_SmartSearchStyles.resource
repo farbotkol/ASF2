@@ -3,16 +3,69 @@
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - */
 /* - - - - - - - - - - SEARCH LANDING PAGE STYLES - - - - - - - - - - */
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - - - - */
+.CoveoErrorReport .coveo-options {
+    display:none;
+}
 
+/* - - ECOSYSTEM FRAME HEADER SEARCH BOX/ICON STYLES - - */
+
+.ecoFrameSearch .coveo-searchBox-column input[type="search"] {
+    font-size: 12px;
+    border-right: none;
+    width: 80%;
+    padding: 2px 5px;
+}
+.ecoFrameSearch .CoveoSearchButton {
+    font-size: 14px;
+    padding: 5px 10px;
+    border: none;
+    width: 20%;
+    display: inline-block;
+}
+.ecoFrameSearch .CoveoSearchButton, .ecoFrameSearch .coveo-searchBox-column input[type="search"]  {
+    margin-top: 11px;
+    height: 30px;
+}
+.ecoFrameSearch .col-lg-3 {
+    padding: 0 !important;
+    max-width: 200px;
+    margin-left: 10px;
+}
 .navbar-top-links > li[data-original-title="SmartSearch"] {
-        display: none;
-    }
+    display: none;
+}
+.navbar-top-links .coveo-SearchBox-column {
+    float: right;
+}
+#newProjectModal .modal-dialog {
+    width: 50% !important;
+}
+#newProjectModal .modal-dialog .modal-content {
+    padding: 40px;
+}
+.pull-right .coveo-query-box-clear {
+    display: none !important;
+}
 
 /* - - SEARCH BOX ROW STYLES - - */
 
 .container.Search, .container.SearchResults {
     width: 100%;
     font-family: "Open Sans", Arial, sans-serif !important;
+}
+.container.SearchResults {
+    padding-top: 0;
+    padding-left: 230px;
+}
+.container.Search {
+    padding-left: 230px;
+    padding-top: 50px;
+}
+@media (max-width:767px){
+    .container.Search {
+        padding-left: 0;
+        padding-top: 50px;
+    }
 }
 .CoveoSearchInterface{
     font-family: "Open Sans", Arial, sans-serif;
@@ -71,18 +124,36 @@
    -webkit-appearance: none;
    -moz-appearance: none;
    appearance: none;
-    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_selectArrow.png");
+    /*background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_selectArrow.png");
     background-position: 93% 50%;
     background-repeat: no-repeat;
+    MOVED THIS TO THE #scopeselector ID TO TARGET IT IN AN IFRAME */
     border-radius: 0;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-right: 30px !important;
 }
-
-/*target Internet Explorer 9 and Internet Explorer 10:*/
+#scopeselector {
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_selectArrow.png");
+    background-position: 93% 50%;
+    background-repeat: no-repeat;
+}
+/* IE10+ STYLE */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {  
+   #scopeselector {
+    background-image: none;
+    }
+    .searchBar select {
+        padding-right: 0 !important;
+    }
+}
+/* IE9, IE10 STYLE */
 @media screen and (min-width:0\0) { 
-    .searchBar {
-        margin: 3.5% 20px 0;
+    #scopeselector {
+    background-image: none;
+    }
+    .searchBar select {
+        padding-right: 0 !important;
     }
 }
 .ie8or9 .searchBar select {
@@ -104,7 +175,7 @@
     display: table-cell;
     font-size: 21px;
     font-weight: bold;
-    height: 50px;
+   /* height: 50px;*/
     padding:0 18px ;
     text-align: center;
     text-transform: uppercase;
@@ -112,6 +183,9 @@
     border-left: none;
     border-radius: 0;
     cursor: pointer;
+}
+.searchBar .searchBtn #CoveoSearchButton {
+    height: 50px;
 }
 .CoveoSearchButton:hover {
     background: #59ba47;
@@ -169,6 +243,20 @@ input.CoveoQueryBox::-ms-clear {
     display: none;
 /* gets rid of double x in search box when typing ahead */
 }
+/* IE10+ STYLE */
+@media screen and (-ms-high-contrast: active), (-ms-high-contrast: none) {  
+    input.CoveoQueryBox::-ms-clear {
+    display: none;
+    /* gets rid of double x in search box when typing ahead */
+    }
+}
+/* IE9, IE10 STYLE */
+@media screen and (min-width:0\0) { 
+    input.CoveoQueryBox::-ms-clear {
+    display: none;
+    /* gets rid of double x in search box when typing ahead */
+    }
+}
 
 .coveo-omnibox {
     border: 2px solid #e3e3e3;
@@ -207,41 +295,6 @@ input.CoveoQueryBox::-ms-clear {
 .coveo-top-field-suggestion-header span.coveo-icon-top-field {
     display: none;
 }
-
-/* - - ECOSYSTEM FRAME SEARCH BOX STYLES - - */
-
-.ecoFrameSearch .coveo-searchBox-column input[type="search"] {
-    font-size: 12px;
-    border-right: none;
-    width: 80%;
-    padding: 2px 5px;
-}
-/* targeting IE9 */
-iframe .ie8or9 .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
-    padding: 2px 10px !important;
-}
-@media screen and (min-width:0\0) { 
-    iframe .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
-        padding: 2px 10px;
-    }
-}
-.ecoFrameSearch .CoveoSearchButton {
-    font-size: 14px;
-    padding: 5px 10px;
-    border: none;
-    width: 20%;
-    display: inline-block;
-}
-.ecoFrameSearch .CoveoSearchButton, .ecoFrameSearch .coveo-searchBox-column input[type="search"]  {
-    margin-top: 11px;
-    height: 30px;
-}
-.ecoFrameSearch .col-lg-3 {
-    padding: 0 !important;
-    max-width: 200px;
-    margin-left: 10px;
-}
-
 
 /* - - MODULE SECTION STYLES - - */
 
@@ -315,7 +368,7 @@ iframe .ie8or9 .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
   and (-webkit-min-device-pixel-ratio: 2) {
     .resultsModules, .resultTotal {
         width: 100%;
-        /* fixes width issue on iOS 7 & 8.3 */
+        /* fixes result width issue on iOS 7 & 8.3 */
     }
 }
 /* - - - - FILTER STYLES - - - - */
@@ -323,6 +376,7 @@ iframe .ie8or9 .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
 /* - CLEAR-ALL-FILTER STYLES - */
 .CoveoBreadcrumb {
     margin: 0 0 20px;
+    word-wrap: break-word;
 }
 .CoveoBreadcrumb .coveo-clear-all {
     background-color: #fff;
@@ -341,14 +395,14 @@ iframe .ie8or9 .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
 }
 .CoveoBreadcrumb .item {
     overflow: visible;
-    white-space: initial !important;
+    white-space: normal;
     text-overflow: initial;
+    word-break: break-word;
 }
 .coveo-facet-breadcrumb .coveo-values .coveo-value .coveo-multi-icon.coveo-selected {
     background-position: -439px -83px;
     height: 15px;
 }
-
 
 .CoveoSearchInterface {
     background-color: transparent;
@@ -358,6 +412,7 @@ iframe .ie8or9 .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
 .resultTotal {
     font-size: 20px;
     margin-bottom: 10px;
+    margin-left: 0 !important;
 }
 .resultTotal span {
     font-size: 20px;
@@ -536,6 +591,7 @@ iframe .ie8or9 .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
 }
 .CoveoResult .coveo-title {
     font-weight: bold;
+    max-width: 820px;
 }
 .CoveoResult a:hover {
     color: #02BCE5;
@@ -550,7 +606,15 @@ iframe .ie8or9 .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
 .CoveoResultLink:link {
     color: #00709D;
 }
-
+.CoveoResult .coveo-title .CoveoResultLink {
+    word-break: break-word;
+}
+/*.CoveoResult .coveo-title .CoveoResultLink {
+    display: block;
+    overflow: hidden;
+   text-overflow: ellipsis;
+    white-space: nowrap;
+}*/
 .resultDetail {
     font-size: 12px;
 }
@@ -596,6 +660,14 @@ iframe .ie8or9 .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
 .resultDetail div {
     /*max-width: 70%;*/
     word-wrap: break-word;
+
+    /* ADD IF LINK TO RESULT IS APPROVED (MAKE OWN STYLE)
+    /*height: 21px;
+    overflow: hidden;
+    table-layout: fixed;
+    text-overflow: ellipsis;
+    width: 100%;
+    word-wrap: break-word;*/
 }
 .resultDetail .PMdetails {
     font-size: 12px;
@@ -612,6 +684,12 @@ iframe .ie8or9 .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
 }
 .resultDetail table th.CoveoCaption {
     border-bottom: 1px solid #e3e3e3;
+}
+.chatterDesc {
+    word-wrap: break-word;
+    width: 100%;
+    display: table;
+    table-layout: fixed;
 }
 
 /* - - - OPPORTUNITY STYLES - - - */
@@ -635,150 +713,183 @@ iframe .ie8or9 .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
     background-color: #bebebe !important;
 }
 
-
+/* - - - TaaS RATING STARS STYLES - - - */
+.ratingInt {
+    display: inline;
+    float: left;
+    margin-left: 10px;
+    margin-top: -2px;
+    vertical-align: middle;
+}
+.rating {
+    display: block;
+    width: 85px;
+    height: 16px;
+    background-repeat: no-repeat;
+    float: left;
+}
+.rating[title="0"] {
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/TaaSstars/TaaSstars_none.png");
+}
+.rating[title="1"] {
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/TaaSstars/TaaSstars_one.png");
+}
+.rating[title="2"] {
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/TaaSstars/TaaSstars_two.png");
+}
+.rating[title="3"] {
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/TaaSstars/TaaSstars_three.png");
+}
+.rating[title="4"] {
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/TaaSstars/TaaSstars_four.png");
+}
+.rating[title="5"] {
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/TaaSstars/TaaSstars_five.png");
+}
 
 /* - - - DOCUMENT TYPE ICON STYLES - - - */
 
 table.documentTable td div {
-    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_docTypeIcons.png");
-    height: 40px;
+    height: 50px;
     width: 40px;
     background-size: 40px;
     margin-right: 8px;
-    background-position: -4px 44px;
+    background-repeat: no-repeat;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/generic.png");
 }
 table.documentTable div.doc {
-    background-position: -4px 414px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_doc.png");
 }
 table.documentTable div.html {
-    background-position: -4px 320px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_web.png");
 }
 table.documentTable div.xls, table.documentTable div.xlsx {
-    background-position: -4px -96px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_excel.png");
 }
 table.documentTable td div.ppt {
-    background-position: -4px 460px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_ppt.png");
 }
 table.documentTable td div.rtf, table.documentTable td div.txt {
-    background-position: -4px 367px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_txt.png");
 }
 table.documentTable td div.msg {
-    background-position: -4px 507px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_eml.png");
 }
 table.documentTable td div.pdf {
-    background-position: -4px -3px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_pdf.png");
 }
 table.documentTable td div.zip {
-    background-position: -3px 227px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_zip.png");
 }
 table.documentTable td div.wav {
-    background-position: -3px 88px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_wav.png");
 }
 table.documentTable td div.exe {
-    background-position: -3px 133px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_exe.png");
 }
-table.documentTable td div.swf {
+table.documentTable td div.swf, table.documentTable td div.mp4 {
 /* video files */
-    background-position: -3px 181px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_vid.png");
 }
-table.documentTable td div.vsd {
+table.documentTable td div.vsd, table.documentTable td div.jpg, table.documentTable td div.png, table.documentTable td div.Image {
 /* image files */
-    background-position: -4px 601px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/filetype/filetype_img.png");
 }
-/* TO HIDE ICON ON DEFAULT TEMPLATE FOR SHAREPOINT SEARCH RESULTS - DONT NEED THIS AFTER TEMPLATE FOR RESULT IS BUILT */
+/* TO HIDE ICON ON DEFAULT TEMPLATE FOR SHAREPOINT SEARCH RESULTS - DONT NEED THIS AFTER TEMPLATE FOR RESULT IS BUILT 
 .documentTable.repositoryType div[class=""], .documentTable.repositoryType div[class="sppublishingpageslibrarylist"],
 .documentTable.repositoryType div[class="spsite"], .documentTable.repositoryType div[class="spdocumentlibrarylist"], 
 .documentTable.repositoryType div[class="sppublishingimageslibrarylist"], .documentTable.repositoryType div[class="spuserprofile"]
  {
     display: none;
-}
+}*/
 
 /* - - - OPPORTUNITY STAGE ICON STYLES - - - */
 
 .oppStage {
-    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/ss_oppStageIcons.png");
     height: 30px;
     width: 30px;
-    background-size: 270px auto;
+    padding: 15px !important;
 }
 
 .oppStage[title="1 Lead"]{
-    background-position: -3px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_one.png");
+
 }
 .oppStage[title="1A Lead - Scout"] {
-    background-position: -3px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_one.png");
 }
 .oppStage[title="1B Lead - Engage"] {
-    background-position: -3px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_one.png");
 }
 .oppStage[title="1C Lead - Position"] {
-    background-position: -3px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_one.png");
 }
 
 .oppStage[title="2 Capture"] {
-    background-position: -29px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_two.png");
 }
 .oppStage[title="2A Capture - LOI"] {
-    background-position: -29px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_two.png");
 }
 .oppStage[title="2B Capture - EOI"] {
-    background-position: -29px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_two.png");
 }
 .oppStage[title="2C Capture - SOQ"] {
-    background-position: -29px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_two.png");
 }
 .oppStage[title="2D Capture - RFI"] {
-    background-position: -29px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_two.png");
 }
 .oppStage[title="2E Capture - RFP"] {
-    background-position: -29px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_two.png");
 }
 
 .oppStage[title="3 Submitted"] {
-    background-position: -55px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_three.png");
 }
 .oppStage[title="3A Capture - Proposal Submitted"] {
-    background-position: -55px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_three.png");
 }
 .oppStage[title="3B Capture - Short List"] {
-    background-position: -55px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_three.png");
 }
 .oppStage[title="3C Capture - Interview"] {
-    background-position: -55px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_three.png");
 }
 
 .oppStage[title="4 Project on hold"] {
-    background-position: -82px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_four.png");
 }
 
 .oppStage[title="5A Program in Negotiation"] {
-    background-position: -108px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_five.png");
 }
 .oppStage[title="5B Program Signed and Active"] {
-    background-position: -108px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_five.png");
 }
 .oppStage[title="5 SNB/Win/Award"] {
-    background-position: -108px -4px;
+   background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_five.png");
 }
+
 
 
 .oppStage[title="6A Program Closed/Completed"] {
-    background-position: -133px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_six.png");
 }
 .oppStage[title="6 Contracted/Booked/Won"] {
-    background-position: -133px -4px;
+     background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_six.png");
 }
 
 .oppStage[title="7 Canceled by Client"] {
-    background-position: -161px -4px;
+     background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_seven.png");
 }
 
 .oppStage[title="8 No-Go"] {
-    background-position: -214px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_eight.png");
 }
 
 .oppStage[title="9 Lost"] {
-    background-position: -241px -4px;
+    background-image: url("/resource/1431365101000/ECO_SmartSearchAssets/oppStage/oppStage_lost.png");
 }
 
 
@@ -786,6 +897,10 @@ table.documentTable td div.vsd {
 /* - - - - - - - - - - SEARCH FACET STYLES - - - - - - - - - - - */
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - */
 
+/* Fix for Sanchivan's screen (All Extra Large Screens?) */
+.CoveoFacet .coveo-label .coveo-caption {
+    text-overflow: initial  !important;
+}
 /*.coveo-search, .coveo-search .coveo-magnifier, .coveo-search .coveo-clear, .coveo-search .coveo-middle, .coveo-middle input {
     display: none !important;
     color: #E7EBEE !important;
@@ -803,6 +918,9 @@ table.documentTable td div.vsd {
 .CoveoFacet .coveo-title, .CoveoFacetRange .coveo-title {
     color: white !important;
     font-size: 17px;
+}
+.coveo-title br {
+    line-height: 0;
 }
 
 /* DATE SLIDER STYLES */
@@ -843,7 +961,7 @@ table.documentTable td div.vsd {
 /* - - - - - - - - - - MEDIA QUERIES - - - - - - - - - - - - - - */
 /* - - - - - - - - - -  - - - - - - - - - - - - - - - - - - - - */
 /* searchbar in header */
-@media (min-width: 992px) and (max-width: 1232px){
+@media (min-width: 1022px) and (max-width: 1232px){
     .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
         width: 120px;
     }
@@ -852,13 +970,21 @@ table.documentTable td div.vsd {
         font-size: 13px;
     }
 }
-@media (min-width: 768px) and (max-width: 991px){
+@media (max-width: 1021px){
     .ecoFrameSearch .coveo-searchBox-column input[type="search"] {
-        width: 80px !important;
+        display: none;
     }
     .ecoFrameSearch .CoveoSearchButton {
-        padding: 5px 7px;
-        font-size: 13px;
+        display:none;
+    }
+      .navbar-top-links > li[data-original-title="SmartSearch"] {
+        display: block;
+    }
+}
+
+@media (max-width: 970px){
+    .navbar-top-links > li[data-original-title="SmartSearch"] .menuText {
+        display: none;
     }
 }
 
@@ -870,7 +996,7 @@ table.documentTable td div.vsd {
 
 /* SMALLER THAN LG */
 @media (max-width:1200px){
-
+    
 }
 
 /* TARGET MD SIZE */
@@ -903,8 +1029,14 @@ table.documentTable td div.vsd {
     .resultImg img {
         margin-top: 15px;
     }
-     .navbar-top-links > li[data-original-title="SmartSearch"] {
-        display: block;
+   
+    .container {
+        padding-left: 0;
+        padding-right: 0;
+    }
+    
+    .container.Search, .container.SearchResults {
+        padding-left: 75px;
     }
 }
 
@@ -913,6 +1045,7 @@ table.documentTable td div.vsd {
     .searchBar .searchBtn, .CoveoSearchButton {
         font-size: 21px;
     }
+
 }
 
 /* TARGET XS SIZE */
@@ -922,6 +1055,9 @@ table.documentTable td div.vsd {
     }
     .blueBlock {
         max-height: 100%;
+    }
+    .container.Search, .container.SearchResults {
+        padding-left: 5px;
     }
    
 }

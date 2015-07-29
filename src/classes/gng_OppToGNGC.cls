@@ -5,6 +5,12 @@
 * CLASS: gng_OppToGNGC
 * CREATED: 10/15/2014 Ethos Solutions - www.ethos.com
 * AUTHOR: Raghuveer Mandali
+*
+* Updates: 
+*    - 20-Apr-2015, Luke Farbotko
+*      Fix issue in the mapping introduced by the critical update 'Predictable 
+		Iteration Order for Apex Unordered Collections'
+*
 ***************************************************************************/
 public with sharing class gng_OppToGNGC {
 	//Field map for Opp field => GNG field
@@ -29,11 +35,20 @@ public with sharing class gng_OppToGNGC {
 		'Account_Manager__c' => new List<String>{'Account_Manager__c'}
 	};
 
+	private static final Set<String> VIEW_ONLY_RECORDTYPES_OPP = new Set<String> {
+		'Project_CS',
+		'Program_CS',
+		'Task_Order_CS',
+		'Project_MS',
+		'Program_MS',
+		'Task_Order_MS'
+	};
+
 	public static Set<Id> hasRanOpp = new Set<Id>();
 
 	//Creating new Go/No-Go records from opportunites
 	public static void createGNGFromOpportunity(Map<String, List<Opportunity>> oppMap) {
-		List<RecordType> recordTypes = [select Id, Name from RecordType where sObjectType = 'Go_No_Go_Conversation__c'];
+		List<RecordType> recordTypes = [select Id, Name, DeveloperName from RecordType where sObjectType = 'Go_No_Go_Conversation__c' or sObjectType = 'Opportunity'];
 		Map<String, RecordType> recordTypeMap = new Map<String, RecordType>();
 		List<Go_No_Go_Conversation__c> gng = new List<Go_No_Go_Conversation__c>();
 		Set<Id> oppIds = new Set<Id>();
@@ -44,15 +59,19 @@ public with sharing class gng_OppToGNGC {
 			}
 		}
 
-		for(RecordType r : recordTypes) recordTypeMap.put(r.Name, r);
+		for(RecordType r : recordTypes) {
+			recordTypeMap.put(r.Name, r);
+			recordTypeMap.put(r.Id, r);
+		}
 		for(String region : oppMap.keySet()) {
 			for(Opportunity o : oppMap.get(region)) {
+				Boolean isViewOnlyRecordType = VIEW_ONLY_RECORDTYPES_OPP.contains(recordTypeMap.get(o.RecordTypeId).DeveloperName);
 				if(hasRanOpp.contains(o.Id)) continue;
 				Go_No_Go_Conversation__c newGNG = new Go_No_Go_Conversation__c();
-				if(region == 'ANZ') newGNG.RecordTypeId = recordTypeMap.get('ANZ Why Go').Id;
+				if(region == 'Asia' || region == 'Africa' || region == 'Middle East' || isViewOnlyRecordType) newGNG.RecordTypeId = recordTypeMap.get('View Only').Id;
+				else if(region == 'ANZ') newGNG.RecordTypeId = recordTypeMap.get('ANZ Why Go').Id;
 				else if(region == 'North America') newGNG.RecordTypeId = recordTypeMap.get('Americas GNG').Id;
 				else if(region == 'Europe') newGNG.RecordTypeId = recordTypeMap.get('Europe GNG').Id;
-				else if(region == 'Asia' || region == 'Africa' || region == 'Middle East') newGNG.RecordTypeId = recordTypeMap.get('View Only').Id;
 				newGNG.Opportunity__c = o.Id;
 				newGNG.Client_Name__c = o.AccountId;
 				newGNG.Subs_Fee__c = o.Subs_Other_Revenue__c;
@@ -116,26 +135,35 @@ public with sharing class gng_OppToGNGC {
 
 	//set ANZ fields (TODO: update to encompass all regions)
 	private static Go_No_Go_Conversation__c setFields(Go_No_Go_Conversation__c g, Opportunity o) {
-		for(String oppField : ANZFieldMap.keySet()) {
-			if(oppField == 'Project_DirectorUser__c' && (o.Geography_Formula__c == 'Europe' || o.Geography_Formula__c == 'Middle East' || o.Geography_Formula__c == 'Africa')) continue;
-			else {
-				for(String gngField : ANZFieldMap.get(oppField)) {
-					g.put(gngField, o.get(oppField));
-				}
-			}
-		}
-		return g;
+          for(String oppField : ANZFieldMap.keySet()) {
+                 if(oppField == 'Project_DirectorUser__c' || oppField == 'Project_Director_EMEA__c')
+                 {
+                   Boolean isEMEA = (o.Geography_Formula__c == 'Europe' || o.Geography_Formula__c == 'Middle East' || o.Geography_Formula__c == 'Africa'); // is India required in here too?
+                   if(oppField == 'Project_DirectorUser__c' && isEMEA)
+                     continue;
+                   if(oppField == 'Project_Director_EMEA__c' && !isEMEA)
+                     continue;
+                 }
+                 for(String gngField : ANZFieldMap.get(oppField)) {
+                       g.put(gngField, o.get(oppField));
+                 }
+          }
+          return g;
 	} 
 
 	//compares the fields between GNG and Opp to see if we need to update the GNG record
 	private static Boolean compareFields(Go_No_Go_Conversation__c g, Opportunity o) {
 		Boolean isUpdate = false;
-		for(String oppField : ANZFieldMap.keySet()) {
-			if(oppField == 'Project_DirectorUser__c' && (o.Geography_Formula__c == 'Europe' || o.Geography_Formula__c == 'Middle East' || o.Geography_Formula__c == 'Africa')) continue;
-			else {
-				for(String gngField : ANZFieldMap.get(oppField)) {
-					if(g.get(gngField) != o.get(oppField)) isUpdate = true;
-				}
+		 for(String oppField : ANZFieldMap.keySet()) {
+             if(oppField == 'Project_DirectorUser__c' || oppField == 'Project_Director_EMEA__c'){
+				   Boolean isEMEA = (o.Geography_Formula__c == 'Europe' || o.Geography_Formula__c == 'Middle East' || o.Geography_Formula__c == 'Africa'); // is India required in here too?
+				   if(oppField == 'Project_DirectorUser__c' && isEMEA)
+				     continue;
+				   if(oppField == 'Project_Director_EMEA__c' && !isEMEA)
+				     continue;
+             }
+			for(String gngField : ANZFieldMap.get(oppField)) {
+				if(g.get(gngField) != o.get(oppField)) isUpdate = true;
 			}
 		}
 		return isUpdate;

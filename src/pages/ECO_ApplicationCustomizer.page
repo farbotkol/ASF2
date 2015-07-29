@@ -1,38 +1,5 @@
-<apex:page controller="ECO_ApplicationCustomizerController" showheader="false" sidebar="false" title="{!$Label.ECOAppCusPickApplications}" standardStylesheets="false" action="{!onLoad}">
-    
-    
-    
-    <script>
-        $(document).ready(function(){
-            init();
-            
-           $(".showAllApps").click(function(){
-                $(".hiddenOnMobile").toggle();
-            });
-
-           $(".showAllApps").click(function(){
-                $(".showHideSwap").toggleClass("hidden-xs");
-           });
-
-
-            $(".showAllApps").click(function(){
-              if ($("i").is('.fa-eye')) {
-                $("i.fa-eye").toggleClass("fa-eye-slash");
-              } else {
-                $("i.fa-eye-slash").toggleClass("fa-eye");
-              }
-            });
-            
-            $('img[id$="theImageHidden"]').closest('a').fadeTo(1, .45);
-        });
-/*  moved the guts to the existing doc.ready
-        $(document).ready(function() {
-            init();
-            
-            $('img[id$="theImageHidden"]').closest('a').fadeTo(1, .45);
-            
-        });
-*/      
+<apex:page controller="ECO_ApplicationCustomizerController"  showheader="false" sidebar="false" title="{!$Label.ECOAppCusPickApplications}" standardStylesheets="false" action="{!onLoad}">
+	<script>
         function attachSortable() {
             $( "#sortable" ).sortable({});
         }
@@ -332,71 +299,13 @@
     <apex:composition template="ECO_Temp_Portal">
         
         <apex:define name="head">
-            
+            <script>var AWAN_online = false;</script>
+            <script src="{!awanJSPath}"></script>
         </apex:define>
 
+        <apex:define name="mainContent">
 
-        
-        <apex:define name="content">
-
-                <!--NAVBAR-->
-        <!--===================================================-->
-        <header id="navbar">
-            <div id="navbar-container" class="boxed">
-
-                <!--Brand logo & name-->
-                <!--================================-->
-                <div class="navbar-header">
-                    <a href="#" class="navbar-brand">
-                        <div class="brand-title">
-                            <span class="brand-text">{!$Label.ECOAppCusECOSYSTEM}</span>
-                        </div>
-                    </a>
-                </div>
-                <!--================================-->
-                <!--End brand logo & name-->
-
-                <!--Navbar Dropdown-->
-                <!--================================-->
-                <div class="navbar-content clearfix">
-                    <ul class="nav navbar-top-links pull-left">
-
-                        <li class="dropdown hidden-xs">
-                            <h3 style="margin:10px 0 0 8px;">{!$Label.ECOAppCusApplicationCustomizer}</h3>
-                        </li>
-
-                    </ul>
-                    <ul class="nav navbar-top-links pull-right">
-                        <!--User dropdown-->
-                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <li id="dropdown-user" class="dropdown">
-                            <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right" style="cursor: default !important;background: white !important;" >
-                                <span class="pull-right">
-                                    <!-- <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/av1.png')}" styleClass="img-circle img-user media-object"/> -->
-                                    <apex:image value="{!photoUrl}" styleClass="img-circle img-user media-object"/>
-                                </span>
-                                <div class="username hidden-xs"><strong><apex:outputText value="{!theUser.Name}'s" /></strong> {!$Label.ECOAppCusECOSYSTEM}</div>
-                            </a>
-
-                        
-                        </li>
-                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <!--End user dropdown-->
-
-                        <li class="logo" style="padding:12px 15px 0 8px;">
-                            <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'AECOMLogo.jpg')}" height="25px" class="hidden-xs" />
-                            <img src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/EcosystemMark.jpg')}" class="visible-xs" height="25px" />
-                        </li>
-
-                    </ul>
-                </div>
-                <!--================================-->
-                <!--End Navbar Dropdown-->
-
-            </div>
-        </header>
-
-        <apex:form id="theForm" >
+        <apex:form id="theAppCustomizerForm" >
         <div class="portalPageWrapper"> 
             
             
@@ -549,6 +458,10 @@
             </div><!-- .container -->
         </div><!-- .portalPageWrapper -->
         </apex:form>
+        </apex:define>
+        
+        <apex:define name="rightNav">
+
         </apex:define>
     </apex:composition>
 </apex:page>
