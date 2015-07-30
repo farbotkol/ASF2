@@ -125,7 +125,10 @@ public with sharing class gng_OppToGNGC {
 				tasks.add(createGNGTask(gngIdsToPD.get(gngId),gngId));
 			}
 		}
-		insert tasks;
+		Database.DMLOptions notifyOption = new Database.DMLOptions();
+		notifyOption.EmailHeader.triggerUserEmail = true;
+
+		Database.insert(tasks, notifyOption);
 	}
 
 	//delete existing Go/No-Go records
