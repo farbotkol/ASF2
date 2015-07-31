@@ -7,8 +7,8 @@ private class Service_Catalog_TrendingTopicsCtrlrTest
         //get Chatter Group Id
         String chatterGroupIdd;
         List<Service_Catalog_Settings__c> mcs = Service_Catalog_Settings__c.getall().values();
-        //chatterGroupIdd = mcs[0].ChatterId__c;
-        chatterGroupIdd = '0F9290000004C9I';
+        chatterGroupIdd = mcs[0].ChatterId__c;
+        //chatterGroupIdd = '0F9290000004C9I';
         
         List<ConnectApi.Topic> tList = new List<ConnectApi.Topic>();
        

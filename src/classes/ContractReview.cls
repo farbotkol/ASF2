@@ -25,15 +25,15 @@ public with sharing class ContractReview {
         		cr.OwnerId  = queueFederalUS.Id;
         	}
         	else{
-        		//if (cr.Preferred_Contract_Reviewer__c <> null){
-        			//cr.OwnerId = cr.Preferred_Contract_Reviewer__c;
+        		if (cr.Preferred_Contract_Reviewer__c <> null){
+        			cr.OwnerId = cr.Preferred_Contract_Reviewer__c;
         		
-	        	//}
-	        	//else {
+	        	}
+	        	else {
 	        		Group queue = [select Id from Group where Name = :v.queueName and Type = 'Queue'];
 	        		cr.OwnerId  = queue.Id;
 	        		
-	        	//}
+	        	}
         	}
         
         	cr.Legal_Team__c = v.queueName;

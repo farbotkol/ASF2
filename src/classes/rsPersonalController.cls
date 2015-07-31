@@ -50,9 +50,4 @@ public with sharing class rsPersonalController extends rsSectionController {
             				|| ( UserInfo.getUserId() == profile.getId());
 		
 	}
-
-	public Boolean getIsContentManager() {
-		return Profile_Info__c.getInstance().Is_Content_Manager__c;
-		
-	}
 }

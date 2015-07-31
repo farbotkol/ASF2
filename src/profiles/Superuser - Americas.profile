@@ -8,7 +8,7 @@
     <applicationVisibilities>
         <application>CRM_Lite</application>
         <default>false</default>
-        <visible>false</visible>
+        <visible>true</visible>
     </applicationVisibilities>
     <applicationVisibilities>
         <application>Chatter_People_Projects</application>
@@ -128,6 +128,14 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>BatchUpdateOpportunityNameSearchable</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>BatchUpdateUserCRSPermissionSets</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>ChangePasswordController</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -189,6 +197,26 @@
     </classAccesses>
     <classAccesses>
         <apexClass>CommunitiesSelfRegControllerTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ContractReview</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ContractReviewGNGDetailsController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ContractReviewSharing</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ContractReviewTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>ContractReviewVariable</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -320,6 +348,10 @@
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>NewContractReviewController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>OpportunityDeptUpdate</apexClass>
         <enabled>false</enabled>
     </classAccesses>
@@ -368,11 +400,55 @@
         <enabled>true</enabled>
     </classAccesses>
     <classAccesses>
+        <apexClass>Service_Catalog_AECOMServiceCatalog</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>Service_Catalog_AECOMServiceCatalogTEST</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>Service_Catalog_MyTestButtonController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>Service_Catalog_TrendingTopicsController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>Service_Catalog_TrendingTopicsCtrlrTest</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>Service_Catalog_categorySEsController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>Service_Catalog_categorycontroller</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>Service_Catalog_categorycontrollerTEST</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>Service_Catalog_eventcontroller</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>Service_Catalog_eventcontrollerTEST</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
         <apexClass>SiteLoginController</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
         <apexClass>SiteRegisterController</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>StaticHelper</apexClass>
         <enabled>false</enabled>
     </classAccesses>
     <classAccesses>
@@ -1496,6 +1572,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>AECOM_team__c.Catalog_Entry__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>AECOM_team__c.Community_Involvement__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1615,6 +1696,11 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.AECOM_Insight__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Account.AccountNumber</field>
         <readable>false</readable>
@@ -1650,6 +1736,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.Account_Survey_Rating__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Account.Agreement_expiration_date__c</field>
         <readable>true</readable>
@@ -1660,8 +1751,38 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.Average_Likelihood_to_recommend_AECOM__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Bid_Proposal_Actual_to_date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Bid_Proposed_Budget__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Billed_60__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Billed_AR__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Account.BillingAddress</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Bookings__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1745,6 +1866,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.Count_of_Survey_Responses__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Account.CountryLookup__c</field>
         <readable>true</readable>
@@ -1807,6 +1933,21 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Account.Global_Key_Account__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.Gross_Margin_Static_Chart__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Gross_Margin__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Gross_Revenue__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1876,6 +2017,31 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Account.Multiplier__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.NPS_Response_Ratio__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.NPS_Score_NUM__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.NPS_Score__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Net_Revenue__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Account.NumberOfEmployees</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -1886,12 +2052,27 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Account.Number_of_Detractors__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Account.Number_of_Open_Opportunities__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
         <field>Account.Number_of_Opportunities__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.Number_of_Passive__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.Number_of_promoters__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -1975,6 +2156,21 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.Ratio_of_Detractor_Responses__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.Ratio_of_Passive_Responses__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.Ratio_of_Promoter_Responses__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Account.Reach__c</field>
         <readable>true</readable>
@@ -2012,6 +2208,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Account.Risk_Notes__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Scheduled_Backlog__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -2090,6 +2291,21 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Unbilled_30__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Unbilled_AR__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Account.Unscheduled_Backlog__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Account.View_Revenue_Forecast_by_Geo__c</field>
         <readable>true</readable>
@@ -2113,6 +2329,11 @@
         <editable>false</editable>
         <field>Account.pse__Services_Billing_Time_Period_Type__c</field>
         <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Account.sumoflikelihoodtorecommend__c</field>
+        <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -2152,6 +2373,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Application__c.ImageName__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Application__c.MobileEnabled__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -2860,6 +3086,11 @@
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.Client_Status__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Case.ClosedDate</field>
         <readable>true</readable>
@@ -2877,6 +3108,16 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Case.Description</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.Follow_Up_Date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.Initial_Discussion__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -2950,6 +3191,26 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.Project_Management__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Case.Project_Manager__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Case.Project_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.Project__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>false</editable>
         <field>Case.QuestionId</field>
         <readable>false</readable>
@@ -2958,6 +3219,16 @@
         <editable>true</editable>
         <field>Case.Reason</field>
         <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Case.Resolved__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Case.Response_Type__c</field>
+        <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
@@ -3036,6 +3307,16 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Case.Solution_Resolution_Date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.Specific_Solution_Plan__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Case.Subject</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -3057,6 +3338,21 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Case.SuppliedPhone</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.Survey_Response_Link__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Case.Survey_Response__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Case.Technical_Topic__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -3795,6 +4091,21 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Contact.Project_Manager__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contact.Project_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Contact.Project__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Contact.ReportsToId</field>
         <readable>true</readable>
@@ -3802,6 +4113,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Contact.SS_Language__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Contact.Send_Survey__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -3822,6 +4138,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Contact.Suffix__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Contact.Survey_File_Information__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -4380,6 +4701,301 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Conditions_Of_Approval__c.Condition__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Conditions_Of_Approval__c.Level_of_Condition__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Conditions_Of_Approval__c.Level_of_Condition_value__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Approval_Level_Required_Value__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Approval_Level_Required__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Business_Line__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Client_Vendor_State_of_Incorporation__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Client_Vendor__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Client_vendor_as_named_on_the_contract__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Comments__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Compliant__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Conditions_complete__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Contract_Type__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Country_Code__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Country_of_incorporation_of_the_client_v__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Date_Required__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Date_received_by_Client__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Description_Nature_of_Works__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Estimated_Fee__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.External_Due_Date__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Federal_Contract__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Fee_Type__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Folder_Referance_Name__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Go_No_Go_Status__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Governing_Law__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Governing_Law_of_the_Contract_State__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Insurance__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Legal_Team__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Limitation_of_Liability__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.My_Contract__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Next_Review_Date__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.ORM_Comments__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Opportunity_GNG__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Opportunity_Name__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Opportunity__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Other_project_member__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.OwnersURL__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.PI_Insurance_Amount__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.PL_Insurance_Amount__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Preferred_Contract_Reviewer__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Previously_reviewed__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Project_Director__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Project_Manager__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Project_Number__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Project__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Registration_Number__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Request_Name__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Review_Request_Type__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Risk_Level__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Second_Legal_User__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Service_Type__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.State_Code__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.State_Province_Emirate__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Status_Review__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Submitted__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Time_Reviewed__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Time_Submitted__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.Time_To_Review__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Contract_Review__c.significant_risks_identified__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>Country__c.Country_Code__c</field>
         <readable>true</readable>
@@ -4437,6 +5053,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Event.Phase__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Event.Strategic_Account_Objective__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -5786,6 +6407,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Go_No_Go_Conversation__c.Opportunity_Name_Searchable__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Go_No_Go_Conversation__c.Opportunity_Name__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -6651,6 +7277,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>Issue__c.Project_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Issue__c.Projects__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -6842,6 +7473,181 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Lead.iContactforSF__iContact_Contact_Id__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Accessibility__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.Additional_comments__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Addressing_sustainability_options__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Adherence_to_agreed_project_schedule__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.Aspects_of_our_service_that_you_like__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Contact__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Cost_savings_resulting_from_project__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Effective_and_timely_communication__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.Experience_with_similar_service_provider__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Handling_of_invoicing_commercial_matters__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.How_could_we_make_our_service_better__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Innovation__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.Likelihood_of_recommending_AECOM__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.Likelihood_of_working_with_AECOM_again__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Management_of_environmental_risks__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Management_of_health_and_safety_risks__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Management_of_project_budget__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.Overall_Project_Satisfaction_Indicator__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Overall_Satisfaction_with_AECOM__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.Overall_Satisfaction_with_Project__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.Overall_Staff_Satisfaction_Indicator__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Overall_Staff_Satisfaction__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.Overall_Value_I_received_on_the_Project__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.Please_tell_us_the_reason_for_your_score__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.Prior_experience_with_AECOM__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Professionalism_and_courtesy__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Project_Manager__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.Project_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Project__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Quality_of_our_work_products_and_service__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Responsiveness__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Technical_expertise__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.The_Project_Team__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>NPS_Survey_Response__c.Understanding_my_business_industry__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>NPS_Survey_Response__c.Would_you_like_to_be_contacted__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -9770,6 +10576,11 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
+        <editable>false</editable>
+        <field>PR_Team_Employee__c.Catalog_People_Profile_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
         <editable>true</editable>
         <field>PR_Team_Employee__c.ChkUniqueEmp__c</field>
         <readable>true</readable>
@@ -9830,7 +10641,7 @@
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
-        <editable>false</editable>
+        <editable>true</editable>
         <field>PR_Team_Employee__c.EmployeeUser__c</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -9912,6 +10723,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>PR_Team_Employee__c.PRStatusEmployee__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>PR_Team_Employee__c.Person_Profile__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -10022,6 +10838,11 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>PortalMessage__c.LongDescription__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>PortalMessage__c.Order__c</field>
         <readable>false</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -10527,6 +11348,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Project__c.Date_Started__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Project__c.Department__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -11761,6 +12587,561 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Service_Catalog_Award__c.Catalog_Entry_Column__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry_Ratings__c.Capability_Rating_Level__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry_Ratings__c.Feedback__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry_Ratings__c.Rating_Sum_Hold__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry_Ratings__c.Star_Rating_Indicator__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.AVGCB__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Approval_Status__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Approval_Submission_date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Business_Line__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Bypass_Secondary_Approval__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.CPMC_1__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Capability_Description__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Capability_Indicator_Description__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Capability_Indicator_Questions__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Capability_Indicator__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Capability_Type__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Capacity_Description__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Capacity_Indicator_Questions__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Capacity_Indicator__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Category_Other__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Category__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Cost_and_Pricing_Models__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Customer_Rating_Count__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.DBFO_Strategy__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Department__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Do_you_have_project_references__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Does_Solution_comply_w_Industry_Std__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Geography__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Gold_Details_del__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.How_many_client_projects__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.How_soon_is_team_expansion_possible__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Is_Approved__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Is_Rejected__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Is_there_a_solution_support_team__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.MMMC_c_1__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Marketing_materials_case_studies__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Name_of_Group_providing_Capability__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Number_of_Reviews__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Overall_Rating__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.PRMC_c_1__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Rating_Count__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Rating_Sum__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Rating__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Recommended_Proposal_Language__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.SME__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.STMC_c_1__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Secondary_SME__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Service_Offering_Details__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Service_Offering_Level__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Standards_Description__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Standards_Indicator_Questions__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Standards_Indicator__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Standards__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Status__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Entry__c.Strategic_Initiative_Indicator__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Strategic_Investment__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Team_Location__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Team_Size__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Tertiary_SME__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Value_Proposition__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Entry__c.Web_Links__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Opportunity__c.Opportunity__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Billing_Cycle__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Client_Contact__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Comments__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Content_Owner_1__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Content_Owner_2__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Custom_End_Date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Due_Date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.Hosting_Fees__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.I_agree_to_the_Terms_and_Conditions__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Lease_Term_Calc__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.Lease_Term_End_Date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Lease_Term__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Opportunity__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.PM_Cell_Phone__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.PM_Desk_Phone__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.PM_Email__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Project_Manager__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Project_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Project_Number__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Project_Technical_Contact_2__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Project_Technical_Contact__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.Request_Date__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.Request_Form_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Request_Form__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.Requestor_Address__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.Requestor_Business_Line__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.Requestor_Cell_Phone__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.Requestor_Desk_Phone__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.Requestor_Email__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Requestor_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.SLA__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.SME__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Service_Type__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Setup_Fees__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Site_Depth__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Site_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Special_Requirements__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Start_of_Service__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.Storage__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.Task_Number__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.Terms_and_Conditions_Doc__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_Request_Form__c.Terms_and_conditions_language__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_Request_Form__c.url_name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_TPG_s__c.Catalog_Entry__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_TPG_s__c.TPG_Listing_Document__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Service_Catalog_TPG_s__c.TPG_Name__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_TPG_s__c.TPG_Web_Link__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_TPG_s__c.TPG__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
+        <field>Service_Catalog_TPG_s__c.TPG_display__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Site__c.AccountManager__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -11871,6 +13252,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>true</editable>
+        <field>SocialPersona.SourceApp</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
         <field>Solution.IsPublished</field>
         <readable>true</readable>
     </fieldPermissions>
@@ -11907,6 +13293,21 @@
     <fieldPermissions>
         <editable>false</editable>
         <field>Sub_Practice_Area__c.Status__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Survey_File_Information__c.Project__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>TPG_Link_Database__c.TPG_List__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>TPG_Link_Database__c.TPG_Web_Link__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -12022,6 +13423,11 @@
     <fieldPermissions>
         <editable>true</editable>
         <field>Task.Phase__c</field>
+        <readable>true</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>true</editable>
+        <field>Task.Strategic_Account_Objective__c</field>
         <readable>true</readable>
     </fieldPermissions>
     <fieldPermissions>
@@ -13335,6 +14741,10 @@
         <recordType>AECOM_team__c.AECOM_Team_Opportunity</recordType>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>AECOM_team__c-Service Catalog- People Profiles</layout>
+        <recordType>AECOM_team__c.Service_Catalog_Person_Record</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>ANZDeptProject__c-ANZDeptProject Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
@@ -13402,6 +14812,10 @@
     <layoutAssignments>
         <layout>Case-Case Layout</layout>
         <recordType>Case.Shared_Services</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Case-Close Loop Process</layout>
+        <recordType>Case.Close_Loop_Process</recordType>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Case-Colorado ER</layout>
@@ -13481,6 +14895,16 @@
         <layout>Contract-Contract Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Contract_Conditions_Of_Approval__c-Condition Of Approval Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Contract_Review__c-Contract Review Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Contract_Review__c-Contract Review Layout</layout>
+        <recordType>Contract_Review__c.Contract_Review_RT</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>Country__c-Country Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
@@ -13492,6 +14916,10 @@
     </layoutAssignments>
     <layoutAssignments>
         <layout>Event-Event Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Event-Event Layout</layout>
+        <recordType>Event.Chatter_Group_Event</recordType>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Event-Event Layout</layout>
@@ -13564,6 +14992,9 @@
     </layoutAssignments>
     <layoutAssignments>
         <layout>Macro-Macro Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>NPS_Survey_Response__c-NPS Survey Response Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Opportunity-Possible Program - APAC</layout>
@@ -13756,7 +15187,50 @@
         <layout>SFDC_Strategy__c-SFDC Strategy Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Service_Catalog_Award__c-Service Catalog Award Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Service_Catalog_Entry_Ratings__c-Service Catalog Entry Ratings Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Service_Catalog_Entry__c-Service Catalog Entry Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Service_Catalog_Opportunity__c-Service Catalog Opportunity Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Service_Catalog_Project_Profile__c-Service Catalog Project Profile Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Service_Catalog_Request_Form__c-Agreement Page</layout>
+        <recordType>Service_Catalog_Request_Form__c.Agreement_Clause</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Service_Catalog_Request_Form__c-Service Catalog RFP Form Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Service_Catalog_Request_Form__c-Service Catalog RFP Form Layout</layout>
+        <recordType>Service_Catalog_Request_Form__c.RFP</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Service_Catalog_Request_Form__c-SharePoint Site Request</layout>
+        <recordType>Service_Catalog_Request_Form__c.SharePoint_Site_Request</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Service_Catalog_TPG_s__c-Service Catalog TPG%E2%80%99s Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Service_Catalog_TPG_s__c-Service Catalog TPG%E2%80%99s Layout</layout>
+        <recordType>Service_Catalog_TPG_s__c.Service_Catalog_TPG_Record</recordType>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>Site__c-Site Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>SocialPersona-Social Persona Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>SocialPost-Social Post Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Solution-Solution Layout</layout>
@@ -13766,6 +15240,15 @@
     </layoutAssignments>
     <layoutAssignments>
         <layout>Sub_Practice_Area__c-Sub Practice Area Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Survey_File_ID__c-Survey File ID Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Survey_File_Information__c-Survey File Information Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>TPG_Link_Database__c-TPG Link Database Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
         <layout>Talent_Sourcing__c-Talent Sourcing Layout</layout>
@@ -14241,21 +15724,21 @@
     </objectPermissions>
     <objectPermissions>
         <allowCreate>true</allowCreate>
-        <allowDelete>false</allowDelete>
+        <allowDelete>true</allowDelete>
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
-        <modifyAllRecords>false</modifyAllRecords>
+        <modifyAllRecords>true</modifyAllRecords>
         <object>Qtr_Review__c</object>
-        <viewAllRecords>false</viewAllRecords>
+        <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
         <allowCreate>true</allowCreate>
-        <allowDelete>false</allowDelete>
+        <allowDelete>true</allowDelete>
         <allowEdit>true</allowEdit>
         <allowRead>true</allowRead>
-        <modifyAllRecords>false</modifyAllRecords>
+        <modifyAllRecords>true</modifyAllRecords>
         <object>Quarterly_Financials__c</object>
-        <viewAllRecords>false</viewAllRecords>
+        <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
         <allowCreate>false</allowCreate>
@@ -14273,7 +15756,7 @@
         <allowRead>true</allowRead>
         <modifyAllRecords>false</modifyAllRecords>
         <object>SFDC_Acct_Plan__c</object>
-        <viewAllRecords>false</viewAllRecords>
+        <viewAllRecords>true</viewAllRecords>
     </objectPermissions>
     <objectPermissions>
         <allowCreate>false</allowCreate>
@@ -14469,6 +15952,10 @@
         <enabled>false</enabled>
     </pageAccesses>
     <pageAccesses>
+        <apexPage>ContractReviewGNGDetails</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
         <apexPage>ConvertProjectToTaskOrder</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
@@ -14498,6 +15985,10 @@
     </pageAccesses>
     <pageAccesses>
         <apexPage>ECO_ReportFinder</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>ECO_Temp_Portal</apexPage>
         <enabled>false</enabled>
     </pageAccesses>
     <pageAccesses>
@@ -14578,6 +16069,10 @@
     </pageAccesses>
     <pageAccesses>
         <apexPage>MyProfilePage</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>NewContractReview</apexPage>
         <enabled>false</enabled>
     </pageAccesses>
     <pageAccesses>
@@ -14674,6 +16169,18 @@
     </pageAccesses>
     <pageAccesses>
         <apexPage>SSLinkedInCompanyInsiderSetup</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>Service_Catalog_LandingPage</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>Service_Catalog_MyTestButtonPage</apexPage>
+        <enabled>false</enabled>
+    </pageAccesses>
+    <pageAccesses>
+        <apexPage>Service_Catalog_categorySEsPage</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>
@@ -14777,6 +16284,10 @@
         <enabled>true</enabled>
     </pageAccesses>
     <pageAccesses>
+        <apexPage>nextgen_testMainPage</apexPage>
+        <enabled>true</enabled>
+    </pageAccesses>
+    <pageAccesses>
         <apexPage>opportunityCustomDepartmentReport</apexPage>
         <enabled>true</enabled>
     </pageAccesses>
@@ -14867,6 +16378,11 @@
     </recordTypeVisibilities>
     <recordTypeVisibilities>
         <default>false</default>
+        <recordType>AECOM_team__c.Service_Catalog_Person_Record</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
         <recordType>Account.AECOM_Internal_Account</recordType>
         <visible>false</visible>
     </recordTypeVisibilities>
@@ -14896,6 +16412,11 @@
     <recordTypeVisibilities>
         <default>false</default>
         <recordType>Campaign.iContact_Email_Campaign</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Case.Close_Loop_Process</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
     <recordTypeVisibilities>
@@ -14960,8 +16481,18 @@
         <visible>true</visible>
     </recordTypeVisibilities>
     <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Contract_Review__c.Contract_Review_RT</recordType>
+        <visible>false</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
         <default>true</default>
         <recordType>Event.CMC_Resources</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Event.Chatter_Group_Event</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
     <recordTypeVisibilities>
@@ -15135,6 +16666,26 @@
     </recordTypeVisibilities>
     <recordTypeVisibilities>
         <default>false</default>
+        <recordType>Service_Catalog_Request_Form__c.Agreement_Clause</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
+        <recordType>Service_Catalog_Request_Form__c.RFP</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>true</default>
+        <recordType>Service_Catalog_Request_Form__c.SharePoint_Site_Request</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>true</default>
+        <recordType>Service_Catalog_TPG_s__c.Service_Catalog_TPG_Record</recordType>
+        <visible>true</visible>
+    </recordTypeVisibilities>
+    <recordTypeVisibilities>
+        <default>false</default>
         <recordType>Task.Acct_Plan_Tasks</recordType>
         <visible>true</visible>
     </recordTypeVisibilities>
@@ -15258,6 +16809,10 @@
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>Contract_Review__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>Country__c</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
@@ -15272,6 +16827,10 @@
     <tabVisibilities>
         <tab>My_Profile</tab>
         <visibility>DefaultOff</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>NPS_Survey_Response__c</tab>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>PR_Office_Resp__c</tab>
@@ -15314,6 +16873,14 @@
         <visibility>DefaultOff</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>Service_Catalog_Entry__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Service_Catalog_Request_Form__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>Skills_and_Qualifications</tab>
         <visibility>DefaultOn</visibility>
     </tabVisibilities>
@@ -15322,8 +16889,20 @@
         <visibility>DefaultOff</visibility>
     </tabVisibilities>
     <tabVisibilities>
+        <tab>Survey_File_ID__c</tab>
+        <visibility>DefaultOn</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Survey_File_Information__c</tab>
+        <visibility>DefaultOff</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
         <tab>Technical_Document__c</tab>
         <visibility>DefaultOff</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Technical_Service_Catalog_Landing_Page</tab>
+        <visibility>DefaultOn</visibility>
     </tabVisibilities>
     <tabVisibilities>
         <tab>ValidState__c</tab>
@@ -15553,6 +17132,10 @@
     <userPermissions>
         <enabled>true</enabled>
         <name>SendSitRequests</name>
+    </userPermissions>
+    <userPermissions>
+        <enabled>true</enabled>
+        <name>SubmitMacrosAllowed</name>
     </userPermissions>
     <userPermissions>
         <enabled>true</enabled>

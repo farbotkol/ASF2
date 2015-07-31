@@ -169,24 +169,6 @@
         <template>Approval_Templates/GNG_EMEA_Approved</template>
     </alerts>
     <alerts>
-        <fullName>GNG_Approval_Notification_English_only</fullName>
-        <description>GNG Approval Notification in English</description>
-        <protected>false</protected>
-        <recipients>
-            <field>Marketing_Proposal_Lead_email__c</field>
-            <type>email</type>
-        </recipients>
-        <recipients>
-            <field>Sales_Manager_Email__c</field>
-            <type>email</type>
-        </recipients>
-        <recipients>
-            <type>owner</type>
-        </recipients>
-        <senderType>CurrentUser</senderType>
-        <template>CMC_North_America/GNG_Approval_Notification_English</template>
-    </alerts>
-    <alerts>
         <fullName>GNG_Approval_Notification_in_English_and_French</fullName>
         <description>GNG Approval Notification in English and French</description>
         <protected>false</protected>
@@ -211,6 +193,42 @@
         </recipients>
         <senderType>DefaultWorkflowUser</senderType>
         <template>Approval_Templates/GNG_EMEA_Submission</template>
+    </alerts>
+    <alerts>
+        <fullName>GNG_NoGo_Approval_Notification</fullName>
+        <description>GNG No-Go Approval Notification in English</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Marketing_Proposal_Lead_email__c</field>
+            <type>email</type>
+        </recipients>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <recipients>
+            <field>Bid_Manager__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>CMC_North_America/GNG_Approval_Notification_NoGo_Approved</template>
+    </alerts>
+    <alerts>
+        <fullName>GNG_NoGo_Approval_Notification_English_only</fullName>
+        <description>GNG Approval Notification in English</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Marketing_Proposal_Lead_email__c</field>
+            <type>email</type>
+        </recipients>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <recipients>
+            <field>Bid_Manager__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>CMC_North_America/GNG_Approval_Notification_English_French</template>
     </alerts>
     <alerts>
         <fullName>GNG_Rejection_Notification_English</fullName>

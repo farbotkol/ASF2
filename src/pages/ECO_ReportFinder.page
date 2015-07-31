@@ -14,7 +14,9 @@
 		});
 		
 		function attachSortable() {
-
+			if(console){
+				console.log('Attaching Sortable');
+			}
 			$('a[id$="linkWithId"]').each(function(){
 				$(this).closest('tr').attr('orderid', $(this).attr('orderid'));
 			});
@@ -27,6 +29,9 @@
  				, attribute: "orderId" 
  			});
  			
+ 			if (console) {
+ 				console.log(serializedIds);
+ 			}
  			
  			updatePositionsInApex(serializedIds);
  		};
@@ -114,13 +119,71 @@
 	<apex:composition template="ECO_Temp_Portal">
 	    
 	    <apex:define name="head">
-            <script>var AWAN_online = false;</script>
-            <script src="{!awanJSPath}"></script>	    	
+	    	
 	    </apex:define>
 	    
-		<apex:define name="mainContent">
+		<apex:define name="content">
 
 
+
+		<!--NAVBAR-->
+		<!--===================================================-->
+		<header id="navbar">
+			<div id="navbar-container" class="boxed">
+
+				<!--Brand logo & name-->
+				<!--================================-->
+				<div class="navbar-header">
+					<a href="#" class="navbar-brand">
+						<div class="brand-title">
+							<span class="brand-text">ECOSYSTEM</span>
+						</div>
+					</a>
+				</div>
+				<!--================================-->
+				<!--End brand logo & name-->
+
+				<!--Navbar Dropdown-->
+				<!--================================-->
+				<div class="navbar-content clearfix">
+					<ul class="nav navbar-top-links pull-left">
+
+						<li class="dropdown hidden-xs">
+							<h3 style="margin:10px 0 0 8px;">Report Finder</h3>
+						</li>
+
+					</ul>
+					<ul class="nav navbar-top-links pull-right">
+						<!--User dropdown-->
+						<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+						<li id="dropdown-user" class="dropdown">
+							<a href="#" data-toggle="dropdown" class="dropdown-toggle text-right" style="cursor: default !important;background: white !important;">
+								<span class="pull-right">
+									<!-- <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/av1.png')}" styleClass="img-circle img-user media-object"/> -->
+									<apex:image value="{!photoUrl}" styleClass="img-circle img-user media-object"/>
+								</span>
+								<div class="username hidden-xs"><strong><apex:outputText value="{!theUser.Name}'s" /></strong> Ecosystem</div>
+							</a>
+
+						
+						</li>
+						<!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+						<!--End user dropdown-->
+
+						<li class="logo" style="padding:12px 15px 0 8px;">
+							<apex:image url="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'AECOMLogo.jpg')}" height="25px" />
+						</li>
+
+					</ul>
+				</div>
+				<!--================================-->
+				<!--End Navbar Dropdown-->
+
+			</div>
+		</header>
+
+
+		<apex:pageMessages id="pageMessages" />
 
 		<div class="portalPageWrapper">	
 
@@ -129,12 +192,12 @@
 		    		<div class="col-sm-12" style="margin-top:90px;">
 		    			<div class="panel panel-default">
 							<div class="panel-heading">
-								<h4>{!$Label.ECORepFindSelectRemoveReports}</h4>
+								<h4>Select and Remove Reports</h4>
 							</div>
 							
 							<div class="panel-body">
 								
-								<apex:form id="reportsForm" >
+								<apex:form id="theForm" >
 									<apex:actionFunction action="{!save}" name="updatePositionsInApex" rerender="pageMessages, searchBlock">
 										<apex:param name="orderedReports" assignTo="{!orderedReports}" value="" />
 									</apex:actionFunction>
@@ -144,14 +207,14 @@
 												<apex:pageBlockSection id="searchFieldsSection" >
 													<div class="form-group">
 														<apex:pageBlockSectionItem >
-															<apex:outputLabel value="{!$Label.ECORepFindReportName}" />
+															<apex:outputLabel value="Report Name" />
 															<apex:inputText value="{!searchReportName}" styleClass="form-control" />
 														</apex:pageBlockSectionItem>
 													</div>
 													
 													<div class="form-group">
 														<apex:pageBlockSectionItem labelStyleClass="createdSince">
-															<apex:outputLabel value="{!$Label.ECORepFindCreatedSince}" />
+															<apex:outputLabel value="Created Since" />
 															<apex:inputField value="{!theUser.Date_of_Birth__c}" styleClass="form-control" />
 														</apex:pageBlockSectionItem>
 													</div>
@@ -159,7 +222,7 @@
 											</div>
 
 											<apex:pageBlockButtons location="bottom" >
-												<apex:commandButton value="{!$Label.ECOSearch}" action="{!doSearch}" rerender="resultsSection, pageMessages" styleClass="btn btn-primary search" />
+												<apex:commandButton value="Search" action="{!doSearch}" rerender="resultsSection, pageMessages" styleClass="btn btn-primary search" />
 												<!-- <apex:commandButton value="Clear Search Terms" action="{!clearSearchTerms}" rerender="resultsBlock, pageMessages, searchBlock" styleClass="btn btn-warning"/> -->
 											</apex:pageBlockButtons>
 
@@ -174,25 +237,25 @@
 												<apex:pageBlockButtons location="top" styleClass="buttonsBottom">
 													<!-- <apex:commandButton action="{!save}" value="Save" styleClass="btn btn-primary" /> -->
 													<button type="button" class="btn btn-primary" onclick="updatePositions();">
-														{!$Label.ECOSave}
+														Save
 													</button>
-													<apex:commandButton action="{!cancel}" value="{!$Label.ECOCancel}" styleClass="btn btn-danger" />
+													<apex:commandButton action="{!cancel}" value="Cancel" styleClass="btn btn-danger" />
 												</apex:pageBlockButtons>
 											</div>
 
 											<div class="row" style="padding-left:15px;"><div class="col-sm-12"><apex:pageMessages id="pageMessages" /></div></div>
 
 											<div class="col-sm-5">
-												<apex:pageBlockSection id="theSelectedReports" columns="1" collapsible="false" title="{!$Label.ECORepFindSelectedReports}">
+												<apex:pageBlockSection id="theSelectedReports" columns="1" collapsible="false" title="Selected Reports">
 													<apex:pageBlockTable value="{!orderedUserConfigItems}" var="configItem" styleClass="table table-striped table-bordered table-hover" id="selectedReportTable">
 														<apex:column >
 															<apex:facet name="header"></apex:facet>
-															<apex:commandButton action="{!removeItem}" value="{!$Label.ECORemove}" rerender="theSelectedReports, pageMessages, resultsSection" onComplete="attachSortable();">
+															<apex:commandButton action="{!removeItem}" value="Remove" rerender="theSelectedReports, pageMessages, resultsSection" onComplete="attachSortable();">
 																<apex:param assignTo="{!selectedReportId}" value="{!configItem.ReportId__c}" name="selectedReportId" />
 															</apex:commandButton>
 														</apex:column>
 														<apex:column >
-															<apex:facet name="header">{!$Label.ECORepFindReportName} </apex:facet>
+															<apex:facet name="header">Report Name </apex:facet>
 															<apex:outputLink value="/{!configItem.ReportId__c}" id="linkWithId" html-orderid="id_{!configItem.ReportId__c}" target="_newReportWindow">
 																<apex:outputText value="{!configItem.ReportName__c}"/>
 															</apex:outputLink>
@@ -202,27 +265,27 @@
 											</div>
 											
 											<div class="col-sm-7 report-search-results" style="padding-right:35px;">
-												<apex:pageBlockSection id="resultsSection" columns="1" collapsible="false" title="{!$Label.ECORepFindSearchResults}" >
+												<apex:pageBlockSection id="resultsSection" columns="1" collapsible="false" title="Search Results" >
 													<apex:pageBlockTable value="{!configItemsOnPage}" var="configItem" id="theResultsTable" styleClass="table table-striped table-bordered table-hover" >
 														<apex:column >
 															<apex:facet name="header">
 																<apex:outputPanel layout="block" styleClass="prefaceText" style="display:inline-block; text-align:center; width:100%;">
-																	{!$Label.ECORepFind8reports}
+																	You may select up to 8 reports
 																</apex:outputPanel>
 															</apex:facet>
 															 
-															<apex:commandButton action="{!selectItem}" value="{!$Label.ECOSelect}" rerender="theSelectedReports, pageMessages, resultsSection" rendered="{!!configItemsOnPage[configItem].selected}" oncomplete="attachSortable();">
+															<apex:commandButton action="{!selectItem}" value="Select" rerender="theSelectedReports, pageMessages, resultsSection" rendered="{!!configItemsOnPage[configItem].selected}" oncomplete="attachSortable();">
 																<apex:param assignTo="{!selectedReportId}" value="{!configItemsOnPage[configItem].theConfigItem.ReportId__c}" name="selectedReportId" />
 															</apex:commandButton>
 															
-															<apex:commandButton action="{!removeItem}" value="{!$Label.ECORemove}" rerender="theSelectedReports, pageMessages, resultsSection" rendered="{!configItemsOnPage[configItem].selected}" oncomplete="attachSortable();">
+															<apex:commandButton action="{!removeItem}" value="Remove" rerender="theSelectedReports, pageMessages, resultsSection" rendered="{!configItemsOnPage[configItem].selected}" oncomplete="attachSortable();">
 																<apex:param assignTo="{!selectedReportId}" value="{!configItemsOnPage[configItem].theConfigItem.ReportId__c}" name="selectedReportId" />
 															</apex:commandButton>
 															
 														</apex:column>
 														
 														<apex:column >
-															<apex:facet name="header">{!$Label.ECORepFindReportName}</apex:facet>
+															<apex:facet name="header">Report Name</apex:facet>
 															
 															<apex:outputLink value="/{!configItemsOnPage[configItem].theConfigItem.ReportId__c}" target="_newReportWindow" >
 																<apex:outputText value="{!configItemsOnPage[configItem].theConfigItem.ReportName__c}"/>
@@ -244,10 +307,5 @@
 			</div><!-- container -->
 		</div><!-- .portalPageWrapper -->
 		</apex:define>
-	
-		<apex:define name="rightNav">
-
-        </apex:define>
-        
 	</apex:composition>
 </apex:page>

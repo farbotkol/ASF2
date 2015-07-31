@@ -11,7 +11,7 @@ public class rsApprovalUtil {
 	//This will approve an entire profile
 	//pass in the two lists of parts & projects that are pending/in review
 	public static void approveProfile(rsProfile profile, List<rs_Profile_Part__c> partsToBeApproved, List<rsPRTeamEmployee> projectsToBeApproved) {
-		if (partsToBeApproved != null && partsToBeApproved.size() > 0) {
+		if(partsToBeApproved.size() > 0) {
             for (rs_Profile_Part__c profilePart : partsToBeApproved){
                 profilePart.Status__c = rsProfilePart.S_APPROVED;
                 rsProfilePart part = new rsProfilePart(profilePart);
@@ -24,7 +24,7 @@ public class rsApprovalUtil {
 				}
             }
         }
-        if(projectsToBeApproved != null && projectsToBeApproved.size() > 0) {
+        if(projectsToBeApproved.size() > 0) {
             for (rsPRTeamEmployee profileProject : projectsToBeApproved){
                 profileProject.setStatus(rsPRTeamEmployee.S_APPROVED);
             }
@@ -45,12 +45,12 @@ public class rsApprovalUtil {
 
 	//Lock profile and move parts/projects to 'In Review' status
 	public static void startReview(rsProfile profile, List<rs_Profile_Part__c> partsToBeApproved, List<rsPRTeamEmployee> projectsToBeApproved) {
-		if(partsToBeApproved != null && partsToBeApproved.size() > 0) {
+		if(partsToBeApproved.size() > 0) {
             for (rs_Profile_Part__c profilePart : partsToBeApproved){
                 profilePart.Status__c = rsProfilePart.S_INREVIEW;
             }
         }
-        if(projectsToBeApproved != null && projectsToBeApproved.size() > 0) {
+        if(projectsToBeApproved.size() > 0) {
             for (rsPRTeamEmployee profileProject : projectsToBeApproved){
                 profileProject.setStatus(rsPRTeamEmployee.S_INREVIEW);
             }
@@ -66,12 +66,12 @@ public class rsApprovalUtil {
 
 	//Unlock profile and move parts/projects to 'Pending' status
 	public static void stopReview(rsProfile profile, List<rs_Profile_Part__c> partsToBeApproved, List<rsPRTeamEmployee> projectsToBeApproved) {
-		if (partsToBeApproved != null && partsToBeApproved.size() > 0) {
+		if(partsToBeApproved.size() > 0) {
             for (rs_Profile_Part__c profilePart : partsToBeApproved){
                 profilePart.Status__c = rsProfilePart.S_PENDING;
             }
         }
-        if(projectsToBeApproved != null && projectsToBeApproved.size() > 0) {
+        if(projectsToBeApproved.size() > 0) {
             for (rsPRTeamEmployee profileProject : projectsToBeApproved){
                 profileProject.setStatus(rsPRTeamEmployee.S_PENDING);
             }

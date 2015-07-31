@@ -8,9 +8,7 @@
 ***************************************************************************/
 global class sshUserContactUtils {
 
-    public static final String UNKNOWN = 'UNKNOWN';
-    public static final String AECOM_EMAIL_DOMAIN = '@aecom.com';
-    public static final String ALTERNATE_EMAIL_DOMAIN = '@urs.com';
+    static final String UNKNOWN = 'UNKNOWN';
 
     /**
     * @Description This method will update the "copy" Contact records for the associated User records changes. Since this is called from a trigger
@@ -20,29 +18,14 @@ global class sshUserContactUtils {
     public static void updateContactUsers(Set<ID> userIdList)
     {
         if(System.isFuture() || System.isBatch() || System.isScheduled()){
-            doUpdateContactUsers(userIdList, null);
+            doUpdateContactUsers(userIdList);
         }else{
-            doUpdateContactUsersFuture(userIdList, null);   
-        }
-    }
-
-    /**
-    * @Description This method will update the "copy" Contact records for the associated User records changes. Since this is called from a trigger
-    *                 on a setup object (User) the method must be a future method.
-    * @param userIdList - Set list of user Id's that were changed.
-    * @param userIdList - Set list of user Id's that were changed.
-    */    
-    public static void updateContactUsers(Set<ID> userIdList, Id internalUserAcctId)
-    {
-        if(System.isFuture() || System.isBatch() || System.isScheduled()){
-            doUpdateContactUsers(userIdList, internalUserAcctId);
-        }else{
-            doUpdateContactUsersFuture(userIdList, internalUserAcctId);   
+            doUpdateContactUsersFuture(userIdList);   
         }
     }
 
     //for executing the User -> Contact update if we are already in the future context
-    private static void doUpdateContactUsers(Set<Id> userIdList, Id internalUserAcctId){
+    private static void doUpdateContactUsers(Set<Id> userIdList){
         Map<String, User> userEmailMap = new Map<String, User>();
         for (User user : [select Email, FirstName, LastName, Department, Title, Phone, MobilePhone, LanguageLocaleKey, Shared_Services_Is_Executive__c FROM User where Id IN :userIdList AND IsActive = true]) 
         {
@@ -52,6 +35,7 @@ global class sshUserContactUtils {
         List<Contact> contactList = [select User__c from Contact where User__c in :userEmailMap.keySet()];
         if(!contactList.isEmpty())
         {
+
             for(Contact contact : contactList)
             {
                 if(userEmailMap.keySet().contains(contact.User__c))
@@ -64,12 +48,9 @@ global class sshUserContactUtils {
                     contact.Title = updateUser.Title;
                     contact.Phone = updateUser.Phone;
                     contact.MobilePhone = updateUser.MobilePhone;
-                    //-- 6.16.15 AECSSH-448 
-                    //contact.SS_Language__c = getLanguageByLocaleKey(updateUser.LanguageLocaleKey); 
+                    contact.SS_Language__c = getLanguageByLocaleKey(updateUser.LanguageLocaleKey); 
                     contact.RecordTypeID        = getRecordTypeIdByName(RT_NAME_EMPLOYEE);
                     contact.Shared_Services_Is_Executive__c = updateUser.Shared_Services_Is_Executive__c;
-                    if (internalUserAcctId != null)
-                        contact.AccountId = internalUserAcctId;
                 }
             }
 
@@ -79,42 +60,39 @@ global class sshUserContactUtils {
 
     //for executing the User -> Contact update if not already in future context
     @future
-    private static void doUpdateContactUsersFuture(Set<Id> userIdList, Id internalUserAcctId){
-        doUpdateContactUsers(userIdList, internalUserAcctId);
+    private static void doUpdateContactUsersFuture(Set<Id> userIdList){
+        doUpdateContactUsers(userIdList);
     }
 
     // get set of user ids that already have an associated contact record
     public static void loadUserIdsWithContact(Set<String> emailAddresses, Set<Id> userIdsWithContact, List<Contact> contactList){
         List<User> userList = [select Id, Email from User where Email in :emailAddresses AND IsActive = true];
-        List<Contact> currentContactList = [select Id, Email from Contact where Email in :emailAddresses];
+        contactList = [select Id, Email from Contact where Email in :emailAddresses];
 
         Map<String, Id> userEmails = new Map<String, Id>();
 
-        if(!userList.isEmpty() && !currentContactList.isEmpty()){
+        if(!userList.isEmpty() && !contactList.isEmpty()){
 
-            for(User user : userList)
-                userEmails.put( (user.Email).toLowerCase(), user.Id);
-
-            for(Contact contact : currentContactList){
-                if(userEmails.containsKey(contact.Email.toLowerCase()) ){
-                    userIdsWithContact.add(userEmails.get(contact.Email.toLowerCase()));
-                    contact.User__c = userEmails.get(contact.Email.toLowerCase());
-                    contactList.add(contact);
+            for(User user : userList){
+                if(!userEmails.keySet().contains( (user.Email).toLowerCase() )){
+                    userEmails.put( (user.Email).toLowerCase(), user.Id);
                 }
             }
 
-            upsert contactList;
+            for(Contact contact : contactList){
+                if(userEmails.keySet().contains( (contact.Email).toLowerCase() )){
+                    userIdsWithContact.add(userEmails.get( (contact.Email).toLowerCase() ));
+                }
+            }
         }
     }
 
-    public static Id getRecordTypeIdByName(String name)
-    {
+    public static Id getRecordTypeIdByName(String name){
+
         Id rtId = null;
-        if (String.isNotBlank(name))
-        {
-            List<RecordType> recordTypes = [select Id from RecordType where Name = :name];
-            if(!recordTypes.isEmpty()) rtId = recordTypes[0].Id;
-        }
+        List<RecordType> recordTypes = [select Id from RecordType where Name = :name];
+
+        if(!recordTypes.isEmpty()) rtId = recordTypes[0].Id;
 
         return rtId;
     }
@@ -177,23 +155,6 @@ global class sshUserContactUtils {
             }
             if(!contactList.isEmpty()) update contactList;
         }
-    }
-
-    public static Contact buildNewContact(Map<String, User> userMap, sshCustomSettings.CaseTriggerSettings settings, String mappedEmail)
-    {
-        Contact newContact = new Contact(
-                        FirstName = userMap.get(mappedEmail).FirstName,
-                        LastName = userMap.get(mappedEmail).LastName,
-                        Department = userMap.get(mappedEmail).Department,
-                        Title = userMap.get(mappedEmail).Title,
-                        Email = userMap.get(mappedEmail).Email,
-                        SS_Language__c = sshUserContactUtils.getLanguageByLocaleKey(userMap.get(mappedEmail).LanguageLocaleKey),
-                        Shared_Services_Is_Executive__c = userMap.get(mappedEmail).Shared_Services_Is_Executive__c,
-                        RecordTypeId = settings.internalUserContactRecordTypeId,
-                        User__c = userMap.get(mappedEmail).Id,
-                        AccountId = settings.internalUserAccount.Id);
-
-        return newContact;
     }
 
     //method for parsing a SuppliedName into Contact from Case

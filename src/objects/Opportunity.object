@@ -10507,6 +10507,11 @@ AND(Go_Probability__c  = 1, INCLUDES( BL_Distribution__c , &quot;Environment&quo
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Pricebook2Id</fullName>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>PrimaryDeptName__c</fullName>
         <externalId>false</externalId>
         <formula>AECOM_Department_2__r.Name</formula>
@@ -10847,6 +10852,7 @@ This field was created during initial configuration but not used after Dept Spli
     </fields>
     <fields>
         <fullName>Produced_by_marketing__c</fullName>
+        <description>Used in DCS Americas</description>
         <externalId>false</externalId>
         <inlineHelpText>Will CMC staff be needed to participate in preparing submittals for this pursuit?</inlineHelpText>
         <label>Produced by marketing?</label>
@@ -10858,6 +10864,10 @@ This field was created during initial configuration but not used after Dept Spli
             <picklistValues>
                 <fullName>No</fullName>
                 <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Unknown</fullName>
+                <default>true</default>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
@@ -11337,6 +11347,10 @@ This field was created during initial configuration but not used after Dept Spli
             </picklistValues>
             <picklistValues>
                 <fullName>Malaysia</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Maldives</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -13381,6 +13395,10 @@ Now visible only to System Administrators and API Users (so that extract process
             </picklistValues>
             <picklistValues>
                 <fullName>Training</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Travel Demand Management</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -15502,6 +15520,28 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>Alex_Castillo</fullName>
+        <columns>Capture_Manager_User__c</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Capture_Manager_User__c</field>
+            <operation>contains</operation>
+            <value>wardrop</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>startsWith</operation>
+            <value>1,2,3,4,5</value>
+        </filters>
+        <label>Alex-Wardrop</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Alex_Garewal</fullName>
         <columns>Capture_Manager_User__c</columns>
         <columns>OPPORTUNITY.NAME</columns>
@@ -15587,6 +15627,28 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             <value>1,2,3,4,5</value>
         </filters>
         <label>Alex - Rusca</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Alex_Sooter</fullName>
+        <columns>Capture_Manager_User__c</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Capture_Manager_User__c</field>
+            <operation>contains</operation>
+            <value>sooter</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>startsWith</operation>
+            <value>1,2,3,4,5</value>
+        </filters>
+        <label>Alex Sooter</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -15795,6 +15857,7 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <columns>Capture_Manager__c</columns>
         <columns>Federal_Report_Comments__c</columns>
         <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.WON</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>OPPORTUNITY.STAGE_NAME</field>
@@ -16498,40 +16561,6 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>B_P_AME_USS_Opps2</fullName>
-        <columns>OPPORTUNITY.NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>Capture_Manager__c</columns>
-        <columns>OPPORTUNITY.AMOUNT</columns>
-        <columns>Net_Revenue_TO_Project__c</columns>
-        <columns>OPPORTUNITY.STAGE_NAME</columns>
-        <columns>Probability_Stage__c</columns>
-        <columns>OPPORTUNITY.CLOSE_DATE</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Lead_Region_Formula__c</field>
-            <operation>contains</operation>
-            <value>US - North</value>
-        </filters>
-        <filters>
-            <field>Geography_Formula__c</field>
-            <operation>contains</operation>
-            <value>america</value>
-        </filters>
-        <filters>
-            <field>Stage_Group__c</field>
-            <operation>startsWith</operation>
-            <value>1,2,3,5</value>
-        </filters>
-        <filters>
-            <field>Business_Line_of_Primary_AECOM_Dept__c</field>
-            <operation>contains</operation>
-            <value>Architecture,PCC,Building Engineering,DP&amp;E</value>
-        </filters>
-        <label>B+P AME - US North Opps</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
         <fullName>B_P_AME_US_North_Opps</fullName>
         <booleanFilter>(1 AND 2 AND 3 AND 4 AND 7 and (5 or 6))</booleanFilter>
         <columns>OPPORTUNITY.NAME</columns>
@@ -16688,7 +16717,7 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             <field>Oracle_Account__c</field>
             <operation>notEqual</operation>
         </filters>
-        <label>B&amp;P_Booked by APIC (current month)</label>
+        <label>B&amp;P AME - Booked by APIC (cur month)</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -16723,7 +16752,7 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             <operation>contains</operation>
             <value>IDIQ,On Call,As Needed,On-Call</value>
         </filters>
-        <label>B&amp;P_AME_Potential Programs</label>
+        <label>B&amp;P AME - Potential Programs</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -16758,7 +16787,7 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             <operation>startsWith</operation>
             <value>1,2,3,4,5</value>
         </filters>
-        <label>B&amp;P_AME_Placeholder Task Orders</label>
+        <label>B&amp;P AME - Placeholder Task Orders</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -16850,7 +16879,7 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <filters>
             <field>OPPORTUNITY.CREATED_DATE</field>
             <operation>greaterOrEqual</operation>
-            <value>4/6/2015 12:00 AM</value>
+            <value>4/29/2015 12:00 AM</value>
         </filters>
         <filters>
             <field>Geography_Formula__c</field>
@@ -16942,7 +16971,7 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <filters>
             <field>OPPORTUNITY.CREATED_DATE</field>
             <operation>greaterOrEqual</operation>
-            <value>9/30/2013 12:00 AM</value>
+            <value>9/30/2014 12:00 AM</value>
         </filters>
         <filters>
             <field>Geography_Formula__c</field>
@@ -16950,58 +16979,6 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             <value>North America</value>
         </filters>
         <label>B&amp;P Active Opps - Need Ultimate Client</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>B_P_Opps_Need_to_find_Ultimate_Client4</fullName>
-        <booleanFilter>((1 AND 2 AND 3) OR (1 AND 2 AND 4 AND 5) OR (1 AND 2 AND 6 AND 7))</booleanFilter>
-        <columns>OPPORTUNITY.LAST_UPDATE</columns>
-        <columns>OPPORTUNITY.STAGE_NAME</columns>
-        <columns>Opportunity_ID__c</columns>
-        <columns>AECOM_Role__c</columns>
-        <columns>OPPORTUNITY.NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>Client_Subgroup__c</columns>
-        <columns>Business_Line_of_Primary_AECOM_Dept__c</columns>
-        <columns>Geography_Formula__c</columns>
-        <columns>Lead_Region_Formula__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Business_Line_of_Primary_AECOM_Dept__c</field>
-            <operation>equals</operation>
-            <value>Architecture,Building Engineering,DP&amp;E,PCC,PDD</value>
-        </filters>
-        <filters>
-            <field>Client_Subgroup__c</field>
-            <operation>contains</operation>
-            <value>Architect</value>
-        </filters>
-        <filters>
-            <field>OPPORTUNITY.STAGE_NAME</field>
-            <operation>startsWith</operation>
-            <value>1,2,3,4,5</value>
-        </filters>
-        <filters>
-            <field>OPPORTUNITY.STAGE_NAME</field>
-            <operation>startsWith</operation>
-            <value>6</value>
-        </filters>
-        <filters>
-            <field>Book_date__c</field>
-            <operation>greaterOrEqual</operation>
-            <value>10/1/2012</value>
-        </filters>
-        <filters>
-            <field>OPPORTUNITY.STAGE_NAME</field>
-            <operation>startsWith</operation>
-            <value>7,8,9</value>
-        </filters>
-        <filters>
-            <field>Date_lost_cancelled_no_go__c</field>
-            <operation>greaterOrEqual</operation>
-            <value>10/1/2012</value>
-        </filters>
-        <label>B&amp;P Opps - Need to find Ultimate Client</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -17025,7 +17002,7 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             <field>Project_Delivery_Method__c</field>
             <operation>notEqual</operation>
         </filters>
-        <label>B&amp;P - Project Delivery Method</label>
+        <label>B&amp;P Opps - Project Delivery Method</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -17259,6 +17236,36 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             <value>6</value>
         </filters>
         <label>Building and Places</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CINKY_ENV_Open_Opptys</fullName>
+        <booleanFilter>1 and 2 and 3</booleanFilter>
+        <columns>Opportunity_ID__c</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>Capture_Manager_User__c</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>AECOM_Primary_Dept_Lookup__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>startsWith</operation>
+            <value>1,2,3,4,5</value>
+        </filters>
+        <filters>
+            <field>AECOM_Primary_Dept_Lookup__c</field>
+            <operation>contains</operation>
+            <value>2101,5838,7530,7535,7540</value>
+        </filters>
+        <filters>
+            <field>Business_Line_of_Primary_AECOM_Dept__c</field>
+            <operation>contains</operation>
+            <value>environment</value>
+        </filters>
+        <label>CINKY ENV Open Opptys</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -21115,6 +21122,54 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>Compliance_Open_Opptys</fullName>
+        <columns>OPPORTUNITY.CREATED_DATE</columns>
+        <columns>Opportunity_ID__c</columns>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.RECORDTYPE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>Business_Line_of_Primary_AECOM_Dept__c</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>Project_State_Province__c</columns>
+        <columns>Capture_Manager_User__c</columns>
+        <columns>Region__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Practice_Area_of_Primary_AECOM_Dept__c</field>
+            <operation>contains</operation>
+            <value>compliance</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>contains</operation>
+            <value>1,2,3</value>
+        </filters>
+        <label>Compliance Open Opptys</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Construction_Supervision_2437_Poland</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CURRENCY_ISO_CODE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>Submittal_Date_Proposal__c</columns>
+        <columns>Work_end_date_del__c</columns>
+        <columns>Capture_Manager_User__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AECOM_Primary_Dept_Lookup__c</field>
+            <operation>contains</operation>
+            <value>2437</value>
+        </filters>
+        <label>Construction Supervision - 2437 - Poland</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Czech_Republic</fullName>
         <booleanFilter>(2 OR 3) AND (1 OR 4)</booleanFilter>
         <columns>OPPORTUNITY.NAME</columns>
@@ -21149,6 +21204,59 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             <value>Czech Republic</value>
         </filters>
         <label>Czech Republic - MF - Env + Water</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Dallas_Metro_New_Opps_Create_Last_Week</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>OPPORTUNITY.CREATED_DATE</columns>
+        <columns>Produced_by_marketing__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OPPORTUNITY.CREATED_DATE</field>
+            <operation>greaterThan</operation>
+            <value>LAST_WEEK</value>
+        </filters>
+        <filters>
+            <field>Area__c</field>
+            <operation>equals</operation>
+            <value>Dallas Metro</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.STAGE_NAME</field>
+            <operation>startsWith</operation>
+            <value>1,2</value>
+        </filters>
+        <label>Dallas Metro New Opps Create Last Week</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Dallas_Metro_New_Opps_Create_Last_Week1</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <columns>OPPORTUNITY.CREATED_DATE</columns>
+        <columns>Produced_by_marketing__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OPPORTUNITY.CREATED_DATE</field>
+            <operation>greaterThan</operation>
+            <value>LAST_WEEK</value>
+        </filters>
+        <filters>
+            <field>Area__c</field>
+            <operation>equals</operation>
+            <value>Dallas Metro</value>
+        </filters>
+        <label>Dallas Metro New Opps Create Last Week</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -21308,6 +21416,33 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         </filters>
         <label>DuPont</label>
         <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>EIC_O_G</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>Group__c</columns>
+        <columns>AECOM_Primary_Dept_Lookup__c</columns>
+        <columns>OPPORTUNITY.CREATED_DATE</columns>
+        <columns>Ceiling_Amount_ReadOnly__c</columns>
+        <columns>Program_Estimated_Revenue__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Group__c</field>
+            <operation>equals</operation>
+            <value>Construction Services</value>
+        </filters>
+        <filters>
+            <field>Business_Line_of_Primary_AECOM_Dept__c</field>
+            <operation>equals</operation>
+            <value>Oil &amp; Gas</value>
+        </filters>
+        <label>EIC Oil &amp; Gas Opps</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Admin_users</group>
+            <group>All_Users</group>
+        </sharedTo>
     </listViews>
     <listViews>
         <fullName>Eastern_Canada_QC_Opps_recently_created</fullName>
@@ -22505,36 +22640,6 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>MS_Clean_Up_Other</fullName>
-        <booleanFilter>(1 AND (2 OR 3))</booleanFilter>
-        <columns>OPPORTUNITY.CREATED_DATE</columns>
-        <columns>OPPORTUNITY.STAGE_NAME</columns>
-        <columns>Opportunity_ID__c</columns>
-        <columns>OPPORTUNITY.NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>Market_Segment__c</columns>
-        <columns>Practice_Area__c</columns>
-        <columns>AECOM_Primary_Dept_Lookup__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Business_Line_of_Primary_AECOM_Dept__c</field>
-            <operation>equals</operation>
-            <value>PDD</value>
-        </filters>
-        <filters>
-            <field>Sub_Practice_Area_of_Primary_AECOM_Dept__c</field>
-            <operation>contains</operation>
-            <value>Other</value>
-        </filters>
-        <filters>
-            <field>PDD_General_Market_Sector__c</field>
-            <operation>contains</operation>
-            <value>Other</value>
-        </filters>
-        <label>PDD MS Clean-Up: Other</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
         <fullName>Market_Sectors</fullName>
         <columns>OPPORTUNITY.NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -23729,43 +23834,6 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>PCC_East_Active_Opps_to_Reassign</fullName>
-        <booleanFilter>(1 AND 2 AND (3 OR (4 AND 5)))</booleanFilter>
-        <columns>Opportunity_ID__c</columns>
-        <columns>OPPORTUNITY.NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>AECOM_Primary_Dept_Lookup__c</columns>
-        <columns>OPPORTUNITY.STAGE_NAME</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Business_Line_of_Primary_AECOM_Dept__c</field>
-            <operation>equals</operation>
-            <value>PCC</value>
-        </filters>
-        <filters>
-            <field>Lead_Region_Formula__c</field>
-            <operation>equals</operation>
-            <value>US - North,US - South</value>
-        </filters>
-        <filters>
-            <field>OPPORTUNITY.STAGE_NAME</field>
-            <operation>startsWith</operation>
-            <value>1,2,3,4,5</value>
-        </filters>
-        <filters>
-            <field>OPPORTUNITY.STAGE_NAME</field>
-            <operation>startsWith</operation>
-            <value>6,7,8,9</value>
-        </filters>
-        <filters>
-            <field>Win_Loss_Report_Date__c</field>
-            <operation>greaterOrEqual</operation>
-            <value>9/29/2013</value>
-        </filters>
-        <label>PCC East - Active Opps to Reassign</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
         <fullName>PCC_LA_Active_Opps_Stage_1_5</fullName>
         <columns>OPPORTUNITY.NAME</columns>
         <columns>ACCOUNT.NAME</columns>
@@ -23876,55 +23944,6 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>PDD_DEGW_New_York_Opps</fullName>
-        <booleanFilter>1 AND 2 AND (3 OR 4)</booleanFilter>
-        <columns>AECOM_Primary_Dept_Lookup__c</columns>
-        <columns>OPPORTUNITY.NAME</columns>
-        <columns>OPPORTUNITY.STAGE_NAME</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Business_Line_of_Primary_AECOM_Dept__c</field>
-            <operation>equals</operation>
-            <value>PDD</value>
-        </filters>
-        <filters>
-            <field>AECOM_Primary_Dept_Lookup__c</field>
-            <operation>contains</operation>
-            <value>0501</value>
-        </filters>
-        <filters>
-            <field>PDD_D_P_E_Primary_Global_Practice_Line__c</field>
-            <operation>equals</operation>
-            <value>Strategy Plus</value>
-        </filters>
-        <filters>
-            <field>PDD_D_P_E_Secondary_Global_Practice_Line__c</field>
-            <operation>equals</operation>
-            <value>Strategy Plus</value>
-        </filters>
-        <label>PDD - DEGW New York Opps</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>PDD_DEGW_New_York_Opps1</fullName>
-        <columns>AECOM_Primary_Dept_Lookup__c</columns>
-        <columns>OPPORTUNITY.NAME</columns>
-        <columns>OPPORTUNITY.STAGE_NAME</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Business_Line_of_Primary_AECOM_Dept__c</field>
-            <operation>equals</operation>
-            <value>PDD</value>
-        </filters>
-        <filters>
-            <field>PDD_D_P_E_Secondary_Global_Practice_Line__c</field>
-            <operation>equals</operation>
-            <value>Strategy Plus</value>
-        </filters>
-        <label>DEGW Seconary</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
         <fullName>PDD_DPE_Opps_SNB_Programs_current</fullName>
         <booleanFilter>1 AND 2 AND 3 AND 4 AND 5</booleanFilter>
         <columns>Opportunity_ID__c</columns>
@@ -24012,70 +24031,7 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>PDD_MS_Clean_Up_RED1</fullName>
-        <booleanFilter>1 AND 2 AND 3 AND 4</booleanFilter>
-        <columns>AECOM_Primary_Dept_Lookup__c</columns>
-        <columns>OPPORTUNITY.STAGE_NAME</columns>
-        <columns>Opportunity_ID__c</columns>
-        <columns>OPPORTUNITY.NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>Market_Segment__c</columns>
-        <columns>PDD_General_Market_Sector__c</columns>
-        <columns>Sub_Practice_Area_of_Primary_AECOM_Dept__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Business_Line_of_Primary_AECOM_Dept__c</field>
-            <operation>equals</operation>
-            <value>PDD</value>
-        </filters>
-        <filters>
-            <field>OPPORTUNITY.RECORDTYPE</field>
-            <operation>equals</operation>
-            <value>Opportunity.Project_Americas,Opportunity.Task_Order_Americas,Opportunity.Program_Americas</value>
-        </filters>
-        <filters>
-            <field>OPPORTUNITY.STAGE_NAME</field>
-            <operation>startsWith</operation>
-            <value>1,2,3,4,5</value>
-        </filters>
-        <filters>
-            <field>Sub_Practice_Area_of_Primary_AECOM_Dept__c</field>
-            <operation>equals</operation>
-        </filters>
-        <label>PDD MS Clean-Up: Practice Area empty</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>PDD_New_Opp_Records_QA</fullName>
-        <columns>OPPORTUNITY.CREATED_DATE</columns>
-        <columns>Opportunity_ID__c</columns>
-        <columns>AECOM_Primary_Dept_Lookup__c</columns>
-        <columns>OPPORTUNITY.STAGE_NAME</columns>
-        <columns>BL_Distribution__c</columns>
-        <columns>OPPORTUNITY.NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>OPPORTUNITY.AMOUNT</columns>
-        <columns>OPPORTUNITY.CLOSE_DATE</columns>
-        <columns>Market_Segment__c</columns>
-        <columns>Practice_Area__c</columns>
-        <columns>PDD_General_Market_Sector__c</columns>
-        <columns>PDD_D_P_E_Primary_Global_Practice_Line__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Primary_Business_Line__c</field>
-            <operation>equals</operation>
-            <value>PDD</value>
-        </filters>
-        <filters>
-            <field>Multiple_Business_Lines__c</field>
-            <operation>equals</operation>
-            <value>1</value>
-        </filters>
-        <label>PDD - Multiple BL/BL Dist Records (QA)</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>PDD_Secondary_Departments_NA_Updates</fullName>
+        <fullName>PDD_Secondary_Departments_NA_Updates1</fullName>
         <booleanFilter>((1 OR 2 OR 3 OR 4 OR 5) AND 6 AND 7)</booleanFilter>
         <columns>Opportunity_ID__c</columns>
         <columns>OPPORTUNITY.NAME</columns>
@@ -24091,27 +24047,27 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <filters>
             <field>AECOM_Department_2__c</field>
             <operation>contains</operation>
-            <value>PDD</value>
+            <value>B+P</value>
         </filters>
         <filters>
             <field>AECOM_Department_3__c</field>
             <operation>contains</operation>
-            <value>PDD</value>
+            <value>B+P</value>
         </filters>
         <filters>
             <field>AECOM_Department_4__c</field>
             <operation>contains</operation>
-            <value>PDD</value>
+            <value>B+P</value>
         </filters>
         <filters>
             <field>AECOM_Department_5__c</field>
             <operation>contains</operation>
-            <value>PDD</value>
+            <value>B+P</value>
         </filters>
         <filters>
             <field>AECOM_Department_6__c</field>
             <operation>contains</operation>
-            <value>PDD</value>
+            <value>B+P</value>
         </filters>
         <filters>
             <field>OPPORTUNITY.STAGE_NAME</field>
@@ -24123,7 +24079,7 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             <operation>equals</operation>
             <value>Opportunity.Program_Americas,Opportunity.Project_Americas,Opportunity.Task_Order_Americas</value>
         </filters>
-        <label>PDD Secondary Departments NA - Updates</label>
+        <label>B&amp;P - Secondary Departments NA - Updates</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -24158,47 +24114,6 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             <value>1,2,4</value>
         </filters>
         <label>GTS Marketing Workload (Active)</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>Pam_Federal_Opportunities</fullName>
-        <columns>Business_Line_of_Primary_AECOM_Dept__c</columns>
-        <columns>Lead_Region_Formula__c</columns>
-        <columns>OPPORTUNITY.NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>OPPORTUNITY.AMOUNT</columns>
-        <columns>Practice_Area_of_Primary_AECOM_Dept__c</columns>
-        <columns>Submittal_Date_Proposal__c</columns>
-        <columns>Capture_Manager__c</columns>
-        <columns>Federal_Report_Comments__c</columns>
-        <columns>OPPORTUNITY.STAGE_NAME</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>OPPORTUNITY.RECORDTYPE</field>
-            <operation>equals</operation>
-            <value>Opportunity.Project_APAC</value>
-        </filters>
-        <filters>
-            <field>Business_Line_of_Primary_AECOM_Dept__c</field>
-            <operation>equals</operation>
-            <value>transportation</value>
-        </filters>
-        <filters>
-            <field>OPPORTUNITY.STAGE_NAME</field>
-            <operation>lessOrEqual</operation>
-            <value>6 Contracted/Booked/Won,1 Lead,1A Lead - Scout,1B Lead - Engage,1C Lead - Po</value>
-        </filters>
-        <filters>
-            <field>OPPORTUNITY.CLOSE_DATE</field>
-            <operation>greaterOrEqual</operation>
-            <value>1/1/2012</value>
-        </filters>
-        <filters>
-            <field>Practice_Area_of_Primary_AECOM_Dept__c</field>
-            <operation>equals</operation>
-            <value>Transit</value>
-        </filters>
-        <label>blue whale</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -25058,6 +24973,86 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>SFPUC_Water_Opps</fullName>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.RECORDTYPE</columns>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Program_Estimated_Revenue__c</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>WinDate__c</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>Estimated_work_start_date__c</columns>
+        <columns>Work_end_date_del__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OPPORTUNITY.NAME</field>
+            <operation>contains</operation>
+            <value>wsip</value>
+        </filters>
+        <filters>
+            <field>Geography_Formula__c</field>
+            <operation>equals</operation>
+            <value>north america</value>
+        </filters>
+        <filters>
+            <field>Business_Line_of_Primary_AECOM_Dept__c</field>
+            <operation>equals</operation>
+            <value>water</value>
+        </filters>
+        <label>SFPUC - Water (WSIP)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>SFPUC_Water_SSIP</fullName>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.RECORDTYPE</columns>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>Program_Estimated_Revenue__c</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>WinDate__c</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>Work_end_date_del__c</columns>
+        <columns>Estimated_work_start_date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OPPORTUNITY.NAME</field>
+            <operation>contains</operation>
+            <value>Sewer System Improvement Program</value>
+        </filters>
+        <filters>
+            <field>Geography_Formula__c</field>
+            <operation>equals</operation>
+            <value>NORTH AMERICA</value>
+        </filters>
+        <filters>
+            <field>Business_Line_of_Primary_AECOM_Dept__c</field>
+            <operation>equals</operation>
+            <value>WATER</value>
+        </filters>
+        <label>SFPUC - Water (SSIP)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>SWA_DCS_APS</fullName>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>Practice_Area_of_Primary_AECOM_Dept__c</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>contains</operation>
+            <value>Arizona Public Service</value>
+        </filters>
+        <label>SWA DCS APS</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Search</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>OPPORTUNITY.NAME</columns>
@@ -25131,38 +25126,6 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             <field>Stage_Group__c</field>
             <operation>contains</operation>
             <value>1,2,3,4,5</value>
-        </filters>
-        <label>Shell Opportunities</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>Shell_Opportunities2</fullName>
-        <columns>Geography_Formula__c</columns>
-        <columns>Business_Line_of_Primary_AECOM_Dept__c</columns>
-        <columns>OPPORTUNITY.NAME</columns>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>OPPORTUNITY.AMOUNT</columns>
-        <columns>Stage_Group__c</columns>
-        <columns>OPPORTUNITY.CLOSE_DATE</columns>
-        <columns>Capture_Manager__c</columns>
-        <columns>Executive_Sponsor__c</columns>
-        <columns>FY13_Market_Sector__c</columns>
-        <columns>Project_Delivery_Method__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>ACCOUNT.NAME</field>
-            <operation>contains</operation>
-            <value>Shell</value>
-        </filters>
-        <filters>
-            <field>Stage_Group__c</field>
-            <operation>contains</operation>
-            <value>1,2,3,4,5</value>
-        </filters>
-        <filters>
-            <field>Geography_Formula__c</field>
-            <operation>equals</operation>
-            <value>AMERICAS</value>
         </filters>
         <label>Shell Opportunities</label>
         <language>en_US</language>
@@ -26687,6 +26650,30 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>X7787_41_PMCM_SF_BAY_AREA_METRO_AREA_MG</fullName>
+        <columns>Opportunity_ID__c</columns>
+        <columns>OPPORTUNITY.NAME</columns>
+        <columns>Capture_Manager_User__c</columns>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>OPPORTUNITY.STAGE_NAME</columns>
+        <columns>OPPORTUNITY.AMOUNT</columns>
+        <columns>OPPORTUNITY.CLOSE_DATE</columns>
+        <columns>Capture_plan_in_place__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AECOM_Primary_Dept_Lookup__c</field>
+            <operation>equals</operation>
+            <value>7787 - 41.PMCM.SF/BAY AREA METRO AREA MGMT</value>
+        </filters>
+        <filters>
+            <field>OPPORTUNITY.CLOSED</field>
+            <operation>equals</operation>
+            <value>0</value>
+        </filters>
+        <label>7787 - 41.PMCM.SF/BAY AREA METRO AREA MG</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>test</fullName>
         <columns>OPPORTUNITY.NAME</columns>
         <columns>OPPORTUNITY.AMOUNT</columns>
@@ -26694,14 +26681,9 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
         <columns>Program_Estimated_Revenue__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>OPPORTUNITY.RECORDTYPE</field>
-            <operation>equals</operation>
-            <value>Opportunity.Program_Americas</value>
-        </filters>
-        <filters>
-            <field>Must_Win__c</field>
-            <operation>equals</operation>
-            <value>Yes</value>
+            <field>AECOM_Primary_Dept_Lookup__c</field>
+            <operation>startsWith</operation>
+            <value>5</value>
         </filters>
         <label>test</label>
         <language>en_US</language>
@@ -29636,6 +29618,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
                 <default>true</default>
             </values>
             <values>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Yes</fullName>
                 <default>false</default>
             </values>
@@ -30084,6 +30070,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Malaysia</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maldives</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -31577,6 +31567,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Training</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Travel Demand Management</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -34923,6 +34917,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
                 <default>true</default>
             </values>
             <values>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Yes</fullName>
                 <default>false</default>
             </values>
@@ -35375,6 +35373,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Malaysia</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maldives</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -36872,6 +36874,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Training</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Travel Demand Management</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -39553,6 +39559,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
                 <default>true</default>
             </values>
             <values>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Yes</fullName>
                 <default>false</default>
             </values>
@@ -40001,6 +40011,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Malaysia</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maldives</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -41390,6 +41404,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Training</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Travel Demand Management</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -44647,6 +44665,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
                 <default>true</default>
             </values>
             <values>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Yes</fullName>
                 <default>false</default>
             </values>
@@ -45095,6 +45117,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Malaysia</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maldives</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -46588,6 +46614,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Training</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Travel Demand Management</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -49926,6 +49956,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
                 <default>true</default>
             </values>
             <values>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Yes</fullName>
                 <default>false</default>
             </values>
@@ -50374,6 +50408,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Malaysia</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maldives</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -51871,6 +51909,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Training</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Travel Demand Management</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -54536,6 +54578,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
                 <default>true</default>
             </values>
             <values>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Yes</fullName>
                 <default>false</default>
             </values>
@@ -54984,6 +55030,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Malaysia</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maldives</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -56373,6 +56423,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Training</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Travel Demand Management</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -59626,6 +59680,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
                 <default>true</default>
             </values>
             <values>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Yes</fullName>
                 <default>false</default>
             </values>
@@ -60074,6 +60132,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Malaysia</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maldives</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -61567,6 +61629,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Training</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Travel Demand Management</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -64913,6 +64979,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
                 <default>true</default>
             </values>
             <values>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Yes</fullName>
                 <default>false</default>
             </values>
@@ -65361,6 +65431,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Malaysia</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maldives</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -66858,6 +66932,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Training</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Travel Demand Management</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -69531,6 +69609,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
                 <default>true</default>
             </values>
             <values>
+                <fullName>Unknown</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Yes</fullName>
                 <default>false</default>
             </values>
@@ -69979,6 +70061,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
             </values>
             <values>
                 <fullName>Malaysia</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Maldives</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -71371,6 +71457,10 @@ IF (ISPICKVAL (StageName,  &quot;9 Lost&quot;),   Date_lost_cancelled_no_go__c  
                 <default>false</default>
             </values>
             <values>
+                <fullName>Travel Demand Management</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Travel Demand Modeling</fullName>
                 <default>false</default>
             </values>
@@ -71812,7 +71902,7 @@ ISNULL(  B_P_Budget__c  )
     </validationRules>
     <validationRules>
         <fullName>Bid_Proposal_Charge_Type_Reqd</fullName>
-        <active>true</active>
+        <active>false</active>
         <description>&quot;Bid &amp; Proposal Charge # Type&quot; is required if &quot;Bid &amp; Proposal Charge #&quot; is entered (not null)</description>
         <errorConditionFormula>AND( NOT(CONTAINS( $User.CommunityNickname, &apos;SystemNA&apos;)) ,
 NOT(CONTAINS( $Profile.Name, &apos;API Access&apos;)),  
@@ -72847,6 +72937,49 @@ if (enabled) {
         <page>OpportunityExport</page>
         <protected>false</protected>
         <requireRowSelection>false</requireRowSelection>
+    </webLinks>
+    <webLinks>
+        <fullName>Mass_Delete</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Mass Delete</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/9.0/connection.js&quot;)}
+
+var records = {!GETRECORDIDS(  $ObjectType.Opportunity )};
+
+if (records[0] == null) {
+alert(&quot;Please select at least one record.&quot;) }
+else {
+
+var errors = [];
+var result = sforce.connection.deleteIds(records);
+if (result &amp;&amp; result.length){
+var numFailed = 0;
+var numSucceeded = 0;
+for (var i = 0; i &lt; result.length; i++){
+var res = result[i];
+if (res &amp;&amp; res.success == &apos;true&apos;){
+numSucceeded++;
+} else {
+var es = res.getArray(&quot;errors&quot;);
+if (es.length &gt; 0) {
+errors.push(es[0].message);
+}
+numFailed++;
+}
+}
+if (numFailed &gt; 0){
+alert(&quot;Failed: &quot; + numFailed + &quot;\nSucceeded: &quot; + numSucceeded + &quot; \n Due to: &quot; + errors.join(&quot;\n&quot;));
+} else {
+alert(&quot;Number of records deleted: &quot; + numSucceeded);
+}
+}
+window.location.reload();
+}</url>
     </webLinks>
     <webLinks>
         <fullName>New_TaskOrder_Opportunity</fullName>

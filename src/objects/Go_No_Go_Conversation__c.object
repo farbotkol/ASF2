@@ -437,7 +437,7 @@
         <externalId>false</externalId>
         <formula>IF ( Opportunity_Lead_Region__c = &apos;Canada&apos;, &apos;Eliecer Brito, Rosie Palmisano, Elvira Ramos&apos;,
 IF ( Opportunity_Lead_Region__c = &apos;US - West&apos;, &apos;Molly Stokes, Rowena DeVega&apos;,
-IF ( Opportunity_Lead_Region__c = &apos;US - North&apos;, &apos;Jill Fernandez, Denise Fremeau, Debbie Loid, Penny Bergstrom&apos;,
+IF ( Opportunity_Lead_Region__c = &apos;US - North&apos;, &apos;Debbie Loid, Penny Bergstrom&apos;,
 IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, Angela Smith, Carrie Borho&apos;,
 
 &apos;Denise Crocker, Marsha Lundgren, Kathy Horton&apos;))))</formula>
@@ -2682,6 +2682,18 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
         <inlineHelpText>Inherited from Opportunity, determined by lead department</inlineHelpText>
         <label>Opportunity Lead Region</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Name_Searchable__c</fullName>
+        <externalId>true</externalId>
+        <label>Opportunity Name</label>
+        <length>120</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -4959,6 +4971,11 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
             <operation>greaterOrEqual</operation>
             <value>2/23/2015 12:00 AM</value>
         </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>notContain</operation>
+            <value>1,6,7,8,9</value>
+        </filters>
         <label>Europe GNG - Pending</label>
         <language>en_US</language>
     </listViews>
@@ -5164,16 +5181,16 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
     </listViews>
     <listViews>
         <fullName>Pacific_Group_GNG_Converations_ALL</fullName>
-        <booleanFilter>(1 AND  7 AND 2) OR (1 AND 7 AND 3) OR (1 AND 7 AND 4) OR (1 AND 7 AND 5) OR (1 AND 7 AND 6)</booleanFilter>
+        <booleanFilter>(1 AND  7 AND 2) OR (1 AND 7 AND 3) OR (1 AND 7 AND 4) OR (1 AND 7 AND 5) OR (1 AND 7 AND 6) OR (1 AND 7 AND 8)</booleanFilter>
         <columns>RFT_Issue_Date__c</columns>
         <columns>Decision_Date__c</columns>
         <columns>NAME</columns>
+        <columns>Opportunity__c</columns>
         <columns>Approval_Status__c</columns>
         <columns>Approver__c</columns>
         <columns>Business_Line__c</columns>
         <columns>AECOM_Gross_Fee__c</columns>
         <columns>Account__c</columns>
-        <columns>Opportunity__c</columns>
         <columns>Participants__c</columns>
         <columns>Bid_Manager__c</columns>
         <columns>B_P_Charge_Number__c</columns>
@@ -5214,6 +5231,11 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
             <field>Approval_Status__c</field>
             <operation>contains</operation>
             <value>Not Submitted,Submitted for Approval - Pending,Approved,Rejected,Not Submitt,No</value>
+        </filters>
+        <filters>
+            <field>Approver__c</field>
+            <operation>equals</operation>
+            <value>Linda Peters</value>
         </filters>
         <label>SF Bay Metro GNG Converations_ALL</label>
         <language>en_US</language>
@@ -8549,6 +8571,10 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <customTabListAdditionalFields>Approver__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>LAST_UPDATE</customTabListAdditionalFields>
         <customTabListAdditionalFields>CREATEDBY_USER</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Opportunity_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Opportunity_Name_Searchable__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Opportunity_Record__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Account__c</lookupDialogsAdditionalFields>
         <searchResultsAdditionalFields>Client_Assessment__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Opportunity_Name__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Project_TO_Contract_Rev__c</searchResultsAdditionalFields>

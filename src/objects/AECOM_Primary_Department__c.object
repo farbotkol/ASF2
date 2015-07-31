@@ -251,10 +251,11 @@
     </fields>
     <fields>
         <fullName>End_Market__c</fullName>
-        <description>&quot;Super Business Line&quot; formerly called &quot;BL Group&quot;</description>
+        <description>&quot;Super Business Line&quot; formerly called &quot;BL Group&quot;
+No longer used after URS acquisition. End Market now describes the client and is now determined by Client Group and Subgroup.</description>
         <externalId>false</externalId>
         <inlineHelpText>Super Business Line formerly called &quot;BL Group&quot;</inlineHelpText>
-        <label>End Market</label>
+        <label>End Market-OLD</label>
         <picklist>
             <picklistValues>
                 <fullName>Buildings and Places</fullName>
@@ -337,6 +338,7 @@
         <fullName>Group_Division__c</fullName>
         <description>Highest level of company organization</description>
         <externalId>false</externalId>
+        <inlineHelpText>Highest level of company organization</inlineHelpText>
         <label>Group</label>
         <picklist>
             <picklistValues>
@@ -1260,6 +1262,29 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>CS_O_G_Departments</fullName>
+        <columns>NAME</columns>
+        <columns>Country__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Office__c</columns>
+        <columns>Group_Division__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Business_Line_Lookup__c</field>
+            <operation>notEqual</operation>
+            <value>Construction Services</value>
+        </filters>
+        <filters>
+            <field>Group_Division__c</field>
+            <operation>equals</operation>
+            <value>Construction Services</value>
+        </filters>
+        <label>CS O&amp;G Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Canada_East_Departments</fullName>
         <columns>NAME</columns>
         <columns>URS_Region__c</columns>
@@ -1301,6 +1326,22 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
             <value>Active</value>
         </filters>
         <label>DP&amp;E BL Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Dallas_Metro</fullName>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>NAME</columns>
+        <columns>Area__c</columns>
+        <columns>Region__c</columns>
+        <columns>Group_Division__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Area__c</field>
+            <operation>equals</operation>
+            <value>Southwest</value>
+        </filters>
+        <label>Southwest Area</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -1377,12 +1418,12 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
         <columns>NAME</columns>
         <columns>Status__c</columns>
         <columns>Business_Line_Lookup__c</columns>
+        <columns>End_Market__c</columns>
+        <columns>Group_Division__c</columns>
         <columns>Geography__c</columns>
         <columns>Group__c</columns>
         <columns>Lead_District__c</columns>
         <columns>Lead_Region__c</columns>
-        <columns>Group_Division__c</columns>
-        <columns>Country__c</columns>
         <columns>Legacy_Company__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
@@ -1390,7 +1431,7 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
             <operation>equals</operation>
             <value>Europe</value>
         </filters>
-        <label>Europe depts</label>
+        <label>Europe Departments</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -1418,6 +1459,39 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
             <value>URS</value>
         </filters>
         <label>URS EMEA depts</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>India_Departments</fullName>
+        <booleanFilter>1 AND (2 OR 3)</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Status__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>End_Market__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Geography_Lookup__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Group__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Legacy_Company__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Geography_Lookup__c</field>
+            <operation>equals</operation>
+            <value>Asia</value>
+        </filters>
+        <filters>
+            <field>Lead_Region__c</field>
+            <operation>equals</operation>
+            <value>India</value>
+        </filters>
+        <filters>
+            <field>Lead_District__c</field>
+            <operation>equals</operation>
+            <value>India</value>
+        </filters>
+        <label>India Departments</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -1462,29 +1536,24 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
     </listViews>
     <listViews>
         <fullName>Middle_East_Departments</fullName>
-        <columns>Lead_Region__c</columns>
-        <columns>Lead_District__c</columns>
         <columns>NAME</columns>
-        <columns>End_Market__c</columns>
-        <columns>Business_Line_Lookup__c</columns>
         <columns>Status__c</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>End_Market__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Group__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Legacy_Company__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>Geography__c</field>
             <operation>equals</operation>
             <value>Middle East</value>
         </filters>
-        <filters>
-            <field>Status__c</field>
-            <operation>equals</operation>
-            <value>Active</value>
-        </filters>
         <label>Middle East Departments</label>
         <language>en_US</language>
-        <sharedTo>
-            <role>Worldwide</role>
-        </sharedTo>
     </listViews>
     <listViews>
         <fullName>New_Departments</fullName>
@@ -1961,6 +2030,7 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
         <fullName>URS_Department_Numbers</fullName>
         <columns>NAME</columns>
         <columns>Business_Line_Lookup__c</columns>
+        <columns>End_Market__c</columns>
         <columns>Legacy_Company__c</columns>
         <columns>Group_Division__c</columns>
         <columns>Area__c</columns>
@@ -2162,7 +2232,7 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
             <operation>startsWith</operation>
             <value>7</value>
         </filters>
-        <label>Legacy URS Depts</label>
+        <label>Legacy URS Depts - North America</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -2180,14 +2250,15 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
     <listViews>
         <fullName>africa</fullName>
         <columns>NAME</columns>
-        <columns>Group__c</columns>
-        <columns>Geography_Lookup__c</columns>
-        <columns>Business_Line_Lookup__c</columns>
         <columns>Status__c</columns>
-        <columns>Lead_Region__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>End_Market__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Geography_Lookup__c</columns>
+        <columns>Group__c</columns>
         <columns>Lead_District__c</columns>
-        <columns>UPDATEDBY_USER</columns>
-        <columns>LAST_UPDATE</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Legacy_Company__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>Geography__c</field>
@@ -2199,7 +2270,7 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
             <operation>equals</operation>
             <value>Active</value>
         </filters>
-        <label>Africa Departments - All</label>
+        <label>Africa Departments</label>
         <language>en_US</language>
     </listViews>
     <nameField>

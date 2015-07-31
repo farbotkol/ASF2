@@ -21,7 +21,7 @@ public with sharing class rsProfile extends rsModel {
 	}
 
     public void refreshUser() {
-        mObj = (User)rsProfile.find.byUserId(this.getId()).getObj();
+        mObj = (User)rsProfile.find.byId(this.getId()).getObj();
     }
 
 	public List<rsProfilePart> getProfileParts() {
@@ -119,18 +119,6 @@ public with sharing class rsProfile extends rsModel {
             mObj.put('Term_Date__c',null);
         }
     } 
-
-    public String getLastUserProfileUpdate() {
-        return mObj.get('Last_User_Profile_Update__c') != null ? DateTime.valueOf(mObj.get('Last_User_Profile_Update__c')).format() 
-                : '' ;
-    }
-
-    public String getLastCMProfileUpdate() {
-        return mObj.get('Last_CM_Profile_Update__c') != null ? DateTime.valueOf(mObj.get('Last_CM_Profile_Update__c')).format() 
-                : '' ;
-    }
-
-    
 
     public String getDateOfBirth() {
         return mObj.get('Date_Of_Birth__c') != null ? Date.valueOf(mObj.get('Date_Of_Birth__c')).format() 

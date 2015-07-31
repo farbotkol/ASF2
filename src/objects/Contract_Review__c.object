@@ -241,15 +241,11 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>License Agreement</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Master Services Agreement</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Memorandum of Understanding/Agreement</fullName>
+                <fullName>Memorandum of Understanding</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -270,10 +266,6 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Services Contract/ Agreement</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Site Access Agreement</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -322,23 +314,22 @@
         <fullName>Country__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <externalId>false</externalId>
-        <inlineHelpText>Country where the project is managed - Currently Country can only be Australia, Brazil, Canada,  Mexico, New Zealand, United States or Venezuela</inlineHelpText>
+        <inlineHelpText>Country where the project is managed</inlineHelpText>
         <label>Country</label>
         <lookupFilter>
             <active>true</active>
             <booleanFilter>1 OR 2</booleanFilter>
-            <errorMessage>Country not available for selection</errorMessage>
             <filterItems>
                 <field>Country__c.Country_Code__c</field>
                 <operation>equals</operation>
-                <value>CA,US,AU,NZ,BR,VE,MX,SP,ES,RO,GR,CZ,HU,AL,BA,BG,HR,CS,MK,ME,SI,IT,FR,PL,DE,AT,CH,BE,NL,LU,EE,LV,LT,DK,NO,SE,RU,AZ,TR,KZ,GE,UA,GB,IE,ZA,AE,BH,OM,IQ,QW,QA,IN</value>
+                <value>CA</value>
             </filterItems>
             <filterItems>
                 <field>Country__c.Country_Code__c</field>
                 <operation>equals</operation>
-                <value>DZ,AO,SH,BJ,BW,BF,BI,CM,CV,CF,TD,KM,CG,DJ,EG,GQ,ER,ET,GA,GM,GH,GW,GN,CI,KE,LS,LR,LY,MG,MW,ML,MR,MU,YT,MA,MZ,NA,NE,NG,ST,RE,RW,ST,SN,SC,SL,SO,SH,SD,SZ,TZ,TG,TN,UG,CD,ZM,TZ,ZW,SS,CD</value>
+                <value>US</value>
             </filterItems>
-            <isOptional>false</isOptional>
+            <isOptional>true</isOptional>
         </lookupFilter>
         <referenceTo>Country__c</referenceTo>
         <relationshipLabel>Contract Reviews</relationshipLabel>
@@ -450,7 +441,7 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Time &amp; materials with guaranteed max / upset price</fullName>
+                <fullName>Time &amp; materials with a guaranteed maximum price</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -546,30 +537,6 @@
         <type>Checkbox</type>
     </fields>
     <fields>
-        <fullName>LegacyId__c</fullName>
-        <externalId>true</externalId>
-        <label>LegacyId</label>
-        <length>80</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Legal_Reviewer_Comments__c</fullName>
-        <externalId>false</externalId>
-        <inlineHelpText>The legal reviewers comments to project members, will appear on email when the review status changes.</inlineHelpText>
-        <label>Legal Reviewer Comments</label>
-        <length>32768</length>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>10</visibleLines>
-    </fields>
-    <fields>
         <fullName>Legal_Team__c</fullName>
         <description>Used for sharing rules only</description>
         <externalId>false</externalId>
@@ -588,19 +555,15 @@
         <label>Limitation of Liability</label>
         <picklist>
             <picklistValues>
-                <fullName>Unknown</fullName>
-                <default>true</default>
+                <fullName>Uncapped</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Capped</fullName>
+                <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Capped in Accordance with DoA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Capped in Excess of DoA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Uncapped</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -827,7 +790,7 @@
                 <operation>notEqual</operation>
                 <value></value>
             </filterItems>
-            <isOptional>true</isOptional>
+            <isOptional>false</isOptional>
         </lookupFilter>
         <referenceTo>Project__c</referenceTo>
         <relationshipLabel>Contract Reviews</relationshipLabel>
@@ -1236,11 +1199,6 @@
                 <operation>equals</operation>
                 <valueField>$Source.Country__c</valueField>
             </filterItems>
-            <filterItems>
-                <field>State_Province_Emirate__c.State_Code__c</field>
-                <operation>notEqual</operation>
-                <value></value>
-            </filterItems>
             <isOptional>false</isOptional>
         </lookupFilter>
         <referenceTo>State_Province_Emirate__c</referenceTo>
@@ -1275,14 +1233,6 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Contract Signed and Executed</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>On Hold</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Withdraw and Closed</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -1338,17 +1288,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Withdraw__c</fullName>
-        <defaultValue>false</defaultValue>
-        <description>Used to flag that the item is to be Withdrawn. When set the review status should change to &apos;Withdraw and close&apos;</description>
-        <externalId>false</externalId>
-        <label>Withdraw</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
         <fullName>significant_risks_identified__c</fullName>
         <externalId>false</externalId>
         <label>Significant risks identified</label>
@@ -1394,6 +1333,615 @@
         <visibleLines>6</visibleLines>
     </fields>
     <label>Contract Review Request</label>
+    <listViews>
+        <fullName>Legal_ANZ_NAC_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal ANZ NAC</label>
+        <language>en_US</language>
+        <queue>Legal_ANZ_NAC</queue>
+        <sharedTo>
+            <group>Legal_ANZ_NAC</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_ANZ_NZ_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal ANZ NZ</label>
+        <language>en_US</language>
+        <queue>Legal_ANZ_NZ</queue>
+        <sharedTo>
+            <group>Legal_ANZ_NZ</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_ANZ_QNT_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal ANZ QNT</label>
+        <language>en_US</language>
+        <queue>Legal_ANZ_QNT</queue>
+        <sharedTo>
+            <group>Legal_ANZ_QNT</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_ANZ_VSA_Contract_Review</fullName>
+        <columns>Request_Name__c</columns>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Client_vendor_as_named_on_the_contract__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal ANZ VSA</label>
+        <language>en_US</language>
+        <queue>Legal_ANZ_VSA</queue>
+        <sharedTo>
+            <group>Legal_ANZ_VSA</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_ANZ_WA_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal ANZ WA</label>
+        <language>en_US</language>
+        <queue>Legal_ANZ_WA</queue>
+        <sharedTo>
+            <group>Legal_ANZ_WA</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Africa_Other_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Africa Other</label>
+        <language>en_US</language>
+        <queue>Legal_Africa_Other</queue>
+        <sharedTo>
+            <group>Legal_Africa_Other</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Asia_Contract_Review</fullName>
+        <filterScope>Queue</filterScope>
+        <label>Legal Asia</label>
+        <language>en_US</language>
+        <queue>Legal_Asia</queue>
+        <sharedTo>
+            <group>Legal_Asia</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Carolinas_Tenn_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Carolinas/Tenn US</label>
+        <language>en_US</language>
+        <queue>Legal_Carolinas_Tenn_US</queue>
+        <sharedTo>
+            <group>Legal_Carolinas_Tenn_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Central_Midwest_US_Contract_Review</fullName>
+        <filterScope>Queue</filterScope>
+        <label>Legal Central Midwest US</label>
+        <language>en_US</language>
+        <queue>Legal_Central_Midwest_US</queue>
+        <sharedTo>
+            <group>Legal_Central_Midwest_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Colorado_Denver_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Colorado/Denver US</label>
+        <language>en_US</language>
+        <queue>Legal_Colorado_Denver_US</queue>
+        <sharedTo>
+            <group>Legal_Colorado_Denver_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Eastern_Midwest_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Eastern Midwest US</label>
+        <language>en_US</language>
+        <queue>Legal_Eastern_Midwest_US</queue>
+        <sharedTo>
+            <group>Legal_Eastern_Midwest_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Federal_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>State_Province_Emirate__c</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Federal US</label>
+        <language>en_US</language>
+        <queue>Legal_Federal_US</queue>
+        <sharedTo>
+            <group>Legal_Federal_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Georgia_Alabama_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Georgia/Alabama US</label>
+        <language>en_US</language>
+        <queue>Legal_Georgia_Alabama_US</queue>
+        <sharedTo>
+            <group>Legal_Georgia_Alabama_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Greater_Florida_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Greater Florida US</label>
+        <language>en_US</language>
+        <queue>Legal_Greater_Florida_US</queue>
+        <sharedTo>
+            <group>Legal_Greater_Florida_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Gulf_Coast_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Gulf Coast US</label>
+        <language>en_US</language>
+        <queue>Legal_Gulf_Coast_US</queue>
+        <sharedTo>
+            <group>Legal_Gulf_Coast_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Latin_America_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Latin America</label>
+        <language>en_US</language>
+        <queue>Legal_Latin_America</queue>
+        <sharedTo>
+            <group>Legal_Latin_America</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Mountain_States_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Mountain States US</label>
+        <language>en_US</language>
+        <queue>Legal_Mountain_States_US</queue>
+        <sharedTo>
+            <group>Legal_Mountain_States_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_New_York_Penn_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal New York/Penn US</label>
+        <language>en_US</language>
+        <queue>Legal_New_York_Penn_US</queue>
+        <sharedTo>
+            <group>Legal_New_York_Penn_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Northeast_Canada_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Eastern Canada</label>
+        <language>en_US</language>
+        <queue>Legal_Eastern_Canada</queue>
+        <sharedTo>
+            <group>Legal_Eastern_Canada</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Northeast_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal New England US</label>
+        <language>en_US</language>
+        <queue>Legal_New_England_US</queue>
+        <sharedTo>
+            <group>Legal_New_England_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Ontario_Canada_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Ontario Canada</label>
+        <language>en_US</language>
+        <queue>Legal_Ontario_Canada</queue>
+        <sharedTo>
+            <group>Legal_Ontario_Canada</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Pacific_Northwest_Canada_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Western Canada</label>
+        <language>en_US</language>
+        <queue>Legal_Western_Canada</queue>
+        <sharedTo>
+            <group>Legal_Western_Canada</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Pacific_Northwest_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Pacific Northwest US</label>
+        <language>en_US</language>
+        <queue>Legal_Pacific_Northwest_US</queue>
+        <sharedTo>
+            <group>Legal_Pacific_Northwest_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Pacific_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Pacific States US</label>
+        <language>en_US</language>
+        <queue>Legal_Pacific_US</queue>
+        <sharedTo>
+            <group>Legal_Pacific_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Southeast_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Mid Atlantic US</label>
+        <language>en_US</language>
+        <queue>Legal_Mid_Atlantic_US</queue>
+        <sharedTo>
+            <group>Legal_Mid_Atlantic_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Legal_Southwest_US_Contract_Review</fullName>
+        <columns>NAME</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Queue</filterScope>
+        <label>Legal Southwest US</label>
+        <language>en_US</language>
+        <queue>Legal_Southwest_US</queue>
+        <sharedTo>
+            <group>Legal_Southwest_US</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>My_Assigned_Contracts_Review_Closed</fullName>
+        <columns>NAME</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Status_Review__c</field>
+            <operation>equals</operation>
+            <value>Approved or Closed</value>
+        </filters>
+        <label>My Assigned Contracts Review (Closed)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>My_Assigned_Contracts_Review_Open</fullName>
+        <columns>NAME</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>Status_Review__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Mine</filterScope>
+        <filters>
+            <field>Status_Review__c</field>
+            <operation>equals</operation>
+            <value>Outstanding Review,Review Complete - Subject to Negotiation or DOA Approval</value>
+        </filters>
+        <label>My Assigned Contracts Review (Open)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>My_Contract_Reviews</fullName>
+        <columns>NAME</columns>
+        <columns>Status_Review__c</columns>
+        <columns>Client_Vendor__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>Estimated_Fee__c</columns>
+        <columns>OWNER.ALIAS</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>Date_Required__c</columns>
+        <columns>External_Due_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>My Contract Reviews</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>US_ORM</fullName>
+        <columns>NAME</columns>
+        <columns>Business_Line__c</columns>
+        <columns>State_Province_Emirate__c</columns>
+        <columns>Compliant__c</columns>
+        <columns>Conditions_complete__c</columns>
+        <columns>Next_Review_Date__c</columns>
+        <columns>ORM_Comments__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Country_Code__c</field>
+            <operation>equals</operation>
+            <value>US</value>
+        </filters>
+        <label>US ORM</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Legal_ORM</group>
+        </sharedTo>
+    </listViews>
     <nameField>
         <displayFormat>CR-{00000}</displayFormat>
         <label>Contract Review ID</label>
@@ -1471,15 +2019,11 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>License Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>Master Services Agreement</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Memorandum of Understanding%2FAgreement</fullName>
+                <fullName>Memorandum of Understanding</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1500,10 +2044,6 @@
             </values>
             <values>
                 <fullName>Services Contract%2F Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Site Access Agreement</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1554,27 +2094,23 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Time %26 materials with guaranteed max %2F upset price</fullName>
+                <fullName>Time %26 materials with a guaranteed maximum price</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
         <picklistValues>
             <picklist>Limitation_of_Liability__c</picklist>
             <values>
-                <fullName>Capped in Accordance with DoA</fullName>
+                <fullName>Capped</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Capped in Excess of DoA</fullName>
+                <fullName>Capped in Accordance with DoA</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Uncapped</fullName>
                 <default>false</default>
-            </values>
-            <values>
-                <fullName>Unknown</fullName>
-                <default>true</default>
             </values>
         </picklistValues>
         <picklistValues>
@@ -1893,10 +2429,6 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>On Hold</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>Outstanding Review</fullName>
                 <default>false</default>
             </values>
@@ -1906,10 +2438,6 @@
             </values>
             <values>
                 <fullName>Review Complete - Subject to Negotiation or DOA Approval</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Withdraw and Closed</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -1962,11 +2490,7 @@
         <searchFilterFields>Opportunity_Name__c</searchFilterFields>
         <searchFilterFields>Project_Manager__c</searchFilterFields>
         <searchFilterFields>Client_Vendor__c</searchFilterFields>
-        <searchFilterFields>Client_vendor_as_named_on_the_contract__c</searchFilterFields>
-        <searchFilterFields>Business_Line__c</searchFilterFields>
-        <searchFilterFields>Country__c</searchFilterFields>
-        <searchFilterFields>OWNER.LAST_NAME</searchFilterFields>
-        <searchFilterFields>OWNER.FIRST_NAME</searchFilterFields>
+        <searchFilterFields>Status_Review__c</searchFilterFields>
         <searchResultsAdditionalFields>Client_Vendor__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Contract_Type__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Opportunity_Name__c</searchResultsAdditionalFields>
@@ -1985,12 +2509,12 @@
     <validationRules>
         <fullName>Federal_Contract_US_Only</fullName>
         <active>true</active>
-        <errorConditionFormula>Federal_Contract__c = True &amp;&amp; (Country_Code__c &lt;&gt; &apos;US&apos; &amp;&amp; Country_Code__c &lt;&gt; &apos;CA&apos;)</errorConditionFormula>
-        <errorMessage>Federal Contract can only be selected when the country is &apos;United States&apos; or &apos;Canada&apos;</errorMessage>
+        <errorConditionFormula>Federal_Contract__c = True &amp;&amp; Country_Code__c &lt;&gt; &apos;US&apos;</errorConditionFormula>
+        <errorMessage>Federal Contract can only be selected when the country is &apos;United States&apos;</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>Gulf_Coast_Region_Only_temp_rule</fullName>
-        <active>false</active>
+        <active>true</active>
         <errorConditionFormula>CONTAINS(&quot;AK:WA:OR:ID:MT:ND:SD:WY:BC:YT:NT:NU:AB:SK:MB:UT:AZ:NM:OK:TX:AR:MS:LA:CO&quot;,State_Province_Emirate__r.State_Code__c )==False</errorConditionFormula>
         <errorDisplayField>State_Province_Emirate__c</errorDisplayField>
         <errorMessage>Contract Reviews can currently only be submitted for the USA and Canada West / Gulf Coast Region.</errorMessage>
@@ -1999,13 +2523,13 @@
         <fullName>State_Required_for_AUS_US_CAN</fullName>
         <active>true</active>
         <description>Due to the queue assignment rules for Australian, US and Canaidian legal team queues being based off State/prov the state is required for these countries</description>
-        <errorConditionFormula>CONTAINS(&quot;AU:CA:US:GB&quot;,Country_Code__c) 
+        <errorConditionFormula>CONTAINS(&quot;AU:CA:US&quot;,Country_Code__c) 
 &amp;&amp;   ISBLANK(State_Province_Emirate__c)</errorConditionFormula>
-        <errorMessage>When the &apos;Country&apos; field is Australia, Canada, United Kingdom or United States a &apos;State/Province/Emirate&apos; is required</errorMessage>
+        <errorMessage>When the &apos;Country&apos; field is Australia, Canada or United States a &apos;State/Province/Emirate&apos; is required</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>US_Canada_Only_temp_rule</fullName>
-        <active>false</active>
+        <active>true</active>
         <errorConditionFormula>CONTAINS(&quot;US:CA&quot;,Country__r.Country_Code__c ) == FALSE</errorConditionFormula>
         <errorDisplayField>Country__c</errorDisplayField>
         <errorMessage>Contract Reviews can currently only be submitted for the USA and Canada West / Gulf Coast Region</errorMessage>
@@ -2020,7 +2544,7 @@
         <openType>replace</openType>
         <protected>false</protected>
         <requireRowSelection>false</requireRowSelection>
-        <url>https://aecom.my.salesforce.com/_ui/search/ui/UnifiedSearchResults?searchType=2&amp;sen=a0Q&amp;sen=a06&amp;sen=a07&amp;sen=a4j&amp;sen=005&amp;sen=701&amp;sen=a4U&amp;sen=001&amp;sen=003&amp;sen=0F9&amp;sen=a0g&amp;str=CR-#!/fen=a4j&amp;initialViewMode=detail&amp;str=CR-</url>
+        <url>/_ui/search/ui/UnifiedSearchResults?offset=0&amp;fpg=-7y2usgmu&amp;str=cr&amp;sen=&amp;fen=a1s&amp;initialViewMode=detail&amp;srtClmn=00Ne0000001BBE8&amp;srtOrd=1&amp;sFltrFields=NAMEContract_Review__c%2C00Ne0000001BBEJEA4Contract_Review__c%2C00Ne0000001BBE8EAOContract_Review__c%2C&amp;relatedListId=Contract_Review__c&amp;aId=_1416360456715&amp;setupid=CustomObjects</url>
     </webLinks>
     <webLinks>
         <fullName>Submit_to_Contract_Reviewer</fullName>
@@ -2033,68 +2557,20 @@
         <url>{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/connection.js&quot;)}
 
 if (&apos;{!Contract_Review__c.Status_Review__c}&apos; == &apos;Pending Submit&apos;){
-  
-    // CHECK IF THERE ARE ANY ATTACHMENTS
-  var resultcnt= sforce.connection.query(&quot;SELECT count() FROM Attachment WHERE ParentId = &apos;{!Contract_Review__c.Id}&apos;&quot;);
-  
-  var answer = true;
-  if (resultcnt.size == 0 ){
-      answer = confirm(&quot;You have not added any attachments, are you sure you wish to submit this review?&quot;);
+  var crObj = new sforce.SObject(&quot;Contract_Review__c&quot;);
+  crObj.id = &apos;{!Contract_Review__c.Id}&apos;; /* Need Id field to update Contract_Review*/
+  crObj.Submitted__c = true; /* Change status */
+
+  /* update method takes an array of Cases; init to 1 element - &apos;caseObj&apos; */
+  var result = sforce.connection.update([crObj]);
+
+  if (result[0].success == &apos;false&apos;) {
+    alert(result[0].errors.message);
+  }else {
+    location.reload(true); /* redisplay the detail page */
   }
-
-  if (answer){
-    var crObj = new sforce.SObject(&quot;Contract_Review__c&quot;);
-    crObj.id = &apos;{!Contract_Review__c.Id}&apos;; /* Need Id field to update Contract_Review*/
-    crObj.Submitted__c = true; /* Change status */
-
-    /* update method takes an array of Cases; init to 1 element - &apos;caseObj&apos; */
-    var result = sforce.connection.update([crObj]);
-
-    if (result[0].success == &apos;false&apos;) {
-      alert(&apos;There are validation errors, please edit and resave this contract review.&apos;);
-    }
-    else {
-      alert(&apos;Submission completed&apos;);
-      location.reload(true); /* redisplay the detail page */
-    }
-  }
-  
-}
-else{
-    alert(&apos;This Contract Review has already been submitted&apos;);
+}else{
+  alert(&apos;This Contract Review has already been submitted&apos;);
 }</url>
-    </webLinks>
-    <webLinks>
-        <fullName>Withdraw</fullName>
-        <availability>online</availability>
-        <displayType>button</displayType>
-        <linkType>javascript</linkType>
-        <masterLabel>Withdraw Request</masterLabel>
-        <openType>onClickJavaScript</openType>
-        <protected>false</protected>
-        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/31.0/connection.js&quot;)}
-
-
-  
-  var answer = true;
-  answer = confirm(&quot;Are you sure you want to withdraw this request.&quot;);
-  
-
-  if (answer){
-    var crObj = new sforce.SObject(&quot;Contract_Review__c&quot;);
-    crObj.id = &apos;{!Contract_Review__c.Id}&apos;; /* Need Id field to update Contract_Review*/
-    crObj.Withdraw__c = true; /* Change status */
-
-    /* update method takes an array of Cases; init to 1 element - &apos;caseObj&apos; */
-    var result = sforce.connection.update([crObj]);
-
-    if (result[0].success == &apos;false&apos;) {
-      alert(&apos;There are validation errors, please edit and re-save this contract review.&apos;);
-    }
-    else {
-      alert(&apos;Withdrawal completed&apos;);
-      location.reload(true); /* redisplay the detail page */
-    }
-  }</url>
     </webLinks>
 </CustomObject>

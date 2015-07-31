@@ -14,10 +14,7 @@ public with sharing class NewContractReviewController {
     	{
 	 		if(ctr.save() != null) {
 	 			
-			    //return new PageReference('/' + ctr.getId() + '/e?retURL=%2F' + ctr.getId() );
-                return new PageReference('/apex/ContractReview_Edit?id=' + ctr.getId() + '&retURL=%2F' + ctr.getId() + '&sfdc.override=1'  );
-                //PageReference edit =  new PageReference( '/apex/ContractReview_Edit?id=a1se0000001iXSc');
-                //return edit;
+			    return new PageReference('/' + ctr.getId() + '/e?retURL=%2F' + ctr.getId() );
 	 		}
 	 		return null;
     	}

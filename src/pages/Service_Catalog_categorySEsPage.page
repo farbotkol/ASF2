@@ -1,0 +1,89 @@
+<apex:page controller="Service_Catalog_categorySEsController">
+    
+    <apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.7.2/jquery.min.js" />   
+    
+    <script type="text/javascript">
+        j$ = jQuery.noConflict();       
+    </script>
+    
+    <apex:form id="seForm">
+        <apex:commandButton value="New Technology Service Catalog Entry" action="{!URLFOR($Action.Service_Catalog_Entry__c.New)}"></apex:commandButton> &nbsp;&nbsp;
+        <apex:pageBlock id="sePageBlock" title="{!catParam}">
+            <apex:outputLabel id="recordCount" value="{!countOfRecs}"></apex:outputLabel>&nbsp;
+            
+            <script type="text/javascript"> 
+                var recordElem = document.getElementById("{!$Component.recordCount}"); 
+                //alert(recordElem.id);            
+            </script>
+            
+            <apex:outputLabel id="recordCountText" value="Catalog Entries."></apex:outputLabel>
+            
+            <script type="text/javascript">
+                var recordCountText = document.getElementById("{!$Component.recordCountText}"); 
+            </script>
+            
+            <apex:pageBlockTable id="recordTable" value="{!CatSEs}" var="seitem">
+                <!--<apex:column >
+                    <apex:facet name="header">Heading</apex:facet>
+                    <apex:facet name="footer">Footing</apex:facet>
+                </apex:column>-->
+                <apex:column headerValue="Action">
+                    <apex:outputLink value="{!URLFOR($Action.Service_Catalog_Entry__c.Edit,seitem.Id)}" style="font-weight: bold;">Edit</apex:outputLink> |&nbsp;
+                    <apex:outputLink value="{!URLFOR($Action.Service_Catalog_Entry__c.Delete,seitem.Id)}" style="font-weight: bold;">Del</apex:outputLink> |&nbsp;
+                    <!--<apex:outputLink value="{!URLFOR($Action.Service_Catalog_Entry__c.ChangeOwner,seitem.Id)}" style="font-weight: bold;">Change Owner</apex:outputLink> |&nbsp;-->
+                    <apex:outputLink value="{!URLFOR($Action.Service_Catalog_Entry__c.View,seitem.Id)}" style="font-weight: bold;">View</apex:outputLink> |&nbsp;
+                    <chatter:follow entityId="{!seitem.id}"/>
+                </apex:column>
+                <!--<apex:column headerValue="Change">
+                    <apex:inputCheckbox value="{!seitem.id}"/>
+                </apex:column> -->
+                <apex:column title="Name" value="{!seitem.Name}"/> 
+                <apex:column title="Category" value="{!seitem.Category__c}"/>
+                <apex:column title="SME" value="{!seitem.SME__c}"/>
+                <apex:column headerValue="Description" title="Capability Description" value="{!seitem.Capability_Description__c}"/>
+                <apex:column headerValue="Capability" title="Capability Indicator" value="{!seitem.Capability_Indicator__c}"/>
+                <apex:column headerValue="Capacity" title="Capacity Indicator" value="{!seitem.Capacity_Indicator__c}"/>
+                <apex:column headerValue="Standards" title="Standards Indicator" value="{!seitem.Standards_Indicator__c}"/>
+                <!--<apex:column title="Status" value="{!seitem.Status__c}"/> -->
+                <apex:column headerValue="Customer Rating" title="Customer Rating Summary" value="{!seitem.Rating__c}"/> 
+                <!--<apex:column headerValue="Number of reviews" title="Number of Customer Reviews" value="{!seitem.Rating_Count__c}"/>-->
+                <apex:column headerValue="Number of reviews" title="Number of Customer Reviews" value="{!seitem.Customer_Rating_Count__c}"/>
+            </apex:pageBlockTable>
+            
+            <script type="text/javascript"> 
+                var recordTable = document.getElementById("{!$Component.recordTable}"); 
+            
+                var recordCnt = recordElem.innerHTML;
+                
+                if (recordCnt==0)
+                    j$(recordTable).remove();
+                else if (recordCnt==1)
+                    recordCountText.innerHTML = "Catalog Entry";
+            
+                var div1  = document.getElementById("j_id0:seForm:sePageBlock:recordTable:j_id7header:sortDiv");
+            	var div2  = document.getElementById("j_id0:seForm:sePageBlock:recordTable:j_id20header:sortDiv");
+            	var div3  = document.getElementById("j_id0:seForm:sePageBlock:recordTable:j_id21header:sortDiv");
+            	var div4  = document.getElementById("j_id0:seForm:sePageBlock:recordTable:j_id22header:sortDiv");
+            	var div5  = document.getElementById("j_id0:seForm:sePageBlock:recordTable:j_id23header:sortDiv");
+            	var div6  = document.getElementById("j_id0:seForm:sePageBlock:recordTable:j_id24header:sortDiv");
+            	var div7  = document.getElementById("j_id0:seForm:sePageBlock:recordTable:j_id25header:sortDiv");
+            	var div8  = document.getElementById("j_id0:seForm:sePageBlock:recordTable:j_id26header:sortDiv");
+            	var div9  = document.getElementById("j_id0:seForm:sePageBlock:recordTable:j_id27header:sortDiv");
+            	var div10 = document.getElementById("j_id0:seForm:sePageBlock:recordTable:j_id28header:sortDiv");            
+                j$(div1).attr({"title" : "Action"});
+            	j$(div2).attr({"title" : "Title"});
+            	j$(div3).attr({"title" : "Category"});
+            	j$(div4).attr({"title" : "Subject Matter Expert"});
+            	j$(div5).attr({"title" : "Description"});
+            	j$(div6).attr({"title" : "# of projects, marketing material, and support team exist"});
+            	j$(div7).attr({"title" : "How soon is team expansion possible?"});
+            	j$(div8).attr({"title" : "Does the solution comply with industry standards?"});
+            	j$(div9).attr({"title" : "Customer Rating"});
+            	j$(div10).attr({"title" : "Number of Reviews"});            
+            
+            </script>            
+            
+        </apex:pageBlock>
+    </apex:form>
+    
+</apex:page>

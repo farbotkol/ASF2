@@ -116,6 +116,17 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Bypass_Secondary_Approval__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This Checkbox will Allow TaaS team to bypass the Secondary approval step.</description>
+        <externalId>false</externalId>
+        <label>Bypass Secondary Approval</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>CPMC_1__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Tracks the numerical indicator given to # Of client projects question.</inlineHelpText>
@@ -1402,7 +1413,7 @@ This would then need to be reviewed &amp; approved by Team TaaS ( workflow for r
         <searchResultsAdditionalFields>Rating__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Customer_Rating_Count__c</searchResultsAdditionalFields>
     </searchLayouts>
-    <sharingModel>ReadWrite</sharingModel>
+    <sharingModel>Read</sharingModel>
     <webLinks>
         <fullName>Service_Catalog_CustomRatingButton</fullName>
         <availability>online</availability>
@@ -1412,7 +1423,8 @@ This would then need to be reviewed &amp; approved by Team TaaS ( workflow for r
         <masterLabel>Rate it!</masterLabel>
         <openType>replace</openType>
         <protected>false</protected>
-        <url>{!URLFOR( $Action.Service_Catalog_Entry_Ratings__c.New , null, [saveURL=Service_Catalog_Entry__c.Link, CF00NM0000001LySB_lkid=Service_Catalog_Entry__c.Id , CF00NM0000001LySB=Service_Catalog_Entry__c.Name])}</url>
+        <url>{!URLFOR( $Action.Service_Catalog_Entry_Ratings__c.New , null, [saveURL=Service_Catalog_Entry__c.Link,
+retURL=Service_Catalog_Entry__c.Link, CF00NM0000001LySB_lkid=Service_Catalog_Entry__c.Id , CF00NM0000001LySB=Service_Catalog_Entry__c.Name])}</url>
     </webLinks>
     <webLinks>
         <fullName>Update_SME</fullName>

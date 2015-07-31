@@ -57,7 +57,6 @@ public without sharing class ECO_Service_Users {
 						, Subject
 						, Type
 						, What.Name
-						, Priority
 				FROM Task 
 				WHERE IsClosed = false
 					AND OwnerId = :userId];

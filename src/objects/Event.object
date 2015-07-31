@@ -37,7 +37,15 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>NewSfdcEvent</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Today</actionName>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -256,6 +264,107 @@
         </picklistValues>
     </recordTypes>
     <recordTypes>
+        <fullName>Chatter_Group_Event</fullName>
+        <active>true</active>
+        <description>Events associated to Chatter Groups</description>
+        <label>Chatter Group Event</label>
+        <picklistValues>
+            <picklist>Level_of_Effort__c</picklist>
+            <values>
+                <fullName>Full-time</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Minimal</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Part-time</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Phase__c</picklist>
+            <values>
+                <fullName>Development Task</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Planning Task</fullName>
+                <default>true</default>
+            </values>
+            <values>
+                <fullName>Post-Implementation Task</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Testing Task</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Subject</picklist>
+            <values>
+                <fullName>Call</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Meeting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Send Letter%2FQuote</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Call</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Meeting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type_of_Interaction__c</picklist>
+            <values>
+                <fullName>Conference</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conference call</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Entertainment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Face-to-face meeting</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
         <fullName>Standard_Events</fullName>
         <active>true</active>
         <description>Used for all other Events</description>
@@ -357,4 +466,50 @@
         </picklistValues>
     </recordTypes>
     <sharingModel>ControlledByParent</sharingModel>
+    <webLinks>
+        <fullName>Mass_Delete</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Mass Delete</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/9.0/connection.js&quot;)} 
+
+var records = {!GETRECORDIDS( $ObjectType.Event )}; 
+var taskRecords = {!GETRECORDIDS( $ObjectType.Task)}; 
+records = records.concat(taskRecords); 
+
+
+if (records[0] == null) { 
+alert(&quot;Please select at least one record.&quot;) } 
+else { 
+
+var errors = []; 
+var result = sforce.connection.deleteIds(records); 
+if (result &amp;&amp; result.length){ 
+var numFailed = 0; 
+var numSucceeded = 0; 
+for (var i = 0; i &lt; result.length; i++){ 
+var res = result[i]; 
+if (res &amp;&amp; res.success == &apos;true&apos;){ 
+numSucceeded++; 
+} else { 
+var es = res.getArray(&quot;errors&quot;); 
+if (es.length &gt; 0) { 
+errors.push(es[0].message); 
+} 
+numFailed++; 
+} 
+} 
+if (numFailed &gt; 0){ 
+alert(&quot;Failed: &quot; + numFailed + &quot;\nSucceeded: &quot; + numSucceeded + &quot; \n Due to: &quot; + errors.join(&quot;\n&quot;)); 
+} else { 
+alert(&quot;Number of records deleted: &quot; + numSucceeded); 
+} 
+} 
+window.location.reload(); 
+}</url>
+    </webLinks>
 </CustomObject>

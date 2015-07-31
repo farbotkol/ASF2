@@ -71,13 +71,13 @@ private class rsProfilePartTest {
     	List<User> users = [select Id from User where Geography__c =: '0xDEADBEEF'];
 
     	Test.startTest();
-        rsProfilePart.find.reviewUnassigned(DateTime.now(), DateTime.now(), 'AB', 'CD', 'EF', 'G', 'HI', 'JK', 'asc');
-        rsProfilePart.find.reviewAssignedToMe(UserInfo.getUserId(),null,null,null,null,null,null,null,'asc');
-        rsProfilePart.find.reviewCompleted(null,null,null,null,null,null,null,'asc');
-        rsProfilePart.find.reviewCompleted(null,DateTime.now(),'AB',null,null,null,null,'asc');
-        rsProfilePart.find.reviewCompleted(null,DateTime.now(),'AB','CD',null,null,null,'asc');
-        rsProfilePart.find.reviewCompleted(null,DateTime.now(),'AB','CD','EF',null,null,'asc');
-        rsProfilePart.find.reviewCompleted(null,DateTime.now(),'AB','CD','EF','G',null,'asc');
+        rsProfilePart.find.reviewUnassigned(DateTime.now(), DateTime.now(), 'AB', 'CD', 'EF', 'G', 'HI', 'JK');
+        rsProfilePart.find.reviewAssignedToMe(UserInfo.getUserId(),null,null,null,null,null,null,null);
+        rsProfilePart.find.reviewCompleted(null,null,null,null,null,null,null);
+        rsProfilePart.find.reviewCompleted(null,DateTime.now(),'AB',null,null,null,null);
+        rsProfilePart.find.reviewCompleted(null,DateTime.now(),'AB','CD',null,null,null);
+        rsProfilePart.find.reviewCompleted(null,DateTime.now(),'AB','CD','EF',null,null);
+        rsProfilePart.find.reviewCompleted(null,DateTime.now(),'AB','CD','EF','G',null);
     	Test.stopTest();
 	}
 }

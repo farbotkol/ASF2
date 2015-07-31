@@ -10,12 +10,8 @@
   					
   				  3. Give all users access via 	'Contract Reviewer General User (SF)' 
   				     or 'Contract Reviewer General User' Permission set
-
-  				  4. Give all users 'ECO Portal access' Permission set
   				     
   Date        :   17 Feb, 2015 
-
-  Update : 5 May 2015 - add eco permissions sets.
 
 ********************************************************************/
 trigger User_ContractReviewPermissionSet on User (after update) {
@@ -25,17 +21,10 @@ trigger User_ContractReviewPermissionSet on User (after update) {
 			
 			StaticHelper.runME = !StaticHelper.excludeIt;
 		}
-
-		UserRole role;
-		try
-		{
-		 role = [SELECT id from UserRole where name = 'Worldwide'];
-		}
-		catch(Exception e){} //no worldwide role
 	    // one query to reduce the number of SOQL Hits
 		list<PermissionSet>  permissionSets = [Select id, Name From PermissionSet 
 								where name in ('Contract_Reviewer','Contract_Reviewer_SF'
-												,'Contract_Reviewer_General_User' , 'Contract_Reviewer_General_User_SF', 'ECOPortalaccess') 
+												,'Contract_Reviewer_General_User' , 'Contract_Reviewer_General_User_SF') 
 												order by Name];
 	
 		PermissionSet permissionSet = permissionSets[0];
@@ -43,9 +32,6 @@ trigger User_ContractReviewPermissionSet on User (after update) {
 		
 		PermissionSet generalPermissionSet = permissionSets[1];
 		PermissionSet generalPermissionSetSF = permissionSets[2];
-
-		PermissionSet ecoPermissionSetSF = permissionSets[4];
-	
 		
 		//PermissionSet permissionSet = [Select id, Name From PermissionSet where name = 'Contract_Reviewer' LIMIT 1];
 		//PermissionSet permissionSetSF = [Select id, Name From PermissionSet where name = 'Contract_Reviewer_SF' LIMIT 1];
@@ -57,15 +43,11 @@ trigger User_ContractReviewPermissionSet on User (after update) {
 		List<Id> userlistIdsRemove = new List<Id>();
 		
 		List<Id> generalUserListIdsInsert = new List<Id>();
-		List<Id> ecoUserListIdsInsert = new List<Id>();
-
 		//List<Id> generalUserlistIdsRemove = new List<Id>();
 		
 		//List<Id> userlistIdsRemove = new List<Id>();
 	
 		List<PermissionSetAssignment>  permissionSetAssignmentToUpdate = new List<PermissionSetAssignment>{};
-
-		List<Id> usersToUpdate = new List<Id>{};
 		
 		
 		for(User user: Trigger.new){
@@ -75,14 +57,7 @@ trigger User_ContractReviewPermissionSet on User (after update) {
 			//{
 				if (user.Legal__c == true )
 	   			{
-	   				// make sure the world role is selected
 	   				userListIdsInsert.add(user.Id);
-	   				if (role <> null && user.UserRole.Id <> role.Id)
-	   				{
-	   					//user.UserRole = role;
-						usersToUpdate.add(user.Id);
-	   				}
-
 	   			}
 	   			else
 	   			{
@@ -90,7 +65,6 @@ trigger User_ContractReviewPermissionSet on User (after update) {
 	   				userlistIdsRemove.add(user.Id);
 	   			}
 	   			generalUserListIdsInsert.add(user.Id);
-	   			ecoUserListIdsInsert.add(user.Id);
 			//}
 			
 			
@@ -115,16 +89,7 @@ trigger User_ContractReviewPermissionSet on User (after update) {
 			     										 	 			where (PermissionSetId = :generalPermissionSet.Id
 																     			 OR PermissionSetId = :generalPermissionSetSF.Id)
 																     			 and AssigneeId IN :generalUserListIdsInsert
-																     	)]);			
-
-		List<User> ecoUserListToInsert  	= 		new  List<User>([SELECT id, profile.UserLicense.Name
-			     										 FROM User
-			     										 WHERE id IN :ecoUserListIdsInsert
-			     										 	AND 
-			     										 	 id not in (Select  AssigneeId From PermissionSetAssignment 
-			     										 	 			where PermissionSetId = :ecoPermissionSetSF.Id
-																			and AssigneeId IN :ecoUserListIdsInsert
-																     	)]);									     	
+																     	)]);										     	
 		
 		for(User user : userListToInsert)
 		{
@@ -154,18 +119,9 @@ trigger User_ContractReviewPermissionSet on User (after update) {
 	   			psa.PermissionSetId = generalPermissionSet.Id;
 	   		}
 	   		permissionSetAssignmentToUpdate.add(psa);
-		}
-
-		for(User user : ecoUserListToInsert)
-		{
-	   		PermissionSetAssignment psa = new PermissionSetAssignment( AssigneeId = user.Id);
-	   	
-	   		psa.PermissionSetId = ecoPermissionSetSF.Id;
 	   		
 	   		
-	   		permissionSetAssignmentToUpdate.add(psa);
 		}
-		
 		
 		
 		
@@ -175,10 +131,12 @@ trigger User_ContractReviewPermissionSet on User (after update) {
 																     										 OR PermissionSetId = :permissionSetSF.Id
 																     										 ) and AssigneeId IN :userlistIdsRemove]);
 		
-		System.enqueueJob(new UserPermissionAssignmentUpdateQueue(permissionSetAssignmentToRemove,permissionSetAssignmentToUpdate, usersToUpdate, role));
-		//delete permissionSetAssignmentToRemove;
-		//insert permissionSetAssignmentToUpdate;
-		
+		try{
+			delete permissionSetAssignmentToRemove;
+			insert permissionSetAssignmentToUpdate;
+		}
+		catch(Exception e)
+		{}
 	}
 
 

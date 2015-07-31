@@ -116,23 +116,52 @@
             <active>false</active>
             <keyCommand>SHIFT+K</keyCommand>
         </defaultShortcut>
+        <defaultShortcut>
+            <action>FOCUS_MACRO</action>
+            <active>false</active>
+            <keyCommand>M</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>FOCUS_FOOTER_PANEL</action>
+            <active>false</active>
+            <keyCommand>F</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_LIST_VIEW</action>
+            <active>false</active>
+            <keyCommand>SHIFT+N</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_LEFT_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+LEFT ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_RIGHT_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+RIGHT ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_TOP_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+UP ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_BOTTOM_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+DOWN ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_APP_LEVEL_COMPONENTS</action>
+            <active>false</active>
+            <keyCommand>Z</keyCommand>
+        </defaultShortcut>
     </keyboardShortcuts>
     <label>Shared Services Console</label>
     <listPlacement>
-        <location>left</location>
-        <units>percent</units>
-        <width>25</width>
+        <location>full</location>
     </listPlacement>
     <listRefreshMethod>none</listRefreshMethod>
-    <pushNotifications>
-        <pushNotification>
-            <fieldNames>Owner</fieldNames>
-            <fieldNames>SS_Category__c</fieldNames>
-            <fieldNames>SS_Is_Uncategorized__c</fieldNames>
-            <fieldNames>Status</fieldNames>
-            <objectName>Case</objectName>
-        </pushNotification>
-    </pushNotifications>
     <saveUserSessions>true</saveUserSessions>
     <tab>standard-Case</tab>
     <tab>standard-Contact</tab>
@@ -141,12 +170,42 @@
     <tab>standard-Chatter</tab>
     <tab>standard-report</tab>
     <tab>standard-Dashboard</tab>
+    <tab>NPS_Survey_Response__c</tab>
+    <tab>Survey_File_Information__c</tab>
+    <tab>Survey_File_ID__c</tab>
+    <tab>Service_Catalog_Request_Form__c</tab>
+    <tab>Service_Catalog_TPG_s__c</tab>
+    <tab>Technical_Service_Catalog_Landing_Page</tab>
+    <tab>Service_Catalog_Entry__c</tab>
+    <tab>TPG_Link_Database__c</tab>
     <workspaceMappings>
         <mapping>
-            <tab>standard-Solution</tab>
+            <tab>NPS_Survey_Response__c</tab>
         </mapping>
         <mapping>
-            <tab>standard-report</tab>
+            <tab>Service_Catalog_Entry__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Service_Catalog_Request_Form__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Service_Catalog_TPG_s__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Survey_File_ID__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Survey_File_Information__c</tab>
+        </mapping>
+        <mapping>
+            <tab>TPG_Link_Database__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Technical_Service_Catalog_Landing_Page</tab>
+        </mapping>
+        <mapping>
+            <fieldName>ParentId</fieldName>
+            <tab>standard-Account</tab>
         </mapping>
         <mapping>
             <tab>standard-Case</tab>
@@ -159,11 +218,13 @@
             <tab>standard-Contact</tab>
         </mapping>
         <mapping>
-            <fieldName>ParentId</fieldName>
-            <tab>standard-Account</tab>
+            <tab>standard-Dashboard</tab>
         </mapping>
         <mapping>
-            <tab>standard-Dashboard</tab>
+            <tab>standard-Solution</tab>
+        </mapping>
+        <mapping>
+            <tab>standard-report</tab>
         </mapping>
     </workspaceMappings>
 </CustomApplication>

@@ -1,6 +1,6 @@
 public with sharing virtual class ECO_PageControllerBase {
 
-	public String awanJSPath										{ get; set; }
+
 
 	//Collection of all URL parameters and cookie values. URL parameters take precedence.
 	public Map<string, string> mParameters {get; set;}
@@ -27,8 +27,6 @@ public with sharing virtual class ECO_PageControllerBase {
 		*/
 
 		sReturnURL = mParameters.get('retURL');
-		
-		awanJSPath = ECO_PortalSettings__c.getInstance().OnAWANJavascriptPath__c;
 		
 		return;
 	}

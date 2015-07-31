@@ -18,7 +18,7 @@ public with sharing class ECO_ApplicationCustomizerController extends ECO_PageCo
 	public List<SelectOption> geographies									{ get{
 			List<SelectOption> optionlist = new List<SelectOption>();
 
-			optionlist.add(new SelectOption('', Label.ECOAppCusSelectGeography));
+			optionlist.add(new SelectOption('', 'Select Geography'));
 			optionlist.addAll(ECO_Utils_Meta.getPickListValues(new Configuration__c(), 'GeographiesAvailableTo__c'));
 
 			return optionlist;
@@ -27,7 +27,7 @@ public with sharing class ECO_ApplicationCustomizerController extends ECO_PageCo
 	public List<SelectOption> categories										{ get{
 			List<SelectOption> optionlist = new List<SelectOption>();
 
-			optionlist.add(new SelectOption('', Label.ECOAppCusSelectCategory));
+			optionlist.add(new SelectOption('', 'Select Category'));
 			optionlist.addAll(ECO_Utils_Meta.getPickListValues(new Application__c(), 'Category__c'));
 
 			return optionlist;
@@ -36,7 +36,7 @@ public with sharing class ECO_ApplicationCustomizerController extends ECO_PageCo
 	public List<SelectOption> businesslines								{ get{
 			List<SelectOption> optionlist = new List<SelectOption>();
 
-			optionlist.add(new SelectOption('', Label.ECOAppCusSelecBusinessLine));
+			optionlist.add(new SelectOption('', 'Select Business Line'));
 			optionlist.addAll(ECO_Utils_Meta.getPickListValues(new Configuration__c(), 'BusinessLinesAvailableTo__c'));
 
 			return optionlist;
@@ -46,7 +46,6 @@ public with sharing class ECO_ApplicationCustomizerController extends ECO_PageCo
 
 	public string selectedGeography									{ get; set; }
 	public string selectedBusinessLine								{ get; set; }
-	
 	public string selectedCategory									{ get; set; }
 	
 	private Date fromDate;
@@ -78,6 +77,7 @@ public with sharing class ECO_ApplicationCustomizerController extends ECO_PageCo
 		selectedCategory = '';
 
 		inSearchResultsMode = false;
+		
 	}
 	
 	public PageReference onLoad () {
@@ -286,17 +286,13 @@ public with sharing class ECO_ApplicationCustomizerController extends ECO_PageCo
 				Configuration__c newConfigItem = configFromPage.clone(false, false, false, false);
 				
 				newConfigItem.UserSortOrder__c = newSortOrder;
-
+	
 				if(ECO_Utils_String.NullCheck(newConfigItem.ConfigurationTemplate__c) == ''){
 					newConfigItem.ConfigurationTemplate__c = selectedAndAvailableAppMap.get(s.replace('id=', '')).Id;
 					newConfigItem.User__c = UserInfo.getUserId();
 					newConfigItem.RecordTypeId = applicationRecordTypeId;
 				}
-				
 				newConfigItem.IsHidden__c = false; // Now this serialized list only conains nonhidden stuff, so let's hardcode it.
-				newConfigItem.IsActive__c = true;
-
-				system.debug('Config Item: ' + newConfigItem);
 				
 				system.debug('newConfigItem.UserSortOrder__c:  '+newConfigItem.UserSortOrder__c);
 				

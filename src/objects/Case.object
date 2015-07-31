@@ -61,6 +61,27 @@
         <type>Default</type>
     </actionOverrides>
     <businessProcesses>
+        <fullName>Close Loop</fullName>
+        <description>Tracks the close loop process.</description>
+        <isActive>true</isActive>
+        <values>
+            <fullName>Closed</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Escalated</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>In Process</fullName>
+            <default>false</default>
+        </values>
+        <values>
+            <fullName>Open</fullName>
+            <default>true</default>
+        </values>
+    </businessProcesses>
+    <businessProcesses>
         <fullName>Colorado ER</fullName>
         <description>Colorado Emergency Response</description>
         <isActive>true</isActive>
@@ -122,6 +143,30 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Client_Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Client Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Satisfied</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Unhappy</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Follow-up Required</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>ClosedDate</fullName>
         <trackTrending>false</trackTrending>
     </fields>
@@ -170,6 +215,27 @@
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
+    </fields>
+    <fields>
+        <fullName>Follow_Up_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Follow Up Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Initial_Discussion__c</fullName>
+        <externalId>false</externalId>
+        <label>Initial Discussion</label>
+        <length>10000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>4</visibleLines>
     </fields>
     <fields>
         <fullName>Inquiry_Type__c</fullName>
@@ -223,27 +289,6 @@
         <type>Checkbox</type>
     </fields>
     <fields>
-        <fullName>Language_Type__c</fullName>
-        <description>Default language type for the case worker.</description>
-        <externalId>false</externalId>
-        <label>Language Type</label>
-        <picklist>
-            <picklistValues>
-                <fullName>EN</fullName>
-                <default>true</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>FR</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
-        </picklist>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Picklist</type>
-    </fields>
-    <fields>
         <fullName>Location__c</fullName>
         <description>Location for use in the ER web form</description>
         <externalId>false</externalId>
@@ -295,6 +340,22 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Email - iExpense Canada</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Detractor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Promoter</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Safety Alert</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Request for Contact</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -354,6 +415,82 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>Project_Management__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Management</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Schedule/Timeliness</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Budget</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Communications/Responsiveness</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Scope Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Project Managers</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Project Directors</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Billing</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Project_Manager__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/&quot;&amp;&quot;Project__r.pse__Project_Manager__r.Id&quot;, Project__r.pse__Project_Manager__r.FirstName  &amp; &quot;&quot; &amp; Project__r.pse__Project_Manager__r.LastName, &quot;_self&quot;)</formula>
+        <label>Project Manager</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.Name</formula>
+        <label>Project Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project</label>
+        <referenceTo>pse__Proj__c</referenceTo>
+        <relationshipLabel>Cases</relationshipLabel>
+        <relationshipName>Cases</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>QuestionId</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -392,6 +529,39 @@
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Resolved__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(IsClosed=True, TRUE, FALSE)</formula>
+        <label>Resolved</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Response_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Response Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Phone Call</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Meeting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
@@ -440,6 +610,18 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Category</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SS_Contact_Language__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Contact.SS_Language__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contact Language</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -610,10 +792,43 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Solution_Resolution_Date__c</fullName>
+        <description>Tracks the &quot;Due Date&quot; of the Agreed Solution.</description>
+        <externalId>false</externalId>
+        <label>Solution Resolution Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Specific_Solution_Plan__c</fullName>
+        <description>Track the Agreed Upon solution.</description>
+        <externalId>false</externalId>
+        <label>Specific Solution Plan</label>
+        <length>10000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
         <fullName>Status</fullName>
         <picklist>
             <picklistValues>
                 <fullName>In Review</fullName>
+                <closed>false</closed>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>In Process</fullName>
+                <closed>false</closed>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Open</fullName>
                 <closed>false</closed>
                 <default>false</default>
             </picklistValues>
@@ -623,14 +838,14 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Closed</fullName>
-                <closed>true</closed>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Pending</fullName>
                 <closed>false</closed>
                 <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Closed</fullName>
+                <closed>true</closed>
+                <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
@@ -662,6 +877,62 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
         <trackTrending>false</trackTrending>
     </fields>
     <fields>
+        <fullName>Survey_Response_Link__c</fullName>
+        <externalId>false</externalId>
+        <label>Survey Response Link</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Url</type>
+    </fields>
+    <fields>
+        <fullName>Survey_Response__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>NPS Survey Response</label>
+        <referenceTo>NPS_Survey_Response__c</referenceTo>
+        <relationshipLabel>Cases</relationshipLabel>
+        <relationshipName>Cases</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Technical_Topic__c</fullName>
+        <externalId>false</externalId>
+        <label>Technical Topic</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approach</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Quality</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Innovation/Best Practice</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Access to Experts</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Key Staff</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Type</fullName>
         <picklist>
             <picklistValues>
@@ -674,6 +945,26 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
             </picklistValues>
             <picklistValues>
                 <fullName>Question</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Detractor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Promoter</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Safety Alert</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Requesting Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>General Response</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -1003,11 +1294,206 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
     <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
     <recordTypeTrackHistory>true</recordTypeTrackHistory>
     <recordTypes>
+        <fullName>Close_Loop_Process</fullName>
+        <active>true</active>
+        <businessProcess>Close Loop</businessProcess>
+        <label>Close Loop Process</label>
+        <picklistValues>
+            <picklist>Client_Status__c</picklist>
+            <values>
+                <fullName>Follow-up Required</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Satisfied</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unhappy</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Inquiry_Type__c</picklist>
+            <values>
+                <fullName>Accounts Payable</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Origin</picklist>
+            <values>
+                <fullName>Detractor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Promoter</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Request for Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Safety Alert</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Priority</picklist>
+            <values>
+                <fullName>High</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Medium</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Project_Management__c</picklist>
+            <values>
+                <fullName>Billing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Budget</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Communications%2FResponsiveness</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Directors</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Managers</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Schedule%2FTimeliness</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Scope Management</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Reason</picklist>
+            <values>
+                <fullName>Existing problem</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New problem</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Response_Type__c</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Meeting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone Call</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>SS_Case_Category__c</picklist>
+            <values>
+                <fullName>Backup Request</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expense Report</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Invoice</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Technical_Topic__c</picklist>
+            <values>
+                <fullName>Access to Experts</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Approach</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Innovation%2FBest Practice</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Key Staff</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Quality</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Type</picklist>
+            <values>
+                <fullName>Detractor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>General Response</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Promoter</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Requesting Contact</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Safety Alert</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
         <fullName>Colorado_ER</fullName>
         <active>true</active>
         <businessProcess>Colorado ER</businessProcess>
         <description>Colorado ER</description>
         <label>Colorado ER</label>
+        <picklistValues>
+            <picklist>Client_Status__c</picklist>
+            <values>
+                <fullName>Follow-up Required</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Satisfied</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unhappy</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
         <picklistValues>
             <picklist>Origin</picklist>
             <values>
@@ -1039,6 +1525,37 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>Project_Management__c</picklist>
+            <values>
+                <fullName>Billing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Budget</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Communications%2FResponsiveness</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Directors</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Managers</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Schedule%2FTimeliness</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Scope Management</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Reason</picklist>
             <values>
                 <fullName>Complex functionality</fullName>
@@ -1061,6 +1578,44 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
                 <default>false</default>
             </values>
         </picklistValues>
+        <picklistValues>
+            <picklist>Response_Type__c</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Meeting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone Call</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Technical_Topic__c</picklist>
+            <values>
+                <fullName>Access to Experts</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Approach</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Innovation%2FBest Practice</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Key Staff</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Quality</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
     </recordTypes>
     <recordTypes>
         <fullName>Shared_Services</fullName>
@@ -1068,6 +1623,21 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
         <businessProcess>Shared Services AP</businessProcess>
         <description>Shared Services Accounts Payable Support</description>
         <label>Shared Services AP</label>
+        <picklistValues>
+            <picklist>Client_Status__c</picklist>
+            <values>
+                <fullName>Follow-up Required</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Satisfied</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unhappy</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
         <picklistValues>
             <picklist>Inquiry_Type__c</picklist>
             <values>
@@ -1122,6 +1692,37 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>Project_Management__c</picklist>
+            <values>
+                <fullName>Billing</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Budget</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Communications%2FResponsiveness</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Directors</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Managers</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Schedule%2FTimeliness</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Scope Management</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Reason</picklist>
             <values>
                 <fullName>Complex functionality</fullName>
@@ -1145,6 +1746,21 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>Response_Type__c</picklist>
+            <values>
+                <fullName>Email</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Meeting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Phone Call</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>SS_Case_Category__c</picklist>
             <values>
                 <fullName>Backup Request</fullName>
@@ -1156,6 +1772,29 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
             </values>
             <values>
                 <fullName>Invoice</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Technical_Topic__c</picklist>
+            <values>
+                <fullName>Access to Experts</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Approach</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Innovation%2FBest Practice</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Key Staff</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Quality</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -1199,20 +1838,6 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
         <searchResultsAdditionalFields>CORE.USERS.ALIAS</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>Private</sharingModel>
-    <validationRules>
-        <fullName>SS_AP_Close_Case_Queue_Esc_Owner</fullName>
-        <active>true</active>
-        <description>Do not allow to close case if Case Owner is the SS-AP Cases Escalation Queue.</description>
-        <errorConditionFormula>AND(Owner:Queue.QueueName = &quot;SS-AP Cases Escalation&quot;, TEXT(Status) = &quot;Closed&quot;)</errorConditionFormula>
-        <errorMessage>You must take ownership of the Case prior to closing!</errorMessage>
-    </validationRules>
-    <validationRules>
-        <fullName>SS_AP_Close_Case_Queue_Owner</fullName>
-        <active>true</active>
-        <description>Do not allow to close case if Case Owner is the SS-AP Cases Queue.</description>
-        <errorConditionFormula>AND(Owner:Queue.QueueName = &quot;SS-AP Cases&quot;, TEXT(Status) = &quot;Closed&quot;)</errorConditionFormula>
-        <errorMessage>You must take ownership of the Case prior to closing!</errorMessage>
-    </validationRules>
     <webLinks>
         <fullName>APXT_CMSL_B__Conga_SL_Basic</fullName>
         <availability>online</availability>
@@ -1225,6 +1850,49 @@ IF( SS_Is_Uncategorized__c , &apos;Uncategorized&apos;, null)
         <protected>false</protected>
         <url>/apex/APXT_CMSL_B__Launch
 ?Id={!Case.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Mass_Delete</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Mass Delete</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/9.0/connection.js&quot;)}
+
+var records = {!GETRECORDIDS(  $ObjectType.Case  )};
+
+if (records[0] == null) {
+alert(&quot;Please select at least one record.&quot;) }
+else {
+
+var errors = [];
+var result = sforce.connection.deleteIds(records);
+if (result &amp;&amp; result.length){
+var numFailed = 0;
+var numSucceeded = 0;
+for (var i = 0; i &lt; result.length; i++){
+var res = result[i];
+if (res &amp;&amp; res.success == &apos;true&apos;){
+numSucceeded++;
+} else {
+var es = res.getArray(&quot;errors&quot;);
+if (es.length &gt; 0) {
+errors.push(es[0].message);
+}
+numFailed++;
+}
+}
+if (numFailed &gt; 0){
+alert(&quot;Failed: &quot; + numFailed + &quot;\nSucceeded: &quot; + numSucceeded + &quot; \n Due to: &quot; + errors.join(&quot;\n&quot;));
+} else {
+alert(&quot;Number of records deleted: &quot; + numSucceeded);
+}
+}
+window.location.reload();
+}</url>
     </webLinks>
     <webLinks>
         <fullName>TIMBASURVEYS__Send_Survey_Case</fullName>
