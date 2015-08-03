@@ -1,5 +1,30 @@
 <apex:page controller="ECO_ApplicationCustomizerController"  showheader="false" sidebar="false" title="{!$Label.ECOAppCusPickApplications}" standardStylesheets="false" action="{!onLoad}">
 	<script>
+	
+        $(document).ready(function(){
+            init();
+            
+           $(".showAllApps").click(function(){
+                $(".hiddenOnMobile").toggle();
+            });
+
+           $(".showAllApps").click(function(){
+                $(".showHideSwap").toggleClass("hidden-xs");
+           });
+
+
+            $(".showAllApps").click(function(){
+              if ($("i").is('.fa-eye')) {
+                $("i.fa-eye").toggleClass("fa-eye-slash");
+              } else {
+                $("i.fa-eye-slash").toggleClass("fa-eye");
+              }
+            });
+            
+            $('img[id$="theImageHidden"]').closest('a').fadeTo(1, .45);
+        });
+
+        
         function attachSortable() {
             $( "#sortable" ).sortable({});
         }
@@ -18,14 +43,18 @@
         }
         
         function savePositionsPageFunction(mode) {
+        	// alert('inside savePositionsPageFunction ');
             var serializedIds = $("#sortable").sortable("serialize", { 
                 key: "id"
                 , attribute: "orderId" 
             });
 
+			// alert('calling savePositions with serializedIds: ' + serializedIds);
             savePositions(serializedIds);
         };
-/* Use 'toggleApp' instead
+
+
+		/* Use 'toggleApp' instead
         function toggleApplication (theId) {
             if (console) {
                 console.log($("a[orderId='id_"+theId+"']").length);
@@ -39,8 +68,10 @@
                 $("a[orderId='id_"+theId+"hidden']").attr('orderId', 'id_'+theId).find('.fa-check-circle').addClass('fa-times-circle').removeClass('fa-check-circle');
             }
         }
-*/
+		*/
+
         function toggleApp (theId){
+        	// alert('in toggle app');
             if ($("#sortable div[orderId='id_"+theId+"']").length) {
                 $("div[orderId='id_"+theId+"']").appendTo('#availableApps').find('.fa-times-circle').removeClass('fa-times-circle').addClass('fa-check-circle');
                 $("div[orderId='id_"+theId+"']").find('*').removeAttr('id');
@@ -49,11 +80,7 @@
                 $("div[orderId='id_"+theId+"']").find('*').removeAttr('id');
             }
         }
-/*
-        function removeApplication (theId){
-            
-        }
-*/      
+
         var timer;
         
         function applyFilter (theField) {
@@ -70,6 +97,7 @@
         
     </script>
 
+  
     <style>
         h2{
             color:white;
