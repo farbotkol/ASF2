@@ -85,7 +85,7 @@ public with sharing class TestCoverageSmokeTests6b {
 
 @isTest private static void test_ConvertProjectToTaskOrderControllerEMEA(){
 		Opportunity testObj = TestCoverageSmokeMocks.mockOpp(false);
-		RecordType r = [select Id from RecordType where Name = 'Program - EMEA' and sObjectType = 'Opportunity'];
+		RecordType r = [select Id from RecordType where DeveloperName = 'Program_EMEA' and sObjectType = 'Opportunity'];
 		testObj.RecordTypeId = r.Id;
 		insert testObj;
 	    ApexPages.StandardController sc = new ApexPages.StandardController(testObj);
@@ -97,7 +97,7 @@ public with sharing class TestCoverageSmokeTests6b {
     
 @isTest private static void test_ConvertProjectToTaskOrderControllerAmericas(){
 		Opportunity testObj = TestCoverageSmokeMocks.mockOpp(false);
-		RecordType r = [select Id from RecordType where Name = 'Program - Americas' and sObjectType = 'Opportunity'];
+		RecordType r = [select Id from RecordType where DeveloperName = 'Program_Americas' and sObjectType = 'Opportunity'];
 		testObj.RecordTypeId = r.Id;
 		testObj.TO_Procurement_Method__c = 'test';
 		insert testObj;
