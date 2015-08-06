@@ -125,7 +125,7 @@ public with sharing class ConvertTaskOrderToProjectController {
         if(opp.RecordType.name.indexOf('APAC')>=0)
             sArea = 'APAC';
         if(opp.RecordType.name.indexOf('EMEA')>=0)
-            sArea = 'EMEA';
+            sArea = 'EMEA&I';
             
         if(opp.RecordType.name.indexOf('Americas')>=0)
             sArea = 'Americas';
