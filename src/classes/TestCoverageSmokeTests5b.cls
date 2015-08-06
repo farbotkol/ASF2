@@ -70,7 +70,7 @@
     	Opportunity testObj = TestCoverageSmokeMocks.mockOpp(false);
     	Opportunity child = TestCoverageSmokeMocks.mockOpp(false);
     	
-    	RecordType r = [select Id from RecordType where Name = 'Program - EMEA' and sObjectType = 'Opportunity'];
+    	RecordType r = [select Id from RecordType where DeveloperName = 'Program_EMEA' and sObjectType = 'Opportunity'];
     	testObj.RecordTypeId =  r.Id;
     	testObj.ProjectCountry__c = 'Greece';
     	testObj.Master_Contract_lookup__c = master.Id;
