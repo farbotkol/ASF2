@@ -2,31 +2,16 @@ public class UserPermissionAssignmentUpdateQueue implements Queueable {
 
 	private List<PermissionSetAssignment> permissionSetAssignmentToRemove;
 	private List<PermissionSetAssignment> permissionSetAssignmentToUpdate;
-	private List<Id> userIdsToUpdate;
-	private UserRole userRole;
 
-	public UserPermissionAssignmentUpdateQueue(List<PermissionSetAssignment> toRemove, List<PermissionSetAssignment> toUpdate, List<Id> usersToUpdate, UserRole role ){
+	public UserPermissionAssignmentUpdateQueue(List<PermissionSetAssignment> toRemove, List<PermissionSetAssignment> toUpdate){
 
 		permissionSetAssignmentToRemove = toRemove;
 		permissionSetAssignmentToUpdate = toUpdate;
-		userIdsToUpdate = usersToUpdate;
-		userRole = role;
-
 	}
 
     public void execute(QueueableContext context) {
-        delete permissionSetAssignmentToRemove;
-		insert permissionSetAssignmentToUpdate;
-
-	    /*List<User> usersToUpdate  =	[SELECT id, UserRoleId
-			     										 FROM User
-			     										 WHERE id IN :userIdsToUpdate];
-
-		for(User user : usersToUpdate)
-		{		     		
-			user.UserRoleId = userRole.Id;
-		}								 
-
-		update usersToUpdate;*/
+    	system.debug(permissionSetAssignmentToUpdate);
+        database.delete (permissionSetAssignmentToRemove, false);
+		database.insert (permissionSetAssignmentToUpdate, false);
     }
 }
