@@ -1,5 +1,5 @@
 /*******************************************************************
-  Name        :   User_ContractReviewPermissionSet
+  Name        :   User_UpdatePermissionSets Previously User_ContractReviewPermissionSet
   Requester   :   CRS Requirments
   Author      :   AECOM - Luke Farbotko
   Version     :   1.0 
@@ -16,8 +16,18 @@
   Date        :   17 Feb, 2015 
 
   Update : 5 May 2015 - add eco permissions sets.
-
+  Update : 31 Jul 2015 - eco permissions and other future permissions sets to be maintained fro,
+						 a custom settings list.CRS to be excluded due to being bound to 
+						 licence types and additional logic.
 ********************************************************************/
-trigger User_ContractReviewPermissionSet on User (after update) {
-	
+trigger User_UpdatePermissionSets on User (after insert, after update) {
+	if(StaticHelper.runME==true ){
+		// prevent test limmits
+		if (Test.isRunningTest())
+		{
+			StaticHelper.runME = !StaticHelper.excludeIt;
+		}
+		
+		UserPermissionAssignmentUpdateHelper.processPermissionSets(trigger.new);
+	}
 }
