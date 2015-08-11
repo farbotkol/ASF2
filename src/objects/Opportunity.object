@@ -2013,7 +2013,7 @@ APD_Success_Fee_MM_As_Negotiated__c )</formula>
     </fields>
     <fields>
         <fullName>APD_Pursuit_Cash_As_Negotiated__c</fullName>
-        <description>Only as Negotiated - Blank Uses Default Value AECOM NSR * 4% *  Probability of Teaming Agreement Execution (%) (Decimal Value in Millions)</description>
+        <description>Only as Negotiated - Blank Uses Default Value AECOM NSR * 4% *  Probability of Teaming Agreement Execution (%) (Decimal Value in Millions)</description>
         <externalId>false</externalId>
         <inlineHelpText>As Negotiated With Client Only (Decimal Value in Millions - e.g. 1.5 = $1,500,000)</inlineHelpText>
         <label>APD Pursuit Cash ($MM) As Negotiated</label>
@@ -43087,7 +43087,7 @@ ISPICKVAL(ProjectCountry__c , &quot;Venezuela&quot;)), &quot;Latin America &amp;
         <active>true</active>
         <businessProcess>Opportunity Sales Process - Programs</businessProcess>
         <description>Master Contract with individual opportunities under it, e.g., ID/IQ, MSA, or on-call contract. Does not result in a booking on its own.</description>
-        <label>Program - EMEA&amp;I</label>
+        <label>Program - EMEA</label>
         <picklistValues>
             <picklist>AECOM_Recompete__c</picklist>
             <values>
@@ -63912,7 +63912,7 @@ ISPICKVAL(ProjectCountry__c , &quot;Venezuela&quot;)), &quot;Latin America &amp;
         <active>true</active>
         <businessProcess>Opportunity Sales Process</businessProcess>
         <description>Standard stand-alone opportunity type.</description>
-        <label>Project - EMEA&amp;I</label>
+        <label>Project - EMEA</label>
         <picklistValues>
             <picklist>AECOM_Recompete__c</picklist>
             <values>
@@ -84733,7 +84733,7 @@ ISPICKVAL(ProjectCountry__c , &quot;Venezuela&quot;)), &quot;Latin America &amp;
         <active>true</active>
         <businessProcess>Opportunity Sales Process</businessProcess>
         <description>Individual projects that will be booked under a Program-type master contract.</description>
-        <label>Task Order - EMEA&amp;I</label>
+        <label>Task Order - EMEA</label>
         <picklistValues>
             <picklist>AECOM_Recompete__c</picklist>
             <values>
@@ -92911,23 +92911,6 @@ OR(
 NOT(ISBLANK(Program_Estimated_Revenue__c))
 )</errorConditionFormula>
         <errorMessage>The program estimated revenue can not be Greater Than the ceiling amount or Less Than the total of booked task orders</errorMessage>
-    </validationRules>
-    <validationRules>
-        <fullName>Proposal_Submittal_Date_required_EMEA</fullName>
-        <active>true</active>
-        <description>Submittal Date (Proposal) is mandatory in stages 3, 5 and 6 for opps where lead region is CE or CIS.</description>
-        <errorConditionFormula>AND(
-NOT(CONTAINS( $User.CommunityNickname, &apos;SystemNA&apos;)) , 
-NOT(CONTAINS( $Profile.Name, &apos;API Access&apos;)), 
-NOT(CONTAINS( $User.CommunityNickname, &apos;APIC&apos;)),  
-CONTAINS( $RecordType.Name ,&quot;EMEA&quot;),
-Not( ISNEW() ), 
-OR( AECOM_Primary_Dept_Lookup__r.Lead_Region__c = &apos;CE&apos;,AECOM_Primary_Dept_Lookup__r.Lead_Region__c = &apos;CIS&apos; ),
-OR(BEGINS(TEXT( StageName ), &quot;3&quot;),BEGINS(TEXT( StageName ), &quot;5&quot;),BEGINS(TEXT( StageName ), &quot;6&quot;)), 
-ISNULL(Submittal_Date_Proposal__c) 
-)</errorConditionFormula>
-        <errorDisplayField>Submittal_Date_Proposal__c</errorDisplayField>
-        <errorMessage>Submittal Date (Proposal) is mandatory in stages 3, 5 and 6 for opps where lead region is CE or CIS</errorMessage>
     </validationRules>
     <webLinks>
         <fullName>New_Task_Order_On_Program</fullName>
