@@ -43087,7 +43087,7 @@ ISPICKVAL(ProjectCountry__c , &quot;Venezuela&quot;)), &quot;Latin America &amp;
         <active>true</active>
         <businessProcess>Opportunity Sales Process - Programs</businessProcess>
         <description>Master Contract with individual opportunities under it, e.g., ID/IQ, MSA, or on-call contract. Does not result in a booking on its own.</description>
-        <label>Program - EMEA</label>
+        <label>Program - EMEA&amp;I</label>
         <picklistValues>
             <picklist>AECOM_Recompete__c</picklist>
             <values>
@@ -63912,7 +63912,7 @@ ISPICKVAL(ProjectCountry__c , &quot;Venezuela&quot;)), &quot;Latin America &amp;
         <active>true</active>
         <businessProcess>Opportunity Sales Process</businessProcess>
         <description>Standard stand-alone opportunity type.</description>
-        <label>Project - EMEA</label>
+        <label>Project - EMEA&amp;I</label>
         <picklistValues>
             <picklist>AECOM_Recompete__c</picklist>
             <values>
@@ -84733,7 +84733,7 @@ ISPICKVAL(ProjectCountry__c , &quot;Venezuela&quot;)), &quot;Latin America &amp;
         <active>true</active>
         <businessProcess>Opportunity Sales Process</businessProcess>
         <description>Individual projects that will be booked under a Program-type master contract.</description>
-        <label>Task Order - EMEA</label>
+        <label>Task Order - EMEA&amp;I</label>
         <picklistValues>
             <picklist>AECOM_Recompete__c</picklist>
             <values>
@@ -92642,6 +92642,23 @@ OR($RecordType.Name = &quot;Project - CS&quot;, $RecordType.Name = &quot;Program
 
 Program_Estimated_Revenue__c &lt; Ceiling_Amount_Total__c)</errorConditionFormula>
         <errorMessage>The program estimated revenue can not be Greater Than the ceiling amount.</errorMessage>
+    </validationRules>
+	<validationRules>
+        <fullName>Proposal_Submittal_Date_required_EMEA</fullName>
+        <active>true</active>
+        <description>Submittal Date (Proposal) is mandatory in stages 3, 5 and 6 for opps where lead region is CE or CIS.</description>
+        <errorConditionFormula>AND(
+NOT(CONTAINS( $User.CommunityNickname, &apos;SystemNA&apos;)) , 
+NOT(CONTAINS( $Profile.Name, &apos;API Access&apos;)), 
+NOT(CONTAINS( $User.CommunityNickname, &apos;APIC&apos;)),  
+CONTAINS( $RecordType.Name ,&quot;EMEA&quot;),
+Not( ISNEW() ), 
+OR( AECOM_Primary_Dept_Lookup__r.Lead_Region__c = &apos;CE&apos;,AECOM_Primary_Dept_Lookup__r.Lead_Region__c = &apos;CIS&apos; ),
+OR(BEGINS(TEXT( StageName ), &quot;3&quot;),BEGINS(TEXT( StageName ), &quot;5&quot;),BEGINS(TEXT( StageName ), &quot;6&quot;)), 
+ISNULL(Submittal_Date_Proposal__c) 
+)</errorConditionFormula>
+        <errorDisplayField>Submittal_Date_Proposal__c</errorDisplayField>
+        <errorMessage>Submittal Date (Proposal) is mandatory in stages 3, 5 and 6 for opps where lead region is CE or CIS</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>Contract_Duration_Required_at_Stage2</fullName>
