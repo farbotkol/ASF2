@@ -46,7 +46,12 @@ public with sharing class ContractReviewTest {
     @isTest 
     private static void TestContractReviewSharing() 
     {
-      User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = false and isactive = true limit 1 ];
+        
+      User user = TestCoverageSmokeMocks.mockUser(true);
+      //Profile p = [select id from profile where name='Chatter + Resumes + Projects'];
+      //update user;
+      
+      //User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = false and isactive = true limit 1 ];
 
 
       Country__c ctry = new Country__c(Name='Someplace', Country_Code__c='SP');
@@ -70,11 +75,15 @@ public with sharing class ContractReviewTest {
     @isTest 
     private static void TestLegalFlagTrigger1()
     {
-    	
+      
       StaticHelper.excludeIt = false;
+      
         
+      User user = TestCoverageSmokeMocks.mockUser(true);
+      //Profile p = [select id from profile where name='Chatter + Resumes + Projects'];
+      //update user;
         // Test a 'Salesforce' licence user 
-      User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'salesforce' and Legal__c = false and isactive = true limit 1 ];
+      //User user = [SELECT id, Legal__c  FROM user WHERE Geography_Allocation__c = 'ANZ' and profile.UserLicense.Name = 'salesforce' and Legal__c = false and isactive = true limit 1 ];
       
       Test.startTest();
       user.Legal__c = false;  
@@ -93,7 +102,13 @@ public with sharing class ContractReviewTest {
     private static void TestLegalFlagTrigger2()
     {
       StaticHelper.excludeIt = false;
-
+    
+      //User user = TestCoverageSmokeMocks.mockUser(true);
+      //Profile p = [select id from profile where name='Chatter + Resumes + Projects'];
+      //user.Legal__c = true;
+      //update user;
+        
+        
       User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'salesforce' and Legal__c = true and isactive = true limit 1 ];
 
       Test.startTest();
@@ -278,7 +293,7 @@ public with sharing class ContractReviewTest {
       cr.Country__c = ctry.Id;
       cr.Date_Required__c = Date.today();
       cr.Opportunity_GNG__c = gng.Id; 
-        		
+            
       insert cr; 
 
       ContractReviewVariable crv = new ContractReviewVariable();
@@ -290,8 +305,8 @@ public with sharing class ContractReviewTest {
       crvl.add(crv);
 
       ContractReview.Assign(crvl);
-		
-		
+    
+    
     }
     
     
@@ -313,15 +328,15 @@ public with sharing class ContractReviewTest {
       insert a;   
 
 
-  		Test.StartTest();   
-  		BatchUpdateOpportunityNameSearchable batchprocess = new BatchUpdateOpportunityNameSearchable();
-  		ID batchprocessid = Database.executeBatch(batchprocess);
-  		
-  		Test.StopTest();    		 	
-  		Go_No_Go_Conversation__c gng = [select Opportunity_Name__c, Opportunity_Name_Searchable__c 
-  		    		 						from Go_No_Go_Conversation__c limit 1];						 						
-  		System.assert(gng.Opportunity_Name__c == gng.Opportunity_Name_Searchable__c);
-		
+      Test.StartTest();   
+      BatchUpdateOpportunityNameSearchable batchprocess = new BatchUpdateOpportunityNameSearchable();
+      ID batchprocessid = Database.executeBatch(batchprocess);
+      
+      Test.StopTest();          
+      Go_No_Go_Conversation__c gng = [select Opportunity_Name__c, Opportunity_Name_Searchable__c 
+                          from Go_No_Go_Conversation__c limit 1];                       
+      System.assert(gng.Opportunity_Name__c == gng.Opportunity_Name_Searchable__c);
+    
    }
    
    
@@ -331,18 +346,18 @@ public with sharing class ContractReviewTest {
 
       User user = TestCoverageSmokeMocks.mockUser(true);
 
-  		Test.StartTest();   
-  		
+      Test.StartTest();   
+      
       BatchUpdateUserCRSPermissionSets batchprocess = new BatchUpdateUserCRSPermissionSets();
-  		ID batchprocessid = Database.executeBatch(batchprocess);
-  		
-  		Test.StopTest();   
+      ID batchprocessid = Database.executeBatch(batchprocess);
+      
+      Test.StopTest();   
 
       integer cnt = [select count() from PermissionSetAssignment where PermissionSet.Name like '%Contract_Reviewer%' and AssigneeId = :user.Id];
 
       System.assert(cnt == 1, cnt);
  
-		
+    
    }
 
 
