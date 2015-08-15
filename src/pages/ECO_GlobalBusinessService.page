@@ -1,0 +1,99 @@
+<apex:page standardcontroller="SharedServicesRequest__c" extensions="ECO_GlobalBusinessService" >
+<apex:messages />
+	<style>
+
+		.table{
+			border-collapse:collapse;
+		}
+
+		.table th, .table td {
+		  padding: 8px 2px 8px 5px;
+		  border: 1px solid #dbdbdb;;
+		  border-collapse: collapse;
+		}
+		
+		.table tr {
+		  border: 1px solid #dbdbdb;;
+		  border-collapse: collapse;
+		}
+		
+		.table td {
+			background-color: white;
+		}
+		
+		td:nth-child(1){
+     		font-weight: bold;
+		}
+		
+
+		.customHelpIcon
+		{
+			display:inline-block;
+			margin:0 5px 0 0;
+			width:24px;
+			height:24px;
+			vertical-align:top !important;
+		}
+		/* CUSTOM HELP / GUIDANCE TEXT BOX */
+		.customHelpText{
+			padding: 7px;
+		    border: 1px solid #85B3CE;
+		    min-height: 30px;
+		    display: block;
+		    width: auto;
+		    margin: 0 0 5px 0;
+		    background-repeat: no-repeat;
+		    border-radius: 4px;
+		    background-color: #A2D3F1;
+		    
+		}
+		.customHelpBody{
+			display:inline-block;
+			color:#;
+			max-width:95%;
+		}	
+		
+	</style>
+
+
+<apex:form >
+
+<apex:sectionHeader title="New Global Business Services" subtitle="Select Global Business Services Record Type" />
+
+<apex:pageBlock >
+	<apex:pageBlockButtons location="top">
+		<apex:commandButton action="{!cancel}" value="Cancel" />
+	</apex:pageBlockButtons>
+
+
+
+		<div class="customHelpText">
+			<div class="customHelpBody">
+				Before you proceed with requesting a new record please use the search box at the top of the screen to ensure the record you are requesting doesn't already exist.  Duplicate records will be rejected in Oracle and merged or deleted in Salesforce if requested.
+			</div>
+		</div>
+	<apex:outputPanel >
+
+	<apex:inputHidden value="{!selectedRecordType}" id="rtypeid"/>
+	<table class="table" style="width:100%;">
+		<tr>
+			<th>Record Type Name</th>
+			<th>Record Type Description</th>
+			<th></th>
+		</tr>
+		<apex:repeat value="{!GBSRecordTypes}" var="gbsRecordType">
+			<tr>	
+				<td><apex:outputField value="{!gbsRecordType.Name}"/></td>
+				<td><apex:outputField value="{!gbsRecordType.Description}"/></td>
+				<!--<td><apex:commandButton value="Select" onclick="recordTypeSelected('{!gbsRecordType.Id}'); return false;"/></td>-->
+				<td><apex:commandButton value="Select" action="{!URLFOR($Action.SharedServicesRequest__c.New, null,[RecordType=gbsRecordType.Id, retURL=$CurrentPage.Parameters.retURL], True)}"/></td>
+			</tr>		
+		</apex:repeat>
+	</table>
+	
+	</apex:outputPanel>
+
+</apex:pageBlock>
+
+</apex:form>
+</apex:page>

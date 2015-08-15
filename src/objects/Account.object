@@ -37,18 +37,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>MapHighlightAction</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>New</actionName>
-        <content>newAccountRedirect</content>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <content>ECO_AccountGBSRedirect</content>
+        <skipRecordTypeSelect>true</skipRecordTypeSelect>
         <type>Visualforce</type>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>NewsHighlightAction</actionName>
-        <type>Default</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>RequestUpdate</actionName>
@@ -78,6 +70,44 @@
     <enableEnhancedLookup>true</enableEnhancedLookup>
     <enableFeeds>true</enableFeeds>
     <enableHistory>true</enableHistory>
+    <fieldSets>
+        <fullName>Basic_List_Set</fullName>
+        <description>To be used where basic account info needs to be displayed in a list.</description>
+        <displayedFields>
+            <field>Name</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Phone</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Account_Email_Address__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>Basic List Set</label>
+    </fieldSets>
+    <fields>
+        <fullName>AK_Native_Tribally_Owned__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>AK Native Tribally Owned</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>AbilityOne__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Ability One</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
     <fields>
         <fullName>AccountNumber</fullName>
         <trackFeedHistory>false</trackFeedHistory>
@@ -87,15 +117,27 @@
         <fullName>AccountSource</fullName>
         <picklist>
             <picklistValues>
+                <fullName>Web</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Phone Inquiry</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Partner Referral</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Purchased List</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Advertisement</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Client Referral</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contacted directly by client</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -107,63 +149,11 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Forum/conference lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>In course of meeting with client</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Industry Association/Magazine</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>In response to a marketing initiative</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Newspaper</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Online tender site</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other third party source</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Panel</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Partner</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Partner Referral</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Phone Inquiry</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Public Relations</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Purchased List</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Referral</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -175,23 +165,7 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Through current project work</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Trade Show</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Unsolicited (instigated by AECOM)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Variation on current project</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Web</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -199,10 +173,58 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>www.aecom.com</fullName>
+                <fullName>Unsolicited (instigated by AECOM)</fullName>
                 <default>false</default>
             </picklistValues>
-            <sorted>true</sorted>
+            <picklistValues>
+                <fullName>Online tender site</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Newspaper</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Industry Association/Magazine</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other third party source</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Contacted directly by client</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>In course of meeting with client</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Forum/conference lead</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>In response to a marketing initiative</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Through current project work</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Variation on current project</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Referral</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Panel</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -219,29 +241,6 @@
         <trackHistory>false</trackHistory>
         <type>Email</type>
         <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Account_Manager_User__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <inlineHelpText>AECOM employee with primary responsibility for this account, or lead contact if no account manager</inlineHelpText>
-        <label>Account Manager</label>
-        <lookupFilter>
-            <active>true</active>
-            <filterItems>
-                <field>User.IsActive</field>
-                <operation>equals</operation>
-                <value>True</value>
-            </filterItems>
-            <isOptional>true</isOptional>
-        </lookupFilter>
-        <referenceTo>User</referenceTo>
-        <relationshipLabel>Accounts</relationshipLabel>
-        <relationshipName>Accounts</relationshipName>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Account_Manager__c</fullName>
@@ -313,6 +312,19 @@ Name))))))))))))))))))))))</formula>
         <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AcctsGroupCustomer__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Group Customer</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Accounts (Group Customer)</relationshipLabel>
+        <relationshipName>AccountsGroupCustomer</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Agreement_expiration_date__c</fullName>
@@ -952,620 +964,6 @@ IF (Number_of_Contracted_Opportunities__c  = 0, &quot;Prospective&quot;,
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>TextArea</type>
-    </fields>
-    <fields>
-        <fullName>Consultant_Specialties__c</fullName>
-        <description>Specialties of our teaming partners and subs</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Select specialties of teaming partners and subs</inlineHelpText>
-        <label>Consultant Specialties</label>
-        <picklist>
-            <picklistValues>
-                <fullName>Accounting / Financing</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Acoustics</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>ADA / Barrier Free Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Advanced Traffic Management Systems</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Aerial Photography</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Air Flow Analysis</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Air Quality</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Air Transportation Planning</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Analytical Laboratory Analysis</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Animal Shelters</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>AntiTerrorism/Force Protection</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Appraisals</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Aquatic / Terrestrial /Wetland</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Aquatic Facility / Natatoriums</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Archaeological Services</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Architectural Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Architecture</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Architecture / Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Art Selection</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Asbestos / Hazardous Materials</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Attorney-at-Law</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Audio / Visual Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Barracks Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Bioengineering Techniques</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Blast Analysis</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Branding</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Broadcast Studios</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Building Assessments</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CADD Services</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cathodic Protection</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>CCTV Inspection</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Certified Industrial Hygienist</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Civil Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Code Analysis</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Commissioning</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Constructability Reviews</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Construction Inspection</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Construction Management</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Corrections Expert</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cost Estimating / Cost Control</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Cultural Resources Survey</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Curtainwalls</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Demolition</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Design / Build - General Contr</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Developer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Direct Digital Controls (DDC)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Drilling</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Educational Planners</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Electrical Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Electrical Inspection</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Energy Conservation</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Environmental Contracting</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Environmental Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Environmental Inspection</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Environmental Management</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Equipment Supplier/Installation</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Exhibit &amp; Signage Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Facility Management</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Fire Protection, Life Safety</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Flood Protection / Local Protection</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Foodservice Consultants</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Geology</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Geotechnical Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Golf Course Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Graphic Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Healthcare (Specialty) Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Healthcare Planners</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Highway Safety</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Historic Preservation</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Hurricane Resistant Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Hydraulic Modeling</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Hydrology</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Information Technology</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Inspection Testing</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Interior Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Judicial Facilities Program</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Laboratory Analysis</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Laboratory Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Land Planning</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Landscape Architecture</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Library Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Lighting Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Light Rail Specialists</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Management Consultants</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Mapping Services</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Marina Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Market Research</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Master Planning</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Materials Management</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Mechanical / Electrical Eng.</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Medical Equipment Planning</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Medical Gas Systems Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Modeling</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Museum Architecture &amp; Planning</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Naval Architecture</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Noise, Vibration and Air Quality</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Parking Garage Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Partnering Facilitator</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pavement Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pedestrian Tunnels / Connector</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>People-Mover Systems</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pipeline</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Plantscapes</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pollution Prevention</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Process Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Project Management</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Property Condition Assessments</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Public Relations / Involvement</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Real Estate Brokerage and Dev.</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Recreational Planning / Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Relocation Management</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Remediation</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Research Services</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Risk Assessments</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Roadway Inventory</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Rock Slope Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Roofing Consultant</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Roundabout Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Scheduling Consultant</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Security Consulting</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Seismic Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Shielding Design / Physicist</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Signage</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Snow Avalanche Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Soil Borings</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Space Planning / Programming</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Streetscaping</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Structural Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Structural Steel Coating Inspection</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Student Housing Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Subsurface Utility Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Surveying</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Sustainability</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Technology Planning</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Telecommunications</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Television (TV) Inspection Srv</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Theater Consultants</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Total Asset Management</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Traffic Analysis</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Transportation Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Tunnel Design / Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Underground Storage Tank Remov</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Underwater Inspection Services</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Value Engineering</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Vertical Transportation</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Vibration Analysis</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Wastewater / WTP Design</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Website Development</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Wind Testing &amp; Analysis</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>true</sorted>
-        </picklist>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <type>MultiselectPicklist</type>
-        <visibleLines>10</visibleLines>
     </fields>
     <fields>
         <fullName>CountryLookup__c</fullName>
@@ -2329,6 +1727,15 @@ IF (Number_of_Contracted_Opportunities__c  = 0, &quot;Prospective&quot;,
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>CreditHoldFlag__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Credit Hold Flag</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>CreditRiskRating__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>1298 - 1358 Medium Risk
@@ -2360,9 +1767,37 @@ IF (Number_of_Contracted_Opportunities__c  = 0, &quot;Prospective&quot;,
         <trackHistory>false</trackHistory>
     </fields>
     <fields>
+        <fullName>CustomerAccountStatus__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Customer Account Status</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CustomerType__c</fullName>
+        <externalId>false</externalId>
+        <label>Intercompany Customer</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>D_B_Rating__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Dun &amp; Bradstreet rating on financial stability. To request a D&amp;B, email Salesforce_Help@aecom.com or contact Shared Services directly.</inlineHelpText>
+        <inlineHelpText>Dun &amp; Bradstreet rating on financial stability. Reports are requested automatically and will be added to account records weekly.</inlineHelpText>
         <label>D&amp;B Rating</label>
         <picklist>
             <picklistValues>
@@ -3025,10 +2460,52 @@ IF (Number_of_Contracted_Opportunities__c  = 0, &quot;Prospective&quot;,
         <visibleLines>5</visibleLines>
     </fields>
     <fields>
+        <fullName>DoNotSurvey__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Do Not Survey</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ECO_Disadvn_WomanOwned_SB__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>ECO Disadvantage Woman Owned SB</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Eight_A_Certified__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Eight A Certified</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>EndMarketSector__c</fullName>
+        <externalId>false</externalId>
+        <label>End Market Sector</label>
+        <picklist>
+            <picklistValues>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>FY14_Key_Client__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Access restricted.</inlineHelpText>
-        <label>FY15 Key Client</label>
+        <label>FY14 Key Client</label>
         <picklist>
             <picklistValues>
                 <fullName>KAM Tier I</fullName>
@@ -3063,27 +2540,31 @@ IF (Number_of_Contracted_Opportunities__c  = 0, &quot;Prospective&quot;,
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>ANZ KAM</fullName>
+                <fullName>ANZ SPP</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>WA KAM</fullName>
+                <fullName>SPP Lite</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>NAC KAM</fullName>
+                <fullName>WAC SPP</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>QNT KAM</fullName>
+                <fullName>NSW SPP</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>NZ KAM</fullName>
+                <fullName>QLD SPP</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>VSA KAM</fullName>
+                <fullName>NZ SPP</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>VicT SPP</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -3154,6 +2635,17 @@ IF (Number_of_Contracted_Opportunities__c  = 0, &quot;Prospective&quot;,
         <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>GroupCustomer__c</fullName>
+        <externalId>false</externalId>
+        <label>Group Customer Value</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Hierarchy_Group_Name__c</fullName>
@@ -3237,6 +2729,24 @@ Parent.Parent.Parent.Parent.Parent.ParentId
         <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Hist_BLK_Minority_Inst__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Hist BLK Minority Inst</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>HubZone__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Hub Zone</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>IDReport__c</fullName>
@@ -3403,6 +2913,51 @@ Parent.Parent.Parent.Parent.Parent.ParentId
         <trackHistory>false</trackHistory>
     </fields>
     <fields>
+        <fullName>Is_DisabledVetOwned__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Disabled Vet Owned</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_MinorityOwned__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Minority Owned</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_SmallBusiness__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Small Business</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_VeteranOwned__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Veteran Owned</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Is_WomanOwned__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Woman Owned</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Jigsaw</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -3457,10 +3012,6 @@ Parent.Parent.Parent.Parent.Parent.ParentId
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Power &amp; Industrial</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Program Management</fullName>
                 <default>false</default>
             </picklistValues>
@@ -3480,25 +3031,19 @@ Parent.Parent.Parent.Parent.Parent.ParentId
         <visibleLines>5</visibleLines>
     </fields>
     <fields>
-        <fullName>Legacy_AccountID_URS__c</fullName>
-        <description>Holds ID from the legacy URS Vision system; needed until Projects are migrated to Salesforce from the US Midwest Vision system. Need to be careful to preserve this when merging accounts.</description>
+        <fullName>LargeBusiness__c</fullName>
+        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
-        <inlineHelpText>Holds ID from the legacy URS Vision system; needed until Projects are migrated to Salesforce from the US Midwest Vision system. Need to be careful to preserve this when merging accounts.</inlineHelpText>
-        <label>Legacy AccountID - URS</label>
-        <length>75</length>
-        <required>false</required>
+        <label>Large Business</label>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
-        <type>Text</type>
-        <unique>false</unique>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Legacy_AccountID__c</fullName>
         <caseSensitive>false</caseSensitive>
-        <description>Holds ID from B&amp;O, the legacy ANZ system; needed until ANZ Projects are migrated to Salesforce. Need to be careful to preserve this when merging accounts.</description>
         <externalId>true</externalId>
-        <inlineHelpText>Holds ID from B&amp;O, the legacy ANZ system; needed until ANZ Projects are migrated to Salesforce. Need to be careful to preserve this when merging accounts.</inlineHelpText>
-        <label>Legacy AccountID - ANZ</label>
+        <label>Legacy AccountID</label>
         <length>75</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
@@ -3586,6 +3131,37 @@ Parent.Parent.Parent.Parent.Parent.ParentId
         <trackHistory>true</trackHistory>
     </fields>
     <fields>
+        <fullName>NoSurvey__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Check this box when you would like to opt the account out of receiving a survey.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box when you would like to opt the account out of receiving a survey.</inlineHelpText>
+        <label>No Survey</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NonProfit__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Non Profit</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Num_1099__c</fullName>
+        <externalId>false</externalId>
+        <label>Num 1099</label>
+        <length>30</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>NumberOfEmployees</fullName>
         <inlineHelpText>Number of Employees</inlineHelpText>
         <trackFeedHistory>false</trackFeedHistory>
@@ -3667,6 +3243,30 @@ Parent.Parent.Parent.Parent.Parent.ParentId
         <caseSensitive>false</caseSensitive>
         <externalId>true</externalId>
         <label>Oracle Customer Number</label>
+        <length>30</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>OracleVendorID__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>Oracle Vendor ID</label>
+        <length>15</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>OracleVendorNumber__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>Oracle Vendor Number</label>
         <length>30</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
@@ -3860,6 +3460,17 @@ Parent.Parent.Parent.Parent.Parent.Oracle_Name_Key_Accounts__c
         <type>Hierarchy</type>
     </fields>
     <fields>
+        <fullName>PaymentTermName__c</fullName>
+        <externalId>false</externalId>
+        <label>Payment Term Name</label>
+        <length>15</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Performance_RIsks__c</fullName>
         <description>Indicates that the Office of Risk Management considers this account to pose a performance risk.</description>
         <externalId>false</externalId>
@@ -3993,14 +3604,14 @@ Can be deleted</inlineHelpText>
         <fullName>Region__c</fullName>
         <externalId>false</externalId>
         <formula>IF (ISBLANK( State_Province_Emerate__c ), &quot;None&quot;, 
-IF (CONTAINS(&quot;Nova Scotia:Quebec:New Brunswick:Newfoundland:Prince Edward Island&quot;, State_Province_Emerate__r.Name ), &quot;AME Northeast&quot;, 
-IF (CONTAINS(&quot;Alberta:British Columbia:Manitoba:Northwest Territories:Nunavut:Saskatchewan:Yukon Territory&quot;, State_Province_Emerate__r.Name ), &quot;AME West / Gulf Coast&quot;, 
-IF (CONTAINS(&quot;Ontario:Illinois:Indiana:Iowa:Kansas:Kentucky:Michigan:Minnesota:Missouri:Nebraska:Ohio:Wisconsin&quot;,State_Province_Emerate__r.Name ), &quot;AME Midwest&quot;, 
-IF (CONTAINS(&quot;Connecticut:Maine:Massachusetts:New Hampshire:Pennsylvania:New Jersey:New York:Rhode Island:Vermont:Delaware&quot;,State_Province_Emerate__r.Name ),&quot;AME Northeast&quot;, 
-IF (CONTAINS(&quot;Alabama:Florida:Georgia:North Carolina:District of Columbia:Maryland:West Virginia:Virginia:Puerto Rico:South Carolina:Tennessee:U.S. Virgin Islands&quot;,State_Province_Emerate__r.Name ), &quot;AME Southeast&quot;, 
-IF (CONTAINS(&quot;Arkansas:Texas:Louisiana:Oklahoma:Mississippi&quot;,State_Province_Emerate__r.Name ), &quot;AME West / Gulf Coast&quot;, 
-IF (CONTAINS(&quot;Alaska:Arizona:Colorado:North Dakota:South Dakota:Idaho:Montana:New Mexico:Oregon:Utah:Washington:Wyoming&quot;, State_Province_Emerate__r.Name ), &quot;AME West / Gulf Coast&quot;, 
-IF (CONTAINS(&quot;American Samoa:California:Hawaii:Nevada:Guam: Midway Atoll:Wake Island:Mariana Islands&quot;, State_Province_Emerate__r.Name ), &quot;AME Pacific&quot;, 
+IF (CONTAINS(&quot;New Brunswick:Newfoundland:Ontario:Prince Edward Island&quot;, State_Province_Emerate__r.Name ), &quot;Canada&quot;, 
+IF (CONTAINS(&quot;Nova Scotia:Quebec&quot;, State_Province_Emerate__r.Name ), &quot;Canada&quot;, 
+IF (CONTAINS(&quot;Alberta:British Columbia:Manitoba:Northwest Territories:Nunavut:Saskatchewan:Yukon Territory&quot;, State_Province_Emerate__r.Name ), &quot;Canada&quot;, 
+IF (CONTAINS(&quot;Arkansas:Illinois:Indiana:Iowa:Kansas:Kentucky:Michigan:Minnesota:Missouri:Nebraska:North Dakota:Ohio:South Dakota:Delaware:Wisconsin&quot;,State_Province_Emerate__r.Name ), &quot;US North&quot;, 
+IF (CONTAINS(&quot;Connecticut:Maine:Massachusetts:New Hampshire:Pennsylvania:New Jersey:New York:Rhode Island:Vermont:West Virginia&quot;,State_Province_Emerate__r.Name ),&quot;US North&quot;, 
+IF (CONTAINS(&quot;Alabama:Florida:Georgia:Mississippi:North Carolina:District of Columbia:Maryland:Virginia:Puerto Rico:South Carolina:Tennessee:U.S. Virgin Islands&quot;,State_Province_Emerate__r.Name ), &quot;US South&quot;, 
+IF (CONTAINS(&quot;Texas :Louisiana:Oklahoma&quot;,State_Province_Emerate__r.Name ), &quot;US South&quot;, 
+IF (CONTAINS(&quot;Alaska:American Samoa:Arizona:California:Colorado:Hawaii:Idaho:Montana:Nevada:New Mexico:Oregon:Utah:Washington:Wyoming:Guam: Midway Atoll:Wake Island:Mariana Islands&quot;, State_Province_Emerate__r.Name ), &quot;US West&quot;, 
 IF (CONTAINS(&quot;United Arab Emirates&quot;, CountryLookup__r.Name) , BillingCity , 
 CountryLookup__r.Name ))))))))))</formula>
         <inlineHelpText>autofilled based on address state</inlineHelpText>
@@ -4068,6 +3679,16 @@ CountryLookup__r.Name ))))))))))</formula>
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>ReportLink__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/00Oe0000000Gy2k?pv1=&quot;&amp;Id, &quot;Report Link&quot;)</formula>
+        <label>Report Link</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Risk_Notes__c</fullName>
         <description>Comments and/or advice related to information provided in the other Risk Factor section fields.</description>
         <externalId>false</externalId>
@@ -4097,6 +3718,15 @@ CountryLookup__r.Name ))))))))))</formula>
         <fullName>Site</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
+    </fields>
+    <fields>
+        <fullName>SmallDisadvnBusiness__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Small Disadvantage Business</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Special_Status__c</fullName>
@@ -4609,6 +4239,30 @@ CountryLookup__r.Name ))))))))))</formula>
         <type>TextArea</type>
     </fields>
     <fields>
+        <fullName>SubsidiaryAccount__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Subsidiary Account</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Subsidiary Accounts</relationshipLabel>
+        <relationshipName>Accounts</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>TaxReference__c</fullName>
+        <externalId>false</externalId>
+        <label>Tax Reference</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>TickerSymbol</fullName>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -4701,14 +4355,79 @@ CountryLookup__r.Name ))))))))))</formula>
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
-        <fullName>View_Revenue_Forecast_by_Geo__c</fullName>
+        <fullName>VAT_RegistrationNumber__c</fullName>
         <externalId>false</externalId>
-        <formula>HYPERLINK(&quot;/00Oa0000008myy0?pv0=&quot;+ Id , &quot;Display a projection of revenue by quarter for this account&quot;, &quot;_top&quot;)</formula>
-        <label>View Opportunity Revenue Forecast by Geo</label>
+        <label>VAT Registration Number</label>
+        <length>30</length>
         <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>VendorInactiveDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Vendor Inactive Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>VendorType__c</fullName>
+        <externalId>false</externalId>
+        <label>Vendor Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>COMPANY</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CONTRACTOR</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>INTER-COMPANY</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>IRC_JOB_AGENCY</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>NON PROFIT ORGANIZATION</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SUBCONSULTANT</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SUBCONTRACTOR</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>TAX AUTHORITY</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>TIME SHEET CONTRACTOR</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>UTILITIES</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>VENDOR</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>true</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>View_YTD_Bookings_for_Hierarchy__c</fullName>
@@ -4809,6 +4528,33 @@ CountryLookup__r.Name ))))))))))</formula>
         <sharedTo/>
     </listViews>
     <listViews>
+        <fullName>Accounts_With_Oracle_Info_for_Sync_Test</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.ADDRESS1_STATE</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>CORE.USERS.ALIAS</columns>
+        <columns>OracleVendorID__c</columns>
+        <columns>OracleVendorNumber__c</columns>
+        <columns>Oracle_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>OracleCustomerID__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <filters>
+            <field>OracleCustomerNumber__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <filters>
+            <field>ACCOUNT.NAME</field>
+            <operation>notContain</operation>
+            <value>*DO NOT USE*</value>
+        </filters>
+        <label>Accounts With Oracle Info for Sync Test</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Accounts_with_Employees</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>ACCOUNT.ADDRESS1_STATE</columns>
@@ -4820,6 +4566,23 @@ CountryLookup__r.Name ))))))))))</formula>
         <sharedTo>
             <role>Americas</role>
         </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>All_Accounts</fullName>
+        <columns>ACCOUNT.NAME</columns>
+        <columns>ACCOUNT.ADDRESS1_STATE</columns>
+        <columns>ACCOUNT.PHONE1</columns>
+        <columns>ACCOUNT.TYPE</columns>
+        <columns>Number_of_Contracted_Opportunities__c</columns>
+        <columns>Number_of_Open_Opportunities__c</columns>
+        <columns>ACCOUNT.CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ACCOUNT.CREATED_DATE</field>
+            <operation>greaterOrEqual</operation>
+        </filters>
+        <label>All Accounts</label>
+        <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>Americas_Accounts_requiring_MK_Denial</fullName>
@@ -4856,33 +4619,6 @@ CountryLookup__r.Name ))))))))))</formula>
             <value>Nicaragua,Panama,Cuba,Bahamas,Haiti,Jamaica,Dominican,Antigua</value>
         </filters>
         <label>MK Denial - No. &amp; Central America</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>Austin_City</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>PARENT_NAME</columns>
-        <columns>Client_Subgroup__c</columns>
-        <columns>ACCOUNT.CREATED_DATE</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
-        <columns>Account_Manager_User__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>ACCOUNT.NAME</field>
-            <operation>contains</operation>
-            <value>Austin</value>
-        </filters>
-        <filters>
-            <field>Client_Group__c</field>
-            <operation>equals</operation>
-            <value>Municipal</value>
-        </filters>
-        <filters>
-            <field>ACCOUNT.ADDRESS1_STATE</field>
-            <operation>equals</operation>
-            <value>Texas</value>
-        </filters>
-        <label>Austin, City</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -4945,7 +4681,7 @@ CountryLookup__r.Name ))))))))))</formula>
             <operation>equals</operation>
             <value>Account.Account_Record_Type_North_America</value>
         </filters>
-        <label>Honeywell</label>
+        <label>CAM Accounts</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -5118,10 +4854,12 @@ CountryLookup__r.Name ))))))))))</formula>
     </listViews>
     <listViews>
         <fullName>FY14_Key_Accounts</fullName>
+        <columns>Oracle_Task__c</columns>
         <columns>ACCOUNT.NAME</columns>
         <columns>Oracle_Name__c</columns>
+        <columns>Oracle_Name_Key_Accounts__c</columns>
+        <columns>Account_Manager__c</columns>
         <columns>Region__c</columns>
-        <columns>State_Province_Emerate__c</columns>
         <columns>ACCOUNT.ADDRESS1_COUNTRY</columns>
         <columns>Client_Group__c</columns>
         <columns>Client_Subgroup__c</columns>
@@ -5292,17 +5030,6 @@ CountryLookup__r.Name ))))))))))</formula>
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>Movers_and_Shakers_Property_Club_Ltd</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>ACCOUNT.ADDRESS1_STATE</columns>
-        <columns>ACCOUNT.PHONE1</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <filterScope>Everything</filterScope>
-        <label>Movers and Shakers Property Club Ltd</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
         <fullName>Nancy</fullName>
         <booleanFilter>1 OR 2</booleanFilter>
         <columns>ACCOUNT.NAME</columns>
@@ -5403,7 +5130,7 @@ CountryLookup__r.Name ))))))))))</formula>
         <filters>
             <field>CREATEDBY_USER.ALIAS</field>
             <operation>notEqual</operation>
-            <value>dbadm,anort</value>
+            <value>dbadm</value>
         </filters>
         <filters>
             <field>UPDATEDBY_USER.ALIAS</field>
@@ -5530,31 +5257,6 @@ CountryLookup__r.Name ))))))))))</formula>
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>Pfizer</fullName>
-        <booleanFilter>1 OR 2</booleanFilter>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>PARENT_NAME</columns>
-        <columns>City__c</columns>
-        <columns>State_Province_Emerate__c</columns>
-        <columns>Client_Group__c</columns>
-        <columns>Client_Subgroup__c</columns>
-        <columns>Hierarchy_Group__c</columns>
-        <columns>Number_of_Open_Opportunities__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Hierarchy_Group__c</field>
-            <operation>startsWith</operation>
-            <value>Pfizer</value>
-        </filters>
-        <filters>
-            <field>ACCOUNT.NAME</field>
-            <operation>contains</operation>
-            <value>Pfizer</value>
-        </filters>
-        <label>Pfizer</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
         <fullName>Potential_Subcontractors</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>ACCOUNT.ADDRESS1_CITY</columns>
@@ -5636,76 +5338,6 @@ CountryLookup__r.Name ))))))))))</formula>
         </sharedTo>
     </listViews>
     <listViews>
-        <fullName>Shell7</fullName>
-        <booleanFilter>1 AND 2 AND (3 or 4)</booleanFilter>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>ACCOUNT.LAST_UPDATE</columns>
-        <columns>ACCOUNT.CREATED_DATE</columns>
-        <columns>ACCOUNT.ADDRESS1_STATE</columns>
-        <columns>ACCOUNT.PHONE1</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>ACCOUNT.ADDRESS1_STREET</columns>
-        <columns>ACCOUNT.ADDRESS1_CITY</columns>
-        <columns>ACCOUNT.ADDRESS1_ZIP</columns>
-        <columns>ACCOUNT.ADDRESS1_COUNTRY</columns>
-        <columns>PARENT_NAME</columns>
-        <columns>CREATEDBY_USER.ALIAS</columns>
-        <columns>Account_Manager_User__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>ACCOUNT.NAME</field>
-            <operation>contains</operation>
-            <value>Shell</value>
-        </filters>
-        <filters>
-            <field>PARENT_NAME</field>
-            <operation>contains</operation>
-            <value>shell</value>
-        </filters>
-        <filters>
-            <field>ACCOUNT.LAST_ACTIVITY</field>
-            <operation>greaterOrEqual</operation>
-            <value>LAST_WEEK</value>
-        </filters>
-        <filters>
-            <field>ACCOUNT.CREATED_DATE</field>
-            <operation>greaterThan</operation>
-            <value>LAST_WEEK</value>
-        </filters>
-        <label>Shell - Created/Modified Last Week</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>Shell_Hierarchy</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>ACCOUNT.ADDRESS1_STATE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>IDReport__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Hierarchy_Group__c</field>
-            <operation>startsWith</operation>
-            <value>Royal Dutch Shell</value>
-        </filters>
-        <label>Shell Hierarchy</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>Shell_Hierarchy1</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>ACCOUNT.ADDRESS1_STATE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <columns>IDReport__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Hierarchy_Group__c</field>
-            <operation>startsWith</operation>
-            <value>Royal Dutch Shell</value>
-        </filters>
-        <label>Shell Hierarchy</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
         <fullName>South_Dublin_City_Council</fullName>
         <columns>ACCOUNT.NAME</columns>
         <columns>ACCOUNT.ADDRESS1_STATE</columns>
@@ -5734,7 +5366,7 @@ CountryLookup__r.Name ))))))))))</formula>
             <operation>contains</operation>
             <value>TRANS</value>
         </filters>
-        <label>exxonmobil</label>
+        <label>Transportation Clients</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -5806,17 +5438,6 @@ CountryLookup__r.Name ))))))))))</formula>
             <value>National Government</value>
         </filters>
         <label>USACE Leads</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>urs_italy</fullName>
-        <columns>ACCOUNT.NAME</columns>
-        <columns>ACCOUNT.ADDRESS1_STATE</columns>
-        <columns>ACCOUNT.PHONE1</columns>
-        <columns>ACCOUNT.TYPE</columns>
-        <columns>CORE.USERS.ALIAS</columns>
-        <filterScope>Mine</filterScope>
-        <label>urs italy</label>
         <language>en_US</language>
     </listViews>
     <recordTypeTrackFeedHistory>false</recordTypeTrackFeedHistory>
@@ -6256,13 +5877,6 @@ CountryLookup__r.Name ))))))))))</formula>
             </values>
             <values>
                 <fullName>Yes</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Consultant_Specialties__c</picklist>
-            <values>
-                <fullName>Accounting %2F Financing</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -7006,6 +6620,17 @@ CountryLookup__r.Name ))))))))))</formula>
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>CustomerType__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>D_B_Rating__c</picklist>
             <values>
                 <fullName>Fair</fullName>
@@ -7636,13 +7261,20 @@ CountryLookup__r.Name ))))))))))</formula>
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>EndMarketSector__c</picklist>
+            <values>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>FY14_Key_Client__c</picklist>
             <values>
                 <fullName>AME</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>ANZ KAM</fullName>
+                <fullName>ANZ SPP</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -7670,11 +7302,11 @@ CountryLookup__r.Name ))))))))))</formula>
                 <default>false</default>
             </values>
             <values>
-                <fullName>NAC KAM</fullName>
+                <fullName>NSW SPP</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>NZ KAM</fullName>
+                <fullName>NZ SPP</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -7682,15 +7314,19 @@ CountryLookup__r.Name ))))))))))</formula>
                 <default>false</default>
             </values>
             <values>
-                <fullName>QNT KAM</fullName>
+                <fullName>QLD SPP</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>VSA KAM</fullName>
+                <fullName>SPP Lite</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>WA KAM</fullName>
+                <fullName>VicT SPP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>WAC SPP</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -8540,6 +8176,53 @@ CountryLookup__r.Name ))))))))))</formula>
                 <default>false</default>
             </values>
         </picklistValues>
+        <picklistValues>
+            <picklist>VendorType__c</picklist>
+            <values>
+                <fullName>COMPANY</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CONTRACTOR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>INTER-COMPANY</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>IRC_JOB_AGENCY</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>NON PROFIT ORGANIZATION</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SUBCONSULTANT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SUBCONTRACTOR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>TAX AUTHORITY</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>TIME SHEET CONTRACTOR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>UTILITIES</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>VENDOR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
     </recordTypes>
     <recordTypes>
         <fullName>Account_Record_Type_North_America</fullName>
@@ -8917,609 +8600,6 @@ CountryLookup__r.Name ))))))))))</formula>
             </values>
             <values>
                 <fullName>Yes</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Consultant_Specialties__c</picklist>
-            <values>
-                <fullName>ADA %2F Barrier Free Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Accounting %2F Financing</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Acoustics</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Advanced Traffic Management Systems</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Aerial Photography</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Air Flow Analysis</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Air Quality</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Air Transportation Planning</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Analytical Laboratory Analysis</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Animal Shelters</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>AntiTerrorism%2FForce Protection</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Appraisals</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Aquatic %2F Terrestrial %2FWetland</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Aquatic Facility %2F Natatoriums</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Archaeological Services</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Architectural Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Architecture</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Architecture %2F Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Art Selection</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Asbestos %2F Hazardous Materials</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Attorney-at-Law</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Audio %2F Visual Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Barracks Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Bioengineering Techniques</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Blast Analysis</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Branding</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Broadcast Studios</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Building Assessments</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>CADD Services</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>CCTV Inspection</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Cathodic Protection</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Certified Industrial Hygienist</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Civil Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Code Analysis</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Commissioning</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Constructability Reviews</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Construction Inspection</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Construction Management</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Corrections Expert</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Cost Estimating %2F Cost Control</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Cultural Resources Survey</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Curtainwalls</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Demolition</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Design %2F Build - General Contr</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Developer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Direct Digital Controls %28DDC%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Drilling</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Educational Planners</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Electrical Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Electrical Inspection</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Energy Conservation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Environmental Contracting</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Environmental Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Environmental Inspection</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Environmental Management</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Equipment Supplier%2FInstallation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Exhibit %26 Signage Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Facility Management</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Fire Protection%2C Life Safety</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Flood Protection %2F Local Protection</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Foodservice Consultants</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Geology</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Geotechnical Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Golf Course Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Graphic Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Healthcare %28Specialty%29 Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Healthcare Planners</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Highway Safety</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Historic Preservation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Hurricane Resistant Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Hydraulic Modeling</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Hydrology</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Information Technology</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Inspection Testing</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Interior Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Judicial Facilities Program</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Laboratory Analysis</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Laboratory Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Land Planning</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Landscape Architecture</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Library Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Light Rail Specialists</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Lighting Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Management Consultants</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Mapping Services</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Marina Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Market Research</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Master Planning</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Materials Management</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Mechanical %2F Electrical Eng%2E</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medical Equipment Planning</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medical Gas Systems Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Modeling</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Museum Architecture %26 Planning</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Naval Architecture</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Noise%2C Vibration and Air Quality</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Parking Garage Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Partnering Facilitator</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pavement Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pedestrian Tunnels %2F Connector</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>People-Mover Systems</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pipeline</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Plantscapes</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pollution Prevention</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Process Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project Management</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Property Condition Assessments</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Public Relations %2F Involvement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Real Estate Brokerage and Dev%2E</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Recreational Planning %2F Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Relocation Management</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Remediation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Research Services</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Risk Assessments</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Roadway Inventory</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Rock Slope Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Roofing Consultant</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Roundabout Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Scheduling Consultant</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Security Consulting</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Seismic Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Shielding Design %2F Physicist</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Signage</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Snow Avalanche Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Soil Borings</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Space Planning %2F Programming</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Streetscaping</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Structural Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Structural Steel Coating Inspection</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Student Housing Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Subsurface Utility Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Surveying</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Sustainability</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Technology Planning</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Telecommunications</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Television %28TV%29 Inspection Srv</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Theater Consultants</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Total Asset Management</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Traffic Analysis</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Transportation Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tunnel Design %2F Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Underground Storage Tank Remov</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Underwater Inspection Services</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Value Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Vertical Transportation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Vibration Analysis</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Wastewater %2F WTP Design</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Website Development</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Wind Testing %26 Analysis</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -10251,6 +9331,17 @@ CountryLookup__r.Name ))))))))))</formula>
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>CustomerType__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>D_B_Rating__c</picklist>
             <values>
                 <fullName>Fair</fullName>
@@ -10881,13 +9972,20 @@ CountryLookup__r.Name ))))))))))</formula>
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>EndMarketSector__c</picklist>
+            <values>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>FY14_Key_Client__c</picklist>
             <values>
                 <fullName>AME</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>ANZ KAM</fullName>
+                <fullName>ANZ SPP</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -10915,11 +10013,11 @@ CountryLookup__r.Name ))))))))))</formula>
                 <default>false</default>
             </values>
             <values>
-                <fullName>NAC KAM</fullName>
+                <fullName>NSW SPP</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>NZ KAM</fullName>
+                <fullName>NZ SPP</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -10927,15 +10025,19 @@ CountryLookup__r.Name ))))))))))</formula>
                 <default>false</default>
             </values>
             <values>
-                <fullName>QNT KAM</fullName>
+                <fullName>QLD SPP</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>VSA KAM</fullName>
+                <fullName>SPP Lite</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>WA KAM</fullName>
+                <fullName>VicT SPP</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>WAC SPP</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -11140,10 +10242,6 @@ CountryLookup__r.Name ))))))))))</formula>
             </values>
             <values>
                 <fullName>PDD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Power %26 Industrial</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -11789,6 +10887,53 @@ CountryLookup__r.Name ))))))))))</formula>
                 <default>false</default>
             </values>
         </picklistValues>
+        <picklistValues>
+            <picklist>VendorType__c</picklist>
+            <values>
+                <fullName>COMPANY</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CONTRACTOR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>INTER-COMPANY</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>IRC_JOB_AGENCY</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>NON PROFIT ORGANIZATION</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SUBCONSULTANT</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SUBCONTRACTOR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>TAX AUTHORITY</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>TIME SHEET CONTRACTOR</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>UTILITIES</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>VENDOR</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
     </recordTypes>
     <searchLayouts>
         <customTabListAdditionalFields>ACCOUNT.NAME</customTabListAdditionalFields>
@@ -11803,13 +10948,11 @@ CountryLookup__r.Name ))))))))))</formula>
         <lookupDialogsAdditionalFields>City__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>State_Province_Emerate__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>CountryLookup__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Client_ID__c</lookupDialogsAdditionalFields>
         <lookupFilterFields>ACCOUNT.NAME</lookupFilterFields>
         <lookupFilterFields>00N30000004qR9N</lookupFilterFields>
         <lookupFilterFields>00N30000004qDCb</lookupFilterFields>
         <lookupFilterFields>00N30000007fA9Q</lookupFilterFields>
         <lookupFilterFields>00N30000007fA9P</lookupFilterFields>
-        <lookupFilterFields>00N30000004r7oG</lookupFilterFields>
         <lookupPhoneDialogsAdditionalFields>ACCOUNT.NAME</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>ACCOUNT.PHONE1</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>Street__c</lookupPhoneDialogsAdditionalFields>
@@ -11820,9 +10963,9 @@ CountryLookup__r.Name ))))))))))</formula>
         <searchFilterFields>City__c</searchFilterFields>
         <searchFilterFields>State_Province_Emerate__c</searchFilterFields>
         <searchFilterFields>CountryLookup__c</searchFilterFields>
+        <searchFilterFields>Account_Manager__c</searchFilterFields>
         <searchFilterFields>Client_Group__c</searchFilterFields>
         <searchFilterFields>Client_Subgroup__c</searchFilterFields>
-        <searchFilterFields>Account_Manager_User__c</searchFilterFields>
         <searchFilterFields>Reach__c</searchFilterFields>
         <searchFilterFields>Former_Client_Name__c</searchFilterFields>
         <searchResultsAdditionalFields>ACCOUNT.NAME</searchResultsAdditionalFields>
@@ -11887,6 +11030,25 @@ BEGINS(TEXT( $User.Geography_Allocation__c) , &apos;ANZ&apos; ),
         <showsLocation>true</showsLocation>
         <showsStatus>true</showsStatus>
         <url>http://news.altavista.com/search?nc=0&amp;q={!Account_Name}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Client_Project_Performance</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <hasMenubar>false</hasMenubar>
+        <hasScrollbars>true</hasScrollbars>
+        <hasToolbar>false</hasToolbar>
+        <height>600</height>
+        <isResizable>true</isResizable>
+        <linkType>url</linkType>
+        <masterLabel>Client Project Performance</masterLabel>
+        <openType>newWindow</openType>
+        <position>none</position>
+        <protected>false</protected>
+        <showsLocation>false</showsLocation>
+        <showsStatus>false</showsStatus>
+        <url>/00Oe0000000Gy2k?pv1=&quot;{!Account.Id}</url>
     </webLinks>
     <webLinks>
         <fullName>Create_Edit_Address</fullName>
