@@ -29,4 +29,10 @@
     <tab>Business_Line__c</tab>
     <tab>ANZDeptProject__c</tab>
     <tab>ANZTaskStructure__c</tab>
+    <tab>Ecosystem</tab>
+    <tab>Revenue__c</tab>
+    <tab>Billing__c</tab>
+    <tab>CostDistLine__c</tab>
+    <tab>EarnedValueHeader__c</tab>
+    <tab>VendorSub__c</tab>
 </CustomApplication>

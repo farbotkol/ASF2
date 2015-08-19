@@ -1,0 +1,304 @@
+<apex:page standardController="pse__Proj__c" standardStylesheets="false" recordSetVar="results" extensions="ECO_CloneProjectController"  tabStyle="pse__Proj__c">
+  	
+	<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js" />
+	<!--
+  	<script src="{!URLFOR($Resource.ECO_jQuery_1_11_2_min_js, '/js/jquery-1.11.2.min.js')}" type="text/javascript"></script>
+  	-->
+	<script type="text/javascript">
+	
+	j$ = jQuery.noConflict();
+
+	//handle manual entry in search form, trigger search when enter key hit
+    function handlerKeyPress(e) {    	
+        if(e.keyCode == 13){            
+           doSearchProjects();
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    j$(document).ready(function(){
+		j$("[id*=txtSearchProjectName]").focus();  
+    });
+	</script>
+
+	<style>
+		.pbButton label{
+			margin-right:5px;
+		}
+		.apexp .detailList .list td, .apexp .detailList .list th, .apexp .editPage .bPageBlock .detailList .list tr td, .apexp .editPage .bPageBlock .detailList .list tr th{
+			border-bottom: 1px solid #ededed !important;
+			color: #000 !important;
+			font-size:1em !important;
+		}
+	</style>
+
+	
+
+
+	<apex:form >
+
+		
+     	<apex:actionFunction name="doSearchProjects" action="{!SearchProjects}" rerender="msg,opProjects,pbPagingButtons,opGlobalTemplates,pbGTPagingButtons,opMyTemplates,pbMTPagingButtons" status="statusBar" />
+
+<apex:sectionHeader subtitle="Project Clone" title="Copy Project {!cloningActionStr}" >
+</apex:sectionHeader>
+
+		<apex:actionStatus id="statusBar">
+			<apex:facet name="start">
+				<p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Processing...</p>
+			</apex:facet>
+			<apex:facet name="stop">
+			</apex:facet>
+		</apex:actionStatus>
+
+<apex:pageMessages id="msg"></apex:pageMessages>
+
+		<apex:pageBlock title="Project Search">
+			<apex:pageBlockButtons location="top">
+				<apex:outputLabel for="txtSearchProjectName" value="{!$ObjectType.pse__Proj__c.Fields.Name.Label}"></apex:outputLabel> 	<apex:inputText id="txtSearchProjectName" value="{!searchProjectName}" onkeypress="return handlerKeyPress(event);" ></apex:inputText>  <apex:commandButton action="{!SearchProjects}" value="Search" rerender="msg,opProjects,pbPagingButtons,opGlobalTemplates,pbGTPagingButtons,opMyTemplates,pbMTPagingButtons" status="statusBar" /> <apex:commandButton action="{!doCancel}" value="Cancel" immediate="true"/>
+			</apex:pageBlockButtons>
+			<apex:pageBlockSection columns="1">
+
+
+
+
+					<apex:pageBlockSectionItem >
+
+						<apex:outputPanel >
+
+							<apex:tabPanel switchType="client" selectedTab="tabProjects">
+								<apex:tab label="Projects" id="tabProjects">
+									<apex:outputPanel id="opProjects">
+
+									<div style="display:{!if(noSearchResults==true,'none','block')};">
+										<apex:pageBlockTable value="{!projects}" var="proj" id="pbProjects" styleClass="list">
+											<apex:column rendered="{!!hideSourceLink}" width="30">
+												<apex:facet name="header">Source Project</apex:facet>
+										        <apex:commandLink action="{!setSelectedProject}" value="Select" rerender="msg,pbsProjectFields" status="statusBar" immediate="true">
+							            			<apex:param assignTo="{!selectedProjectId}" name="selProjectId" value="{!proj.Id}" />
+							            		</apex:commandLink>
+							            		
+										    </apex:column>
+										    <apex:column rendered="{!!hideTargetLink}" width="30">
+												<apex:facet name="header">Target Project</apex:facet>
+										        <apex:commandLink action="{!setMergeProject}" value="Select" rerender="msg,pbsProjectFields" status="statusBar" immediate="true">
+							            			<apex:param assignTo="{!mergeProjectId}" name="mergeProjectId" value="{!proj.Id}" />
+							            		</apex:commandLink>
+										    </apex:column>
+											<apex:column width="100">
+												<apex:facet name="header">{!$ObjectType.pse__Proj__c.Fields.Name.Label}</apex:facet>
+												<!--
+												<a target="_blank" href="/{!proj.Id}" id="{!proj.Id}" onblur="LookupHoverDetail.getHover('{!proj.Id}').hide();" onfocus="LookupHoverDetail.getHover('{!proj.Id}', '/{!proj.Id}/m?retURL=%2F{!proj.Id}&isAjaxRequest=1').show();" onmouseout="LookupHoverDetail.getHover('{!proj.Id}').hide();" onmouseover="LookupHoverDetail.getHover('{!proj.Id}', '/{!proj.Id}/m?retURL=%2F{!proj.Id}&isAjaxRequest=1').show();">{!proj.Name}</a>
+												-->
+												<span title="Open project in new window"><a target="_blank" href="/{!proj.Id}">{!proj.Name}</a></span>
+											</apex:column>
+											<apex:column width="100">
+												<apex:facet name="header">{!$ObjectType.pse__Proj__c.Fields.pse__Account__c.Label}</apex:facet>
+												{!proj.pse__Account__r.Name}
+											</apex:column>
+											<apex:column width="100">
+												<apex:facet name="header">{!$ObjectType.pse__Proj__c.Fields.pse__Opportunity__c.Label}</apex:facet>
+												{!proj.pse__Opportunity__r.Name}
+											</apex:column>
+											<apex:column width="100">
+												<apex:facet name="header">Record Owner</apex:facet>
+												{!proj.Owner.Name}
+											</apex:column>
+											
+										</apex:pageBlockTable>
+									</div>
+									<div style="display:{!if(noSearchResults==true,'block','none')};">
+										<apex:pageMessage severity="INFO" title="No projects matched the search criteria." strength="3"></apex:pageMessage>
+									</div>
+									</apex:outputPanel>
+									<apex:outputPanel id="pbPagingButtons" >
+										<br/>
+										<div align="center">
+										<apex:commandButton disabled="{!!hasFirstProject}" action="{!moveFirstProjects}" value="|< First" rerender="pbProjects,pbPagingButtons,msg"  status="statusBar"/>
+										<apex:commandButton disabled="{!!hasPrevProjects}" action="{!movePrevProjects}" value="< Prev" rerender="pbProjects,pbPagingButtons,msg"  status="statusBar"/>
+										<apex:outputText >
+										&nbsp;Page {!projectsCurrentPage} of {!projectsTotalPages}&nbsp;
+										</apex:outputText>
+										<apex:commandButton disabled="{!!hasNextProjects}" action="{!moveNextProjects}" value="Next >" rerender="pbProjects,pbPagingButtons,msg" status="statusBar"/>
+										<apex:commandButton disabled="{!!hasLastProject}" action="{!moveLastProjects}" value="Last >|" rerender="pbProjects,pbPagingButtons,msg"  status="statusBar"/>
+										</div>
+									</apex:outputPanel>
+
+								</apex:tab>
+								<apex:tab label="Global Templates" id="tabGlobalTemplates">
+									<apex:outputPanel id="opGlobalTemplates">
+									<div style="display:{!if(noGTSearchResults==true,'none','block')};">
+										<apex:pageBlockTable value="{!globalTemplates}" var="gt" id="pbGlobalTemplates">
+											<apex:column width="30">
+												<apex:facet name="header">Action</apex:facet>
+										        <apex:commandLink action="{!setSelectedProject}" value="Select" rerender="msg,pbsProjectFields" status="statusBar" immediate="true">
+							            			<apex:param assignTo="{!selectedProjectId}" name="selProjectId" value="{!gt.Id}" />
+							            		</apex:commandLink>
+							            		
+										    </apex:column>
+										   
+											<apex:column width="100">
+												<apex:facet name="header">{!$ObjectType.pse__Proj__c.Fields.Name.Label}</apex:facet>
+												<span title="Open template in new window"><a target="_blank" href="/{!gt.Id}">{!gt.Name}</a></span>
+											</apex:column>
+											<apex:column width="100">
+												<apex:facet name="header">{!$ObjectType.pse__Proj__c.Fields.pse__Account__c.Label}</apex:facet>
+												{!gt.pse__Account__r.Name}
+											</apex:column>
+											<apex:column width="100">
+												<apex:facet name="header">{!$ObjectType.pse__Proj__c.Fields.pse__Opportunity__c.Label}</apex:facet>
+												{!gt.pse__Opportunity__r.Name}
+											</apex:column>
+											<apex:column width="100" >
+												<apex:facet name="header">Record Owner</apex:facet>
+												{!gt.Owner.Name}
+											</apex:column>
+											
+										</apex:pageBlockTable>
+									</div>
+									<div style="display:{!if(noGTSearchResults==true,'block','none')};">
+										<apex:pageMessage severity="INFO" title="No global templates matched the search criteria." strength="3"></apex:pageMessage>
+									</div>
+									</apex:outputPanel>
+									<apex:outputPanel id="pbGTPagingButtons" >
+										<br/>
+										<div align="center">
+										<apex:commandButton disabled="{!!hasFirstGT}" action="{!moveFirstGTs}" value="|< First" rerender="pbGlobalTemplates,pbGTPagingButtons,msg"  status="statusBar"/>
+										<apex:commandButton disabled="{!!hasPrevGTs}" action="{!movePrevGTs}" value="< Prev" rerender="pbGlobalTemplates,pbGTPagingButtons,msg"  status="statusBar"/>
+										<apex:outputText >
+										&nbsp;Page {!gtCurrentPage} of {!gtTotalPages}&nbsp;
+										</apex:outputText>
+										<apex:commandButton disabled="{!!hasNextGTs}" action="{!moveNextGTs}" value="Next >" rerender="pbGlobalTemplates,pbGTPagingButtons,msg" status="statusBar"/>
+										<apex:commandButton disabled="{!!hasLastGT}" action="{!moveLastGTs}" value="Last >|" rerender="pbGlobalTemplates,pbGTPagingButtons,msg"  status="statusBar"/>
+										</div>
+									</apex:outputPanel>
+								</apex:tab>
+								<apex:tab label="My Templates" id="tabMyTemplates" >
+									<apex:outputPanel id="opMyTemplates">
+									<div style="display:{!if(noMTSearchResults==true,'none','block')};">
+										<apex:pageBlockTable value="{!myTemplates}" var="mt" id="pbMyTemplates">
+											<apex:column width="30">
+												<apex:facet name="header">Action</apex:facet>
+										        <apex:commandLink action="{!setSelectedProject}" value="Select" rerender="msg,pbsProjectFields" status="statusBar" immediate="true">
+							            			<apex:param assignTo="{!selectedProjectId}" name="selProjectId" value="{!mt.Id}" />
+							            		</apex:commandLink>
+							            		
+										    </apex:column>
+										   
+											<apex:column width="100">
+												<apex:facet name="header">{!$ObjectType.pse__Proj__c.Fields.Name.Label}</apex:facet>
+												<span title="Open template in new window"><a target="_blank" href="/{!mt.Id}">{!mt.Name}</a></span>
+											</apex:column>
+											<apex:column width="100">
+												<apex:facet name="header">{!$ObjectType.pse__Proj__c.Fields.pse__Account__c.Label}</apex:facet>
+												{!mt.pse__Account__r.Name}
+											</apex:column>
+											<apex:column width="100">
+												<apex:facet name="header">{!$ObjectType.pse__Proj__c.Fields.pse__Opportunity__c.Label}</apex:facet>
+												{!mt.pse__Opportunity__r.Name}
+											</apex:column>
+											<apex:column width="100">
+												<apex:facet name="header">Record Owner</apex:facet>
+												{!mt.Owner.Name}
+											</apex:column>
+											
+										</apex:pageBlockTable>
+									</div>
+									<div style="display:{!if(noMTSearchResults==true,'block','none')};">
+										<apex:pageMessage severity="INFO" title="No personal templates matched the search criteria." strength="3"></apex:pageMessage>
+									</div>
+									</apex:outputPanel>
+									<apex:outputPanel id="pbMTPagingButtons" >
+										<br/>
+										<div align="center">
+										<apex:commandButton disabled="{!!hasFirstMT}" action="{!moveFirstMTs}" value="|< First" rerender="pbMyTemplates,pbMTPagingButtons,msg"  status="statusBar" styleClass="searchProjectsBtn"/>
+										<apex:commandButton disabled="{!!hasPrevMTs}" action="{!movePrevMTs}" value="< Prev" rerender="pbMyTemplates,pbMTPagingButtons,msg"  status="statusBar"/>
+										<apex:outputText >
+										&nbsp;Page {!mtCurrentPage} of {!mtTotalPages}&nbsp;
+										</apex:outputText>
+										<apex:commandButton disabled="{!!hasNextMTs}" action="{!moveNextMTs}" value="Next >" rerender="pbMyTemplates,pbMTPagingButtons,msg" status="statusBar"/>
+										<apex:commandButton disabled="{!!hasLastMT}" action="{!moveLastMTs}" value="Last >|" rerender="pbMyTemplates,pbMTPagingButtons,msg"  status="statusBar"/>
+										</div>
+									</apex:outputPanel>
+
+								</apex:tab>
+							</apex:tabPanel>
+
+						
+						
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection columns="1">
+	
+			<apex:pageBlockSectionItem >
+					
+					
+					
+			</apex:pageBlockSectionItem>
+
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+
+	<apex:pageBlock title="Copy Project {!cloningActionStr}" mode="edit">	
+		<apex:pageBlockButtons location="top">
+			<apex:commandButton action="{!cloneProject}" value="Save" reRender="msg" immediate="false" status="statusBar"/>			
+			<apex:commandButton action="{!clear}" value="Clear" reRender="msg,pbsProjectFields" immediate="true" status="statusBar"/>
+			<apex:commandButton action="{!doCancel}" value="Cancel" immediate="true"/>
+		</apex:pageBlockButtons>
+		
+		<apex:pageBlockSection columns="2" id="pbsProjectFields" title="General Project Information" collapsible="false">
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel value="Selected Source Project"></apex:outputLabel>
+				<!--
+				<apex:outputLabel value="{!selectedProjectName}"></apex:outputLabel>
+				-->
+				<apex:outputField id="txtSelectedProjName" value="{!project.Name}" />
+			</apex:pageBlockSectionItem>
+
+			<apex:pageBlockSectionItem rendered="{!showNewProjectFields}">
+				<apex:outputLabel for="txtProjOwner" value="Record Owner"></apex:outputLabel>
+				<apex:outputPanel >
+				<div class="requiredInput">
+	                <div class="requiredBlock"></div>
+	                <apex:inputField id="txtProjOwner" value="{!project.OwnerId}" required="false" />
+	            </div>
+	            </apex:outputPanel>
+			</apex:pageBlockSectionItem>
+
+			<apex:pageBlockSectionItem >
+				<apex:outputLabel for="txtMergeProjName" value="Project to Merge Into{!IF(hideTargetLink,'',' (Empty if New Project)')}"></apex:outputLabel>
+				<!--<apex:inputField id="txtMergeProjName" value="{!mergeProject.pse__Parent_Project__c}" />-->
+				<apex:outputField id="txtMergeProjName" value="{!mergeProject.Name}" />		            
+			</apex:pageBlockSectionItem>
+
+			<apex:pageBlockSectionItem rendered="{!showNewProjectFields}">
+				<apex:outputLabel for="txtProjOpp" value="{!$ObjectType.pse__Proj__c.Fields.pse__Opportunity__c.Label}"></apex:outputLabel>
+				<apex:inputField id="txtProjOpp" value="{!project.pse__Opportunity__c}" />	
+			</apex:pageBlockSectionItem>
+
+			<apex:pageBlockSectionItem rendered="{!showNewProjectFields}">
+				<apex:outputLabel for="txtProjName" value="New Project Name (Empty if Merging Projects)"></apex:outputLabel>
+				<apex:outputPanel >
+				<!--<div class="requiredInput">
+	                <div class="requiredBlock"></div>-->
+	                <apex:inputText id="txtProjName" value="{!newProjectName}" />	
+	            <!--</div>-->
+	            </apex:outputPanel>
+			</apex:pageBlockSectionItem>	
+
+			
+			<apex:pageBlockSectionItem ></apex:pageBlockSectionItem>
+
+		</apex:pageBlockSection>
+		
+	</apex:pageBlock>
+
+	</apex:form>
+
+
+
+</apex:page>

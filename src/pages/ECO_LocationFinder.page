@@ -1,0 +1,78 @@
+<apex:page controller="ECO_LocationFinderController" showheader="true" sidebar="true" standardStylesheets="false">
+	<apex:composition template="ECO_Temp_Portal">
+	    
+	    <apex:define name="head">
+	    	
+	    </apex:define>
+	    
+		<apex:define name="content">
+			<apex:sectionHeader id="sectionHeader" title="Location Finder" />
+			
+			<apex:pageMessages id="pageMessages" />
+			
+			<apex:form id="theForm" >
+				<apex:pageBlock id="searchBlock">
+					
+					<apex:pageBlockButtons location="bottom" >
+						<apex:commandButton value="Search" action="{!doSearch}" rerender="resultsBlock, pageMessages" />
+						<apex:commandButton value="Clear Search Terms" action="{!clearSearchTerms}" rerender="resultsBlock, pageMessages, searchBlock" />
+					</apex:pageBlockButtons>
+					
+					<apex:pageBlockSection id="searchFieldsSection" >
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Location Name" />
+							<apex:inputText value="{!searchLocationName}" />
+						</apex:pageBlockSectionItem>
+						
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Created Since" />
+							<apex:inputField value="{!theUser.Date_of_Birth__c}" />
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+				</apex:pageBlock>
+				
+				<apex:pageBlock id="resultsBlock" >
+					<apex:pageBlockButtons location="top" >
+						<apex:commandButton action="{!save}" value="Save" />
+						<apex:commandButton action="{!cancel}" value="Cancel" />
+					</apex:pageBlockButtons>
+					
+					<apex:pageBlockSection id="theSelectedLocations" columns="1" collapsible="false" title="Selected Locations" >
+						<apex:pageBlockTable value="{!selectedConfigItems}" var="configItem" >
+							<apex:column >
+								<apex:commandButton action="{!removeItem}" value="Remove" rerender="theSelectedLocations, pageMessages, resultsSection">
+									<apex:param assignTo="{!selectedLocationId}" value="{!selectedConfigItems[configItem].LocationId__c}" name="selectedLocationId" />
+								</apex:commandButton>
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">Location Name</apex:facet>
+								<apex:outputText value="This Location"/>
+							</apex:column>
+						</apex:pageBlockTable>
+					</apex:pageBlockSection>
+					
+					<apex:pageBlockSection id="resultsSection" columns="1" collapsible="false" title="Search Results" >
+						<apex:pageBlockTable value="{!configItemsOnPage}" var="configItem" >
+							<apex:column >
+								<button  value="Select">
+									Select
+								</button>
+								
+								<button  value="Select">
+									Remove
+								</button>
+							</apex:column>
+							
+							<apex:column >
+								<apex:facet name="header">Report Name</apex:facet>
+								<apex:outputText value="Report Name"/>
+							</apex:column>
+							
+						</apex:pageBlockTable>
+					</apex:pageBlockSection>
+
+				</apex:pageBlock>
+			</apex:form>
+		</apex:define>
+	</apex:composition>
+</apex:page>

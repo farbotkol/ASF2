@@ -1,0 +1,428 @@
+<apex:page standardController="POLineItem__c" extensions="ECO_PurchaseOrderLineItemController" tabStyle="POHeader__c" showHeader="true" sidebar="true">
+	<apex:form >
+
+
+
+		<apex:includeScript value="{!URLFOR($Resource.ECO_jQuery_1_11_2_min_js)}" />
+		<script type='text/javascript'>
+			j$ = jQuery.noConflict();
+			/*
+			function setSelectedTaskInParent(taskId, taskName){
+				parent.setTaskField(taskId, taskName);
+			}
+			*/
+
+			function setTaskField(taskId, taskName, projectTaskNumber){				
+				j$("[id*=currentPOLineItem_TaskName]").html(projectTaskNumber + " (" + taskName + ")"); 
+				j$("[id*=currentPOLineItem_TaskId]").val(taskId); 
+
+				setSelectedTask_JS();
+			}
+
+			function setUnitOfMeasureLabel(){
+				var linetype = j$("[id*=poliLineType]").val(); 
+				if(linetype == 'Unit Rate'){					
+					j$("[id*=poliUnitOfMeasureLabel]").html('Each');
+				}else{	//services
+					j$("[id*=poliUnitOfMeasureLabel]").html('Lump Sum');
+				}
+			}
+			
+
+			function closeMe(){
+				parent.closeDialog();
+			}
+
+			function closeMeAndReRender(){
+				parent.closeDialogAndReRender();
+			}
+
+			var firstLoad = false;
+
+			function handleLineTypeChange(){
+				//selectPOLineType_JS();
+				var hasBeenSynced = Boolean("{!hasBeenSynced}");
+				var hasPreviousVersions = Boolean("{!hasPreviousVersions}");
+				
+
+				/*
+				var linetype = '';
+				if(hasBeenSynced == true || hasPreviousVersions == true){
+					linetype = "{!currentPOLineItem.LineType__c}";
+									
+				}else{
+					linetype = j$("[id*=poliLineType]").val(); 	
+				}
+				*/
+
+				var linetype = j$("[id*=poliLineTypeForOnChange]").val(); 
+				//alert(linetype);
+
+				if(linetype == 'Unit Rate'){
+					if(firstLoad == false){
+						j$("[id*=poliAmount]").val('');
+						j$("[id*=poliUnitOfMeasureUserDefined]").val('Each');
+					}					
+					j$("[id*=poliAmount]").attr('disabled','disabled');
+					j$("[id*=poliQuantity]").removeAttr('disabled');					
+					j$("[id*=poliUnitPrice]").removeAttr('disabled');
+					j$("[id*=poliUnitofMeasure]").val('Each');
+					j$("[id*=poliUnitOfMeasureLabel]").html('Each');				
+
+
+				}else{	//services
+
+					j$("[id*=poliAmount]").removeAttr('disabled');
+					if(firstLoad == false){
+						j$("[id*=poliQuantity]").val('');
+						j$("[id*=poliUnitOfMeasureUserDefined]").val('Lump Sum');
+					}					
+					j$("[id*=poliQuantity]").attr('disabled','disabled');			
+					j$("[id*=poliUnitPrice]").val('1');
+					j$("[id*=poliUnitPrice]").attr('disabled','disabled');
+					j$("[id*=poliUnitofMeasure]").val('Lump Sum');
+					j$("[id*=poliUnitOfMeasureLabel]").html('Lump Sum');
+
+					
+				}
+				firstLoad = false;
+				
+			}
+
+			function calculateTotalForGoods(){
+				
+				var hasBeenInvoiced = "{!hasBeenInvoiced}";
+				//alert(hasBeenInvoiced);
+				var unitPrice = j$.trim(j$("[id*=poliUnitPrice]").val());
+				if(hasBeenInvoiced == "true"){
+					unitPrice = j$.trim(j$("[id*=changedUnitPrice]").val());
+				}else{
+					unitPrice = j$.trim(j$("[id*=poliUnitPrice]").val());
+				}
+				
+				var quantity = j$.trim(j$("[id*=poliQuantity]").val());
+				//var unitOfMeasure = j$("[id*=poliUnitofMeasure]").val();
+
+				if(unitPrice.length > 0 && quantity.length > 0){	
+					//alert(parseFloat(unitPrice));
+					//alert(parseFloat(quantity));			
+					if(j$.isNumeric(parseFloat(unitPrice)) && j$.isNumeric(parseFloat(quantity))){
+						var amtTotal = parseFloat(unitPrice) * parseFloat(quantity);	
+						//alert(amtTotal);					
+						amtTotal = amtTotal.toFixed(2); 						
+						j$("[id*=poliAmount]").val(amtTotal);					
+					}
+				}
+			}
+
+			function setHiddenField(fieldId, value){
+				j$("[id*=" + fieldId + "]").val(value);
+			}
+
+			function handleDeleteClick(action){
+
+				if(confirm("Are you sure you want to " + action.toLowerCase() + "?")){
+					cancelPurchaseOrderLineItem_JS();
+				}
+			}
+
+			j$(document).ready(function(){
+				firstLoad = true;
+				handleLineTypeChange();
+
+				/*
+				var editType = "{!editType}";				
+				if(editType == 'Add'){
+					j$("[id*=poliQuantity]").val('1');
+				}
+				*/
+
+				//j$("[id*=poliUnitofMeasure]").attr('disabled','disabled');
+				j$("[id*=poliUnitPrice]").blur(function(){
+					calculateTotalForGoods();
+				});
+				j$("[id*=poliQuantity]").blur(function(){					
+					calculateTotalForGoods();
+				});
+
+				j$("[id*=poliAmount]").blur(function(){
+					var unitOfMeasure = j$("[id*=poliUnitofMeasure]").val();
+					if(unitOfMeasure == 'Lump Sum'){	//services
+						var quantity = j$("[id*=poliQuantity]");
+						quantity.val(j$.trim(j$("[id*=poliAmount]").val()));
+					} 									
+				});
+			});
+
+/*
+poliQuantity
+poliAmount
+poliUnitofMeasure
+poliUnitPrice
+*/
+
+		</script>
+
+		<div style="display:none;">
+			<apex:inputText value="{!currentPOLineItem_TaskId}" id="currentPOLineItem_TaskId" />
+			<apex:inputField value="{!currentPOLineItem.UnitofMeasure__c}" id="poliUnitofMeasure" />
+			<apex:inputField value="{!currentPOLineItem.LineType__c}" id="poliLineTypeForOnChange" />	
+			
+			<apex:inputField value="{!currentPOLineItem.UnitPrice__c}" id="changedUnitPrice" />	
+			
+		</div>
+
+		<!--
+		<div id="poliUnitOfMeasureLabel"></div>			
+		-->
+
+		<apex:actionFunction action="{!saveCurrentPOLineItem}" name="saveCurrentPOLineItem_JS" oncomplete="closeMeAndReRender();" />
+		<apex:actionFunction action="{!getTasksForProject}" name="getTasksForProject_JS" reRender="pbTasks" immediate="true" oncomplete="return false;"/>
+
+		<apex:actionFunction name="doGetTasksForProject" action="{!getTasksForProject}" rerender="pbTasks" status="statusBar" />
+
+		<!--
+		<apex:actionFunction name="selectPOLineType_JS" action="{!selectPOLineType}" rerender="poliQuantity,poliAmount,poliUnitofMeasure,poliUnitPrice" />
+		-->
+
+		<apex:actionFunction name="setSelectedTask_JS" action="{!setSelectedTask}" rerender="poliUnitofMeasure" status="statusBar"/>
+
+		<apex:actionFunction name="cancelPurchaseOrderLineItem_JS" action="{!cancelPurchaseOrderLineItem}" status="statusBar"/>
+
+		<apex:sectionHeader subtitle="{!editType} Purchase Order Line Item" title=" Purchase Order {!poHeaderName}" >
+			<apex:actionStatus id="statusBar">
+				<apex:facet name="start">
+					<p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Processing...</p>
+				</apex:facet>
+				<apex:facet name="stop">
+				</apex:facet>
+			</apex:actionStatus>
+		</apex:sectionHeader>
+		<!--
+hasBeenSynced = {!hasBeenSynced}
+<br/>
+hasPreviousVersions = {!hasPreviousVersions}
+-->
+		<apex:pageMessages id="msg" escape="false"></apex:pageMessages>
+
+			<apex:outputPanel >
+				<apex:pageMessage escape="true" severity="INFO" summary="This Purchase Order Line Item has been sent to oracle. Only certain fields may be modified." rendered="{!hasBeenSynced}" />
+			</apex:outputPanel>
+
+			<apex:pageBlock id="pbCurrentPOLineItem" title="Purchase Order Line Item Detail">
+				<apex:pageBlockButtons >				
+					<apex:commandButton action="{!saveCurrentPOLineItem}" value="{!if(hasBeenSynced == true, 'Change', 'Save')}" reRender="msg"/>
+					<!--
+					<apex:commandButton action="{!returnToPurchaseOrder}" value="Cancel" immediate="true" />
+					-->
+					<apex:commandButton onclick="handleDeleteClick('{!cancelButtonText}');" value="{!cancelButtonText}" immediate="true" disabled="{!if(currentPOLineItem.Id == null, 'true', 'false')}" reRender="msg"/>				
+					<apex:commandButton action="{!returnToPurchaseOrder}" value="Return to Purchase Order" immediate="true"/>
+				</apex:pageBlockButtons>
+				<apex:pageBlockSection columns="2">
+
+					<!--
+					<apex:pageBlockSectionItem >		
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.Name.Label}" for="currentPOLineItem_Name"/>
+						<apex:outputField value="{!currentPOLineItem.Name}" id="currentPOLineItem_Name" />
+					</apex:pageBlockSectionItem>
+					-->
+
+					<!--
+					<apex:pageBlockSectionItem >		
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.POHeader__c.Label}" for="currentPOLineItem_POHeader"/>
+						<apex:outputLabel value="{!poHeaderName}" id="currentPOLineItem_POHeader" />
+					</apex:pageBlockSectionItem>
+
+
+					-->	
+
+					<apex:pageBlockSectionItem >		
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.OraclePONumber__c.Label}" for="poliOraclePONumber"/>
+						<apex:outputLabel value="{!currentPOLineItem.OraclePONumber__c}" id="poliOraclePONumber" />
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem >		
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.LineType__c.Label}" for="poliLineType"/>
+						<apex:outputPanel >
+							
+							<apex:inputField value="{!currentPOLineItem.LineType__c}" id="poliLineType" rendered="{!if(hasBeenSynced == false && hasPreviousVersions == false, 'true', 'false')}" onchange="setHiddenField('poliLineTypeForOnChange', this.options[this.selectedIndex].value); handleLineTypeChange(); return false;" required="true" />
+							
+							<apex:outputLabel value="{!currentPOLineItem.LineType__c}" rendered="{!if(hasBeenSynced == false && hasPreviousVersions == false, 'false', 'true')}"  />
+						</apex:outputPanel>
+						
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem >		
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.LineNumber__c.Label}" for="poliLineNumber"/>
+						<apex:outputPanel >
+							<apex:inputField value="{!currentPOLineItem.LineNumber__c}" id="poliLineNumber" rendered="{!if(hasBeenSynced == false && hasPreviousVersions == false, 'true', 'false')}"/>
+							<apex:outputText value="{!currentPOLineItem.LineNumber__c}" rendered="{!if(hasBeenSynced == false && hasPreviousVersions == false, 'false', 'true')}" />
+						</apex:outputPanel>						
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem >		
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.Quantity__c.Label}" for="poliQuantity"/>										
+						<apex:inputField value="{!currentPOLineItem.Quantity__c}" id="poliQuantity" />						
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.ProjectTask__c.Label}" for="currentPOLineItem_TaskName"/>
+						
+						<apex:outputPanel >
+						<div class="requiredInput">
+	                        <div class="requiredBlock">&nbsp;</div>	                             
+							<apex:outputLabel value="{!currentPOLineItem_TaskName}" id="currentPOLineItem_TaskName" />							
+						</div>
+						</apex:outputPanel>
+						
+						<!--<apex:outputLabel value="{!currentPOLineItem.ProjectTask__r.Name}" id="currentPOLineItem_TaskName" />-->
+					</apex:pageBlockSectionItem>
+
+
+					<!--
+					<apex:pageBlockSectionItem >		
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.Revision__c.Label}" for="poliRevision"/>
+						<apex:outputLabel value="{!currentPOLineItem.Revision__c}" id="poliRevision" />
+					</apex:pageBlockSectionItem>
+					-->
+
+					<apex:pageBlockSectionItem >		
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.UnitPrice__c.Label}" for="poliUnitPrice"/>
+
+						<apex:outputPanel >
+							<apex:outputText value="{!currentPOLineItem.UnitPrice__c}" rendered="{!hasBeenInvoiced}" />					
+							<apex:inputField value="{!currentPOLineItem.UnitPrice__c}" id="poliUnitPrice" rendered="{!!hasBeenInvoiced}"/>
+						</apex:outputPanel>	
+
+					
+					</apex:pageBlockSectionItem>	
+
+					<apex:pageBlockSectionItem >		
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.ExpenditureType__c.Label}" for="poliExpenditureType"/>
+						<apex:outputPanel >
+							<div class="requiredInput">
+	                        <div class="requiredBlock">&nbsp;</div>
+							<apex:inputField value="{!currentPOLineItem.ExpenditureType__c}" id="poliExpenditureType" rendered="{!if(hasBeenSynced == false && hasPreviousVersions == false, 'true', 'false')}" />
+							<apex:outputField value="{!currentPOLineItem.ExpenditureType__c}" rendered="{!if(hasBeenSynced == false && hasPreviousVersions == false, 'false', 'true')}" />
+							</div>
+						</apex:outputPanel>						
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem >	
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.Amount__c.Label}" for="poliAmount"/>										
+						<apex:inputField value="{!currentPOLineItem.Amount__c}" id="poliAmount" required="false"/>									
+					</apex:pageBlockSectionItem>		
+
+					<apex:pageBlockSectionItem >		
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.Class__c.Label}" for="poliClass"/>
+						<apex:outputPanel >
+							<apex:inputField value="{!currentPOLineItem.Class__c}" id="poliClass" rendered="{!if(hasBeenSynced == false && hasPreviousVersions == false, 'true', 'false')}" />
+							<apex:outputField value="{!currentPOLineItem.Class__c}" rendered="{!if(hasBeenSynced == false && hasPreviousVersions == false, 'false', 'true')}" />
+						</apex:outputPanel>						
+					</apex:pageBlockSectionItem>
+		
+
+					<apex:pageBlockSectionItem >		
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.UnitofMeasure__c.Label}" for="poliUnitOfMeasureUserDefined"/>
+						<apex:inputField value="{!currentPOLineItem.UnitOfMeasureUserDefined__c}" id="poliUnitOfMeasureUserDefined" />										
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem >		
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.SubClass__c.Label}" for="poliSubClass"/>
+						<apex:outputPanel >
+							<apex:inputField value="{!currentPOLineItem.SubClass__c}" id="poliSubClass" rendered="{!if(hasBeenSynced == false && hasPreviousVersions == false, 'true', 'false')}" />
+							<apex:outputField value="{!currentPOLineItem.SubClass__c}" rendered="{!if(hasBeenSynced == false && hasPreviousVersions == false, 'false', 'true')}" />
+						</apex:outputPanel>						
+					</apex:pageBlockSectionItem>
+
+					<apex:pageBlockSectionItem >	
+						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.LineDescription__c.Label}" for="poliLineDescription"/>
+						<apex:outputPanel >
+						<div class="requiredInput">
+	                        <div class="requiredBlock">&nbsp;</div>
+							<apex:inputField value="{!currentPOLineItem.LineDescription__c}" id="poliLineDescription" />
+	                     </div>
+						</apex:outputPanel>						
+					</apex:pageBlockSectionItem>
+
+				</apex:pageBlockSection>	
+	
+				
+				<apex:pageBlockSection columns="1" title="Available Project Tasks" rendered="{!if(hasBeenSynced == false && hasPreviousVersions == false, 'true', 'false')}">
+
+					<apex:pageBlockSectionItem >
+						
+						<apex:outputPanel >
+							<apex:outputLabel value="{!$ObjectType.pse__Project_Task__c.Fields.Name.Label}" for="taskFilter"/>&nbsp;&nbsp;
+							
+							<!--
+							<apex:inputText value="{!taskFilter}" id="taskFilter"/>&nbsp;&nbsp;
+							<apex:commandButton onclick="getTasksForProject_JS();" value="Search" immediate="true" />
+-->
+<apex:inputText id="txtSearchTaskName" value="{!searchTaskName}" ></apex:inputText>
+<!--
+							<apex:commandButton action="{!getTasksForProject}" value="Search2" immediate="true" reRender="pbTasks"/>
+							-->
+							<apex:commandButton onclick="doGetTasksForProject(); return false;" value="Search" reRender="pbTasks" />
+							<br/><br/>
+							<apex:outputPanel id="pbTasks">
+		
+							<apex:pageMessage rendered="{!noSearchResults}" summary="No tasks were found." severity="info" strength="3" id="msgNoResults" />
+							<apex:pageBlockTable value="{!projectTasks}" var="task" rendered="{!!noSearchResults}">
+								<apex:column >
+									<apex:facet name="header">Action</apex:facet>
+									<div style="display:{!if(task.IsChargeable__c == true && task.FinancialTask__c == true, 'block', 'none')};">
+										<a href="#" onclick="setTaskField('{!task.Id}','{!task.Name}', '{!task.ProjectTaskNumber__c}'); return false;">Select</a>
+									</div>
+								</apex:column>
+								<apex:column >
+									<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Name.Label}</apex:facet>
+									{!task.Name}
+								</apex:column>
+								<apex:column >
+									<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.ProjectTaskNumber__c.Label}</apex:facet>
+									{!task.ProjectTaskNumber__c}
+								</apex:column>
+								
+								<!--
+								<apex:column >
+									<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.pse__Parent_Task__c.Label}</apex:facet>
+									{!task.pse__Parent_Task__r.Name}
+								</apex:column>
+								-->
+								<apex:column >
+									<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.FinancialTask__c.Label}</apex:facet>
+									{!if(task.FinancialTask__c == true, 'Y', 'N')}
+								</apex:column>
+								<apex:column >
+									<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.IsChargeable__c.Label}</apex:facet>
+									{!if(task.IsChargeable__c == true, 'Y', 'N')}
+								</apex:column>
+								<apex:column >
+									<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.pse__Start_Date__c.Label}</apex:facet>
+									<apex:outputText value="{0, date, yyyy-MM-dd}">
+										<apex:param value="{!task.pse__Start_Date__c}" />											
+									</apex:outputText>									
+								</apex:column>
+								<apex:column >
+									<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.pse__End_Date__c.Label}</apex:facet>
+									<apex:outputText value="{0, date, yyyy-MM-dd}">
+										<apex:param value="{!task.pse__End_Date__c}" />											
+									</apex:outputText>								
+								</apex:column>
+
+							</apex:pageBlockTable>
+							
+							</apex:outputPanel>
+							
+						</apex:outputPanel>
+						
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+			</apex:pageBlock>			
+	</apex:form>
+
+	<!--
+		<apex:relatedList list="DistributionsPOLineItem__r" title="Distributions" />
+	-->
+</apex:page>

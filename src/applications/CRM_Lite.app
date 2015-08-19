@@ -3,9 +3,8 @@
     <defaultLandingTab>standard-home</defaultLandingTab>
     <description>Allows access to Chatter, Project and People Profiles, Accounts, Contacts, and the GNG object, which also displays read-only opportunity data.</description>
     <label>CRM Lite</label>
-    <logo>CompanyCollateral_2/AECOM_Logo_for_Chatter_Resume_App.png</logo>
     <tab>standard-Chatter</tab>
-    <tab>My_Profile</tab>
+    <tab>standard-UserProfile</tab>
     <tab>People</tab>
     <tab>Project__c</tab>
     <tab>standard-Account</tab>
@@ -15,4 +14,10 @@
     <tab>standard-report</tab>
     <tab>standard-File</tab>
     <tab>Business_Line__c</tab>
+    <tab>Ecosystem</tab>
+    <tab>Revenue__c</tab>
+    <tab>Billing__c</tab>
+    <tab>CostDistLine__c</tab>
+    <tab>EarnedValueHeader__c</tab>
+    <tab>VendorSub__c</tab>
 </CustomApplication>

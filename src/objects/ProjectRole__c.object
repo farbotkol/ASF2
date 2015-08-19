@@ -62,6 +62,26 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Definition__c</fullName>
+        <externalId>false</externalId>
+        <label>Definition</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>SortOrder__c</fullName>
+        <externalId>false</externalId>
+        <label>Sort Order</label>
+        <precision>4</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Type__c</fullName>
         <externalId>false</externalId>
         <label>Type</label>
@@ -81,12 +101,33 @@
     </fields>
     <label>Project Role</label>
     <listViews>
-        <fullName>All</fullName>
+        <fullName>KeyMembers</fullName>
         <columns>NAME</columns>
         <columns>Type__c</columns>
         <columns>Active__c</columns>
+        <columns>SortOrder__c</columns>
         <filterScope>Everything</filterScope>
-        <label>All</label>
+        <filters>
+            <field>Type__c</field>
+            <operation>equals</operation>
+            <value>Key Member</value>
+        </filters>
+        <label>Key Member</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>TeamMembers</fullName>
+        <columns>NAME</columns>
+        <columns>Type__c</columns>
+        <columns>Active__c</columns>
+        <columns>SortOrder__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Type__c</field>
+            <operation>equals</operation>
+            <value>Team Member</value>
+        </filters>
+        <label>Team Members</label>
         <language>en_US</language>
     </listViews>
     <nameField>

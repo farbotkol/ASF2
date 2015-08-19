@@ -1,0 +1,883 @@
+<apex:page extensions="ECO_ProjectSetupController" standardController="pse__Proj__c" tabStyle="pse__Proj__c" showHeader="true" sidebar="false" id="thepage">
+    
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+
+    <style>
+
+        .colA {
+            text-align:right;
+            vertical-align:middle !important;
+        }
+
+        .colB {
+            vertical-align:middle !important;
+        }
+
+        .colC {
+            text-align:left;
+            vertical-align:middle !important;
+        }       
+
+
+        .searchText{
+            text-align:center;
+            font-weight:bold;
+            font-size:20px;
+        }
+
+        .pbSubExtra{
+            visibility: hidden !important;
+        }
+
+        /* CUSTOM HELP / GUIDANCE TEXT BOX */
+        .customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 30px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        }
+
+
+        .fixedPickList{
+            width: 350px;
+        }
+        .fixedName{
+            width: 345px;
+        }
+        /*
+        .activeTab {
+            background-color:#236FBD; 
+            color:white; 
+            tab-color:yellow;
+            background-image:none
+          }
+        .inactiveTab {
+            background-color:white; 
+            color:black; 
+            background-image:none
+        }
+
+        .disabledTab {
+            background-color:grey; 
+            color:grey; 
+            background-image:none
+        }
+        */
+        .rich-tabpanel{
+            margin:10px 10px 0 10px;
+            width:98.5%;
+        }
+        .pbBody .rich-tabpanel .rich-tab-header{
+            border: 1px solid #d3d3d3 !important;
+            background: ;
+            color: #555 !important;
+            border-top-right-radius: 4px !important;
+            border-top-left-radius: 4px !important;
+            padding: 7px 12px;
+            text-decoration:none;
+            font-size:13px;
+            background: #999999; /* Old browsers */
+            /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+            background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzk5OTk5OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUxJSIgc3RvcC1jb2xvcj0iI2Q2ZDZkNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUxJSIgc3RvcC1jb2xvcj0iIzIwN2NjYSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUxJSIgc3RvcC1jb2xvcj0iI2Q2ZDZkNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlNWU1ZTUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+            background: -moz-linear-gradient(top,  #999999 0%, #d6d6d6 51%, #207cca 51%, #d6d6d6 51%, #e5e5e5 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#999999), color-stop(51%,#d6d6d6), color-stop(51%,#207cca), color-stop(51%,#d6d6d6), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  #999999 0%,#d6d6d6 51%,#207cca 51%,#d6d6d6 51%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  #999999 0%,#d6d6d6 51%,#207cca 51%,#d6d6d6 51%,#e5e5e5 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  #999999 0%,#d6d6d6 51%,#207cca 51%,#d6d6d6 51%,#e5e5e5 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  #999999 0%,#d6d6d6 51%,#207cca 51%,#d6d6d6 51%,#e5e5e5 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#999999', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-8 */
+        }
+        .rich-tab-active{
+            background: #f1f1f1 !important;
+            font-weight:bold !important;
+        }
+        .pbBody .rich-tabpanel .rich-tab-header.activeTab{
+            border-bottom:none !important;
+        }
+        .pbBody .rich-tabpanel .disabledTab{
+            opacity:0.45 !important;
+        }
+        .rich-tabhdr-side-border, .rich-tabhdr-side-border{
+            background:none !important;
+            display:none;
+        }
+        .rich-tabhdr-side-cell{
+            border-top:none;
+        }
+        
+        .infoTable {
+            background: #f5f5f5;
+            border-collapse: separate;
+            font-size: 12px;
+            line-height: 24px;
+            text-align: left;
+            margin:5px 14px 0 14px;
+        }   
+        .infoTable table{
+            width:100%;
+        }
+        .infoTable th {
+            background-color: #a6afa2 !important;
+            color: #fff;
+            font-weight: bold;
+            padding: 3px 9px;
+            position: relative;
+            border:none !important;
+        }
+        .infoTable th:first-child{
+            border-right:1px solid #fff !important;
+        }
+
+        .infoTable th:after {
+            content: '';
+            display: block;
+            height: 25%;
+            left: 0;
+            margin: 1px 0 0 0;
+            position: absolute;
+            top: 25%;
+            width: 100%;
+        }
+        .infoTable td {
+            border-right: 1px solid #fff;
+            border-left: 1px solid #e8e8e8;
+            border-top: 1px solid #fff;
+            border-bottom: 1px solid #e8e8e8;
+            padding: 3px 9px;
+            position: relative;
+            transition: all 300ms;
+            min-width: 90px;
+        }
+        .rich-tab-header:hover{
+            cursor:pointer !important;
+        }
+        .rich-tab-disabled:hover{
+            cursor:auto !important;
+        }
+        .infoTable td:first-child {
+            box-shadow: inset 1px 0 0 #fff;
+        }   
+
+        .infoTable td:last-child {
+            border-right: 1px solid #e8e8e8;
+            box-shadow: inset -1px 0 0 #fff;
+        }   
+
+        .infoTable tr {
+        }
+
+        .infoTable tr:nth-child(odd) td {
+            background: #f1f1f1;    
+        }
+
+        .infoTable tr:last-of-type td {
+            box-shadow: inset 0 -1px 0 #fff; 
+        }
+
+        .infoTable tr:last-of-type td:first-child {
+            box-shadow: inset 1px -1px 0 #fff;
+        }   
+
+        .infoTable tr:last-of-type td:last-child {
+            box-shadow: inset -1px -1px 0 #fff;
+        }   
+
+        .infoTable tbody:hover td {
+        }
+
+        .infoTable tbody:hover tr:hover td {
+            color: #444;
+            text-shadow: 0 1px 0 #fff;
+        }
+        body .bEditBlock .pbBody .pbSubheader, body .bWizardBlock .pbBody .pbSubheader{
+            background-image:none !important;
+            color:#27282e;
+        }
+        .hideDropdown select{
+            display:none !important;
+        }
+
+    </style>
+    <!--[if gte IE 9]>
+      <style type="text/css">
+        .pbBody .rich-tabpanel .inactiveTab {
+           filter: none;
+        }
+      </style>
+    <![endif]-->
+
+    <script type="text/javascript">
+        var j$ = jQuery.noConflict();
+
+        j$(function(){
+            /*j$(document.getElementById('{!$Component.thepage.WholeForm}')).bind('keypress', function(e){
+                    if (e.keyCode == 13) {
+                        SearchSites();
+                    }
+            });
+
+            j$("#ProjectInput input").bind('keypress', function(e){
+                    if (e.keyCode == 13) {
+                        CreateProject();
+                    }
+            });
+
+            j$("#ProjectInput2 input").bind('keypress', function(e){
+                    if (e.keyCode == 13) {
+                        CreateProject();
+                    }
+            });*/
+        
+            j$(document.getElementById('{!$Component.thepage.WholeForm}')).keypress(function (e) {
+                if (e.keyCode == 13) { 
+                    e.preventDefault();
+                }
+            });
+
+
+
+            j$('#AddressInput').bind('keydown', function(event) {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    SearchSites();
+                }
+            });
+        });
+
+
+
+    </script>
+
+
+    <apex:sectionHeader title="Project Edit" subtitle="New Project" />
+
+    <apex:outputPanel id="WholeForm">
+
+
+
+        <apex:pageMessages id="messages" />
+
+        <div class="customHelpText">
+            <div class="customHelpBody">
+                Complete the following steps to provide the minimum information required to create an Ecosystem project record.   Additional project information can be added once the initial setup is complete.   
+                <br/><br/>
+                    Step 1: Search and select the client account(s) associated with the project.  If the account does not exist, create a new client account record using the request button.   
+                    <br/>
+                    Step 2:  Select the relevant project opportunity associated with the client account(s).  This will link the new project record to the existing Salesforce opportunity record.  Skip the selection if the opportunity records listed are not relevant to the project or no opportunities exist for the client account(s).
+                    <br/>
+                    Step 3: Provide a project name, owner, estimated start date and estimated fee.
+                    <br/>
+                    Step 4: Select the AECOM organization(s) that will support delivery of the project, the role (primary or secondary) and percent contribution. 
+                    <br/>
+                    <br/>
+            </div>
+        </div>  
+
+
+        <apex:form id="theform">
+
+            <apex:outputPanel id="SelectAddressPanel">
+                <apex:pageBlock mode="edit" title="Create Project" id="thepageblock"> 
+
+                    
+                    <apex:pageBlockButtons location="top">
+                        <apex:outputPanel id="buttons">
+                            <apex:commandButton value="Cancel" action="{!Cancel}" immediate="true"/>
+                            <apex:commandButton value="Request New Client Record" onclick="window.open('{!URLFOR($Action.SharedServicesRequest__c.New, null)}');"></apex:commandButton>
+                            <apex:commandButton value="Create Project" action="{!CreateProject}" disabled="{!IF(oPrimaryOrganization == null, true, false)}"  rendered="{!NOT(boolNameAttempted)}" />
+                            <apex:commandButton value="Confirm" action="{!CreateProject}" rendered="{!AND(IF(oPrimaryOrganization != null, true, false), boolNameAttempted)}" />
+                        </apex:outputPanel>
+                    </apex:pageBlockButtons>
+                    
+                    <apex:outputPanel id="dupeFound" rendered="{!boolNameAttempted}">
+                        <apex:outputPanel >
+
+                            <div id="ProjectInput2">
+                            <apex:pageBlockSection title="General Project Information"  columns="2" collapsible="false">
+                                <apex:repeat value="{!$ObjectType.pse__Proj__c.FieldSets.pse_ProjectFieldsforCustomProjectSetup}" var="Field1">
+                                    <apex:inputField value="{!oProject[Field1]}" required="true" rendered="{!Field1.required}"/>
+                                    <apex:inputField value="{!oProject[Field1]}" rendered="{!AND(NOT(Field1.required), IF(Field1.Label=="Opportunity Name", false, true))}"/>
+                                    <apex:outputField value="{!oProject[Field1]}" rendered="{!AND(NOT(Field1.required), IF(Field1.Label=="Opportunity Name", true, false))}"/>
+                                </apex:repeat>
+
+                            </apex:pageBlockSection>
+                            </div>
+
+                            
+
+                            <!--<script type="text/javascript">
+                                var q$ = jQuery.noConflict();
+                                q$(function(){
+                                    q$("[id$='mlktp']").hide();
+                                });
+
+                            </script>-->
+
+                            <apex:pageBlockSection title="Possible Project Matches"  columns="1" collapsible="false"></apex:pageBlockSection>
+                            <div style="padding:0 12px;margin-top:7px">
+                            <apex:pageBlockTable value="{!listSimilarProjects}" var="matchProject" rendered="{!IF(listSimilarProjects.size > 0, true, false)}">
+                                <apex:repeat value="{!$ObjectType.pse__Proj__c.FieldSets.pse_ProjectFieldsforCustomProjectSetup}" var="MatchProjectField">
+                                    <apex:column >
+                                        <apex:facet name="header">{!MatchProjectField.label}</apex:facet>
+                                        <apex:outputfield value="{!matchProject[MatchProjectField]}" rendered="{!IF(MatchProjectField.Label=='Project Name', false, true)}" />
+                                        <apex:outputLink value="/{!matchProject.id}" target="_blank" rendered="{!IF(MatchProjectField.Label=='Project Name', true, false)}" >{!matchProject[MatchProjectField]}</apex:outputLink>&nbsp;&nbsp;
+                                    </apex:column>
+                                </apex:repeat>                                              
+                            </apex:pageBlockTable>
+                            </div>
+
+                            
+                        </apex:outputPanel> 
+                    </apex:outputPanel>
+
+
+                    <apex:outputPanel id="tabPanel" rendered="{!not(boolNameAttempted)}">               
+
+                        <apex:tabPanel id="thetabpanel" switchType="client" value="{!TabState}"  tabClass="activeTab" inactiveTabClass="inactiveTab" disabledTabClass="disabledTab">
+                            <apex:tab label="Step 1 – Select Client Account(s)" name="name1" id="tabOne">
+                                    
+                                    <apex:outputPanel id="SiteTab">
+                                    <apex:actionRegion >
+
+                                    <apex:pageBlockSection title="Selected Accounts"  columns="1" collapsible="false"></apex:pageBlockSection>
+                                    <apex:outputPanel id="SitePanel">
+                                        <apex:actionStatus id="SiteSelectUpdateStatus">
+                                            <apex:facet name="start">
+                                                <p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+                                            </apex:facet>
+                                            <apex:facet name="stop">
+                                                    <apex:outputPanel >
+                                                            ​<apex:pageMessage severity="INFO" rendered="{!IF(lstSites.size > 0, false, true)}" summary="No Sites Were Selected."></apex:pageMessage> 
+                                                            <apex:outputPanel id="SiteSelect" rendered="{!if(lstSites.size > 0, true, false)}">
+
+                                                            <div style="padding:0 12px;margin-top:7px">
+                                                                <apex:pageBlockTable value="{!lstSites}" var="Site" rendered="{!if(lstSites.size > 0, true, false)}">
+                                                                    <apex:repeat value="{!$ObjectType.Site__c.FieldSets.pse_ClientFinder_Search_Result_Fieldset}" var="SearchField">
+                                                                        <apex:column value="{!Site.oSite[SearchField]}" />
+                                                                    </apex:repeat>
+                                                                    <apex:column headerValue="Billing Client">
+                                                                        <apex:inputCheckbox value="{!Site.booIsBilling}" disabled="{!Site.booIsDefaultTopTask}">
+                                                                            <apex:actionSupport event="onclick" action="{!BillingSelect}" reRender="SiteTab">
+                                                                                <apex:param assignTo="{!idSiteID}" name="SiteID" value="{!Site.oSite.id}" />
+                                                                            </apex:actionSupport>
+                                                                        </apex:inputCheckbox>
+                                                                    </apex:column>
+                                                                    <apex:column headerValue="Primary Billing" >
+                                                                        <apex:inputCheckbox value="{!Site.booIsDefaultTopTask}" disabled="{!OR(Site.booIsDefaultTopTask, NOT(Site.booIsBilling))}">
+                                                                            <apex:actionSupport event="onclick" action="{!DefaultTopSelect}" reRender="SiteTab">
+                                                                                <apex:param assignTo="{!idSiteID}" name="SiteID" value="{!Site.oSite.id}" />
+                                                                            </apex:actionSupport>
+                                                                        </apex:inputCheckbox>
+                                                                    </apex:column>
+                                                                    <apex:column headerValue="End Client" >
+                                                                        <apex:inputCheckbox value="{!Site.booIsEnd}"  disabled="{!Site.booIsPrimaryEnd}">
+                                                                            <apex:actionSupport event="onclick" action="{!EndSelect}" reRender="SiteTab">
+                                                                                <apex:param assignTo="{!idSiteID}" name="SiteID" value="{!Site.oSite.id}" />
+                                                                            </apex:actionSupport>
+                                                                        </apex:inputCheckbox>
+                                                                    </apex:column>
+                                                                    <apex:column headerValue="Primary End">
+                                                                        <apex:inputCheckbox value="{!Site.booIsPrimaryEnd}" disabled="{!OR(Site.booIsPrimaryEnd, NOT(Site.booIsEnd))}">
+                                                                            <apex:actionSupport event="onclick" action="{!PrimaryEndSelect}" reRender="WholeForm">
+                                                                                <apex:param assignTo="{!idSiteID}" name="SiteID" value="{!Site.oSite.id}" />
+                                                                            </apex:actionSupport>
+                                                                        </apex:inputCheckbox>
+                                                                    </apex:column>
+                                                                    <apex:column headerValue="Client Contact">
+                                                                        <apex:selectList value="{!Site.billingContact}" disabled="{!NOT(Site.booIsBilling)}">
+                                                                            <apex:selectOptions value="{!Site.contacts}"></apex:selectoptions>
+                                                                        </apex:selectList>
+                                                                    </apex:column>
+                                                                </apex:pageBlockTable>
+                                                            </div>
+
+                                                            <BR />
+                                                            
+                                                            <div style="text-align:center;padding:0 0 5px 10px;">
+                                                                <apex:commandButton value="Next" action="{!Step2}" reRender="tabPanel, messages" />
+                                                            </div>
+
+                                                            <BR />
+
+                                                            <div class="infoTable">
+                                                                <table  border="1" cellpadding="0" cellspacing="0">
+                                                                    <tr>
+                                                                        <th>Attribute</th>
+                                                                        <th>Definitition</th>
+                                                                    </tr>
+                                                                    <TR>
+                                                                        <TD>Billing Client</TD>
+                                                                        <TD>Billing clients to whom invoices will be sent.  These clients will be available to be selected for assignment to particular tasks during project setup.</TD>
+                                                                    </TR>   
+                                                                    <TR>
+                                                                        <TD>Primary Billing</TD>
+                                                                        <TD>The client to whom invoices will be sent (typically the client on the Prime Contract).  Where multiple billing clients exists, this client will be the default client on all tasks but can be changed to one of the Other Billing clients.</TD>
+                                                                    </TR>
+                                                                    <TR >
+                                                                        <TD>End Client</TD>
+                                                                        <TD>End Clients associated with the project (or may be intermediate clients between the contracted/billing client and the ultimate end client)</TD>
+                                                                    </TR>   
+                                                                    <TR>
+                                                                        <td>Primary End</td>
+                                                                        <td>The ultimate end Client for the project</td>
+                                                                    </TR>
+                                                                </table>
+                                                            </div>
+                                                            <BR /><BR /><BR />  
+                                                            
+                                                        </apex:outputPanel> 
+                                                    </apex:outputPanel>                     
+                                            </apex:facet>
+                                        </apex:actionStatus>
+                                    </apex:outputPanel> 
+
+                                    <apex:outputPanel >
+                                        <apex:actionFunction action="{!SearchSites}" name="SearchSites"  rerender="SiteTab" status="SiteSearchUpdateStatus" />
+
+                                        <div id="AddressInput" tabindex="1">
+                                        <apex:pageBlockSection title="Search for Account" columns="2" collapsible="false">
+                                            <apex:repeat value="{!$ObjectType.Site__c.FieldSets.pse_ClientFinder_Search_Fieldset}" var="FieldsForSearch">
+                                                <apex:pageBlockSectionItem >
+                                                    <apex:outputLabel value="{!FieldsForSearch.Label}" />
+                                                    <apex:inputField value="{!oSite[FieldsForSearch]}" required="false" />
+                                                </apex:pageBlockSectionItem>
+                                            </apex:repeat>
+                                        </apex:pageBlockSection>
+                                        </div>
+                                        
+
+                                        
+                                        <div style="text-align:center;">
+                                            <apex:outputLabel value="Show me clients that are not in my Operating Unit" />&nbsp;
+                                            <c:ECO_HelpIcon helpText="Click box to search for clients with physical/billing location outside of Opertating Unit"/>
+                                            <apex:inputCheckbox value="{!bSearchOutsideUserOrg}" />
+                                            <br/><br/>
+                                            <apex:commandButton id="SearchButton" action="{!SearchSites}" value="Search" rerender="SiteTab" status="SiteSearchUpdateStatus" />
+                                        </div>
+                                        
+                                        <BR /><BR /><BR />
+                                    </apex:outputPanel>
+
+                                    <apex:outputPanel id="SiteSearch">                      
+                                        <apex:actionStatus id="SiteSearchUpdateStatus">
+                                            <apex:facet name="start">
+                                                <p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+                                            </apex:facet>
+                                            <apex:facet name="stop">
+                                                <apex:outputtext value="{!strSearchResults}"/>
+
+                                                <apex:outputPanel id="SiteSearchResult" rendered="{!booDisplaySiteSearchResult}">
+                                                    <apex:pageBlockSection title="Search Results"  columns="1" collapsible="false"></apex:pageBlockSection>
+                                                        <div style="padding:0 12px;margin-top:7px">
+
+                                                            <apex:pageMessage severity="INFO" rendered="{!IF(lstSitesSearchResults.size > 0, false, true)}" summary="No Results Were Found."></apex:pageMessage> 
+                                                            <apex:pageBlockTable value="{!lstSitesSearchResults}" rendered="{!IF(lstSitesSearchResults.size > 0, true, false)}" var="Site">
+                                                                <apex:column width="35">
+                                                                    <apex:facet name="header">Action</apex:facet>
+                                                                    <apex:commandLink action="{!SelectSite}" value="Select" rerender="tabPanel" status="SiteSelectUpdateStatus">
+                                                                        <apex:param assignTo="{!idSiteID}" name="SiteID" value="{!Site.id}" />
+                                                                    </apex:commandLink>&nbsp;&nbsp;
+                                                                </apex:column>
+                                                                <apex:repeat value="{!$ObjectType.Site__c.FieldSets.pse_ClientFinder_Search_Result_Fieldset}" var="SearchField">
+                                                                    <apex:column value="{!Site[SearchField]}"/>
+                                                                </apex:repeat>
+                                                            </apex:pageBlockTable>
+                                                        </div>
+                                                        <BR /><BR />
+                                                        <div style="text-align:center;">
+                                                            <apex:commandButton value="{!showMoreSiteText}" action="{!toggleSiteShow}"  rerender="SiteTab" status="SiteSearchUpdateStatus" rendered="{!bShowMoreButtonSite}" />
+                                                        </div>
+                                                        <BR /><BR /><BR />
+                                                </apex:outputPanel>
+
+
+                                            </apex:facet>
+                                        </apex:actionStatus>
+                                    </apex:outputPanel>     
+
+                                    </apex:actionRegion>
+                                </apex:outputPanel> 
+
+                            </apex:tab>
+
+                            <apex:tab label="Step 2 – Select Opportunity" name="name2" id="tabTwo" disabled="{!if(lstSites.size > 0, false, true)}">
+                                <apex:actionRegion >
+
+
+                                    <apex:actionStatus id="OppSelectStatus">
+                                        <apex:facet name="start">
+                                            <p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+                                        </apex:facet>
+                                        <apex:facet name="stop">
+                                            <apex:outputPanel >     
+                                            <apex:pageBlockSection title="Select Opportunity"  columns="1" collapsible="false"></apex:pageBlockSection>
+                                            <div style="padding:0 12px;margin-top:7px">
+                                            <apex:pageMessage severity="INFO" rendered="{!IF(lstSearchOpportunities.size > 0, false, true)}" summary="No Opportunities Were Found."></apex:pageMessage> 
+
+                                            <!--<apex:pageBlockTable value="{!lstSearchOpportunities}" var="SearchOpportunity" rendered="{!IF(lstSearchOpportunities.size > 0, true, false)}">
+
+                                                <apex:column width="35">
+                                                    <apex:facet name="header">Action</apex:facet>
+                                                    <apex:commandLink action="{!SelectOpportunity}" value="Select" rerender="tabPanel, messages" status="OppSelectStatus">
+                                                        <apex:param assignTo="{!sSelectedOpportunityId}" name="strSearchOpportunityID" value="{!SearchOpportunity.id}" />
+                                                    </apex:commandLink>
+                                                </apex:column>
+
+                                                <apex:repeat value="{!$ObjectType.opportunity.FieldSets.pse_OpportunityFieldsForSearchResult}" var="FieldForDisplay">
+                                                    <apex:column >
+                                                        <apex:facet name="header">{!FieldForDisplay.label}</apex:facet>
+                                                        {!SearchOpportunity[FieldForDisplay]}
+                                                    </apex:column>
+                                                </apex:repeat>          
+                                            </apex:pageBlockTable>-->
+
+                                            <apex:pageBlockTable value="{!lstOppClone}" var="SearchOpportunity" rendered="{!IF(lstSearchOpportunities.size > 0, true, false)}">
+
+                                                <apex:column width="35">
+                                                    <apex:facet name="header">Action</apex:facet>
+                                                    <apex:commandLink action="{!SelectOpportunity}" value="Select" rerender="tabPanel, messages" status="OppSelectStatus">
+                                                        <apex:param assignTo="{!sSelectedOpportunityId}" name="strSearchOpportunityID" value="{!SearchOpportunity.id}" />
+                                                    </apex:commandLink>
+                                                </apex:column>
+
+                                                <apex:column >
+                                                    <apex:facet name="header">Account Name</apex:facet>
+                                                    {!SearchOpportunity.acctName}
+                                                </apex:column>
+                                                <apex:column >
+                                                    <apex:facet name="header">Opportunity Name</apex:facet>
+                                                    {!SearchOpportunity.oppName}
+                                                </apex:column>
+                                                <apex:column >
+                                                    <apex:facet name="header">Capture Manager</apex:facet>
+                                                    {!SearchOpportunity.CapManager}
+                                                </apex:column>
+                                                <apex:column >
+                                                    <apex:facet name="header">Created Date</apex:facet>
+                                                    {!SearchOpportunity.createdDate}
+                                                </apex:column>
+
+                                            </apex:pageBlockTable>
+
+                                            </div>
+                                            </apex:outputPanel>
+                                        </apex:facet>
+                                    </apex:actionStatus>
+                                    <br /><br />
+                                    <div style="text-align:center;">
+                                        <apex:commandButton value="Skip Opportunity Selection" action="{!SkipOpportunity}" reRender="tabPanel, messages" />
+                                    </div>
+                                    <BR /><BR />
+                                    <div class="customHelpText">
+                                        <div class="customHelpBody">
+                                            Note: If no opportunity is selected, one will be automatically created.
+                                        </div>
+                                    </div>                                      
+                                <BR /><BR /><BR />
+                                </apex:actionRegion>
+                            <!--</apex:outputPanel> -->
+                            </apex:tab>
+
+                            <apex:tab label="Step 3 – Project Information" name="name3" id="tabThree" disabled="{!OR(if(lstSites.size > 0, false, true), NOT(bOppSelected))}">
+
+                                <apex:outputPanel id="ProjectSetupPanel">
+
+                                    <apex:actionFunction action="{!CreateProject}" name="CreateProject"  rerender="WholeForm" />
+                                    <apex:actionRegion >
+                                        <!--  Project Setup Input Field Section -->
+                                        <apex:actionStatus id="ProjectSetupStatus">
+                                            <apex:facet name="start">
+                                                <p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+                                            </apex:facet>
+                                            <apex:facet name="stop">
+                                                <apex:outputPanel id="ProjectSetup">
+
+                                                    <div id="ProjectInput">
+                                                    <apex:pageBlockSection title="General Project Information"  columns="2" collapsible="false">
+                                                        <apex:pageBlockSectionItem helpText="Consider a title that is applicable for both internal and external (client facing) use.">
+                                                            <apex:outputLabel value="Project Name" />
+                                                            <apex:inputField value="{!oProject.name}" required="true" />
+                                                        </apex:pageBlockSectionItem>
+                                                        <apex:pageBlockSectionItem helpText="Name the current owner of this Project - may be bid/capture manager, project manager or another person.">
+                                                            <apex:outputLabel value="Owner" />
+                                                            <apex:inputField styleClass="hideDropdown" value="{!oProject.ownerid}" required="true" />
+                                                        </apex:pageBlockSectionItem>
+
+                                                        <apex:repeat value="{!$ObjectType.pse__Proj__c.FieldSets.pse_ProjectFieldsforCustomProjectSetup}" var="Field1">
+
+                                                            <apex:inputField value="{!oProject[Field1]}" required="true" rendered="{!AND(Field1.required, Field1.Label!='Project Name', Field1!='OwnerId')}"/>
+                                                            <apex:inputField value="{!oProject[Field1]}" rendered="{!AND(NOT(Field1.required), Field1.Label!='Opportunity Name', Field1!='OwnerId')}"/>
+                                                            <apex:outputField id="oppName" value="{!oProject[Field1]}" rendered="{!AND(NOT(Field1.required), Field1.Label=='Opportunity Name')}"/>
+                                                        </apex:repeat>
+
+                                                    </apex:pageBlockSection>
+                                                    </div>
+
+                                                    
+
+                                                    <!--<script type="text/javascript">
+                                                        var r$ = jQuery.noConflict();
+                                                        r$(function(){
+                                                            r$("[id$='mlktp']").hide();
+                                                        });
+
+                                                    </script>-->
+
+                                                    <div style="text-align:center;">
+                                                        <apex:commandButton value="Next" action="{!ProjectDetailNext}" reRender="tabPanel, messages" status="ProjectSetupStatus" />
+                                                    </div>
+
+
+                                                    <apex:outputPanel id="ProjectMatch" rendered="{!boolNameAttempted}">
+
+
+
+                                                    <apex:pageBlockSection title="Possible Project Matches"  columns="1" collapsible="false"></apex:pageBlockSection>
+                                                        <div style="padding:0 12px;margin-top:7px">
+                                                        <apex:pageBlockTable value="{!listSimilarProjects}" var="matchProject" rendered="{!IF(listSimilarProjects.size > 0, true, false)}">
+                                                            <apex:repeat value="{!$ObjectType.pse__Proj__c.FieldSets.pse_ProjectFieldsforCustomProjectSetup}" var="MatchProjectField">
+                                                                <apex:column >
+                                                                    <apex:facet name="header">{!MatchProjectField.label}</apex:facet>
+                                                                    <apex:outputfield value="{!matchProject[MatchProjectField]}" rendered="{!IF(MatchProjectField.Label=='Project Name', false, true)}" />
+                                                                    <apex:outputLink value="/{!matchProject.id}" target="_blank" rendered="{!IF(MatchProjectField.Label=='Project Name', true, false)}" >{!matchProject[MatchProjectField]}</apex:outputLink>&nbsp;&nbsp;
+                                                                </apex:column>
+                                                            </apex:repeat>                                              
+                                                        </apex:pageBlockTable>
+                                                        </div>
+                                                    </apex:outputPanel>
+                                                    
+                                                </apex:outputPanel> 
+                                            </apex:facet>
+                                        </apex:actionStatus>
+                                        <BR /><BR />
+                                    </apex:actionRegion>
+
+
+                                    <BR /><BR /><BR />
+                                </apex:outputPanel>
+
+                            </apex:tab>
+
+                            <apex:tab label="Step 4 – Select Organization(s)" name="name4" id="tabFour" disabled="{!OR(if(lstSites.size > 0, false, true), NOT(bProjectFilled))}">
+                                    <apex:outputPanel id="searchSection">
+                                        <apex:pageBlockSection title="Selected Organizations"  columns="1" collapsible="false"></apex:pageBlockSection>
+
+                                        <apex:actionRegion >
+
+
+                                            <div id="Orgsearch" style="padding:0 12px;margin-top:7px">
+                                            <apex:actionStatus id="selectStatus">
+                                                <apex:facet name="start">
+                                                    <p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+                                                </apex:facet>
+                                                <apex:facet name="stop">
+                                                        <apex:outputPanel >
+
+
+                                                            <apex:pageMessage title="Warning" severity="WARNING" strength="3" rendered="{!AND(IF(userOrg.OUID__c == oPrimaryOrganization.OUID__c, false, true), if( userOrg == null, false, true), if(oPrimaryOrganization == null, false, true))}" summary="You have selected a Primary Organisation {!oPrimaryOrganization.Department__c} that belongs to an operating unit or business which is not the operating unit to which you belong to. 
+For example you may be an Australian employee and you have selected to create a project within the UK operating unit. 
+Please review your selection of Primary Organisation {!oPrimaryOrganization.Department__c} and update if appropriate."></apex:pageMessage> 
+
+                                                            <apex:pageMessage title="Warning" severity="WARNING" strength="3" rendered="{!AND(IF(oPrimaryEnd.osite.OUID__c == oPrimaryOrganization.OUID__c, false, true), if(oPrimaryOrganization == null, false, true))}" summary="A client record has been selected that is not associated with the project owning organization. Contact Shared Services to create a client record within the owning organization to avoid a future Oracle syncing error when booking the project."></apex:pageMessage> 
+
+
+                                                            <apex:pageMessage severity="INFO" rendered="{!IF(lSelectedOrganizations.size > 0, false, true)}" summary="No Organizations have been selected." >
+                                                                
+                                                            </apex:pageMessage> 
+
+                                                            <apex:outputPanel rendered="{!if(lSelectedOrganizations.size > 0, true, false)}">
+                                                                <apex:pageBlockTable value="{!lSelectedOrganizations}" var="organization">
+                                                                    <apex:column >
+                                                                        <apex:facet name="header">Action</apex:facet>
+                                                                        <apex:commandLink action="{!SelectPrimary}" value="Make Primary" rerender="messages, searchSection, buttons" status="selectStatus">
+                                                                            <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.oOrganization.Id}" />
+                                                                        </apex:commandLink>&nbsp;&nbsp;
+                                                                        <apex:commandLink action="{!RemoveEntry}" value="Remove" rerender="messages, searchSection, buttons" status="selectStatus">
+                                                                            <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.oOrganization.Id}" />
+                                                                        </apex:commandLink>
+                                                                    </apex:column>
+                                                                    <apex:column >
+                                                                        <apex:facet name="header">Type</apex:facet>
+                                                                        {!organization.strType}
+                                                                    </apex:column>
+                                                                    <apex:column value="{!organization.oOrganization.OrganizationName__c}"/>
+                                                                    <apex:column value="{!organization.oOrganization.GeographyName__c}"/> 
+                                                                    <apex:column value="{!organization.oOrganization.Region__c}"/> 
+                                                                    <apex:column value="{!organization.oOrganization.District__c}"/>
+                                                                    <apex:column headerValue="Office" value="{!organization.oOrganization.LocationName__c}"/>
+                                                                    <apex:column value="{!organization.oOrganization.BusinessLineName__c}"/>
+                                                                    <apex:column value="{!organization.oOrganization.Department__c}"/>
+                                                                    <apex:column style="text-align:right;">
+                                                                        <apex:facet name="header">Contribution %</apex:facet>
+                                                                        <apex:inputfield style="width:4em;text-align:right;" value="{!organization.oProjectOrganization.ContributionPercent__c}" />&nbsp;&#37;
+                                                                    </apex:column> 
+                                                                </apex:pageBlockTable>
+                                                                
+                                                            </apex:outputPanel> 
+
+                                                            <BR /><BR />
+
+                                                        </apex:outputPanel>
+                                                </apex:facet>
+                                            </apex:actionStatus>
+                                            </div>
+                                            <apex:outputpanel >
+                                            <apex:pageBlockSection title="Your Owning Organization" collapsible="false"></apex:pageBlockSection>
+                                            <div style="padding:0 12px;margin-top:7px">
+                                            <apex:outputText Value="No Owning Organizations Found." rendered="{!IF(lUserOrganizations.size > 0, false, true)}" />
+                                            <apex:pageBlockTable value="{!lUserOrganizations}" var="organization" rendered="{!IF(lUserOrganizations.size > 0, true, false)}">
+                                                <apex:column width="200px">
+                                                    <apex:facet name="header">Action</apex:facet>
+                                                    <apex:commandLink action="{!SelectPrimary}" value="Set Primary" rerender="messages, buttons, tabPanel, searchSection" status="selectStatus">
+                                                        <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.Id}" />
+                                                    </apex:commandLink>&nbsp;&nbsp;
+                                                    <apex:commandLink action="{!SelectSecondary}" value="Set Supporting" rerender="messages, buttons, tabPanel, searchSection" status="selectStatus">
+                                                        <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.Id}" />
+                                                    </apex:commandLink>
+                                                </apex:column>
+                                                <apex:column value="{!organization.OrganizationName__c}"/>
+                                                <apex:column value="{!organization.GeographyName__c}"/> 
+                                                <apex:column value="{!organization.Region__c}"/> 
+                                                <apex:column value="{!organization.District__c}"/>
+                                                <apex:column headerValue="Office" value="{!organization.LocationName__c}"/>
+                                                <apex:column value="{!organization.BusinessLineName__c}"/>
+                                                <apex:column value="{!organization.Department__c}"/>
+                                                
+                                            </apex:pageBlockTable>
+                                            </div>
+                                            </apex:outputPanel>
+                                            
+                                            <apex:pageBlockSection title="Search For Organizations" collapsible="false" columns="1">
+
+                                                <apex:panelGrid columns="3" columnClasses="colA, colB, colC" id="theGrid">
+                                                    <apex:outputLabel for="Name" value="Organization Name" />
+                                                    <apex:inputText title="Organization Name" styleClass="fixedName"  id="Name" value="{!sOrganizationName}" />
+                                                    <apex:commandButton value="Search" action="{!SearchOrganizations}" rerender="messages, searchSection" status="searchStatus"/>
+
+                                                    <apex:outputLabel for="GeographyName" value="Geography Name" />
+                                                    <apex:selectList styleClass="fixedPickList" size="1" id="GeographyName" value="{!sGeographyName}">
+                                                        <apex:selectOption itemValue="" itemLabel="Select"/>
+                                                        <apex:selectOptions value="{!loGeographies}"/>
+                                                        <apex:actionSupport event="onchange" action="{!SearchOrganizations}" rerender="messages, searchSection" status="searchStatus"/>
+                                                    </apex:selectList>  
+                                                    <apex:outputText value="" />
+
+                                                    <apex:outputLabel for="Region" value="Region" />
+                                                    <apex:selectList styleClass="fixedPickList" size="1" id="Region" value="{!sRegion}">
+                                                        <apex:selectOption itemValue="" itemLabel="Select"/>
+                                                        <apex:selectOptions value="{!loRegions}"/>
+                                                        <apex:actionSupport event="onchange" action="{!SearchOrganizations}" rerender="messages, searchSection" status="searchStatus"/>
+                                                    </apex:selectList>  
+                                                    <apex:outputText value="" />
+
+                                                    <apex:outputLabel for="District" value="District" />
+                                                    <apex:selectList styleClass="fixedPickList" size="1" id="District" value="{!sDistrict}">
+                                                        <apex:selectOption itemValue="" itemLabel="Select"/>
+                                                        <apex:selectOptions value="{!loDistricts}"/>
+                                                        <apex:actionSupport event="onchange" action="{!SearchOrganizations}" rerender="messages, searchSection" status="searchStatus"/>
+                                                    </apex:selectList>
+                                                    <apex:outputText value="" />
+
+                                                    <apex:outputLabel for="Office" value="Office" />
+                                                    <apex:selectList styleClass="fixedPickList" size="1" id="Office" value="{!sLocation}">
+                                                        <apex:selectOption itemValue="" itemLabel="Select"/>
+                                                        <apex:selectOptions value="{!loLocations}"/>
+                                                        <apex:actionSupport event="onchange" action="{!SearchOrganizations}" rerender="messages, searchSection" status="searchStatus"/>
+                                                    </apex:selectList>
+                                                    <apex:outputText value="" />
+
+                                                    <apex:outputLabel for="BusinessLine" value="Business Line" />
+                                                    <apex:selectList styleClass="fixedPickList" size="1" id="BusinessLine" value="{!sBusinessLine}">
+                                                        <apex:selectOption itemValue="" itemLabel="Select"/>
+                                                        <apex:selectOptions value="{!loBusinessLines}"/>
+                                                        <apex:actionSupport event="onchange" action="{!SearchOrganizations}" rerender="messages, searchSection" status="searchStatus"/>
+                                                    </apex:selectList>
+                                                    <apex:outputText value="" />
+
+                                                    <apex:outputLabel for="Department" value="Department" />
+                                                    <apex:selectList styleClass="fixedPickList" size="1" id="Department" value="{!sDepartment}">
+                                                        <apex:selectOption itemValue="" itemLabel="Select"/>
+                                                        <apex:selectOptions value="{!loDepartments}"/>
+                                                        <apex:actionSupport event="onchange" action="{!SearchOrganizations}" rerender="messages, searchSection" status="searchStatus"/>
+                                                    </apex:selectList>
+                                                    <apex:outputText value="" />
+
+                            
+                                                </apex:panelGrid>
+
+
+                                            </apex:pageBlockSection>
+
+                                            <apex:actionStatus id="searchStatus">
+                                                <apex:facet name="start">
+                                                    <p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Searching...</p>
+                                                </apex:facet>
+                                                <apex:facet name="stop">
+                                                    <apex:outputpanel >
+                                                    <apex:pageBlockSection rendered="{!bSearchInProgress}" title="Search Results" collapsible="false"></apex:pageBlockSection>
+                                                    <div style="padding:0 12px;margin-top:7px">
+                                                    <apex:pageBlockTable rendered="{!bSearchInProgress}" value="{!lOrganizations}" var="organization">
+                                                        <apex:column width="200px">
+                                                            <apex:facet name="header">Action</apex:facet>
+                                                            <apex:commandLink action="{!SelectPrimary}" value="Set Primary" rerender="messages, searchSection, buttons" status="selectStatus">
+                                                                <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.Id}" />
+                                                            </apex:commandLink>&nbsp;&nbsp;
+                                                            <apex:commandLink action="{!SelectSecondary}" value="Set Supporting" rerender="messages, searchSection, buttons" status="selectStatus">
+                                                                <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.Id}" />
+                                                            </apex:commandLink>
+                                                        </apex:column>
+                                                        <apex:column value="{!organization.OrganizationName__c}"/>
+                                                        <apex:column value="{!organization.GeographyName__c}"/> 
+                                                        <apex:column value="{!organization.Region__c}"/> 
+                                                        <apex:column value="{!organization.District__c}"/>
+                                                        <apex:column headerValue="Office" value="{!organization.LocationName__c}"/>
+                                                        <apex:column value="{!organization.BusinessLineName__c}"/>
+                                                        <apex:column value="{!organization.Department__c}"/>
+                                                        <!-- <apex:column value="{!organization.ProjectOwning__c}"/>-->
+                                                    </apex:pageBlockTable>
+                                                    </div>
+                                                    <BR /><BR />
+                                                    <apex:outputpanel rendered="{!bSearchInProgress}" >
+                                                        <div style="text-align:center;">
+                                                            <apex:commandButton value="{!showMoreOrgText}" action="{!toggleOrgShow}"  rerender="messages, searchSection"  status="searchStatus" rendered="{!bShowMoreButtonOrg}" />
+                                                        </div>
+                                                    </apex:outputPanel>
+                                                    </apex:outputPanel>
+                                                </apex:facet>
+                                            </apex:actionStatus>
+                                        </apex:actionRegion>
+                                    </apex:outputPanel>
+                                    <BR /><BR /><BR />
+                            </apex:tab>
+                        </apex:tabPanel>
+                    </apex:outputPanel>
+
+
+
+
+
+
+
+
+                    
+                </apex:pageBlock>
+            </apex:outputPanel>
+
+
+
+        </apex:form>
+    </apex:outputPanel>
+
+</apex:page>

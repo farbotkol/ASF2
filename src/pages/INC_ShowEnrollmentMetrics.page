@@ -1,0 +1,444 @@
+<apex:page showHeader="true" sidebar="true" 
+			controller="INC_ShowEnrollmentMetricsController" standardStylesheets="false">
+	<style>
+		.metricTable
+		{
+			font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+			width:100%;
+			border-collapse:collapse;
+		}
+
+		.table1, .table2
+		{
+			font-family:"Trebuchet MS", Arial, Helvetica, sans-serif;
+			width:100%;
+			border-collapse:collapse;
+			margin-top:10px;
+		}
+		.epdetails{
+			padding-bottom: 3px;
+		}
+		.metricTable td, .metricTable th
+		{ 
+			font-size:1.2em;
+			border:1px solid #000000;
+			padding:3px 7px 2px 7px;
+		}
+		.table1 td, .table2 td
+		{
+			border:1px solid #000000;
+			padding:3px 7px 2px 7px;
+		}
+		.metricTable th 
+		{
+			font-size:1.4em;
+			text-align:center;
+			padding-top:5px;
+			padding-bottom:4px;
+			background-color:#A9A9A9;
+			color:#fff;
+		}
+		.metricTable tr.importantrow td 
+		{
+			color:#000;
+			background-color:#B0C4DE;
+			font-weight: bold;
+		} 
+		.tableheader{
+			margin-right: auto;
+			margin-left: auto;
+			text-align: left;
+			font-size: 16px;
+		}
+		.currency{
+			text-align: right;
+			padding-right: 0;
+		}
+		.currency span{
+			visibility: hidden;
+
+		}
+		.percent{
+			text-align: right;
+			padding-right: 0;
+		}
+		.label{
+			text-align: left;
+			width: 400px;
+		}
+		.aslabel::after{
+			display: inline; 
+			content: "*"; 
+			font-size: 1em; 
+			font-weight: bold;  
+			 
+		}
+		.red{
+			background-color: red;
+		}
+		.green{
+			background-color: green;
+		}
+		.yellow{
+			background-color: yellow;
+		}
+		.gray{
+			background-color: #DCDCDC;
+		}
+		.status{
+			width:33%;
+			margin-left: 10px;
+			float:left;
+		}
+		.status2{
+			width:33%;
+			float:left;
+		}
+		.status3{
+			width:33%;
+			float:left;
+		}
+		.status, .status2, .status3{
+			border:1px solid black;
+			display: block;
+			height: 40px;
+			padding: 5px 5px 5px 5px;
+			font-weight: bold;
+			font-size: 10px;
+			margin:0px;
+			padding:0px;
+
+		}
+		.status li, .status2 li, .status3 li{
+			list-style-type: none;
+			text-decoration: none;
+			text-align: center;
+		}
+		.message{
+			padding-bottom: 5px;
+		}
+		.approvedtable{
+			padding-top: 5px;
+		}
+		.incentivevalues{
+			display:block;
+		}
+		.normal{
+			cursor:pointer;
+		}
+		.hover{
+			color: blue;
+			cursor:pointer;
+		}
+		
+		.incentivemessage{
+			font-size: 10px;
+		}
+		.incentivemessage:before{
+			bottom: 3px;
+    		content: "(1)";
+    		font-size: 8px;
+    		position: relative;
+    		top: -5px;	
+		}
+		.incentivemessagediv{
+			margin-left: 10px;
+		}
+		.pheader{
+			font-size: 30px;
+		}
+		.dtwheader:after{
+			bottom: 5px;
+    		content: "(2)";
+    		font-size: 8px;
+    		position: relative;
+    		top: -5px;
+		}
+		.dtwmessage:before{
+			bottom: 3px;
+    		content: "(2)";
+    		font-size: 8px;
+    		position: relative;
+    		top: -5px;	
+		}
+		.dtwmessage{
+			margin-left: 10px;
+			font-size: 10px;
+		}
+		
+		.table1{
+			float:left;
+			width: 50%;
+			height: auto;
+		}
+		
+		.raised1:after{
+			bottom: 3px;
+    		content: "(1)";
+    		font-size: 8px;
+    		position: relative;
+    		top: -8px;
+		}
+
+		.table2{
+			float:left;
+			width: 50%;
+			padding-left: 10px;
+		}
+		
+		
+		.column1{
+			width:200px;
+			text-align: left;
+		}
+		.column2{
+			width:75px;
+			text-align: right;
+		} 
+		.firstmessage{
+			float:right;
+		}
+		.metricstart{
+			float:left;
+		}
+	</style>
+	<apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+	<apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+	<script>
+	$j = jQuery.noConflict();
+	$j(document).ready(function(){
+		$j( ".docheaderclass").click(function(){
+			$j(this).next().slideToggle(400);
+		});
+		$j(".clickheader").hover(function(){
+        		$j(this).removeClass('normal').addClass('hover');
+        	}, function(){
+        		$j(this).removeClass('hover').addClass('normal');
+        	});
+	});
+	    
+	</script>
+	<apex:form >
+	<apex:pageBlock >
+		<apex:pageBlockButtons location="both">
+			<apex:commandButton Value="Acknowledge Warning" action="{!UpdateFlag}" rendered="{!oEnrollmentPlan.MetricWarningActive__c = 'Yes'}"/>
+			<apex:CommandButton value="Close" action="{!close}"/>
+		</apex:pageBlockButtons>
+<apex:pageBlockSection collapsible="true" title="Enrollment Plan Details">
+<!--<div class="docheaderclass epdetails">
+   <h1 class="clickheader">Enrollment Plan Details</h1>
+   <br/>
+</div> -->
+<!--<div id="Enrollmentplan" class="content"> -->
+		<apex:outputField value="{!oEnrollmentPlan.Name}"/>
+		<apex:outputtext />
+		<apex:outputField value="{!oEnrollmentPlan.IPProjectManager__c}" />
+		<apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.CustomerName__c}" />
+		<apex:outputField value="{!oEnrollmentPlan.ContractType__c}" />
+		<apex:outputField value="{!oEnrollmentPlan.ProjectStartDate__c}" />
+		<apex:outputField value="{!oEnrollmentPlan.ScheduledFinishDate__c}" />
+		<apex:outputText />
+<!--</div>-->
+</apex:pageBlockSection>
+<!--<div class="docheaderclass">
+ <p class="pheader">
+  <h1 class="clickheader">Incentive Plan Details</h1>
+ </p>
+</div>
+<div class="content"> -->
+	<apex:pageBlockSection title="Incentive Plan Details" collapsible="true" columns="1" showHeader="true">	
+	<!--	<div id='IncentivePlan'> -->
+		 	<apex:outputField value="{!oEnrollmentPlan.IncentivePlan__r.Name}"/>
+			<apex:outputField value="{!oEnrollmentPlan.IncentivePlan__r.ContractType__c}"/>
+			<apex:outputField value="{!oEnrollmentPlan.IncentivePlan__r.ContractSubType__c}"/>
+	<!--	</div> -->
+		<apex:pageBlockSection showHeader="false" columns="1">
+			<apex:outputField value="{!oEnrollmentPlan.IncentivePlan__r.HelpText__c}"/>
+			<apex:outputField value="{!oEnrollmentPlan.IncentivePlan__r.PlanCriteria__c}"/>
+		</apex:pageBlockSection>
+	</apex:pageBlockSection>
+<!--</div> -->
+<div>
+<!--<div class="docheaderclass epdetails">
+   <h1 class="clickheader">Incentive Status Report</h1>
+</div> -->
+<apex:pageBlockSection title="Incentive Status Report" collapsible="true" columns="1">
+<div class="content"> 
+	   <div class="message" >The Incentive Status Report (ISR) represents the financial status of the enrolled project. The ISR is available online to all Approvers and Enrolled Participants, and is intended to provide you with important insight into how your project is performing against the established targets to earn a cash award.
+	   </div>
+	<apex:outputpanel >
+		<div>
+		<div class="status {!sFirstMessageClass}">
+		   <li>Project performing below DTW Baseline margin % of NSR </li>
+		   <li>(if EAC margin % &lt; baseline margin %)</li>
+		</div>
+		<div class="status2 {!sSecondMessageClass}">
+		   <li>Project performing above Baseline % of NSR, but below Threshold % of NSR</li>
+		   <li>(if EAC margin &gt; baseline but &lt; threshold)</li>
+		</div>
+		<div class="status3 {!sThirdMessageClass}">
+		   <li>Project performing above Threshold % of NSR</li>
+		   <li>(If EAC margin &lt; threshold)</li>
+		</div>
+		</div>
+	</apex:outputpanel>
+	<div>
+	<apex:outputPanel id="inctable" layout="block">
+			<table id="incentivetable" class="table1">
+				<apex:repeat value="{!listIncValues}" var="incrow">
+					<tr>
+						<td class="column1 {!incrow.tdclass}">{!incrow.label}</td>
+						<td class="column2">{!incrow.column1val}</td>
+					</tr>
+				</apex:repeat>
+			</table>
+			<table id="incentivetable2" class="table2">
+				<apex:repeat value="{!listIncValuesTable2}" var="incrow2">
+					<tr>
+						<td class="column1 {!incrow2.tdclass}">{!incrow2.label}</td>
+						<td class="column2">{!incrow2.column1val}</td>
+					</tr>
+				</apex:repeat>
+			</table>
+	</apex:outputPanel>
+	</div>
+	 <apex:outputpanel >
+	 <div class="firstmessage">
+		<p class="incentivemessage" >
+			The estimated incentive pool is
+			based on the latest Forecast Margin % of NSR. This is a point in time measure that changes with any subsequent EAC updates made by the PM. Final incentive pool calculations are based on final project result, including assessment of operational metrics
+		</p>
+	</div>
+	</apex:outputpanel>
+
+ </div>
+</apex:pageBlockSection>
+ </div>
+ <div class="metricstart">
+		<div id="Baseline">
+			<div class="tableheader docheaderclass">
+				<p class="pheader">
+					<h1 class="clickheader dtwheader">Deliver to Win Baseline Metrics</h1>
+				</p>
+			</div>
+			<div class="content">
+				<table class="metricTable">
+				 	<tr class="headerrow">
+						<th></th>
+						<th>{!firstColumnHeader}</th>
+						<th>Current</th>
+						<th></th>
+						<th>Variance</th>
+						<th></th>
+					</tr>
+				 	<apex:repeat value="{!listBaseline}" var="basRow">
+						<tr class="{!basRow.sClass}">
+							<td class=" label {!basRow.tdclass}  {!basRow.labelclass}">{!basRow.Label}</td>
+							<td class="{!basRow.tdclass}">{!basRow.Column1Val}<span>%</span></td>
+							<td class="{!basRow.tdclass}">{!basRow.CurrentVal}<span>%</span></td>
+							<td class="warning {!basRow.tdclass}"></td>
+							<td class="{!basRow.tdclass}">{!basRow.Variance}<span>%</span></td>
+							<td class="warning {!basRow.tdclass}">
+							  <apex:outputText escape="false" value="{!basRow.imageCol2}"/>
+							</td>
+						</tr>
+				  	</apex:repeat>
+				</table>
+				<p class="dtwmessage">
+					Includes Management Adjustments, if any.  Changes in budget since enrollment may impact Deliver to Win baseline metrics, including margin % and "% complete @ enrollment"
+				</p>
+			</div>
+		</div>
+		<div id="Approved" class="approvedtable">
+			<div class="tableheader docheaderclass">
+				<p class="pheader">
+					<h1 class="clickheader">Approved Budget</h1>
+				</p>
+			</div>
+			<div class="content">
+				<table class="metricTable">
+				 	<tr class="headerrow">
+						<th></th>
+						<th>{!firstColumnHeader}</th>
+						<th>Current</th>
+						<th></th>
+						<th>Variance</th>
+						<th></th>
+					</tr>
+				 	<apex:repeat value="{!listApproved}" var="appRow">
+						<tr class="{!appRow.sClass}">
+							<td class=" label {!appRow.tdclass}">{!appRow.Label}</td>
+							<td class="{!appRow.tdclass}">{!appRow.Column1Val}<span>%</span></td>
+							<td class="{!appRow.tdclass}">{!appRow.CurrentVal}<span>%</span></td>
+							<td class="warning {!appRow.tdclass}"></td>
+							<td class="{!appRow.tdclass}">{!appRow.Variance}<span>%</span></td>
+							<td class="warning {!appRow.tdclass}">
+								<apex:outputText escape="false" value="{!appRow.imageCol2}"/>
+							</td>
+						</tr>
+				  	</apex:repeat>
+				</table>
+			</div>
+		</div>
+		<div id="Forcasted">
+			<div class="tableheader docheaderclass">
+				<p class="pheader">
+					<h1 class="clickheader">Forecasted Budget</h1>
+				</p>
+			</div>
+			<div class="content">
+				<table class="metricTable">
+				 	<tr class="headerrow">
+						<th></th>
+						<th>{!firstColumnHeader}</th>
+						<th>Current</th>
+						<th></th>
+						<th>Variance</th>
+						<th></th>
+					</tr>
+				 	<apex:repeat value="{!listForecasted}" var="forRow">
+						<tr class="{!forRow.sClass}">
+							<td class=" label {!forRow.tdclass}">{!forRow.Label}</td>
+							<td class="{!forRow.tdclass}">{!forRow.Column1Val}<span>%</span></td>
+							<td class="{!forRow.tdclass}">{!forRow.CurrentVal}<span>%</span></td>
+							<td class="{!forRow.tdclass}">{!forRow.imageCol1}</td>
+							<td class="{!forRow.tdclass}">{!forRow.Variance}<span>%</span></td>
+							<td class="{!forRow.tdclass}">{!forRow.imageCol2}</td>
+						</tr>
+				  	</apex:repeat>
+				</table>
+			</div>
+		</div>
+		<div id="Actual">
+			<div class="tableheader docheaderclass">
+				<p class="pheader">
+					<h1 class="clickheader">Inception to Date Actuals</h1>
+				</p>
+			</div>
+			<div class="content">
+				<table class="metricTable">
+				 	<tr class="headerrow">
+						<th></th>
+						<th>{!firstColumnHeader}</th>
+						<th>Current</th>
+						<th></th>
+						<th>Variance</th>
+						<th></th>
+					</tr>
+				 	<apex:repeat value="{!listActuals}" var="appRow">
+						<tr class="{!appRow.sClass}">
+							<td class=" label {!appRow.tdclass}">{!appRow.Label}</td>
+							<td class="{!appRow.tdclass}">{!appRow.Column1Val}<span>%</span></td>
+							<td class="{!appRow.tdclass}">{!appRow.CurrentVal}<span>%</span></td>
+							<td class="{!appRow.tdclass}">{!appRow.imageCol1}</td>
+							<td class="{!appRow.tdclass}">{!appRow.Variance}<span>%</span></td>
+							<td class="{!appRow.tdclass}">{!appRow.imageCol2}</td>
+						</tr>
+				  	</apex:repeat>
+				</table>
+			</div>
+		</div>
+	</div>
+	</apex:pageBlock> 
+</apex:form>
+</apex:page>

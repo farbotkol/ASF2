@@ -1,0 +1,256 @@
+<apex:page showHeader="true" standardController="pse__Proj__c" extensions="ECO_CloseoutOpportunityPhaseController" tabStyle="pse__Proj__c"  sidebar="true">
+
+	<style>
+
+		.colA {
+			font-weight: bold;
+			text-align:right;
+			vertical-align:middle !important;
+		}
+
+		.colB {
+			padding:0 10px !important;
+		}
+
+		.colC {
+			vertical-align:middle !important;
+		}
+
+
+		.colD {
+			text-align:left;
+			vertical-align:middle !important;
+		}		
+
+		.questions{
+			vertical-align:middle !important;
+			margin-left:3px;
+		}
+
+		.dmeOutput{  
+			font-size: 1.0em;
+	  		font-weight: bold; 
+	  		color: #4a4a56;  /*Standrd Salesforce Color*/
+	  	}
+	  	
+	  	.attachNewFile{
+	  		visibility: hidden;
+	  	}
+	  	
+		.pbtOutputPanel
+		{
+			padding: 100;
+			color: red;
+		}  	
+		
+		.textBox
+		{
+			padding-bottom: 5px;
+		}
+		
+		.fileList
+		{
+			padding:0 12px;
+			margin-top:7px;
+		}
+		
+	    .bPageBlock .detailList tr td.dataCol, 
+	    .bPageBlock .detailList tr td.labelCol
+	    {
+	    	border-bottom:1px solid #dbdbdb;
+	    }
+
+	    .bPageBlock .detailList tr td.dataCol.last, 
+	    .bPageBlock .detailList tr td.labelCol.last
+	    {
+	    	border-bottom:0px solid #dbdbdb;
+	    }
+	     
+	    .questionCol {
+	    	padding-top: 10px;  
+		}
+	</style>
+
+    <head>
+        <apex:stylesheet value="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"  />
+        <apex:includeScript value="https://code.jquery.com/jquery-1.9.1.js" />
+        <apex:includeScript value="https://code.jquery.com/ui/1.10.3/jquery-ui.js" />
+    </head>
+
+	<script>
+
+	    function openPopup(id)
+	    {
+	        var newWin=window.open('/' + id, 'PopUp',
+	               'height=450,width=650,left=300,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no,channelmode=no');
+	        if (window.focus) 
+	        {
+	            newWin.focus();
+	        }
+	             
+	        return false;       
+	    }	
+	    
+	    function fileChosen(attachButton,documentField,overrideField)
+	    {
+	    	if(documentField.value != '')
+	    	{
+				document.getElementById(attachButton).style.visibility = 'visible';			
+				document.getElementById(overrideField).value = '';
+				document.getElementById(overrideField).style.visibility = 'visible';
+							
+			}
+			else
+			{
+				document.getElementById(attachButton).style.visibility= 'hidden';
+				document.getElementById(overrideField).style.visibility= 'hidden';			
+			}		
+	    }
+
+		function documentTypeChosen(value, outputTextField, outputTextFieldAECOM, outputTextFieldOther) {
+			//alert('test');
+	//		refreshInputNames();
+	/*    	if(value == 'AECOM')
+	    	{
+	    		//alert('test');
+				document.getElementById(outputTextField).style.visibility= 'hidden';
+				document.getElementById(outputTextFieldOther).style.visibility= 'hidden';
+				document.getElementById(outputTextFieldAECOM).style.visibility= 'visible';			  							  	
+	    	}
+	    	else
+	    	{
+	    		alert('test');
+				document.getElementById(outputTextField).style.visibility= 'hidden';
+				document.getElementById(outputTextFieldOther).style.visibility= 'visible';
+				document.getElementById(outputTextFieldAECOM).style.visibility= 'hidden';			  							  	
+	    	}    	*/
+		}    
+	    
+	</script>
+
+	<apex:form >
+
+		<apex:sectionHeader title="Closeout: Opportunity Phase" subtitle="{!pse__Proj__c.Name}" />
+
+
+		<apex:pageMessages id="messages" />		
+		<apex:pageBlock >
+
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton value="Save" action="{!closesave}" />
+				<apex:commandButton value="Back to Project" action="{!back}" immediate="true" />
+			</apex:pageBlockButtons>
+
+
+			<apex:pageBlockSection title="Closeout" collapsible="false" />
+
+			<div style="padding:0 100px;margin-top:7px">
+			<apex:outputPanel id="projectFields">
+			
+				<apex:panelGrid columns="4" columnClasses="colA, colB, colC, colD">
+					<apex:outputLabel value="Project/Opportunity Closure Status" />
+					<apex:outputText value="" />
+					<apex:actionRegion >
+					<apex:inputField value="{!oProject.ProjOpptyClosureStatus__c}" required="true">
+						<apex:actionSupport event="onchange" reRender="projectFields" />
+					</apex:inputField>
+					</apex:actionRegion>
+					<apex:outputText value="" />
+
+					<apex:outputLabel value="Status Change Reason" rendered="{!oProject.ProjOpptyClosureStatus__c == '9 Lost'}" />
+					<apex:outputText value="" rendered="{!oProject.ProjOpptyClosureStatus__c == '9 Lost'}" />			
+					<apex:inputField value="{!oProject.Reason_Won_or_Lost__c}" rendered="{!oProject.ProjOpptyClosureStatus__c == '9 Lost'}" required="true" />
+					<apex:outputText value="" rendered="{!oProject.ProjOpptyClosureStatus__c == '9 Lost'}" />
+
+					<apex:outputLabel value="Status Change Date" />
+					<apex:outputText value="" />
+					<apex:inputField value="{!oProject.StatusChangeDate__c}" required="true" />
+					<apex:outputText value="" />
+
+					<apex:outputLabel value="Notes" />
+					<apex:outputText value="" />
+					<apex:inputField value="{!oProject.ProjOpptyCloseoutNotes__c}" required="true" />
+					<apex:outputText value="" />
+
+					<apex:outputLabel value="Also Close Related Opportunity Record" />
+					<apex:outputText value="" />
+		            <apex:outputPanel layout="block" styleClass="requiredInput">
+		                    <div class="requiredBlock"></div>
+							<apex:selectRadio value="{!oProject.AlsoCloseRelatedOpportunityList__c}" layout="lineDirection" required="true" >
+			                    <apex:selectOptions value="{!types}"></apex:selectoptions>
+			 				</apex:selectRadio>
+		            </apex:outputPanel>					
+		            <apex:outputLink value="/{!oProject.pse__Opportunity__c}" target="_blank"><apex:outputText value="{!oProject.pse__Opportunity__r.name}" /></apex:outputLink>
+
+		            <apex:outputLabel value="Client Debrief" />
+		            <apex:outputText value="" />
+		            <apex:outputPanel layout="block" styleClass="requiredInput">
+		                    <div class="requiredBlock"></div>
+							<apex:selectRadio value="{!oProject.ClientDebrief__c}" layout="lineDirection" required="true" >
+			                    <apex:selectOptions value="{!types}"></apex:selectoptions>
+			 				</apex:selectRadio>
+		            </apex:outputPanel>
+		            <apex:outputText value="" />
+
+		            <apex:outputLabel value="Notes" />
+		            <apex:outputText value="" />
+		            <apex:inputField value="{!oProject.ClientDebriefNotes__c}" required="true" />
+		            <apex:outputText value="" />
+
+		            <apex:outputLabel value="Internal Debrief" />
+		            <apex:outputText value="" />
+		            <apex:outputPanel layout="block" styleClass="requiredInput">
+		                    <div class="requiredBlock"></div>
+							<apex:selectRadio value="{!oProject.InternalDebrief__c}" layout="lineDirection" required="true">
+			                    <apex:selectOptions value="{!types}"></apex:selectoptions>
+			 				</apex:selectRadio>
+		            </apex:outputPanel>
+		            <apex:outputText value="" />
+
+		            <apex:outputLabel value="Notes" />
+		            <apex:outputText value="" />		            
+		            <apex:inputField value="{!oProject.InternalDebriefNotes__c}" required="true" />
+		            <apex:outputText value="" />
+
+				</apex:panelGrid>			
+			
+			</apex:outputPanel>	
+			</div>
+			
+
+			<br /><br /><br />
+
+		 	<apex:outputPanel >
+				<div class="fileList">
+					<apex:pageBlockTable value="{!AttachedClosureFiles}" var="file" style="width: 825px;" rendered="{!oProject.ClosureAttachment__c != null}">
+						<apex:column headerValue="File Name">
+							<!-- <apex:outputLink onclick="return openPopup('{!attachedDocumentControlSystemFile.Id}')"> 
+								<apex:outputText value="{!attachedDocumentControlSystemFile.Name}" />
+							</apex:outputLink> -->
+							<apex:outputLink value="{!URLFOR($Action.Attachment.Download, file.Id)}" target="_blank">
+								<apex:outputText value="{!file.Name}" />
+							</apex:outputLink>
+						</apex:column>
+						<apex:column value="{!file.ContentType}" />	
+						<apex:column value="{!file.LastModifiedDate}" />	
+						<apex:column value="{!file.LastModifiedById}" />
+					</apex:pageBlockTable>
+								
+					<apex:inputFile id="dclosureAttachment" value="{!dclosureAttachment.Body}" contentType="{!dclosureAttachment.ContentType}" fileName="{!dclosureAttachment.Name}" onchange="fileChosen('{!$Component.cmdControlSystemAttachment}', this, '{!$Component.overrideControlSysName}'); return false;"/>
+					<apex:inputText id="overrideControlSysName" value="{!overrideControlSystemName}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
+					<apex:commandButton id="cmdControlSystemAttachment" value="Attach" action="{!saveClosureAttachmentAndProject}" styleclass="attachNewFile"/><br/>
+				</div>
+			</apex:outputPanel>
+
+		</apex:pageBlock>
+
+	</apex:form>
+
+	<script>
+
+		function setFocusOnLoad() {}
+
+	</script>
+
+
+</apex:page>

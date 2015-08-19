@@ -1,0 +1,394 @@
+<apex:page standardController="Agreement__c" extensions="ECO_ProjectSegmentationController" action="{!init}" tabstyle="Agreement__c">
+ 		<style>
+        .customHelpText
+        {
+            padding:10px 5px;
+            border:1px solid #85B3CE;
+            min-height:25px;
+            display:block;
+            width:auto;
+            margin:5px 5px;
+            background-color:#E3F0F8;
+        }
+        .customHelpIcon
+        {
+            display:inline-block;
+            margin:0 5px 0 0;
+            width:24px;
+            height:24px;
+            vertical-align:top !important;
+        }
+        .customHelpBody
+        {
+            padding: 10px 5px;
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        }  
+        </style>
+<apex:pageMessages id="pageMessages"/>
+<apex:form >
+<apex:sectionHeader title="Agreements" subtitle="Contract Segmentation Questionnaire"/>
+<apex:pageBlock title="Contract Segmentation Questionnaire">
+<apex:pageBlockButtons >
+	<apex:commandButton value="Save" action="{!save}" rendered="{!mode=='Edit'}"/> 
+	<apex:commandButton value="Cancel" action="{!cancel}" rendered="{!mode=='Edit'}"/> 	
+	<apex:commandButton value="Edit" action="{!editSegmentationSurvey}" rendered="{!mode=='' && agreement.SegApprovalStatus__c != 'Approved'}"/>
+	<apex:commandButton value="Return to Agreement" action="{!returnToAgreement}" rendered="{!mode=='' && agreement.IsMSA__c}"/>
+	<apex:commandButton value="Return to Funding" action="{!returnToFunding}" rendered="{!mode=='' && !agreement.IsMSA__c}"/>
+	<apex:commandButton value="Submit for Approval" action="{!submitForApproval}" rendered="{!mode=='' && agreement.SegApprovalStatus__c != 'Approved' && ShowApprovalProcess}"/>
+</apex:pageBlockButtons>
+
+<!-- <apex:outputPanel >The segmenting of a contract involves breaking a contract into smaller units for accounting purposes so revenue can be recognized among different components or phases. As a result, different profitability margins may apply to each unit or phase. SOP 81-1 establishes the following conditions under which it is permissible to segment a contract:</apex:outputPanel><br/><br/>											
+ -->
+<apex:pageBlockSection columns="2">
+<apex:pageBlockSectionItem ><apex:outputText style="font-weight: bold" value="Contract Name / Description"/><apex:outputField value="{!agreement.ContractTitle__c}"/></apex:pageBlockSectionItem>				
+<apex:pageBlockSectionItem >
+	<apex:outputText style="font-weight: bold" value="Group CFO"/>
+	<apex:outputPanel >
+		<apex:inputField value="{!agreement.segGroupCFO__c}" rendered="{!mode=='Edit'}"/>
+		<apex:outputField value="{!agreement.segGroupCFO__c}" rendered="{!mode==''}"/>
+	</apex:outputPanel>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem ><apex:outputText style="font-weight: bold" value="Contract Number"/><apex:outputField value="{!agreement.AgreementNumber__c}"/></apex:pageBlockSectionItem>				
+<apex:pageBlockSectionItem >
+	<apex:outputText style="font-weight: bold" value="Designee"/>
+	<apex:outputPanel >
+		<apex:inputField value="{!agreement.segDesignee__c}" rendered="{!mode=='Edit'}"/>
+		<apex:outputField value="{!agreement.segDesignee__c}" rendered="{!mode==''}"/>
+	</apex:outputPanel>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem ><apex:outputText style="font-weight: bold" value="Client"/><apex:outputField value="{!agreement.Account__c}"/></apex:pageBlockSectionItem>		
+</apex:pageBlockSection>
+
+<br/>
+        <div class="customHelpText">
+            <img src="../img/icon/forecasts24.png" class="customHelpIcon"/> 
+            <div class="customHelpBody">
+				<apex:outputPanel >The segmenting of a contract involves breaking a contract into smaller units for accounting purposes so revenue can be recognized among different components or phases. As a result, different profitability margins may apply to each unit or phase. SOP 81-1 establishes the following conditions under which it is permissible to segment a contract:</apex:outputPanel>										         
+            </div>
+        </div> 
+<apex:outputPanel id="main">
+<apex:pageBlockSection title="All Must Be Met (reference SOP 81-1 paragraph 40)" columns="1" collapsible="false">
+					
+	<!-- 		<apex:outputPanel >	
+			<table><tr><td width="800px">
+			<apex:outputText ><b><br/>Does the project require domestic travel to a remote or austere location, or requires international travel?</b></apex:outputText>	
+			</td>
+			<td><apex:actionRegion ><apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthTravelRequired__c}" >
+		    		<apex:selectOptions value="{!YesNoOptions}"/>
+		    		<apex:actionSupport event="onchange" rerender="travelRequired"/>
+		 		</apex:selectRadio></apex:actionRegion></td>
+			</tr>
+			</table>																		
+			</apex:outputPanel> -->
+
+<apex:outputPanel >
+<table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >A separate proposal has been submitted for each component of the project.</apex:outputText>
+		</td>	
+		<td>
+			<apex:actionRegion >
+ 			<apex:selectRadio layout="lineDirection" value="{!agreement.segSeparateProposal__c}" disabled="{!mode==''}">
+		    	<apex:selectOptions value="{!YesNoOptions}"/>
+		    	<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+		 	</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 
+	</tr>
+</table>
+</apex:outputPanel>						
+<apex:outputPanel >
+<table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >A proposal has been submitted for the entire project.</apex:outputText>
+		</td>	
+		<td>
+			<apex:actionRegion >
+ 				<apex:selectRadio layout="lineDirection" value="{!agreement.segProposalSubmitted__c}" disabled="{!mode==''}">
+		    		<apex:selectOptions value="{!YesNoOptions}"/>
+		    		<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+		 		</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 
+	</tr>
+</table>
+</apex:outputPanel>		
+
+<apex:outputPanel >
+<table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >The customer had the right to accept either individual components or the entire project</apex:outputText>
+		</td>	
+		<td>
+			<apex:actionRegion >
+ 				<apex:selectRadio layout="lineDirection" value="{!agreement.segRightToAccept__c}" disabled="{!mode==''}">
+		    		<apex:selectOptions value="{!YesNoOptions}"/>
+		    		<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+		 		</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 
+	</tr>
+</table>
+</apex:outputPanel>						
+<apex:outputPanel >
+<table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >The aggregate price of the seperate components approximates the total proposed amount for the entire project.</apex:outputText>
+		</td>
+		<td>
+			<apex:actionRegion >
+ 				<apex:selectRadio layout="lineDirection" value="{!agreement.segSeparateComponents__c}" disabled="{!mode==''}" >
+		    		<apex:selectOptions value="{!YesNoOptions}"/>
+		    		<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+		 		</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 		
+	</tr>
+</table>
+</apex:outputPanel>	
+</apex:pageBlockSection>				
+<br/>
+<apex:outputPanel id="section2" rendered="{!ShowSection2}">
+<apex:pageBlockSection columns="1" collapsible="false" title="If the project does not meet the above, it may still be segmented only if it meets all following criteria (reference SOP 81-1 paragraph 41)">
+<apex:outputPanel >
+<table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >The terms and scope of the contract call for seperate phases or elements.</apex:outputText>
+		</td>	
+		<td>
+			<apex:actionRegion >
+	 			<apex:selectRadio layout="lineDirection" value="{!agreement.segTermsAndScope__c}" disabled="{!mode==''}">
+			    	<apex:selectOptions value="{!YesNoOptions}"/>
+			    	<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+			 	</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 
+	</tr>
+</table>
+</apex:outputPanel>											
+<apex:outputPanel >
+<table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >The seperate phases or elements are often bid / negotiated separately.</apex:outputText>
+		</td>	
+		<td>
+			<apex:actionRegion >
+	 			<apex:selectRadio layout="lineDirection" value="{!agreement.segSeparatePhases__c}" disabled="{!mode==''}">
+			    	<apex:selectOptions value="{!YesNoOptions}"/>
+			    	<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+			 	</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 
+	</tr>
+</table>
+</apex:outputPanel>													
+<apex:outputPanel >
+<table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >The market assigns different gross profit rates to each phase or element because of different risks or relationships of supply and demand.</apex:outputText>
+		</td>	
+		<td>
+			<apex:actionRegion >
+	 			<apex:selectRadio layout="lineDirection" value="{!agreement.segGrossProfitRates__c}" disabled="{!mode==''}">
+			    	<apex:selectOptions value="{!YesNoOptions}"/>
+			    	<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+			 	</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 
+	</tr>
+</table>
+</apex:outputPanel>												
+<apex:outputPanel >
+<table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >AECOM has a significant history of providing similar services to other customers under separate contracts for each significant segment where each segment is ascribed a profit margin higher that the profit margin on the project.</apex:outputText>
+		</td>	
+		<td>
+			<apex:actionRegion >
+	 			<apex:selectRadio layout="lineDirection" value="{!agreement.segSignificantHisory__c}" disabled="{!mode==''}">
+			    	<apex:selectOptions value="{!YesNoOptions}"/>
+			    	<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+			 	</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 
+	</tr>
+</table></apex:outputPanel>													
+<apex:outputPanel >
+<table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >The excess of the aggregate price of the the phases sold separtely over the prices of the entire project relates to cost savings resulting from combined performance of the contract obligations.</apex:outputText>
+		</td>	
+		<td>
+			<apex:actionRegion >
+	 			<apex:selectRadio layout="lineDirection" value="{!agreement.segAggregatePrice__c}" disabled="{!mode==''}">
+			    	<apex:selectOptions value="{!YesNoOptions}"/>
+			    	<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+			 	</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 
+	</tr>
+</table></apex:outputPanel>																					
+<apex:outputPanel >
+<table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >The historical pricing policy is relatively stable and based on pricing policy rather than unique economic or customer relationships.</apex:outputText>
+		</td>	
+		<td>
+			<apex:actionRegion >
+	 			<apex:selectRadio layout="lineDirection" value="{!agreement.segPricingPolicy__c}" disabled="{!mode==''}">
+			    	<apex:selectOptions value="{!YesNoOptions}"/>
+			    	<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+			 	</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 
+	</tr>
+</table>	</apex:outputPanel>													
+<apex:outputPanel ><table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >The above criteria is documented and verifable.</apex:outputText>
+		</td>	
+		<td>
+			<apex:actionRegion >
+	 			<apex:selectRadio layout="lineDirection" value="{!agreement.segVerifiable__c}" disabled="{!mode==''}">
+			    	<apex:selectOptions value="{!YesNoOptions}"/>
+			    	<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+			 	</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 
+	</tr>
+</table></apex:outputPanel>
+</apex:pageBlockSection>
+<b></b><br/>							
+</apex:outputPanel>
+<apex:outputPanel id="section3" rendered="{!ShowSection3}">	
+<apex:pageBlockSection columns="1" collapsible="false" title="Contract options and additions: An option or an addition to an existing contract should be treated as a separate contract in any of the following circumstances (reference SOP 81-1 paragraph 64)">
+						
+<apex:outputPanel ><table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >The product or service to be provided differs significantly from the product or service provided under the original contract.</apex:outputText>
+		</td>	
+		<td>
+			<apex:actionRegion >
+	 			<apex:selectRadio layout="lineDirection" value="{!agreement.segProductOrServiceDiffers__c}" disabled="{!mode==''}">
+			    	<apex:selectOptions value="{!YesNoOptions}"/>
+			    	<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+			 	</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 
+	</tr>
+</table></apex:outputPanel>
+
+<apex:outputPanel ><table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >The price of the new product or service is negotiated without regard to the original contract and involves different economic judgements.</apex:outputText>
+		</td>	
+		<td>
+			<apex:actionRegion >
+	 			<apex:selectRadio layout="lineDirection" value="{!agreement.segNegotiatedWithoutRegard__c}" disabled="{!mode==''}">
+			    	<apex:selectOptions value="{!YesNoOptions}"/>
+			    	<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+			 	</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 
+	</tr>
+</table></apex:outputPanel>
+
+<apex:outputPanel ><table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >The product or services to be provided are similar to those under the original contract, but the contract price and anticipated contract cost relationship are significantly different.</apex:outputText>
+		</td>	
+		<td>
+			<apex:actionRegion >
+	 			<apex:selectRadio layout="lineDirection" value="{!agreement.segUnderOriginalContract__c}" disabled="{!mode==''}">
+			    	<apex:selectOptions value="{!YesNoOptions}"/>
+			    	<apex:actionSupport event="onchange" rerender="main" action="{!resetSections}"/>
+			 	</apex:selectRadio>
+		 	</apex:actionRegion>
+		</td> 
+	</tr>
+</table></apex:outputPanel>
+
+</apex:pageBlockSection>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!ShowConclusion}">
+<apex:pageBlockSection title="Conclusion" columns="1" collapsible="false">
+<apex:outputPanel rendered="{!agreement.segProductOrServiceDiffers__c == 'No' && agreement.segNegotiatedWithoutRegard__c == 'No' && agreement.segUnderOriginalContract__c == 'No'}" ><table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >Do not segment the contract / Amendment / Option</apex:outputText>
+		</td>	
+		<td>
+ 			<apex:selectRadio layout="lineDirection" value="{!agreement.segAmendmentOption__c}" disabled="{!mode==''}">
+		    	<apex:selectOptions value="{!YesNoOptions}"/>
+		 	</apex:selectRadio>
+		</td> 
+	</tr>
+</table></apex:outputPanel>
+
+<apex:outputPanel rendered="{!agreement.segProductOrServiceDiffers__c != 'No' || agreement.segNegotiatedWithoutRegard__c != 'No' || agreement.segUnderOriginalContract__c != 'No'}" ><table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >Segment the contract / Amendment / Option based on adherence to SOP-81-1</apex:outputText>
+		</td>	
+		<td>
+ 			<apex:selectRadio layout="lineDirection" value="{!agreement.segAdherence__c}" disabled="{!mode==''}" >
+		    	<apex:selectOptions value="{!YesNoOptions}"/>
+		 	</apex:selectRadio>
+		</td> 
+	</tr>
+</table></apex:outputPanel>
+
+<apex:outputPanel rendered="{!agreement.segProductOrServiceDiffers__c == 'No' && agreement.segNegotiatedWithoutRegard__c == 'No' && agreement.segUnderOriginalContract__c == 'No'}"><table>
+	<tr>
+		<td width="800px"><br/>
+			<apex:outputText >Contract / Amendment / Option does not qualify for segmenting, but per attachmed documentation will be segmented for management purposes.  Note: In such case project(s) will be evaluated and necssary adjustments made at least quarterly to assure that profit is recognized ratably across the entire contract.</apex:outputText>
+		</td>	
+		<td>
+ 			<apex:selectRadio layout="lineDirection" value="{!agreement.segOptionDoesNotQualify__c}" disabled="{!mode==''}">
+		    	<apex:selectOptions value="{!YesNoOptions}"/>
+		 	</apex:selectRadio>
+		</td> 
+	</tr>
+</table></apex:outputPanel>
+</apex:pageBlockSection>
+</apex:outputPanel>
+</apex:outputPanel>
+<apex:pageBlockSection title="Related Projects" columns="1" collapsible="false">
+<b>Related Project(s)</b><br/>
+<apex:outputPanel >
+<apex:repeat value="{!projects}" var="project">
+<apex:commandLink action="{!URLFOR($Action.pse__Proj__c.view, project.Id)}"><apex:outputField value="{!project.Name}"/></apex:commandLink><apex:outputText value="   "/><br/>
+</apex:repeat>
+</apex:outputPanel>
+</apex:pageBlockSection>
+</apex:pageBlock>
+</apex:form>		
+
+	<apex:relatedList list="ProcessSteps" rendered="{!mode=='' && ShowApprovalProcess}" id="ProcessSteps" />	
+	<script>
+    	var allTdTags = document.getElementsByTagName('td');
+    	for(var i=0;i<allTdTags.length;i++){
+       
+     	if(allTdTags[i].className == 'pbButton'){
+                     document.getElementsByName('piSubmit')[0].style.display = "none";          
+        	}
+    	}
+  	</script>
+										
+</apex:page>

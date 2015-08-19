@@ -1602,10 +1602,8 @@ Project_City__c + &quot;, &quot; + Project_StateProvinceEmirate__c  + &quot;, &q
         <fullName>Opportunity__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <inlineHelpText>Link to opportunity</inlineHelpText>
         <label>Opportunity</label>
         <referenceTo>Opportunity</referenceTo>
-        <relationshipLabel>Project Profiles</relationshipLabel>
         <relationshipName>Projects</relationshipName>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
@@ -2635,10 +2633,6 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>PMCM</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Program Management</fullName>
                 <default>false</default>
             </picklistValues>
@@ -2941,7 +2935,7 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             <operation>equals</operation>
             <value>Project__c.Program</value>
         </filters>
-        <label>The Alerus Center</label>
+        <label>Halliburton Montrose UK</label>
         <language>en_US</language>
         <sharedTo>
             <group>CMC_EMEA</group>
@@ -2967,35 +2961,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <filters>
             <field>Opportunity__c</field>
             <operation>contains</operation>
+            <value>fertilizer</value>
         </filters>
         <label>All Projects</label>
         <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>All_Projects_with_Updates_Global</fullName>
-        <columns>Project_Geography__c</columns>
-        <columns>NAME</columns>
-        <columns>Owner_Client_Output__c</columns>
-        <columns>Complete_CM_Review__c</columns>
-        <columns>UPDATEDBY_USER</columns>
-        <columns>LAST_UPDATE</columns>
-        <columns>RECORDTYPE</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Review_Requested__c</field>
-            <operation>equals</operation>
-            <value>1</value>
-        </filters>
-        <filters>
-            <field>Project_Geography__c</field>
-            <operation>contains</operation>
-            <value>America</value>
-        </filters>
-        <label>All Projects with Updates - Test</label>
-        <language>en_US</language>
-        <sharedTo>
-            <group>Content_Managers</group>
-        </sharedTo>
     </listViews>
     <listViews>
         <fullName>All_Projects_with_Updates_NA</fullName>
@@ -3078,7 +3047,7 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             <operation>equals</operation>
             <value>1</value>
         </filters>
-        <label>All Projects with Updates - Global</label>
+        <label>All Projects with Updates - Test</label>
         <language>en_US</language>
         <sharedTo>
             <group>Content_Managers</group>
@@ -3298,7 +3267,8 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <columns>NAME</columns>
         <columns>Code_254__c</columns>
         <columns>Code_254_Text__c</columns>
-        <columns>Search_Completion_Date__c</columns>
+        <columns>Primary_254_Code__c</columns>
+        <columns>Primary_330_Code__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>Code_254__c</field>
@@ -3369,7 +3339,6 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
     <listViews>
         <fullName>CM_Cleanup_blank_City</fullName>
         <columns>NAME</columns>
-        <columns>Search_Completion_Date__c</columns>
         <columns>Project_City__c</columns>
         <columns>Project_StateProvinceEmirate__c</columns>
         <columns>Project_County__c</columns>
@@ -3424,7 +3393,6 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
     </listViews>
     <listViews>
         <fullName>CM_Review_Bad_Names</fullName>
-        <booleanFilter>1 OR 2</booleanFilter>
         <columns>RECORDTYPE</columns>
         <columns>NAME</columns>
         <columns>Owner__c</columns>
@@ -3437,11 +3405,6 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             <field>Project_Name__c</field>
             <operation>contains</operation>
             <value>in support,responsible for,&quot; was &quot;,project to</value>
-        </filters>
-        <filters>
-            <field>Note_to_User__c</field>
-            <operation>contains</operation>
-            <value>Name needs to be fixed</value>
         </filters>
         <label>CM Cleanup - Really bad Project Names</label>
         <language>en_US</language>
@@ -3522,7 +3485,7 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             <operation>equals</operation>
             <value>D01,D02</value>
         </filters>
-        <label>mining</label>
+        <label>Dam Projects</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -3563,30 +3526,6 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <sharedTo>
             <group>Content_Managers</group>
         </sharedTo>
-    </listViews>
-    <listViews>
-        <fullName>Environment_Americas</fullName>
-        <columns>Owner_Client_Output__c</columns>
-        <columns>Owner__c</columns>
-        <columns>Oracle_Project_Manager__c</columns>
-        <columns>Project_Manager__c</columns>
-        <columns>NAME</columns>
-        <columns>AECOM_Region__c</columns>
-        <columns>Oracle_Project_Number__c</columns>
-        <columns>Oracle_Completion_Date__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Business_Line__c</field>
-            <operation>equals</operation>
-            <value>Environment</value>
-        </filters>
-        <filters>
-            <field>Project_Geography__c</field>
-            <operation>contains</operation>
-            <value>America</value>
-        </filters>
-        <label>Environment - Americas</label>
-        <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>Key_B_P_Projects</fullName>
@@ -3779,6 +3718,32 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <sharedTo>
             <group>Content_Managers</group>
         </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Key_Projects_all_BLs1</fullName>
+        <columns>NAME</columns>
+        <columns>Owner_Client_Output__c</columns>
+        <columns>Confidential_Owner__c</columns>
+        <columns>Note_to_User__c</columns>
+        <columns>Completion_Date__c</columns>
+        <columns>Fee__c</columns>
+        <columns>Project_Supergeography__c</columns>
+        <columns>AECOM_Region__c</columns>
+        <columns>Business_Line__c</columns>
+        <columns>REF__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Key_Project__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>Project_Country__c</field>
+            <operation>equals</operation>
+            <value>mauritius</value>
+        </filters>
+        <label>Key Projects - all BLs</label>
+        <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>Key_Transportation_Projects</fullName>
@@ -4453,9 +4418,9 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
     </listViews>
     <listViews>
         <fullName>Technology_Review_Group_Projects</fullName>
+        <booleanFilter>1 OR 2</booleanFilter>
         <columns>NAME</columns>
         <columns>Owner_Client_Output__c</columns>
-        <columns>Categories__c</columns>
         <columns>Search_Completion_Date__c</columns>
         <columns>SearchFee__c</columns>
         <columns>Business_Line__c</columns>
@@ -4464,6 +4429,11 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <filterScope>Everything</filterScope>
         <filters>
             <field>Categories__c</field>
+            <operation>includes</operation>
+            <value>Technology Solutions</value>
+        </filters>
+        <filters>
+            <field>Service_Line__c</field>
             <operation>includes</operation>
             <value>Technology Solutions</value>
         </filters>
@@ -4479,20 +4449,21 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <columns>Legacy_Conversion_Source__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>RECORDTYPE</field>
+            <field>Business_Line__c</field>
             <operation>equals</operation>
+            <value>Transportation</value>
         </filters>
         <filters>
             <field>Project_Geography__c</field>
             <operation>equals</operation>
-            <value>Global</value>
+            <value>North America</value>
         </filters>
         <filters>
-            <field>Fee__c</field>
-            <operation>greaterThan</operation>
-            <value>USD 50,USD 0</value>
+            <field>Legacy_Conversion_Source__c</field>
+            <operation>contains</operation>
+            <value>Vision</value>
         </filters>
-        <label>Surface Transportation</label>
+        <label>Transportation_with legacy contacts</label>
         <language>en_US</language>
         <sharedTo>
             <group>Content_Managers</group>
@@ -5416,10 +5387,6 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Operations and Maintenance</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PMCM</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -6358,10 +6325,6 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
-                <fullName>PMCM</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>Permitting</fullName>
                 <default>false</default>
             </values>
@@ -7294,10 +7257,6 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Operations and Maintenance</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PMCM</fullName>
                 <default>false</default>
             </values>
             <values>

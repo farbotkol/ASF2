@@ -1,0 +1,18 @@
+<apex:page standardcontroller="pse__Proj__c" extensions="ECO_ProjectAgreementController">
+<apex:form >
+<apex:pageBlock >
+<apex:pageBlockSection >
+
+<apex:pageblocktable value="{!projectAgreementRelatedList}" var="projectAgreement">
+	<apex:column headervalue="Action">
+		<apex:outputLink value="/apex/ECO_ProjectFunding" target="_top">Fund Project
+			<apex:param name="ProjectId" value="{!projectAgreement.Project__r.Id}" />
+			<apex:param name="AgreementId" value="{!projectAgreement.Agreement__c}" />			
+		</apex:outputLink></apex:column>
+	<apex:column value="{!projectAgreement.Project__r.Id}" headervalue="Project Id"></apex:column>
+	<apex:column value="{!projectAgreement.Agreement__c}" headervalue="Agreement Id"></apex:column>
+</apex:pageblocktable>
+</apex:pageBlockSection>
+</apex:pageBlock>
+</apex:form>
+</apex:page>

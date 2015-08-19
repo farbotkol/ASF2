@@ -1,0 +1,432 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AppliedResourceAlias__c</fullName>
+        <externalId>false</externalId>
+        <formula>BLANKVALUE( OriginalResourceAlias__c ,  CASE( TEXT(ResourceType__c) , &apos;Labor/Person&apos;, &apos;People&apos;, &apos;Subcontractor&apos;, &apos;Subs1&apos;, &apos;ODC/FEE&apos;, &apos;Financial Elements&apos;, &apos;Contingency&apos;, &apos;Contingency&apos;, &apos;ERROR&apos;) )</formula>
+        <label>Applied Resource Alias</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AppliedResourceListName__c</fullName>
+        <externalId>false</externalId>
+        <formula>BLANKVALUE(ResourceListName__c , &apos;AECOM Rollup Resources&apos; )</formula>
+        <label>Applied Resource List Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>BudgetHeader__c</fullName>
+        <externalId>false</externalId>
+        <label>Budget Header</label>
+        <referenceTo>BudgetHeader__c</referenceTo>
+        <relationshipLabel>Budget Resources</relationshipLabel>
+        <relationshipName>BudgetResources</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>ColumnHeader__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK(
+   IF(ISBLANK( ProjectTeamMember__c )
+   ,
+   ResourceName__c
+   ,
+   ProjectTeamMember__r.Contact__r.FirstName + &apos; &apos; + ProjectTeamMember__r.Contact__r.LastName
+   )
+)
+,
+SubsAndVendors__r.VendorName__c
+,
+IF(ISBLANK( ProjectTeamMember__c )
+   ,
+   ResourceName__c
+   ,
+   ProjectTeamMember__r.Contact__r.FirstName + &apos; &apos; + ProjectTeamMember__r.Contact__r.LastName
+   )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Column Header</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CostRate__c</fullName>
+        <externalId>false</externalId>
+        <formula>OverrideRawCost__c + (OverrideRawCost__c * OverrideFringeMultiplier__c ) 
++ 
+(OverrideRawCost__c * OverrideOverheadMultiplier__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cost Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ExpenditureType__c</fullName>
+        <externalId>false</externalId>
+        <label>Expenditure Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Value 1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>ExternalId__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>External Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>ForeignResource__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(BudgetHeader__r.Project__r.CarryingOutOrganization__r.OUID__c ==  ProjectTeamMember__r.Contact__r.User__r.ECO_OUID__c, &apos;Local&apos;, &apos;Foreign&apos;)</formula>
+        <label>Foreign Resource</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>FullyBurdenedCostRate__c</fullName>
+        <externalId>false</externalId>
+        <label>Fully Burdened Cost Rate</label>
+        <summarizedField>BudgetAssignment__c.FullyBurdenedCostRate__c</summarizedField>
+        <summaryForeignKey>BudgetAssignment__c.BudgetResource__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>JobName__c</fullName>
+        <externalId>false</externalId>
+        <label>Job Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>MarginType__c</fullName>
+        <externalId>false</externalId>
+        <label>Margin Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Amount</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Percent</fullName>
+                <default>true</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>OriginalResourceAlias__c</fullName>
+        <externalId>false</externalId>
+        <label>Original Resource Alias</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OverrideBillRate__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Bill Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OverrideFringeMultiplier__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Fringe Multiplier</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>OverrideOverheadMultiplier__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Overhead Multiplier</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>OverrideRatesOnLines__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>Override Rates On Lines</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>OverrideRawCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Raw Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OverrideUplift__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Uplift</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>ProjectTeamMember__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project Team Member</label>
+        <referenceTo>ProjectTeamMember__c</referenceTo>
+        <relationshipName>BudgetColumns</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ResourceListName__c</fullName>
+        <externalId>false</externalId>
+        <label>Resource List Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ResourceName__c</fullName>
+        <externalId>false</externalId>
+        <label>Resource Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ResourceType__c</fullName>
+        <externalId>false</externalId>
+        <label>Resource Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Labor/Person</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Subcontractor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>ODC/FEE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Contingency</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Resource__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Resource</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Budget Resources</relationshipLabel>
+        <relationshipName>BudgetResources</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>SortOrder__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(  ISPICKVAL( ResourceType__c , &apos;Labor/Person&apos;) , 1
+,
+IF(  ISPICKVAL( ResourceType__c , &apos;Subcontractor&apos;) , 2
+,
+IF(  ISPICKVAL( ResourceType__c , &apos;ODC/FEE&apos;) , 3
+,
+4
+)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Sort Order</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sort_Order_Detail__c</fullName>
+        <externalId>false</externalId>
+        <label>Sort Order Detail</label>
+        <precision>5</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SubsAndVendors__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Subs and Vendors</label>
+        <referenceTo>VendorSub__c</referenceTo>
+        <relationshipName>BudgetColumns</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>TotalCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Cost</label>
+        <summarizedField>BudgetAssignment__c.FullyBurdenedCost__c</summarizedField>
+        <summaryForeignKey>BudgetAssignment__c.BudgetResource__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TotalRevenue__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Revenue</label>
+        <summarizedField>BudgetAssignment__c.CalculatedRevenue__c</summarizedField>
+        <summaryForeignKey>BudgetAssignment__c.BudgetResource__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <label>Budget Resource</label>
+    <nameField>
+        <displayFormat>BR-{000000000}</displayFormat>
+        <label>Budget Resource Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Budget Resources</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Cannot_have_both_resource_and_PTA</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(
+ NOT(ISBLANK(ProjectTeamMember__c ))
+,
+ NOT(ISBLANK(ResourceName__c ))
+)</errorConditionFormula>
+        <errorMessage>Cannot have both a Project Team Member and a Resource Name.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Require_Resource_or_PTA</fullName>
+        <active>false</active>
+        <errorConditionFormula>AND(AND(
+ ISBLANK(ProjectTeamMember__c )
+,
+ ISBLANK(ResourceName__c )
+), ISBLANK(SubsAndVendors__c))</errorConditionFormula>
+        <errorMessage>Either Project Team Member, Vendor or Resource Name is required.</errorMessage>
+    </validationRules>
+</CustomObject>

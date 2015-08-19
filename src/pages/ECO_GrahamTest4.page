@@ -1,0 +1,128 @@
+<apex:page showHeader="false" sidebar="false" applyHtmlTag="false" applyBodyTag="false" standardStylesheets="false" controller="ECO_GrahamTest3Controller">
+<html ng-app="aecom">
+
+<head>
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_Bootstrap_3_3_2, 'css/bootstrap.min.css')}" /> 
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_AngularChart, 'angular-chart.css')}" /> 
+
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_Bootstrap_3_3_2, 'js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_GrahamTest3, 'angular.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_ChartJS, 'Chart.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_AngularChart, 'angular-chart.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_GrahamTest3, 'aecom.js')}"/>
+
+    <style>
+		.navbar-nav > li > a, .navbar-brand {
+		    padding-top:4px !important; 
+		    padding-bottom:0 !important;
+		    height: 28px;
+		}
+		.navbar {
+			min-height:28px !important;
+		}
+
+		.panel-heading {
+			color:#149feb !important;
+			height:26px;
+			padding:3px 0px 0px 7px;
+		}
+
+		.nopadding {
+			padding: 3px !important;
+		}
+
+		.dashbox {
+			height:213px;
+			margin-bottom: 6px;
+		}
+
+		.mainMargin {
+			margin-left:10px;
+			margin-right:10px;
+		}
+
+		.customNavbar {
+			border:0px;
+		}
+
+		.navbarText {
+			color:white !important;
+			font-size:13pt;
+		}
+
+		.navbarBackground {
+			background-color:#149feb;
+		}
+    </style>
+
+    <script type="text/javascript">
+			app
+				.factory('test1', ['$q', '$rootScope', function($q, $rootScope) {
+                    return function() {
+                        var deferred = $q.defer();
+ 
+                        Visualforce.remoting.Manager.invokeAction(
+                            '{!$RemoteAction.ECO_GrahamTest3Controller.getProjects}',
+                            function(result, event) {
+                                $rootScope.$apply(function() {
+                                  if (event.status) {
+                                    deferred.resolve(result);
+                                  } else {
+                                    deferred.reject(event);
+                                  }
+                                })
+                            },
+                            { buffer: true, escape: true, timeout: 30000 }
+                        );
+ 
+                        return deferred.promise;
+                    }
+                }]);
+	</script>
+</head>
+
+<body ng-controller="MainCtrl">
+<nav class="navbar navbar-default customNavbar">
+	<div class="container-fluid navbarBackground">
+		<div class="navbar-header">
+			<a class="navbar-brand navbarText" href="#">Project Manager Dashboard</a>
+		</div>
+	</div>
+</nav>
+
+<div class="border row mainMargin">
+	<div class="border col-md-9">
+		<div class="row">
+			<div class="col-md-4 nopadding">
+				<c:ECO_PMD_ProjectDetails />
+				<c:ECO_PMD_FinancialSummary />  
+				<c:ECO_PMD_RiskRegister />    		
+			</div>     
+			<div class="col-md-4 nopadding">
+				<c:ECO_PMD_MyAlerts />
+				<c:ECO_PMD_EarnedValue />      		
+				<c:ECO_PMD_ChangeOrders />
+			</div>     
+			<div class="col-md-4 nopadding">
+				<c:ECO_PMD_MyTasks />
+				<c:ECO_PMD_Schedule />      		
+				<c:ECO_PMD_SHEQuality />
+			</div>     
+		</div>
+	</div>
+
+	<div class="border col-md-3 nopadding">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+			Chatter
+			</div>
+			<div class="panel-body">
+				<iframe src="/apex/ECO_GrahamTest5" frameBorder="0" height="592" width="285"/>
+			</div>
+		</div>
+	</div>  
+</div>
+</body>
+</html>	
+</apex:page>

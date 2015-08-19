@@ -1,0 +1,629 @@
+<apex:page standardController="pse__Proj__c" tabstyle="pse__Proj__c" extensions="ECO_SafetyHealthEnvironmentController" action="{!init}">
+
+    <style>
+    
+        .attachNewFile{
+            visibility: hidden;
+        }
+        
+        .ouputPanelSep{
+            border-bottom:1px solid #dbdbdb;
+        }
+        
+        .customHelpText{
+            padding:7px;
+            border:1px solid #85B3CE;
+            min-height:30px;
+            display:block;
+            width:auto;
+            margin:0;
+        //  background-color:#C6E4EE;
+            background-color:#A2D3F1;
+            background-repeat:no-repeat;
+            border-radius:4px;
+        }
+        
+        .customHelpBody{
+            display:block;
+            color:#;
+            max-width:95%;
+        }
+        
+        .infoTable {
+            background: #f5f5f5;
+            border-collapse: separate;
+            font-size: 12px;
+            line-height: 24px;
+            text-align: left;
+            margin:5px 14px 0 14px;
+        }   
+        .infoTable table{
+            width:100%;
+        }
+        .infoTable th {
+            background-color: #a6afa2 !important;
+            color: #fff;
+            font-weight: bold;
+            padding: 3px 9px;
+            position: relative;
+            border:none !important;
+        }
+        .infoTable th:first-child{
+            border-right:1px solid #fff !important;
+        }
+
+        .infoTable th:after {
+            content: '';
+            display: block;
+            height: 25%;
+            left: 0;
+            margin: 1px 0 0 0;
+            position: absolute;
+            top: 25%;
+            width: 100%;
+        }
+        .infoTable td {
+            border-right: 1px solid #fff;
+            border-left: 1px solid #e8e8e8;
+            border-top: 1px solid #fff;
+            border-bottom: 1px solid #e8e8e8;
+            padding: 3px 9px;
+            position: relative;
+            transition: all 300ms;
+            min-width: 90px;
+        }   
+        
+        .teamMemberGrid{
+            border:none;
+        }   
+        
+        .teamMemberGrid tr{
+            border:none;
+        }       
+        
+        .teamMemberGrid td{
+            border:none;
+        }   
+        
+        .table {
+            font-family: 'Arial';
+            margin: 1px auto;
+            border-collapse: collapse;
+            border: 1px solid #eee;
+            /* box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1), 0px 10px 20px rgba(0, 0, 0, 0.05), 0px 20px 20px rgba(0, 0, 0, 0.05), 0px 30px 20px rgba(0, 0, 0, 0.05); */
+            width: 100%;
+            heigth: 20px;
+            table-layout: fixed;
+        }
+        .table tr{
+            border-bottom: 1px solid #f2f3f3;
+        }
+
+        .table tr:hover {
+          background: #e8f4f8;
+        }
+        
+        .table tr:hover td {
+            background: #e8f4f8;
+        }
+        
+        .table th, .table td {
+          border: 0px solid #eee;
+          padding: 3px 3px 3px 3px;
+          border-collapse: collapse;
+        }
+        
+        .table td {
+          background: #fff;
+        }
+        
+        .table .tdleft{
+            padding-left: 1px;
+            padding-right: 1px;
+        }
+        
+        .table .tdfooter{
+            align: right;
+        }
+        
+        
+        .table th {
+        
+          background:  #f2f3f3;
+          font-size: .9em;
+          font-weight: bold;  
+          border: 1px solid #D3D3D3;
+        }
+        
+        .table th.last {
+          border-right: none;
+        }
+
+        .bPageBlock .message{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 30px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+
+        }       
+
+        ul {
+            margin-top: -10px;
+        }
+
+    </style>
+    
+    <script>
+    function setFocusOnLoad() {}    
+    
+    function fileChosen(attachButton,documentField,overrideField)
+    {
+        if(documentField.value != '')
+        {
+            document.getElementById(attachButton).style.visibility = 'visible';         
+            document.getElementById(overrideField).value = '';
+            document.getElementById(overrideField).style.visibility = 'visible';
+                        
+        }
+        else
+        {
+            document.getElementById(attachButton).style.visibility= 'hidden';
+            document.getElementById(overrideField).style.visibility= 'hidden';          
+        }       
+    }   
+    
+    function createAttachment(id, name)
+    {
+        attachInduction(id,name);
+    }
+    
+    function createProjectTeamMember(id)
+    {
+        createTeamMember(id);
+    }
+        
+    </script>
+    <apex:form >
+    <apex:inputHidden value="{!pse__Proj__c.Name}"/>
+    <apex:inputHidden value="{!inductionId}" id="inductionId" />
+    <apex:sectionHeader title="Safety, Health & Environment " subtitle="{!pse__Proj__c.Name}"/>
+    
+    <div class="customHelpText">
+        <div class="customHelpBody">
+            Assessment of potential Safety, Health &amp; Environment risks is required on all projects, regardless of size or type of activities being performed (e.g., office vs field).  It is AECOM policy and best practice to plan, execute and monitor projects in such a manner to prevent work-related injuries or illnesses, prevent damage to property and/or equipment from our activities, and prevent adverse impacts to the environment from our ongoing projects or operations.  
+            <br/><br/>
+            Complete this section to identify any project-related safety, health or environmental risks and to determine the appropriate approach for planning and mitigation.  Upload relevant project specific SH&amp;E documents, such as standalone Health and Safety Plans, Environmental Management Plans, training or induction certificates, Journey Management Plans, or task risk analyses (e.g., JSA, SWMS, THA, etc).  
+            <br/><br/>
+            This section is NOT intended to report, document, track or monitor safety incidents. Any safety, health and/or environmental incidents should be immediately reported using AECOMs enterprise-wide safety reporting tool IndustrySafe.  Additionally, site specific health and safety plans, job safety analysis, and task hazard analysis should be generated utilizing current corporate and client guidelines. 
+        </div>
+    </div>
+
+    <br/>
+
+    <apex:pageBlock title="Safety, Health & Environment Edit" mode="edit">
+    <apex:actionFunction name="attachInduction" action="{!createInductionAttachment}">     
+        <apex:param id="uid" name="inductionId" value="" />
+        <apex:param id="uname" name="inductionName" value="" />     
+    </apex:actionFunction>
+    <apex:actionFunction name="createTeamMember" action="{!newInductionTeamMember}">     
+        <apex:param id="inductionId" name="inductionId" value="" />
+    </apex:actionFunction>  
+        <br/>
+
+        <br/>
+        <apex:pageBlockButtons location="top">
+            <apex:commandButton value="Save" action="{!save}"/><apex:commandButton value="Return to Project" action="{!cancel}"/>
+        </apex:pageBlockButtons>
+        <apex:pageBlockSection title="Safety & Health" columns="1" id="safetyAndHealth">
+            <apex:outputPanel id="safetyAndHealth1" >
+            <apex:outputPanel >
+            
+            <table><tr>                         
+            <td width="800px"><apex:outputText style="font-weight: bold;"><b><br/>Does the project consists of work outside of an office environment (e.g., field/construction work)?</b></apex:outputText></td>
+            <td><apex:actionRegion ><apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c}" >
+                <apex:selectOptions value="{!YesNoOptions}"/>
+                <apex:actionSupport event="onchange" rerender="safetyAndHealth1"/>
+            </apex:selectRadio></apex:actionRegion></td>
+            </tr></table>
+ 
+            </apex:outputPanel>
+            
+            <apex:outputPanel id="outsideOfficeEnvironment" rendered="{!pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes'}"> 
+            <apex:outputPanel id="undertakeWork">   
+            <apex:actionRegion >
+                <table><tr>
+                    <td width="800px">
+                        <apex:outputText style="font-weight: bold;"><b><br/>Will members of the project team undertake work at project or client sites or offices?</b></apex:outputText>
+                    </td>
+                    <td><apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthUndertakeWork__c}" >
+                        <apex:selectOptions value="{!YesNoOptions}"/>
+                        <apex:actionSupport event="onchange" rerender="undertakeWork"/>
+                    </apex:selectRadio></td>                    
+                </tr></table>
+
+                <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthUndertakeWork__c == 'Yes'}">
+                <div class="ouputPanelSep">
+                    <ul>
+                    <li>All members of the project team who will be working at the client or project offices may undergo the induction applicable to that location.</li>                               
+                    <li>A Communication Plan should also be completed for travel to/from the office if appropriate.</li>                                
+                    <li>An Inductions Register will be created to capture details of indictions for your project.</li>
+                    </ul>
+        <!--            <apex:outputLabel style="font-weight:bold;">Inductions Register</apex:outputLabel><br/> -->
+                    <apex:outputPanel >
+                        <apex:commandButton value="New Induction" action="{!newInduction}"/><br/>
+                        <apex:pageBlockTable value="{!inductionRegistrations}" var="induction" rendered="{!inductionRegistrations.size > 0}">
+                            <apex:column headervalue="Name of Induction">
+                                <apex:commandLink style="color:#015ba7;" action="{!URLFOR($Action.Induction__c.View, induction.Id, ['saveURL'='/apex/ECO_SafetyHealthEnvironment?Id='+pse__Proj__c.Id, 'retURL'='/apex/ECO_SafetyHealthEnvironment?Id='+pse__Proj__c.Id])}"><apex:outputText value="{!induction.Name}"/></apex:commandLink>
+                            </apex:column>
+                            <apex:column headervalue="Required By" value="{!induction.RequiredBy__c}"></apex:column>
+                            <apex:column headervalue="Project Team Members">
+                                <table class="teamMemberGrid">
+                                    <apex:repeat value="{!inductedProjectTeamMembersMap[induction.Id]}" var="inductionTeamMember">
+                                    <tr><td style="border:none"><apex:outputText value="{!inductionTeamMember.TeamMember__c}"/></td></tr>
+                                    </apex:repeat>
+                                </table>
+                            <apex:commandButton value="Add Team Member" action="{!newInductionTeamMember}" rerender="inductionId">
+                                    <apex:param name="inductionId" value="{!induction.Id}" assignTo="{!inductionId}"/>
+                            </apex:commandButton>
+                            </apex:column>
+                        
+                            <apex:column headervalue="Location of Induction" value="{!induction.LocationofInduction__c}"></apex:column>
+                            <apex:column headervalue="Frequency" value="{!induction.Frequency__c}" ></apex:column>
+                            <apex:column headervalue="Fee" value="{!induction.Fee__c}"></apex:column>               
+                            <apex:column headervalue="Notes" value="{!induction.Notes__c}"></apex:column>
+                            <apex:column headervalue="Attachments">
+                                <table class="teamMemberGrid">
+                                    <apex:repeat value="{!inductionAttachmentsMap[induction.Id]}" var="attachment">
+                                    <tr><td style="border:none"><apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachment.Id)}" target="_blank"><apex:outputText value="{!attachment.Name}"/></apex:outputLink></td></tr>
+                                    </apex:repeat>
+                                </table>
+                                <apex:commandButton value="Add Attachments" action="{!createInductionAttachment}" rerender="id2">
+                                    <apex:param name="inductionId" value="{!induction.Id}" assignTo="{!inductionId2}"/>
+                                    <apex:param name="inductionName" value="{!induction.Name}" assignTo="{!inductionName2}" />                                  
+                                </apex:commandButton>
+                            </apex:column>          
+                        </apex:pageBlockTable>
+                    </apex:outputPanel> 
+                <apex:outputPanel rendered="{!inductionRegistrations.size == 0}">
+                    <apex:outputText value="No records to display"/>
+                </apex:outputPanel><br/><br/>                                       
+                </div></apex:outputPanel>
+                </apex:actionRegion>                
+            </apex:outputPanel>
+            
+            <apex:outputPanel id="siteInspections">
+            
+            <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes'}">
+            
+            <table><tr>
+            <td width="800px"><apex:outputText ><b><br/>Does the project involve site inspections and/or field tasks?</b></apex:outputText></td>
+            <td><apex:actionRegion ><apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthSiteInspections__c}" >
+                <apex:selectOptions value="{!YesNoOptions}"/>
+                <apex:actionSupport event="onchange" rerender="siteInspections"/>
+            </apex:selectRadio></apex:actionRegion></td>
+            </tr></table>
+                    
+            <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthSiteInspections__c=='Yes'}">
+
+            <div class="ouputPanelSep">
+                <div class="customHelpText" >
+                    <div class="customHelpBody">
+                        All field activities require a Task Risk Analysis to be undertaken.<br/><br/>               
+                        A Task Risk Analysis Register has been created for your project to enable the identification of these activies and subsequently complete the analysis.<br/>  Once the tasks have been identified, complete the required analysis per your geography safety standard (e.g., Job Safety Analysis, Safe Work Method Statement,<br/> Task Hazard Analysis) and upload the completed documents for access and reference by the project team unless a project-specific <br/>health and safety plan is prepared for the project.
+                    </div>                                                                      
+                </div>
+                <br/>
+                <div class="fileList">
+                    <apex:pageBlockTable value="{!SafetyHealthInspectionFiles}" var="attachedSafetyInspectionFile" style="width: 825px;" rendered="{!pse__Proj__c.SafetyHealthInspectionAttachments__c != null}">
+                        <apex:column headerValue="File Name">
+                            <apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachedSafetyInspectionFile.Id)}" target="_blank">
+                                <apex:outputText value="{!attachedSafetyInspectionFile.Name}" />
+                            </apex:outputLink>
+                        </apex:column>
+                        <apex:column value="{!attachedSafetyInspectionFile.ContentType}" /> 
+                        <apex:column value="{!attachedSafetyInspectionFile.LastModifiedDate}" />    
+                        <apex:column value="{!attachedSafetyInspectionFile.LastModifiedById}" />
+                    </apex:pageBlockTable></div>
+                    <apex:inputFile id="safetyHealthInspectionAttachment" value="{!newSafetyHealthInspectionAttachment.Body}" contentType="{!newSafetyHealthInspectionAttachment.ContentType}" fileName="{!newSafetyHealthInspectionAttachment.Name}" onchange="fileChosen('{!$Component.cmdSafetyHealthInspectionAttachment}', this, '{!$Component.overrideSafetyHealthInspectionName}'); return false;"/>
+                    <apex:inputText id="overrideSafetyHealthInspectionName" value="{!overrideSafetyHealthInspectionName}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
+                    <apex:commandButton id="cmdSafetyHealthInspectionAttachment" value="Attach" action="{!saveSafetyHealthInspectionAttachmentAndProject}" styleclass="attachNewFile"/><br/>
+                <br/></div></apex:outputPanel></apex:outputPanel>
+
+            </apex:outputPanel>
+            
+            <apex:outputPanel id="healthRequirements">      
+            <apex:actionregion >    
+                <table><tr>
+                    <td width="800px"><apex:outputText ><b><br/>Are their client specific safety and health requirements for this project?</b></apex:outputText></td>
+                    <td><apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthSpecificRequirements__c}" >
+                        <apex:selectOptions value="{!YesNoOptions}"/>
+                        <apex:actionSupport event="onchange" rerender="healthRequirements"/>
+                    </apex:selectRadio></td>
+                </tr></table>
+                <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthSpecificRequirements__c == 'Yes'}">
+                    <div class="ouputPanelSep">
+                    <apex:outputText >Identify below any additional safety requirements which may apply to the project.</apex:outputText><br/>
+                    <apex:inputField style="width: 800px;" value="{!pse__Proj__c.SafetyHealthRequirementDescription__c}" html-placeholder="Reach out to Client Account Manager or Client Safety Lead for client specific safety and health requirements."/><br/><br/>
+                    </div>
+                </apex:outputPanel> 
+            </apex:actionregion>                
+            </apex:outputPanel>
+            
+            <apex:outputPanel id="healthPlan">  
+            <table>
+                <tr><td width="800px">                          
+                    <apex:outputText ><b><br/>Is a detailed standalone project-specific health and safety plan required?</b></apex:outputText>
+                </td>
+                    <td><apex:actionregion >
+                    <apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthSafetyPlan__c}" >
+                        <apex:selectOptions value="{!YesNoOptions}"/>
+                        <apex:actionSupport event="onchange" rerender="healthPlan"/>
+                    </apex:selectRadio></apex:actionregion></td>
+                </tr>
+            </table>
+            <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthSafetyPlan__c =='Yes'}">
+                <div class="ouputPanelSep">
+                <apex:outputText >                                  
+                Work directly with your regional SH{!'&'}E manager to compile the detailed safety plan and upload the signed and approved document.
+                </apex:outputText><br/>
+                <div class="fileList">
+                    <apex:pageBlockTable value="{!SafetyHealthPlanFiles}" var="attachedSafetyPlanFile" style="width: 825px;" rendered="{!pse__Proj__c.SafetyHealthPlanAttachments__c != null}">
+                        <apex:column headerValue="File Name">
+                            <apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachedSafetyPlanFile.Id)}" target="_blank">
+                                <apex:outputText value="{!attachedSafetyPlanFile.Name}" />
+                            </apex:outputLink>
+                        </apex:column>
+                        <apex:column value="{!attachedSafetyPlanFile.ContentType}" />   
+                        <apex:column value="{!attachedSafetyPlanFile.LastModifiedDate}" />  
+                        <apex:column value="{!attachedSafetyPlanFile.LastModifiedById}" />
+                    </apex:pageBlockTable></div>
+                    <apex:inputFile id="safetyHealthPlanAttachment" value="{!newSafetyHealthPlanAttachment.Body}" contentType="{!newSafetyHealthPlanAttachment.ContentType}" fileName="{!newSafetyHealthPlanAttachment.Name}" onchange="fileChosen('{!$Component.cmdSafetyHealthPlanAttachment}', this, '{!$Component.overrideSafetyHealthPlanName}'); return false;"/>
+                    <apex:inputText id="overrideSafetyHealthPlanName" value="{!overrideSafetyHealthPlanName}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
+                    <apex:commandButton id="cmdSafetyHealthPlanAttachment" value="Attach" action="{!saveSafetyHealthPlanAttachmentAndProject}" styleclass="attachNewFile"/><br/>
+                <br/></div>
+            </apex:outputPanel>
+        
+            </apex:outputPanel>
+            
+            <apex:outputPanel id="travelRequired">
+            <apex:outputPanel > 
+            <table><tr><td width="800px">
+            <apex:outputText ><b><br/>Does the project require domestic travel to a remote or austere location, or international travel?</b></apex:outputText> 
+            </td>
+            <td><apex:actionRegion ><apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthTravelRequired__c}" >
+                    <apex:selectOptions value="{!YesNoOptions}"/>
+                    <apex:actionSupport event="onchange" rerender="travelRequired"/>
+                </apex:selectRadio></apex:actionRegion></td>
+            </tr>
+            </table>                                                                        
+            </apex:outputPanel> <br/>
+            <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthTravelRequired__c =='Yes'}">
+                <apex:outputText style="width: 500px">
+                A Travel Security Identification Document (TSID) is required for international travel.  Go to the Locations and Resilience section for direction based on the project location. <br/>                                           
+                Contact your local SH&amp;E Manager to determine if a Journey Management Plan is required for travel to remote or austere locations.
+                </apex:outputText><br/><br/>
+                
+                
+                <apex:commandButton id="cmdLocationsAndResilience" value="Locations and Resilience" action="{!gotoLocationsAndResilience}"/><br/>
+                </apex:outputPanel>
+            </apex:outputPanel>
+        </apex:outputPanel>
+        </apex:outputPanel>                                                     
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection title="Environment" columns="1" id="environmentImpact">
+        <apex:pageMessage severity="info"  escape="false"  summary="Undertaking an environmental review of projects demonstrates AECOMs commitment to work in an environmentally responsible manner in the delivery of our services (and is also in compliance with ISO 14001) by:
+                <br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Identifying and assessing the environmental impacts relating to our projects and the services we provide;<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. Using this assessment to assist in controlling significant environmental issues i.e. to adopt a proactive approach, and;<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. Ensuring that we work within the framework of legislation and good practice guidelines."/>     
+            <apex:outputPanel >
+            <apex:actionRegion >
+            <table>
+                <tr><td width="800px">
+                    <apex:outputText ><b><br/>Does work require compliance with environmental regulations (impacts to land, air, water; waste disposal or discharge; noise or nuisance)?</b></apex:outputText>                                      
+                </td>
+                <td><apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthEnvRegulations__c}" >
+                    <apex:selectOptions value="{!YesNoOptions}"/>
+                    <apex:actionSupport event="onchange" rerender="environmentImpact"/>
+                </apex:selectRadio></td>
+                
+            </tr></table>
+            </apex:actionRegion>
+            </apex:outputPanel>
+            
+            <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthEnvRegulations__c =='Yes'}">
+            <apex:outputPanel >
+
+            <table><tr><td width="800px">
+            <apex:outputText ><b><br/>Does our project or the Client's Project have an impact on the following areas?</b></apex:outputText>
+            </td>
+            <td><apex:actionRegion ><apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthEnvProjectImpact__c}" >
+                <apex:selectOptions value="{!YesNoOptions}"/>
+                <apex:actionSupport event="onchange" rerender="environmentImpact"/>
+            </apex:selectRadio></apex:actionRegion></td>        
+            </tr>
+            </table>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthEnvProjectImpact__c == 'Yes'}">
+            <apex:pageMessage severity="info"  escape="false"  summary="List all of the activities that may have a potential impact on the environment.<br/> 
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Subjectively rank the significance of each impact as high, medium or low <br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Note whether AECOM can either control or influence each identified potential impact<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- For impacts that have been identifieid as being of high or medium significance, and where AECOM can control or influence them, set out our proposed actions to manage these issues<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- At each project reveiw, update this assessment and note action taken (if applicable)<br/>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- If there are no environmental impacts, please say &quot;none&quot; (rather than &quot;not applicable&quot;) and provide the reason why."/>          
+            <br/><apex:outputLabel style="font-weight: bold" value="List of Project Activities"/>
+            
+            <table class="table">
+                <tr>
+                    <th></th>
+                    <th>Activity</th>
+                    <th>Impact on the Environment</th>
+                    <th>Significance</th>
+                    <th>Control</th>
+                    <th>Proposed Action</th>
+                    <th>Action Taken</th>           
+                </tr>
+                <tr>
+                    <td><apex:commandLink value="New Impact"/></td>
+                    <td colspan="6">Dig Hole with Backhoe</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>               
+                    <td>Emissions from Backhoe</td>
+                    <td>Medium</td>
+                    <td>Neither</td>
+                    <td>Use a shovel instead</td>
+                    <td>None</td>
+                </tr>
+                <tr>
+                    <td></td>
+                    <td></td>
+                    <td>Sut in the Stream</td>
+                    <td>Low</td>
+                    <td>Influence</td>
+                    <td>Put filter bariers in place</td>
+                    <td>Installed filter in stream around dig site</td>
+                </tr>
+            </table>
+            
+            <apex:commandLink value="New Activity"/><br/><br/>
+            
+            
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthEnvProjectImpact__c == 'No'}">
+            <apex:outputText >
+            Select the "Not Applicable" option below.
+            </apex:outputText>
+            </apex:outputPanel>         
+            <apex:outputPanel >
+
+            <table><tr><td width="800px">
+            <apex:outputText ><b>This section can be completed once all impacts have completed actions recorded.</b></apex:outputText>
+            </td>
+            <td>
+            <apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthEnvImpactStatus__c}" >
+                <apex:selectOptions value="{!ImpactStatusOptions}"/>
+            </apex:selectRadio> </td>           
+            </tr>
+            </table>
+
+            </apex:outputPanel>
+            
+            
+            
+            <div class="infoTable">
+                <table  border="1" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <th>Emissions to Air</th>
+                    </tr>
+                    <TR>
+                        <TD>Carbon dioxide emissions from energy use during building lifetime (global impact)</TD>
+                    </TR>   
+                    <TR>
+                        <TD>Green house gas depletion from refrigerants and insulants</TD>
+                    </TR>
+                    <TR >
+                        <TD>NOx emissions from burners (global - leading to acid rain)</TD>
+                    </TR>   
+                    <TR>
+                        <td>Indoor environment (local)</td>
+                    </TR>
+                    <TR>
+                        <td>Release of hazardous materials to air (global and local)</td>
+                    </TR>                   
+                    <TR>
+                        <td>During Construction – Dust, noise, light, VOC’s , Ash/Particulates, Litter, Steam, Methane</td>
+                    </TR>
+                    <tr>
+                        <th>Releases to Water</th>
+                    </tr>
+                    <TR>
+                        <td>Storm Water</td>
+                    </TR>
+                    <TR>
+                        <td>Silt</td>
+                    </TR>
+                    <TR>
+                        <td>Oil/Fuel Spillage</td>
+                    </TR>
+                    <TR>
+                        <td>Chemicals</td>
+                    </TR>
+                    <TR>
+                        <td>Hot Water (to natural rivers, ponds or other sensitive water courses)</td>
+                    </TR>
+                    <TR>
+                        <td>Process Effluent</td>
+                    </TR>       
+                    <TR>
+                        <td>Fire Dowsing</td>
+                    </TR>
+                    <TR>
+                        <td>Waste leaching</td>
+                    </TR>
+                    <tr>
+                        <th>Materials and Waste Management</th>
+                    </tr>                   
+                    <TR>
+                        <td>Materials extraction, manufacture, use and transportation</td>
+                    </TR>
+                    <TR>
+                        <td>Waste disposal - land use, transport etc (global and local)</td>
+                    </TR>
+                    <TR>
+                        <td>Possible waste by-products (wood, concrete, brick/aggregates, plastic, metal, paper, batteries, electrical items, clinical, asbestos, copper, garden waste, fluorescent lights)</td>
+                    </TR>
+                    <TR>
+                        <td>Managing / cleaning up contamination</td>
+                    </TR>
+                    <TR>
+                        <td>Embodied energy, material selection, the use of recycled materials</td>
+                    </TR>   
+
+                    <tr>
+                        <th>Local Environment and Community Issues</th>
+                    </tr>
+                    <TR>
+                        <td>Noise</td>
+                    </TR>   
+                    <TR>
+                        <td>Vibration</td>
+                    </TR>   
+                    <TR>
+                        <td>Dust</td>
+                    </TR>       
+                    <TR>
+                        <td>Light</td>
+                    </TR>   
+                    <TR>
+                        <td>Transport</td>
+                    </TR>   
+                    <TR>
+                        <td>Effect on local ecology (global and local)</td>
+                    </TR>   
+                    <TR>
+                        <td>Mud/litter on the road</td>
+                    </TR>       
+                    <TR>
+                        <td>Litter</td>
+                    </TR>                                                                                                                                                                                                                                                                                                                                                   
+                </table>
+            </div>
+            </apex:outputPanel>                                                     
+        </apex:pageBlockSection>
+
+    </apex:pageBlock>
+    <c:ECO_RiskFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="SH&E" />
+    <c:ECO_AssumptionFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="SH&E" />
+<!--    <c:ECO_MSABillRateFlyout ProjectId="{!pse__Proj__c.Id}" rendered="{!pse__Proj__c.Id != null}" />  --> 
+    
+    </apex:form>
+
+</apex:page>

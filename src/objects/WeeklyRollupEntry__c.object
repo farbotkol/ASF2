@@ -1,0 +1,277 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>false</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>false</enableSharing>
+    <enableStreamingApi>false</enableStreamingApi>
+    <fields>
+        <fullName>AcctBurdenedCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Acct Burdened Cost</label>
+        <summarizedField>EarnedValueSnapshot__c.AcctBurdenedCost__c</summarizedField>
+        <summaryForeignKey>EarnedValueSnapshot__c.WeeklyRollupEntry__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>AcctRawCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Acct Raw Cost</label>
+        <summarizedField>EarnedValueSnapshot__c.AcctRawCost__c</summarizedField>
+        <summaryForeignKey>EarnedValueSnapshot__c.WeeklyRollupEntry__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>AppliedAcctBurdenedCost__c</fullName>
+        <externalId>false</externalId>
+        <formula>BLANKVALUE(OverrideAcctBurdenedCost__c, AcctBurdenedCost__c)</formula>
+        <label>Applied Acct Burdened Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>AppliedAcctRawCost__c</fullName>
+        <externalId>false</externalId>
+        <formula>BLANKVALUE(OverrideAcctRawCost__c, AcctRawCost__c)</formula>
+        <label>Applied Acct Raw Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>AppliedApprovedCost__c</fullName>
+        <externalId>false</externalId>
+        <formula>BLANKVALUE( OverrideApprovedCost__c ,  ApprovedCost__c )</formula>
+        <label>Applied Approved Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>AppliedRevenue__c</fullName>
+        <externalId>false</externalId>
+        <formula>BLANKVALUE(OverrideRevenue__c, Revenue__c)</formula>
+        <label>Applied Cash In</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ApprovedCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Approved Cost</label>
+        <summarizedField>EarnedValueSnapshot__c.ThisWeekAmount__c</summarizedField>
+        <summaryForeignKey>EarnedValueSnapshot__c.WeeklyRollupEntry__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>CPI__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( AppliedAcctBurdenedCost__c != 0, EarnedValue__c / AppliedAcctBurdenedCost__c , 0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>CPI</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CompositeKey__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>Composite Key</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>EarnedValue__c</fullName>
+        <externalId>false</externalId>
+        <label>Earned Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OverrideAcctBurdenedCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Acct Burdened Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OverrideAcctRawCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Acct Raw Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OverrideApprovedCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Approved Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OverrideRevenue__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Cash In</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PeriodStartDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Period Start Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ProjectFunctionalBurdenedCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Functional Burdened Cost</label>
+        <summarizedField>EarnedValueSnapshot__c.ProjectFunctionalBurdenedCost__c</summarizedField>
+        <summaryForeignKey>EarnedValueSnapshot__c.WeeklyRollupEntry__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>ProjectFunctionalRawCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Functional Raw Cost</label>
+        <summarizedField>EarnedValueSnapshot__c.ProjectFunctionalRawCost__c</summarizedField>
+        <summaryForeignKey>EarnedValueSnapshot__c.WeeklyRollupEntry__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Project__c</fullName>
+        <externalId>false</externalId>
+        <label>Project</label>
+        <referenceTo>pse__Proj__c</referenceTo>
+        <relationshipLabel>Weekly Rollup Entries</relationshipLabel>
+        <relationshipName>Weekly_Rollup_Entries</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Revenue__c</fullName>
+        <externalId>false</externalId>
+        <label>Cash In</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>SPI__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(AppliedApprovedCost__c != 0, EarnedValue__c / AppliedApprovedCost__c, 0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>SPI</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Weekly Rollup Entry</label>
+    <nameField>
+        <displayFormat>WRE-{0000000}</displayFormat>
+        <label>Weekly Rollup Id</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Weekly Rollup Entries</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

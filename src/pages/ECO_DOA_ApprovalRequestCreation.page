@@ -1,0 +1,125 @@
+<apex:page controller="ECO_DOA_ApprovalRequestController" showHeader="true" sidebar="true">
+
+<apex:stylesheet value="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"/>
+
+<style>
+	.customHelpText{
+		padding:20px 25px;
+		border:1px solid #85B3CE;
+		min-height:30px;
+		display:block;
+		width:auto;
+		margin:0;
+		background-color:#E3F0F8;
+		background-image: url('../img/icon/forecasts24.png');
+		background-position:1% 50%;
+		background-repeat:no-repeat;
+		border-radius:4px;
+		margin-bottom:15px;
+	}
+	.customHelpBody{
+		display:inline-block;
+		color:#;
+		max-width:95%;
+		margin-left:28px;
+	}
+    .questionCol {
+    	padding-top: 10px;  
+	}
+</style>
+
+<apex:sectionHeader title="DOA Request for Approval" subtitle="New Request" />
+<apex:pageMessages id="messages" />
+
+<div class="customHelpText">
+	<div class="customHelpBody">
+		The Enterprise Delegations of Authority (DoA) defines those matters that require the authorization of specific members of senior management prior to proceeding.  Sub-DoA have also been developed for the individual business groups in instances where leadership has elected to handle specific matters requiring elevation pursuant to the DoA or delegate approval to certain business group executives.  As such, a global process has been developed that assures a consistent and orderly approach for obtaining review, input and approval of identified DoA matters. <br/><br/> 
+
+		Answer the questions below to determine the appropriate form to complete for project and non-project related matters.  Reference the relevant DoA policy to determine the level of approval required (e.g., Risk Committee, Hub).
+	</div>
+</div>	
+	
+<apex:form >
+
+<apex:outputPanel id="wholeform">
+
+	<apex:pageBlock title="DOA Request for Approval" mode="edit">
+
+		<apex:pageBlockButtons location="top">
+			<apex:commandButton value="Back" action="{!back}" />
+			<apex:commandButton action="{!createRequest}" value="Create Request" disabled="{!NOT(OR(IF(questionOne=='No', true, false), IF(questionTwo=='Yes', true, false), IF(questionThree != null, true, false)))}" />
+		</apex:pageBlockButtons>
+		<div style="padding:0 12px;margin-top:7px">
+
+		<apex:outputPanel >
+			<table><tr>
+			<td class="questionCol">
+				<apex:outputText value="Are the DoA triggers project related?"/>
+				</td>
+				<td>
+					<apex:selectRadio value="{!questionOne}" layout="lineDirection" >
+		                <apex:selectOptions value="{!types}"></apex:selectoptions>
+		                <apex:actionSupport event="onchange" action="{!answerone}" rerender="wholeform"/>
+						</apex:selectRadio>
+				</td>
+			</tr></table>	
+		</apex:outputPanel>
+
+		<apex:outputPanel rendered="{!IF(questionOne=='No', true, false)}">
+			<apex:pageMessage severity="INFO" summary="Complete a Request for Approval (RFA) Form for the non-project related matters and submit for review, input and approval by the Hub."></apex:pageMessage> 
+		</apex:outputPanel>
+
+		<apex:outputPanel rendered="{!IF(questionOne=='Yes', true, false)}">
+			
+			<table><tr>
+			<td class="questionCol">
+				<apex:outputText value="Are you only requesting Risk Committee advice as part of an initial pursuit (Phase 0)?"/>
+				</td>
+				<td>
+					<apex:selectRadio value="{!questionTwo}" layout="lineDirection" >
+		                <apex:selectOptions value="{!types}"></apex:selectoptions>
+		                <apex:actionSupport event="onchange" action="{!answertwo}" rerender="wholeform"/>
+						</apex:selectRadio>
+				</td>
+			</tr></table>	
+		</apex:outputPanel>
+
+		<apex:outputPanel rendered="{!IF(questionTwo=='Yes', true, false)}">
+			<apex:pageMessage severity="INFO" summary="A Phase 0 submittal does not need to follow a particular template, does not require prior submission to the relevant Risk Committee, and no formal approval decision is sought. The ORM Cover Memo is optional for this phase and may be used if desired."></apex:pageMessage> 
+		</apex:outputPanel>
+
+		<apex:outputPanel rendered="{!IF(questionTwo=='No', true, false)}" >
+			
+			<table><tr>
+			<td class="questionCol">
+				<apex:outputText value="Is approval by the Risk Committee (Geography or Enterprise) required?"/>
+				</td>
+				<td>
+					<apex:selectRadio value="{!questionThree}" layout="lineDirection" >
+		                <apex:selectOptions value="{!types}"></apex:selectoptions>
+		                <apex:actionSupport event="onchange" action="{!answerthree}" rerender="wholeform"/>
+						</apex:selectRadio>
+				</td>
+			</tr></table>	
+		</apex:outputPanel>
+
+		<apex:outputPanel rendered="{!IF(questionThree=='Yes', true, false)}">
+			<apex:pageMessage severity="INFO" summary="Complete the Risk Committee Submittal Template (RCST) and submit for review, input and approval."></apex:pageMessage> 
+		</apex:outputPanel>
+
+		<apex:outputPanel rendered="{!IF(questionThree=='No', true, false)}">
+			<apex:pageMessage severity="INFO" summary="Complete the Request for Approval (RFA) form and submit for applicable business group or geography level approvals."></apex:pageMessage> 
+		</apex:outputPanel>	
+
+		</div>
+		<BR/ ><BR/ ><BR/ >
+		
+	</apex:pageBlock>
+
+
+</apex:outputPanel>
+
+</apex:form>
+
+
+</apex:page>

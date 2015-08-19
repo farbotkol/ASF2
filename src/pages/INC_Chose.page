@@ -1,0 +1,164 @@
+<apex:page standardcontroller="EnrollmentPlan__c" extensions="INC_ChoseIncentivePlanController" tabstyle="EnrollmentPlan__c">
+	
+	<script>
+		function rerenderQuestionSections()
+		{
+			rerenderQuestions();
+		}
+	
+		function selectPlanFromList(planId) {
+        	selectPlan(planId);
+    	}
+	</script> 
+	
+	<style>
+	.halfWidthWrapper {
+			width:20%;
+			display:inline-block;
+			float:left;
+	}
+		
+	#results{
+		margin-left:20%;
+		padding-left:20px;
+	}
+	.validicon{
+		height: 16px;
+    	width: 16px;
+	}
+	.notvalid{
+		display:none;
+		  height: 10px;
+   		 width: 10px;
+	}
+	</style>
+	
+	<apex:form >
+	
+	<apex:actionFunction id="rerenderQuestions" name="rerenderQuestions" rerender="blockpb2, block2"/>
+	<apex:actionFunction id="selectPlan" name="selectPlan" action="{!selectPlanForEnrollment}" rerender="blockpb2, block2">
+		<apex:param id="paramPlanId" name="planId" value="" />
+	</apex:actionFunction>
+
+	<apex:pageMessages />
+	<apex:sectionHeader title="Incentive Plan Questionnairre" subtitle="Enrollment Application" />
+	<apex:inputHidden value="{!EnrollmentPlan__c.ProjectGeography__c}"/>
+	<apex:inputHidden value="{!EnrollmentPlan__c.FPPOverallEligibility_c__c}"/>	
+	<apex:inputHidden value="{!EnrollmentPlan__c.TMPlanOverallEligibility__c}"/>
+	<apex:pageBlock title="Incentive Plan Questionnairre">
+	<apex:pageBlockButtons ><apex:commandButton value="Search Plans" action="{!submitQuestionnairre}"/><apex:commandButton value="Return To Application" action="{!returnHome}"/></apex:pageBlockButtons>
+		
+		<!-- If presented with an ANZ net margin form, there is only 1 question to ask -->
+		<apex:pageBlockSection rendered="{!IsANZRegion}" columns="2" id="blockpb1">
+		<apex:outputPanel >Would you like to be Guided or Manually select an Incentive Plan?
+			<apex:selectRadio layout="lineDirection" value="{!selectedSelectionMethod}" label="Selection Method" required="true" onchange="rerenderQuestionSections(); return false;">
+    			<apex:selectOptions value="{!SelectionMethods}"/>
+    			<apex:actionSupport event="onchange" rerender="blockpb1" action="{!clearResults}"/>
+ 			</apex:selectRadio>
+		</apex:outputPanel>		
+		
+		<apex:outputPanel id="block1" rendered="{!selectedSelectionMethod=='Guided'}">
+		<apex:outputLabel value="Please Answer the Following Question" style="font-weight: bold;"/><br/>	
+		Has the contract been fully executed by the client and AECOM?  <!-- If no, Application should not be started until contract is fully executed -->
+			<apex:selectRadio layout="lineDirection" value="{!question1Answer}" label="Question 1">
+    			<apex:selectOptions value="{!YesNoOptions}"/>
+			</apex:selectRadio>
+		</apex:outputPanel>
+		<apex:outputPanel rendered="{!availablePlans.size > 0}">
+				<apex:outputLabel value="Available Plans" style="font-weight: bold;"/>
+				<apex:pageBlockTable value="{!availablePlans}" var="plan" columnsWidth="75px,90px,100px,417px,95px,425px">
+					<apex:column headervalue=""><apex:commandButton value="Select Plan" onclick="selectPlanFromList('{!plan.Id}'); return false;"/></apex:column>
+					<apex:column headervalue="Contract Type" value="{!plan.ContractType__c}"></apex:column>
+					<apex:column headervalue="Contract Sub Type" value="{!plan.ContractSubType__c}"></apex:column>
+					<apex:column headervalue="Plan Criteria" value="{!plan.PlanCriteria__c}"></apex:column>
+					<apex:column headervalue="Geography" value="{!plan.GeographyAllocation__c}"></apex:column>
+					<apex:column headervalue="Help Text" value="{!plan.HelpText__c}"></apex:column>
+				</apex:pageBlockTable>
+			</apex:outputPanel>
+		
+		</apex:pageBlockSection>
+	
+		<!-- If project is part of a geography outside of ANZ, there are two questions to ask -->
+
+				<apex:pageBlockSection rendered="{!NOT(IsANZRegion) && NOT(IsMultiPlanEligible)}" columns="1" id="blockpb2">
+				<apex:outputPanel id="test1">Would you like to be Guided or Manually select an Incentive Plan?
+					<apex:selectRadio layout="lineDirection" value="{!selectedSelectionMethod}" label="Selection Method" required="true">
+		    			<apex:selectOptions value="{!SelectionMethods}"/>
+		    			<apex:actionSupport event="onchange" rerender="blockpb2" action="{!clearResults}"/>
+					</apex:selectRadio>
+				<apex:outputPanel id="block2" rendered="{!selectedSelectionMethod =='Guided'}" >		
+<!-- 					<apex:outputLabel value="Please Answer the Following Questions" style="font-weight: bold;" /><br/> -->
+				 	<apex:outputText >Has the contract been fully executed by the client and AECOM?</apex:outputText>
+					<apex:selectRadio layout="lineDirection" value="{!question1Answer}" label="Question 1" >
+		    			<apex:selectOptions value="{!YesNoOptions}"/>
+					</apex:selectRadio> <!-- If no, Application should not be started until contract is fully executed -->
+				 	Is work on this project performed by AECOM employees in multiple countries? <!-- If yes, go to Net Margin form instead of gross margin form  -->
+					<apex:selectRadio layout="lineDirection" value="{!question2Answer}" label="Question 2" >
+		    			<apex:selectOptions value="{!YesNoOptions}"/>
+					</apex:selectRadio>
+				</apex:outputPanel>
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!availablePlans.size > 0}">
+				<apex:outputLabel value="Available Plans" style="font-weight: bold;"/>
+				<apex:pageBlockTable value="{!availablePlans}" var="plan" columnsWidth="75px,80px,10px,100px,417px,95px,425px">
+					<apex:column headervalue=""><apex:commandButton value="Select Plan" onclick="selectPlanFromList('{!plan.Id}'); return false;"/></apex:column>
+					<apex:column headervalue="Contract Type" value="{!plan.ContractType__c}"></apex:column>
+					<apex:column headervalue="Valid">
+						<apex:image styleclass="{!IF(plan.ContractType__c = enrollmentplan.IncentiveProject__r.ContractTypeShortName__c, 'validicon', 'notvalid')}" value="/img/func_icons/util/checkmark16.gif" id="someImage" width="16" height="16"/>
+					</apex:column>
+					<apex:column headervalue="Contract Sub Type" value="{!plan.ContractSubType__c}"></apex:column>
+					<apex:column headervalue="Plan Criteria" value="{!plan.PlanCriteria__c}"></apex:column>
+					<apex:column headervalue="Geography" value="{!plan.GeographyAllocation__c}"></apex:column>
+					<apex:column headervalue="Help Text" value="{!plan.HelpText__c}"></apex:column>
+				</apex:pageBlockTable>
+			</apex:outputPanel>
+			</apex:pageBlockSection>
+		
+		<!-- If the project is eligible for more than 1 incentive plan, present a short Q&A Selecting the right incentive plan for your project -->
+		<apex:pageBlockSection rendered="{!NOT(IsANZRegion) && IsMultiPlanEligible}" columns="1" id="blockpb3">
+			<apex:outputPanel >Would you like to be Guided or Manually select an Incentive Plan?
+				<apex:actionRegion >
+				<apex:selectRadio layout="lineDirection" value="{!selectedSelectionMethod}" label="Selection Method" required="true">
+	    			<apex:selectOptions value="{!SelectionMethods}"/>
+	    			<apex:actionSupport event="onchange" rerender="blockpb3"/>
+				</apex:selectRadio>
+				</apex:actionRegion>
+			</apex:outputPanel>			
+			<apex:outputPanel id="block3" rendered="{!selectedSelectionMethod=='Guided'}">
+				<apex:outputLabel value="Please Answer the Following Question" style="font-weight: bold;"/><br/>
+				Has the contract been fully executed by the client and AECOM?<br/>  <!-- If no, Application should not be started until contract is fully executed  -->
+				<apex:selectRadio layout="lineDirection" value="{!question1Answer}" label="Question 1">
+		    		<apex:selectOptions value="{!YesNoOptions}"/>
+				</apex:selectRadio>
+				Is work on this project performed by AECOM employees in multiple countries?<br/> <!-- (If yes, go to Net Margin form instead of gross margin form) -->
+				<apex:selectRadio layout="lineDirection" value="{!question2Answer}" label="Question 2">
+		    		<apex:selectOptions value="{!YesNoOptions}"/>
+				</apex:selectRadio>
+				Are scope of work and budget defined?<br/>  <!-- (if no, direct to T&M plan form)  -->
+				<apex:selectRadio layout="lineDirection" value="{!question3Answer}" label="Question 3">
+		    		<apex:selectOptions value="{!YesNoOptions}"/>
+				</apex:selectRadio>
+				Do contract provisions allow for the ability to manage costs and risks in a way that provides opportunity to improve margin as a percent of revenue (i.e. GM % of NSR, NM % of NSR)? <!-- (if no, go to T&M plan form). --> 
+				<apex:selectRadio layout="lineDirection" value="{!question4Answer}" label="Question 4">
+		    		<apex:selectOptions value="{!YesNoOptions}"/>
+				</apex:selectRadio>
+			</apex:outputPanel>
+			
+			<apex:outputPanel rendered="{!availablePlans.size > 0}">
+				<apex:outputLabel value="Available Plans" style="font-weight: bold;"/>
+				<apex:pageBlockTable value="{!availablePlans}" var="plan" columnsWidth="75px,80px,10px,100px,417px,95px,425px">
+					<apex:column headervalue=""><apex:commandButton value="Select Plan" onclick="selectPlanFromList('{!plan.Id}'); return false;"/></apex:column>
+					<apex:column headervalue="Contract Type" value="{!plan.ContractType__c}"></apex:column>
+					<apex:column headervalue="Valid">
+						<apex:image styleclass="{!IF(plan.ContractType__c = enrollmentplan.IncentiveProject__r.ContractTypeShortName__c, 'validicon', 'notvalid')}" value="/img/func_icons/util/checkmark16.gif" id="someImage" width="16" height="16"/>
+					</apex:column>
+					<apex:column headervalue="Contract Sub Type" value="{!plan.ContractSubType__c}"></apex:column>
+					<apex:column headervalue="Plan Criteria" value="{!plan.PlanCriteria__c}"></apex:column>
+					<apex:column headervalue="Geography" value="{!plan.GeographyAllocation__c}"></apex:column>
+					<apex:column headervalue="Help Text" value="{!plan.HelpText__c}"></apex:column>
+				</apex:pageBlockTable>
+			</apex:outputPanel>
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+	</apex:form>
+</apex:page>

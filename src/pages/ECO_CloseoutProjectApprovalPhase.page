@@ -1,0 +1,848 @@
+<apex:page standardController="pse__Proj__c" extensions="ECO_CloseoutApprovalPhaseController" tabStyle="pse__Proj__c"   showHeader="true" sidebar="true">
+
+	<style>
+
+		.colA {
+			font-weight: bold;
+			text-align:right;
+			vertical-align:middle !important;
+		}
+
+		.colB {
+			padding:0 10px !important;
+		}
+
+		.colC {
+			vertical-align:middle !important;
+		}
+
+
+		.colD {
+			text-align:left;
+			vertical-align:middle !important;
+		}		
+
+		.questions{
+			vertical-align:middle !important;
+			margin-left:3px;
+		}
+
+		/* CUSTOM HELP / GUIDANCE TEXT BOX */
+		.customHelpText{
+			padding:7px;
+			border:1px solid #85B3CE;
+			min-height:30px;
+			display:block;
+			width:auto;
+			margin:0;
+			background-color:#E3F0F8;
+			border-radius:4px;
+			margin-bottom:15px;
+		}
+		.customHelpBody{
+			display:inline-block;
+			color:#;
+			max-width:95%;
+		}
+		.dmeOutput{  
+			font-size: 1.0em;
+	  		font-weight: bold; 
+	  		color: #4a4a56;  /*Standrd Salesforce Color*/
+	  	}
+	  	
+	  	.attachNewFile{
+	  		visibility: hidden;
+	  	}
+	  	
+		.pbtOutputPanel
+		{
+			padding: 100;
+			color: red;
+		}  	
+		
+		.textBox
+		{
+			padding-bottom: 5px;
+		}
+		
+		.fileList
+		{
+			padding:0 12px;
+			margin-top:7px;
+		}
+		
+	    .bPageBlock .detailList tr td.dataCol, 
+	    .bPageBlock .detailList tr td.labelCol
+	    {
+	    	border-bottom:1px solid #dbdbdb;
+	    }
+
+	    .bPageBlock .detailList tr td.dataCol.last, 
+	    .bPageBlock .detailList tr td.labelCol.last
+	    {
+	    	border-bottom:0px solid #dbdbdb;
+	    }
+	     
+	    .questionCol {
+	    	padding-top: 10px;  
+		}
+	</style>
+
+
+    <head>
+        <apex:stylesheet value="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"  />
+        <apex:includeScript value="https://code.jquery.com/jquery-1.9.1.js" />
+        <apex:includeScript value="https://code.jquery.com/ui/1.10.3/jquery-ui.js" />
+    </head>
+
+	<script>
+
+	    function openPopup(id)
+	    {
+	        var newWin=window.open('/' + id, 'PopUp',
+	               'height=450,width=650,left=300,top=100,resizable=no,scrollbars=yes,toolbar=no,status=no,channelmode=no');
+	        if (window.focus) 
+	        {
+	            newWin.focus();
+	        }
+	             
+	        return false;       
+	    }	
+	    
+	    function fileChosen(attachButton,documentField,overrideField)
+	    {
+	    	if(documentField.value != '')
+	    	{
+				document.getElementById(attachButton).style.visibility = 'visible';			
+				document.getElementById(overrideField).value = '';
+				document.getElementById(overrideField).style.visibility = 'visible';
+							
+			}
+			else
+			{
+				document.getElementById(attachButton).style.visibility= 'hidden';
+				document.getElementById(overrideField).style.visibility= 'hidden';			
+			}		
+	    }
+
+		function documentTypeChosen(value, outputTextField, outputTextFieldAECOM, outputTextFieldOther) {
+			//alert('test');
+	//		refreshInputNames();
+	/*    	if(value == 'AECOM')
+	    	{
+	    		//alert('test');
+				document.getElementById(outputTextField).style.visibility= 'hidden';
+				document.getElementById(outputTextFieldOther).style.visibility= 'hidden';
+				document.getElementById(outputTextFieldAECOM).style.visibility= 'visible';			  							  	
+	    	}
+	    	else
+	    	{
+	    		alert('test');
+				document.getElementById(outputTextField).style.visibility= 'hidden';
+				document.getElementById(outputTextFieldOther).style.visibility= 'visible';
+				document.getElementById(outputTextFieldAECOM).style.visibility= 'hidden';			  							  	
+	    	}    	*/
+		}    
+	    
+	</script>
+
+	<apex:sectionHeader title="Closeout: Approval Phase" subtitle="{!pse__Proj__c.Name}" />
+
+	<div class="customHelpText">
+		<div class="customHelpBody">
+			Project closeout is the process to assess the project and team as a whole, to ensure that all project and performance goals and requirements have been successfully achieved, ensures mandatory project delivery requirements have been properly addressed/completed, and the project records have been archived.  A closed project no longer accepts labor and expense charges or transactions.  Complete the project closure checklist to aid in the closure process.  <br/><br/>
+
+			A project may be placed on hold due to various circumstances, for example preliminary (pre-design) work has been performed on a project but the project is not ready to kick off, client funding is not available for the project to continue for an extended period of time, or changes to the project scope require re-evaluation of the project or the design.  A project placed on hold will be closed to charges and transactions pending restart.  <br/><br/> 
+		</div>
+	</div>	
+
+	<apex:form >
+
+	
+		<apex:pageMessages id="messages" />		
+		<apex:outputPanel id="all" >
+			<apex:pageBlock >
+
+				<apex:pageBlockButtons >
+					<apex:commandButton value="Submit" action="{!createChangeManagement}" />
+					<apex:commandButton value="Save" action="{!closesave}" />
+					<apex:commandButton value="Back to Project" action="{!back}" immediate="true" />
+				</apex:pageBlockButtons>
+
+				<apex:outputPanel id="projectFields">
+
+					<apex:outputPanel rendered="{!oProject.RequestedProjectStatus__c == 'On Hold'}">
+						<apex:pageBlockSection title="Financial Details" collapsible="false" >
+							<apex:outputField value="{!oProject.CurrentApprovedCostBudget__c}" />
+							<apex:outputField value="{!oProject.CurrentApprovedRevenueBudget__c}" />
+							<apex:outputField value="{!oProject.CurrentForecastCostBudget__c}" />
+							<apex:outputField value="{!oProject.CurrentForecastRevenueBudget__c}" />
+							<apex:outputField value="{!oProject.UnbilledValue__c}" />
+							<apex:outputField value="{!oProject.AR_Value__c}" />
+						</apex:pageBlockSection>
+					</apex:outputPanel>
+
+					<apex:pageBlockSection title="Closeout/Hold" collapsible="false" />
+
+
+
+					<div style="padding:0 100px;margin-top:7px">
+
+						<apex:panelGrid columns="4" columnClasses="colA, colB, colC, colD">
+
+							
+							<apex:outputLabel value="Requested Project Status" />
+							<apex:outputText value="  "  />	
+							<apex:actionRegion >
+							<apex:inputField value="{!oProject.RequestedProjectStatus__c}" required="true">
+									<apex:actionSupport event="onchange" action="{!stub}" reRender="all, messages"/>
+							</apex:inputField>	
+							</apex:actionRegion>		
+							<apex:outputText value="  "  />							
+
+							
+
+							<apex:outputLabel value="Scheduled Closure Date" rendered="{!oProject.RequestedProjectStatus__c == 'Closed'}" />
+							<apex:outputText value="   "  rendered="{!oProject.RequestedProjectStatus__c == 'Closed'}"  />	
+							<apex:inputField value="{!oProject.ClosureDate__c}" rendered="{!oProject.RequestedProjectStatus__c == 'Closed'}" required="true" />
+							<apex:outputText value=""  rendered="{!oProject.RequestedProjectStatus__c == 'Closed'}"  />		
+
+							<apex:outputLabel value="Notes" rendered="{!oProject.RequestedProjectStatus__c == 'Closed'}" />
+							<apex:outputText value="   "  rendered="{!oProject.RequestedProjectStatus__c == 'Closed'}"  />	
+							<apex:inputField value="{!oProject.ProjectClosureNotes__c}"  rendered="{!oProject.RequestedProjectStatus__c == 'Closed'}" required="true" />
+							<apex:outputText value=""  rendered="{!oProject.RequestedProjectStatus__c == 'Closed'}"  />
+
+							<apex:outputLabel value="Scheduled On Hold Date" rendered="{!oProject.RequestedProjectStatus__c == 'On Hold'}" />
+							<apex:outputText value="   "  rendered="{!oProject.RequestedProjectStatus__c == 'On Hold'}"  />	
+							<apex:inputField value="{!oProject.ScheduledOnHoldDate__c}"  rendered="{!oProject.RequestedProjectStatus__c == 'On Hold'}" required="true" />
+							<apex:outputText value=""  rendered="{!oProject.RequestedProjectStatus__c == 'On Hold'}"  />
+
+							<apex:outputLabel value="Scheduled Restart Date" rendered="{!oProject.RequestedProjectStatus__c == 'On Hold'}" />
+							<apex:outputText value="   "  rendered="{!oProject.RequestedProjectStatus__c == 'On Hold'}"  />	
+							<apex:inputField value="{!oProject.ScheduledRestartDate__c}"  rendered="{!oProject.RequestedProjectStatus__c == 'On Hold'}" required="true" />
+							<apex:outputText value=""  rendered="{!oProject.RequestedProjectStatus__c == 'On Hold'}"  />
+
+							<apex:outputLabel value="On Hold Reason" rendered="{!oProject.RequestedProjectStatus__c == 'On Hold'}" />
+							<apex:outputText value="   "  rendered="{!oProject.RequestedProjectStatus__c == 'On Hold'}"  />	
+							<apex:inputField value="{!oProject.OnHoldReason__c}"  rendered="{!oProject.RequestedProjectStatus__c == 'On Hold'}" required="true" />
+							<apex:commandButton value="Restart on hold" rendered="{!oProject.RequestedProjectStatus__c == 'On Hold' && oProject.pse__Stage__c = 'On Hold'}" action="{!restart}" />										
+						</apex:panelGrid>
+					
+
+					<br/><br/>
+
+						<apex:pageMessage title="Warning" severity="WARNING" strength="3" rendered="{!AND(oProject.RequestedProjectStatus__c == 'On Hold', oProject.UnbilledValue__c > 0)}" summary="The project has a current Unbilled balance of {!oProject.UnbilledValue__c}, please ensure that all invoices have been raised and this balance is correct prior to putting the project on hold"></apex:pageMessage> 
+					</div>
+
+					<apex:outputPanel id="sections" rendered="{!oProject.RequestedProjectStatus__c == 'Closed'}">
+						<apex:pageBlockSection title="Schedule/WBS" columns="1" collapsible="false" />
+						<div style="padding:0 12px;margin-top:7px">
+
+							<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseScheduleMilestoneCompletion__c" noField="projcloseScheduleMilestoneCompletionText__c" 
+												questionText="Have all major milestones been completed and the scheduled end dates updated to reflect actuals?"/>
+
+							<apex:outputLink value="https://aecom--ecosysdev--pse.cs15.visual.force.com/apex/ProjectTaskGantt?id={!oProject.id}" target="_blank">View Schedule/WBS</apex:outputLink>
+						</div>
+
+						<apex:pageBlockSection title="Project Team" columns="1" collapsible="false" />
+
+							<div style="padding:0 12px;margin-top:7px">
+
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseProjectTeamPerformanceReview__c" noField="projcloseProjTeamPerformanceReviewText__c" 
+														questionText="If the PM or Project Approver determined a project team performance review is required, has this been completed and placed on file?"/>
+
+
+								<apex:actionRegion >
+									<table width="100%" cellpadding="0" cellspacing="0">
+
+										<tr>
+											<td class="questions">
+												<apex:outputLabel value="Was a lessons learned meeting conducted with the project team?" />
+											</td>
+											<td class="questions" width="255px">
+												<apex:selectRadio value="{!oProject.projcloseProjectTeamLessonsLearned__c}" layout="lineDirection">
+								                    <apex:selectOptions value="{!types}"></apex:selectoptions>
+								                    <apex:actionSupport event="onchange" reRender="projcloseProjectTeamLessonsLearned"/>
+								 				</apex:selectRadio>			
+											</td>
+										</tr>
+									</table>
+								</apex:actionRegion>
+								<apex:outputPanel id="projcloseProjectTeamLessonsLearned">
+									<apex:outputPanel rendered="{!if(oProject.projcloseProjectTeamLessonsLearned__c == 'Yes', true, false)}">
+										
+										<apex:outputText value="If yes, attach lessons learned." />
+										<div class="fileList">
+											<apex:pageBlockTable value="{!AttachedDocumentLesson}" var="file" style="width: 825px;" rendered="{!oProject.ClosureLessonAttachment__c != null}">
+												<apex:column headerValue="File Name">
+
+													<apex:outputLink value="{!URLFOR($Action.Attachment.Download, file.Id)}" target="_blank">
+														<apex:outputText value="{!file.Name}" />
+													</apex:outputLink>
+												</apex:column>
+												<apex:column value="{!file.ContentType}" />	
+												<apex:column value="{!file.LastModifiedDate}" />	
+												<apex:column value="{!file.LastModifiedById}" />
+											</apex:pageBlockTable>
+														
+											<apex:inputFile id="docLessonAttachment" value="{!docLessonAttachment.Body}" contentType="{!docLessonAttachment.ContentType}" fileName="{!docLessonAttachment.Name}" onchange="fileChosen('{!$Component.saveLessonAndProject}', this, '{!$Component.overrideLessons}'); return false;"/>
+											<apex:inputText id="overrideLessons" value="{!overrideLessons}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
+											<apex:commandButton id="saveLessonAndProject" value="Attach" action="{!saveLessonAndProject}" styleclass="attachNewFile"/><br/>
+										</div>
+
+									</apex:outputPanel>
+									<br /><br />
+								</apex:outputPanel>
+
+
+								<apex:outputLink value="/apex/ECO_Stakeholders?id={!oProject.id}" target="_blank">View Project Team</apex:outputLink>
+							</div>
+
+
+						<apex:pageBlockSection title="Clients" columns="1" collapsible="false" />
+
+							<div style="padding:0 12px;margin-top:7px">
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseClientsClientsContacted__c" noField="projcloseClientsContactedText__c" 
+														questionText="Has the client been contacted for confirmation that we have completed our contract obligations?"/>
+
+								<apex:actionRegion >
+									<table width="100%" cellpadding="0" cellspacing="0">
+
+										<tr>
+											<td class="questions">
+												<apex:outputLabel value="Is a formal completion certificate or letter from the client required?" />
+											</td>
+											<td class="questions" width="255px">
+												<apex:selectRadio value="{!oProject.projcloseClientsFormalCompletionCert__c}" layout="lineDirection">
+								                    <apex:selectOptions value="{!types}"></apex:selectoptions>
+								                    <apex:actionSupport event="onchange" reRender="projcloseClientsFormalCompletionCert"/>
+								 				</apex:selectRadio>			
+											</td>
+										</tr>
+									</table>
+								</apex:actionRegion>
+								<apex:outputPanel id="projcloseClientsFormalCompletionCert">
+									<apex:outputPanel rendered="{!if(oProject.projcloseClientsFormalCompletionCert__c == 'Yes', true, false)}">
+										
+										<apex:outputText value="If yes, attach the document." />
+										<div class="fileList">
+											<apex:pageBlockTable value="{!AttachedDocumentCertificate}" var="file" style="width: 825px;" rendered="{!oProject.ClosureCertificateAttachment__c != null}">
+												<apex:column headerValue="File Name">
+
+													<apex:outputLink value="{!URLFOR($Action.Attachment.Download, file.Id)}" target="_blank">
+														<apex:outputText value="{!file.Name}" />
+													</apex:outputLink>
+												</apex:column>
+												<apex:column value="{!file.ContentType}" />	
+												<apex:column value="{!file.LastModifiedDate}" />	
+												<apex:column value="{!file.LastModifiedById}" />
+											</apex:pageBlockTable>
+														
+											<apex:inputFile id="docCertificateAttachment" value="{!docCertificateAttachment.Body}" contentType="{!docCertificateAttachment.ContentType}" fileName="{!docCertificateAttachment.Name}" onchange="fileChosen('{!$Component.saveCertificateAndProject}', this, '{!$Component.overrideCertificate}'); return false;"/>
+											<apex:inputText id="overrideCertificate" value="{!overrideCertificate}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
+											<apex:commandButton id="saveCertificateAndProject" value="Attach" action="{!saveCertificateAndProject}" styleclass="attachNewFile"/><br/>
+										</div>
+
+									</apex:outputPanel>
+									<br /><br />
+								</apex:outputPanel>
+
+
+								<apex:actionRegion >
+									<table width="100%" cellpadding="0" cellspacing="0">
+
+										<tr>
+											<td class="questions">
+												<apex:outputLabel value="If there is potential for follow on work, has the opportunity been entered in Salesforce?" />
+											</td>
+											<td class="questions" width="255px">
+												<apex:selectRadio value="{!oProject.projcloseClientsFollowonWork__c}" layout="lineDirection">
+								                    <apex:selectOptions value="{!types}"></apex:selectoptions>
+								                    <apex:actionSupport event="onchange" reRender="projcloseClientsFollowonWork"/>
+								 				</apex:selectRadio>			
+											</td>
+										</tr>
+									</table>
+								</apex:actionRegion>
+								<apex:outputPanel id="projcloseClientsFollowonWork">
+									<apex:outputPanel rendered="{!if(oProject.projcloseClientsFollowonWork__c == 'No', true, false)}">
+										<apex:outputLabel value="If no, enter the opportunity or contact your local Salesforce CRM contact for support." />
+									</apex:outputPanel>
+									<br /><br />
+								</apex:outputPanel>
+
+
+
+								<apex:pageMessage severity="INFO" summary="No Results Found." rendered="{!IF(ProjectSitesFound.size > 0, false, true)}" />
+								<apex:pageBlockTable value="{!pse__Proj__c.ProjectSites__r}" var="o" rendered="{!IF(ProjectSitesFound.size > 0, true, false)}" >	
+									<apex:column ><apex:outputLink value="/{!o.Site__c}"  target="_blank">View</apex:outputLink></apex:column>
+									<apex:column value="{!o.Account_Name__c}"/>
+									<apex:column value="{!o.Address1__c}"/>
+									<apex:column value="{!o.City__c}"/>
+									<apex:column value="{!o.State__c}"/>
+									<apex:column value="{!o.Country__c}"/>
+									<apex:column value="{!o.Type__c}"/>
+									<apex:column value="{!o.IsCustomer__c}"/>
+									<apex:column value="{!o.IsVendor__c}"/>
+
+								</apex:pageBlockTable>
+							</div>
+
+
+						<apex:pageBlockSection title="Safety, Health & Environment" columns="1" collapsible="false" />
+
+						<div style="padding:0 12px;margin-top:7px">
+
+							<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseSafetyincidents__c" noField="projcloseSafetyincidentsText__c" 
+													questionText="If any safety, health or environment incidents or accidents occurred during the project, have all reports been completed and resultant corrective actions been addressed?"/>
+
+
+							<apex:outputLink value="/apex/ECO_SafetyHealthEnvironment?id={!oProject.id}" target="_blank">View Safety, Health &amp; Environment</apex:outputLink>
+						</div>
+
+
+
+						<apex:pageBlockSection title="Agreements and Funding" columns="1" collapsible="false" />
+
+							<div style="padding:0 12px;margin-top:7px">
+
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseAgreementsClientNotification__c" noField="projcloseAgreementsClientNotifyText__c" 
+														questionText="Has the client been notified if all payments have been received or if there are still outstanding invoices?"/>
+
+								<c:ECO_ClosureQuestion yesno="true" pageController="{!PageCont}" questionField="projcloseAgreementsCancelled__c" noField="projcloseAgreementsCancelledText__c" 
+														questionText="Do we need to cancel and/or extend any guarantee/warranty/insurance/bond?"/>
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseAgreementsCloseoutActions__c" noField="projcloseAgreementsCloseoutActionsText__c" 
+														questionText="If the contract calls out specific closeout actions or requirements, have those been met?"/>
+
+
+								<apex:pageMessage severity="INFO" summary="No Results Found." rendered="{!IF(AgreementsProjectFound.size > 0, false, true)}" />
+								<apex:pageBlockTable value="{!pse__Proj__c.AgreementsProject__r}" var="o"  rendered="{!IF(AgreementsProjectFound.size > 0, true, false)}">	
+									<apex:column ><apex:outputLink value="/{!o.id}"  target="_blank">View</apex:outputLink></apex:column>
+									<apex:column value="{!o.Name}"/>
+									<apex:column value="{!o.RecordTypeid}"/>
+									<apex:column width="300" value="{!o.Description__c}"/>
+									<apex:column value="{!o.Amount__c}"/>
+									<apex:column value="{!o.Account__c}"/>
+								</apex:pageBlockTable>
+							</div>
+
+
+
+
+						<apex:pageBlockSection title="Scope and Packages" columns="1" collapsible="false" />
+
+							<div style="padding:0 12px;margin-top:7px">
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projectcloseScopeServicesIncluded__c" noField="projectcloseScopeServicesIncludedText__c" 
+														questionText="Have all scope of services 'as sold' to the client and included as part of our contract been completed?"/>
+
+								<apex:outputLink value="/apex/ECO_ProjectScope?projectId={!oProject.id}" target="_blank">View Scope and Packages</apex:outputLink>
+							</div>
+
+
+						<apex:pageBlockSection title="Subs and Vendors" columns="1" collapsible="false" />
+
+							<div style="padding:0 12px;margin-top:7px">
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseSubsContractObligations__c" noField="projcloseSubsContractObligationsText__c" 
+														questionText="Have all vendors or subs (including AECOM intercompany subs) contractual obligations been met?"/>
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseSubsContractDeliverableDue__c" noField="projcloseSubsContractDeliverableDueText__c" 
+														questionText="Have all deliverables, materials or services due from vendors or subs been received and accepted?"/>
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseSubsPartnerReviews__c" noField="projcloseSubsPartnerReviewsText__c" 
+														questionText="Have all required vendor/subconsultant/subcontractor or partner reviews been completed?"/>
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseSubsInvoices__c" noField="projcloseSubsInvoicesText__c" 
+														questionText="Have all subs or vendor invoices been received and paid?"/>
+
+								<apex:pageMessage severity="INFO" summary="No Results Found." rendered="{!IF(VendorSitesProjectFound.size > 0, false, true)}" />
+								<apex:pageBlockTable value="{!pse__Proj__c.VendorSitesProject__r}" var="o" rendered="{!IF(VendorSitesProjectFound.size > 0, true, false)}">	
+									<apex:column ><apex:outputLink value="/{!o.id}"  target="_blank">View</apex:outputLink></apex:column>
+									<apex:column value="{!o.name}"/>
+									<apex:column value="{!o.AccountName__c}"/>
+									<apex:column value="{!o.AccountManager__c}"/>
+									<apex:column value="{!o.State__c}"/>
+									<apex:column value="{!o.Country__c}"/>
+									<apex:column value="{!o.Site__r.SiteStatus__c}"/>
+								</apex:pageBlockTable>
+							</div>
+
+
+
+
+						<apex:pageBlockSection title="Deliverables" columns="1" collapsible="false">
+
+							<div style="padding:0 12px;margin-top:7px">
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseDeliverablesAccepted__c" noField="projcloseDeliverablesAcceptedText__c" 
+														questionText="Have all deliverables been submitted and accepted by the client?"/>
+
+								<apex:pageMessage severity="INFO" summary="No Results Found." rendered="{!IF(DeliverablesFound.size > 0, false, true)}" />
+								<apex:pageBlockTable value="{!pse__Proj__c.Deliverables__r}" var="o" rendered="{!IF(DeliverablesFound.size > 0, true, false)}" >	
+									<apex:column ><apex:outputLink value="/{!o.id}"  target="_blank">View</apex:outputLink></apex:column>
+									<apex:column value="{!o.name}"/>
+									<apex:column value="{!o.DeliverableType__c}"/>
+									<apex:column value="{!o.Owner__c}"/>
+									<apex:column value="{!o.Status__c}"/>
+									<apex:column value="{!o.Owner__c}"/>
+									<apex:column value="{!o.DueDate__c}"/>
+								</apex:pageBlockTable>
+							</div>
+
+
+						</apex:pageBlockSection>
+
+
+						<apex:pageBlockSection title="Document Management" columns="1" collapsible="false">
+							<apex:outputPanel >
+							<div style="padding:0 12px;margin-top:7px">
+							
+								<apex:pageMessage severity="INFO" escape="false" summary="Note:  If AECOM intercompany or multi-offices are part of the project team, determine if all critical files have been compiled and provided or saved to the owning project office files to ensure project information can be found after archiving. <br/><br/> Confirm local regulatory/statutory requirements for document retention, especially for projects including construction documents, as they may take priority over AECOM’s policies" />
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseDocproperlySaved__c" noField="projcloseDocproperlySavedText__c" 
+														questionText="Are the project documents properly saved to the project file or any critical documents that may be needed if there was a problem on the project or are required to maintain our ISO certification?"/>
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseDocHardCopy__c" noField="projcloseDocHardCopyText__c" 
+														questionText="Are the hard copy project files prepared for archiving in accordance with archiving procedures?"/>								
+														
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseDocFilesCleaned__c" noField="projcloseDocFilesCleanedText__c" 
+														questionText="Have the digital/electronic project files been prepared and files “cleaned up” by the PM for archiving?"/>																					
+
+								<apex:outputLink value="/apex/ECO_DocumentManagement?id={!oProject.id}" target="_blank">View Document Management</apex:outputLink>
+							
+							</div>
+							</apex:outputPanel>
+
+						</apex:pageBlockSection>
+
+
+						<apex:pageBlockSection title="Stakeholder & Communications" columns="1" collapsible="false" />
+
+							<div style="padding:0 12px;margin-top:7px">
+
+								<apex:actionRegion >
+									<table width="100%" cellpadding="0" cellspacing="0">
+
+										<tr>
+											<td class="questions">
+												<apex:outputLabel value="Has the client been contacted to complete a project survey?" />
+											</td>
+											<td class="questions" width="255px">
+												<apex:selectRadio value="{!oProject.projcloseStakeholderContactToSurvey__c}" layout="lineDirection">
+								                    <apex:selectOptions value="{!types}"></apex:selectoptions>
+								                    <apex:actionSupport event="onchange" reRender="projcloseStakeholderContactToSurvey"/>
+								 				</apex:selectRadio>			
+											</td>
+										</tr>
+									</table>
+								</apex:actionRegion>
+								<apex:outputPanel id="projcloseStakeholderContactToSurvey">
+									<apex:outputPanel rendered="{!if(oProject.projcloseStakeholderContactToSurvey__c == 'Yes', true, false)}">
+										<table width="100%" cellpadding="0" cellspacing="0">
+
+											<tr>
+												<td class="questions">
+													<apex:outputLabel value="If yes, did the client complete the survey?" />
+												</td>
+												<td class="questions" width="255px">
+													<apex:selectRadio value="{!oProject.projcloseStakeholderCompleteSurvey__c}" layout="lineDirection">
+									                    <apex:selectOptions value="{!types2}"></apex:selectoptions>
+									                    <apex:actionSupport event="onchange" reRender="projcloseStakeholderCompleteSurvey"/>
+									 				</apex:selectRadio>			
+												</td>
+											</tr>
+										</table>
+									</apex:outputPanel>
+								</apex:outputPanel>
+								<apex:outputPanel id="projcloseStakeholderCompleteSurvey">
+									<apex:outputPanel rendered="{!if(oProject.projcloseStakeholderCompleteSurvey__c == 'No', true, false)}">
+										<apex:outputLabel value="If no, follow up with the client or the AECOM client care team." />
+									</apex:outputPanel>
+									<br /><br />
+								</apex:outputPanel>
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseStakeholderCloseoutMeeting__c" noField="projcloseStakeholderCloseoutMeetingText__c" 
+														questionText="Have you completed a closeout meeting with the client?"/>
+
+
+
+								<apex:actionRegion >
+									<table width="100%" cellpadding="0" cellspacing="0">
+
+										<tr>
+											<td class="questions">
+												<apex:outputLabel value="Have you requested a commendation letter?" />
+											</td>
+											<td class="questions" width="255px">
+												<apex:selectRadio value="{!oProject.projcloseStakeholderCommendation__c}" layout="lineDirection">
+								                    <apex:selectOptions value="{!types}"></apex:selectoptions>
+								                    <apex:actionSupport event="onchange" reRender="projcloseStakeholderCommendation"/>
+								 				</apex:selectRadio>			
+											</td>
+										</tr>
+									</table>
+								</apex:actionRegion>
+								<apex:outputPanel id="projcloseStakeholderCommendation">
+									<apex:outputPanel rendered="{!if(oProject.projcloseStakeholderCommendation__c == 'Yes', true, false)}">
+										
+										<apex:outputText value="If yes, attach the document." />
+										<div class="fileList">
+											<apex:pageBlockTable value="{!AttachedDocumentRecommended}" var="file" style="width: 825px;" rendered="{!oProject.ClosureRecommendationAttachment__c != null}">
+												<apex:column headerValue="File Name">
+
+													<apex:outputLink value="{!URLFOR($Action.Attachment.Download, file.Id)}" target="_blank">
+														<apex:outputText value="{!file.Name}" />
+													</apex:outputLink>
+												</apex:column>
+												<apex:column value="{!file.ContentType}" />	
+												<apex:column value="{!file.LastModifiedDate}" />	
+												<apex:column value="{!file.LastModifiedById}" />
+											</apex:pageBlockTable>
+														
+											<apex:inputFile id="doRecommendationAttachment" value="{!doRecommendationAttachment.Body}" contentType="{!doRecommendationAttachment.ContentType}" fileName="{!doRecommendationAttachment.Name}" onchange="fileChosen('{!$Component.saveRecommendationAndProject}', this, '{!$Component.overrideRecommedation}'); return false;"/>
+											<apex:inputText id="overrideRecommedation" value="{!overrideRecommedation}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
+											<apex:commandButton id="saveRecommendationAndProject" value="Attach" action="{!saveRecommendationAndProject}" styleclass="attachNewFile"/><br/>
+										</div>
+
+									</apex:outputPanel>
+									<br /><br />
+								</apex:outputPanel>
+
+
+
+
+
+								<apex:outputLink value="/apex/ECO_Stakeholders?id={!oProject.id}" target="_blank">View Stakeholder &amp; Communications</apex:outputLink>
+							</div>
+
+							
+
+						<apex:pageBlockSection title="Risk Management" columns="1" collapsible="false" />
+							<div style="padding:0 12px;margin-top:7px">
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseRiskManMitigation__c" noField="projcloseRiskManMitigationText__c" 
+														questionText="Was the risk mitigation strategy evaluated for effectiveness and comments documented?"/>
+
+								<apex:outputLink value="/apex/ECO_RMAChooser?id={!oProject.id}" target="_blank">View Risk Management</apex:outputLink>
+							</div>
+
+
+						<apex:pageBlockSection title="Resilience" columns="1" collapsible="false" />	
+
+							<div style="padding:0 12px;margin-top:7px">
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseResilienceComplete__c" noField="projclosResilienceCompleteExplantation__c" 
+														questionText="Have all actions related to resilience planning for the project been completed, per the Operational Security Plan?"/>	
+
+								<apex:outputLink value="/apex/ECO_Resilience?id={!oProject.id}" target="_blank">View Resilience</apex:outputLink>
+
+							</div>
+						<apex:pageBlockSection title="DOA" columns="1" collapsible="false" />
+							<div style="padding:0 12px;margin-top:7px">
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseDoAConditionsCompleted__c" noField="projcloseDoAConditionsCompletedText__c" 
+														questionText="Were all DoA conditions of approval completed or met?"/>
+
+								<apex:outputLink value="/apex/ECO_DOA_ApprovalRequest?projectID={!oProject.id}" target="_blank">View DOA</apex:outputLink>
+
+								<apex:pageMessage severity="INFO" summary="No Results Found." rendered="{!IF(DOAConditionsFound.size > 0, false, true)}" />
+								<apex:pageBlockTable value="{!pse__Proj__c.DOAConditions__r}" var="o" rendered="{!IF(DOAConditionsFound.size > 0, true, false)}">	
+									<apex:column ><apex:outputLink value="/{!o.id}"  target="_blank">View</apex:outputLink></apex:column>
+									<apex:column value="{!o.name}"/>
+									<apex:column value="{!o.Completed__c}"/>
+									<apex:column value="{!o.Level__c}"/>
+									<apex:column value="{!o.Mitigation_Plan__c}"/>
+								</apex:pageBlockTable>								
+
+							</div>
+							
+
+						<apex:pageBlockSection title="Budget" columns="1" collapsible="false" />
+
+							<div style="padding:0 12px;margin-top:7px">
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseBudgetContractDocuments__c" noField="projcloseBudgetContractDocumentsText__c" 
+														questionText="Have all the contractual documents, including scope changes/variations, been signed by the PM, Project Approver and the client, and are they on file?"/>
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseBudgetFeesBilled__c" noField="projcloseBudgetFeesBilledText__c" 
+														questionText="Have all AECOMs fees and expenses been billed to the project?"/>														
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseBudgetFinalinvoice__c" noField="projcloseBudgetFinalinvoiceText__c" 
+														questionText="Has the final invoice been sent and paid?"/>		
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseBudgetAcctsReceivable__c" noField="projcloseBudgetAcctsReceivableText__c" 
+														questionText="Has Accounting confirmed receipt of all outstanding Accounts Receivable (ARs)?"/>		
+
+								<apex:pageMessage severity="INFO" summary="No Results Found." rendered="{!IF(BudgetHeadersFound.size > 0, false, true)}" />
+								<apex:pageBlockTable value="{!pse__Proj__c.BudgetHeaders__r}" var="o" rendered="{!IF(BudgetHeadersFound.size > 0, true, false)}">	
+									<apex:column ><apex:outputLink value="/{!o.id}"  target="_blank">View</apex:outputLink></apex:column>
+									<apex:column value="{!o.name}"/>
+									<apex:column value="{!o.BudgetName__c}"/>
+									<apex:column value="{!o.RecordTypeid}"/>
+									<apex:column value="{!o.Status__c}"/>
+									<apex:column value="{!o.Description__c}"/>
+									<apex:column value="{!o.TotalRevenue__c}"/>
+									<apex:column value="{!o.TotalCost__c}"/>
+									<apex:column value="{!o.CreatedById}"/>
+									<apex:column value="{!o.CreatedDate}"/>
+								</apex:pageBlockTable>
+							</div>
+
+
+
+
+						<apex:pageBlockSection title="Project Description & Marketing Collateral" columns="1" collapsible="false" />
+
+							<div style="padding:0 12px;margin-top:7px">
+
+								<apex:actionRegion >
+									<table width="100%" cellpadding="0" cellspacing="0">
+
+										<tr>
+											<td class="questions">
+												<apex:outputLabel value="Has the project description been reviewed and updated to reflect the final project scope of work and outcomes?" />
+											</td>
+											<td class="questions" width="255px">
+												<apex:selectRadio value="{!oProject.projcloseProjDescFinalOutcomes__c}" layout="lineDirection">
+								                    <apex:selectOptions value="{!types}"></apex:selectoptions>
+								                    <apex:actionSupport event="onchange" reRender="projcloseProjDescFinalOutcomes"/>
+								 				</apex:selectRadio>			
+											</td>
+										</tr>
+									</table>
+								</apex:actionRegion>
+								<apex:outputPanel id="projcloseProjDescFinalOutcomes">
+									<apex:outputPanel rendered="{!if(oProject.projcloseProjDescFinalOutcomes__c == 'No', true, false)}">
+										<apex:outputLabel value="If no, complete the project description prior to finalizing closeout activities." />
+									</apex:outputPanel>
+									<br /><br />
+								</apex:outputPanel>
+
+
+								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseProjDescFutureMarketing__c" noField="projcloseProjDescFutureMarketingText__c" 
+														questionText="Can this project be used for future marketing efforts?"/>
+
+
+								<apex:actionRegion >
+									<table width="100%" cellpadding="0" cellspacing="0">
+
+										<tr>
+											<td class="questions">
+												<apex:outputLabel value="Do we need permission from Client to publish or use this project material for marketing/promotion?" />
+											</td>
+											<td class="questions" width="255px">
+												<apex:selectRadio value="{!oProject.projcloseDescPublishPermission__c}" layout="lineDirection">
+								                    <apex:selectOptions value="{!types}"></apex:selectoptions>
+								                    <apex:actionSupport event="onchange" reRender="projcloseDescPublishPermission"/>
+								 				</apex:selectRadio>			
+											</td>
+										</tr>
+									</table>
+								</apex:actionRegion>
+								<apex:outputPanel id="projcloseDescPublishPermission">
+									<apex:outputPanel rendered="{!if(oProject.projcloseDescPublishPermission__c == 'Yes', true, false)}">
+										
+										<apex:outputText value="If yes, attach the permission document." />
+										<div class="fileList">
+											<apex:pageBlockTable value="{!AttachedDocumentPermission}" var="file" style="width: 825px;" rendered="{!oProject.ClosurePermissionAttachment__c != null}">
+												<apex:column headerValue="File Name">
+
+													<apex:outputLink value="{!URLFOR($Action.Attachment.Download, file.Id)}" target="_blank">
+														<apex:outputText value="{!file.Name}" />
+													</apex:outputLink>
+												</apex:column>
+												<apex:column value="{!file.ContentType}" />	
+												<apex:column value="{!file.LastModifiedDate}" />	
+												<apex:column value="{!file.LastModifiedById}" />
+											</apex:pageBlockTable>
+														
+											<apex:inputFile id="docPermissionAttachment" value="{!docPermissionAttachment.Body}" contentType="{!docPermissionAttachment.ContentType}" fileName="{!docPermissionAttachment.Name}" onchange="fileChosen('{!$Component.savePermissionAndProject}', this, '{!$Component.overridePermission}'); return false;"/>
+											<apex:inputText id="overridePermission" value="{!overridePermission}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
+											<apex:commandButton id="savePermissionAndProject" value="Attach" action="{!savePermissionAndProject}" styleclass="attachNewFile"/><br/>
+										</div>
+										<br/><br/>
+
+										<apex:outputText value="If available, upload any project images." />
+										<div class="fileList">
+											<apex:pageBlockTable value="{!AttachedDocumentImage}" var="file" style="width: 825px;" rendered="{!oProject.ClosureImageAttachment__c != null}">
+												<apex:column headerValue="File Name">
+
+													<apex:outputLink value="{!URLFOR($Action.Attachment.Download, file.Id)}" target="_blank">
+														<apex:outputText value="{!file.Name}" />
+													</apex:outputLink>
+												</apex:column>
+												<apex:column value="{!file.ContentType}" />	
+												<apex:column value="{!file.LastModifiedDate}" />	
+												<apex:column value="{!file.LastModifiedById}" />
+											</apex:pageBlockTable>
+														
+											<apex:inputFile id="docImageAttachment" value="{!docImageAttachment.Body}" contentType="{!docImageAttachment.ContentType}" fileName="{!docImageAttachment.Name}" onchange="fileChosen('{!$Component.saveImageAndProject}', this, '{!$Component.overrideImage}'); return false;"/>
+											<apex:inputText id="overrideImage" value="{!overrideImage}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
+											<apex:commandButton id="saveImageAndProject" value="Attach" action="{!saveImageAndProject}" styleclass="attachNewFile"/><br/>
+										</div>
+
+									</apex:outputPanel>
+									<br /><br />
+								</apex:outputPanel>
+
+
+											
+							</div>
+
+	
+						<apex:pageBlockSection title="Outstanding Activities" columns="1" collapsible="false" />
+							<div style="padding:0 12px;margin-top:7px">
+								<apex:pageMessage severity="INFO" summary="No Results Found." rendered="{!IF(listTask.size > 0, false, true)}" />
+								<apex:pageBlockTable value="{!listTask}" var="o" rendered="{!IF(listTask.size > 0, true, false)}">	
+									<apex:column ><apex:outputLink value="/{!o.id}"  target="_blank">View</apex:outputLink></apex:column>
+									<apex:column value="{!o.subject}"/>
+									<apex:column value="{!o.Description}"/>
+									<apex:column value="{!o.Ownerid}"/>
+									<apex:column value="{!o.ActivityDate}"/>
+									<apex:column value="{!o.Status}"/>
+								</apex:pageBlockTable>
+							</div>
+
+
+						<apex:pageBlockSection title="Claims" columns="1" collapsible="false" />
+							<div style="padding:0 12px;margin-top:7px">
+
+								<apex:actionRegion >
+									<table width="100%" cellpadding="0" cellspacing="0">
+
+										<tr>
+											<td class="questions">
+												<apex:outputLabel value="Is there a current or pending claim on the project?" />
+											</td>
+											<td class="questions" width="255px">
+												<apex:selectRadio value="{!oProject.projcloseClaimsPending__c}" layout="lineDirection">
+								                    <apex:selectOptions value="{!types}"></apex:selectoptions>
+								                    <apex:actionSupport event="onchange" reRender="projcloseClaimsPending"/>
+								 				</apex:selectRadio>			
+											</td>
+										</tr>
+									</table>
+								</apex:actionRegion>
+								<apex:outputPanel id="projcloseClaimsPending">
+									<apex:outputPanel rendered="{!if(oProject.projcloseClaimsPending__c == 'Yes', true, false)}">
+										<apex:outputtext value="If yes, place the project on hold and explain why." />
+										<apex:inputField value="{!oProject.projcloseClaimsPendingText__c}" required="true" />
+									</apex:outputPanel>
+									<br /><br />
+								</apex:outputPanel>
+
+							</div>
+
+
+					</apex:outputPanel>	
+					
+				</apex:outputPanel>	
+
+			</apex:pageBlock>
+		</apex:outputPanel>
+	</apex:form>
+
+	<script>
+
+		function setFocusOnLoad() {}
+
+	</script>	
+</apex:page>

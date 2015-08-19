@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Flow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <interviewLabel>LookupTest2 {!$Flow.CurrentDateTime}</interviewLabel>
+    <label>LookupTest2</label>
+    <processType>AutoLaunchedFlow</processType>
+    <recordLookups>
+        <name>Enrollment_Participant_to_Employee_Contact_Record</name>
+        <label>Enrollment Participant to Employee Contact Record</label>
+        <locationX>274</locationX>
+        <locationY>69</locationY>
+        <assignNullValuesIfNoRecordsFound>false</assignNullValuesIfNoRecordsFound>
+        <filters>
+            <field>RecordTypeId</field>
+            <operator>EqualTo</operator>
+            <value>
+                <stringValue>012a0000001ZT7F</stringValue>
+            </value>
+        </filters>
+        <object>Contact</object>
+        <outputAssignments>
+            <assignToReference>EnrollmentParticpant2.EmployeeStatusFlow__c</assignToReference>
+            <field>Status__c</field>
+        </outputAssignments>
+    </recordLookups>
+    <startElementReference>Enrollment_Participant_to_Employee_Contact_Record</startElementReference>
+    <variables>
+        <name>EnrollmentParticpant2</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>true</isInput>
+        <isOutput>false</isOutput>
+        <objectType>EnrollmentParticipant__c</objectType>
+    </variables>
+    <variables>
+        <name>EnrollmentParticpants</name>
+        <dataType>SObject</dataType>
+        <isCollection>false</isCollection>
+        <isInput>false</isInput>
+        <isOutput>true</isOutput>
+        <objectType>EnrollmentParticipant__c</objectType>
+    </variables>
+</Flow>

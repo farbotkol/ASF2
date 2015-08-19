@@ -1,0 +1,589 @@
+<apex:page extensions="ECO_RMASummaryControllerPdf" showHeader="false" renderAs="pdf" sidebar="false" doctype="html-5.0" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" tabStyle="QuestionnaireSet__c" standardController="QuestionnaireSet__c" action="{!init}">
+
+    <head>
+        <script>
+
+            $( document ).ready(function() {
+
+                function mouseDownGo() {
+                    document.style.color = "green";
+
+                }
+                function mouseDownNoGo() {
+                    document.style.color = "red";
+                }
+
+            });
+            
+        </script>
+
+        <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+        <script type="text/javascript">
+        function collapseSection()
+        {
+            console.log('collapseSection');
+            $("div[id$='ProjectSummary']").find("div.pbBody").find("img.hideListButton").click();
+        }
+        sfdcPage.appendToOnloadQueue(collapseSection);
+        </script>
+
+        <style>
+            @page{
+                size:landscape;
+            }
+            body{
+                font-family:arial, sans-serif;
+                font-size:80%;
+            }
+            .headerInfo{
+                height:65px;
+                border-bottom: 2px solid #DDDDDD;
+                padding:0 0 15px 0; 
+                margin: 0 0 25px 0;
+                background-position:top right;
+                background-repeat:no-repeat;
+                background-size:5% auto !important;
+                background-image : url({!URLFOR($Resource.ECO_CustomGraphicAssets, 'PDFLogo.jpg')});
+            }
+            .headerInfo h1{
+                margin:-2px 0 0 0;
+                font-size:16px;
+                line-height:80%;
+            }
+            .headerInfo h2{
+                font-size:16px;
+                line-height:80%;
+            }
+            .headerInfo h5{
+                line-height:80%;
+                margin:0;
+            }
+            .rightHeaderInfo{
+                float:right; 
+                border-left:2px solid #ddd; 
+                height:40px;
+                vertical-align:middle; 
+                padding-left:55px;
+                position:absolute;
+                right:0;
+                top:0;
+                padding:50px 10px 0 25px;
+                width:150px;
+            }
+            table{
+                border: 1px solid #ddd;
+                width:100%; 
+            }
+            table tr th {
+                vertical-align: bottom;
+                background-color: #f8f8f8;
+                
+            }
+            table>caption+thead>tr:first-child>td, table>caption+thead>tr:first-child>th, table>colgroup+thead>tr:first-child>td, table>colgroup+thead>tr:first-child>th, table>thead:first-child>tr:first-child>td, table>thead:first-child>tr:first-child>th {
+                border-top: 0;
+            }
+            table>tbody>tr>td, table>tbody>tr>th, table>tfoot>tr>td, table>tfoot>tr>th, table>thead>tr>td, table>thead>tr>th, table tr td, table tr th {
+                padding: 5px;
+                line-height: 1.42857143;
+                vertical-align: top;
+                border-top: 1px solid #ddd;
+            }
+            table tr > td > td, table tr > td > tr > td, td > td, td > span > table tr td, td > table tr td, td > span > table, td > table {
+                border:none;
+                padding:0;
+            }
+            .notificationAndAlerts > span > div > table > tbody > tr:last-child, .notificationAndAlerts > span > div > table > tbody > tr > td:first-child, .notificationAndAlerts td:first-child, .notificationAndAlerts table tr:last-child {
+                display:none;
+                border:none;
+                padding:0;
+                width:0;
+            }
+            .notificationAndAlerts table > tbody > tr > td:first-child, .notificationAndAlerts table > tbody > tr:last-child{
+                display:none;
+            }
+
+            .pbHeader > table > tbody > tr > td, .pbHeader > table, .pbHeader table td, .pbHeader table{
+                border:none !important;
+                padding: 0;
+            }
+            .pbHeader{
+                
+            }
+            .pbSubheader {
+                margin: 6px 0 0 0;
+                background-color:#008cb2;
+                color:#fff;
+                -moz-border-radius: 4px 4px 0 0;
+                -webkit-border-radius:  4px 4px 0 0;
+                border-radius:  4px 4px 0 0;
+                border-top: 3px solid #f8f8f8;
+                padding:4px 12px 4px 12px;
+            }
+            .pbSubheader h3{
+                margin:0;
+            }
+            .footer{
+                position:absolute; width:100%; height:100px; bottom:0; border-top:1px solid #4a4a56; padding-top:15px;
+            }
+            .risk{
+                background:#ebebeb;
+            }
+            .notificationAndAlerts table, .notificationAndAlerts td{
+                border:none !important;
+                width:auto;
+                padding:0;
+            }
+            .mainTitle{
+                margin:15px 0 -5px 0;
+            }
+        </style>
+
+    </head>
+
+        <div class="headerInfo">
+            <h5>Risk and Market Assessment</h5>
+            <h2 style="line-height:80%;">Project: {!QuestionnaireSet__c.Project__r.Name}</h2>
+
+            <div class="rightHeaderInfo">
+                Project ID:<br/>
+                {!QuestionnaireSet__c.Project__r.Id}
+            </div>
+
+            <h1 style="">
+                <apex:outputLabel for="QuestionnaireSetName" value="Version: "/>
+                <apex:outputText value="{!oQuestionnaireSet.Name}" />
+            </h1>
+
+            
+
+        </div>
+
+        <div class="footer">
+            {!QuestionnaireSet__c.Project__r.Id} | {!QuestionnaireSet__c.Project__r.Name} |  Risk and Market Assessment | <strong>FOR INTERNAL USE ONLY</strong>
+        </div>
+
+        <apex:pageMessages id="pageMessages"/>
+        <apex:outputPanel id="topPanel" rendered="{!NOT(ISNULL(QuestionnaireSet__c.Project__c))}">
+            <div class="projectSummary">
+
+                <apex:pageBlock id="ProjectSummary">
+                <div style="page-break-after: always; margin-top:-32px;">
+
+
+                    <apex:pageBlockSection title="Project Information" collapsible="true" columns="2">
+                        <apex:outputField value="{!theProject.Name}" />
+                        <apex:outputField value="{!theProject.OwnerId}" style="text-decoration:none;" />
+                        <apex:outputField value="{!theProject.pse__Opportunity__c}" />
+                        <apex:outputField value="{!theProject.EstimatedContractValue__c}" />
+                        <apex:outputField value="{!theProject.pse__Project_Manager__c}" />
+                        <apex:outputField value="{!theProject.NetServicesRevenue__c}" />
+                        <apex:outputField value="{!theProject.ProjectOwningOrg__c}" />
+                        <apex:outputField value="{!theProject.TotalMargin__c}" />
+                        <apex:outputField value="{!theProject.PrimaryEndClient__c}" />
+                        <apex:outputField value="{!theProject.TotalBidBudget__c}" />
+                        <apex:outputField value="{!theProject.PrimaryBillingClient__c}" />
+                        <apex:outputField value="{!theProject.EstimatedStartDate__c}" />
+                        <apex:outputField value="{!QuestionnaireSet__c.UnansweredQuestionCount__c}"/>
+                    </apex:pageBlockSection>
+
+
+
+                    <div class="notificationAndAlerts">
+                        <apex:pageBlockSection collapsible="false" title="Notifications and Alerts" columns="2"></apex:pageBlockSection>
+                        <apex:repeat value="{!lNotifications}" var="n" rendered="{!if(lNotifications != null && lNotifications.size > 0, true, false)}">
+                            <apex:pageMessage severity="INFO" summary="{!n.sMessage}" />
+                        </apex:repeat>
+                    </div>
+
+
+                    <apex:pageBlockSection columns="1" title="Risk Assessment" collapsible="false"></apex:pageBlockSection>
+
+                    <apex:pageBlockTable value="{!lQuestionnaires}" columnsWidth="40%,20%,20%,20%" var="item" rendered="{!NOT(ISNULL(sSelectedQuestionnaireSet))}">
+                        <apex:column headerValue="Name" value="{!item.Name}" /> 
+                        <apex:column value="{!item.ProjectRisk__c}"/> 
+                        <apex:column value="{!item.DoATriggers__c}"/> 
+                        <apex:column value="{!item.PercentComplete__c}"/> 
+                    </apex:pageBlockTable>
+
+                </div>
+                    <!--
+                    <apex:pageBlockSection title="Project Sites" columns="1" collapsible="false">
+                        <apex:pageBlockTable value="{!lProjectSites}" var="item" width="100%" rendered="{!if(lProjectSites != null && lProjectSites.size > 0, true, false)}">
+                            <apex:column value="{!item.Account_Name__c}"/>
+                            <apex:column value="{!item.OracleCustomerNumber__c}"/>
+                            <apex:column value="{!item.CreditRiskRating__c}"/>
+                            <apex:column value="{!item.Address1__c}"/> 
+                            <apex:column value="{!item.City__c}"/>
+                            <apex:column value="{!item.State__c}"/>
+                            <apex:column value="{!item.Country__c}"/>
+                            <apex:column value="{!item.Postal_Code__c}"/>
+                            <apex:column value="{!item.Is_Billing__c}"/>
+                            <apex:column value="{!item.Is_Default_Top_Task__c}"/>
+                            <apex:column value="{!item.Is_End__c}"/>
+                            <apex:column value="{!item.Is_Primary_End__c}"/>
+                        </apex:pageBlockTable>
+                        <apex:outputText value="No Project Sites have been defined." rendered="{!if(lProjectSites != null && lProjectSites.size = 0, true, false)}"/>
+                    </apex:pageBlockSection>
+                    -->
+
+                    
+                    
+
+                    <!-- OUT PER MICHAELS REQUEST 7/30/2015
+                    <apex:pageBlockSection collapsible="false" columns="1" title="Market Assessment" rendered="{!if(lMarketAssessments != null && lMarketAssessments.size > 0, true, false)}" >
+                    </apex:pageBlockSection>
+
+                    <apex:pageBlockTable value="{!lMarketAssessments}" style="width:100%"  var="ma" rendered="{!if(lMarketAssessments != null && lMarketAssessments.size > 0, true, false)}" >
+                        <apex:column style="width:300px" value="{!ma.Name}"/>
+                        <apex:column style="width:150px" value="{!ma.Status__c}"/>
+                    </apex:pageBlockTable>
+                    
+                    
+                    <apex:pageBlockSection collapsible="false" columns="2" title="Export Control(s)" rendered="{!if(lExportControls != null && lExportControls.size > 0, true, false)}" />
+                    <apex:pageBlockTable value="{!lExportControls}" var="ec" rendered="{!if(lExportControls != null && lExportControls.size > 0, true, false)}">
+                        <apex:column >
+                            <apex:facet name="header">Action</apex:facet>
+                            <a href="/{!ec.Id}">View</a>
+                        </apex:column>
+                        <apex:column value="{!ec.Name}"/>
+                        <apex:column value="{!ec.Status__c}"/>
+                    </apex:pageBlockTable>
+                    -->
+
+                    
+
+                    <apex:pageMessage severity="INFO" summary="There are no Notifications or Alerts associated to this project" rendered="{!if(lNotifications != null && lNotifications.size = 0, true, false)}" />
+
+                    <div style="clear:both;"></div><br/>
+                   
+                    <div id="goNoGo">
+                        <apex:pageBlockSection title="Go / No Go" columns="2" collapsible="false" rendered="{!NOT(showGoNoGoButton)}">
+                                <apex:outputField value="{!QuestionnaireSet__c.GoNoGoRecommendation__c}"/>
+                                <apex:outputField style="align:right;" value="{!QuestionnaireSet__c.GoNoGo_Review__c}"/>
+                                <apex:outputField value="{!QuestionnaireSet__c.GoNoGo_Review__r.ScheduledDate__c}"/>
+                                <apex:outputField style="align:right;" value="{!QuestionnaireSet__c.GoNoGo_Review__r.Status__c}"/>
+                                <apex:outputField value="{!QuestionnaireSet__c.MeetingNotes__c}"/>
+                                <apex:outputField style="align:right;" value="{!QuestionnaireSet__c.Project__r.ProjectReviewCategory__c}"/>
+                                <apex:outputField value="{!QuestionnaireSet__c.RequestedProjectCategory__c}"/>
+                                <apex:outputField style="align:right;" value="{!QuestionnaireSet__c.ReasonForVariance__c}"/>
+                        </apex:pageBlockSection>
+                    </div>
+                    
+                    <div id="attendees" style="margin-bottom:1px;">
+                        <apex:pageBlockSection collapsible="false" title="Attendees"></apex:pageBlockSection>
+                        <apex:pageBlockTable value="{!lAttendees}" var="eachAttendee" rendered="{!IF(lAttendees != null && lAttendees.size > 0, true, false)}" >  
+                            <apex:column headerValue="Name" value="{!eachAttendee.name}"/>  
+                            <apex:column headerValue="Phone" value="{!eachAttendee.phone}"/>
+                            <apex:column headerValue="Email" value="{!eachAttendee.email}"/>
+                        </apex:pageBlockTable> 
+                        <apex:outputText value="No Attendees found for this meeting." rendered="{!if(lAttendees != null && lAttendees.size < 1, true, false)}"/>
+                    </div>
+                    
+                </apex:pageBlock>
+                
+            </div>
+            
+        </apex:outputPanel>
+        
+        <apex:outputPanel layout="block" styleClass="questionnaire" id="theAccordion" >
+            <apex:repeat value="{!questionnaireNameToMNotDoAAnswers}" var="questionnaireNameKey">  
+                <apex:pageBlock title="{!questionnaireNameKey} Risk Assessment Details" id="theBlock" >
+                        <apex:pageBlockSection collapsible="false" title="Risk Assessment"></apex:pageBlockSection>
+                        <table class="table-hover list" width="100%" cellpadding="0" cellspacing="0" >
+                            <tr class="headerRow">
+                                <th>Type</th>
+                                <th>Question</th>
+                                <th width="10%">Answer</th>
+                            </tr>
+                            
+                            <apex:repeat value="{!questionnaireNameToMNotDoAAnswers[questionnaireNameKey]}" var="group">
+                                <apex:repeat value="{!questionnaireNameToMNotDoAAnswers[questionnaireNameKey][group]}" var="answer" id="notDoAAnswerInnerRepeater">
+                                    
+                                    <tr>
+                                        <td width="150px" class="cell">
+                                            <apex:outputField value="{!answer.TemplateQuestion__r.RiskTitle__c}" />
+                                        </td>
+                                        <td class="cell {!answer.TemplateQuestion__r.Indented__c}">
+                                            <apex:outputField value="{!answer.TemplateQuestion__r.Question__c}" />
+                                            <apex:outputPanel layout="inline" styleClass="questionHelpText" rendered="{!answer.TemplateQuestion__r.HelpText__c != ''}">
+                                                <apex:outputField styleClass="helpText" value="{!answer.TemplateQuestion__r.HelpText__c}"  />
+                                            </apex:outputPanel>
+                                        </td>
+                                        <td class="cell" valign="bottom" id="{!answer.TemplateQuestion__c}" isSectionHeader="{!answer.TemplateQuestion__r.isDOAmaster__c}">
+                                            <apex:outputField value="{!answer.Value__c}" id="answerRadio" />
+                                        </td>
+                                    </tr>
+                                    <apex:outputPanel layout="none" rendered="{!questionnaireNameToQuestionToRiskMap[questionnaireNameKey][answer.TemplateQuestion__c].Project__c != null}">
+                                        <tr class="risk">
+                                            <td class="cell {!answer.TemplateQuestion__r.Indented__c}" align="right" colspan="3">
+                                                <table style="width: 100%;" >
+                                                    <tr>
+                                                        <td align="right" valign="middle">Risk Mitigation</td>
+                                                        <td align="right" valign="top"><apex:outputField value="{!questionnaireNameToQuestionToRiskMap[questionnaireNameKey][answer.TemplateQuestion__c].RiskMitigation__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
+                                                    </tr>
+                                                </table>
+                                                
+                                            </td>
+                                        </tr>
+                                    </apex:outputPanel>
+                                    
+                                </apex:repeat>
+                            </apex:repeat>
+                        </table>
+
+                        <br/>
+
+                       
+                    <apex:outputPanel rendered="{!questionnaireNameToShowDOASection[questionnaireNameKey]}">
+                        <apex:pageBlockSection collapsible="false" title="DOA Triggers"></apex:pageBlockSection>
+                        <!--
+                        <table class="table-hover list" width="100%" cellpadding="0" cellspacing="0" >
+                            <tr class="headerRow">
+                                <th>Type</th>
+                                <th>Question</th>
+                                <th width="10%">Answer</th>
+                            </tr>
+                            <tr>
+                                <td width="150px" class="cell">
+                                    <apex:outputField value="{!questionnaireNameToDOA_SectionAnswer[questionnaireNameKey].TemplateQuestion__r.RiskTitle__c}" />
+                                </td>
+                                <td class="cell {!questionnaireNameToDOA_SectionAnswer[questionnaireNameKey].TemplateQuestion__r.Indented__c}">
+                                    <apex:outputField value="{!questionnaireNameToDOA_SectionAnswer[questionnaireNameKey].TemplateQuestion__r.Question__c}" />
+                                    <apex:outputPanel layout="inline" styleClass="questionHelpText" rendered="{!questionnaireNameToDOA_SectionAnswer[questionnaireNameKey].TemplateQuestion__r.HelpText__c != ''}">
+                                        <apex:outputField styleClass="helpText" value="{!questionnaireNameToDOA_SectionAnswer[questionnaireNameKey].TemplateQuestion__r.HelpText__c}"  />
+                                    </apex:outputPanel>
+                                </td>
+                                <td class="cell" valign="bottom" id="{!questionnaireNameToDOA_SectionAnswer[questionnaireNameKey].TemplateQuestion__c}" isSectionHeader="{!questionnaireNameToDOA_SectionAnswer[questionnaireNameKey].TemplateQuestion__r.isDOAmaster__c}">
+                                    <apex:outputField value="{!questionnaireNameToDOA_SectionAnswer[questionnaireNameKey].Value__c}" />
+                                </td>
+                            </tr>
+                            <apex:outputPanel layout="none" rendered="{!questionnaireNameToQuestionToRiskMap[questionnaireNameKey][questionnaireNameToDOA_SectionAnswer[questionnaireNameKey].TemplateQuestion__c].Project__c != null}">
+                                <tr class="risk">
+                                    <td class="cell {!questionnaireNameToDOA_SectionAnswer[questionnaireNameKey].TemplateQuestion__r.Indented__c}" align="right" valign="middle" colspan="3">
+                                        <apex:outputLabel value="Risk Mitigation" for="m1" escape="true"/>
+                                        <apex:outputField id="m1" value="{!questionnaireNameToQuestionToRiskMap[questionnaireNameKey][questionnaireNameToDOA_SectionAnswer[questionnaireNameKey].TemplateQuestion__c].RiskMitigation__c}" style="width: 80%; height: 80px; border-left: 5px solid red;" />
+                                    </td>
+                                </tr>
+                            </apex:outputPanel>
+                        </table>
+                        -->
+                      
+                        <apex:outputPanel id="DOAHeader" rendered="{!questionnaireNameToShowDOASection[questionnaireNameKey]}">
+                        <table class="table-hover list" width="100%" cellpadding="0" cellspacing="0">
+
+                            <tr class="headerRow">
+                                <th>Type</th>
+                                <th width="12%">DCS sub-DOA</th>
+                                <th>Enterprise DOA</th>
+                                <th>Question</th>
+                                <th width="10%">Answer</th>
+                            </tr>
+                            <apex:repeat value="{!questionnaireNameToMDoAAnswers[questionnaireNameKey]}" var="group">
+                                <apex:repeat value="{!questionnaireNameToMDoAAnswers[questionnaireNameKey][group]}" var="answer">
+                                    <apex:outputPanel id="DoAQuestions" layout="none" rendered="{!answer.TemplateQuestion__r.isDOAmaster__c || questionnaireNameToShowDOASection[questionnaireNameKey]}">
+                                        <tr>
+                                            <td width="150px" class="cell">
+                                                <apex:outputField value="{!answer.TemplateQuestion__r.RiskTitle__c}" />
+                                            </td>
+                                            <td width="100px" class="cell">
+                                                <apex:outputField value="{!answer.TemplateQuestion__r.DCSSubDOA__c}" />
+                                            </td>
+                                            <td width="100px" class="cell sectionPrefix">
+                                                <apex:outputField value="{!answer.TemplateQuestion__r.EnterpriseDOA__c}" />
+                                            </td>
+                                            <td class="cell">
+                                                <apex:outputField value="{!answer.TemplateQuestion__r.Question__c}" />
+                                            </td>
+                                            <td class="cell" valign="bottom" width="255px" id="{!answer.TemplateQuestion__c}" isSectionHeader="{!answer.TemplateQuestion__r.isDOAmaster__c}" isDOA="{!answer.TemplateQuestion__r.IsDoATrigger__c}">
+                                                <apex:outputField value="{!answer.Value__c}" />
+                                            </td>
+                                        </tr>
+                                    </apex:outputPanel>
+                                </apex:repeat>
+                            </apex:repeat>
+                        </table>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+            
+                </apex:pageBlock>
+            </apex:repeat>
+            
+                        <apex:repeat value="{!lMarketAssessments}" var="ma" id="theRepeat" rendered="{!if(lMarketAssessments != null && lMarketAssessments.size > 0, true, false)}">
+                <apex:pageBlock title="{!ma.Name} Details" html-style="text-decoration: underline;">
+                    <table class="table-hover list" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:125px;">
+                        <tr class="headerRow">
+                            <th width="90%">Question</th>
+                            <th width="10%">Answer</th>
+                        </tr>
+                        <tr>
+                            <td class="cell">
+                                This work is consistent with our documented business plan, strategic business aims and corporate values
+                                 <br/>
+                                <apex:outputField value="{!ma.FreeFormDocumentedBusinessPlan__c}" style="width:75%;"/>
+                            </td>
+                            <td class="cell" valign="top">
+                                <apex:outputField value="{!ma.DocumentedBusinessPlan__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cell">
+                                This is a documented key account or a client from whom we anticipate significant long term revenues
+                                 <br/>
+                                <apex:outputField value="{!ma.FreeFormDocumentedKeyAccount__c}" style="width:75%;"/>
+                            </td>
+                            <td class="cell" valign="top">
+                                <apex:outputField value="{!ma.DocumentedKeyAccount__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cell">
+                                We have a strong relationship with this client
+                                 <br/>
+                                <apex:outputField value="{!ma.FreeFormStrongClientRelationship__c}" style="width:75%;"/>
+                            </td>
+                            <td class="cell" valign="bottom">
+                                <apex:outputField value="{!ma.StrongClientRelationship__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cell">
+                                We have the required and recent project experience to do this project
+                                 <br/>
+                                <apex:outputField value="{!ma.FreeFormRecentProjectExperience__c}" style="width:75%;"/>
+                            </td>
+                            <td class="cell" valign="bottom">
+                                <apex:outputField value="{!ma.RecentProjectExperience__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cell">
+                                We have the required technical personnel available with the right and recent experience to do this project
+                                 <br/>
+                                <apex:outputField value="{!ma.FreeFormRequiredTechnicalPersonnel__c}" style="width:75%;"/>
+                            </td>
+                            <td class="cell" valign="bottom">
+                                <apex:outputField value="{!ma.RequiredTechnicalPersonnel__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cell">
+                                We are in a strong position to win and deliver this project relative to our competitors
+                                 <br/>
+                                <apex:outputField value="{!ma.FreeFormStrongPositiveWin__c}" style="width:75%;"/>
+                            </td>
+                            <td class="cell" valign="bottom">
+                                <apex:outputField value="{!ma.StrongPositiveWin__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cell">
+                                We were aware of this opportunity prior to the RFP being issued and have pre-positioned for this work
+                                 <br/>
+                                <apex:outputField value="{!ma.FreeFormAwareofOpportunity__c}" style="width:75%;"/>
+                            </td>
+                            <td class="cell" valign="bottom">
+                                <apex:outputField value="{!ma.AwareofOpportunity__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cell">
+                                We have sufficient time and the right resources (both technical and marketing) to prepare a winning bid
+                                 <br/>
+                                <apex:outputField value="{!ma.FreeFormSufficientTimeandResources__c}" style="width:75%;"/>
+                            </td>
+                            <td class="cell" valign="bottom">
+                                <apex:outputField value="{!ma.SufficientTimeandResources__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cell">
+                                There is no incumbent or AECOM is the incumbent
+                                 <br/>
+                                <apex:outputField value="{!ma.FreeFormIncumbent__c}" style="width:75%;"/>
+                            </td>
+                            <td class="cell" valign="bottom">
+                                <apex:outputField value="{!ma.Incumbent__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cell">
+                                We know who will be making the decision on the client?s behalf
+                                 <br/>
+                                <apex:outputField value="{!ma.FreeFormDecisionMaker__c}" style="width:75%;"/>
+                            </td>
+                            <td class="cell" valign="bottom">
+                                <apex:outputField value="{!ma.DecisionMaker__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cell">
+                                The client?s decision to appoint will predominantly be made on factors other than price
+                                 <br/>
+                                <apex:outputField value="{!ma.FreeFormDecisiontoAppoint__c}" style="width:75%;"/>
+                            </td>
+                            <td class="cell" valign="bottom">
+                                <apex:outputField value="{!ma.DecisiontoAppoint__c}" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="cell">
+                                Potential conflict of interest issues exist
+                                &nbsp;&nbsp;&nbsp;
+                                <apex:outputLink target="_blank" value="{!URLFOR($Resource.GoNoGoConflictofInterestGuidanceSteps)}">help</apex:outputLink>
+                                 <br/>
+                                <table>
+                                    <tr>
+                                        <td>Expert Witness or Litigation Support</td>
+                                        <td>
+                                            <apex:outputField value="{!ma.ExpertWitnessorLitigationSupport__c}" />
+                                        </td>
+                                    </tr>                               
+                                    <tr>
+                                        <td>JV Involvement</td>
+                                        <td>
+                                            <apex:outputField value="{!ma.JVinvolvement__c}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Program Management Services</td>
+                                        <td>
+                                            <apex:outputField value="{!ma.ProgramManagementServices__c}" />
+                                        </td>
+                                    </tr>   
+                                    <tr>
+                                        <td>RFP Development Services</td>
+                                        <td>
+                                            <apex:outputField value="{!ma.RFPDevelopmentServices__c}" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>Staff Augmentation or embedded workforce</td>
+                                        <td>
+                                            <apex:outputField value="{!ma.StaffAugmentationorembeddedworkforce__c}" />
+                                        </td>
+                                    </tr>                                                                                                                           
+                                </table>
+                                <br/>                                
+                                <apex:outputField value="{!ma.FreeFormPotentialConflictofInterest__c}" style="width:75%;"/>
+                            </td>
+                            <td class="cell" valign="bottom">
+                                <apex:outputField value="{!ma.Potentialconflictofinterestissues__c}" />
+                            </td>
+                        </tr>
+                    </table>
+
+                </apex:pageBlock>
+            </apex:repeat>
+        </apex:outputPanel>
+
+    <script>
+        var allTdTags = document.getElementsByTagName('td');
+        for(var i=0;i<allTdTags.length;i++){
+       
+        if(allTdTags[i].className == 'pbButton'){
+                     document.getElementsByName('piSubmit')[0].style.display = "none";          
+            }
+        }
+    </script>
+    
+</apex:page>

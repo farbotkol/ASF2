@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Object used for tracking billing information from Oracle</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>BalanceDue__c</fullName>
+        <externalId>false</externalId>
+        <label>Balance Due</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>BillThroughDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Bill Through Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Billing_InvoiceImageFileURL__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF((ISBLANK( ImageDocumentID__c )) || (ISBLANK( ImageSequenceNumber__c )), NULL, 
+HYPERLINK(&quot;https://abc.aecomnet.com/aecom/jsp/pdf.jsp?&amp;docId=&quot; + SUBSTITUTE(ImageDocumentID__c, &quot;.000000000000000&quot;, &quot;&quot;) + &quot;&amp;seqNum=&quot; + SUBSTITUTE(ImageSequenceNumber__c, &quot;.000000000000000&quot;, &quot;&quot;) + &quot;&amp;projId=&quot; +  SUBSTITUTE(ProjectNumber__r.pse__Project_ID__c, &quot;.000000000000000&quot;, &quot;&quot;) + &quot;&amp;draft=&quot; +  SUBSTITUTE(DraftInvoiceNumber__c, &quot;.000000000000000&quot;, &quot;&quot;) , &quot; Billing Invoice Image &quot;))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Billing Invoice Image</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CreditedInvoiceNumber__c</fullName>
+        <externalId>false</externalId>
+        <label>Credited Invoice Number</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CustomerNumber__c</fullName>
+        <externalId>false</externalId>
+        <label>Customer Number</label>
+        <length>150</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DraftInvoiceNumber__c</fullName>
+        <externalId>false</externalId>
+        <label>Draft Invoice Number</label>
+        <length>40</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GL_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>GL Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>GL_Period_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>GL Period Name</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ImageDocumentID__c</fullName>
+        <externalId>false</externalId>
+        <label>Image Document ID</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ImageSequenceNumber__c</fullName>
+        <externalId>false</externalId>
+        <label>Image Sequence Number</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InvoiceAmount__c</fullName>
+        <externalId>false</externalId>
+        <label>Invoice Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>InvoiceCreationDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Invoice Creation Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>InvoiceDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Invoice Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>OracleSyncErrorMessage__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Sync Error Message</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>PA_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>PA Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>PA_Period_Name__c</fullName>
+        <externalId>false</externalId>
+        <label>PA Period Name</label>
+        <length>100</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectNumber__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Number</label>
+        <referenceTo>pse__Proj__c</referenceTo>
+        <relationshipLabel>Billings</relationshipLabel>
+        <relationshipName>Billings</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>true</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>RAInvoiceNumber__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>RA Invoice Number</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>RecordStatus__c</fullName>
+        <description>P = Pending 
+T = Transfer (Success) 
+E = Error 
+S = Successful</description>
+        <externalId>false</externalId>
+        <inlineHelpText>P = Pending 
+T = Transfer (Success) 
+E = Error 
+S = Successful</inlineHelpText>
+        <label>Oracle Sync Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>P</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>T</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>E</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>S</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>RetentionAmount__c</fullName>
+        <externalId>false</externalId>
+        <label>Retention Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>TaxAmount__c</fullName>
+        <externalId>false</externalId>
+        <label>TaxAmount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>5</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <label>Billing</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>DraftInvoiceNumber__c</columns>
+        <columns>InvoiceAmount__c</columns>
+        <columns>InvoiceCreationDate__c</columns>
+        <columns>InvoiceDate__c</columns>
+        <columns>PA_Date__c</columns>
+        <columns>PA_Period_Name__c</columns>
+        <columns>ProjectNumber__c</columns>
+        <columns>GL_Date__c</columns>
+        <columns>GL_Period_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <label>Billing Invoice #</label>
+        <type>Text</type>
+    </nameField>
+    <pluralLabel>Billings</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>CreditedInvoiceNumber__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>InvoiceAmount__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>InvoiceCreationDate__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>InvoiceDate__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>PA_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>ProjectNumber__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>GL_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>GL_Period_Name__c</customTabListAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

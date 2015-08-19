@@ -2,8 +2,8 @@
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
     <defaultLandingTab>standard-home</defaultLandingTab>
     <label>AECOM Sales</label>
-    <logo>SharedDocuments/AECOM_Logo.jpg</logo>
     <tab>standard-Chatter</tab>
+    <tab>SharedServicesRequest__c</tab>
     <tab>standard-File</tab>
     <tab>standard-Campaign</tab>
     <tab>standard-Lead</tab>
@@ -33,4 +33,10 @@
     <tab>Business_Line__c</tab>
     <tab>ANZDeptProject__c</tab>
     <tab>ANZTaskStructure__c</tab>
+    <tab>Ecosystem</tab>
+    <tab>Revenue__c</tab>
+    <tab>Billing__c</tab>
+    <tab>CostDistLine__c</tab>
+    <tab>EarnedValueHeader__c</tab>
+    <tab>VendorSub__c</tab>
 </CustomApplication>

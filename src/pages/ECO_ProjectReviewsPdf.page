@@ -1,0 +1,398 @@
+<apex:page standardController="ProjectReview__c" extensions="ECO_ProjectReviewsControllerPdf" renderAs="pdf"  showHeader="false" sidebar="false" doctype="html-5.0" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" >
+<head>
+
+
+	<apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+	<script type="text/javascript">
+	function collapseSection()
+	{
+		console.log('collapseSection');
+		$("div[id$='ProjectSummary']").find("div.pbBody").find("img.hideListButton").click();
+	}
+	sfdcPage.appendToOnloadQueue(collapseSection);
+	</script>
+	<style>
+            @page{
+                size:landscape;
+            }
+            body{
+                font-family:arial, sans-serif;
+                font-size:80%;
+            }
+            .headerInfo{
+                height:65px;
+                border-bottom: 2px solid #DDDDDD;
+                padding:0 0 15px 0; 
+                margin: 0 0 25px 0;
+                background-position:top right;
+                background-repeat:no-repeat;
+                background-size:5% auto !important;
+                background-image : url({!URLFOR($Resource.ECO_CustomGraphicAssets, 'PDFLogo.jpg')});
+            }
+            .headerInfo h1{
+                margin:-2px 0 0 0;
+                font-size:16px;
+                line-height:80%;
+            }
+            .headerInfo h2{
+                font-size:16px;
+                line-height:80%;
+            }
+            .headerInfo h5{
+                line-height:80%;
+                margin:0;
+            }
+            .rightHeaderInfo{
+                float:right; 
+                border-left:2px solid #ddd; 
+                height:40px;
+                vertical-align:middle; 
+                padding-left:55px;
+                position:absolute;
+                right:0;
+                top:0;
+                padding:50px 10px 0 25px;
+                width:150px;
+                
+            }
+            table{
+                border: 1px solid #ddd;
+                width:100%; 
+            }
+            table tr th {
+                vertical-align: bottom;
+                background-color: #f8f8f8;
+                
+            }
+            table>caption+thead>tr:first-child>td, table>caption+thead>tr:first-child>th, table>colgroup+thead>tr:first-child>td, table>colgroup+thead>tr:first-child>th, table>thead:first-child>tr:first-child>td, table>thead:first-child>tr:first-child>th {
+                border-top: 0;
+            }
+            table>tbody>tr>td, table>tbody>tr>th, table>tfoot>tr>td, table>tfoot>tr>th, table>thead>tr>td, table>thead>tr>th, table tr td, table tr th {
+                padding: 5px;
+                line-height: 1.42857143;
+                vertical-align: top;
+                border-top: 1px solid #ddd;
+            }
+            table tr > td > td, table tr > td > tr > td, td > td, td > span > table tr td, td > table tr td, td > span > table, td > table {
+                border:none;
+                padding:0;
+            }
+            .notificationAndAlerts > span > div > table > tbody > tr:last-child, .notificationAndAlerts > span > div > table > tbody > tr > td:first-child, .notificationAndAlerts td:first-child, .notificationAndAlerts table tr:last-child {
+                display:none;
+                border:none;
+                padding:0;
+                width:0;
+            }
+            .notificationAndAlerts table > tbody > tr > td:first-child, .notificationAndAlerts table > tbody > tr:last-child{
+                display:none;
+            }
+
+            .pbHeader > table > tbody > tr > td, .pbHeader > table, .pbHeader table td, .pbHeader table{
+                border:none !important;
+                padding: 0;
+            }
+
+            .pbBody h3{
+                margin: 6px 0 0 0;
+                background-color:#008cb2;
+                color:#fff;
+                -moz-border-radius: 4px 4px 0 0;
+                -webkit-border-radius:  4px 4px 0 0;
+                border-radius:  4px 4px 0 0;
+                border-top: 3px solid #f8f8f8;
+                padding:4px 12px 4px 12px;
+            }
+            .footer{
+                position:absolute; 
+                width:100%; 
+                height:100px; 
+                bottom:0; 
+                border-top:1px solid #4a4a56; 
+                padding-top:15px;
+                margin-top:155px;
+            }
+            .risk{
+                background:#ebebeb;
+            }
+            .notificationAndAlerts table, .notificationAndAlerts td{
+                border:none !important;
+                width:auto;
+                padding:0;
+            }
+            .mainTitle{
+                margin:15px 0 -5px 0;
+            }
+            td >span >div >table >tbody >tr >td, td >span >div >table >tbody >tr >th{
+            	border:none;
+            	padding:0;
+            	width:auto;
+            }
+
+            table table{
+            	border:0;
+            	padding:0;
+            }
+        </style>
+    </head>
+
+
+
+	
+
+
+
+
+    	<div class="headerInfo">
+            <h5>Project Review</h5>
+            <h2 style="line-height:80%;">Project: {!theProject.Name}</h2>
+
+            <div class="rightHeaderInfo">
+                Project ID:<br/>
+                {!theProject.Id}
+            </div>
+            <!-- dont need this on this page
+            <h1 style="">
+                <apex:outputLabel for="QuestionnaireSetName" value="Version: "/>
+                <apex:outputText value="{!oQuestionnaireSet.Name}" />
+            </h1>
+			-->
+
+        </div>
+
+
+        <div class="footer">
+            {!theProject.Id} | {!theProject.Name} |  Project Review | <strong>FOR INTERNAL USE ONLY</strong>
+        </div>
+
+
+
+		<apex:pageMessages id="pgMessages" />
+		<div class="projectSummary">
+			<apex:pageBlock title="Project Summary" id="ProjectSummary">
+				<h3>Project Information</h3>
+			    <apex:outputPanel id="ProjectInformation">
+            		<table cellpadding="0" cellspacing="0">
+		               <tr>
+			                <th style="font-weight:bold"><apex:outputLabel value="Project Name"/></th>
+			                <td><apex:outputField value="{!theProject.Name}"/></td>
+			                <th style="font-weight:bold"><apex:outputLabel value="Owner"/></th>
+			                <td><apex:outputField value="{!theProject.OwnerId}"/></td>
+		                </tr>
+		               <tr>
+			                <th style="font-weight:bold"><apex:outputLabel value="Opportunity Name"/></th>
+			                <td><apex:outputField value="{!theProject.pse__Opportunity__c}"/></td>
+			                <th style="font-weight:bold"><apex:outputLabel value="Estimated AECOM Gross Fee"/></th>
+			                <td><apex:outputField value="{!theProject.EstimatedContractValue__c}"/></td>
+			           </tr>
+			           <tr>
+			                <th style="font-weight:bold"><apex:outputLabel value="Project Manager"/></th>
+			                <td><apex:outputField value="{!theProject.pse__Project_Manager__c}"/></td>
+			                <th style="font-weight:bold"><apex:outputLabel value="Net Services Revenue"/></th>
+			                <td><apex:outputField value="{!theProject.NetServicesRevenue__c}"/></td>
+			           </tr>
+			           <tr>
+			                <th style="font-weight:bold"><apex:outputLabel value="Project Owning Org"/></th>
+			                <td><apex:outputField value="{!theProject.ProjectOwningOrg__c}"/></td>
+			                <th style="font-weight:bold"><apex:outputLabel value="Total Margin"/></th>
+			                <td><apex:outputField value="{!theProject.TotalMargin__c}"/></td>
+			           </tr>
+			           <tr>
+			                <th style="font-weight:bold"><apex:outputLabel value="Primary End Client"/></th>
+			                <td><apex:outputField value="{!theProject.PrimaryEndClient__c}"/></td>
+			                <th style="font-weight:bold"><apex:outputLabel value="Total Bid Budget"/></th>
+			                <td><apex:outputField value="{!theProject.TotalBidBudget__c}"/></td>
+			           </tr>
+			           <tr>
+			                <th style="font-weight:bold"><apex:outputLabel value="Primary Billing Client"/></th>
+			                <td><apex:outputField value="{!theProject.PrimaryBillingClient__c}"/></td>
+			                <th style="font-weight:bold"><apex:outputLabel value="Estimated Start Date"/></th>
+			                <td><apex:outputField value="{!theProject.EstimatedStartDate__c}"/></td>
+			           </tr>					           		               
+		        	</table>
+		        	<br/>
+            	</apex:outputPanel>
+			    
+			    <!--  
+	           	<apex:pageBlockSection title="Project Information" collapsible="true" columns="2">
+	            	<apex:outputField value="{!theProject.Name}" />
+	            	<apex:outputField value="{!theProject.OwnerId}" />
+	            	<apex:outputField value="{!theProject.pse__Opportunity__c}" />
+	            	<apex:outputField value="{!theProject.EstimatedContractValue__c}" />
+	            	<apex:outputField value="{!theProject.pse__Project_Manager__c}" />
+	            	<apex:outputField value="{!theProject.NetServicesRevenue__c}" />
+	            	<apex:outputField value="{!theProject.ProjectOwningOrg__c}" />
+	            	<apex:outputField value="{!theProject.TotalMargin__c}" />
+	            	<apex:outputField value="{!theProject.PrimaryEndClient__c}" />
+	            	<apex:outputField value="{!theProject.TotalBidBudget__c}" />
+	            	<apex:outputField value="{!theProject.PrimaryBillingClient__c}" />
+	            	<apex:outputField value="{!theProject.EstimatedStartDate__c}" />
+            	</apex:pageBlockSection>
+            	
+            	
+				<apex:pageBlockSection id="ReviewDetails_1" title="Project Review Details" columns="2" collapsible="false">
+					<apex:outputField value="{!ProjectReview__c.Name}" />
+					<apex:outputField value="{!ProjectReview__c.Status__c}" />
+					<apex:outputField label="Record Type" value="{!ProjectReview__c.RecordType.Name}" />
+					<apex:outputField value="{!ProjectReview__c.ResponsiblePerson__c}" />
+					<apex:outputField value="{!ProjectReview__c.Snapshot_Date__c}" />
+					<apex:outputField value="{!ProjectReview__c.TotalKPIs__c}" />
+					<apex:outputField value="{!ProjectReview__c.ScheduledDate__c}" />
+					<apex:outputField value="{!ProjectReview__c.PassedKPIs__c}" />
+					<apex:outputField value="{!ProjectReview__c.CompletedDate__c}" />
+					<apex:outputField value="{!ProjectReview__c.KPIPassPercentage__c}" />
+            	</apex:pageBlockSection>
+            	-->
+            	<br/>
+            	<br/>
+            	<h3>Project Review Details</h3>
+            	<apex:outputPanel id="ProjectReviewDetails">
+            		<table cellpadding="0" cellspacing="0">
+		               <tr>
+			                <th style="font-weight:bold"><apex:outputLabel value="Title"/></th>
+			                <td><apex:outputField value="{!ProjectReview__c.Name}"/></td>
+			                <th style="font-weight:bold"><apex:outputLabel value="Status"/></th>
+			                <td><apex:outputField value="{!ProjectReview__c.Status__c}"/></td>
+		                </tr>
+		               <tr>
+			                <th style="font-weight:bold"><apex:outputLabel value="Record Type"/></th>
+			                <td><apex:outputField value="{!ProjectReview__c.RecordType.Name}"/></td>
+			                <th style="font-weight:bold"><apex:outputLabel value="Responsible Person"/></th>
+			                <td><apex:outputField value="{!ProjectReview__c.ResponsiblePerson__c}"/></td>
+			           </tr>
+			           <tr>
+			                <th style="font-weight:bold"><apex:outputLabel value="Snapshot Date"/></th>
+			                <td><apex:outputField value="{!ProjectReview__c.Snapshot_Date__c}"/></td>
+			                <th style="font-weight:bold"><apex:outputLabel value="Total KPIs" rendered="{!showKPIs}" /></th>
+			                <td><apex:outputField value="{!ProjectReview__c.TotalKPIs__c}" rendered="{!showKPIs}"/></td>
+			           </tr>
+			           <tr>
+			                <th style="font-weight:bold"><apex:outputLabel value="Scheduled Date"/></th>
+			                <td><apex:outputField value="{!ProjectReview__c.ScheduledDate__c}"/></td>
+			                <th style="font-weight:bold"><apex:outputLabel value="Passed KPIs" rendered="{!showKPIs}" /></th>
+			                <td><apex:outputField value="{!ProjectReview__c.PassedKPIs__c}" rendered="{!showKPIs}" /></td>
+			           </tr>
+			           <tr>
+			                <th style="font-weight:bold"><apex:outputLabel value="Completed Date"/></th>
+			                <td><apex:outputField value="{!ProjectReview__c.CompletedDate__c}"/></td>
+			                <th style="font-weight:bold"><apex:outputLabel value="KPI Pass (%)" rendered="{!showKPIs}" /></th>
+			                <td><apex:outputField value="{!ProjectReview__c.KPIPassPercentage__c}" rendered="{!showKPIs}" /></td>
+			           </tr>
+			           <tr>
+			           <td>
+			           	<apex:outputField value="  {!ProjectReview__c.ProjectReviewTemplate__r.Purpose__c}" rendered="{!NOT(ISBLANK(ProjectReview__c.ProjectReviewTemplate__c))}"/>
+			           </td>
+			           </tr>		               
+		        	</table>
+            	</apex:outputPanel>
+
+            	            	
+				<apex:outputPanel id="KPIResults">
+				<apex:pageBlockSection title="KPI Results" columns="1" collapsible="false" rendered="{!isPerfReview}">
+					<apex:pageBlockTable value="{!lKPI_Results}" var="item" width="100%" id="KPITable">
+						<apex:column >
+							<apex:facet name="header">Trigger Name</apex:facet>
+							<apex:outputField value="{!item.Trigger_Name__c}" />
+						</apex:column>
+						<apex:column ><!-- styleClass="{!item.Evaluation_Result__c}"-->
+							<apex:facet name="header">Has Triggered</apex:facet>
+							<apex:image height="30px" width="30px" value="{!IF(item.Evaluation_Result__c, $Resource.redTriangle, $Resource.greenStar)}" />
+						</apex:column> 
+						<apex:column >
+							<apex:facet name="header">Alert Message</apex:facet>
+							<apex:outputField value="{!item.Alert_Message__c}" />
+						</apex:column>
+						<apex:column rendered="{!perfActiveStatus}">
+							<apex:facet name="header">Explanation</apex:facet>
+							<apex:outputField value="{!item.Explanation__c}" style="width:80%"/>
+						</apex:column>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection>
+				</apex:outputPanel>
+
+				<apex:pageBlockSection title="Agenda Items" columns="1" collapsible="false" rendered="{!showOtherSections}">
+					<apex:pageBlockTable value="{!lAgendaItems}" var="item" width="100%" columnsWidth="120px" id="AgendaTable">
+						<apex:column >
+							<apex:facet name="header">Item Number</apex:facet>
+							<apex:outputField value="{!item.Agenda_Num__c}" style="width: 24px"/>
+						</apex:column>
+						<apex:column >
+							<apex:facet name="header">Item Name</apex:facet>
+							<apex:outputField value="{!item.Name}" style="width: 500px"/>
+						</apex:column>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection>
+
+				<apex:pageBlockSection title="Approval Conditions"  columns="1" collapsible="false">
+				<apex:pageMessage severity="INFO" rendered="{!if(lstDOAConditions.size > 0, false, true)}" summary="No DOA Conditions Found"></apex:pageMessage> 
+				<apex:pageBlockTable value="{!lstDOAConditions}" var="Condition" rendered="{!if(lstDOAConditions.size > 0, true, false)}">
+					<apex:column headerValue="View"  width="40">
+						<apex:outputLink value="/{!Condition.id}">View</apex:outputLink>
+					</apex:column>				
+					<apex:repeat value="{!$ObjectType.DOAConditions__c.FieldSets.DOA_ApprovalView}" var="SearchField">
+						<apex:column value="{!Condition[SearchField]}" />
+					</apex:repeat>
+				</apex:pageBlockTable>
+				</apex:pageBlockSection>
+				
+				<!--  <p style="page-break-after:always;"></p>  -->
+
+				<apex:pageBlockSection title="Meeting Minutes" columns="1" collapsible="false" rendered="{!showOtherSections}">
+					<apex:outputText label="" value="{!ProjectReview__c.MeetingMinutes__c}" escape="false" />
+				</apex:pageBlockSection>
+
+				<apex:pageBlockSection title="Attendees" columns="1" collapsible="false" rendered="{!showOtherSections}">
+					<apex:pageBlockTable value="{!lAttendees}" var="item" width="100%" id="AttendeesTable" rendered="{!IF(lAttendees.size > 0, true, false)}"><!--  columnsWidth="120px" -->
+						<apex:column >
+							<apex:facet name="header">Name</apex:facet>
+							<apex:outputLabel value="{!item.Name}" />
+						</apex:column>
+						<apex:column >
+							<apex:facet name="header">Phone</apex:facet>
+							<apex:outputLabel value="{!item.Phone}" />
+						</apex:column>
+						<apex:column >
+							<apex:facet name="header">Email</apex:facet>
+							<apex:outputLabel value="{!item.Email}" />
+						</apex:column>
+					</apex:pageBlockTable>
+					<apex:pageMessage severity="info" rendered="{!if(lAttendees.size = 0, true, false)}" summary="No attendees have been specified." />
+				</apex:pageBlockSection>
+				<apex:pageBlockSection title="Follow-up Tasks" columns="1" collapsible="false" rendered="{!showOtherSections}">
+					<apex:pageBlockTable value="{!ProjectReview__c.OpenActivities}" var="item" width="100%" id="TasksTable" rendered="{!IF(oProjectReview.OpenActivities.size > 0, true, false)}">
+						<apex:column >
+							<apex:outputField value="{!item.ActivityDate}" />
+						</apex:column>
+						<apex:column >
+							<apex:outputField value="{!item.Subject}" />
+						</apex:column>
+						<apex:column >
+							<apex:outputField value="{!item.OwnerId}" />
+						</apex:column>
+					</apex:pageBlockTable>
+					<apex:pageMessage severity="info" rendered="{!IF(oProjectReview.OpenActivities.size = 0, true, false)}" summary="No tasks have been specified." />
+				</apex:pageBlockSection>
+			</apex:pageBlock>
+
+			
+		</div>
+
+
+
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+			<br />
+		
+		<apex:outputText escape="false" value="{!projectSnapshotRecord}"/>
+	<!--<apex:relatedList list="OpenActivities" rendered="{!showOtherSections}" />-->
+	<!--  
+	<apex:relatedList list="ActivityHistories" rendered="{!showOtherSections}" />
+	<apex:relatedList list="NotesAndAttachments" rendered="{!showOtherSections}" />
+	<apex:relatedList list="ProcessSteps" rendered="{!showOtherSections}" />
+	-->
+</apex:page>

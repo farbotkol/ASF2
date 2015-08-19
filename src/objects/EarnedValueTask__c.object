@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Comments__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Describe why tasks are not progressing as planned or make additional notes for future reference.</inlineHelpText>
+        <label>Comments</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Committed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Committed</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CostAccruals__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter here any costs which should be accrued for the purpose of calculating the EV metrics and trend EACs.  This would include the costs of subs work that is counted in the percent complete assessment, but not yet costed to the project actuals.</inlineHelpText>
+        <label>Cost Accruals</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>EarnedValueHeader__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Earned Value Header</label>
+        <referenceTo>EarnedValueHeader__c</referenceTo>
+        <relationshipLabel>Earned Value Tasks</relationshipLabel>
+        <relationshipName>Earned_Value_Tasks</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>EarnedValueSnapshot__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Earned Value Snapshot</label>
+        <referenceTo>EarnedValueSnapshot__c</referenceTo>
+        <relationshipLabel>Earned Value Tasks</relationshipLabel>
+        <relationshipName>EarnedValueTasks</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>NotifyTaskOwner__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>used to fire workflow to notify task owner</description>
+        <externalId>false</externalId>
+        <label>Notify Task Owner</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>NotifyUserEmail__c</fullName>
+        <externalId>false</externalId>
+        <label>Notify User Email</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PercentComplete__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Review the work that has been completed and discuss with the task/deliverable owner the level of effort required to finalize the task/deliverable.</inlineHelpText>
+        <label>Percent Complete</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>ProjectTask__c</fullName>
+        <deleteConstraint>Cascade</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project Task</label>
+        <referenceTo>pse__Project_Task__c</referenceTo>
+        <relationshipLabel>Earned Value Tasks</relationshipLabel>
+        <relationshipName>Earned_Value_Tasks</relationshipName>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ReportName__c</fullName>
+        <externalId>false</externalId>
+        <formula>&apos;tbd&apos;
+/*
+HYPERLINK(
+&apos;/&apos; +  EarnedValueSnapshot__r.EarnedValueHeader__r.Id , 
+EarnedValueSnapshot__r.EarnedValueHeader__r.ReportName__c , 
+&apos;_blank&apos;)
+*/</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Report Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SnapshotDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Snapshot Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>TaskName__c</fullName>
+        <externalId>false</externalId>
+        <formula>ProjectTask__r.Name</formula>
+        <label>Task Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TaskTotalApprovedCostSnapshot__c</fullName>
+        <externalId>false</externalId>
+        <label>Task Total Approved Cost Snapshot</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>TrendEAC1__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(PercentComplete__c = 0, 0, ProjectTask__r.TotalProjectFunctionalBurdenedCost__c / PercentComplete__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This is a predicted Forecast/EAC Cost calculated using the current Earned Value, presuming the current productivity rate continues through to completion.  Calculated as &quot;Total Cost / Percent Complete&quot;</inlineHelpText>
+        <label>Trend EAC 1</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TrendEAC2__c</fullName>
+        <externalId>false</externalId>
+        <formula>(ProjectTask__r.TotalProjectFunctionalBurdenedCost__c + ProjectTask__r.TotalApprovedCost__c)  * (1 - PercentComplete__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>This is a predicted Forecast/EAC Cost calculated using the current Earned Value, presuming the rest of the project proceeds as originally planned through to completion.   Calculated as &quot;Total Cost + Budget Cost x (1- Percent Complete)&quot;.</inlineHelpText>
+        <label>Trend EAC 2</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <label>Earned Value Task</label>
+    <nameField>
+        <displayFormat>EVT-{0000000}</displayFormat>
+        <label>Earned Value Task Id</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Earned Value Tasks</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

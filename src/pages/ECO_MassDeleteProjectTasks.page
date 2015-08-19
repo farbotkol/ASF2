@@ -1,0 +1,20 @@
+<apex:page standardController="pse__Project_Task__c" recordSetVar="tasks" tabStyle="pse__Project_Task__c" extensions="ECO_MassDeleteController">
+	<apex:form id="theForm">
+		
+		<apex:sectionHeader title="Delete Records" subTitle="Project Tasks" />
+		
+		<apex:pageMessages id="pageMessages" />
+		
+		<apex:commandButton action="{!deleteStuff}" value="Confirm Delete" />
+		<apex:commandButton action="{!cancel}" value="Return to Project" />
+		
+		<div style="width:100%; height:15px;"></div>
+		
+		<apex:pageBlock id="theBlock">
+			<apex:pageBlockTable value="{!sObjsToDelete}" var="obj">
+				<apex:column value="{!obj['Name']}" />
+			</apex:pageBlockTable>
+		</apex:pageBlock>
+		
+	</apex:form>
+</apex:page>

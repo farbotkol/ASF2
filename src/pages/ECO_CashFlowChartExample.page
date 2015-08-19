@@ -1,0 +1,35 @@
+<apex:page controller="ECO_CashFlowChartExampleController" >
+
+
+	<script type="text/javascript"
+          src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }"></script>
+    
+    <script type="text/javascript">
+      google.setOnLoadCallback(drawChart);
+
+      function drawChart() {
+        var data = google.visualization.arrayToDataTable({!chartDataJSON});
+
+        var options = {
+          title: 'Cash Flow',
+          curveType: 'function',
+          legend: { position: 'bottom' },
+          vAxis: {format: 'currency'},
+          pointSize: 5
+        };
+
+        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart.draw(data, options);
+      }
+    </script>
+    
+    <div id="curve_chart" style="width: 900px; height: 500px"></div>
+    
+</apex:page>

@@ -1,0 +1,306 @@
+<apex:component layout="none" controller="ECO_EarnedValueFlyoutController" allowDML="true">
+    <apex:attribute name="ProjectId" description="Parent Project ID" type="ID" assignTo="{!sProjectId}"  required="true"/>
+
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/css/font-awesome.min.css')}" />
+    
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+
+    <script type="text/javascript"
+          src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }">
+    </script>
+
+    <script>
+        $q = jQuery.noConflict();
+
+        var evFlyout = {
+            init : function(){
+
+                $q('body').on('click', evFlyout.hideContentFlyout);
+                
+                $q('#evPane').on('click', function(event) { 
+                    event.stopPropagation();
+                });
+                
+                $q('#evPane .tab').on('click', evFlyout.showContentFlyout);
+                
+                $q('#evPane .close').click(function(){
+                    evFlyout.hideContentFlyout();
+                });
+            },
+
+            hideContentFlyout : function(){
+                var width = $q('#evPane').outerWidth() * -1 + 'px';
+                
+                $q('#evPane').animate({
+                    right : width
+                  }, 550, 'easeInCubic');
+            },
+           
+            showContentFlyout : function(event){
+                event.stopPropagation();
+                
+                if($q('#evPane').css('right') == '0px'){
+                    evFlyout.hideContentFlyout();
+                }else{
+                    $q('#evPane').animate({
+                        right : 0
+                      }, 550, 'easeOutCubic');
+                }
+            }
+        }
+
+        $q(document).ready(function (){
+            evFlyout.init();
+        });
+    </script>
+
+    <style>
+        /*
+                FLYOUT STYLES
+        */
+
+         #evPane.evFlyout {
+            background-color:#f3f3f3;
+            position: fixed;
+            width: 925px;
+            right: -924px;
+            top: 50px;
+            height:550px;
+            padding: 10px 0 20px 20px;
+            border-right: none;
+            -webkit-border-top-left-radius: 20px;
+            -webkit-border-bottom-left-radius: 20px;
+            -moz-border-radius-topleft: 20px;
+            -moz-border-radius-bottomleft: 20px;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+            z-index: 5000;
+            margin-left: 42px;
+            min-height: 400px;
+            box-shadow: 0 0 10px #787878;
+            border: 1px solid #DEDEDE;
+        }
+
+         #evPane.evFlyout .tab {
+            position: absolute;
+            border-right: none;
+            background-color: #f3f3f3;
+            
+            -webkit-border-top-left-radius: 10px;
+            -webkit-border-top-right-radius: 10px;
+            -moz-border-radius-topleft: 10px;
+            border-top-left-radius: 10px;
+            cursor: pointer;
+            padding:7px 8px;
+            box-shadow:0 -3px 4px #959595;
+
+            top:440px;
+            left: -59px;
+
+            -webkit-transform: rotate(-90deg); 
+            -moz-transform: rotate(-90deg); 
+            -ms-transform: rotate(-90deg);
+        }
+
+         #evPane.evFlyout .close {
+            color: #D6D6D6;
+            cursor: pointer;
+            display: block;
+            float: right;
+            font-family: 'Platform-Font', Helvetica, Arial, sans-serif;
+            padding-left: 25px;
+            padding-right: 20px;
+            text-align: right;
+            text-transform: uppercase;
+        }
+
+         #evPane.evFlyout .delete{
+            position: absolute;
+            top: 12px;
+            right: 7px;
+            padding: 6px 8px;
+        }
+
+         #evPane.evFlyout .delete:hover{
+            text-decoration:underline;
+        }
+
+         #evPane.evFlyout .header {
+            color: #333;
+            font-size: 25px;
+            padding-bottom: 15px;
+            padding-top: 10px;
+        }
+        
+         #evPane.evFlyout .body {
+            padding-right: 20px;
+            overflow: scroll;
+        }
+
+         #evPane.evFlyout select{
+            margin:2px 0 5px 0;
+        }
+
+         #evPane.evFlyout .table{
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            margin-top:15px;
+        }
+
+         #evPane.evFlyout .table th{
+            font-size: 1.05em;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.14);
+        }
+
+         #evPane.evFlyout .table-striped > tbody > tr:nth-child(4n),  #evPane.evFlyout .table-striped > tbody > tr:nth-child(4n-1){
+            background-color: #f6f8fa;
+        }
+
+         #evPane.evFlyout .table td{
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+         #evPane.evFlyout .table>tbody>tr>td, .flyout .table>tbody>tr>th, .flyout .table>tfoot>tr>td, .flyout .table>tfoot>tr>th, .flyout .table>thead>tr>td, .flyout .table>thead>tr>th{
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+        }
+
+         #evPane.evFlyout .label-table{
+            display: inline-block;
+            width: 80%;
+            min-width: 8ex;
+            font-size: 1em;
+            max-width: 100px;
+            padding: 5px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        /* tables */
+         #evPane.evFlyout table.tablesorter {
+            font-family:arial;
+            background-color: #CDCDCD;
+            margin:10px 0pt 15px;
+            font-size: 8pt;
+            width: 100%;
+            text-align: left;
+        }
+
+         #evPane.evFlyout table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+            background-color: #aebdee;
+            border: 1px solid #FFF;
+            font-size: 8pt;
+            padding: 4px;
+        }
+
+         #evPane.evFlyout table.tablesorter thead tr .header {
+            background-image: url(bg.gif);
+            background-repeat: no-repeat;
+            background-position: center right;
+            cursor: pointer;
+        }
+
+         #evPane.evFlyout table.tablesorter tbody td {
+            color: #3D3D3D;
+            padding: 4px;
+            background-color: #FFF;
+            vertical-align: top;
+            height: 20px;
+        }
+
+         #evPane.evFlyout table.tablesorter tbody tr.odd td {
+            background-color:#F0F0F6;
+        }
+
+         #evPane.evFlyout table.tablesorter thead tr .headerSortUp {
+            background-image: url(asc.gif);
+        }
+
+         #evPane.evFlyout table.tablesorter thead tr .headerSortDown {
+            background-image: url(desc.gif);
+        }
+
+         #evPane.evFlyout table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+        background-color: #8dbdd8;
+        }
+
+        .noteText{
+            color:#818181;
+            font-style: italic;
+        }
+
+        .tableHeader1 {
+            padding: 3px;
+            text-align: center;
+            border-style:solid;
+            border-color:#ffffff;
+            border-width: 1px;
+        }
+
+        .tableHeader2 {
+            background-color: #aac0dd;
+            width:110px;
+            min-width:110px;
+            max-width:110px;
+            overflow:hidden;
+        }
+
+        .tableCell1 {
+            width:110px;
+            min-width:110px;
+            max-width:110px;
+            padding:3px;
+            overflow:hidden;
+            border:1px solid #ffffff;
+        }
+
+        .nonEditable {
+            background-color: #d4dfee;
+        }
+
+        .editedCell {
+/*          color:#00a000; */
+            background-color:#f0f0b0;
+        }
+
+        .varianceBad {
+            color:#ff0000;
+        }
+
+        .negativeNumber {
+            color:#ff0000;
+        }
+    </style>
+    
+        <div id="evPane" class="evFlyout flyout">
+            <div class="close">
+                <i class="fa fa-arrow-right" style="color:#333;"></i>
+            </div>
+            <div class="tab">
+                Earned Value
+            </div>
+            <div class="header">
+                Earned Value
+            </div>
+
+            <apex:outputPanel id="evPanel">
+                <div class="body">
+                    <apex:pageBlock mode="mainDetail">
+                        <div style="height:450px;">
+	                    </div>  
+	                </apex:pageBlock>
+                </div>
+            </apex:outputPanel>
+        </div>
+    
+</apex:component>

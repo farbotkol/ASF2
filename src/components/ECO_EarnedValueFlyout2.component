@@ -1,0 +1,787 @@
+<apex:component layout="none" controller="ECO_CashFlowFlyoutController2" allowDML="true">
+    <apex:attribute name="ProjectId" description="Parent Project ID" type="ID" assignTo="{!sProjectId}"  required="true"/>
+
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/css/font-awesome.min.css')}" />
+    
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+
+    <script type="text/javascript"
+          src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }">
+    </script>
+
+    <script>
+        $w = jQuery.noConflict();
+
+        var evFlyout = {
+            init : function(){
+
+                $w('body').on('click', evFlyout.hideContentFlyout);
+                
+                $w('#evPane').on('click', function(event) { 
+                    event.stopPropagation();
+                });
+                
+                $w('#evPane .tab').on('click', evFlyout.showContentFlyout);
+                
+                $w('#evPane .close').click(function(){
+                    evFlyout.hideContentFlyout();
+                });
+            },
+
+            hideContentFlyout : function(){
+                var width = $w('#evPane').outerWidth() * -1 + 'px';
+                
+                $w('#evPane').animate({
+                    right : width
+                  }, 550, 'easeInCubic');
+            },
+           
+            showContentFlyout : function(event){
+                event.stopPropagation();
+                
+                if($w('#evPane').css('right') == '0px'){
+                    evFlyout.hideContentFlyout();
+                }else{
+                    $w('#evPane').animate({
+                        right : 0
+                      }, 550, 'easeOutCubic');
+                }
+            }
+        }
+
+        $w(document).ready(function (){
+ 			//drawChartx();
+ 			//drawCpiAndSpiChartx();
+
+            $w('.tabsForResource2').tabs();
+
+            evFlyout.init();
+
+            $w('.mainTable2').editableTableWidget({preventColumns: [1, 3, 4, 5, 6, 7, 8, 9]});
+
+            $w('.mainTable2 td').on('change', function(evt, newValue, oldValue) {
+                var col = $w(this).parent().children().index($w(this));
+
+                if (newValue == '?') {
+                    if (col == 1) {
+                        diff = parseFloat(oldValue.replace(/,/g, '')) - parseFloat($w('#plannedCostVariance2').html().replace(/,/g, ''));
+
+                        $w(this).html(diff.format(2));
+
+                        if (diff < 0) {
+                            $w(this).addClass('negativeNumber');
+                        } else {
+                            $w(this).removeClass('negativeNumber');
+                        }
+                    } else if (col == 4) {
+                        diff = parseFloat(oldValue.replace(/,/g, '')) - parseFloat($w('#cashInVariance2').html().replace(/,/g, ''));
+
+                        if (diff < 0) {
+                            $w(this).addClass('negativeNumber');
+                        } else {
+                            $w(this).removeClass('negativeNumber');
+                        }
+
+                        $w(this).html(diff.format(2));
+                    }
+                }
+
+                var row = $w(this).parent().parent().children().index($w(this).parent());
+  
+                val = getValue(this);
+
+                if (col == 1) {
+                    $w($w($w('.dataTable1 tbody tr')[row]).children()[1]).find('input').val(val);
+                } else if (col == 4) {
+                    $w($w($w('.dataTable1 tbody tr')[row]).children()[3]).find('input').val(val);
+                }
+
+                copyFromDataTable2();
+            });
+
+            copyFromDataTable2();
+        });
+
+      var chartJson2 = {!chartData};
+
+      function drawCharts() {
+      	drawChartx();
+      	drawCpiAndSpiChartx();
+      }
+
+      google.setOnLoadCallback(drawCharts);
+
+      function drawChart2() {
+        var data = google.visualization.arrayToDataTable(chartJson2);
+
+        var options = {
+          curveType: 'none',
+          legend: { position: 'bottom' },
+          vAxis: {format: 'currency'},
+          pointSize: 2,
+          seriesType: "line",
+          titlePosition: "none",
+          series: {0: {type: "bars"}},
+          colors: ['#cad7e9', '#0066ad'],
+          chartArea: {left:130, top:20, width: '75%', height:'50%'}
+        };
+
+        var chart = new google.visualization.ComboChart(document.getElementById('curve_chart2'));
+
+        chart.draw(data, options);
+      }
+
+     	function drawChartx() {	      	
+			var chartJsonx = '{!chartJSON}';		
+
+			  var data = new google.visualization.DataTable();
+			  data.addColumn('string', 'Period Date');
+		      data.addColumn('number', 'Approved Cost');
+		      data.addColumn('number', 'Actual Cost');
+		      data.addColumn('number', 'Earned Value');
+		      data.addColumn('number', 'Trend EAC 1');
+		      data.addColumn('number', 'Trend EAC 2');
+
+		      var rows = JSON.parse(chartJsonx);
+
+		      rows.forEach(function(entry) {
+			     entry[1] = parseInt(entry[1]);
+			     entry[2] = parseInt(entry[2]);
+			     entry[3] = parseInt(entry[3]);
+
+			     if(entry[3] == 0)
+			     	entry[3] = null;
+
+			     entry[4] = parseInt(entry[4]);
+			     entry[5] = parseInt(entry[5]);
+			  });
+
+			  var row1Total = 0;
+		      var row2Total = 0;
+		      //var row3Total = 0;
+
+		      for(key in rows){
+			     row1Total += rows[key][1];
+			     row2Total += rows[key][2];
+			     //row3Total += rows[key][3];
+
+			     rows[key][1] = row1Total;
+			     rows[key][2] = row2Total;
+			     //rows[key][3] = row3Total;
+			  }
+
+		      data.addRows(rows);
+
+		      var options = {
+		        chart: {
+		          title: 'Project Progress Report',
+		          subtitle: ''
+		        },
+		        width: 660,
+		        height: 140,
+		        pointSize: 10
+		      };
+
+		      var chart = new google.charts.Line(document.getElementById('curve_charta'));
+
+		      chart.draw(data, options);
+	    }
+
+	    function drawCpiAndSpiChartx(){
+			var cpiAndSpiJSON = '{!cpiAndSpiJSON}';		
+
+	    	var data = new google.visualization.DataTable();
+		      data.addColumn('string', 'Period Date');
+		      data.addColumn('number', 'CPI');
+		      data.addColumn('number', 'SPI');
+
+		      var rows = JSON.parse(cpiAndSpiJSON);
+
+		      rows.forEach(function(entry) {
+			     entry[1] = parseInt(entry[1]);
+			     entry[2] = parseInt(entry[2]);
+
+			  });
+
+		      data.addRows(rows);
+
+		      var options = {
+		        chart: {
+		          title: 'CPI and SPI',
+		          subtitle: ''
+		        },
+		        width: 660,
+		        height: 140,
+		        pointSize: 10
+		      };
+
+		      var chart = new google.charts.Line(document.getElementById('cpiAndSpi_chart'));
+
+		      chart.draw(data, options);
+	    }
+
+      function recalcColumn2(ps) {
+        x = 0;
+
+        $w('.mainTable2 tbody tr td:nth-child(' + ps + ')').each( function() {
+            y = 0;
+
+            try {
+                y = parseFloat($w(this).html().trim().replace(/,/g, ''));
+            } catch (ex) {
+
+            }
+
+            if (isNaN(y)) {
+                y = 0;
+            }
+
+            $w(this).html(y.format(2));
+
+            if (y < 0) {
+                $w(this).addClass('negativeNumber');
+            } else {
+                $w(this).removeClass('negativeNumber');
+            }
+
+            x += y;
+            $w(this).next('td').html(x.format(2));
+
+            if (x < 0) {
+                $w(this).next('td').addClass('negativeNumber');
+            } else {
+                $w(this).next('td').removeClass('negativeNumber');
+            }
+        });
+      }
+
+      function calcTotal2() {
+        $w('.mainTable2 tbody tr td:nth-child(2)').each( function() {
+            y = 0;
+
+            try {
+                y = parseFloat($w(this).html().trim().replace(/,/g, ''));
+            } catch (ex) {
+            }
+
+            if (isNaN(y)) {
+                y = 0;
+            }
+
+            z = 0;
+
+            try {
+                z = parseFloat($w($w(this).parent().children()[4]).html().trim().replace(/,/g, ''));
+            } catch (ex) {
+            }
+
+            if (isNaN(z)) {
+                z = 0;
+            }
+
+            sum = -y + z;
+
+            $w($w(this).parent().children()[6]).html(sum.format(2));
+
+            if (sum < 0) {
+                $w($w(this).parent().children()[6]).addClass('negativeNumber');
+            } else {
+                $w($w(this).parent().children()[6]).removeClass('negativeNumber');
+            }
+        });         
+      }
+
+      function recalculateCumulative2() {
+        recalcColumn2('2');
+        recalcColumn2('4');
+
+//        calcTotal2();
+
+//        recalcColumn2('7');
+      }
+
+      function copyFromDataTable2() {
+        row = 0;
+
+        main = $w('.mainTable2 tbody tr');
+
+        $w('.mainTable2 tbody tr td').removeClass('editedCell');
+
+        var totalPlannedCost = 0;
+        var totalCashIn = 0;
+
+        $w('.dataTable1 tbody tr').each(function() {
+            appliedCost = getCellValue(this, 0);
+            overrideAppliedCost = getInputValue(this, 1);
+            actualCost = getCellValue(this, 4);
+            earnedValue = getCellValue(this, 5);
+            cpi = getCellValue(this, 6);
+            spi = getCellValue(this, 7);
+
+            if (overrideAppliedCost == null) {
+                $w($w(main[row]).children()[1]).html(appliedCost.format(2));
+                totalPlannedCost += appliedCost;
+            } else {
+                $w($w(main[row]).children()[1]).html(overrideAppliedCost.format(2));
+                $w($w(main[row]).children()[1]).addClass('editedCell');
+                totalPlannedCost += overrideAppliedCost;
+            }
+
+            $w($w(main[row]).children()[3]).html(actualCost.format(2));
+
+            $w($w(main[row]).children()[6]).html(earnedValue.format(2));
+            $w($w(main[row]).children()[7]).html(cpi.format(2));
+            $w($w(main[row]).children()[8]).html(spi.format(2));
+
+            row++;
+        });
+
+        $w('#overriddenPlannedCostTotal2').html(totalPlannedCost.format(2));
+
+        if (totalPlannedCost < 0) {
+            $w('#overriddenPlannedCostTotal2').addClass('negativeNumber');
+        } else {
+            $w('#overriddenPlannedCostTotal2').removeClass('negativeNumber');
+        }
+
+        $w('#overriddenCashInTotal2').html(totalCashIn.format(2));
+
+        if (totalCashIn < 0) {
+            $w('#overriddenCashInTotal2').addClass('negativeNumber');
+        } else {
+            $w('#overriddenCashInTotal2').removeClass('negativeNumber');
+        }
+
+        diff1 = parseFloat((totalPlannedCost - {!plannedCostTotal}).toFixed(2));
+
+        $w('#plannedCostVariance2').html(diff1.format(2));
+
+        if (diff1 < 0) {
+            $w('#plannedCostVariance2').addClass('negativeNumber');
+        } else {
+            $w('#plannedCostVariance2').removeClass('negativeNumber');
+        }
+
+        diff2 = parseFloat((totalCashIn - {!CashInTotal}).toFixed(2));
+
+        $w('#cashInVariance2').html(diff2.format(2));
+
+        if (diff2 < 0) {
+            $w('#cashInVariance2').addClass('negativeNumber');
+        } else {
+            $w('#cashInVariance2').removeClass('negativeNumber');
+        }
+
+        if (totalPlannedCost != {!plannedCostTotal}) {
+            $w('#plannedCostVariance2Label').addClass('varianceBad');
+        } else {
+            $w('#plannedCostVariance2Label').removeClass('varianceBad');
+        }
+
+        if (totalCashIn != {!cashInTotal}) {
+            $w('#cashInVariance2Label').addClass('varianceBad');
+        } else {
+            $w('#cashInVariance2Label').removeClass('varianceBad');
+        }
+
+        recalculateCumulative2();
+
+        row = 1;
+        $w('.mainTable2 tbody tr td:nth-child(7)').each( function() {
+            chartJson[row++][1] = parseFloat($w(this).html().trim().replace(/,/g, ''));
+        });
+
+        row = 1;
+        $w('.mainTable2 tbody tr td:nth-child(8)').each( function() {
+            chartJson[row++][2] = parseFloat($w(this).html().trim().replace(/,/g, ''));
+        });
+
+        //drawChart2();
+      }
+
+      function checkSave2() {
+        plannedCostVariance2 = Math.abs(parseFloat($w('#plannedCostVariance2').html().replace(/,/g, '')));
+        cashInVariance2 = Math.abs(parseFloat($w('#cashInVariance2').html().replace(/,/g, '')));
+
+        if (plannedCostVariance2 >= 1.00) {
+            alert('Can\'t save until Planned Cost Variance is less than 1.00 (preferably balanced to 0.00).');
+
+            return false;
+        } else if (plannedCostVariance2 > 0) {
+            return confirm('There is a small Planned Cost Variance.  Are you sure you want to save without balancing it first?');
+        }
+
+        if (cashInVariance2 >= 1.00) {
+            alert('Can\'t save until Cash In Variance is less than 1.00 (preferably balanced to 0.00).');
+
+            return false;
+        } else if (cashInVariance2 > 0) {
+            return confirm('There is a small Cash In Variance.  Are you sure you want to save without balancing it first?');
+        }
+
+        return true;
+      }
+    </script>
+
+    <style>
+        /*
+                FLYOUT STYLES
+        */
+
+         #evPane.evFlyout {
+            background-color:#f3f3f3;
+            position: fixed;
+            width: 1036px;
+            right: -1035px;
+            top: 50px;
+            height:550px;
+            padding: 10px 0 20px 20px;
+            border-right: none;
+            -webkit-border-top-left-radius: 20px;
+            -webkit-border-bottom-left-radius: 20px;
+            -moz-border-radius-topleft: 20px;
+            -moz-border-radius-bottomleft: 20px;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+            z-index: 5000;
+            margin-left: 42px;
+            min-height: 400px;
+            box-shadow: 0 0 10px #787878;
+            border: 1px solid #DEDEDE;
+        }
+
+         #evPane.evFlyout .tab {
+            position: absolute;
+            border-right: none;
+            background-color: #f3f3f3;
+            
+            -webkit-border-top-left-radius: 10px;
+            -webkit-border-top-right-radius: 10px;
+            -moz-border-radius-topleft: 10px;
+            border-top-left-radius: 10px;
+            cursor: pointer;
+            padding:7px 8px;
+            box-shadow:0 -3px 4px #959595;
+
+            top:440px;
+            left: -59px;
+
+            -webkit-transform: rotate(-90deg); 
+            -moz-transform: rotate(-90deg); 
+            -ms-transform: rotate(-90deg);
+        }
+
+         #evPane.evFlyout .close {
+            color: #D6D6D6;
+            cursor: pointer;
+            display: block;
+            float: right;
+            font-family: 'Platform-Font', Helvetica, Arial, sans-serif;
+            padding-left: 25px;
+            padding-right: 20px;
+            text-align: right;
+            text-transform: uppercase;
+        }
+
+         #evPane.evFlyout .delete{
+            position: absolute;
+            top: 12px;
+            right: 7px;
+            padding: 6px 8px;
+        }
+
+         #evPane.evFlyout .delete:hover{
+            text-decoration:underline;
+        }
+
+         #evPane.evFlyout .header {
+            color: #333;
+            font-size: 25px;
+            padding-bottom: 15px;
+            padding-top: 10px;
+        }
+        
+         #evPane.evFlyout .body {
+            padding-right: 20px;
+            overflow: scroll;
+        }
+
+         #evPane.evFlyout select{
+            margin:2px 0 5px 0;
+        }
+
+         #evPane.evFlyout .table{
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            margin-top:15px;
+        }
+
+         #evPane.evFlyout .table th{
+            font-size: 1.05em;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.14);
+        }
+
+         #evPane.evFlyout .table-striped > tbody > tr:nth-child(4n),  #evPane.evFlyout .table-striped > tbody > tr:nth-child(4n-1){
+            background-color: #f6f8fa;
+        }
+
+         #evPane.evFlyout .table td{
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+         #evPane.evFlyout .table>tbody>tr>td, .flyout .table>tbody>tr>th, .flyout .table>tfoot>tr>td, .flyout .table>tfoot>tr>th, .flyout .table>thead>tr>td, .flyout .table>thead>tr>th{
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+        }
+
+         #evPane.evFlyout .label-table{
+            display: inline-block;
+            width: 80%;
+            min-width: 8ex;
+            font-size: 1em;
+            max-width: 100px;
+            padding: 5px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        /* tables */
+         #evPane.evFlyout table.tablesorter {
+            font-family:arial;
+            background-color: #CDCDCD;
+            margin:10px 0pt 15px;
+            font-size: 8pt;
+            width: 100%;
+            text-align: left;
+        }
+
+         #evPane.evFlyout table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+            background-color: #aebdee;
+            border: 1px solid #FFF;
+            font-size: 8pt;
+            padding: 4px;
+        }
+
+         #evPane.evFlyout table.tablesorter thead tr .header {
+            background-image: url(bg.gif);
+            background-repeat: no-repeat;
+            background-position: center right;
+            cursor: pointer;
+        }
+
+         #evPane.evFlyout table.tablesorter tbody td {
+            color: #3D3D3D;
+            padding: 4px;
+            background-color: #FFF;
+            vertical-align: top;
+            height: 20px;
+        }
+
+         #evPane.evFlyout table.tablesorter tbody tr.odd td {
+            background-color:#F0F0F6;
+        }
+
+         #evPane.evFlyout table.tablesorter thead tr .headerSortUp {
+            background-image: url(asc.gif);
+        }
+
+         #evPane.evFlyout table.tablesorter thead tr .headerSortDown {
+            background-image: url(desc.gif);
+        }
+
+         #evPane.evFlyout table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+        background-color: #8dbdd8;
+        }
+
+        .noteText{
+            color:#818181;
+            font-style: italic;
+        }
+
+        .tableHeader1 {
+            padding: 3px;
+            text-align: center;
+            border-style:solid;
+            border-color:#ffffff;
+            border-width: 1px;
+        }
+
+        .tableHeader2 {
+            background-color: #aac0dd;
+            width:110px;
+            min-width:110px;
+            max-width:110px;
+            overflow:hidden;
+        }
+
+        .tableCell1 {
+            width:110px;
+            min-width:110px;
+            max-width:110px;
+            padding:3px;
+            overflow:hidden;
+            border:1px solid #ffffff;
+        }
+
+        .nonEditable {
+            background-color: #d4dfee;
+        }
+
+        .editedCell {
+/*          color:#00a000; */
+            background-color:#f0f0b0;
+        }
+
+        .varianceBad {
+            color:#ff0000;
+        }
+
+        .negativeNumber {
+            color:#ff0000;
+        }
+    </style>
+    
+        <div id="evPane" class="evFlyout flyout">
+            <div class="close">
+                <i class="fa fa-arrow-right" style="color:#333;"></i>
+            </div>
+            <div class="tab">
+                Earned Value
+            </div>
+            <div class="header">
+                Earned Value
+            </div>
+
+            <apex:outputPanel id="evPanel">
+                <div class="body">
+                    <apex:pageBlock mode="mainDetail">
+                        <div style="height:450px;">
+
+<div id="tabs2" class="tabsForResource2" style="height:200px;width:705px;float:left;">
+  <ul>
+    <li><a class="tabs-1x" href="#tabs-1x">Earned Value</a></li>
+    <li><a class="tabs-2x" href="#tabs-2x">CPI/SPI Trend</a></li>
+  </ul>
+  <div id="tabs-1x">
+	<div id="curve_charta" style="width: 660px; height: 140px; float:left;"></div>
+  </div>
+  <div id="tabs-2x">
+	<div id="cpiAndSpi_chart" style="width: 660px; height: 140px; float:left;"></div>
+  </div>
+</div>
+
+                            <div style="width:270px; height:200px; padding-left:20px; float:right; padding-right:5px;">
+
+                            <div style="float:right;">
+                                <apex:commandButton onclick="return checkSave2();" action="{!save}" value="Save" style="margin-right:10px; margin-bottom: 15px;"/>
+                                <apex:commandButton action="{!clearAllOverrides}" value="Clear All Overrides" style="margin-right:0px; margin-bottom: 15px;" onclick="return confirm('Are you sure you want to clear all overrides?  This action cannot be undone!');"/>
+                             </div>   
+
+                             <div style="float:right;">
+                            <table style="width:260px;">
+                                <tr>
+                                    <td>Original Planned Cost Total:</td>
+                                    <td style="padding-left:5px; text-align:right;" class="{!IF(plannedCostTotal<0, 'negativeNumber', '')}">
+                                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                        <apex:param value="{!plannedCostTotal}" />
+                                    </apex:outputText>  
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Applied Planned Cost Total:</td>
+                                    <td id="overriddenPlannedCostTotal2" style="padding-left:5px; text-align:right;"></td>
+                                </tr>
+
+                                <tr>
+                                    <td id="plannedCostVariance2Label">Planned Cost Variance:</td>
+                                    <td id="plannedCostVariance2" style="padding-left:5px; text-align:right;"></td>
+                                </tr>
+
+                                <tr>
+                                    <td style="padding-top:10px;">Original Cash In Total:</td>
+                                    <td style="padding-top:10px; padding-left:5px; text-align:right;" class="{!IF(cashInTotal<0, 'negativeNumber', '')}">
+                                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                        <apex:param value="{!cashInTotal}" />
+                                    </apex:outputText>  
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Applied Cash In Total:</td>
+                                    <td id="overriddenCashInTotal2" style="padding-left:5px; text-align:right;"></td>
+                                </tr>
+
+                                <tr>
+                                    <td id="cashInVariance2Label">Cash In Variance:</td>
+                                    <td id="cashInVariance2" style="padding-left:5px; text-align:right;"></td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="2" style="padding-top:10px;">
+                                        <i>Enter '?' in any cell to balance the variance to that cell.</i>
+                                    </td>
+                                </tr>   
+                            </table>
+                            </div>
+                            <div style="clear:both;"></div>
+
+                            </div>
+
+
+                            <div style="width:5px; height:20px;clear:both;"></div>
+
+                            <table style="border-collapse:collapse;border-width: 1px 1px 0px 1px;border-style:solid;border-color:#ffffff;table-layout:fixed;">
+                                <thead>
+                                    <tr class="headerRow">
+                                        <th class="tableHeader1 tableHeader2">Period Start Date</th>
+                                        <th class="tableHeader1 tableHeader2">Planned Cost<br />(In Period)</th>
+                                        <th class="tableHeader1 tableHeader2">Planned Cost<br />(Cumulative)</th>
+                                        <th class="tableHeader1 tableHeader2">Actual Cost<br />(In Period)</th>
+                                        <th class="tableHeader1 tableHeader2">Actual Cost<br />(Cumulative)</th>
+                                        <th class="tableHeader1 tableHeader2">Progress<br />% Complete</th>
+                                        <th class="tableHeader1 tableHeader2">Earned Value</th>
+                                        <th class="tableHeader1 tableHeader2">CPI</th>
+                                        <th class="tableHeader1 tableHeader2">SPI</th>
+                                    </tr>
+                                </thead>
+                            </table>
+
+                            <div style="height:185px; overflow:scroll;">
+
+                            <apex:pageBlockTable styleClass="mainTable2" value="{!lWeeklyRollupEntries}" var="row" style="border-collapse:collapse;border:1px solid #ffffff;table-layout:fixed;">
+                                <apex:column styleClass="nonEditable tableCell1">
+                                    <apex:outputText value="{0,date,M/d/yyyy}">
+                                        <apex:param value="{!row.PeriodStartDate__c}"/>
+                                    </apex:outputText>
+                                </apex:column>
+
+                                <apex:column styleClass="tableCell1" style="text-align:right;" ></apex:column>
+                                <apex:column styleClass="tableCell1 nonEditable" style="text-align:right;" ></apex:column>
+                                <apex:column styleClass="tableCell1 nonEditable" style="text-align:right;" ></apex:column>
+                                <apex:column styleClass="tableCell1 nonEditable" style="text-align:right;" ></apex:column>
+                                <apex:column styleClass="tableCell1 nonEditable" style="text-align:right;" ></apex:column>
+                                <apex:column styleClass="tableCell1 nonEditable" style="text-align:right;" ></apex:column>
+                                <apex:column styleClass="tableCell1 nonEditable" style="text-align:right;" ></apex:column>
+                                <apex:column styleClass="tableCell1 nonEditable" style="text-align:right;" ></apex:column>
+                            </apex:pageBlockTable>
+
+                            </div>
+                    </div>  
+
+                    </apex:pageBlock>
+                </div>
+            </apex:outputPanel>
+        </div>
+    
+</apex:component>

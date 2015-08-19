@@ -1,0 +1,290 @@
+<apex:page standardController="pse__Proj__c" extensions="ECO_ResilienceController" showHeader="true" sidebar="true" docType="html-5.0" id="pgId">
+    <style>
+    .ui-widget{
+        font-family:inherit !important;
+        font-size:inherit !important;
+    }
+    </style>
+    <apex:stylesheet value="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"/>
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+
+
+     <script type="text/javascript">
+
+        var j$ = jQuery.noConflict();
+         j$(function() {
+            function log( message ) {
+                j$(document.getElementById('{!$Component.pgId.frmId.pgBlockId.CityID}')).val(message);
+
+            }
+
+            j$(document.body).on('change','#city',function(){
+                j$(document.getElementById('{!$Component.pgId.frmId.pgBlockId.CityID}')).val(j$("#city").val());
+            });
+         
+            j$( "#city" ).autocomplete({
+                source: function( request, response ) {
+                    j$.ajax({
+                    //url: "http://gd.geobytes.com/AutoCompleteCity",
+                    url: "https://secure.geobytes.com/AutoCompleteCity/gd?key=d4180a306e267fa5529183aedabfaf51",
+                    dataType: "jsonp",
+                    data: {
+                        q: request.term
+                    },
+                success: function( data ) {
+                    response( data );
+                }
+            });
+            },
+            minLength: 3,
+                select: function( event, ui ) {
+                log( ui.item ? ui.item.label : "");
+                },
+            open: function() {
+                j$( this ).removeClass( "ui-corner-all" ).addClass( "ui-corner-top" );
+                },
+            close: function() {
+                j$( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
+                }
+            });
+
+
+
+        });
+     </script>
+
+    <apex:sectionHeader title="Project Location(s) and Resilence" subtitle="{!pse__Proj__c.Name}" />
+
+    <style>
+        .searchText{
+            text-align:center;
+            font-weight:bold;
+            font-size:20px;
+        }
+        .tt-search-box.tt-input{
+            border-radius:0;
+            border:1px solid #a9a9a9;
+        }
+        #city { width: 25em; }
+
+        /* CUSTOM HELP / GUIDANCE TEXT BOX */
+        .customHelpText{
+            padding:7px;
+            border:1px solid #85B3CE;
+            min-height:30px;
+            display:block;
+            width:auto;
+            margin:0;
+            background-color:#E3F0F8;
+            border-radius:4px;
+            margin-bottom:15px;
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        }       
+    </style>
+
+    <apex:outputPanel id="messages">
+        <apex:pageMessages />
+    </apex:outputPanel>
+
+    <div class="customHelpText">
+        <div class="customHelpBody">
+            <B>Project Locations</B>:  List all project cities and countries where AECOM staff will be required to travel to/from or work in to complete the required scope of services.  This includes any travel to locations as part of the planning, bid or execution phases of the project and includes both client sites as well as physical project sites. The risk rating of the project location(s) will inform the level and complexity of resilience planning (below).<br/><br/>
+
+            <B>Resilience Planning</B>:  Resilience planning details how we protect our project team members and provides a road map of what to do should an emergency or crisis occur, including staff actions and vital information to assist our security team with response actions.  Projects located in high risk countries may require additional planning for security and well-being, including Journey Management Plan, Communications Plan, Medical Response Plan, Disruptive Event Management Plan, Risk Assessment Guide, Disruptive Event Response Checklist and Evacuation Plan.<br/><br/>
+
+            Contact the Global Resilience Group (GRG) with any questions (ProjectResilience@aecom.com).
+            <br/><br/>
+             Goal is to Establish and maintain a framework for the protection of our people and assets. Establish resiliency in our global operations.           
+        </div>
+    </div>  
+
+
+     <apex:form id="frmId">
+
+        <apex:outputField value="{!pse__Proj__c.PrimaryCityName__c}" rendered="false"/>
+        <apex:outputField value="{!pse__Proj__c.PrimaryCountry__c}" rendered="false"/>
+        <apex:outputField value="{!pse__Proj__c.ResilienceElectronicAssets__c}" rendered="false"/>
+
+        <apex:pageBlock title="Project Location(s)" id="pgBlockId">
+
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="Return to Project" action="{!cancel}" />
+            </apex:pageBlockButtons>
+
+            <apex:panelGrid columns="3" id="panelGridId">
+                <div class="ui-widget">
+                  <label for="city">Location (City): </label>
+                  <input id="city" />
+                </div>
+                <apex:commandButton action="{!SelectPrimaryCity}" value="Add Primary" id="CityRiskAddPrimary" rerender="ProjectCityPanel, messages, ResiliencePanel"  status="CityUpdateStatus" />
+                <apex:commandButton action="{!SelectSecondaryCity}" value="Add Secondary" id="CityRiskAddSecondary" rerender="ProjectCityPanel, messages, ResiliencePanel"  status="CityUpdateStatus" />
+            </apex:panelGrid>
+            <apex:inputHidden id="CityID" value="{!idCityID}" />
+            <BR /><BR />
+
+            <apex:outputPanel id="ProjectCityPanel">
+                <apex:pageBlockSection title="Selected Locations"  columns="1" collapsible="false"></apex:pageBlockSection>
+                <apex:actionStatus id="CityUpdateStatus">
+                    <apex:facet name="start">
+                        <p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+
+                    </apex:facet>
+                    <apex:facet name="stop">
+                        <apex:outputPanel >
+                            <apex:pageMessage severity="INFO" rendered="{!if(lstProjectCities.size > 0, false, true)}" summary="No Cities have been selected."></apex:pageMessage> 
+                            <apex:pageBlockTable value="{!lstProjectCities}" var="ProjectCity" rendered="{!if(lstProjectCities.size > 0, true, false)}">
+                                <apex:column >
+                                    <apex:facet name="header">Action</apex:facet>
+                                    <apex:commandLink action="{!SelectPrimaryCity}" value="Make Primary" rerender="messages, ProjectCityPanel" status="CityUpdateStatus">
+                                        <apex:param assignTo="{!idCityID}" name="CityID" value="{!ProjectCity.CityName__c}, ,{!ProjectCity.ProjectCountryRisk__r.CountryName__c}" />
+                                    </apex:commandLink>&nbsp;&nbsp;
+                                    <apex:commandLink action="{!RemoveEntryCity}" value="Remove" rerender="messages, ProjectCityPanel, ResiliencePanel" status="CityUpdateStatus">
+                                        <apex:param assignTo="{!idCityID}" name="CityID" value="{!ProjectCity.CityName__c}, ,{!ProjectCity.ProjectCountryRisk__r.CountryName__c}" />
+                                    </apex:commandLink>
+                                </apex:column>
+                                <apex:column headerValue="Project Location" value="{!ProjectCity.CityName__c}" />
+                                <apex:column headerValue="State/Province" value="{!ProjectCity.State_Name__c}" />
+                                <apex:column headerValue="Country" value="{!ProjectCity.ProjectCountryRisk__r.CountryName__c}" />
+                                <apex:column headerValue="Security Rating" value="{!ProjectCity.ProjectCountryRisk__r.Safety_Rating__c}" />
+                                <apex:column headerValue="Business Risk" value="{!ProjectCity.ProjectCountryRisk__r.BusinessRisk__c}" />
+                                <apex:column headerValue="Detention & Discrimination" value="{!ProjectCity.ProjectCountryRisk__r.DetentionDiscrimination__c}" />
+                                <apex:column headerValue="Kidnap & Ransom" value="{!ProjectCity.ProjectCountryRisk__r.KidnapRansom__c}" />
+                                <apex:column headerValue="Property" value="{!ProjectCity.ProjectCountryRisk__r.Property__c}" />
+                                <apex:column value="{!ProjectCity.Type__c}" />
+                            </apex:pageBlockTable>
+
+                            <BR /><BR /><BR />
+                            <div style="text-align:center;font-size: 20px;font-weight: bold;padding:0 0 5px 10px;">
+                            <apex:outputLabel value="Project Location Risk: " />
+                            <apex:outputText value="{!projectRisk}" />
+                            </div>
+
+                        </apex:outputPanel>
+                    </apex:facet>
+                </apex:actionStatus>
+            </apex:outputPanel>
+            <BR /><BR /><BR />
+
+
+            <BR /><BR /><BR />
+        </apex:pageBlock>
+        <apex:outputPanel id="ResiliencePanel">
+        <apex:pageBlock title="Resilience Planning">
+
+            <apex:pageBlockButtons location="top">
+                <apex:commandButton value="GRG Website" onclick="window.open('http://my.aecomnet.com/Intranet/AECOM+Corporate/Global+Resilience+Group');"/>
+                <apex:commandButton value="Operational Security Plan" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Operational%20Security%20Plan%20with%20Attachments/Introduction%20to%20Operational%20Security%20Plan.pdf');" />
+                <apex:commandButton value="Travel Security Information Document" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Travel%20Security%20Information%20Document/AECOM%20Travel%20Security%20Information%20Document.pdf');" />
+                <apex:commandButton value="Physical Resilience Standard" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" />
+                <apex:commandButton value="Country Security Standard" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/SitePages/Home.aspx?RootFolder=%2Fsites%2Fgrgp%2FShared%20Documents%2FTravel%20Security%20Landing%20Page%2FCountry%20Security%20Standards&FolderCTID=0x012000D13C84D93D4AD74ABE09B56950AEA117&View={66F60314-229D-46B1-952A-BEF57127A7ED}');" />  
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection title="Travel Security"  columns="1" collapsible="false" />
+
+            <apex:pageMessage severity="INFO" rendered="{!if(lstProjectCities.size > 0, false, true)}" summary="Project Location must be selected to support resilience planning."></apex:pageMessage> 
+            <apex:outputPanel rendered="{!if(lstProjectCities.size > 0, true, false)}">
+                <apex:outputPanel rendered="{!AND(( projectRisk >= 0 ), ( projectRisk <= 1.9) )}">
+                        Based on the country risk rating for this project, no further action is required when project team members book project travel.
+                </apex:outputPanel>
+
+                <apex:outputPanel rendered="{!AND(( projectRisk >= 2 ), ( projectRisk <= 2.9) )}">
+                    Based on the country risk rating, project team members are required to complete and submit Section 1.0 of the Travel Security Information Document prior to booking project travel.  Further information and guidance is available on the Global Resilience Group website.
+                    <BR /><BR />
+                    <!--<apex:commandButton value="GRG Website" onclick="window.open('http://my.aecomnet.com/Intranet/AECOM+Corporate/Global+Resilience+Group');"/>
+                    <apex:commandButton value="Physical Resilience Standard" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" />
+                    -->
+                </apex:outputPanel>
+
+                <apex:outputPanel rendered="{!projectRisk >= 3}">
+                    Based on the country risk rating, project team members are required to complete and submit Section 1.0, 2.0 and 3.0 (as applicable) of the Travel Security Information Document and receive concurrence from the Global Resilience Group prior to booking travel. Further information and guidance is available on the Global Resilience Group website.
+                    <!--<apex:commandButton value="GRG Website" onclick="window.open('http://my.aecomnet.com/Intranet/AECOM+Corporate/Global+Resilience+Group');"/>
+                    <apex:commandButton value="Physical Resilience Standard" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" />
+                    -->
+                </apex:outputPanel>
+
+                <apex:pageBlockSection title="Electronic Assets Security"  columns="1" collapsible="false" />
+
+                    <table><tr>
+                    <td class="questionCol">
+                        <apex:outputText value="Will any AECOM employee be carrying or transporting AECOM-owned computer, network, other devices and/or electronics?"/>
+                        </td>
+                        <td>
+                            <apex:selectRadio value="{!oProject.ResilienceElectronicAssets__c}" layout="lineDirection" >
+                                <apex:selectOptions value="{!types}"></apex:selectoptions>
+                                <apex:actionSupport event="onchange" action="{!selectOption}" rerender="ResiliencePanel, messages"/>
+                            </apex:selectRadio>
+                        </td>
+                    </tr></table>       
+
+                <apex:outputPanel rendered="{!oProject.ResilienceElectronicAssets__c == 'No'}">
+                    <BR /><BR />
+                    No further action is required.
+                </apex:outputPanel>         
+
+                <apex:outputPanel rendered="{!oProject.ResilienceElectronicAssets__c == 'Yes'}">
+                    <BR /><BR />
+                    Completion of Section 1.8 of the Operational Security Plan is required for review by the IT Information Security team and the Global Resilience Group.  Further information and guidance is available on the Global Resilience Group website.
+                    <BR /><BR />
+                    <!--<apex:commandButton value="GRG Website" onclick="window.open('http://my.aecomnet.com/Intranet/AECOM+Corporate/Global+Resilience+Group');"/>
+                    <apex:commandButton value="Physical Resilience Standard"  onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" />
+                    -->
+                </apex:outputPanel>
+
+                <apex:pageBlockSection title="Project Location Security"  columns="1" collapsible="false" />
+                <apex:outputPanel rendered="{!AND(( projectRisk >= 0 ), ( projectRisk <= 1.9) )}">
+                    Based on the country risk rating for this project, the project team is required to complete and submit Section 1.0 of the Operational Security Plan.  Security requirements for the project can be reviewed in the Physical Resilience Standard.  Further information and guidance is available on the Global Resilience Group website.
+                    <BR /><BR />
+                    <!--<apex:commandButton value="GRG Website" onclick="window.open('http://my.aecomnet.com/Intranet/AECOM+Corporate/Global+Resilience+Group');"/>
+                    <apex:commandButton value="Physical Resilience Standard"  onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" />         
+                    --> 
+                </apex:outputPanel>
+
+                <apex:outputPanel rendered="{!AND(( projectRisk >= 2 ), ( projectRisk <= 2.9) )}">
+                    Based on the country risk rating for this project, the project team is required to complete the following documentation for review and approval by the Global Resilience Group:
+                    <BR /><BR />
+                    <ul>
+                        <li>Project Pre-Bid Security Risk Assessment (opportunity phase)</li>
+                        <li>Operational Security Plan (contracted phase; Sections 1.0 and 2.0 only)</li>
+                    </ul>
+                    <BR /><BR />
+                    Costs to complete the Operational Security Plan and implement identified security measures, security training, staff and/or materials should be estimated and included in AECOM’s proposal and Project Plan. 
+                    <BR /><BR />
+                    Further information and guidance is available on the Global Resilience Group website.  Security requirements can be viewed in the Physical Resilience and Country Security Standards.   
+                    <BR /><BR />
+                    <!--<apex:commandButton value="GRG Website" onclick="window.open('http://my.aecomnet.com/Intranet/AECOM+Corporate/Global+Resilience+Group');"/>
+                    <apex:commandButton value="Country Security Standard" action="{!stub}" />       
+                    <apex:commandButton value="Physical Resilience Standard"  onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" />     
+                    -->     
+                </apex:outputPanel>
+
+                <apex:outputPanel rendered="{!projectRisk >= 3}">
+                    Based on the country risk rating for this project, the project team is required to complete the following documentation for review and approval by the Global Resilience Group:
+                    <BR /><BR />
+                    <ul>
+                        <li>Project Pre-Bid Security Risk Assessment (opportunity phase)</li>
+                        <li>Operational Security Plan (contracted phase)</li>
+                    </ul>
+                    <BR /><BR />
+                    Costs to complete the Operational Security Plan and implement identified security measures, security training, staff and/or materials should be estimated and included in AECOM’s proposal and Project Plan. 
+                    <BR /><BR />
+                    Further information and guidance is available on the Global Resilience Group website.  Security requirements can be viewed in the Physical Resilience and Country Security Standards. 
+                    <BR /><BR />
+                    <!--<apex:commandButton value="GRG Website" onclick="window.open('http://my.aecomnet.com/Intranet/AECOM+Corporate/Global+Resilience+Group');"/>
+                    <apex:commandButton value="Country Security Standard" action="{!stub}" />       
+                    <apex:commandButton value="Physical Resilience Standard"  onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" /> 
+                    -->                 
+                </apex:outputPanel> 
+            </apex:outputPanel>
+        </apex:pageBlock>
+        </apex:outputPanel>
+
+        <c:ECO_RiskFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="Resilience" />
+        <c:ECO_AssumptionFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="Resilience" />
+     </apex:form>
+
+</apex:page>

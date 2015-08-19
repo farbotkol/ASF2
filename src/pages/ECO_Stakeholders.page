@@ -1,0 +1,508 @@
+<apex:page standardController="pse__Proj__c" extensions="ECO_StakeholdersController" showHeader="true" sidebar="false">
+
+	<style>
+		.panelWrapper .mainTitle {
+    		color:black !important;
+    		padding: 10px 10px 10px 10px !important;
+    		font-size: 1.3em !important
+		}
+		
+		.bPageBlock .detailList tr td.dataCol.last, 
+    	.bPageBlock .detailList tr td.labelCol.last
+    	{
+    		border-bottom:0px solid #dbdbdb;
+    	}
+	
+    	.bPageBlock .detailList tr td.dataCol, 
+    	.bPageBlock .detailList tr td.labelCol
+   		{
+    		border-bottom:1px solid #dbdbdb;
+    	}
+    		
+		.meetingNotes td, .meetingNotes th{
+			padding:10px;
+		}
+
+		.meetingNotes td{
+			padding-top:2px;
+		}
+		
+		.textalign{text-align:center; } 
+
+		.meetingNotes th{
+			padding-bottom:2px;
+		}
+
+		.tableLabel{
+			font-weight:bold;
+			color: #4a4a56 !important;
+			text-align: right;
+			font-size: 91%;
+			padding-right:10px;
+		}
+
+		.setPicker{
+			position:absolute;
+			top:0;
+			right:0;
+		}
+		body .bPageBlock .pbBody .labelCol{
+			padding-top: 3px !important;
+			padding-bottom: 5px;
+			vertical-align: middle;
+		}
+
+		.riskNotifications .pbBody .redText{
+			color:red;
+		}
+		
+		.ui-widget-header{
+			background: #FFFFFF;
+		}
+		
+		.customHelpText
+		{
+			padding:20px 25px;
+			border:1px solid #85B3CE;
+			min-height:30px;
+			display:block;
+			width:auto;
+			margin:20px 25px;
+			background-color:#E3F0F8;
+		}
+		.customHelpIcon
+		{
+			display:inline-block;
+			margin:0 15px 0 0;
+			width:24px;
+			height:24px;
+			vertical-align:top !important;
+		}
+		.customHelpBody
+		{
+			display:inline-block;
+			color:#;
+			max-width:95%;
+		}
+		.bPageBlock .message{
+		    padding: 7px;
+		    border: 1px solid #85B3CE;
+		    min-height: 30px;
+		    display: block;
+		    width: auto;
+		    margin: 0 0 5px 0;
+		    background-repeat: no-repeat;
+		    border-radius: 4px;
+		    background-color: #A2D3F1;
+
+		}
+	</style>
+	
+	<apex:form id="topForm">
+
+		<apex:outputField value="{!pse__Proj__c.EstimatedStartDate__c}" rendered="false" />
+
+		<div style="position:relative; border-bottom:5px; border-top:5px; padding-bottom:5px">
+			<apex:sectionHeader title="Project Team & Stakeholders" subtitle="{!pse__Proj__c.Name}" />
+		</div>
+	
+		<apex:pageMessages id="pgMessages" />
+
+		<apex:outputPanel id="topPanel" rendered="{!NOT(ISNULL(pse__Proj__c.Id))}">
+			<div class="projectSummary">
+				<apex:pageBlock title="Project Key Members">
+					<apex:pageBlockButtons location="top">
+						<apex:commandButton action="{!SaveAll}" value="Save" rerender="pgMessages,ActiveKeysTable,InactiveKeysTable,ProjectTeamTable,VendorSubTable,StakeholderTable,CommTable" onClick="this.disabled = true;"/><!-- onComplete="location.reload()" -->
+						<apex:commandButton action="{!ReturnToProject}" value="Return to Project" />
+					</apex:pageBlockButtons>
+					<apex:pageBlockSection columns="1" collapsible="false">
+						<apex:tabPanel switchType="client" selectedTab="active">
+							<apex:tab id="activeKeyMembers" label="Key Members" name="active">
+								<apex:pageMessage severity="info" rendered="{!showVacantKeyMemberNote}" summary="One or more of this project's active Key Member roles is vacant." />
+						        <apex:pageBlockTable value="{!lActiveMembersKey}" var="item" width="100%" id="ActiveKeysTable">
+						        	<apex:facet name="footer">
+										<apex:commandLink action="{!addRecord}" value="Add New Key Member" rerender="ActiveKeysTable" status="keyStatus">
+											<apex:param name="object" value="KeyMember" assignTo="{!recordObjectType}"/>
+										</apex:commandLink>
+									</apex:facet>
+						        	<apex:column >
+										<apex:facet name="header">Role</apex:facet>
+										<apex:outputLabel value="{!item.RoleName}" rendered="{!if(item.RoleName != null, true, false)}"/>
+										<apex:selectList size="1" multiselect="false" value="{!item.RoleID}" rendered="{!if(item.RoleName == null, true, false)}">
+											<apex:selectOptions value="{!item.lKeyRoleTypes}" />
+										</apex:selectList>
+									</apex:column>
+						        	<apex:column >
+										<apex:facet name="header">Name</apex:facet>
+										<apex:inputField value="{!item.oPTM.Contact__c}"> 
+											<apex:actionSupport event="onchange" action="{!defaultDates}" reRender="topPanel, pgMessages" />
+										</apex:inputField> 
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Start Date</apex:facet>
+										<apex:inputField value="{!item.oPTM.StartDate__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">End Date</apex:facet>
+										<apex:inputField value="{!item.oPTM.EndDate__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Phone</apex:facet>
+										<apex:outputField value="{!item.oPTM.Phone__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Email</apex:facet>
+										<apex:outputField value="{!item.oPTM.Email__c}" />
+									</apex:column>
+						        </apex:pageBlockTable>
+						        <apex:actionStatus id="keyStatus">
+									<apex:facet name="start">
+										<p style="padding-bottom:20px;text-align:center;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+									</apex:facet>
+								</apex:actionStatus>
+				        	</apex:tab>
+				        	<apex:tab id="inActiveKeyMembers" label="Key Member History" name="inactive">
+						        <apex:pageBlockTable value="{!lInactiveMembersKey}" var="item" width="100%" id="InactiveKeysTable">
+						        	<apex:column >
+										<apex:facet name="header">Role</apex:facet>
+										<apex:outputLabel value="{!item.RoleName}" />
+									</apex:column>
+						        	<apex:column >
+										<apex:facet name="header">Name</apex:facet>
+										<apex:inputField value="{!item.oPTM.Contact__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Start Date</apex:facet>
+										<apex:inputField value="{!item.oPTM.StartDate__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">End Date</apex:facet>
+										<apex:inputField value="{!item.oPTM.EndDate__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Phone</apex:facet>
+										<apex:outputField value="{!item.oPTM.Phone__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Email</apex:facet>
+										<apex:outputField value="{!item.oPTM.Email__c}" />
+									</apex:column>
+						        </apex:pageBlockTable>
+				        	</apex:tab>
+				        </apex:tabPanel>
+					</apex:pageBlockSection>
+				</apex:pageBlock>
+				
+				<apex:pageBlock title="Project Team (AECOM)">
+					<apex:pageBlockSection columns="1" collapsible="false">
+						<apex:outputPanel id="ProjectTeamTable">
+						<apex:tabPanel switchType="client" selectedTab="ActiveTeamMember">
+							<apex:tab id="activeTeamMember" label="Active Team Members" name="ActiveTeamMember">
+
+								<apex:pageBlockTable value="{!lMembersTeam}" var="item" width="100%" columnsWidth="60px">
+									<apex:facet name="footer">
+										<apex:commandLink action="{!addRecord}" value="Add New Team Member" rerender="ProjectTeamTable" status="teamStatus">
+											<apex:param name="object" value="MembersTeam" assignTo="{!recordObjectType}"/>
+										</apex:commandLink>
+									</apex:facet>
+									<apex:column >
+										<apex:facet name="header">Actions</apex:facet>
+										<apex:commandLink action="{!removeRecord}" value="Remove" rerender="ProjectTeamTable" status="teamStatus">
+											<apex:param name="object" value="MembersTeam" assignTo="{!recordObjectType}" />
+											<apex:param name="objID" value="{!item.oPTM.Id}" assignTo="{!recordObjectId}" />
+										</apex:commandLink>
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Role Type</apex:facet>
+										<apex:selectList size="1" multiselect="false" value="{!item.RoleID}">
+											<apex:selectOptions value="{!item.lTeamRoleTypes}" />
+										</apex:selectList>
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Name</apex:facet>
+										<apex:inputField value="{!item.oPTM.Contact__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Project Role Title</apex:facet>
+										<apex:inputField value="{!item.oPTM.ProjectRoleTitle__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Phone</apex:facet>
+										<apex:outputField value="{!item.oPTM.Phone__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Email</apex:facet>
+										<apex:outputField value="{!item.oPTM.Email__c}" />
+									</apex:column>
+								</apex:pageBlockTable>
+								<apex:actionStatus id="teamStatus">
+									<apex:facet name="start">
+										<p style="padding-bottom:20px;text-align:center;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+									</apex:facet>
+								</apex:actionStatus>
+
+							</apex:tab>
+							<apex:tab id="inactiveTeamMember" label="Inactive Team Members" name="inActiveTeamMember">
+								<apex:pageMessage severity="info" rendered="{!if(lInactiveMembersTeam.size = 0, true, false)}" summary="No inactive users have been found." />
+								<apex:pageBlockTable value="{!lInactiveMembersTeam}" rendered="{!if(lInactiveMembersTeam.size = 0, false, true)}" var="item" width="100%" columnsWidth="60px">
+									<apex:column >
+										<apex:facet name="header">Role Type</apex:facet>
+										<apex:selectList size="1" multiselect="false" value="{!item.RoleID}">
+											<apex:selectOptions value="{!item.lTeamRoleTypes}" />
+										</apex:selectList>
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Name</apex:facet>
+										<apex:inputField value="{!item.oPTM.Contact__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Project Role Title</apex:facet>
+										<apex:inputField value="{!item.oPTM.ProjectRoleTitle__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Phone</apex:facet>
+										<apex:outputField value="{!item.oPTM.Phone__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Email</apex:facet>
+										<apex:outputField value="{!item.oPTM.Email__c}" />
+									</apex:column>
+								</apex:pageBlockTable>								
+
+							</apex:tab>
+
+						</apex:tabPanel>
+						</apex:outputPanel>
+					</apex:pageBlockSection>
+				</apex:pageBlock>
+				
+<apex:outputPanel styleClass="panelWrapper" layout="block">
+    <apex:pageBlock >
+    	
+		<apex:facet name="header">
+		<apex:outputPanel >
+		<h2 class="mainTitle">
+		Stakeholders
+		</h2><c:ECO_HelpIcon helpText="An individual, group or organization who has interests that may be positively or negatively affected by the performance or completion of the project or may exert influence over the project, its deliverables or its team members. 
+Stakeholders can be:
+actively involved within the project (i.e., the project team),
+outside of the project, but within AECOM (i.e., project sponsor, operations managers, business line managers), or
+outside of AECOM (i.e., clients, business partners, subcontractors, end users, government regulators)."/>
+		</apex:outputPanel>
+		</apex:facet>    
+			
+
+					
+					
+					
+
+					
+					
+					
+<!-- 							<c:ECO_HelpIcon helpText="An individual, group or organization who has interests that may be positively or negatively affected by the performance or completion of the project or may exert influence over the project, its deliverables or its team members. 
+Stakeholders can be:
+actively involved within the project (i.e., the project team),
+outside of the project, but within AECOM (i.e., project sponsor, operations managers, business line managers), or
+outside of AECOM (i.e., clients, business partners, subcontractors, end users, government regulators)."/> -->
+					<apex:pageBlockButtons location="top">
+						<apex:commandButton action="/apex/ECO_ClientFinder?scontrolCaching=1&id={!oProject.Id}" value="Manage Clients" />
+					</apex:pageBlockButtons>
+
+						<apex:pageMessage severity="info"  escape="false"  summary="
+				1. Engage with the appropriate Client Account or Program Manager when completing this section to ensure all appropriate client-related stakeholders are recognized and any client or account-specific communication strategies or gift and entertainment policies are identified and followed.<br/>
+				2. Risks are inherent when the client contact or other stakeholders change during project execution.  Consider adding
+				potential risks to the project Risk Register with proposed mitigation strategies when a new stakeholder
+				is introduced to the project, such as holding a project review or kickoff meeting with the new contact.
+				" />
+
+
+					<apex:pageBlockSection title="Clients" columns="1" collapsible="false">
+
+						<apex:pageBlockTable value="{!lProjectSites}" var="item" width="100%" id="ClientsTable" columnsWidth="60px" rendered="{!if(lProjectSites.size > 0, true, false)}">
+							<apex:column > 
+								<apex:facet name="header">Actions</apex:facet>
+								<apex:outputLink value="/{!item.Site__r.Account__c}" >View</apex:outputLink>
+							</apex:column>
+							<apex:repeat value="{!$ObjectType.Project_Site__c.FieldSets.pse_ClientFinder_Display_Fieldset}" var="SearchField">
+								<apex:column value="{!item[SearchField]}" />
+							</apex:repeat>
+							<apex:column headerValue="Billing Client">
+								<apex:inputCheckbox value="{!item.Is_Billing__c}" disabled="true" />
+							</apex:column>
+							<apex:column headerValue="Primary Billing" >
+								<apex:inputCheckbox value="{!item.Is_Default_Top_Task__c}" disabled="true" />
+							</apex:column>
+							<apex:column headerValue="End Client" >
+								<apex:inputCheckbox value="{!item.Is_End__c}" disabled="true" />
+							</apex:column>
+							<apex:column headerValue="Primary End">
+								<apex:inputCheckbox value="{!item.Is_Primary_End__c}" disabled="true" />
+							</apex:column>
+						<!--<apex:repeat value="{!AccountBasicListFields}" var="f">
+							<apex:column value="{!item[f.fieldPath]}" />
+		            	</apex:repeat>-->
+		            	</apex:pageBlockTable>
+		            	<apex:pageMessage severity="info" rendered="{!if(lAccounts.size = 0, true, false)}" summary="No Clients/Project Sites have been defined." />
+	            	</apex:pageBlockSection>
+
+					<apex:pageBlockSection title="Others"  columns="1" collapsible="false">
+						<apex:inputField value="{!pse__Proj__c.MediaInvolvement__c}" />
+						<apex:pageBlockTable value="{!lStakeholders}" var="item" width="100%" columnsWidth="60px" id="StakeholderTable">
+							<apex:facet name="footer">
+								<apex:commandLink action="{!addRecord}" value="Add New Stakeholder" rerender="StakeholderTable" status="stakeholderStatus">
+									<apex:param name="object" value="Stakeholder__c" assignTo="{!recordObjectType}"/>
+								</apex:commandLink>
+							</apex:facet>
+							<apex:column >
+								<apex:facet name="header">Actions</apex:facet>
+								<apex:commandLink action="{!removeRecord}" value="Remove" rerender="StakeholderTable" status="stakeholderStatus">
+									<apex:param name="object" value="Stakeholder__c" assignTo="{!recordObjectType}" />
+									<apex:param name="objID" value="{!item.Id}" assignTo="{!recordObjectId}" />
+								</apex:commandLink>
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">Stakeholder Type</apex:facet>
+								<apex:inputField value="{!item.StakeholderType__c}" />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">Organization</apex:facet>
+								<apex:inputField value="{!item.Organization__c}" />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">Contact Name</apex:facet>
+								<apex:inputField value="{!item.ContactName__c}" />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">Contact Phone</apex:facet>
+								<apex:inputField value="{!item.ContactPhone__c}" />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">Interest</apex:facet>
+								<apex:inputField value="{!item.Interest__c}" />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">AECOM Contact</apex:facet>
+								<apex:inputField value="{!item.AECOMContact__c}" />
+							</apex:column>
+						</apex:pageBlockTable>
+						<apex:actionStatus id="stakeholderStatus">
+							<apex:facet name="start">
+								<p style="padding-bottom:20px;text-align:center;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+							</apex:facet>
+						</apex:actionStatus>
+					</apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:outputPanel>	
+							
+				<apex:pageBlock title="Communication Activities">
+					<apex:pageBlockSection columns="1" collapsible="false">
+						<apex:pageMessage severity="info" rendered="{!showCommPlanNote}" summary="Reminder: Check with the appropriate Client Account or Program Manager to determine if a client or program-specific communication plan exists prior to defining the communication strategy for the project. Alternatively, go directly to the SalesForce client account to determine if an Account Plan is available." />
+						<apex:pageBlockTable value="{!lCommPlans}" var="item" width="100%" columnsWidth="60px" id="CommTable">
+							<apex:facet name="footer">
+								<apex:commandLink action="{!addRecord}" value="Add New Communication Plan" rerender="CommTable" status="commStatus">
+									<apex:param name="object" value="CommunicationPlan__c" assignTo="{!recordObjectType}"/>
+								</apex:commandLink>
+							</apex:facet>
+							<apex:column >
+								<apex:facet name="header">Actions</apex:facet>
+								<apex:commandLink action="{!removeRecord}" value="Remove" rerender="CommTable" status="commStatus">
+									<apex:param name="object" value="CommunicationPlan__c" assignTo="{!recordObjectType}" />
+									<apex:param name="objID" value="{!item.Id}" assignTo="{!recordObjectId}" />
+								</apex:commandLink>
+							</apex:column>
+							<apex:column title="test">
+								<apex:facet name="header">
+									<apex:outputPanel layout="none"><apex:outputText value="Activity"/><div><c:ECO_HelpIcon helpText="e.g., Client Progress Report, Community Meeting, Public Hearing, Town Hall, Team Partner Status Meeting, etc."/></div></apex:outputPanel>
+<!-- <apex:outputPanel>
+									<table>
+										<tr><td>Activity</td><td><c:ECO_HelpIcon helpText="e.g., Client Progress Report, Community Meeting, Public Hearing, Town Hall, Team Partner Status Meeting, etc."/></td></tr>
+									</table>
+									</apex:outputPanel> -->
+								</apex:facet>
+								<apex:inputField value="{!item.Activity__c}" />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">Audience</apex:facet>
+								<apex:inputField value="{!item.Audience__c}" />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">Responsible Person</apex:facet>
+								<apex:inputField value="{!item.ResponsiblePTM__c}" />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">How</apex:facet>
+								<apex:inputField value="{!item.How__c}" />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">When</apex:facet>
+								<apex:inputField value="{!item.When__c}" />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">Frequency</apex:facet>
+								<apex:inputField value="{!item.Frequency__c}" />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">Generate Task</apex:facet>
+								<apex:inputField value="{!item.GenerateTask__c}" />
+							</apex:column>
+						</apex:pageBlockTable>
+						<apex:actionStatus id="commStatus">
+							<apex:facet name="start">
+								<p style="padding-bottom:20px;text-align:center;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+							</apex:facet>
+						</apex:actionStatus>
+					</apex:pageBlockSection>
+				</apex:pageBlock>
+				
+				<apex:pageBlock title="Project Surveys">
+					<apex:pageBlockButtons location="bottom">
+						<apex:commandButton action="{!ReturnToProject}" value="Return to Project" />
+						<apex:commandButton action="{!SaveAll}" value="Save" rerender="pgMessages,ActiveKeysTable,InactiveKeysTable,ProjectTeamTable,VendorSubTable,StakeholderTable,CommTable" onClick="this.disabled = true;"/><!-- onComplete="location.reload()" -->
+					</apex:pageBlockButtons>
+				
+					<apex:pageBlockSection columns="1" collapsible="false">
+
+						<apex:pageMessage severity="info" escape="false" summary="Project surveys measure the client’s overall satisfaction with AECOMs performance on a specific project. AECOM conducts monthly surveys on a 2% random sample of projects over 20% complete (of budget).   <br /><br />
+
+Complete this section if the Project Manager wants to request a survey of the project, schedule a survey around a specific project event (e.g., completion of key milestone or deliverable) or schedule survey intervals for long term projects (e.g., annual survey).  The request will be provided to the Client Care Management team to action the project survey on the dates requested.   <br /><br />
+
+Projects with no dates identified below will be automatically subjected to the random selection process. " />
+
+						<apex:pageBlockTable value="{!lSurveySchedules}" var="item" width="100%" columnsWidth="60px" id="SurveyScheduleTable">
+							<apex:facet name="footer">
+								<apex:commandLink action="{!addRecord}" value="Add New Survey" rerender="SurveyScheduleTable" status="surveyStatus">
+									<apex:param name="object" value="SurveySchedule__c" assignTo="{!recordObjectType}"/>
+								</apex:commandLink>
+							</apex:facet>
+							<apex:column >
+								<apex:facet name="header">Actions</apex:facet>
+								<apex:commandLink action="{!removeRecord}" value="Remove" rerender="SurveyScheduleTable" status="surveyStatus">
+									<apex:param name="object" value="SurveySchedule__c" assignTo="{!recordObjectType}" />
+									<apex:param name="objID" value="{!item.Id}" assignTo="{!recordObjectId}" />
+								</apex:commandLink>
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">Scheduled Date</apex:facet>
+								<apex:inputField value="{!item.ScheduledDate__c}" />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">Comments</apex:facet>
+								<apex:inputField value="{!item.Comments__c}" style="width: 825px; height: 12px"/>
+							</apex:column>
+						</apex:pageBlockTable>
+						<apex:actionStatus id="surveyStatus">
+							<apex:facet name="start">
+								<p style="padding-bottom:20px;text-align:center;" class="searchText"><img style="position:relative;top:24px;" src="/img/loading32.gif" /> Updating...</p>
+							</apex:facet>
+						</apex:actionStatus>
+					</apex:pageBlockSection>
+				</apex:pageBlock>				
+				
+			</div>
+			
+		</apex:outputPanel>
+
+		<c:ECO_RiskFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="Project Team" />
+        <c:ECO_AssumptionFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="Project Team" />
+	</apex:form>
+</apex:page>

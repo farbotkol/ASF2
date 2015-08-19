@@ -1,0 +1,1280 @@
+<apex:page controller="ECO_ProjectSummaryController" showHeader="true" sidebar="false" tabStyle="pse__Proj__c">
+
+	<style>
+		table.list .headerRow th{
+			font-size:1.1em !important;
+		}
+		.apexp .bPageBlock.apexDefaultPageBlock .pbBody .pbSubheader{
+		    background: #A6AFA2;
+		}
+	</style>
+
+
+	<script type='text/javascript'>
+
+
+
+		function doSyncStep(step){
+		
+			switch(step) {
+				case 0:
+					syncRequest_Step1_start_JS();
+					break;
+			    case 1:			      			
+					syncRequest_Step1_complete_JS();
+					break;
+			    case 2:			       
+					syncRequest_Step2_start_JS();
+			        break;
+			    case 3:
+			    	syncRequest_Step2_complete_JS();
+			        break;
+			    case 4:
+			    	syncRequest_Step3_start_JS();
+			        break;
+			    case 5:
+			    	syncRequest_Step3_complete_JS();
+			        break;
+			    case 6:
+			    	syncRequest_Step4_start_JS();
+			        break;
+			    case 7:
+			    	syncRequest_Step4_complete_JS();
+			   		break;			   		
+			   	case 8:
+			    	syncRequest_Step5_start_JS();
+			        break;
+			    case 9:
+			    	syncRequest_Step5_complete_JS();
+			        break;		
+			    case 10:
+			    	syncRequest_Step6_start_JS();
+			        break;
+			    case 11:
+			    	syncRequest_Step6_complete_JS();
+			        break;	
+			    case 12:
+			    	syncRequest_Step7_start_JS();
+			        break;
+			    case 13:
+			    	syncRequest_Step7_complete_JS();
+			        break;	
+			    case 14:
+			    	syncRequest_Step8_start_JS();
+			        break;
+			    case 15:
+			    	syncRequest_Step8_complete_JS();
+			        break;  
+			    case 16:
+			    	syncRequest_Finish_JS();
+			        break;     
+			    case 17:
+			    	checkIfSyncHasBeenProcessed_JS();
+			    	break;
+			    case 101:
+			    	numberRequest_Step1_start_JS();
+			    	break;
+			    case 102:
+			    	numberRequest_Step1_complete_JS();
+			    	break;
+			    case 103:
+			    	sendProjectNumberRequest_start_JS();
+			    	break;
+			    case 104: 
+			    	sendProjectNumberRequest_complete_JS();
+			    	break;
+			    case 105: 
+			    	checkIfProjectNumberRequestHasBeenProcessed_JS();
+			    	break;
+			    default:
+			     	    
+			 } 
+		}
+
+
+		function doMessageQueuePolling(){	
+
+			if(pollMessageQueue == "true"){
+				var timerVal = document.getElementById('pollingTimer').innerHTML; 		    	
+			    var seconds = parseInt(timerVal);
+		 
+			    if (seconds == 1) {
+			      temp = document.getElementById('pollingTimer');
+			      temp2 = document.getElementById('pollingTimerBottom');
+			      temp.innerHTML = "checking if processed";
+			      temp2.innerHTML = "checking if processed";
+			      checkIfSyncHasBeenProcessed_JS();
+			      return;
+			    }
+	 
+			    seconds--;
+			    temp = document.getElementById('pollingTimer');
+			    temp2 = document.getElementById('pollingTimerBottom');
+			    temp.innerHTML = seconds;
+			    temp2.innerHTML = seconds;
+			    var timeoutFunction = setTimeout(doMessageQueuePolling, 1000);
+			}    		
+			
+		}
+
+		function doMessageQueuePolling_ProjectNumberRequest(){	
+
+			if(pollMessageQueue == "true"){
+				var timerVal = document.getElementById('pollingTimer').innerHTML; 		    	
+			    var seconds = parseInt(timerVal);
+		 
+			    if (seconds == 1) {
+			      temp = document.getElementById('pollingTimer');
+			      temp2 = document.getElementById('pollingTimerBottom');
+			      temp.innerHTML = "checking if processed";
+			      temp2.innerHTML = "checking if processed";
+			      checkIfProjectNumberRequestHasBeenProcessed_JS();
+			      return;
+			    }
+	 
+			    seconds--;
+			    temp = document.getElementById('pollingTimer');
+			    temp2 = document.getElementById('pollingTimerBottom');
+			    temp.innerHTML = seconds;
+			    temp2.innerHTML = seconds;
+			    var timeoutFunction = setTimeout(doMessageQueuePolling_ProjectNumberRequest, 1000);
+			}    		
+			
+		}
+/*
+		function changeTimerTime(value){
+			document.getElementById("pollingTimer").innerHTML = value;
+		}
+		*/
+
+/*
+		function doSyncStep(step){
+			
+			switch(step){
+				case 1:.
+					progressStr = 'Creating Message Queue record';
+					divSyncProgress.html(progressStr);
+					syncRequest_Step1_complete_JS();
+					break;
+				case 2:
+					progressStr += '<br/>Creating Message Queue record - Complete!';
+					progressStr += '<br/><br/>Flagging tasks as sync status = P (Pending)';
+					divSyncProgress.html(progressStr);
+					syncRequest_Step2_complete_JS();
+					break;
+				case 3:
+					progressStr += 'Flagging tasks as sync status = P (Pending) - Complete!';
+					divSyncProgress.html(progressStr);
+				default:
+
+			}
+			
+		}
+
+*/
+	</script>
+
+	<apex:form >
+	
+		<div id="divSyncProgress"></div>
+
+		<apex:actionFunction action="{!initiateOracleProjectSyncRequest}" name="initiateOracleProjectSyncRequest_JS" status="statusBar" oncomplete="executeOracleProjectSyncRequest_JS();"/>
+
+        <apex:actionFunction action="{!executeOracleProjectSyncRequest}" name="executeOracleProjectSyncRequest_JS" status="statusBar" reRender="msg,txtJSON,syncHistorySection,statusBar"/>		
+
+
+        <!--/////////////////// for progress status ///////////////-->
+
+        <apex:actionFunction action="{!syncRequest_Step1_start}" name="syncRequest_Step1_start_JS" oncomplete="doSyncStep(1);" reRender="msgPanel,msgPanelBottom,msgPollingTop,msgPollingBottom" status="statusBar"/>		
+        <apex:actionFunction action="{!syncRequest_Step1_complete}" name="syncRequest_Step1_complete_JS" oncomplete="doSyncStep(2);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>		
+        <apex:actionFunction action="{!syncRequest_Step2_start}" name="syncRequest_Step2_start_JS" oncomplete="doSyncStep(3);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+        <apex:actionFunction action="{!syncRequest_Step2_complete}" name="syncRequest_Step2_complete_JS" oncomplete="doSyncStep(4);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>		
+        <apex:actionFunction action="{!syncRequest_Step3_start}" name="syncRequest_Step3_start_JS" oncomplete="doSyncStep(5);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+        <apex:actionFunction action="{!syncRequest_Step3_complete}" name="syncRequest_Step3_complete_JS" oncomplete="doSyncStep(6);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>	
+        <apex:actionFunction action="{!syncRequest_Step4_start}" name="syncRequest_Step4_start_JS" oncomplete="doSyncStep(7);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+        <apex:actionFunction action="{!syncRequest_Step4_complete}" name="syncRequest_Step4_complete_JS" oncomplete="doSyncStep(8);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>	
+
+        <apex:actionFunction action="{!syncRequest_Step5_start}" name="syncRequest_Step5_start_JS" oncomplete="doSyncStep(9);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+        <apex:actionFunction action="{!syncRequest_Step5_complete}" name="syncRequest_Step5_complete_JS" oncomplete="doSyncStep(10);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+
+        <apex:actionFunction action="{!syncRequest_Step6_start}" name="syncRequest_Step6_start_JS" oncomplete="doSyncStep(11);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+        <apex:actionFunction action="{!syncRequest_Step6_complete}" name="syncRequest_Step6_complete_JS" oncomplete="doSyncStep(12);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+        <apex:actionFunction action="{!syncRequest_Step7_start}" name="syncRequest_Step7_start_JS" oncomplete="doSyncStep(13);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+        <apex:actionFunction action="{!syncRequest_Step7_complete}" name="syncRequest_Step7_complete_JS" oncomplete="doSyncStep(14);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+
+        <apex:actionFunction action="{!syncRequest_Step8_start}" name="syncRequest_Step8_start_JS" oncomplete="doSyncStep(15);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+        <apex:actionFunction action="{!syncRequest_Step8_complete}" name="syncRequest_Step8_complete_JS" oncomplete="doSyncStep(16);" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+
+        <apex:actionFunction action="{!syncRequest_Finish}" name="syncRequest_Finish_JS" reRender="msgPanel,msgPollingTop,msgPanelBottom" oncomplete="checkIfSyncHasBeenProcessed_JS();"/>
+
+        <apex:actionFunction action="{!checkIfSyncHasBeenProcessed}" name="checkIfSyncHasBeenProcessed_JS" reRender="msgPollingTop,msgPollingBottom,syncHistorySection" oncomplete="doMessageQueuePolling();"/>
+
+        
+        <apex:actionFunction action="{!syncRequest_Step1_start}" name="numberRequest_Step1_start_JS" oncomplete="numberRequest_Step1_complete_JS();" reRender="msgPanel,msgPanelBottom,msgPollingTop,msgPollingBottom" status="statusBar"/>	
+
+        <apex:actionFunction action="{!syncRequest_Step1_complete}" name="numberRequest_Step1_complete_JS" oncomplete="sendProjectNumberRequest_start_JS();" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+
+        <apex:actionFunction action="{!sendProjectNumberRequest_start}" name="sendProjectNumberRequest_start_JS" oncomplete="sendProjectNumberRequest_complete_JS();" reRender="msgPanel,msgPanelBottom,msgPollingTop,msgPollingBottom" status="statusBar"/>
+
+        <apex:actionFunction action="{!sendProjectNumberRequest_complete}" name="sendProjectNumberRequest_complete_JS" oncomplete="sendProjectNumberRequest_Finish_JS();" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+
+		<apex:actionFunction action="{!sendProjectNumberRequest_Finish}" name="sendProjectNumberRequest_Finish_JS" oncomplete="checkIfProjectNumberRequestHasBeenProcessed_JS();" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+    
+		<apex:actionFunction action="{!checkIfSyncHasBeenProcessed}" name="checkIfProjectNumberRequestHasBeenProcessed_JS" reRender="msgPollingTop,msgPollingBottom,syncHistorySection" oncomplete="doMessageQueuePolling();"/>
+
+        <!--///////////////////////////////////////////////////////-->
+		
+		<apex:sectionHeader subtitle="{!project.Name}" title="{!btnValue}" >
+			<apex:actionStatus id="statusBar">
+				<apex:facet name="start">
+					<p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Processing...</p>
+				</apex:facet>
+				<apex:facet name="stop">
+				</apex:facet>
+			</apex:actionStatus>
+		</apex:sectionHeader>
+
+	
+		
+
+		<!--
+		<input type="button" value="{!btnValue}" onclick="initiateOracleProjectSyncRequest_JS();"/>
+		-->
+
+<apex:outputPanel id="msgPanel">
+			<apex:pageMessages id="msg" escape="false"></apex:pageMessages>
+		</apex:outputPanel>
+
+		<apex:outputPanel id="msgPollingTop" >
+		
+			<script type="text/javascript">
+			var pollMessageQueue = "{!pollMessageQueue}";
+			</script>
+			<div style="display:{!if(showPollingMsg==true, 'block', 'none')}">
+			<apex:pageMessage escape="false" summary="{!pollingMessageQueueMsg}" severity="INFO" ></apex:pageMessage>
+			</div>
+		</apex:outputPanel>
+
+		<apex:pageBlock >
+		<apex:pageBlockButtons >
+
+			<!--
+			<apex:commandButton value="{!btnValue}" action="{!doRequest}" onclick="initiateOracleProjectSyncRequest_JS();" reRender="opTemp" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber}"/>
+			-->
+			<apex:commandButton value="{!btnValue}" action="{!doRequest}" onclick="numberRequest_Step1_start_JS(); return false;" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber}"/>
+
+			<apex:commandButton value="Send Project Sync Request" onclick="doSyncStep(0); return false;"  rendered="{!!isProjectNumber}" disabled="{!!allowRequestSubmit}"/>
+			<apex:commandButton value="Save" action="{!updateProject}" status="statusBar"/>
+			<apex:commandButton value="Return to Project" action="{!returnToProject}" />
+		
+		</apex:pageBlockButtons>
+
+		<apex:pageBlockSection columns="1">
+			<apex:pageBlockSectionItem >
+
+		<apex:tabPanel switchType="client" selectedTab="tabProjectSummary">
+			<apex:tab label="Project Summary" id="tabProjectSummary">
+				<!--
+				<apex:outputPanel id="opLastSync"><apex:outputLabel value="{!lastSyncStr}" /></apex:outputPanel>
+				<br/>
+				-->
+				<apex:pageBlock rendered="{!isProjectNumber}"  mode="edit">
+
+					<apex:pageBlockSection columns="2" title="Project Information">
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Name.Label}" for="pnPROJECT_NAME" />			
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.Name}" id="pnPROJECT_NAME" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>
+								</div>
+							</apex:outputPanel>							
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.CarryingOutOrganizationOracleId__c.Label}" for="pnCARRYING_OUT_ORGANIZATION_ID" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.CarryingOutOrganizationOracleId__c}" id="pnCARRYING_OUT_ORGANIZATION_ID" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+									</div>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem />
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.OrganizationString__c.Fields.OUName__c.Label}" for="pnOU_NAME" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputLabel value="{!project.CarryingOutOrganization__r.OUName__c}" id="pnOU_NAME" />
+									</div>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+
+
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.ProjectLongName__c.Label}" for="pnLONG_NAME" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.ProjectLongName__c}" id="pnLONG_NAME">
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.ContractTypes__c.Label}" for="pnCONTRACT_TYPE" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.ContractTypes__c}" id="pnCONTRACT_TYPE" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.DistributionRule__c.Label}" for="pnDISTRIBUTION_RULE" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.DistributionRule__c}" id="pnDISTRIBUTION_RULE" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.TemplateId__c.Label}" for="pnTEMPLATE_ID" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+	                        		<apex:outputField value="{!project.Template_Id__c}" id="pnTEMPLATE_ID" />
+	                        		<!--
+									<apex:outputField value="{!project.TemplateId__c}" id="pnTEMPLATE_ID" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+									-->
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.TemplateName__c.Label}" for="pnTEMPLATE_NAME" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+	                        		<apex:outputField value="{!project.Template_Name__c}" id="pnTEMPLATE_NAME" />
+	                        		<!--
+									<apex:outputField value="{!project.TemplateName__c}" id="pnTEMPLATE_NAME" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+									-->
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem />
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.CarryingOutOrganization__c.Label}" for="pnORG_ID" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.CarryingOutOrganization__c}" id="pnORG_ID" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.pse__Start_Date__c.Label}" for="pnSTART_DATE" />
+							<apex:outputField value="{!project.pse__Start_Date__c}" id="pnSTART_DATE" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<!--<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.COSTINDRATESCHID__c.Label}" for="pnCOSTINDRATESCHID" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.COSTINDRATESCHID__c}" id="pnCOSTINDRATESCHID" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>						
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.ProjectCurrencyCode__c.Label}" for="pnProjectCurrencyCode" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.ProjectCurrencyCode__c}" id="pnProjectCurrencyCode" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.ProjectFunctionalCurrencyCode__c.Label}" for="pnProjectFunctionalCurrencyCode" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.ProjectFunctionalCurrencyCode__c}" id="pnProjectFunctionalCurrencyCode" >-->
+										<!--<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>-->
+									<!--</apex:outputField>	
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>-->
+
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Id.Label}" for="pnPM_PROJECT_REFERENCE" />
+							<apex:outputLabel value="{!project.Id}" id="pnPM_PROJECT_REFERENCE" />								
+						</apex:pageBlockSectionItem>
+
+					</apex:pageBlockSection>
+
+
+				</apex:pageBlock>
+
+
+				<apex:pageBlock rendered="{!!isProjectNumber}">
+					<apex:pageBlockSection columns="2" title="Project Information">
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Name.Label}" for="PROJECT_NAME" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.Name}" id="PROJECT_NAME" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+								</div>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+
+						<!--
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.OracleProjectnumber__c.Label}" for="PROJECT_ID" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock"></div>&nbsp;
+									<apex:outputLabel value="{!projectHeader.PROJECT_ID}" id="PROJECT_ID" />									
+								</div>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+						-->
+
+						<apex:pageBlockSectionItem />
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.CarryingOutOrganization__c.Label}" for="ORG_ID" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputLabel value="{!project.CarryingOutOrganization__r.Name}" id="ORG_ID" />
+									<a href="{!URLFOR($Action.ProjectOrganization__c.New, null,["Project__c"=project.Name,"CF00Ne00000016tDV_lkid"=project.Id,"retURL"=retUrl])}">change</a>									
+								</div>
+								
+								
+									<apex:commandLink value="change" action="{!URLFOR($Action.ProjectOrganization__c.New, null,["Project__c"=project.Name,"CF00Ne00000016tDV_lkid"=project.Id,"retURL"=retUrl])}"/> 
+									
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.ProjectLongName__c.Label}" for="LONG_NAME" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.ProjectLongName__c}" id="LONG_NAME" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.CarryingOutOrganization__c.Label}" for="CARRYING_OUT_ORGANIZATION_ID" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputLabel value="{!project.CarryingOutOrganization__r.OrgID__c}" id="CARRYING_OUT_ORGANIZATION_ID" />
+									</div>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.ContractTypes__c.Label}" for="CONTRACT_TYPE" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.ContractTypes__c}" id="CONTRACT_TYPE" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.OrganizationString__c.Fields.OUName__c.Label}" for="OU_NAME" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputLabel value="{!project.CarryingOutOrganization__r.OUName__c}" id="OU_NAME" />
+									</div>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem />
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.DistributionRule__c.Label}" for="DISTRIBUTION_RULE" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.DistributionRule__c}" id="DISTRIBUTION_RULE" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.TemplateId__c.Label}" for="TEMPLATE_ID" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+	                        		<apex:outputField value="{!project.Template_Id__c}" id="TEMPLATE_ID" />
+	                        		<!--
+									<apex:outputField value="{!project.TemplateId__c}" id="TEMPLATE_ID" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+									-->
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.TemplateName__c.Label}" for="TEMPLATE_NAME" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+	                        		<apex:outputField value="{!project.Template_Name__c}" id="TEMPLATE_NAME" />
+	                        		<!--
+									<apex:outputField value="{!project.TemplateName__c}" id="TEMPLATE_NAME" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+									-->
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<!--<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.COSTINDRATESCHID__c.Label}" for="COSTINDRATESCHID" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.COSTINDRATESCHID__c}" id="COSTINDRATESCHID" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>-->
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.ProjectCurrencyCode__c.Label}" for="ProjectCurrencyCode" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.ProjectCurrencyCode__c}" id="ProjectCurrencyCode" >
+										<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+									</apex:outputField>	
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.ProjectFunctionalCurrencyCode__c.Label}" for="ProjectFunctionalCurrencyCode" />
+							<apex:outputPanel layout="block">
+								<div class="requiredInput">
+	                        		<div class="requiredBlock">&nbsp;</div>
+									<apex:outputField value="{!project.ProjectFunctionalCurrencyCode__c}" id="ProjectFunctionalCurrencyCode" >
+										<!--<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>-->
+									</apex:outputField>	
+								</div>
+							</apex:outputPanel>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Segment1__c.Label}" for="SEGMENT1" />
+							<apex:outputLabel value="{!project.Segment1__c}" id="SEGMENT1" />						
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.pse__Project_Type__c.Label}" for="PROJECT_TYPE" />
+							<apex:outputField value="{!project.pse__Project_Type__c}" id="PROJECT_TYPE" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>				
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.pse__Stage__c.Label}" for="PROJECT_STATUS" />
+							<apex:outputField value="{!project.pse__Stage__c}" id="PROJECT_STATUS" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>		
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.ProjectDescription__c.Label}" for="DESCRIPTION" />
+							<apex:outputField value="{!project.ProjectDescription__c}" id="DESCRIPTION" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>						
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.pse__Start_Date__c.Label}" for="START_DATE" />
+							<apex:outputField value="{!project.pse__Start_Date__c}" id="START_DATE" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.OracleCompletionDate__c.Label}" for="COMPLETION_DATE" />
+							<apex:outputField value="{!project.OracleCompletionDate__c}" id="COMPLETION_DATE" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.OracleCloseDate__c.Label}" for="CLOSED_DATE" />
+							<apex:outputField value="{!project.OracleCloseDate__c}" id="CLOSED_DATE" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.EnableTopTaskCustomerFlag__c.Label}" for="ENABLE_TOP_TASK_CUSTOMER" />
+							<apex:outputField value="{!project.EnableTopTaskCustomerFlag__c}" id="ENABLE_TOP_TASK_CUSTOMER" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.OracleCustomerID__c.Label}" for="CUSTOMER_NUMBER" />
+							<apex:outputLabel value="{!project.OracleCustomerID__c}" id="CUSTOMER_NUMBER" />							
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.pse__Account__c.Label}" for="CUSTOMER_NAME" />
+							<apex:outputLabel value="{!project.pse__Account__r.Name}" id="CUSTOMER_NAME" />						
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.PrimarySite__c.Label}" for="CUSTOMER_SITE" />
+							<apex:outputPanel >
+								<apex:outputLabel value="{!project.PrimarySite__r.Name}" id="CUSTOMER_SITE" />	
+								<a href="{!URLFOR($Action.Project_Site__c.ManageSites, project.Id,["retURL"=retUrl])}">change</a>
+							</apex:outputPanel>														
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.PrimarySiteId__c.Label}" for="CUSTOMER_SITE_ID" />
+							<apex:outputField value="{!project.PrimarySiteId__c}" id="CUSTOMER_SITE_ID" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+						
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Attribute1__c.Label}" for="ATTRIBUTE1" />
+							<apex:outputField value="{!project.Attribute1__c}" id="ATTRIBUTE1" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Attribute2__c.Label}" for="ATTRIBUTE2" />
+							<apex:outputField value="{!project.Attribute2__c}" id="ATTRIBUTE2" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Attribute3__c.Label}" for="ATTRIBUTE3" />
+							<apex:outputField value="{!project.Attribute3__c}" id="ATTRIBUTE3" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Attribute4__c.Label}" for="ATTRIBUTE4" />
+							<apex:outputField value="{!project.Attribute4__c}" id="ATTRIBUTE4" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Attribute5__c.Label}" for="ATTRIBUTE5" />
+							<apex:outputField value="{!project.Attribute5__c}" id="ATTRIBUTE5" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Attribute6__c.Label}" for="ATTRIBUTE6" />
+							<apex:outputField value="{!project.Attribute6__c}" id="ATTRIBUTE6" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Attribute7__c.Label}" for="ATTRIBUTE7" />
+							<apex:outputField value="{!project.Attribute7__c}" id="ATTRIBUTE7" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Attribute8__c.Label}" for="ATTRIBUTE8" />
+							<apex:outputField value="{!project.Attribute8__c}" id="ATTRIBUTE8">
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Attribute9__c.Label}" for="ATTRIBUTE9" />
+							<apex:outputField value="{!project.Attribute9__c}" id="ATTRIBUTE9" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Attribute10__c.Label}" for="ATTRIBUTE10" />
+							<apex:outputField value="{!project.Attribute10__c}" id="ATTRIBUTE10">
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>				
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.Id.Label}" for="PM_PROJECT_REFERENCE" />
+							<apex:outputLabel value="{!project.Id}" id="PM_PROJECT_REFERENCE" />
+						</apex:pageBlockSectionItem>
+
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.AllowCrossChargeFlag__c.Label}" for="ALLOW_CROSS_CHARGE_FLAG" />
+							<apex:outputField value="{!project.AllowCrossChargeFlag__c}" id="ALLOW_CROSS_CHARGE_FLAG" >
+								<apex:inlineEditSupport event="ondblclick" showOnEdit="update"/>
+							</apex:outputField>	
+						</apex:pageBlockSectionItem>
+
+					</apex:pageBlockSection>
+
+					<apex:pageBlockSection columns="1" title="Key Members">
+						<apex:pageBlockSectionItem >
+
+							<apex:tabPanel value="{!selectedKeyMemberTab}" switchType="client">
+								<apex:tab id="validKeyMembers" label="Passed Validation {!validKeyMemberLimitMsg}">
+									<apex:pageMessage severity="INFO" rendered="{!if(numValidKeyMembers == 0, true, false)}" summary="No valid key members currently exist."></apex:pageMessage>
+									<apex:pageBlockTable value="{!validKeyMembers}" var="keyMember" rendered="{!if(numValidKeyMembers == 0, false, true)}">						
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.ProjectTeamMember__c.Fields.User__c.Label}</apex:facet>
+											<!--											
+											<a href="/{!keyMember.Id}" target="_blank">{!keyMember.User__r.Name}</a>
+											-->
+											<a href="/{!keyMember.Id}?retURL={!retUrl}}" 
+		                                    id="lookup{!keyMember.Id}opp4"
+		                                    onblur="LookupHoverDetail.getHover('lookup{!keyMember.Id}opp4').hide();"
+		                                    onfocus="LookupHoverDetail.getHover('lookup{!keyMember.Id}opp4', '/{!keyMember.Id}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
+		                                    onmouseout="LookupHoverDetail.getHover('lookup{!keyMember.Id}opp4').hide();"
+		                                    onmouseover="LookupHoverDetail.getHover('lookup{!keyMember.Id}opp4', '/{!keyMember.Id}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
+		                                    >
+		                                    {!keyMember.Contact__r.Name}
+		                                    </a> 
+
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.ProjectTeamMember__c.Fields.OracleEmployeeNumber__c.Label}</apex:facet>
+											{!keyMember.OracleEmployeeNumber__c}
+										</apex:column>
+										<!--
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.ProjectTeamMember__c.Fields.PersonId__c.Label}</apex:facet>
+											{!keyMember.PersonId__c}
+										</apex:column>
+										-->
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.ProjectRole__c.fields.Name.Label}</apex:facet>
+											{!keyMember.ProjectRole__r.Name}										
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.ProjectTeamMember__c.fields.OracleProjectRoleTypeId__c.Label}</apex:facet>
+											{!keyMember.OracleProjectRoleTypeId__c}										
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.ProjectTeamMember__c.Fields.StartDate__c.Label}</apex:facet>
+											<apex:outputText value="{0, date, yyyy-MM-dd}">
+												<apex:param value="{!keyMember.StartDate__c}" />											
+											</apex:outputText>
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.ProjectTeamMember__c.Fields.EndDate__c.Label}</apex:facet>
+											<apex:outputText value="{0, date, yyyy-MM-dd}">
+												<apex:param value="{!keyMember.EndDate__c}" />											
+											</apex:outputText>											
+										</apex:column>
+									</apex:pageBlockTable>
+								</apex:tab>
+								<apex:tab id="invalidKeyMembers" label="Failed Validation {!invalidKeyMemberLimitMsg}">
+									<apex:pageMessage severity="INFO" rendered="{!if(numInvalidKeyMembers == 0, true, false)}" summary="No invalid key members currently exist."></apex:pageMessage>
+									<apex:pageBlockTable value="{!invalidKeyMembers}" var="invalidKeyMember" title="Key Members {!invalidTaskLimitMsg}" rendered="{!if(numInvalidKeyMembers == 0, false, true)}">
+										<apex:column >
+											<apex:facet name="header">Key Member</apex:facet>
+											<a href="/{!invalidKeyMember.recordId}?retURL={!retUrl}" 
+		                                    id="lookup{!invalidKeyMember.recordId}opp4"
+		                                    onblur="LookupHoverDetail.getHover('lookup{!invalidKeyMember.recordId}opp4').hide();"
+		                                    onfocus="LookupHoverDetail.getHover('lookup{!invalidKeyMember.recordId}opp4', '/{!invalidKeyMember.recordId}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
+		                                    onmouseout="LookupHoverDetail.getHover('lookup{!invalidKeyMember.recordId}opp4').hide();"
+		                                    onmouseover="LookupHoverDetail.getHover('lookup{!invalidKeyMember.recordId}opp4', '/{!invalidKeyMember.recordId}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
+		                                    >
+		                                    {!invalidKeyMember.recordName}
+		                                    </a> 
+		                                    <!--
+											<a href="/{!invalidKeyMember.recordId}" target="_blank">{!invalidKeyMember.recordName}</a>
+											-->
+										</apex:column>
+										<apex:column >											
+											<apex:facet name="header">Validation Errors</apex:facet>
+											<font color="red"><b>{!invalidKeyMember.validationErrorMessage}</b></font>
+										</apex:column>
+									</apex:pageBlockTable>
+								</apex:tab>
+							</apex:tabPanel>
+						
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+
+					<apex:pageBlockSection columns="1" title="Tasks">
+						<apex:pageBlockSectionItem >
+
+							<apex:tabPanel switchType="client" value="{!selectedTaskTab}">
+								<apex:tab label="Passed Validation ({!numValidTasks} records)" id="validTasks">
+									<apex:pageMessage severity="INFO" rendered="{!if(numValidTasks == 0, true, false)}" summary="No valid tasks currently exist."></apex:pageMessage>
+
+									<apex:pageBlockTable value="{!validTasks}" var="task" rendered="{!if(numValidTasks == 0, false, true)}" title="Tasks {!validTaskLimitMsg}">
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Name.Label}</apex:facet>
+											
+											<a href="/{!task.Id}?retURL={!retUrl}" 
+		                                    id="lookup{!task.Id}opp4"
+		                                    onblur="LookupHoverDetail.getHover('lookup{!task.Id}opp4').hide();"
+		                                    onfocus="LookupHoverDetail.getHover('lookup{!task.Id}opp4', '/{!task.Id}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
+		                                    onmouseout="LookupHoverDetail.getHover('lookup{!task.Id}opp4').hide();"
+		                                    onmouseover="LookupHoverDetail.getHover('lookup{!task.Id}opp4', '/{!task.Id}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
+		                                    >
+		                                    {!task.Name}
+		                                    </a> 
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.ProjectNumber__c.Label}</apex:facet>
+											{!task.ProjectNumber__c}
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.ProjectTaskNumber__c.Label}</apex:facet>
+											{!task.ProjectTaskNumber__c}
+										</apex:column>									
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.LongProjTaskName__c.Label}</apex:facet>
+											{!task.LongProjTaskName__c}
+										</apex:column>	
+										<!--								
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.OracleCustomerId__c.Label}</apex:facet>
+											{!task.OracleCustomerId__c}
+										</apex:column>		
+										-->
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.TopTaskOwningCustomerOracleId__c.Label}</apex:facet>
+											{!task.TopTaskOwningCustomerOracleId__c}
+										</apex:column>
+							
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.pse__Start_Date__c.Label}</apex:facet>
+											<apex:outputText value="{0, date, yyyy-MM-dd}">
+												<apex:param value="{!task.pse__Start_Date__c}" />											
+											</apex:outputText>												
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.pse__End_Date__c.Label}</apex:facet>
+											<apex:outputText value="{0, date, yyyy-MM-dd}">
+												<apex:param value="{!task.pse__End_Date__c}" />											
+											</apex:outputText>												
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.IsBillable__c.Label}</apex:facet>
+											{!if(task.IsBillable__c = true, 'Y', 'N')}									
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.IsChargeable__c.Label}</apex:facet>
+											{!if(task.IsChargeable__c = true, 'Y', 'N')}											
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.WorkTypeName__c.Label}</apex:facet>
+											{!task.WorkTypeName__c}
+										</apex:column>								
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.pse__Parent_Task__c.Label}</apex:facet>
+											{!task.pse__Parent_Task__r.Name}
+										</apex:column>
+										<!--
+										<apex:column>
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Attribute1__c.Label}</apex:facet>
+											{!task.Attribute1__c}
+										</apex:column>
+										
+										<apex:column>
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Attribute2__c.Label}</apex:facet>
+											{!task.Attribute2__c}
+										</apex:column>
+										<apex:column>
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Attribute3__c.Label}</apex:facet>
+											{!task.Attribute3__c}
+										</apex:column>
+										<apex:column>
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Attribute4__c.Label}</apex:facet>
+											{!task.Attribute4__c}
+										</apex:column>
+										<apex:column>
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Attribute5__c.Label}</apex:facet>
+											{!task.Attribute5__c}
+										</apex:column>
+										<apex:column>
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Attribute6__c.Label}</apex:facet>
+											{!task.Attribute6__c}
+										</apex:column>
+										<apex:column>
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Attribute7__c.Label}</apex:facet>
+											{!task.Attribute7__c}
+										</apex:column>
+										<apex:column>
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Attribute8__c.Label}</apex:facet>
+											{!task.Attribute8__c}
+										</apex:column>
+										<apex:column>
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Attribute9__c.Label}</apex:facet>
+											{!task.Attribute9__c}
+										</apex:column>
+										<apex:column>
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Attribute10__c.Label}</apex:facet>
+											{!task.Attribute10__c}
+										</apex:column>
+										-->
+									</apex:pageBlockTable>
+								</apex:tab>
+								<apex:tab label="Failed Validation {!invalidTaskLimitMsg}" id="invalidTasks">
+									<apex:pageMessage severity="INFO" rendered="{!if(numInvalidTasks == 0, true, false)}" summary="No invalid tasks currently exist."></apex:pageMessage>
+									<apex:pageBlockTable value="{!invalidTasks}" var="invalidTask" title="Tasks {!invalidTaskLimitMsg}" rendered="{!if(numInvalidTasks == 0, false, true)}">
+										<apex:column >
+											<apex:facet name="header">Task</apex:facet>
+											<!--
+											<a href="/{!invalidTask.recordId}" target="_blank">{!invalidTask.recordName}</a>
+											-->
+											<a href="/{!invalidTask.recordId}?retURL={!retUrl}" 
+		                                    id="lookup{!invalidTask.recordId}opp4"
+		                                    onblur="LookupHoverDetail.getHover('lookup{!invalidTask.recordId}opp4').hide();"
+		                                    onfocus="LookupHoverDetail.getHover('lookup{!invalidTask.recordId}opp4', '/{!invalidTask.recordId}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
+		                                    onmouseout="LookupHoverDetail.getHover('lookup{!invalidTask.recordId}opp4').hide();"
+		                                    onmouseover="LookupHoverDetail.getHover('lookup{!invalidTask.recordId}opp4', '/{!invalidTask.recordId}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
+		                                    >
+		                                    {!invalidTask.recordName}
+		                                    </a> 
+										</apex:column>
+										<apex:column >											
+											<apex:facet name="header">Validation Errors</apex:facet>
+											<font color="red"><b>{!invalidTask.validationErrorMessage}</b></font>
+										</apex:column>
+									</apex:pageBlockTable>
+								</apex:tab>
+
+							</apex:tabPanel>
+
+							
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+
+					
+
+					<apex:pageBlockSection columns="1" title="Customers {!customerLimitMsg}">
+						<apex:pageBlockSectionItem >
+
+							<apex:tabPanel switchType="client" value="{!selectedCustomerTab}">
+								<apex:tab label="Passed Validation {!validCustomerLimitMsg}" id="validCustomers">
+									<apex:pageMessage severity="INFO" rendered="{!if(numValidCustomers == 0, true, false)}" summary="No invalid customers currently exist."></apex:pageMessage>
+									<apex:pageBlockTable value="{!validCustomers}" var="customer" rendered="{!if(numValidCustomers == 0, false, true)}">	
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.Project_Site__c.Fields.Account_Name__c.Label}</apex:facet>
+											<!--
+											<a href="/{!customer.Id}" target="_blank">{!customer.Account_Name__c}</a>
+											-->
+											<a href="/{!customer.Id}?retURL={!retUrl}" 
+		                                    id="lookup{!customer.Id}opp4"
+		                                    onblur="LookupHoverDetail.getHover('lookup{!customer.Id}opp4').hide();"
+		                                    onfocus="LookupHoverDetail.getHover('lookup{!customer.Id}opp4', '/{!customer.Id}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
+		                                    onmouseout="LookupHoverDetail.getHover('lookup{!customer.Id}opp4').hide();"
+		                                    onmouseover="LookupHoverDetail.getHover('lookup{!customer.Id}opp4', '/{!customer.Id}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
+		                                    >
+		                                    {!customer.Account_Name__c}
+		                                    </a> 
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.Project_Site__c.Fields.OracleCustomerID__c.Label}</apex:facet>
+											{!customer.OracleCustomerID__c}
+											
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.Project_Site__c.Fields.OracleCustomerNumber__c.Label}</apex:facet>
+											{!customer.OracleCustomerNumber__c}
+										</apex:column>		
+										<!--							
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.Project_Site__c.Fields.OracleBillToAddressId__c.Label}</apex:facet>
+											{!customer.OracleBillToAddressId__c}
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.Project_Site__c.Fields.OracleShipToAddressId__c.Label}</apex:facet>
+											{!customer.OracleShipToAddressId__c}
+										</apex:column>
+										-->
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.Project_Site__c.Fields.BillToAddressID__c.Label}</apex:facet>
+											<!--{!customer.BillToAddressID__c}-->
+											{!if(customer.BillToAddressID__c == null, customer.OracleBillToAddressId__c, customer.BillToAddressID__c)}
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.Project_Site__c.Fields.ShipToAddressID__c.Label}</apex:facet>
+											<!--{!customer.ShipToAddressID__c}-->
+											{!if(customer.ShipToAddressID__c == null, customer.OracleShipToAddressId__c, customer.ShipToAddressID__c)}
+										</apex:column>
+
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.Project_Site__c.Fields.BillingContactID__c.Label}</apex:facet>
+											{!customer.BillingContactID__c}
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.Site__c.Fields.CustomerAccountSiteID__c.Label}</apex:facet>
+											{!customer.Site__r.CustomerAccountSiteID__c}
+										</apex:column>
+
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.Project_Site__c.Fields.Is_Default_Top_Task__c.Label}</apex:facet>
+											{!if(customer.Is_Default_Top_Task__c = true, 'Y', 'N')}
+										</apex:column>
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.Project_Site__c.Fields.CurrencyIsoCode.Label}</apex:facet>
+											{!customer.CurrencyIsoCode}
+										</apex:column>									
+										<apex:column >
+											<apex:facet name="header">{!$ObjectType.Project_Site__c.Fields.Contribution__c.Label}</apex:facet>
+											{!customer.Contribution__c}
+										</apex:column>
+									</apex:pageBlockTable>
+
+								</apex:tab>
+								<apex:tab label="Failed Validation {!invalidCustomerLimitMsg}" id="invalidCustomers">
+									<apex:pageMessage severity="INFO" rendered="{!if(numInvalidCustomers == 0, true, false)}" summary="No invalid customers currently exist."></apex:pageMessage>
+									<apex:pageBlockTable value="{!invalidCustomers}" var="invalidCustomer" title="Tasks {!invalidCustomerLimitMsg}" rendered="{!if(numInvalidCustomers == 0, false, true)}">
+										<apex:column >
+											<apex:facet name="header">Customer</apex:facet>
+											<!--
+											<a href="/{!invalidCustomer.recordId}" target="_blank">{!invalidCustomer.recordName}</a>
+											-->
+											<a href="/{!invalidCustomer.recordId}?retURL={!retUrl}" 
+		                                    id="lookup{!invalidCustomer.recordId}opp4"
+		                                    onblur="LookupHoverDetail.getHover('lookup{!invalidCustomer.recordId}opp4').hide();"
+		                                    onfocus="LookupHoverDetail.getHover('lookup{!invalidCustomer.recordId}opp4', '/{!invalidCustomer.recordId}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
+		                                    onmouseout="LookupHoverDetail.getHover('lookup{!invalidCustomer.recordId}opp4').hide();"
+		                                    onmouseover="LookupHoverDetail.getHover('lookup{!invalidCustomer.recordId}opp4', '/{!invalidCustomer.recordId}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
+		                                    >
+		                                    {!invalidCustomer.recordName}
+		                                    </a> 
+										</apex:column>
+										<apex:column >											
+											<apex:facet name="header">Validation Errors</apex:facet>
+											<font color="red"><b>{!invalidCustomer.validationErrorMessage}</b></font>
+										</apex:column>
+									</apex:pageBlockTable>
+								</apex:tab>
+							</apex:tabPanel>
+							
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+
+					<apex:pageBlockSection columns="1" title="Classifications">
+						<apex:pageBlockSectionItem >
+							<apex:pageBlockTable value="{!projectClassifications}" var="classification">
+								<!--
+								<apex:column >
+									<apex:facet name="header">{!$ObjectType.pse__Proj__c.Fields.OracleProjectnumber__c.Label}</apex:facet>
+									{!classification.PROJECT_NUMBER}
+								</apex:column>
+								<apex:column >
+									<apex:facet name="header">{!$ObjectType.pse__Proj__c.Fields.Id.Label}</apex:facet>
+									{!classification.PROJECT_ID}
+								</apex:column>
+								-->
+								<apex:column >
+									<apex:facet name="header">Class Category</apex:facet>
+									{!classification.CLASS_CATEGORY}
+								</apex:column>
+								<apex:column >
+									<apex:facet name="header">Class Code</apex:facet>
+									{!classification.CLASS_CODE}
+								</apex:column>
+							</apex:pageBlockTable>
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+
+
+					
+
+
+				</apex:pageBlock>
+			</apex:tab>
+			<apex:tab label="Request JSON" id="tabJSON">
+				<apex:inputTextarea cols="200" rows="30" value="{!sJSON}" id="txtJSON" />
+			</apex:tab>
+		</apex:tabPanel>
+		
+		</apex:pageBlockSectionItem>
+
+		</apex:pageBlockSection>
+
+		<apex:pageBlockSection columns="1" title="Request History" id="syncHistorySection">
+				<apex:pageBlockSectionItem >
+		
+								<apex:tabPanel switchType="client" selectedTab="successSync">
+									<apex:tab label="Successful Requests ({!numSuccessfulSyncs})" id="successSync">
+										<apex:pageMessage severity="INFO" rendered="{!!hasSyncHistory}" summary="No sync history exists."></apex:pageMessage>									
+										<apex:pageBlockTable value="{!syncHistory}" var="history" rendered="{!hasSyncHistory}">					
+											<apex:column >
+												<apex:facet name="header">{!$ObjectType.IntegrationMessageQueue__c.Fields.Status__c.Label}</apex:facet>
+												<apex:image url="{!URLFOR($Resource.greenStar)}" height="20px" width="20px" />
+											</apex:column>					
+											<apex:column >
+												<apex:facet name="header">{!$ObjectType.IntegrationMessageQueue__c.Fields.SuccessMessage__c.Label}</apex:facet>
+												{!if(history.msgQueue.SuccessMessage__c == null, 'Project request successfully processed.', history.msgQueue.SuccessMessage__c)}
+											</apex:column>
+											<apex:column >
+												<apex:facet name="header">Date Processed</apex:facet>
+												{!history.syncLocalDateTime}
+											</apex:column>
+										</apex:pageBlockTable>	
+									</apex:tab>
+									<apex:tab label="Failed/Attempted Requests ({!numFailedAttemptedSyncs})" id="failedSync">
+										<apex:pageMessage severity="INFO" rendered="{!!hasRequestFailures}" summary="No sync failures exists."></apex:pageMessage>									
+										<apex:pageBlockTable value="{!requestFailures}" var="failure" rendered="{!hasRequestFailures}">				
+											<apex:column >
+												<apex:facet name="header">{!$ObjectType.IntegrationMessageQueue__c.Fields.Status__c.Label}</apex:facet>
+												<apex:image url="{!if(failure.msgQueue.ErrorMessage__c == '' || failure.msgQueue.ErrorMessage__c == null, URLFOR($Resource.yellowCircle), URLFOR($Resource.redTriangle))}" height="20px" width="20px" />{!failure.msgQueue.Status__c}
+											</apex:column>					
+											<apex:column >
+												<apex:facet name="header">{!$ObjectType.IntegrationMessageQueue__c.Fields.ErrorMessage__c.Label}</apex:facet>
+												{!failure.msgQueue.ErrorMessage__c}
+											</apex:column>
+											<apex:column >
+												<apex:facet name="header">Date Attempted</apex:facet>
+												{!failure.syncLocalDateTime}
+											</apex:column>
+										</apex:pageBlockTable>	
+									</apex:tab>
+
+								</apex:tabPanel>
+
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+
+   					<apex:pageBlockSection columns="1" title="Task Request History" id="syncTaskHistorySection">
+						<apex:pageBlockSectionItem >
+							<apex:tabPanel switchType="client" selectedTab="successSync">
+									<apex:tab label="Successful Requests ({!numSuccessfulTaskSyncs})" id="successSync">
+										<apex:pageMessage severity="INFO" rendered="{!!hasTaskSyncHistory}" summary="No sync history exists."></apex:pageMessage>									
+										<apex:pageBlockTable value="{!taskSyncHistorySuccess}" var="taskSyncSuccess" rendered="{!hasTaskSyncHistory}">					
+											<apex:column >
+												<apex:facet name="header">{!$ObjectType.IntegrationMessageQueue__c.Fields.Status__c.Label}</apex:facet>
+												<apex:image url="{!URLFOR($Resource.greenStar)}" height="20px" width="20px" />
+											</apex:column>	
+											<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Name.Label}</apex:facet>							{!taskSyncSuccess.task.Name}			                                    
+											</apex:column>				
+											<apex:column >
+												<apex:facet name="header">Scheduled Job</apex:facet>
+												{!if(taskSyncSuccess.msgQueue.JobName__c == 'Task Sync Later', 'Y' , 'N')}
+											</apex:column>
+											<apex:column >
+												<apex:facet name="header">Date Processed</apex:facet>
+												{!taskSyncSuccess.syncLocalDateTime}
+											</apex:column>
+										</apex:pageBlockTable>	
+									</apex:tab>
+									<apex:tab label="Failed/Attempted Requests ({!numFailedAttemptedTaskSyncs})" id="failedSync">
+									
+										<apex:pageMessage severity="INFO" rendered="{!!hasTaskRequestFailures}" summary="No sync failures exists."></apex:pageMessage>									
+										<apex:pageBlockTable value="{!taskSyncHistoryPendingOrErrors}" var="taskSyncFailure" rendered="{!hasTaskRequestFailures}">				
+											<apex:column >
+												<apex:facet name="header">{!$ObjectType.IntegrationMessageQueue__c.Fields.Status__c.Label}</apex:facet>
+												<apex:image url="{!if(taskSyncFailure.msgQueue.Status__c = 'Error' || taskSyncFailure.msgQueue.Status__c = 'Aborted', URLFOR($Resource.redTriangle), URLFOR($Resource.yellowCircle))}" height="20px" width="20px" />&nbsp;{!taskSyncFailure.msgQueue.Status__c}
+											</apex:column>	
+											<apex:column >
+											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.Name.Label}</apex:facet>						
+			                                    {!taskSyncFailure.task.Name}
+			                              	</apex:column>				
+											<apex:column >
+												<apex:facet name="header">{!$ObjectType.IntegrationMessageQueue__c.Fields.ErrorMessage__c.Label}</apex:facet>
+												{!taskSyncFailure.msgQueue.ErrorMessage__c}
+											</apex:column>
+											<apex:column >
+												<apex:facet name="header">Scheduled Job</apex:facet>
+												{!if(taskSyncFailure.msgQueue.JobName__c == 'Task Sync Later', 'Y' , 'N')}
+											</apex:column>
+											<apex:column >
+												<apex:facet name="header">Date Attempted</apex:facet>												
+												{!if(taskSyncFailure.msgQueue.JobName__c == 'Task Sync Later' && taskSyncFailure.msgQueue.Status__c = 'Initiated', 'Next Sunday/Monday', taskSyncFailure.syncLocalDateTime)}
+											</apex:column>
+										</apex:pageBlockTable>	
+										
+									</apex:tab>
+
+								</apex:tabPanel>
+</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+
+		<apex:outputPanel id="msgPanelBottom">
+			<apex:pageMessages escape="false"></apex:pageMessages>
+		</apex:outputPanel>
+
+		<apex:outputPanel id="msgPollingBottom" >
+			<div style="display:{!if(showPollingMsg==true, 'block', 'none')}">
+			<apex:pageMessage escape="false" summary="{!pollingMessageQueueMsgBottom}" severity="INFO" ></apex:pageMessage>
+			</div>
+		</apex:outputPanel>
+		
+<!--
+
+		<apex:commandButton action="{!testTaskSync}" value="test task sync prototype"></apex:commandButton>
+		-->
+		
+	
+	</apex:form>
+
+</apex:page>

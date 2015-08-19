@@ -6,7 +6,6 @@
     <tab>standard-Contact</tab>
     <tab>standard-Account</tab>
     <tab>standard-Idea</tab>
-    <tab>standard-Answers</tab>
     <tab>standard-report</tab>
     <tab>standard-Dashboard</tab>
     <tab>AECOM_Primary_Department__c</tab>
@@ -23,4 +22,10 @@
     <tab>State_Province_Emirate__c</tab>
     <tab>Account_Plan_Contacts__c</tab>
     <tab>Business_Line__c</tab>
+    <tab>Ecosystem</tab>
+    <tab>Revenue__c</tab>
+    <tab>Billing__c</tab>
+    <tab>CostDistLine__c</tab>
+    <tab>EarnedValueHeader__c</tab>
+    <tab>VendorSub__c</tab>
 </CustomApplication>

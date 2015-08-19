@@ -1,0 +1,221 @@
+<apex:page standardcontroller="Deliverable__c" showHeader="true" sidebar="true" extensions="ECO_DeliverableADDTQReviewersController">
+<apex:form >
+ 	  <style>
+ 	    .ErrorRow{
+ 	    	background-color: #FFFF00;
+ 	    }
+
+ 	    .tableclass{
+ 	    	border: 1px solid black; border-collapse: collapse; padding: 30px;
+ 	    }
+
+ 	    .borderclass{
+ 	    	 border: 1px solid black;padding: 10px;
+ 	    }
+
+		.customHelpText{
+			padding: 7px;
+		    border: 1px solid #85B3CE;
+		    min-height: 30px;
+		    display: block;
+		    width: auto;
+		    margin: 0 0 5px 0;
+		    background-repeat: no-repeat;
+		    border-radius: 4px;
+		    background-color: #A2D3F1;
+		    
+		}
+		.customHelpBody{
+			display:inline-block;
+			color:#;
+			max-width:95%;
+		}
+		.infoTable {
+			background: #f5f5f5;
+			border-collapse: separate;
+			font-size: 12px;
+			line-height: 24px;
+			text-align: left;
+			margin:5px 14px 0 14px;
+		}	
+		.infoTable table{
+			width:100%;
+		}
+		.infoTable th {
+			background-color: #008cb2 !important;
+			color: #fff;
+	  		font-weight: bold;
+			padding: 3px 9px;
+			position: relative;
+			border:none !important;
+		}
+		.infoTable th:first-child{
+			border-right:1px solid #fff !important;
+		}
+
+		.infoTable th:after {
+			content: '';
+			display: block;
+			height: 25%;
+			left: 0;
+			margin: 1px 0 0 0;
+			position: absolute;
+			top: 25%;
+			width: 100%;
+		}
+		.infoTable td {
+			border-right: 1px solid #fff;
+			border-left: 1px solid #e8e8e8;
+			border-top: 1px solid #fff;
+			border-bottom: 1px solid #e8e8e8;
+			padding: 3px 9px;
+			position: relative;
+			transition: all 300ms;
+			min-width: 90px;
+		}
+		.rich-tab-header:hover{
+			cursor:pointer !important;
+		}
+		.rich-tab-disabled:hover{
+			cursor:auto !important;
+		}
+		.infoTable td:first-child {
+			box-shadow: inset 1px 0 0 #fff;
+		}	
+
+		.infoTable td:last-child {
+			border-right: 1px solid #e8e8e8;
+			box-shadow: inset -1px 0 0 #fff;
+		}	
+
+		.infoTable tr {
+		}
+
+		.infoTable tr:nth-child(odd) td {
+			background: #f1f1f1;	
+		}
+
+		.infoTable tr:last-of-type td {
+			box-shadow: inset 0 -1px 0 #fff; 
+		}
+
+		.infoTable tr:last-of-type td:first-child {
+			box-shadow: inset 1px -1px 0 #fff;
+		}	
+
+		.infoTable tr:last-of-type td:last-child {
+			box-shadow: inset -1px -1px 0 #fff;
+		}	
+
+		.infoTable tbody:hover td {
+		}
+
+		.infoTable tbody:hover tr:hover td {
+			color: #444;
+			text-shadow: 0 1px 0 #fff;
+		}
+		body .bEditBlock .pbBody .pbSubheader, body .bWizardBlock .pbBody .pbSubheader{
+			background-image:none !important;
+			color:#27282e;
+		}
+
+ 	  </style>
+      <apex:sectionheader subtitle="Build Technical Quality Team" title="Deliverable">
+      </apex:sectionheader>
+      <apex:pageBlock mode="Readonly" id="TQTPB" title="Add Members to Technical Quality Team">
+      <apex:pageBlockButtons location="top">
+
+	   	     <apex:CommandButton value="Add New Member" action="{!addNewMemberNotInTeam}" rerender="ProTeamInformationPBS,TQTInformationPBS">
+ 	   	     </apex:CommandButton> 	
+
+ 	   	     <apex:CommandButton value="Add Selected Members" action="{!moveMembersDown}" rerender="ProTeamInformationPBS,TQTInformationPBS">
+ 	   	     </apex:CommandButton>
+ 	   	     <apex:commandButton value="Remove Selected Member" action="{!removeSelectedMembers}" reRender="ProTeamInformationPBS,TQTInformationPBS">
+ 	   	     </apex:commandButton>
+
+      		 <apex:commandButton value="Save" action="{!SaveChanges}" reRender="TQTPB,TQTInformationPBS"></apex:commandButton>
+ 	   		 <apex:commandButton value="Return to Deliverable" action="{!Cancel}">
+ 	   		 </apex:commandButton>
+ 	   		
+
+
+ 	  </apex:pageBlockButtons>
+      <apex:pagemessages ></apex:pagemessages>
+      <!--<apex:pageMessage severity="info" summary="Reminder: Consider SiD when selecting reviewers for deliverable technical quality reviews." />-->
+
+	  <div class="customHelpText">
+			<div class="customHelpBody">
+				Reminder: Consider SiD when selecting reviewers for deliverable technical quality reviews.
+			</div>
+	  </div>	
+
+      <apex:pageblocksection id="ProTeamInformationPBS" title="Available Team Members" columns="1" collapsible="false">
+      	<apex:pageMessage severity="INFO" rendered="{!IF(ListDisplayTeamKeys.size > 0, false, true)}" summary="No valid team members found."></apex:pageMessage> 
+ 	   	<apex:pageBlockTable value="{!ListDisplayTeamKeys}" var="avaRow" rendered="{!IF(ListDisplayTeamKeys.size > 0, true, false)}">
+ 	   	  <apex:column headerValue="Select" title="Select user to add to team." width="40">
+ 	   	     <apex:inputCheckbox value="{!mapDisplayTeamAvailable[avaRow].bSelected}" disabled="{!NOT(mapDisplayTeamAvailable[avaRow].bCanBeUser)}">
+ 	   	  </apex:inputCheckbox>
+ 	   	  </apex:column>
+ 	   	  <apex:column value="{!mapDisplayTeamAvailable[avaRow].oProjectTeamMember.Contact__r.Name}">
+ 	   	  </apex:column>
+ 	   	  <apex:column value="{!mapDisplayTeamAvailable[avaRow].oProjectTeamMember.ProjectRole__r.Name}">
+ 	   	  </apex:column>
+ 	   	  <apex:column Headervalue="Can be Approver" width="300">
+ 	   	  	<apex:inputCheckbox value="{!mapDisplayTeamAvailable[avaRow].bCanBeUser}" disabled="true" rendered="{!mapDisplayTeamAvailable[avaRow].bCanBeUser}" />
+ 	   	  	<apex:outputText value="{!mapDisplayTeamAvailable[avaRow].approvalMessage}" rendered="{!NOT(mapDisplayTeamAvailable[avaRow].bCanBeUser)}" />
+ 	   	  </apex:column>
+ 	   	</apex:pageBlockTable>
+ 	   </apex:pageblocksection>
+
+
+ 	   <apex:pageblocksection id="TQTInformationPBS" title="Select Technical Quality Team" columns="1"  collapsible="false">
+ 	   	<apex:pageBlockTable value="{!mapDisplayTQTExisting}" var="extsRow">
+ 	   		<apex:column headerValue="Select" title="Select user to remove from team." width="40">
+ 	   	    	<apex:inputCheckbox value="{!mapDisplayTQTExisting[extsRow].bSelected}" disabled="{!Not(mapDisplayTQTExisting[extsRow].bNewRecord)}">
+ 	   	  		</apex:inputCheckbox>
+	 	   	  </apex:column>
+	 	   	  <apex:column headerValue="Name" styleClass="{!IF((mapDisplayTQTExisting[extsRow].bHasError),"ErrorRow","")}"> 
+	 	   		<apex:outputLabel value="{!mapDisplayTQTExisting[extsRow].sUserName}" rendered="{!mapDisplayTQTExisting[extsRow].oTechnicalQualityTeam.TechnicalQualityTeamMember__c != null}"/>
+	 	   	  	<apex:inputField value="{!mapDisplayTQTExisting[extsRow].oPTM.Contact__c}" rendered="{!mapDisplayTQTExisting[extsRow].oTechnicalQualityTeam.TechnicalQualityTeamMember__c = null}" required="true"/>
+	 	   	  </apex:column>
+	 	   	  <apex:column Headervalue="Role" styleClass="{!IF((mapDisplayTQTExisting[extsRow].bHasError),"ErrorRow","")}">
+	 	   	  	<apex:inputField value="{!mapDisplayTQTExisting[extsRow].oTechnicalQualityTeam.Role__c}" required="true"/>
+	 	   	  </apex:column>
+	 	   	  <!--<apex:column Headervalue="Required Date" styleClass="{!IF((mapDisplayTQTExisting[extsRow].bHasError),"ErrorRow","")}">
+	 	   	  	<apex:inputField value="{!mapDisplayTQTExisting[extsRow].oTechnicalQualityTeam.RequiredDate__c}" required="true"/>
+	 	   	  </apex:column>-->
+	 	   	  <apex:column Headervalue="Status" styleClass="{!IF((mapDisplayTQTExisting[extsRow].bHasError),"ErrorRow","")}">
+	 	   	  	<apex:OutputField value="{!mapDisplayTQTExisting[extsRow].oTechnicalQualityTeam.Status__c}"/>
+	 	   	  </apex:column>
+ 	   	</apex:pageBlockTable>
+ 	   </apex:pageblocksection>
+ 	  </apex:pageBlock>
+
+ 	   <BR /><BR /><BR />
+
+ 	   	<TABLE class="infoTable">
+ 	   		<TR>
+ 	   			<TH class="borderclass">Name</TH>
+ 	   			<TH class="borderclass">Definition</TH>
+ 	   		</TR>
+ 	   		<TR>
+ 	   			<TD class="borderclass">Originator</TD>
+ 	   			<TD class="borderclass">Initiates project work and takes it to an appropriate level of completion prior to checking and verification.</TD>
+ 	   		</TR>
+ 	   		<TR>
+ 	   			<TD class="borderclass">Reviewer</TD>
+ 	   			<TD class="borderclass">The person responsible for performing the technical accuracy check of the deliverable. Person must be qualified based on discipline, experience and registration/certification OR as approved by BL</TD>
+ 	   		</TR>
+ 	   		<TR>
+ 	   			<TD class="borderclass">Lead Verifier</TD>
+ 	   			<TD class="borderclass">The person authorized by Business Line to approve certain types of deliverables due to inherent risk.</TD>
+ 	   		</TR>
+ 	   		<TR>
+ 	   			<TD class="borderclass">Approver</TD>
+ 	   			<TD class="borderclass">The person identified in the Project Plan who is responsible for the approval and release of deliverables.</TD>
+ 	   		</TR>
+ 	   	</TABLE>
+
+ 	   	<BR /><BR /><BR />
+ </apex:form>
+</apex:page>

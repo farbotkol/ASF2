@@ -1,0 +1,125 @@
+<apex:page standardController="Project_Review_Trigger__c" extensions="ECO_ProjectReviewTriggersController" showHeader="true" sidebar="false" >
+	<style>
+		.meetingNotes td, .meetingNotes th{
+			padding:10px;
+		}
+
+		.meetingNotes td{
+			padding-top:2px;
+		}
+
+		.meetingNotes th{
+			padding-bottom:2px;
+		}
+
+		.tableLabel{
+			font-weight:bold;
+			color: #4a4a56 !important;
+			text-align: right;
+			font-size: 91%;
+			padding-right:10px;
+		}
+
+		.setPicker{
+			position:absolute;
+			top:0;
+			right:0;
+		}
+		body .bPageBlock .pbBody .labelCol{
+			padding-top: 3px !important;
+			padding-bottom: 5px;
+			vertical-align: middle;
+		}
+
+		.riskNotifications .pbSubsection .detailList tr td{
+			color:red !important;
+		}
+	</style>
+
+	<script type="text/javascript">
+	function showRangeFields()
+	{
+		var operatorVal = document.getElementById("{!$Component.mainForm.topBlock.Operator}").value;
+		var Range = document.getElementById("RangeSelection");
+		if(operatorVal == 'between' || operatorVal == 'outside')
+		{
+			Range.style.display = "block";
+		}
+		else
+		{
+			Range.style.display = "none";
+		}
+	}
+	sfdcPage.appendToOnloadQueue(showRangeFields);
+	</script>
+
+	<apex:form id="mainForm">
+		<apex:actionFunction name="loadMetric" action="{!loadMetric}" rerender="topBlock" />
+		<div style="position:relative">
+			<apex:sectionHeader title="Project Review Trigger" />
+		</div>
+		<apex:pageMessages id="pgMessages" />
+		<div class="projectSummary">
+			<apex:pageBlock title="Trigger Definition" id="topBlock">
+				<apex:pageBlockButtons location="top">
+					<apex:commandButton value="Save" action="{!doSave}"/>
+					<apex:commandButton value="Delete" action="{!delete}" />
+				</apex:pageBlockButtons>
+				<table border="0" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<td style="padding-left:5%;">
+							Name:&nbsp;&nbsp;<apex:inputField id="Name" value="{!Project_Review_Trigger__c.Name}" />
+						</td>
+						<td>
+							Evaluation Frequency:&nbsp;&nbsp;<apex:inputField id="EvalFreq" value="{!Project_Review_Trigger__c.Evaluation_Frequency__c}" />
+						</td>
+						<td colspan="2">
+							Active:&nbsp;&nbsp;<apex:inputField id="IsActive" value="{!Project_Review_Trigger__c.Is_Active__c}" />
+						</td>
+					</tr>
+					<tr>
+						<td colspan="4" style="height:30px">&nbsp;</td>
+					</tr>
+					<tr>
+						<td style="padding-left:5%;width:15%">
+							If&nbsp;&nbsp;
+							<apex:selectList id="KPIMetric" size="1" value="{!Project_Review_Trigger__c.KPI_Metric__c}" onChange="loadMetric()">
+								<apex:selectOptions value="{!lMetricOptions}" />
+							</apex:selectList>
+						</td> 
+						<td style="width:12%">
+							is&nbsp;&nbsp;
+							<apex:inputField id="Operator" value="{!Project_Review_Trigger__c.Operator__c}" onChange="showRangeFields()"/>
+						</td>
+						<td style="width:8%">
+							<apex:inputField id="Comparator1" style="width:80px;" value="{!Project_Review_Trigger__c.Comparator_1__c}" html-placeholder="Enter value" />
+							&nbsp;&nbsp;
+							<apex:outputLabel id="UnitOfMeasure1" value="{!unitOfMeasure}" />
+						</td>
+						<!-- <apex:outputPanel id="RangeSelection"> -->
+						<td style="width:16%">
+							<div id="RangeSelection" style="display:none;">
+							and&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<apex:inputField id="Comparator2" style="width:80px;" value="{!Project_Review_Trigger__c.Comparator_2__c}" html-placeholder="Enter value" />
+							&nbsp;&nbsp;
+							<apex:outputLabel id="UnitOfMeasure2" value="{!unitOfMeasure}" />
+							</div>
+						</td>
+						<!-- </apex:outputPanel> -->
+					</tr>
+					<tr>
+						<td colspan="4" style="height:30px">&nbsp;</td>
+					</tr>
+					<tr>
+						<td style="padding-left:10%; text-align:center">
+							Then create alert:
+						</td>
+						<td colspan="3">
+							<apex:inputField id="AlertMessage" value="{!Project_Review_Trigger__c.Alert_Message__c}" style="width:50%" />
+						</td>
+					</tr>
+				</table>
+			</apex:pageBlock>
+		</div>
+	</apex:form>
+</apex:page>

@@ -116,23 +116,52 @@
             <active>false</active>
             <keyCommand>SHIFT+K</keyCommand>
         </defaultShortcut>
+        <defaultShortcut>
+            <action>FOCUS_MACRO</action>
+            <active>false</active>
+            <keyCommand>M</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>FOCUS_FOOTER_PANEL</action>
+            <active>false</active>
+            <keyCommand>F</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_LIST_VIEW</action>
+            <active>false</active>
+            <keyCommand>SHIFT+N</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_LEFT_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+LEFT ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_RIGHT_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+RIGHT ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_TOP_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+UP ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_BOTTOM_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+DOWN ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_APP_LEVEL_COMPONENTS</action>
+            <active>false</active>
+            <keyCommand>Z</keyCommand>
+        </defaultShortcut>
     </keyboardShortcuts>
     <label>Shared Services Console</label>
     <listPlacement>
-        <location>left</location>
-        <units>percent</units>
-        <width>25</width>
+        <location>full</location>
     </listPlacement>
     <listRefreshMethod>none</listRefreshMethod>
-    <pushNotifications>
-        <pushNotification>
-            <fieldNames>Owner</fieldNames>
-            <fieldNames>SS_Category__c</fieldNames>
-            <fieldNames>SS_Is_Uncategorized__c</fieldNames>
-            <fieldNames>Status</fieldNames>
-            <objectName>Case</objectName>
-        </pushNotification>
-    </pushNotifications>
     <saveUserSessions>true</saveUserSessions>
     <tab>standard-Case</tab>
     <tab>standard-Contact</tab>
@@ -141,12 +170,78 @@
     <tab>standard-Chatter</tab>
     <tab>standard-report</tab>
     <tab>standard-Dashboard</tab>
+    <tab>QuestionnaireTemplate__c</tab>
+    <tab>Site__c</tab>
+    <tab>OrganizationString__c</tab>
+    <tab>Ecosystem</tab>
+    <tab>Project_Review_Trigger__c</tab>
+    <tab>KPI_Metric__c</tab>
+    <tab>RoutingMember__c</tab>
+    <tab>CountryRisk__c</tab>
+    <tab>ProjectCountry_Risk__c</tab>
+    <tab>BurdenReference__c</tab>
+    <tab>Load_Test</tab>
+    <tab>Questionnaire__c</tab>
+    <tab>Revenue__c</tab>
+    <tab>Billing__c</tab>
+    <tab>CostDistLine__c</tab>
+    <tab>EarnedValueHeader__c</tab>
+    <tab>VendorSub__c</tab>
     <workspaceMappings>
         <mapping>
-            <tab>standard-Solution</tab>
+            <tab>Billing__c</tab>
         </mapping>
         <mapping>
-            <tab>standard-report</tab>
+            <tab>BurdenReference__c</tab>
+        </mapping>
+        <mapping>
+            <tab>CostDistLine__c</tab>
+        </mapping>
+        <mapping>
+            <tab>CountryRisk__c</tab>
+        </mapping>
+        <mapping>
+            <tab>EarnedValueHeader__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Ecosystem</tab>
+        </mapping>
+        <mapping>
+            <tab>KPI_Metric__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Load_Test</tab>
+        </mapping>
+        <mapping>
+            <tab>OrganizationString__c</tab>
+        </mapping>
+        <mapping>
+            <tab>ProjectCountry_Risk__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Project_Review_Trigger__c</tab>
+        </mapping>
+        <mapping>
+            <tab>QuestionnaireTemplate__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Questionnaire__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Revenue__c</tab>
+        </mapping>
+        <mapping>
+            <tab>RoutingMember__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Site__c</tab>
+        </mapping>
+        <mapping>
+            <tab>VendorSub__c</tab>
+        </mapping>
+        <mapping>
+            <fieldName>ParentId</fieldName>
+            <tab>standard-Account</tab>
         </mapping>
         <mapping>
             <tab>standard-Case</tab>
@@ -159,11 +254,13 @@
             <tab>standard-Contact</tab>
         </mapping>
         <mapping>
-            <fieldName>ParentId</fieldName>
-            <tab>standard-Account</tab>
+            <tab>standard-Dashboard</tab>
         </mapping>
         <mapping>
-            <tab>standard-Dashboard</tab>
+            <tab>standard-Solution</tab>
+        </mapping>
+        <mapping>
+            <tab>standard-report</tab>
         </mapping>
     </workspaceMappings>
 </CustomApplication>

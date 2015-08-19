@@ -1,0 +1,168 @@
+<apex:page showHeader="true" sidebar="true" standardController="TechnicalQualityReview__c" extensions="ECO_ReviewMemberManagerController">
+
+
+	<style>
+		.ErrorRow{
+			background-color: #FFFF00;
+		}
+
+		.tableclass{
+			border: 1px solid black; border-collapse: collapse; padding: 30px;
+		}
+
+		.borderclass{
+			border: 1px solid black;padding: 10px;
+		}
+
+		.searchText{
+			text-align:center;
+			font-weight:bold;
+			font-size:20px;
+		}
+	</style>
+
+	<apex:form >
+		<apex:outputPanel id="wholePanel">
+		<apex:outputfield value="{!TechnicalQualityReview__c.Deliverable__c}" rendered="false"/>
+		<apex:outputfield value="{!TechnicalQualityReview__c.ApproverRequiredDate__c}" rendered="false"/>
+		<apex:outputfield value="{!TechnicalQualityReview__c.ReviewerRequiredDate__c}" rendered="false"/>
+		<apex:outputfield value="{!TechnicalQualityReview__c.OriginatorRequiredDate__c}" rendered="false"/>
+		<apex:outputfield value="{!TechnicalQualityReview__c.LeadVerifierRequiredDate__c}" rendered="false"/>
+
+		<div style="visibility:hidden;">
+		<apex:inputField value="{!TechnicalQualityReview__c.Deliverable__c}" />
+		</div>
+		<apex:sectionheader title="Manage Technical Members" />
+
+		<apex:pagemessages />
+		 
+		<apex:pageBlock mode="edit" id="TQTPB" title="Add Members to Technical Quality Team">
+
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="/{!TechnicalQualityReview__c.Deliverable__c}" value="Return to Deliverable" immediate="true"/>
+				<apex:commandButton action="{!saveRequest}" value="Save" reRender="wholePanel" status="savestatus" />
+			</apex:pageBlockButtons>
+
+			<apex:pageBlockButtons location="bottom">
+				<apex:commandButton action="{!saveRequest}" value="Save" reRender="wholePanel" status="savestatus" />
+			</apex:pageBlockButtons>
+
+			<apex:actionStatus id="savestatus">
+				<apex:facet name="start">
+					<p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Saving...</p>
+				</apex:facet>
+				<apex:facet name="stop">
+					<apex:outputPanel >
+
+					<apex:pageblocksection title="Request Details" collapsible="false" >
+						<apex:repeat value="{!$ObjectType.TechnicalQualityReview__c.FieldSets.TQR_Field_View}" var="Field1">
+							<apex:inputField value="{!oTechnicalQualityReview[Field1]}" required="true" rendered="{!Field1.required}"/>
+				           	<apex:inputField value="{!oTechnicalQualityReview[Field1]}" rendered="{!not(Field1.required)}" />
+						</apex:repeat>
+					</apex:pageblocksection>
+					<apex:pageblocksection title="Type" collapsible="false" >
+						<apex:repeat value="{!$ObjectType.TechnicalQualityReview__c.FieldSets.TypeSet}" var="Field1">
+							<apex:inputField value="{!oTechnicalQualityReview[Field1]}" required="true" rendered="{!Field1.required}"/>
+				           	<apex:inputField value="{!oTechnicalQualityReview[Field1]}" rendered="{!not(Field1.required)}" />
+						</apex:repeat>
+					</apex:pageblocksection>
+					<apex:pageblocksection title="Review Scope" collapsible="false" >
+						<apex:repeat value="{!$ObjectType.TechnicalQualityReview__c.FieldSets.ReviewScopeSet}" var="Field1">
+							<apex:inputField value="{!oTechnicalQualityReview[Field1]}" required="true" rendered="{!Field1.required}"/>
+				           	<apex:inputField value="{!oTechnicalQualityReview[Field1]}" rendered="{!not(Field1.required)}" />
+						</apex:repeat>
+					</apex:pageblocksection>
+					<BR /><BR /><BR />
+
+					
+					<apex:tabPanel switchType="ajax" value="{!tabNmae}">
+						<apex:tab label="Selected Technical Quality Team" name="tabOne" id="tabOne" rendered="{!oTechnicalQualityReview.id != null}" >
+
+							<apex:actionStatus id="approvalstatus">
+							<apex:facet name="start">
+								<p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Saving...</p>
+							</apex:facet>
+							<apex:facet name="stop">
+								<apex:outputPanel id="STQT">					
+
+									<apex:pageblocksection title="Selected Technical Quality Team" columns="1" collapsible="false" />
+									<apex:pageMessage severity="INFO" rendered="{!IF(lstReviewMember_Wrapper.size > 0, false, true)}" summary="No Technical Quality Team Members associated with the request."></apex:pageMessage> 
+									<apex:pageBlockTable value="{!lstReviewMember_Wrapper}" var="members"  rendered="{!IF(lstReviewMember_Wrapper.size > 0, true, false)}">
+										<!--<apex:column headerValue="Select">
+											<apex:inputCheckbox value="{!members.bSelected}" />
+										</apex:column>-->
+										<apex:column headerValue=""> 
+											<apex:outputLink value="/{!members.oReviewMember.id}">View</apex:outputLink>
+										</apex:column>
+										<apex:column headerValue="Member"> 
+											<apex:outputField value="{!members.oReviewMember.TechnicalQualityTeamMember__r.TechnicalQualityTeamMember__c}" />
+										</apex:column>
+										<apex:column Headervalue="Role">
+											<apex:outputField value="{!members.oReviewMember.TechnicalQualityTeamMember__r.Role__c}" />
+										</apex:column>
+										<apex:column Headervalue="Discipline">
+											<apex:inputField value="{!members.oReviewMember.Discipline__c}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected)}" />
+											<apex:outputField value="{!members.oReviewMember.Discipline__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', not(members.bSelected))}" />
+										</apex:column>
+										<apex:column Headervalue="Description">
+											<apex:inputField value="{!members.oReviewMember.Description__c}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected)}" />
+											<apex:outputField value="{!members.oReviewMember.Description__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', not(members.bSelected))}" />
+										</apex:column>
+										<apex:column Headervalue="Comments">
+											<apex:inputField value="{!members.oReviewMember.Comments__c}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected)}" />
+											<apex:outputField value="{!members.oReviewMember.Comments__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', not(members.bSelected))}" />
+										</apex:column>		
+										<apex:column Headervalue="General Description">
+											<apex:inputField value="{!members.oReviewMember.General_Description__c}" rendered="{!AND(members.oReviewMember.Status__c!= 'Submitted', members.bSelected)}" />
+											<apex:outputField value="{!members.oReviewMember.General_Description__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', not(members.bSelected))}" />
+										</apex:column>					
+										<apex:column Headervalue="Status">
+											<apex:outputField value="{!members.oReviewMember.Status__c}" rendered="{!members.bSelected}" />
+										</apex:column>
+										<apex:column Headervalue="Action">
+											<apex:commandButton value="Submit" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected)}" action="{!submitForApproval}" reRender="wholePanel, STQT" status="approvalstatus"  />
+											<apex:commandButton value="Recall" rendered="{!AND(members.oReviewMember.Status__c == 'Submitted', members.bSelected)}" action="{!killApproval}" reRender="wholePanel, STQT" status="approvalstatus" />
+										</apex:column>																																																
+									</apex:pageBlockTable>		
+								</apex:outputPanel>
+							</apex:facet>
+							</apex:actionStatus>
+
+						</apex:tab>
+						<apex:tab label="Existing Technical Quality Team" name="tabTwo" id="tabTwo">
+
+							<apex:pageblocksection id="TQTInformationPBS" title="Existing Technical Quality Team" columns="1" collapsible="false" />
+
+							<apex:pageMessage severity="INFO" rendered="{!IF(lstTQT_Wrapper.size > 0, false, true)}" summary="There are no Technical Quality Team Members available."></apex:pageMessage> 
+							<apex:pageBlockTable value="{!lstTQT_Wrapper}" var="extsRow" rendered="{!IF(lstTQT_Wrapper.size > 0, true, false)}">
+								<apex:column headerValue="Select">
+									<apex:inputCheckbox value="{!extsRow.bSelected}" />
+								</apex:column>
+								<apex:column headerValue="Member"> 
+									<apex:outputField value="{!extsRow.oTechnicalQualityTeam.TechnicalQualityTeamMember__c}" />
+								</apex:column>
+								<apex:column Headervalue="Role">
+									<apex:outputField value="{!extsRow.oTechnicalQualityTeam.Role__c}" />
+								</apex:column>
+							</apex:pageBlockTable>
+
+						</apex:tab>
+
+					</apex:tabPanel>
+
+
+
+
+					</apex:outputPanel>
+				</apex:facet>
+			</apex:actionStatus>	
+			
+
+			<!--<apex:pageBlockButtons location="bottom">
+				<apex:commandButton value="Submit Selected For Review" action="{!submitForApproval}" reRender="wholePanel" status="approvalstatus" rendered="{!IF(lstReviewMember_Wrapper.size > 0, true, false)}" />	
+				<apex:commandButton value="Recall Selected" action="{!killApproval}"  reRender="wholePanel" status="approvalstatus" rendered="{!IF(lstReviewMember_Wrapper.size > 0, true, false)}" />		
+			</apex:pageBlockButtons>-->
+		</apex:pageBlock>
+		</apex:outputPanel>
+	</apex:form>
+</apex:page>

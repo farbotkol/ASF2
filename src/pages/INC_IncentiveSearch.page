@@ -1,0 +1,86 @@
+<apex:page showHeader="true" sidebar="true" controller="INC_IncentiveSearch_Controller">
+<style>
+#values th{
+	font-size: 10px;
+} 
+#values td{
+	font-size: 10px;
+}
+.fixed { table-layout:fixed; }
+.fixed td { overflow: hidden; }
+.hiddencolumn{
+	display:none;
+}
+</style>
+<apex:form >
+	<apex:pageMessages />
+	<apex:sectionHeader title="" subtitle="Incentive Project Search" />
+	<apex:pageBlock title="Search Criteria">
+		<apex:pageBlockSection title="" showheader="false" columns="1">
+			<apex:pageBlockTable value="{!searchCriteria}" var="row" id="theSearchTable">
+			   <apex:column headerValue="Row">
+			   		<apex:outputText value="{!row.Row}"/>
+			   </apex:column>
+			   <apex:column headerValue="Criteria">
+			       <apex:selectList value="{!row.criteria}" multiselect="false" size="1">
+			          <apex:selectOptions value="{!row.criteriaRowlist}"/>
+			          <apex:actionSupport event="onchange" reRender="theSearchTable"/>
+			       </apex:selectList>
+			   </apex:column>
+			   <apex:column headerValue="Value">
+			   		<apex:inputText value="{!blankValue}" html-readonly="true" rendered="{!row.Criteria = ''}"/>
+			   		<apex:inputText value="{!row.value}" rendered="{!AND(row.Criteria != '',row.Criteria != 'PM')}"/>
+			   		<apex:inputField value="{!row.IncProj.ProjectManager__c}" rendered="{!Row.Criteria = 'PM'}" />
+			   </apex:column>
+			   <apex:column >
+			        <apex:commandButton value="Add Row" action="{!addrow}" reRender="theSearchTable"/>
+			        <apex:commandButton value="Remove Row" action="{!removerow}" reRender="theSearchTable">
+			          <apex:param name="removerow" value="{!row.row}" assignTo="{!removerow}"/>
+        			</apex:commandButton>
+			   </apex:column>
+			</apex:pageBlockTable>
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+	<apex:pageBlock >
+		<apex:pageBlockButtons location="top">
+		   <apex:commandButton value="Search" action="{!search}"/>
+		</apex:pageBlockButtons>
+		<apex:pageBlockSection showHeader="false" columns="1">
+		<!--	<table id="values" class="fixed">
+				<col width="15%"/>
+				<col width="25%"/>
+				<col width="15%"/>
+				<col width="20%"/>
+				<col width="15%"/>
+				<col width="10%"/>
+				<tr>
+					<th>Project Number</th>
+					<th>Project Name</th>
+					<th>Customer Name</th>
+					<th>Approved NSR Budget</th>
+					<th>Current Owner</th>
+					<th>Enrollment Status</th>
+				</tr>
+				<apex:repeat value="{!lResults}" var="result">
+				  <tr>
+				  	 <td>{!result.ProjectID__c}</td>
+				  	 <td>{!result.Name}</td>
+				  	 <td>{!result.CustomerName__c}</td>
+				  	 <td>{!result.ApprovedNSRBudget__c}</td>
+				  	 <td><apex:outputText value="{!result.OwnerID}"/></td>
+				  	 <td>{!result.EnrollmentStatus__c}</td>
+				  </tr>
+				</apex:repeat>
+			</table> -->
+			<apex:pageBlockTable value="{!lResults}" var="result">
+				<apex:column value="{!result.ProjectID__c}"/>
+				<apex:column value="{!result.Name}"/>
+				<apex:column value="{!result.CustomerName__c}"/>
+				<apex:column value="{!result.ApprovedNSRBudget__c}"/>
+				<apex:column value="{!result.OwnerID}"/>
+				<apex:column value="{!result.EnrollmentStatus__c}"/>
+			</apex:pageBlockTable>
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+</apex:form>
+</apex:page>

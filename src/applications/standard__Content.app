@@ -5,7 +5,6 @@
     <tab>standard-Workspace</tab>
     <tab>standard-ContentSearch</tab>
     <tab>standard-ContentSubscriptions</tab>
-    <tab>standard-ContentFavorites</tab>
     <tab>AECOM_Primary_Department__c</tab>
     <tab>AECOM_Employee__c</tab>
     <tab>AECOM_team__c</tab>
@@ -18,4 +17,10 @@
     <tab>State_Province_Emirate__c</tab>
     <tab>Account_Plan_Contacts__c</tab>
     <tab>Business_Line__c</tab>
+    <tab>Ecosystem</tab>
+    <tab>Revenue__c</tab>
+    <tab>Billing__c</tab>
+    <tab>CostDistLine__c</tab>
+    <tab>EarnedValueHeader__c</tab>
+    <tab>VendorSub__c</tab>
 </CustomApplication>

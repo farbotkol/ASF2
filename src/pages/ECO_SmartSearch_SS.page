@@ -1,0 +1,2072 @@
+<apex:page applyBodyTag="false" controller="ECO_SmartSearchController_SS" showheader="false" sidebar="false" standardStylesheets="false" action="{!getSearchToken}" id="portalPage" title="Ecosystem">
+    <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/jquery.lazyload.min.js')}"></script> 
+    <CoveoSolutions:CoveoJsSearch stylesheet="CoveoFullSearch.css" debug="true" />
+
+    <!-- iframe IE IE compatibility -->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" /> 
+    <script>
+        // Copyright 2014-2015 Twitter, Inc.
+        // Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
+        if (navigator.userAgent.match(/IEMobile\/10\.0/)) {
+          var msViewportStyle = document.createElement('style')
+          msViewportStyle.appendChild(
+            document.createTextNode(
+              '@-ms-viewport{width:auto!important}'
+            )
+          )
+          document.querySelector('head').appendChild(msViewportStyle)
+        }
+    </script>
+    <script src="{!URLFOR($Resource.ECO_RespondJs, 'dest/respond.min.js')}"></script>
+    <!-- end iframe IE compatibility -->
+
+    <script>
+       $(function() {
+            $("img.lazy").lazyload({
+                event : "sporty"
+            });
+        });
+
+        $(window).bind("load", function() {
+            var timeout = setTimeout(function() { $("img.lazy").trigger("sporty") }, 500);
+        });   
+
+        $(document).ready(function(){
+           $(".showAllApps").click(function(){
+                $(".hiddenOnMobile").toggle();
+            });
+
+           $(".showAllApps").click(function(){
+                $(".showHideSwap").toggleClass("hidden-xs");
+           });
+
+
+            $(".showAllApps").click(function(){
+              if ($("i").is('.fa-eye')) {
+                $("i.fa-eye").toggleClass("fa-eye-slash");
+              } else {
+                $("i.fa-eye-slash").toggleClass("fa-eye");
+              }
+            });
+        });
+
+    </script>
+
+
+    <style>
+
+        @media screen and (max-device-width:767px){
+            .hiddenOnMobile{
+                opacity:0.8;
+                display:none;
+                background-color:#333 !important;
+            }
+            .showHideSwap{
+                float: right;
+                width: 132px;
+                margin-top: -33px;
+            }
+            
+        }
+        .badge-header{
+            margin-top: 8px !important;
+            top:0 !important;
+        }
+        .publishercontainer .bottomBar{
+            height:45px !important;
+        }
+        .coveo-search {
+            display: none !important;
+        }
+        .ie8or9 .CoveoBreadcrumb .item {
+            overflow: visible;
+            white-space: initial !important;
+            text-overflow: initial;
+        }
+        /* IE DEVICE WIDTH WORKAROUND */
+        @-webkit-viewport   { width: device-width; }
+        @-moz-viewport      { width: device-width; }
+        @-ms-viewport       { width: device-width; }
+        @-o-viewport        { width: device-width; }
+        @viewport           { width: device-width; }
+    </style>
+
+    <body class="nifty-ready">
+        <apex:composition template="ECO_Temp_Portal" >
+        
+            <apex:define name="head">
+                <script>var AWAN_online = false;</script>
+                <script src="{!awanJSPath}"></script>
+            </apex:define>
+
+            <apex:define name="content" >
+                <!-- This is where I am storing all of the modals -->
+                <div class="modal fade" id="modalAlerts" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title" id="myModalLabel">Alerts</h4>
+                            </div>
+                            
+                            <div class="modal-body">
+                                <table class="table table-striped table-hover displayNone">
+                                    <thead>
+                                        <tr>
+                                        <th>Project No</th>
+                                        <th>Project Name</th>
+                                        <th>Type</th>
+                                        <th>Alert</th>
+                                        <th>Response</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <apex:repeat value="{!alerts}" var="alert" >
+                                        
+                                            <tr>
+                                                <td><a href="{!alert.LinkToRecord__c}"><apex:outputText value="60316205" /></a></td>
+                                                <td><a href="{!alert.LinkToRecord__c}"><apex:outputField value="{!alert.Subject__c}" /></a></td>
+                                                <td><apex:outputText value="Financial" /></td>
+                                                <td><apex:outputField value="{!alert.LongDescriptionMaxLength__c}" /></td>
+                                                <td><apex:outputText value="Comment" /></td>
+                                            </tr>                                       
+    
+                                        </apex:repeat>
+                                        <apex:outputPanel rendered="{!alerts.size = 0}" layout="none">
+                                            <tr>
+                                                <td colspan="5" style="text-align:center;"><h3>You have no alerts</h3></td>
+                                            </tr>
+                                        </apex:outputPanel>
+                                    </tbody>
+                                </table>
+    
+                                <div class="tempAlert">
+                                    Alerts will be added to Ecosystem progressively. The core of this functionality will be in the final release (roll out beginning in Q1 FY16)
+                                </div>
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="modal fade" id="modalTasks" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title" id="myModalLabel">Tasks</h4>
+                            </div>
+                            
+                            <div class="modal-body">
+    
+                                <table class="table table-striped table-hover">
+                                    <thead>
+                                        <tr>
+                                        <th>Project No</th>
+                                        <th>Project Name</th>
+                                        <th>Type</th>
+                                        <th>Alert</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <apex:repeat value="{!tasks}" var="task" >
+                                        
+                                            <tr>
+                                                <td><a href="#"><apex:outputField value="{!task.Subject}" /></a></td>
+                                                <td><a href="#"><apex:outputField value="{!task.What.Name}" /></a></td>
+                                                <td><apex:outputField value="{!task.Status}" /></td>
+                                                <td><apex:outputField value="{!task.Description}" /></td>
+                                            </tr>
+    
+                                        </apex:repeat>
+    
+                                        <apex:outputPanel rendered="{!tasks.size = 0}" layout="none">
+                                            <tr>
+                                                <td colspan="5" style="text-align:center;"><h3>You have no tasks</h3></td>
+                                            </tr>
+                                        </apex:outputPanel>
+    
+                                    </tbody>
+                                </table>
+    
+                                <!--<div class="tempAlert">
+                                    Tasks will be added to the Ecosystem progressively. The core of this functionality will be in the final release (roll out beginning in Q1 FY16)
+                                </div>-->
+    
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <div class="modal fade" id="modalApprovals" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header"> 
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                                <h4 class="modal-title" id="myModalLabel">Approvals</h4>
+                            </div>
+                            
+                            <div class="modal-body">
+    
+                                <table class="table table-striped table-hover displayNone">
+                                    <thead>
+                                        <tr>
+                                        <th>Project No</th>
+                                        <th>Project Name</th>
+                                        <th>Type</th>
+                                        <th>Alert</th>
+                                        <th>Request Info</th>
+                                        <th>Approve</th>
+                                        <th>Reject</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <apex:repeat value="{!approvals}" var="approval" >                                        
+                                            <tr>
+                                                <td></td>
+                                                <td><a href="#"><apex:outputField value="{!approval.ProcessInstance.TargetObject.Name}" /></a></td>
+                                                <td></td>
+                                                <td><apex:outputField value="{!approval.ProcessInstance.Status}" /></td>
+                                                <td></td>
+                                                <td></td>
+                                                <td></td>
+                                            </tr>    
+                                        </apex:repeat>
+    
+                                        <apex:outputPanel rendered="{!approvals.size = 0}" layout="none">
+                                            <tr>
+                                                <td colspan="7" style="text-align:center;"><h3>You have no approvals</h3></td>
+                                            </tr>
+                                        </apex:outputPanel>
+    
+                                    </tbody>
+                                </table>
+    
+                                <div class="tempAlert">
+                                    Workflows from various AECOM systems will be included in Ecosystem as development progresses. Keep an eye on the News Feed for timing updates
+                                </div>
+    
+                            </div>
+                            
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-primary" data-dismiss="modal">Ok</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            
+                <!-- End Modal Storage -->
+                <apex:pageMessages id="pageMessages" />
+            
+                <apex:form id="theForm" >   
+                    <apex:actionFunction name="goToReportsBuilder" action="{!goToReportBuilder}" />
+                    <apex:actionFunction name="goToApplicationConfiguration" action="{!goToApplicationConfiguration}" />
+                    <apex:actionFunction name="goToNewProject" action="{!goToNewProject}" />
+                    <apex:actionFunction name="goToNewOpportunity" action="{!goToNewOpportunity}" />
+                </apex:form>
+
+                <div id="container" class="aside effect mainnav-sm">
+                    
+                    <!-- TOP NAVBAR -->
+                    <!--===================================================-->
+                    <header id="navbar">
+                        <div id="navbar-container" class="boxed">
+            
+                            <!--Brand logo & name-->
+                            <!--================================-->
+                            <div class="navbar-header">
+                                <a href="#" class="navbar-brand">
+                                    <img src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" data-original="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/my-aecom-apps.jpg')}" class="brand-icon lazy" />
+                                    <div class="brand-title">
+                                        <span class="brand-text">ECOSYSTEM</span>
+                                    </div>
+                                </a>
+                            </div>
+                            <!--================================-->
+                            <!--End brand logo & name-->
+            
+                            <!--Navbar Dropdown-->
+                            <!--================================-->
+                            <div class="navbar-content clearfix">
+                                <ul class="nav navbar-top-links pull-left">
+            
+                                    <!--Navigation toogle button-->
+                                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                                    <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="Expand Applications">
+                                        <a class="mainnav-toggle" href="#">
+                                            <i class="fa fa-th fa-lg"></i>
+                                        </a>
+                                    </li>
+                                     <li class=" visible-xs">
+                                        <a class="mainnav-toggle" href="#">
+                                            <i class="fa fa-th fa-lg"></i>
+                                        </a>
+                                    </li>
+                                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                                    <!--End Navigation toogle button-->
+            
+            
+                                    <!--Alerts Modal-->
+                                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                                    <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="Alerts">
+                                        <a onclick="$('#modalAlerts').modal('show')" style="cursor:pointer;" title="Alerts">
+                                            <i class="fa fa-warning fa-lg"></i>
+                                            <apex:outputPanel layout="block" styleClass="badge badge-header badge-danger" rendered="{!alerts.size > 0}">
+                                                <apex:outputText value="{!alerts.size}" />
+                                            </apex:outputPanel>
+                                        </a>
+                                    </li>
+            
+                                    <!--Task Modal -->
+                                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                                    <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="Tasks">
+                                        <a onclick="$('#modalTasks').modal('show')" style="cursor:pointer;" title="Tasks">
+                                            <i class="fa fa-tasks fa-lg"></i>
+                                            <apex:outputPanel layout="block" styleClass="badge badge-header badge-danger" rendered="{!tasks.size > 0}">
+                                                <apex:outputText value="{!tasks.size}" />
+                                            </apex:outputPanel>
+                                        </a>
+                                    </li>
+            
+                                    <!--Approval Modal -->
+                                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                                    <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="Approvals">
+                                        <a onclick="$('#modalApprovals').modal('show')" style="cursor:pointer;" title="Approvals">
+                                            <i class="fa fa-check-square fa-lg"></i>
+                                            <apex:outputPanel layout="block" styleClass="badge badge-header badge-danger" rendered="{!approvals.size > 0}">
+                                                <apex:outputText value="{!approvals.size}" />
+                                            </apex:outputPanel>
+                                        </a>
+                                    </li>
+            
+            
+                                    <li class="btn-hover-info add-tooltip hidden-xs" data-placement="bottom" data-toggle="tooltip" data-original-title="Open Outlook">
+                                        <a href="outlook:Inbox" style="cursor:pointer;" title="Opens Outlook Explorer">
+                                            <i class="fa fa-envelope fa-lg"></i>
+                                        </a>
+                                    </li>
+            
+                                    <li class="dropdown hidden-xs">
+                                        <a style="height:24px;" href="javascript:alert('A consolidated project delivery tool which enables the creation of new projects will be included in the final Ecosystem release. The roll-out of this release will commence in Q1 FY16 and continue progressively for the DCS business. Other business groups will be added to the roadmap in the near future')">
+                                            <button class="btn btn-primary" style="margin:12px 0 0 0;">New Project</button>
+                                        </a>
+                                    </li>
+            
+                                    <li class="dropdown hidden-xs">
+                                        <a style="height:24px;" href="/setup/ui/recordtypeselect.jsp?ent=Opportunity" target="_blank"><button class="btn btn-success" style="margin:12px 0 0 0;">New Opportunity</button></a>
+                                    </li>
+            
+                                </ul>
+
+                                <div class="coveo-search-section hidden-sm hidden-xs ecoFrameSearch">
+                                    <div class="coveo-searchBox-column">
+                                        <div class="coveo-search-section-wrapper">
+                                            <div id="headerSearchBox" class="col-lg-3 col-md-3">
+                                                <input type="search" placeholder="SEARCH..." class="CoveoQueryBox" /><span type="button" class="CoveoSearchButton" >Go</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+
+                                <ul class="nav navbar-top-links pull-right">
+                                    <!--User dropdown-->
+                                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                                    <li class="add-tooltip" data-placement="bottom" data-toggle="tooltip" data-original-title="Home"><a href="/apex/ECO_Portal"><img src="{!URLFOR($Resource.ECO_SmartSearchAssets, 'ss_homeIcon.png')}" /></a></li>
+                                    <li class="add-tooltip" data-placement="bottom" data-toggle="tooltip" data-original-title="SmartSearch"><a href="/apex/ECO_SmartSearch"><img src="{!URLFOR($Resource.ECO_SmartSearchAssets, 'ss_searchIcon.png')}" /></a></li>
+            
+                                    <li class="hidden-xs add-tooltip AWAN"  data-placement="bottom" data-toggle="tooltip" data-original-title="Help" >
+                                        <a href="http://my.aecomnet.com/Intranet/About/Delivery%20Excellence/Ecosystem/Training" target="_blank"><i class="fa fa-question-circle"></i></a>
+                                    </li>
+            
+            
+                                    <li id="dropdown-user" class="dropdown">
+                                        <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right">
+                                            <span class="pull-right">
+                                                <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" html-data-original="{!photoUrl}" styleClass="img-circle img-user media-object lazy"/>
+                                                
+                                            </span>
+                                            <div class="username visible-lg"><strong><apex:outputText value="{!theUser.Name}'s" /></strong> Ecosystem</div>
+                                        </a>
+            
+                                        <div class="dropdown-menu dropdown-menu-md dropdown-menu-right with-arrow panel-default">
+            
+                                            <!-- Dropdown heading  -->
+                                            <div class="pad-all bord-btm">
+                                                You are logged in as: <strong><apex:outputText value="{!theUser.Name}" /></strong>
+                                            </div>
+            
+            
+                                            <!-- User dropdown menu -->
+                                            <ul class="head-list">
+                                                <li>
+                                                    <a href="/_ui/core/userprofile/UserProfilePage?tab=sfdc.ProfilePlatformFeed" target="_profilePage">
+                                                        <i class="fa fa-user fa-fw fa-lg"></i> Profile
+                                                    </a>
+                                                </li>
+                                                <li>
+                                                    <a href="/ui/setup/Setup?setupid=PersonalSetup" target="_settingsPage">
+                                                        <i class="fa fa-gear fa-fw fa-lg"></i> Settings
+                                                    </a>
+                                                </li>
+                                            </ul>
+            
+                                            <!-- Dropdown footer -->
+                                            <div class="pad-all text-right">
+                                                <a href="https://aecom--ecosysdev.cs15.my.salesforce.com/secur/logout.jsp" class="btn btn-primary">
+                                                    <i class="fa fa-sign-out fa-fw"></i> Logout
+                                                </a>
+                                            </div>
+                                        </div>
+                                    </li>
+                                    <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
+                                    <!--End user dropdown-->
+            
+                                    <li class="logo" style="padding:12px 15px 0 8px;">
+                                        <img src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" data-original="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'AECOMLogo.jpg')}" height="25px" class="hidden-xs lazy" />
+                                        <img src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" data-original="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/EcosystemMark.jpg')}" class="visible-xs lazy" height="25px" />
+                                    </li>
+            
+                                </ul>
+                            </div>
+                            <!--================================-->
+                            <!--End Navbar Dropdown-->
+            
+                        </div>
+                    </header>
+                    <!--===================================================-->
+                    <!--END NAVBAR-->
+            
+                    <div class="boxed">
+            
+                        <!--CONTENT CONTAINER-->
+                        <!--===================================================-->
+                        <div id="content-container">
+            
+                            <a class="aside-toggle hidden-xs" href="#" title="show/hide Reports"> 
+                                <div class="reportsMenuButton" title="show/hide Reports">
+                                    <i class="fa fa-file" style="font-size:20px; color:#fff;"></i>
+                                </div>
+                            </a>
+            
+                            <apex:outputPanel layout="none" rendered="{!tickerMessages.size > 0}" >
+                                <div class="gallery autoplay items-{!tickerMessages.size}">
+                                    <apex:repeat value="{!tickerMessages}" var="message" >
+                                        <div id="item-{!message.Order__c}" class="control-operator"></div>
+                                    </apex:repeat>
+              
+                                    <apex:repeat value="{!tickerMessages}" var="message" >
+                                      <figure class="item">
+                                        <h4 id="tickerHeader" style="margin: 0;">{!message.Subject__c}</h4>
+                                        <apex:outputText value="{!message.LongDescriptionMaxLength__c}" />
+                                      </figure>
+                                    </apex:repeat>
+            
+                                    <div class="controls">
+                                        <apex:repeat value="{!tickerMessages}" var="message" >
+                                            <a href="#item-{!message.Order__c}" class="control-button">•</a>
+                                        </apex:repeat>
+                                    </div>
+                                </div>
+                            </apex:outputPanel>
+                            
+                            <!--Page content-->
+                            <!--===================================================-->
+                            <div id="page-content">
+                                <apex:stylesheet value="{!URLFOR($Resource.ECO_SmartSearchStyles)}" />
+                                <script type="text/javascript">
+                                
+									var userTPGs = '{!collaborationGroups}';
+
+                                	function aecomCleanProjectImage(projectImageFieldContent){
+                                        console.log('projectImageFieldContent=' + projectImageFieldContent);
+                                        var fullImageContent = Coveo.$(projectImageFieldContent);
+                                        var img = $("img", fullImageContent)[0];
+                                        
+                                        if(img == undefined) {
+                                            return projectImageFieldContent;
+                                        }
+                                        else {
+                                        	return img.outerHTML;
+                                        }
+                                    }
+                                
+                                	function cleansysfiletype(sysfiletype) {
+                                        
+                                    	if(sysfiletype.indexOf('.') > -1) {
+                                        	return sysfiletype.substr(sysfiletype.indexOf('.') + 1);    
+                                        }
+                                        else
+                                            return sysfiletype;
+                                    }
+                                
+                                    Coveo.$(function () {
+                                    	var aecomsourceFacetDependencies = [
+                                            {DependentFacetSelector: '#objectTypeFacet', LocationValues: ['salesforce'] }
+                                        ];
+                                        
+										var objectTypeFacetDependencies = [
+                                            {DependentFacetSelector: '#acctclientGroup', LocationValues: ['account']},
+                                            {DependentFacetSelector: '#acctclientSubGroup', LocationValues: ['account']},
+                                            {DependentFacetSelector: '#acctType', LocationValues: ['account']},
+                                            {DependentFacetSelector: '#acctCountry', LocationValues: ['account']},
+                                            {DependentFacetSelector: '#oppGroup', LocationValues: ['opportunity']}, 
+                                            {DependentFacetSelector: '#oppLeadDistrict', LocationValues: ['opportunity']}, 
+                                            {DependentFacetSelector: '#oppLeadRegion', LocationValues: ['opportunity']}, 
+                                            {DependentFacetSelector: '#oppAECOMWork', LocationValues: ['opportunity']}, 
+                                            {DependentFacetSelector: '#userBusinessLine', LocationValues: ['user']},
+                                            {DependentFacetSelector: '#userRegion', LocationValues: ['user']},
+                                            {DependentFacetSelector: '#userSF330Discipline', LocationValues: ['user']},
+                                            {DependentFacetSelector: '#projectGeography', LocationValues: ['projectc']},
+                                            {DependentFacetSelector: '#projectAecomRegion', LocationValues: ['projectc']},
+                                            {DependentFacetSelector: '#projectBusinessLine', LocationValues: ['projectc']},
+                                            {DependentFacetSelector: '#projectClientGroup', LocationValues: ['projectc']},
+                                            {DependentFacetSelector: '#projectClientSubGroup', LocationValues: ['projectc']},
+                                            {DependentFacetSelector: '#projectServiceLine', LocationValues: ['projectc']},
+                                        ];
+                                
+                                        Coveo.$('#search').on('state:change:f:@aecomsource', function (e, data) {
+                                            console.log('@aecomsource has changed, the new value is: ' + data.value);
+                                            if(data.value.length==0){
+                                                Coveo.$('#firstLevelSubGroup').hide(); //this panel needed because cannot re-hide Facets properly
+                                                clearSubFacetsSelections(aecomsourceFacetDependencies);
+                                                Coveo.$('#aecomsourceFacets').coveo().keepDisplayedValuesNextTime = false;
+                                            }
+                                            else{
+                                                var count = 0;
+                                                _.each(aecomsourceFacetDependencies, function(d){
+                                                    var selectedLearn = _.find(d.LocationValues, function(lv){
+                                            			return _.find(data.value, function(x){return x.toLowerCase() === lv.toLowerCase()});
+                                                        });
+                                                    if(selectedLearn){
+                                                        Coveo.$(d.DependentFacetSelector).parent().show();
+                                                        count = count + 1;
+                                                    }
+                                                    else{
+                                                        Coveo.$(d.DependentFacetSelector).parent().hide();
+                                                    }
+                                                });
+                                                if(count > 0){
+                                                    Coveo.$('#firstLevelSubGroup').show();
+                                                }
+                                            }
+                                        });
+                                        
+                                        Coveo.$('#search').on('state:change:f:@objecttype', function (e, data) {
+                                            console.log('@objecttype has changed, the new value is: ' + data.value);
+                                            if(data.value.length==0){
+                                                Coveo.$('#secondLevelSubGroup').hide(); //this panel needed because cannot re-hide Facets properly
+                                                clearSubFacetsSelections(objectTypeFacetDependencies);
+                                                Coveo.$('#objectTypeFacet').coveo().keepDisplayedValuesNextTime = false;
+                                            }
+                                            else{
+                                                var count = 0;
+                                                _.each(objectTypeFacetDependencies, function(d){
+                                                    var selectedLearn = _.find(d.LocationValues, function(lv){
+                                                            return _.find(data.value, function(x){return x.toLowerCase() === lv.toLowerCase()});
+                                                        });
+                                                    if(selectedLearn){
+                                                        Coveo.$(d.DependentFacetSelector).parent().show();
+                                                        count = count + 1;
+                                                    }
+                                                    else{
+                                                        Coveo.$(d.DependentFacetSelector).parent().hide();
+                                                    }
+                                                });
+                                                if(count > 0){
+                                                    Coveo.$('#secondLevelSubGroup').show();
+                                                }
+                                            }
+                                        });
+                                
+                                        function clearSubFacetsSelections(facetDependencies){
+                                            _.each(facetDependencies, function(d){
+                                                Coveo.$(d.DependentFacetSelector).coveo('reset');
+                                            });
+                                        }
+                                        
+                                        
+                                        var hideLandingAndSearchSection;
+                                        Coveo.Rest.SearchEndpoint.configureOnPremiseEndpoint('{!endPointURL}', '{!coveoToken}' );
+                                        //Coveo.Rest.SearchEndpoint.configureOnPremiseEndpoint('https://smartsearchrest.aecom.com:8443/rest/search/', '{!coveoToken}' );
+                                        
+                                        //ScopeSelector: 
+                                        //  is a "select" element allowing to use Coveo Tabs as a dropdown.
+                                        //  Normal tabs are hidden.
+                                        //  Scopeselector items are generated from CoveoTab element data-captions.
+                                        //  "Change" event changes tabs and relaunch the query.
+                                        //  Updates when the #t is sent through
+
+                                        //ScopeSelector: "Change" event changes tabs and relaunch the query.
+                                        Coveo.$('#scopeselector').on('change', function(){
+                                            var ee = Coveo.$('#scopeselector');
+                                            var selected = ee.val();
+                                            //Coveo.$("[data-caption='"+selected+"']").coveo('select');
+                                            Coveo.$('#search').coveo('state', 't', selected);
+                                            
+                                            if(hideLandingAndSearchSection) {
+                                            	Coveo.$('#search').coveo('executeQuery');
+                                            //Coveo.$("[data-caption='"+selected+"']").click();
+                                            }
+                                        });
+                                
+                                        // ScopeSelector: Updates when the #t is sent through
+                                        Coveo.$('#search').on('state:change:t', function(e, args) {
+                                            Coveo.$('#scopeselector').val(args.value);
+                                        })
+                                        
+                                        // Scopeselector: items are generated from CoveoTab element data-captions.
+                                        Coveo.$("#search").on("afterComponentsInitialization", function(){
+                                            var tabs = Coveo.$('#searchTabs > .CoveoTab');
+                                            _.each(tabs, function(tab){
+                                            	var tabCaption = tab.getAttribute('data-caption');
+                                            	var tabValue = tab.getAttribute('data-id');
+                                                var newOption = '<option value="'+ tabValue +'">' + tab.getAttribute('data-caption') + '</option>';
+                                                Coveo.$('#scopeselector').append(newOption);
+                                            });
+                                            // make sure to initialize dropdown to first value - IE issue.
+                                            Coveo.$('#scopeselector').val(Coveo.$("#scopeselector option:first").val());
+                                        })
+                                            
+                                        //QUERYSUMMARY: The span text is updated on querySuccess event of the JavaScript Search Framework
+                                        Coveo.$('#search').on('querySuccess', function(e, args) {
+                                            var count = args.results.totalCountFiltered;
+                                            var keywords = args.query.q;
+                                            
+                                            Coveo.$('#querysummary').text('');
+                                            
+                                            //  removing decimal values in IE10 and lower...
+                                            var resultpart = Coveo.$('<span><span style="font-weight:bold; font-size: 25px;">' + count.toLocaleString("en-US").split('.')[0] +'</span> results</span>');
+                                        	
+                                            Coveo.$('#querysummary').append(resultpart);
+                                            
+                                            var mylabel;
+                                            if(typeof(keywords)==="undefined"){
+                                                mylabel="";
+                                            }
+                                            else {
+                                                Coveo.$('#querysummary').append(' for ');
+                                                mylabel = Coveo.$('<span style="font-weight:bold; font-size: 25px;">' + keywords +'</span>');  
+                                                Coveo.$('#querysummary').append(mylabel);
+                                            }
+                                                                                        
+                                            if(count == 0) {
+                                            	Coveo.$('#NoResultSummary').show();
+                                                Coveo.$('#resultQuerySummary').hide();
+                                            }
+                                            else {
+                                            	Coveo.$('#NoResultSummary').hide();
+                                                Coveo.$('#resultQuerySummary').show();
+                                            }
+                                            
+                                            // On the first query hide the landingsection and show the searchResults section                                            
+                                            if(!hideLandingAndSearchSection) {
+                                                hideLandingAndSearchSection = true;
+                                                Coveo.$('#landingMode').hide();
+                                                Coveo.$('#searchResults').show();
+                                            }
+                                        });
+                                        
+                                        // Hide the searchResults section on load
+                                        Coveo.$('#searchResults').hide();
+
+                                        //TEMPORARY WORKAROUND - REST CONNECTIVITY:
+                                        //    While REST server connectivity is resolved, using Coveo Cloud index test instance.
+                                        //    1. Filter down to content from EcoSystemDev org.
+                                        //    2. Comment Coveo.Rest.SearchEndpoint.configureSampleEndpoint();
+                                        /*Coveo.$('#search').on('doneBuildingQuery', function(e, args) {
+                                            args.queryBuilder.constantExpression.add('@sforganizationid==("00De0000005Ub8l")');
+                                        });*/
+
+                                        //WORKAROUND: 0021868: Query Suggestion box stick after search; expected fix in June release of Coveo Javascript Framework
+                                        Coveo.$("#CoveoSearchButton").on("click", function() {
+                                            Coveo.$("#CoveoQueryBox").coveo('close')
+                                        });
+                                        
+                                        Coveo.$("#CoveoSearchButton").on('click', function(){
+                                        	Coveo.$("#search").coveo('state', 'q', Coveo.$("#CoveoQueryBox").val());
+
+                                       	});
+                                        
+                                        var autoTrigger = document.location.hash.indexOf("q=") > -1;
+                                        
+                                        Coveo.$("#search").on('afterInitialization', function(e, args) {
+                                        	if(autoTrigger) {
+                                           		Coveo.$('#search').coveo('executeQuery');  
+                                            }
+                                        });
+                                            
+										/* Hook to Opened Documents  */
+                                        Coveo.$('#search').on('changeAnalyticsCustomData', function(e, args) {
+                                            if(args.type === "ClickEvent" && args.metaObject.documentURL){
+                                            	var $clickedElement = Coveo.$('.CoveoResult a[href="' + args.metaObject.documentURL + '"]');
+                                                var result = $clickedElement.closest('.CoveoResult').data('CoveoResult');
+                                            	var sysurihash = result ? result.raw.sysurihash : '';
+                                                Coveo.UserRecentStorage.Documents.Push(args.metaObject.documentTitle, args.metaObject.documentURL, sysurihash);
+                                            }
+                                        })                                             
+
+                                        /* Hook to record Queries */
+                                        Coveo.$('#search').on('querySuccess', function(e, args) {
+                                            Coveo.UserRecentStorage.Queries.Push(args.query.q);
+                                        }) 
+
+                                        /* UserRecent: access to user recent opened documents and queries storage */
+                                        Coveo.UserRecentStorage = {
+                                            Documents: {
+                                                Push: function(title, url, sysurihash){
+                                                    Visualforce.remoting.Manager.invokeAction(
+                                                        '{!$RemoteAction.ECO_SmartSearchController_SS.getMyRecentlyViewed}',
+                                                        function(result,event) {
+                                                            var decodedValue = Coveo.UserRecentStorage.Utils.DecodeHTMLEntities(result);
+                                                            
+                                                            var oldObject = JSON.parse(decodedValue);
+                                                            if(!oldObject){
+                                                                oldObject = [];
+                                                            }
+                                                            
+                                                            //prepend: insert as first item
+                                                            oldObject.unshift({"title": title, "url": url, "sysurihash": sysurihash});
+                                                            
+                                                            //removing duplicate
+                                                            oldObject = _.uniq(oldObject, function(item){return item.url.toLowerCase();});
+                                                            
+                                                            //resize: keep only 10
+                                                            var newObject = oldObject.slice(0, 10);
+                                                            
+                                                            // Save it back to Salesforce User Object
+                                                            Visualforce.remoting.Manager.invokeAction(
+                                                                '{!$RemoteAction.ECO_SmartSearchController_SS.pushMyRecentlyViewed}',
+                                                                JSON.stringify(newObject), function(event) {}, {escape: true}
+                                                            );
+                                                        },
+                                                        {escape:true}
+                                                    );
+                                                },
+                                                ReadAll: function(){
+                                                    Visualforce.remoting.Manager.invokeAction(
+                                                        '{!$RemoteAction.ECO_SmartSearchController_SS.getMyRecentlyViewed}',
+                                                        function(result,event) {
+                                                            var oldValue = Coveo.UserRecentStorage.Utils.DecodeHTMLEntities(result);
+                                                            console.log(["ReadAll: ",JSON.parse(oldValue)]);
+                                                        },
+                                                        {escape:true}
+                                                    );
+                                                },
+                                                GetAllUriHashes: function(recentDocs){
+                                                    var recentDocsObj = JSON.parse(Coveo.UserRecentStorage.Utils.DecodeHTMLEntities(recentDocs));
+                                                    var urihashes = Coveo._.map(recentDocsObj, function(d){return d.sysurihash;});
+                                                    return Coveo._.compact(urihashes).join();
+                                                }
+                                            },
+                                            Queries: {
+                                                Push: function(keywords){
+                                                    Visualforce.remoting.Manager.invokeAction(
+                                                        '{!$RemoteAction.ECO_SmartSearchController_SS.getMyRecentSearch}',
+                                                        function(result,event) {
+                                                            var decodedValue = Coveo.UserRecentStorage.Utils.DecodeHTMLEntities(result);
+                                                            var oldObject = JSON.parse(decodedValue);
+                                                            if(!oldObject){
+                                                                oldObject = [];
+                                                            }
+                                                            
+                                                            if(keywords){
+                                                                //prepend: insert as first item
+                                                                oldObject.unshift({"keywords": keywords});
+                                                                
+                                                                //removing duplicate
+                                                                oldObject = _.uniq(oldObject, function(item){return item.keywords.toLowerCase();});
+                                                                
+                                                                //resize: keep only 10
+                                                                var newObject = oldObject.slice(0, 10);
+                                                                
+                                                                //Coveo.docCookies.setItem("UserRecentQueries", JSON.stringify(newObject), tenDaysFromNow);
+                                                                // Save it back to Salesforce User Object
+                                                                Visualforce.remoting.Manager.invokeAction(
+                                                                    '{!$RemoteAction.ECO_SmartSearchController_SS.pushMyRecentSearch}',
+                                                                    JSON.stringify(newObject), function(event) {}, {escape: true}
+                                                                );
+                                                            }
+                                                        },
+                                                        {escape:true}
+                                                    );
+                                                },
+                                                ReadAll: function(){
+                                                    Visualforce.remoting.Manager.invokeAction(
+                                                        '{!$RemoteAction.ECO_SmartSearchController_SS.getMyRecentSearch}',
+                                                        function(result,event) {
+                                                            var oldValue = Coveo.UserRecentStorage.Utils.DecodeHTMLEntities(result);
+                                                            console.log(["ReadAll: ",JSON.parse(oldValue)]);
+                                                        },
+                                                        {escape:true}
+                                                    );
+                                                },
+                                                GetAllKeywords: function(keywords) {
+                                                    var keywordsObj = JSON.parse(Coveo.UserRecentStorage.Utils.DecodeHTMLEntities(keywords));
+                                                    keywordsObj = Coveo._.map(keywordsObj, function(q){return q.keywords;});
+                                                    return Coveo._.compact(keywordsObj).join(" ");
+                                                }
+                                            },
+                                            Utils: {
+                                                DecodeHTMLEntities: function(str){
+                                                    //this workaround will decode HTML entities like &quote; so JSON.parse
+                                                    //will be able to successfully convert string -> obj
+                                                    var x = document.createElement('div');
+                                                    x.innerHTML = str;
+                                                    var decodedValue = x.innerHTML;
+                                                    delete x;
+                                                    return decodedValue ? decodedValue : null;
+                                                }
+                                            }
+                                        };
+                                        
+                                        //Thanks to https://developer.mozilla.org/en-US/docs/Web/API/Document/cookie
+                                		/*Coveo.docCookies = { 
+                                          
+                                          getItem: function (sKey) {
+                                            if (!sKey) { return null; }
+                                            return decodeURIComponent(document.cookie.replace(new RegExp("(?:(?:^|.*;)\\s*" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=\\s*([^;]*).*$)|^.*$"), "$1")) || null;
+                                          },
+                                          setItem: function (sKey, sValue, vEnd, sPath, sDomain, bSecure) {
+                                            if (!sKey || /^(?:expires|max\-age|path|domain|secure)$/i.test(sKey)) { return false; }
+                                            var sExpires = "";
+                                            if (vEnd) {
+                                              switch (vEnd.constructor) {
+                                                case Number:
+                                                  sExpires = vEnd === Infinity ? "; expires=Fri, 31 Dec 9999 23:59:59 GMT" : "; max-age=" + vEnd;
+                                                  break;
+                                                case String:
+                                                  sExpires = "; expires=" + vEnd;
+                                                  break;
+                                                case Date:
+                                                  sExpires = "; expires=" + vEnd.toUTCString();
+                                                  break;
+                                              }
+                                            }
+                                            document.cookie = encodeURIComponent(sKey) + "=" + encodeURIComponent(sValue) + sExpires + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "") + (bSecure ? "; secure" : "");
+                                            return true;
+                                          },
+                                          removeItem: function (sKey, sPath, sDomain) {
+                                            if (!this.hasItem(sKey)) { return false; }
+                                            document.cookie = encodeURIComponent(sKey) + "=; expires=Thu, 01 Jan 1970 00:00:00 GMT" + (sDomain ? "; domain=" + sDomain : "") + (sPath ? "; path=" + sPath : "");
+                                            return true;
+                                          },
+                                          hasItem: function (sKey) {
+                                            if (!sKey) { return false; }
+                                            return (new RegExp("(?:^|;\\s*)" + encodeURIComponent(sKey).replace(/[\-\.\+\*]/g, "\\$&") + "\\s*\\=")).test(document.cookie);
+                                          },
+                                          keys: function () {
+                                            var aKeys = document.cookie.replace(/((?:^|\s*;)[^\=]+)(?=;|$)|^\s*|\s*(?:\=[^;]*)?(?:\1|$)/g, "").split(/\s*(?:\=[^;]*)?;\s*/);
+                                			//for (var nLen = aKeys.length, nIdx = 0; nIdx < nLen; nIdx++) { aKeys[nIdx] = decodeURIComponent(aKeys[nIdx]); }
+                                			//          return aKeys;
+                                		//}
+                                		//};
+                                            
+                                        Coveo.$("#search").coveo('init' , {
+                                            externalComponents : [Coveo.$("#headerSearchBox"), 
+                                                                  Coveo.$("#mainSearchBox")],
+                                            Facet : {
+                                                valueCaption: {
+                                                    'pdf': 'pdf',
+                                                    'doc': 'word',
+                                                    'docx': 'word',                                                    
+                                                    'ppt': 'powerpoint',
+                                                    'xls': 'excel',
+                                                    'xlsx': 'excel',
+                                                    'zip': 'zip',
+                                                    'html': 'html',
+                                                    '.vsd': 'vsd'
+                                                }
+                                            }
+                                        })
+                                        
+                                        // Suggested Search
+                                        Visualforce.remoting.Manager.invokeAction(
+                                            '{!$RemoteAction.ECO_SmartSearchController_SS.getMyRecentSearch}',
+                                            function(result,event) {
+                                                var suggestionKeywords = Coveo.UserRecentStorage.Queries.GetAllKeywords(result);
+                                                Coveo.$('#suggestedSearch').on('buildingQuery', function(e, args) {
+                                                    args.queryBuilder.firstResult = 0;
+                                                    args.queryBuilder.numberOfResults = 10;
+                                                    if(suggestionKeywords){
+                                                        args.queryBuilder.advancedExpression.add("$correlateUsingIdf(keywords: '"+ suggestionKeywords +"')");
+                                                    } else {
+                                                        //forcing no result
+                                                        args.queryBuilder.advancedExpression.add("NOT @uri");
+                                                    }
+                                                });
+                                        		Coveo.$("#suggestedSearch").coveo('init');
+                                            },
+                                            {escape:true}
+                                        );   
+                                        
+                                        // Most Viewed Search         
+                                		Visualforce.remoting.Manager.invokeAction(
+                                            '{!$RemoteAction.ECO_SmartSearchController_SS.getMyRecentlyViewed}',
+                                            function(result,event) {
+                                                var recentUrls = Coveo.UserRecentStorage.Documents.GetAllUriHashes(result);
+                                                Coveo.$('#MostViewedSearch').on('buildingQuery', function(e, args) {
+                                                    args.queryBuilder.firstResult = 0;
+                                                    args.queryBuilder.numberOfResults = 7;
+                                                    args.queryBuilder.sortCriteria = 'DateDescending';
+                                                    
+                                                    if(recentUrls){
+                                                        args.queryBuilder.advancedExpression.add("@sysurihash=(" + recentUrls + ")");
+                                                    } else {
+                                                        //forcing no result
+                                                        args.queryBuilder.advancedExpression.add("NOT @uri");
+                                                    }                                                        
+                                                });
+                                                
+                                                Coveo.$("#MostViewedSearch").coveo('init');  
+                                            },
+                                            {escape:true}
+                                        );   
+                                        
+                                		Coveo.$('#TPNSearch').on('buildingQuery', function(e, args) {
+                                            args.queryBuilder.firstResult = 0;
+                                            args.queryBuilder.numberOfResults = 7;
+                                            args.queryBuilder.sortCriteria = 'DateDescending';
+                                        });
+                                        
+                                        // Suggested Search
+                                        Coveo.$("#TPNSearch").coveo('init');
+                                    });
+                                </script>
+                                <script id="Default" type="text/x-underscore-template">
+                                    <div class="col-lg-12 col-md-12 resultDetail">
+                                    	<div class="coveo-title">
+                                        	<a target="_blank" class="CoveoResultLink"><%=Title?highlight(Title, titleHighlights):ClickUri%></a>
+                                        </div>asdf
+                                        <div class="resultDescription">
+                                        	<%=highlight(Excerpt, excerptHighlights)%>
+                                        </div>
+                                        <table class="documentTable repositoryType">
+                                            <tr>
+                                                <td rowspan="2"><div class="<%=cleansysfiletype(raw.sysfiletype)%>"></div></td>
+                                                <td valign="bottom"><span class="user">Posted By: <%=raw.sysauthor%></span> | <span class="modifiedDate"><%=date(raw.sysdate, {predefinedFormat : "MMM dd, yyyy"})%></span></td>
+                                            </tr>
+                                            <tr>
+                                                <td><%=raw.aecomsource%></td>
+                                            </tr>                                            
+                                        </table>
+                                        
+                                    </div>
+                                </script>
+                                <script id="Account" type="text/x-underscore-template">
+                                    <div class="col-lg-12 col-md-12 resultDetail">
+                                    	<div class="coveo-title">
+                                            <a target="_blank" class="CoveoResultLink"><%=Title?highlight(Title, titleHighlights):ClickUri%></a>
+                                        </div>
+                                        <div class="infoBlock">
+                                            <strong>Client ID:</strong> <%=raw.sfclientid%><br />
+                                            <strong>Client Group:</strong> <%=raw.sfclientgroup%><br />
+                                             <strong>Account Manager:</strong> <%=raw.sfaccountmanagername%>
+                                        </div>
+                                        <div class="infoBlock">
+                                            <strong>Region:</strong> <%=raw.sfregion%><br />
+                                            <strong>Street:</strong> <%=raw.sfstreet%>&emsp;&nbsp;<strong>City:</strong> <%=raw.sfcity%>&emsp;&nbsp;<strong>Country:</strong> <%=raw.sfcountrylookupname%>
+                                        </div>
+                                        <div class="repositoryType">
+                                            <span><%=raw.aecomsource%></span>
+                                        </div>
+                                    </div>
+                                </script>
+                                <script id="Opportunity" type="text/x-underscore-template">
+                                    <div class="col-lg-12 col-md-12 resultDetail">
+                                        <div class="coveo-title">
+                                            <a target="_blank" class="CoveoResultLink"><%=Title?highlight(Title, titleHighlights):ClickUri%></a>
+                                        </div>
+                                        <div class="row">
+                                            <div class="col-lg-6">
+                                                <table class="oppStageTable">
+                                                    <tr>
+                                                        <td class="col-lg-1 oppStage" title="<%=raw.sfopportunitystagename%>"></td>
+                                                        <td class="col-lg-11"><strong>Stage:</strong> <%=raw.sfopportunitystagename%></div>
+                                                    </tr>
+                                                </table>
+                                            </div>
+                                        </div>
+                                        <div class="infoBlock">
+                                            <strong>Opportunity ID:</strong> <%=raw.sfopportunityidc%>
+                                        </div>
+                                        <div class="infoBlock">
+                                            <strong>Capture Manager:</strong> <%=raw.sfcapturemanager%><br />
+                                            <% if(raw.sfgroup != null && raw.sfgroup  != '') {%>
+                                                <strong>Group:</strong>: <%=raw.sfgroup%>
+                                            <% } %>
+                                            <% if(raw.sfgroup != null && raw.sfgroup != '' && raw.sfclientgroup != null && raw.sfclientgroup != '') {%>
+                                                |
+                                            <% } %> 
+                                            <% if(raw.sfclientgroup != null && raw.sfclientgroup != '') {%>
+                                                <strong>Client Group:</strong> <%=raw.sfclientgroup%>
+                                            <% } %>    
+                                        </div>
+                                        <div class="infoBlock">
+                                            <!--strong>Geography Distribution:</strong> <%=raw.sfgeographydistribution%> | <strong>Lead Region:</strong> <%=raw.sfleadregion%> | <strong>Lead District:</strong> <%=raw.sfleaddistrict%><br /-->
+											<% if(raw.sfgeographydistribution) {%>
+                                                <strong>Geography Distribution:</strong> <%=raw.sfgeographydistribution%>
+                                            <% } %>
+                                            <% if(raw.sfgeographydistribution && raw.sfleadregion) {%>
+                                                |
+                                            <% } %> 
+                                            <% if(raw.sfleadregion) {%>
+                                                <strong>Lead Region:</strong> <%=raw.sfleadregion%>
+                                            <% } %>
+                                            <% if(raw.sfgeographydistribution && !raw.sfleadregion && raw.sfleaddistrict || raw.sfleadregion && raw.sfleaddistrict) {%>
+                                                |
+                                            <% } %> 
+                                            <% if(raw.sfleaddistrict) {%>
+                                                <strong>Lead District:</strong> <%=raw.sfleaddistrict%>
+                                            <% } %>
+                                            <br/>
+                                            <!--strong>BL Distribution:</strong> <%=raw.sfbldistribution%> | <strong>AECOM Work:</strong> <%=raw.sfpracticeareaofprimaryaecomdept%-->
+                                            <% if(raw.sfbldistribution != null && raw.sfbldistribution  != '') {%>
+                                                <strong>BL Distribution:</strong> <%=raw.sfbldistribution%>
+                                            <% } %>
+                                            <% if(raw.sfbldistribution != null && raw.sfbldistribution != '' && raw.sfpracticeareaofprimaryaecomdept != null && raw.sfpracticeareaofprimaryaecomdept != '') {%>
+                                                |
+                                            <% } %> 
+                                            <% if(raw.sfpracticeareaofprimaryaecomdept != null && raw.sfpracticeareaofprimaryaecomdept != '') {%>
+                                                <strong>AECOM Work:</strong> <%=raw.sfpracticeareaofprimaryaecomdept%>
+                                            <% } %>
+                                        </div>
+                                        <div class="repositoryType">
+                                           <span><%=raw.aecomsource%></span>
+                                        </div>
+                                    </div>
+                                </script>
+                                <script id="User" type="text/x-underscore-template">
+                                	<div class="col-lg-9 col-md-9 resultDetail">
+                                        <div class="coveo-title">
+                                            <a target="_blank" class="CoveoResultLink"><%=Title?highlight(Title, titleHighlights):ClickUri%></a>
+                                            <br /><span class="userTitle"><%=raw.sfusertitle%></span>
+                                        </div>
+                                        <div>
+                                        	<span class="email"><a href="mailto:<%=raw.sfemail%>"><%=raw.sfemail%></a></span>
+                                        </div>
+                                        <div>
+                                        	<% if(raw.syssfphone != null && raw.syssfphone != '') {%>
+                                            	<span><%=raw.syssfphone%></span> 
+                                                <span class="phoneType">(work)</span>   
+                                            <% } %>
+                                            <% if(raw.syssfphone != null && raw.syssfphone != '' && raw.sfmobilephone != null && raw.sfmobilephone != '') {%>
+
+                                            	|
+                                            <% } %>  
+                                            <% if(raw.sfmobilephone != null && raw.sfmobilephone != '') {%>
+                                            	<span><%=raw.sfmobilephone%></span> 
+                                            	<span class="phoneType">(mobile)</span>        
+                                            <% } %>
+                                      	</div>
+                                        <div class="repositoryType">
+                                            <% if(raw.sfuserbusinesslinec != null && raw.sfuserbusinesslinec != '') {%>
+                                            	<span class="businessLine"><%=raw.sfuserbusinesslinec%></span>   
+                                            <% } %>
+                                                <% if(raw.sfuserbusinesslinec != null && raw.sfuserbusinesslinec != '' && raw.sfuserregionc != null && raw.sfuserregionc != '' && raw.sfuserregionc != 'N/A') {%>
+                                                |
+                                            <% } %> 
+                                            <% if(raw.sfuserregionc != null && raw.sfuserregionc != '' && raw.sfuserregionc != 'N/A') {%>
+                                                <span class="country"><%=raw.sfuserregionc%></span>
+                                            <% } %>
+                                            <br /><span><%=raw.aecomsource%></span>
+                                       	</div>
+                                  	</div>
+                                    <div class="col-lg-3 col-md-3 resultImg">
+                                    	<img src="<%=raw.sffullphotourl %>" />
+                                    </div>
+                                </script>
+                                <script id="Chatter" type="text/x-underscore-template">
+                                	<div class="col-lg-12 col-md-12 resultDetail"> 
+                                        <div class="coveo-title">
+                                            <a target="_blank" class="CoveoResultLink"><%=raw.sfparentname?highlight(raw.sfparentname, titleHighlights):'Feed Comment'%></a>
+                                        </div>
+                                        <div>
+                                            <span><%=title%></span><br/>
+                                       	</div>
+                                        <div class="repositoryType">                                            
+                                            <span class="TPNuser">Posted By: <%=raw.sfcreatedbyname%></span>&nbsp;|&nbsp;<span class="modifiedDate"><%=date(raw.sfcreateddate, {predefinedFormat : "MMM dd, yyyy"})%></span><br />
+                                            <span><%=raw.aecomsource%></span>
+                                        </div>
+                                  	</div>
+                                </script>
+                                <script id="Project" type="text/x-underscore-template">
+                                	<div class="col-lg-9 resultDetail">
+                                        <div class="coveo-title">
+                                            <a target="_blank" class="CoveoResultLink"><%=Title?highlight(Title, titleHighlights):ClickUri%></a>
+                                        </div>
+                                        <div class="resultDescription">
+                                        	<span><%=raw.sfprojectcbriefdescriptionc%></span>
+                                        </div>
+                                        <div class="PMdetails">
+                                            <strong>Primary Contact:</strong> <%=raw.sfprojectmanagername%> (<span class="email"><a href="mailto:<%=raw.sfprojectmanageremail%>"><%=raw.sfprojectmanageremail%></a></span>)<br/ >
+                                            <%=raw.sfprojectmanagerphone%>
+                                        </div>
+                                        <div class="PMdetails">
+                                        	<strong>Client Group:</strong> <%=raw.sfprojectcclientgroupc%><br/>
+                                            <strong>Client Subgroup:</strong>  <%=raw.sfprojectcmarketsectorc%><br/>   
+                                            <strong>Project Geography:</strong>  <%=raw.sfprojectcprojectgeographyc%>
+                                        </div>
+                                        <div class="repositoryType"> 
+                                            <% if(raw.sfprojectcbusinesslinec != null && raw.sfprojectcbusinesslinec != '') {%>
+                                                <span class="businessLine"><%=raw.sfprojectcbusinesslinec%></span>   
+                                            <% } %>
+                                            <% if(raw.sfprojectcbusinesslinec != null && raw.sfprojectcbusinesslinec != '' && raw.sfprojectcaecomregionc != null && raw.sfprojectcaecomregionc != '') {%>
+                                                |
+                                            <% } %> 
+                                            <% if(raw.sfprojectcaecomregionc != null && raw.sfprojectcaecomregionc != '') {%>
+                                                <span class="region"><%=raw.sfprojectcaecomregionc%></span>
+                                            <% } %>                                     
+                                            <br /><span><%=raw.aecomsource%></span>
+                                        </div> 
+                                    </div>
+                                    <% if(raw.sfprojectcimagec != null || raw.sfprojectcimagec == '') { %>
+                                    	<div class="col-lg-3 resultImg">
+                                        	<%=aecomCleanProjectImage(raw.sfprojectcimagec)%>
+                                        </div>
+                                    <% } %>
+                                </script>
+                                <script id="MyAecom" type="text/x-underscore-template">
+                                    <div class="col-lg-12 resultDetail">
+                                    	<div class="coveo-title">
+                                        	<a target="_blank" class="CoveoResultLink"><%=Title?highlight(Title, titleHighlights):ClickUri%></a>
+                                            <% if(AWAN_online == true && raw.sysfiletype.match(/doc|pdf|xls|ppt|Zip|xlsx|exe|wav|swf|rtf|msg/i)) { %>
+                                            	<span class="CoveoQuickView"></span>
+                                            <% }%>
+                                        </div>
+                                        <% if(AWAN_online == true) { %>
+                                            <div class="resultDescription">
+                                                <%=highlight(Excerpt, excerptHighlights)%>
+                                            </div>
+                                        <% } else { %>
+
+                                        	<div class="VPNerror">
+                                            	This result requires a connection to the AECOM network from an office or by VPN. An AECOM network connection 
+                                                cannot be detected. Clicking this link when off-network may result in a “page cannot be displayed” message
+                                            </div>
+                                        <% } %>
+                                        <table class="documentTable repositoryType">
+                                            <tr>
+                                                <td rowspan="2"><div class="<%=cleansysfiletype(raw.sysfiletype)%>"></div></td>
+                                                <td>
+                                                    <% if(raw.aecomcontenttype != 'html' && AWAN_online) { %>
+                                                        <% if(raw.sysauthor){%>
+                                                            <span class="user">Author: <%=raw.sysauthor%></span> 
+                                                        <% } %>
+                                                        <% if(raw.sysauthor && raw.sysdate) {%>
+                                                            |    
+                                                        <% } %> 
+                                                        <% if(raw.sysdate) {%>
+                                                            <span class="modifiedDate"><%=date(raw.sysdate, {predefinedFormat : "MMM dd, yyyy"})%></span>
+                                                        <% } %>
+                                                    <% } %>
+                                            	</td>
+                                            </tr>
+                                           <tr>
+                                                <td>
+                                                    <%=raw.aecomsource%>
+                                                </td>
+                                            </tr>                                             
+                                        </table>                                        
+                                    </div> 
+                                </script>
+                                <script id="MySoURSe" type="text/x-underscore-template">
+                                    <div class="col-lg-12 resultDetail">
+                                        
+                                        <div class="coveo-title">
+                                            <a target="_blank" class="CoveoResultLink"><%=Title?highlight(Title, titleHighlights):ClickUri%></a>
+                                            
+                                            <% if(raw.sysfiletype.match(/doc|pdf|xls|ppt|Zip|xlsx|exe|wav|swf|rtf|msg/i)) { %>                                            	
+                                                <span class="CoveoQuickView"></span>
+                                            <% }%>
+                                            
+                                        </div>
+                                        <div class="resultDescription">
+                                            <%=highlight(Excerpt, excerptHighlights)%>
+                                        </div>
+                                        
+                                        <table class="documentTable repositoryType">
+                                            <tr>
+                                                <td rowspan="2"><div class="<%=cleansysfiletype(raw.sysfiletype)%>"></div></td>
+                                                <td valign="bottom">
+                                                    <% if(raw.aecomcontenttype != 'html') { %>
+                                                        <% if(raw.sysauthor) {%>
+                                                            <span class="user">Author: <%=raw.sysauthor%></span> 
+                                                        <% } %>
+                                                        <% if(raw.sysauthor && raw.sysdate) {%>
+                                                            |    
+                                                        <% } %> 
+                                                        <% if(raw.sysdate) {%>
+                                                            <span class="modifiedDate"><%=date(raw.sysdate, {predefinedFormat : "MMM dd, yyyy"})%></span>
+                                                        <% } %>
+                                                    <% } %>
+                                            	</td>
+                                                <td>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    The SoURSe
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+                                    </div>
+                                </script>
+								<script id="Sharepoint" type="text/x-underscore-template"> 
+                                    <div class="col-lg-12 resultDetail">
+                                        <div class="coveo-title">
+                                            <a target="_blank" class="CoveoResultLink"><%=Title?highlight(Title, titleHighlights):ClickUri%></a>
+                                            <% if(!(AWAN_online == false && !raw.syssite.match('extranet')) && raw.sysfiletype.match(/doc|pdf|xls|ppt|Zip|xlsx|exe|wav|swf|rtf|msg/i)) { %>
+                                            	<span class="CoveoQuickView"></span>
+                                            <% }%>
+                                        </div>
+                                        
+                                        <% if(AWAN_online == false && !raw.syssite.match('extranet')) { %>
+
+                                        	<div class="VPNerror">
+                                            	This result requires a connection to the AECOM network from an office or by VPN. An AECOM network connection 
+                                                cannot be detected. Clicking this link when off-network may result in a “page cannot be displayed” message
+                                            </div>                                        
+                                        <% } else { %>
+                                            <div class="resultDescription">
+                                                <%=highlight(Excerpt, excerptHighlights)%>
+                                            </div>
+                                        <% } %>
+                                        <table class="documentTable repositoryType">
+                                            <tr>
+                                                <td rowspan="2"><div class="<%=cleansysfiletype(raw.sysfiletype)%>"></div></td>
+                                                <td valign="bottom">
+                                                    <% if(AWAN_online) { %>
+                                                        <% if(raw.sysauthor) {%>
+                                                            <span class="user">Author: <%=raw.sysauthor%></span> 
+                                                        <% } %>
+                                                        <% if(raw.sysauthor && raw.sysdate) {%>
+                                                            |    
+                                                        <% } %> 
+                                                        <% if(raw.sysdate) {%>
+                                                            <span class="modifiedDate"><%=date(raw.sysdate, {predefinedFormat : "MMM dd, yyyy"})%></span>
+                                                        <% } %> 
+													<% } %> 
+                                               	</td>
+                                            </tr>
+                                            <tr>
+                                                <td>
+                                                    <%=raw.aecomsource%>                                                   
+                                                </td>
+                                            </tr>
+                                        </table>
+                                        
+                                    </div>
+                                </script>
+                                <script id="RecentDocs" type="text/x-underscore-template">
+                                    <div class="col-lg-12 col-md-12 resultDetail">
+                                    	<div class="coveo-title">
+                                        	<a target="_blank" class="CoveoResultLink"><%=Title?highlight(Title, titleHighlights):ClickUri%></a>
+                                        </div>
+                                    </div>
+                                </script>
+                                <div class="container Search">
+                                    <!-- SEARCH BOX ROW -->
+                                    <div class="row searchRow">
+                                        <div class="col-lg-4 col-md-5 col-sm-12 col-xs-12 blueBlock">
+                                            <h1>Smart<span class="search">SEARCH</span></h1>
+
+                                            <p>Welcome to SmartSearch, the consolidated search tool for Salesforce, MyAECOM, TheSoURSe, and SharePoint.AECOMnet.com. </p>
+                                        </div>
+                                        <div class="col-lg-8 col-md-7 col-sm-12 col-xs-12 searchBlock">
+                                            <div class="row searchBar">  
+                                                <!--ScopeSelector: element allowing to use Coveo Tabs as a dropdown -->
+                                                <select id="scopeselector" class="col-lg-3 col-md-3 col-sm-3 col-xs-12"></select>
+                                                
+                                                <div class="coveo-search-section col-lg-9 col-md-9 col-sm-12 col-xs-12">
+                                                    <div class="coveo-searchBox-column">
+                                                        <div id="mainSearchBox" class="coveo-search-section-wrapper">
+                                                            <div class="col-lg-10 col-md-10 col-sm-10 col-xs-10">
+                                                                <input type="search" placeholder="ENTER SEARCH TERMS" class="CoveoOmniBox" id='CoveoQueryBox' />
+                                                            </div>
+                                                            <div class="col-lg-2 col-md-2 col-sm-2 col-xs-2">
+                                                                <span type="button" class="CoveoSearchButton" id='CoveoSearchButton'>Go</span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>                                            
+                                        </div>
+                                    </div>
+                                    <!-- END SEARCH BOX ROW --> 
+                                    <!-- MODULES ROW -->
+                                    <div id="landingMode" class="row searchModules">
+                                        <div class="col-lg-8 col-md-8 mainModule">
+                                            <div class="row sectHead">
+                                                <div class="col-lg-12">
+                                                    <h2>Suggestions</h2>                                                    
+                                                </div>                                                
+                                            </div>
+                                            <div class="row sectBody">
+                                                
+                                                <div id="suggestedSearch" class="CoveoSearchInterface" data-hide-until-first-query="false" data-enable-history="false" data-auto-trigger-query="true">
+
+                                                    <span class="CoveoAnalytics" data-endpoint="{!analyticsEndPoint}" data-search-hub="SmartSearch"></span>
+            
+                                                    <!--ScopeSelector: Normal tabs are hidden (display:none) -->
+                                                    <div class="coveo-tab-section" style="display:none">
+                                                        <a class="CoveoTab" data-id="suggestedResult" data-caption="Suggested Result" />
+                                                    </div>
+                                            
+                                                    <!-- END SEARCH BOX ROW -->
+                                                    
+                                                    <!-- RESULTS ROW -->
+                                                    <div class="row resultsModules">
+                                                        
+                                                        <!-- RESULTS COLUMN-->
+                                                        <div class="col-lg-12 resultsCol" style="padding:0;">
+                                                            
+                                                            <div class="coveo-results-column">
+                                                                <div class="CoveoErrorReport" data-pop-up="false"></div>
+                                                                    
+                                                                <div class="CoveoResultList" data-wait-animation="fade">
+                                                                    <div class="coveo-show-if-no-results">
+                                                                        Each time you search, SmartSearch remembers your query. This area will be populated with results that may interest you in based on your most recent searches.
+                                                                    </div>
+                                                                    <script class="result-template" type="text/x-underscore-template">
+                                                                      	<div class="coveo-icon objecttype <%-raw.objecttype%>"><%-raw.objecttype%></div>
+
+                                                                		<%= loadTemplates({
+                                                                            "Default" : "default",
+                                                                            "Account" : (raw.objecttype == 'Account'),
+                                                                            "Opportunity" : (raw.objecttype == 'Opportunity'),
+                                                                            "Contact" : (raw.objecttype == 'Contact'),
+                                                                            "User" : (raw.objecttype == 'User'),
+                                                                            "Chatter" : (raw.objecttype == 'FeedItem' || raw.objecttype == 'FeedComment'),
+                                                                            "Project" : (raw.objecttype == 'ProjectC'),
+                                                                            "MyAecom" : (raw.aecomsource == 'myAECOM'),
+                                                                            "MySoURSe" : (raw.syssource.toLowerCase().indexOf('sourse') >= 0),
+                                                                            "Sharepoint" : (raw.syscollection.indexOf('Projects') >= 0)
+                                                                            
+                                                                        }) %>       
+                                                                    </script>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- END RESULTS COLUMN-->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!--<div class="col-lg-1 col-md-1"></div>-->
+                                        <div class="col-lg-4 col-md-4 subModules">
+                                            <div class="row sectHead">
+                                                <div class="col-lg-12">
+                                                    <h2>Recently Viewed</h2>
+                                                </div>
+                                            </div>
+                                            <div class="row sectBody">
+                                                
+                                                <div id="MostViewedSearch" class="CoveoSearchInterface" data-hide-until-first-query="false" data-enable-history="false" data-auto-trigger-query="true">
+                                                    <span class="CoveoAnalytics" data-endpoint="{!analyticsEndPoint}" data-search-hub="SmartSearch"></span>
+                                                    <!--ScopeSelector: Normal tabs are hidden (display:none) -->
+                                                    <div class="coveo-tab-section" style="display:none">
+                                                        <a class="CoveoTab" data-id="MostViewedResult" data-caption="My Most Viewed" />
+                                                    </div>
+                                            
+                                                    <!-- RESULTS ROW -->
+                                                    <div class="row resultsModules recentViewLinks">
+                                                        
+                                                        <!-- RESULTS COLUMN-->
+                                                        <div class="col-lg-12 resultsCol" style="padding:0;">
+                                                            
+                                                            <div class="coveo-results-column">
+                                                                <div class="CoveoErrorReport" data-pop-up="false"></div>
+                                                                    
+                                                                <div class="CoveoResultList" data-wait-animation="fade">
+                                                                    <div class="coveo-show-if-no-results">
+                                                                        This area will store your recently viewed items so you don’t need to repeat your latest searches.
+                                                                    </div>  
+                                                                    <script class="result-template" type="text/x-underscore-template">
+                                                                      	<div class="coveo-icon objecttype <%-raw.objecttype%>"><%-raw.objecttype%></div>
+
+                                                                		<%= loadTemplates({
+                                                                            'RecentDocs' : 'default'
+                                                                        }) %>       
+                                                                    </script>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- END RESULTS COLUMN-->
+                                                    </div>
+                                                </div>
+                                            </div>            
+                                            <div class="row sectHead">
+                                                <div class="col-lg-12">
+                                                    <h2>From the TPN</h2>
+                                                </div>
+                                            </div>
+                                            <div class="row sectBody">
+                                                
+                                                <!--div id="TPNSearch" class="CoveoSearchInterface" data-hidden-expression='(@objecttype==("FeedItem") @sfparentname=(TPN,TPG) @sfcollaborationgroupid=({!collaborationGroups})) OR (@objecttype==("FeedComment") @sffeeditemid=[[@sfid] @objecttype==("FeedItem","FeedComment") @sfparentname=(TPN,TPG) @sfcollaborationgroupid=({!collaborationGroups}) ])'
+ 													data-hide-until-first-query="false" data-enable-history="false" data-auto-trigger-query="true"-->
+                                                <div id="TPNSearch" class="CoveoSearchInterface" data-hidden-expression='{!tpnSearchExpression}'
+ 													data-hide-until-first-query="false" data-enable-history="false" data-auto-trigger-query="true">
+                                                    <span class="CoveoAnalytics" data-endpoint="{!analyticsEndPoint}" data-search-hub="SmartSearch"></span>
+                                                    <!--ScopeSelector: Normal tabs are hidden (display:none) -->
+                                                    <div class="coveo-tab-section" style="display:none">
+                                                        <a class="CoveoTab" data-id="tpnResult" data-caption="FROM THE TPN" />
+                                                    </div>
+                                                    
+                                                    <!-- RESULTS ROW -->
+                                                    <div class="row resultsModules">
+                                                        
+                                                        <!-- RESULTS COLUMN-->
+                                                        <div class="col-lg-12 resultsCol" style="padding:0;">
+                                                            
+                                                            <div class="coveo-results-column">
+                                                                <div class="CoveoErrorReport" data-pop-up="false"></div>
+                                                                    
+                                                                <div class="CoveoResultList" data-wait-animation="fade">
+                                                                    <div class="coveo-show-if-no-results">Our Technical Practice Groups (TPGs) are updated frequently.  This area will display the newest content from your groups so you are informed of new activity.</div>
+                                                                    <script class="result-template" type="text/x-underscore-template">
+                                                                      	<div class="coveo-icon objecttype <%-raw.objecttype%>"><%-raw.objecttype%></div>
+
+                                                                		<%= loadTemplates({
+                                                                            "Default" : "default",
+                                                                            "Account" : (raw.objecttype == 'Account'),
+                                                                            "Opportunity" : (raw.objecttype == 'Opportunity'),
+                                                                            "Contact" : (raw.objecttype == 'Contact'),
+                                                                            "User" : (raw.objecttype == 'User'),
+                                                                            "Chatter" : (raw.objecttype == 'FeedItem' || raw.objecttype == 'FeedComment'),
+                                                                            "Project" : (raw.objecttype == 'ProjectC'),
+                                                                            "MyAecom" : (raw.aecomsource == 'myAECOM'),
+                                                                            "MySoURSe" : (raw.syssource.toLowerCase().indexOf('sourse') >= 0),
+                                                                            "Sharepoint" : (raw.syscollection.indexOf('Projects') >= 0)
+                                                                        }) %>       
+                                                                    </script>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                        <!-- END RESULTS COLUMN-->
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- Holding off on Chatter per Andy May 5/7/15 -->
+                                            <!--
+                                            <div class="row sectHead">
+                                                <div class="col-lg-12">
+                                                    <h2>Chatter</h2>
+                                                </div>
+                                            </div>
+                                            <div class="row sectBody">
+                                                {Fancy stuff goes here}
+                                            </div>
+                                            -->
+                                        </div>
+                                    </div>
+                                    <!-- END MODULES ROW -->
+                                </div>  
+                                <!-- END CONTAINER SEARCH -->            
+            
+                                <!-- BEGIN SEARCH RESULTS SECTION -->
+                                <div id="searchResults" class="container SearchResults">
+                                    <!--div id="search" class="CoveoSearchInterface" data-hidden-expression='NOT(@sysfiletype==("spuserprofile"))'
+											data-hide-until-first-query="true" data-enable-history="true" data-auto-trigger-query="false"-->
+                                    <div id="search" class="CoveoSearchInterface" data-hidden-expression='{!searchCoveoSearchInterfaceExpression}'
+											data-hide-until-first-query="true" data-enable-history="true" data-auto-trigger-query="false">
+                                        <span class="CoveoAnalytics" data-endpoint="{!analyticsEndPoint}"></span>
+
+                                        <!--ScopeSelector: Normal tabs are hidden (display:none) -->
+                                        <div id="searchTabs" class="coveo-tab-section" style="display:none">
+                                            <!--a class="CoveoTab" data-id="All" data-caption="All Information" 
+                                               data-expression='NOT @sfid OR @objecttype==("User","ProjectC","Opportunity","Account")  OR  (@objecttype==("FeedItem") @sfparentname=(TPN,TPG) @sfcollaborationgroupid=({!collaborationGroups})) OR (@objecttype==("FeedComment") @sffeeditemid=[[@sfid] @objecttype==("FeedItem","FeedComment") @sfparentname=(TPN,TPG) @sfcollaborationgroupid=({!collaborationGroups}) ])' /-->
+											<a class="CoveoTab" data-id="All" data-caption="All Information" 
+                                               data-expression='{!coveoTabAllExpression}' />
+
+                                            <!--a class="CoveoTab" data-id="People" data-caption="People" data-expression='@objecttype==("User")'/-->
+                                            <a class="CoveoTab" data-id="People" data-caption="People" data-expression='{!coveoTabPeopleExpression}'/>
+                                            
+                                            <!--a class="CoveoTab" data-id="Projects" data-caption="Projects" data-expression='(@objecttype==("ProjectC")) OR (NOT(@sysspsitename = TPN) AND @sysconnectortype == ("Sharepoint") AND @syscollection = ("Projects"))' /-->
+                                            <a class="CoveoTab" data-id="Projects" data-caption="Projects" data-expression='{!coveoTabProjectsExpression}' />
+
+                                            <!--a class="CoveoTab" data-id="Practice"  data-caption="Practice" data-expression='(@objecttype==("FeedItem") @sfparentname=(TPN,TPG) @sfcollaborationgroupid=({!collaborationGroups})) OR (@sysspsitename = TPN) OR (@objecttype==("FeedComment") @sffeeditemid=[[@sfid] @objecttype==("FeedItem","FeedComment") @sfparentname=(TPN,TPG) @sfcollaborationgroupid=({!collaborationGroups}) ])'/-->
+                                            <a class="CoveoTab" data-id="Practice"  data-caption="Practice" data-expression='{!coveoTabPracticeExpression}'/>
+                                        </div>
+                                        <!-- END SEARCH BOX ROW -->
+                                        <div class="row resultTotal">
+                                            <div class="col-lg-12">
+                                                <div class="CoveoDidYouMean"></div>
+                                                <span id="querysummary"></span>
+                                                <div id="NoResultSummary">
+                                                	<span class="CoveoQuerySummary"></span>    
+                                                </div>
+                                            </div>
+                                        </div>
+                                        <!-- RESULTS ROW -->
+                                        <div class="row resultsModules">
+                                            
+                                            <!-- FACET COLUMN-->
+                                            <div class="col-lg-4 col-md-4 col-sm-4 col-xs-12 facetCol">
+
+                                                <div class="resultsSpacer"></div>
+												<div class="CoveoBreadcrumb"></div>
+                                                <div class="coveo-facet-column">
+                                                    <!--<div class="CoveoBreadcrumb" data-title="CurrentSelections"></div>-->
+                                                    <!--div class="CoveoFacet"
+                                                       data-title="Filter by File Type test"
+                                                       data-field="@sysfiletype"
+                                                       data-number-of-values="5"
+                                                       data-tab="All,Projects,Practice"
+                                                       data-enable-facet-search="false"></div-->
+                                                    <div class="CoveoFacet"
+                                                       data-title="Filter by File Type"
+                                                       data-field="@sysfiletype"
+                                                       data-allowed-values='{!filterByFileTypeAllowedValues}'
+                                                       data-number-of-values="5"
+                                                       data-tab="All,Projects,Practice"
+                                                       data-enable-facet-search="false"                                                       
+                                                       data-enable-more-less="true"></div><!--Make this a Salesforce Custom Setting -->
+                                                    <div class="CoveoFacet"
+                                                       data-title="Filter by Year"
+                                                       data-field="@sysyear"
+                                                       data-number-of-values="5"
+                                                       data-tab="All,People,Projects,Practice"
+                                                       data-enable-facet-search="false"></div>
+                                                    <div class="CoveoFacet"
+                                                       data-title="Filter by Month"
+                                                       data-field="@sysmonth"
+                                                       data-number-of-values="5"
+                                                       data-tab="All,People,Projects,Practice"
+                                                       data-enable-facet-search="false"></div>
+                                                    <div id="aecomsourceFacets" class="CoveoFacet"
+                                                       data-title="Filter by Source"
+                                                       data-field="@aecomsource"
+                                                       data-number-of-values="5"
+                                                       data-tab="All,Projects,Practice"
+                                                       data-enable-facet-search="false"></div>
+                                                    <div class="CoveoFacet"
+                                                       data-title="Filter by Keyword"
+                                                       data-field="@sysconcepts"
+                                                       data-number-of-values="5"
+                                                       data-tab="All,Projects,Practice"
+                                                       data-enable-facet-search="false"></div>
+                                                    <div class="CoveoFacet"
+                                                       data-title="Filter by Region"
+                                                       data-field="@sfuserregionc"
+                                                       data-number-of-values="5"
+                                                       data-tab="People"
+                                                       data-enable-facet-search="false"></div>
+                                                    <div class="CoveoFacet"
+                                                       data-title="Filter by SF330 Discipline"
+                                                       data-field="@sfrsprofilepartcsf330disciplinec"
+                                                       data-number-of-values="5"
+                                                       data-tab="People"
+                                                       data-enable-facet-search="false"></div>
+                                                    <div class="CoveoFacet"
+														data-title="Filter by Business Line"
+                                                        data-field="@sfuserbusinesslinec"
+                                                        data-number-of-values="5"
+                                                        data-tab="People"
+                                                        data-enable-facet-search="false"></div>
+
+                                                    <div id="firstLevelSubGroup" style="display:none">
+                                                    	<div>
+                                                            <div id="objectTypeFacet" class="CoveoFacet"
+                                                               data-title="Filter by Object Type"
+                                                               data-field="@objecttype"
+                                                               data-number-of-values="5"
+                                                               data-tab="All,Projects,Practice"
+                                                               data-enable-facet-search="false"></div>                                                        
+                                                    	</div>    
+                                                    </div>
+                                                    <div id="secondLevelSubGroup" style="display:none">
+                                                        <div>
+                                                            <div id="acctclientGroup" class="CoveoFacet"
+                                                               data-title="Filter by Client Group"
+                                                               data-field="@sfclientgroup"
+                                                               data-number-of-values="5"
+                                                               data-tab="All"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+                                                            <div id="acctclientSubGroup" class="CoveoFacet"
+                                                               data-title="Filter by Client Sub Group"
+                                                               data-field="@sfclientsubgroup"
+                                                               data-number-of-values="5"
+                                                               data-tab="All"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+                                                            <div id="acctType" class="CoveoFacet"
+                                                               data-title="Filter by Type"
+                                                               data-field="@sfaccounttype"
+                                                               data-number-of-values="5"
+                                                               data-tab="All"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+                                                            <div id="acctCountry" class="CoveoFacet"
+                                                               data-title="Filter by Country"
+                                                               data-field="@sfcountrylookupname"
+                                                               data-number-of-values="5"
+                                                               data-tab="All"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+                                                            <div id="oppGroup" class="CoveoFacet"
+                                                               data-title="Filter by Group"
+                                                               data-field="@sfgroup"
+                                                               data-number-of-values="5"
+                                                               data-tab="All"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+                                                            <div id="oppLeadDistrict" class="CoveoFacet"
+                                                               data-title="Filter by Lead District"
+                                                               data-field="@sfleaddistrict"
+                                                               data-number-of-values="5"
+                                                               data-tab="All"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+                                                            <div id="oppLeadRegion" class="CoveoFacet"
+                                                               data-title="Filter by Lead Region"
+                                                               data-field="@sfleadregion"
+                                                               data-number-of-values="5"
+                                                               data-tab="All"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+                                                            <div id="oppAECOMWork" class="CoveoFacet"
+                                                               data-title="Filter by AECOM Work"
+                                                               data-field="@sfpracticeareaofprimaryaecomdept"
+                                                               data-number-of-values="5"
+                                                               data-tab="All"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+															<div id="userBusinessLine" class="CoveoFacet"
+                                                               data-title="Filter by Business Line"
+                                                               data-field="@sfuserbusinesslinec"
+                                                               data-number-of-values="5"
+                                                               data-tab="All"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+															<div id="userRegion" class="CoveoFacet"
+                                                               data-title="Filter by Region"
+                                                               data-field="@sfuserregionc"
+                                                               data-number-of-values="5"
+                                                               data-tab="All"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+															<div id="userSF330Discipline" class="CoveoFacet"
+                                                               data-title="Filter by SF330 Discipline"
+                                                               data-field="@sfrsprofilepartcsf330disciplinec"
+                                                               data-number-of-values="5"
+                                                               data-tab="All,People"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+                                                            <div id="projectGeography" class="CoveoFacet"
+                                                               data-title="Filter by Georgraphy"
+                                                               data-field="@sfprojectcprojectgeographyc"
+                                                               data-number-of-values="5"
+                                                               data-tab="All,Projects"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+                                                            <div id="projectAecomRegion" class="CoveoFacet"
+                                                               data-title="Filter by AECOM Region"
+                                                               data-field="@sfprojectcaecomregionc"
+                                                               data-number-of-values="5"
+                                                               data-tab="All,Projects"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+                                                            <div id="projectBusinessLine" class="CoveoFacet"
+                                                               data-title="Filter by Business Line"
+                                                               data-field="@sfprojectcbusinesslinec"
+                                                               data-number-of-values="5"
+                                                               data-tab="All,Projects"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+                                                            <div id="projectClientGroup" class="CoveoFacet"
+                                                               data-title="Filter by Client Group"
+                                                               data-field="@sfprojectcclientgroupc"
+                                                               data-number-of-values="5"
+                                                               data-tab="All,Projects"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+                                                            <div id="projectClientSubGroup" class="CoveoFacet"
+                                                               data-title="Filter by Client Sub Group"
+                                                               data-field="@sfprojectcmarketsectorc"
+                                                               data-number-of-values="5"
+                                                               data-tab="All,Projects"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                        <div>
+                                                            <div id="projectServiceLine" class="CoveoFacet"
+                                                               data-title="Filter by Service Line"
+                                                               data-field="@sfprojectcservicelinec"
+                                                               data-number-of-values="5"
+                                                               data-tab="All,Projects"
+                                                               data-enable-facet-search="false"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                            <!-- END FACET COLUMN -->
+                                            <div class="col-lg-1 col-md-1 col-sm-1 hidden-xs"></div>
+                                            <!-- RESULTS COLUMN-->
+                                            <div class="col-lg-7 col-md-7 col-sm-7 col-xs-12 resultsCol">
+                                                <div class="coveo-results-header row">
+                                                    <!--<div class="coveo-summary-section">
+                                                        <span class="CoveoQueryDuration"></span>
+                                                    </div>-->
+                                                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-6" style="padding-top: 5px;">
+                                                        <div class="coveo-sort-section">
+                                                            <span class="CoveoSort"
+                                                                data-sort-criteria="relevancy"
+                                                                data-caption="Relevance" style="border-right: 1px solid #808080; margin-right: 3px; padding-right: 4px;"></span> 
+                                                            <span class="CoveoSort"
+                                                                    data-sort-criteria="date descending,date ascending"
+                                                                    data-caption="Date"></span>
+                                                        </div>
+                                                    </div>                                                    
+                                                    
+                                                    <div class="col-lg-6 col-md-4 col-sm-6 col-xs-6" style="padding-top: 5px;">
+                                                        <div id="resultQuerySummary">
+                                                        	<span class="CoveoQuerySummary"></span>    
+                                                        </div>                                                        
+                                                    </div>
+
+                                                    <div class="col-lg-3 col-md-4 col-sm-6 col-xs-12" style="padding-top: 5px;">
+                                                        <div class="CoveoPager" data-number-of-pages="4"></div>
+                                                    </div>
+
+                                                    <div class="coveo-clear"></div>
+                                                </div>
+                                                <div class="coveo-results-column">
+                                                    <!--div class="CoveoShareQuery"></div>
+                                                    <div class="CoveoPreferencesPanel">
+                                                        <div class="CoveoResultsPreferences"></div>
+                                                        <div class="CoveoResultsFiltersPreferences"></div>
+                                                    </div-->
+                                                    <div class="CoveoHiddenQuery"></div>
+                                                    <!--<div class="CoveoDidYouMean"></div>-->
+                                                    <div class="CoveoErrorReport" data-pop-up="false"></div>
+                                                    <div class="CoveoTopFieldSuggestions" data-field="@sysconcepts" data-header-title="Suggested Searches"/>
+                                                    <!--div class="CoveoTopFieldSuggestions" data-field="@sfuserbusinesslinec" data-header-title="Suggested Business Line" data-query-override='@sforganizationid==("00De0000005Ub8l")'/>
+                                                    <div class="CoveoTopFieldSuggestions" data-field="@sfuserregionc" data-header-title="Suggested Region" data-query-override='@sforganizationid==("00De0000005Ub8l")'/>
+                                                    <div class="CoveoTopFieldSuggestions" data-field="@sfusertitle" data-header-title="Suggested Title" data-query-override='@sforganizationid==("00De0000005Ub8l")'/-->
+                                                    <!--div class="CoveoTopAnalyticsSuggestions" data-number-of-suggestions="5" data-header-title='Most Frequent Queries'></div-->
+                                                        
+                                                    <div class="CoveoResultList" data-wait-animation="fade">
+                                                        <script class="result-template" type="text/x-underscore-template">
+                                                          <div class="coveo-icon objecttype <%-raw.objecttype%>"><%-raw.objecttype%></div>
+                                                          
+                                                          <%= loadTemplates({
+                                                              "Account" : (raw.objecttype == 'Account'),
+                                                              "Opportunity" : (raw.objecttype == 'Opportunity'),
+                                                              "Contact" : (raw.objecttype == 'Contact'),
+                                                              "User" : (raw.objecttype == 'User'),
+                                                              "Chatter" : (raw.objecttype == 'FeedItem' || raw.objecttype == 'FeedComment'),
+                                                              "Project" : (raw.objecttype == 'ProjectC'),
+                                                              "MyAecom" : (raw.aecomsource == 'myAECOM'),
+                                                              "MySoURSe" : (raw.syssource.toLowerCase().indexOf('sourse') >= 0),
+                                                              "Sharepoint" : (raw.syscollection.indexOf('Projects') >= 0),
+                                                              "Default" : "default"
+                                                          }) %>                                                          
+                                                        </script> 
+                                                    </div>                                                    
+                                                </div>
+                                                <div class="resultsColumnFooter">
+                                                    <div class="CoveoPager"  data-number-of-pages="4"></div>
+                                                    <!--<span class="CoveoQuerySummary"></span>-->
+                                                    <div class="coveo-clear"></div>
+                                                </div>
+                                            </div>
+                                            <!-- END RESULTS COLUMN-->
+                                        </div>
+                                    </div>
+                                </div><!--end container-->
+                                <!-- END SEARCH RESULTS SECTION -->
+                            </div>
+                            <!--===================================================-->
+                            <!--End page content-->
+                        </div>
+                        <!--===================================================-->
+                        <!--END CONTENT CONTAINER-->
+                
+                        <!--AECOM APPS-->
+                        <!--===================================================-->
+                        <nav id="mainnav-container">
+                            <div id="mainnav" >
+                                <!--Menu-->
+                                <!--================================-->
+                                <div id="mainnav-menu-wrap">
+                                    <div class="nano">
+                                        <div class="nano-content"> <!-- took out classes:  ui-widget-content hoverscroll vertical" style="height:85vh !important;" -->
+                                            <!-- THIS OUT FOR NOW 3/20/2015, FOR APP SCROLLING <div class="fixed-listcontainer"> -->
+                                            <ul id="mainnav-menu" class="list-group">
+                                                <li class="visible-xs showAllApps">
+                                                    <a href="#">
+                                                        <div class="media-left">
+                                                            <i class="fa fa-eye" style="font-size:33px; padding-left:1px;"></i>
+                                                        </div>
+                                                        <div class="media-body menu-title showHideSwap visible-xs" style="height:35px;">
+                                                            Show Non-Mobile Applications
+                                                        </div>
+                                                        <div class="media-body menu-title showHideSwap hidden-xs" style="height:35px;">
+                                                            Hide Non-Mobile Applications
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                                <li class="editApps">
+                                                    <a href="#" onclick="goToApplicationConfiguration();">
+                                                        <div class="media-left">
+                                                            <i class="fa fa-cog" style="font-size:33px; padding-left:1px;"></i>
+                                                        </div>
+                                                        <div class="media-body menu-title" style="height:35px;">
+                                                            Edit AECOM APPs 
+                                                        </div>
+                                                    </a>
+                                                </li>
+                                                <apex:repeat value="{!applications}" var="app" >
+                                                    <apex:outputPanel rendered="{!!app.IsHidden__c}" layout="none">
+                                                        <li class="{!app.Application__r.NetworkRequirement__c} {!IF(app.Application__r.MobileEnabled__c, '', 'hiddenOnMobile')} anApplication">
+                                                            <a target="_blank" href="{!app.Application__r.ApplicationURL__c}">
+                                                                <div class="media-left">
+                                                                    <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/loader.gif')}" html-data-original="{!URLFOR($Resource.ECO_CustomGraphicAssets, app.Application__r.ImageName__c)}" styleClass="lazy" width="33px" height="33px" />
+                                                                </div>
+                                                                <div class="media-body menu-title" style="height:35px;">
+                                                                    <apex:outputText value="{!app.Application__r.ApplicationName__c}" />
+                                                                </div>
+                                                            </a>
+                                                        </li>
+                                                    </apex:outputPanel>
+                                                </apex:repeat>
+                                            </ul>
+                                            <!-- END THIS OUT FOR NOW 3/20/2015 </div> -->                            
+                                        </div>
+                                    </div>
+                                </div>
+                                <!--================================-->
+                                <!--End menu-->
+                            </div>
+                        </nav>
+                        <!--===================================================-->
+                        <!--END MAIN NAVIGATION-->
+                
+                
+                        <!--ASIDE-->
+                        <!--===================================================-->
+                        <aside id="aside-container">
+                            <div id="aside">
+                                <div class="nano">
+                                    <div class="nano-content">
+                                        <div class="tab-pane fade in active" id="demo-asd-tab-1" style="margin-top:15px;">
+                                            <h4 class="pad-hor text-thin">
+                                                <a onclick="goToReportsBuilder()" title="hide Reports" style="margin:0 25px 0 5px; cursor:pointer; float:right;">Reports</a>
+                                                <i class="fa fa-gear" onclick="goToReportsBuilder()" style="float:right; cursor:pointer;" title="Edit Reports"></i>
+                                            </h4>
+                                            
+                                            <div>
+                                                <div class="list-group bg-trans">
+                                                    <apex:repeat value="{!reports}" var="report" >
+                                                        <apex:outputLink value="/{!report.ReportId__c}" styleClass="list-group-item" target="_Report-{!report.ReportId__c}">
+                                                            <div class="media-left">
+                                                                <i class="fa fa-file" style="font-size:20px; padding-top:5px;"></i>
+                                                            </div>
+                                                            <div class="media-body">
+                                                                <apex:outputText value="{!report.ReportName__c}" />
+                                                            </div>
+                                                        </apex:outputLink>
+                                                    </apex:repeat>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </aside>
+                        <!--===================================================-->
+                        <!--END ASIDE-->
+                    </div>
+                    <!-- FOOTER -->
+                    <!--===================================================-->
+                    <footer id="footer">
+                        <div class="hide-fixed pull-right pad-rgt"></div>
+                        <p class="pad-lft">&#0169; 2015 AECOM</p>
+                    </footer>
+                    <!--===================================================-->
+                    <!-- END FOOTER -->
+                            
+                    <!-- SCROLL TOP BUTTON -->
+                    <!--===================================================-->
+                    <!--<button id="scroll-top" class="btn"><i class="fa fa-chevron-up"></i></button>-->
+                    <!--===================================================-->
+            
+                </div>
+    
+                <!--===================================================-->
+                <!-- END OF CONTAINER -->
+                <apex:includeScript value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/jquery.sparkline.min.js')}" />
+                
+                <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/jquery.sparkline.min.js')}"></script>
+                <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/bootstrap.min.js')}"></script>
+                <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/nifty.min.js')}"></script>
+                <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/morris.min.js')}"></script>
+                <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/raphael.min.js')}"></script>
+                
+                <!-- out for now, this was for scrolling APPs
+                <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/jquery.hoverscroll.js')}"></script>
+                <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/jquery.simplyscroll.min.js')}"></script>
+                -->
+                <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/gauge.min.js')}"></script>
+                <script src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/ECO_PortalSpecificJS.min.js')}"></script>
+                <script src="{!URLFOR($Resource.ECO_SmartSearchAssets, 'js/main.js')}"></script>
+                <script src="{!URLFOR($Resource.ECO_SmartSearchAssets, 'js/plugin.js')}"></script>
+                
+                
+                <script>
+                    // CLIENT CARE PROGRAM
+                    // =================================================================
+                    $("#client-care-program").sparkline([57.6, 34.2, 8.2], {
+                        type: 'pie',
+                        width: '120',
+                        height: '120',
+                        tooltipChartTitle: 'Client Care Program - Monthly Net Promoter Score',
+                        tooltipFormat: '{{offset:offset}} ({{percent.1}}%)',
+                        tooltipValueLookups: {
+                            'offset': {
+                                0: 'Promoter',
+                                1: 'Passive',
+                                2: 'Detractor',
+                            }
+                        },
+                        sliceColors: ['#7ad689','#fec311','#fe2d11'],
+                    });
+            
+                    // TECHNICAL PRACTICE NETWORKS
+                    // =================================================================
+                    Morris.Area({
+                        element: 'technical-practice-networks',
+                        data: [{
+                            period: 'January',
+                            dl: 99,
+                            up: 1086 
+                            }, {
+                            period: 'February',
+                            dl: 104,
+                            up: 1141
+                            }, {
+                            period: 'March',
+                            dl: 194,
+                            up: 1734
+                            }, {
+                            period: 'April',
+                            dl: 0,
+                            up: 0
+                            }, {
+                            period: 'May',
+                            dl: 0,
+                            up: 0
+                            }, {
+                            period: 'June',
+                            dl: 0,
+                            up: 0
+                            }, {
+                            period: 'July',
+                            dl: 0,
+                            up: 0
+                            }, {
+                            period: 'August',
+                            dl: 0,
+                            up: 0
+                            }, {
+                            period: 'September',
+                            dl: 0,
+                            up: 0
+                            }, {
+                            period: 'October',
+                            dl: 0,
+                            up: 0
+                            }, {
+                            period: 'November',
+                            dl: 0,
+                            up: 0
+                            }, {
+                            period: 'December',
+                            dl: 0,
+                            up: 0
+                            }],
+                        gridEnabled: false,
+                        gridLineColor: 'transparent',
+                        behaveLikeLine: true,
+                        xkey: 'period',
+                        ykeys: ['dl', 'up'],
+                        labels: ['Visitors', 'Pageviews'],
+                        lineColors: ['#00729d'],
+                        pointSize: 0,
+                        pointStrokeColors : ['#00729d'],
+                        lineWidth: 0,
+                        resize:true,
+                        hideHover: 'auto',
+                        fillOpacity: 0.7,
+                        parseTime:false,
+                        gridTextColor: ['#fff']
+                    });
+                    
+                    // CASE INDICENT RATE (Safety)
+                    // =================================================================
+                    var opts = {
+                        lines: 10, // The number of lines to draw
+                        angle: 0, // The length of each line
+                        lineWidth: 0.3, // The line thickness
+                        pointer: {
+                            length: 0.45, // The radius of the inner circle
+                            strokeWidth: 0.035, // The rotation offset
+                            color: '#231f20' // Fill color
+                        },
+                        limitMax: 'true', // If true, the pointer will not go past the end of the gauge
+                        colorStart: '#59ba47', // Colors
+                        colorStop: '#59ba47', // just experiment with them
+                        strokeColor: '#ddd', // to see which ones work best for you
+                        generateGradient: true
+                    };
+            
+                    var target = document.getElementById('case-incident-rate'); // your canvas element
+                    var gauge = new Gauge(target).setOptions(opts); // create sexy gauge!
+                    gauge.maxValue = 6; // set max gauge value
+                    gauge.animationSpeed = 32; // set animation speed (32 is default value)
+                    gauge.set(0.1786); // set actual value
+                    gauge.setTextField(document.getElementById("case-incident-rate-txt"));
+
+                    // GOOGLE ANALYTICS
+                    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){ 
+                    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o), 
+                    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m) 
+                    })(window,document,'script','//www.google-analytics.com/analytics.js','ga'); 
+            
+                    ga('create', 'UA-33974532-22', 'auto'); 
+                    ga('send', 'pageview');
+                </script>
+            </apex:define>
+        </apex:composition>
+    </body>
+</apex:page>

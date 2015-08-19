@@ -1,0 +1,319 @@
+<apex:page standardController="ProjectReview__c" extensions="ECO_ProjectReviewsController" showHeader="true" sidebar="false" action="{!init}">
+	<style>
+		.meetingNotes td, .meetingNotes th{
+			padding:10px;
+		}
+
+		.meetingNotes td{
+			padding-top:2px;
+		}
+
+		.meetingNotes th{
+			padding-bottom:2px;
+		}
+
+		.tableLabel{
+			font-weight:bold;
+			color: #4a4a56 !important;
+			text-align: right;
+			font-size: 91%;
+			padding-right:10px;
+		}
+
+		.setPicker{
+			position:absolute;
+			top:0;
+			right:0;
+		}
+		body .bPageBlock .pbBody .labelCol{
+			padding-top: 3px !important;
+			padding-bottom: 5px;
+			vertical-align: middle;
+		}
+
+		.riskNotifications .pbSubsection .detailList tr td{
+			color:red !important;
+		}
+		.true
+		{
+			background-color:#FD6666;
+		}
+		.false
+		{
+			background-color:#A4FDBD;
+		}
+		.printReviews{
+			padding:4px !important;
+		}
+		
+		.dmeOutput{  
+			font-size: 1.0em;
+  			font-weight: bold; 
+  			color: #4a4a56;  /*Standrd Salesforce Color*/
+  		} 	
+		
+	</style>
+	
+	<apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+	
+	<script type="text/javascript">
+	
+		function collapseSection()
+		{
+			console.log('collapseSection');
+			$("div[id$='ProjectSummary']").find("div.pbBody").find("img.hideListButton").click();
+		}
+		
+		sfdcPage.appendToOnloadQueue(collapseSection);
+		
+	</script>
+	
+	<apex:form id="mainForm">
+		<div style="position:relative">
+			<apex:sectionHeader title="Project Review" subtitle="{!theProject.Name}" />
+		</div>
+		<apex:pageMessages id="pgMessages" />
+		<div class="projectSummary">
+		
+			<apex:pageBlock title="Project Summary" id="ProjectSummary">
+				<apex:pageBlockButtons location="top">
+					<!-- <apex:commandButton action="{!SaveAll}" value="Save" onComplete="location.reload()"/> -->
+					<apex:commandButton action="{!ScheduleMeeting}" value="Schedule Meeting" rendered="{!AND(showOtherSections,showScheduleButton) && oProjectReview.Status__c != 'Not Started'}" />
+					<apex:commandButton action="{!ManageEvent}" value="Manage Meeting" rendered="{!AND(showOtherSections, NOT(showScheduleButton))}" />
+					<apex:commandButton action="{!CreateCalendarInvite}" value="Create Calendar Invite" html-formtarget="_blank" rendered="{!AND(showOtherSections, NOT(showScheduleButton))}" />
+					<apex:commandLink action="{!printProjectReviews}" value="Print Project Reviews" styleClass="btn printReviews" immediate="true" target="_blank" style="text-decoration:none" rendered="{!oProjectReview.Status__c != 'Not Started' && isPerfReview}"/>					
+					<apex:commandButton action="{!SaveHealthCheck}" value="Take Project Snapshot" rendered="{!NOT(perfActiveStatus) && isPerfReview && oProjectReview.Snapshot_Date__c == null}" />
+					<apex:commandButton action="{!SaveAll}" value="Save"/> 
+					<apex:commandButton action="{!ReturnToProjectFromReview}" value="Return to Project"  />
+				</apex:pageBlockButtons>
+				<!--
+				<apex:pageBlockSection title="Project Information" collapsible="false">
+					<apex:repeat value="{!CustomProjSetupFields}" var="f">
+	                	<apex:outputField value="{!theProject[f.fieldPath]}" />
+	            	</apex:repeat>
+	           	</apex:pageBlockSection>
+	           	-->
+	           	<apex:pageBlockSection title="Project Information" collapsible="true" columns="2">
+	            	<apex:outputField value="{!theProject.Name}" />
+	            	<apex:outputField value="{!theProject.OwnerId}" />
+	            	<apex:outputField value="{!theProject.pse__Opportunity__c}" />
+	            	<apex:outputField value="{!theProject.EstimatedContractValue__c}" />
+	            	<apex:outputField value="{!theProject.pse__Project_Manager__c}" />
+	            	<apex:outputField value="{!theProject.NetServicesRevenue__c}" />
+	            	<apex:outputField value="{!theProject.ProjectOwningOrg__c}" />
+	            	<apex:outputField value="{!theProject.TotalMargin__c}" />
+	            	<apex:outputField value="{!theProject.PrimaryEndClient__c}" />
+	            	<apex:outputField value="{!theProject.TotalBidBudget__c}" />
+	            	<apex:outputField value="{!theProject.PrimaryBillingClient__c}" />
+	            	<apex:outputField value="{!theProject.EstimatedStartDate__c}" />
+            	</apex:pageBlockSection>
+ 
+ 					<apex:inputHidden value="{!ProjectReview__c.Name}"/>
+					<apex:inputHidden value="{!ProjectReview__c.Status__c}"/>
+					<apex:inputHidden value="{!ProjectReview__c.MeetingMinutes__c}"/>
+					           	
+				<apex:pageBlockSection id="ReviewDetails" title="Project Review Details" columns="2" collapsible="false">			
+					<apex:inputField value="{!oProjectReview.Name}" required="true" style="width: 250px"/>
+					<apex:outputField value="{!oProjectReview.Status__c}" />
+					<apex:outputField label="Record Type" value="{!oProjectReview.RecordType.Name}" />
+					<apex:inputField value="{!oProjectReview.ResponsiblePerson__c}" />
+					<apex:outputField value="{!oProjectReview.Snapshot_Date__c}" rendered="{!IsPerfReview}"/>
+					<apex:inputField value="{!oProjectReview.ScheduledDate__c}" />
+					<apex:inputField value="{!oProjectReview.CompletedDate__c}" />
+
+				</apex:pageBlockSection>
+				<apex:pageBlockSection >
+					<apex:outputField value="{!oProjectReview.ProjectReviewTemplate__r.Purpose__c}" rendered="{!NOT(ISBLANK(oProjectReview.ProjectReviewTemplate__c))}"/>
+            	</apex:pageBlockSection>
+            	
+            	<apex:pageBlockSection title="Admin View" collapsible="false">
+					<apex:outputField value="{!oProjectReview.TotalKPIs__c}"  rendered="{!showKPIs}"/>
+					<apex:outputField value="{!oProjectReview.PassedKPIs__c}" rendered="{!showKPIs}" />
+					<apex:outputField value="{!oProjectReview.KPIPassPercentage__c}"  rendered="{!showKPIs}"/>        	
+            	</apex:pageBlockSection>
+
+				<apex:outputPanel id="KPIResults" rendered="{!isPerfReview}">
+				<apex:pageBlockSection title="KPI Results" columns="1" collapsible="false" >
+					<apex:pageBlockTable value="{!lKPI_Results}" var="item" width="100%" id="KPITable">
+						<apex:column >
+							<apex:facet name="header">Trigger Name</apex:facet>
+							<apex:outputField value="{!item.Trigger_Name__c}" />
+						</apex:column>
+						<apex:column ><!-- styleClass="{!item.Evaluation_Result__c}"-->
+							<apex:facet name="header">Has Triggered</apex:facet>
+							<!--<apex:outputText value="{!item.Evaluation_Result__c}" />-->
+							<apex:image height="30px" width="30px" value="{!IF(item.Evaluation_Result__c, $Resource.redTriangle, $Resource.greenStar)}" />
+						</apex:column> 
+						<apex:column >
+							<apex:facet name="header">Alert Message</apex:facet>
+							<apex:outputField value="{!item.Alert_Message__c}" />
+						</apex:column>
+						<apex:column rendered="{!perfActiveStatus}">
+							<apex:facet name="header">Explanation</apex:facet>
+							<apex:inputField value="{!item.Explanation__c}" style="width:80%"/>
+						</apex:column>
+					</apex:pageBlockTable>
+				</apex:pageBlockSection>
+				</apex:outputPanel>
+																																							  
+ 				<apex:pageBlockSection title="Agenda Items" columns="1" collapsible="false" rendered="{!showOtherSections && isProjectPerfReview}">
+					<apex:pageBlockTable value="{!lAgendaItems}" var="item" width="100%" columnsWidth="120px" id="AgendaTable">
+						<apex:facet name="footer">
+							<apex:commandLink action="{!addRecord}" value="Add New Agenda Item" rerender="AgendaTable" status="agendaStatus">
+								<apex:param name="object" value="AgendaItem__c" assignTo="{!recordObjectType}"/>
+							</apex:commandLink>
+						</apex:facet>
+						<apex:column >
+							<apex:facet name="header">Actions</apex:facet>
+							<apex:commandLink action="{!removeRecord}" value="Remove" rerender="AgendaTable" status="agendaStatus">
+								<apex:param name="object" value="AgendaItem__c" assignTo="{!recordObjectType}" />
+								<apex:param name="objID" value="{!item.Id}" assignTo="{!recordObjectId}" />
+							</apex:commandLink>
+						</apex:column>
+						<apex:column >
+							<apex:facet name="header">Item Number</apex:facet>
+							<apex:inputField value="{!item.Agenda_Num__c}" style="width: 24px"/>
+						</apex:column>
+						<apex:column >
+							<apex:facet name="header">Item Name</apex:facet>
+							<apex:inputField value="{!item.Name}" style="width: 500px"/>
+						</apex:column>
+						<apex:column >
+							<apex:facet name="header">Comments</apex:facet>
+							<apex:inputField value="{!item.Comments__c}" style="width: 500px"/>
+						</apex:column>
+
+					</apex:pageBlockTable>
+					<apex:actionStatus id="agendaStatus">
+						<apex:facet name="start">
+							<p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+						</apex:facet>
+					</apex:actionStatus>
+				</apex:pageBlockSection> 
+
+				<apex:pageBlockSection title="Approval Conditions"  columns="1" collapsible="false" rendered="{!oProjectReview.Status__c != 'Not Started'}">
+				<apex:pageMessage severity="INFO" rendered="{!if(lstDOAConditions.size > 0, false, true)}" summary="No DOA Conditions Found"></apex:pageMessage> 
+				<apex:pageBlockTable value="{!lstDOAConditions}" var="Condition" rendered="{!if(lstDOAConditions.size > 0, true, false)}">
+					<apex:column headerValue="View"  width="40">
+						<apex:outputLink value="/{!Condition.id}">View</apex:outputLink>
+					</apex:column>				
+					<apex:repeat value="{!$ObjectType.DOAConditions__c.FieldSets.DOA_ApprovalView}" var="SearchField">
+						<apex:column value="{!Condition[SearchField]}" />
+					</apex:repeat>
+				</apex:pageBlockTable>
+				</apex:pageBlockSection>
+
+				<apex:pageBlockSection title="Meeting Minutes" columns="1" collapsible="false" rendered="{!showOtherSections && oProjectReview.Status__c != 'Not Started'}">
+					<apex:inputField label="" value="{!oProjectReview.MeetingMinutes__c}" />
+				</apex:pageBlockSection>
+
+				<apex:pageBlockSection title="Attendees" columns="1" collapsible="false" rendered="{!showOtherSections && oProjectReview.Status__c != 'Not Started'}">
+					<apex:pageBlockTable value="{!lAttendees}" var="item" width="100%" id="AttendeesTable" rendered="{!IF(lAttendees.size > 0, true, false)}"><!--  columnsWidth="120px" -->
+					 <!--
+						<apex:facet name="footer">
+							<apex:commandLink action="{!addRecord}" value="Add New Attendee" rerender="AttendeesTable" status="attendeeStatus">
+								<apex:param name="object" value="Attendee__c" assignTo="{!recordObjectType}"/>
+							</apex:commandLink>
+						</apex:facet>
+					
+						<apex:column >
+							<apex:facet name="header">Actions</apex:facet>
+							<apex:commandLink action="{!removeRecord}" value="Remove" rerender="AttendeesTable" status="attendeeStatus">
+								<apex:param name="object" value="Attendee__c" assignTo="{!recordObjectType}" />
+								<apex:param name="objID" value="{!item.Id}" assignTo="{!recordObjectId}" />
+							</apex:commandLink>
+						</apex:column>
+					-->
+						<apex:column >
+							<apex:facet name="header">Name</apex:facet>
+							<apex:commandLink action="/{!item.Id}" value="{!item.Name}" />
+						</apex:column>
+						<apex:column >
+							<apex:facet name="header">Phone</apex:facet>
+							<apex:outputLabel value="{!item.Phone}" />
+						</apex:column>
+						<apex:column >
+							<apex:facet name="header">Email</apex:facet>
+							<apex:outputLabel value="{!item.Email}" />
+						</apex:column>
+					
+					</apex:pageBlockTable>
+				<!-- 
+					<apex:actionStatus id="subsStatus">
+						<apex:facet name="start">
+							<p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+						</apex:facet>
+					</apex:actionStatus>
+				-->
+					<apex:pageMessage severity="info" rendered="{!if(lAttendees.size = 0, true, false)}" summary="No attendees have been specified." />
+				</apex:pageBlockSection>
+				<apex:pageBlockSection title="Follow-up Tasks" columns="1" collapsible="false" rendered="{!showOtherSections && oProjectReview.Status__c != 'Not Started'}">
+					<apex:commandButton value="New Task" action="{!newTask}"/>
+					<apex:pageBlockTable value="{!ReviewTasks}" var="item" width="100%" id="TasksTable" rendered="{!IF(ReviewTasks.size > 0, true, false)}">
+						<apex:column headervalue="Due Date" >
+							<apex:outputField value="{!item.ActivityDate}" />
+						</apex:column>
+						<apex:column headervalue="Subject" >
+							<apex:outputField value="{!item.Subject}" />
+						</apex:column>
+						<apex:column headervalue="Assigned To">
+							<apex:outputField value="{!item.OwnerId}" />
+						</apex:column>
+					</apex:pageBlockTable>
+					<apex:pageMessage severity="info" rendered="{!IF(ReviewTasks.size = 0, true, false)}" summary="No tasks have been specified." />
+				</apex:pageBlockSection>
+				
+				<apex:pageBlockSection title="Exception Report" rendered="{!isProjectPerfReview && oProjectReview.Status__c != 'Not Started'}" columns="1">
+					<apex:outputPanel >
+						<apex:outputlabel value="Safety" styleclass="dmeOutput"/><br/>
+						<apex:inputField style="width:800px" value="{!oProjectReview.SafetyExceptionReport__c}" html-placeholder="Note any issues, incidents or near misses in the period and whether these have been reported"/>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Client Relations" styleclass="dmeOutput"/><br/>
+						<apex:inputField style="width:800px" value="{!oProjectReview.ClientRelations__c}" html-placeholder="Note any client feedback in the period"/>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Change Management" styleclass="dmeOutput"/><br/>
+						<apex:inputField style="width:800px" value="{!oProjectReview.ChangeManagementExceptionReport__c}" html-placeholder="Note any outstanding change issues (Scope, budget/funding, schedule, quality, other)"/>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Financial Performance" styleclass="dmeOutput"/><br/>
+						<apex:inputField style="width:800px" value="{!oProjectReview.FinancialPerformanceExceptionReport__c}" html-placeholder="Note any financial issues (EAC changes (cost & Rev), EAC - budget differences, margin changes, aged unbilled / AR, LDs)"/>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Schedule" styleclass="dmeOutput"/><br/>
+						<apex:inputField style="width:800px" value="{!oProjectReview.SheduleExceptionReport__c}" html-placeholder="Note any threats to approved schedule (is client aware, is action being taken?)"/>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Quality" styleclass="dmeOutput" /><br/>
+						<apex:inputField style="width:800px" value="{!oProjectReview.QualityException__c}" html-placeholder="Note any quality issues including any unresolved audit findings"/>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Risk Management" styleclass="dmeOutput" html-placeholder=""/><br/>
+						<apex:inputField style="width:800px" value="{!oProjectReview.RiskManagement__c}" html-placeholder="Note any emerging risks and opportunites.  Excluding any threatened claims by clients or others, which should be notified to legal"/>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Staff Resources" styleclass="dmeOutput" /><br/>
+						<apex:inputField style="width:800px" value="{!oProjectReview.StaffResourcesExceptionReport__c}" html-placeholder="Note any staff resourcing issues"/>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Subs" styleclass="dmeOutput"/><br/>
+						<apex:inputField style="width:800px" value="{!oProjectReview.SubsExceptionReport__c}" html-placeholder="Note any issues (contractual, performance)"/>
+					</apex:outputPanel>
+				</apex:pageBlockSection>	
+				
+				<apex:pageBlockSection title="Project Snapshot" columns="1" rendered="{!isPerfReview && oProjectReview.Status__c != 'Not Started'}">
+		<!-- 			<apex:outputText escape="false" value="{!projectSnapshotRecord}"/> -->
+					<iframe src="/apex/ECO_ProjectSnapshot?Id={!ProjectSnapshotRecord}" scrolling="true" id="iframe_id" width="100%" height="100%"/>
+				</apex:pageBlockSection>		
+			</apex:pageBlock>
+		</div>
+	</apex:form>
+	
+	<!--<apex:relatedList list="OpenActivities" rendered="{!showOtherSections}" />-->
+	<!-- <apex:relatedList list="ActivityHistories" rendered="{!showOtherSections}" /> -->
+	<apex:relatedList list="NotesAndAttachments" rendered="{!showOtherSections && oProjectReview.Status__c != 'Not Started'}" />
+	<apex:relatedList list="ProcessSteps" rendered="{!showOtherSections && oProjectReview.Status__c != 'Not Started'}" />
+	<apex:relatedList list="ProjectSnapshots__r" rendered="{!isPerfReview}"/>
+
+</apex:page>

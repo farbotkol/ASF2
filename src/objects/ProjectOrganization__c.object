@@ -96,6 +96,18 @@
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>External_ID__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <description>Used for migration - Project Number is considered as external Id</description>
+        <externalId>true</externalId>
+        <label>External_ID</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
         <fullName>OrgIsActive__c</fullName>
         <externalId>false</externalId>
         <formula>OrganizationString__r.isActive__c</formula>
@@ -122,7 +134,7 @@
         <externalId>false</externalId>
         <label>Project</label>
         <referenceTo>pse__Proj__c</referenceTo>
-        <relationshipLabel>Organizations</relationshipLabel>
+        <relationshipLabel>AECOM Organizations</relationshipLabel>
         <relationshipName>ProjectOrganizations</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
@@ -192,5 +204,18 @@
         <protected>false</protected>
         <showsLocation>false</showsLocation>
         <showsStatus>false</showsStatus>
+    </webLinks>
+    <webLinks>
+        <fullName>Manage_Project_Organizations</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Manage Project Organizations</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>var location = top.location.href; 
+var projID = location.slice(-15); 
+top.location.href = &apos;/apex/ECO_OrganizationFinder?passedProjectID=&apos; + projID;</url>
     </webLinks>
 </CustomObject>

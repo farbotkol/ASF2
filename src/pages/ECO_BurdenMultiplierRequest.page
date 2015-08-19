@@ -1,0 +1,140 @@
+<apex:page standardcontroller="ProjectBurdenMultiplierRequest__c" extensions="ECO_BurdenMultiplierRequestController" action="{!init}">
+
+<style>
+	.dmeOutput{  
+		font-size: 1.0em;
+  		font-weight: bold; 
+  		color: #4a4a56;  /*Standrd Salesforce Color*/
+  	}
+</style>
+
+<script>
+function setFocusOnLoad() {}
+</script>
+<apex:form >
+
+	<apex:sectionHeader title="Edit Request for Non-Standard Burden Multipliers" subtitle="{!project.Name}"/>
+	
+	<apex:pageBlock title="Edit Request for Non-Standard Burden Multipliers">
+	
+	<apex:pageBlockButtons >
+		<apex:commandButton value="Save" action="{!save}"/>
+		<apex:commandButton value="Return to Project" action="{!cancel}"/>
+	</apex:pageBlockButtons>
+	<apex:inputHidden value="{!ProjectBurdenMultiplierRequest__c.Project__c }"/>
+	<apex:pageBlockSection title="Project Information" collapsible="false">
+		<apex:outputField value="{!project.EcoSystemReferenceNumber__c}"/>
+		<apex:outputField value="{!project.pse__Stage__c}"/>
+		<apex:outputField value="{!project.OracleProjectnumber__c}"/>
+		<apex:outputField value="{!ProjectBurdenMultiplierRequest__c.ProjectManager__c}"/> <!-- Project Manager -->		
+		<apex:outputField value="{!project.Name}"/>
+		<apex:outputField value="{!ProjectBurdenMultiplierRequest__c.ProjectApprover__c}"/> <!-- Project Approver -->
+		<apex:outputField value="{!project.PrimaryEndClient__r.AccountName__c}"/>
+		<apex:outputField value="{!ProjectBurdenMultiplierRequest__c.FinanceLead__c}"/> <!-- Finance Lead -->
+		<apex:outputField value="{!project.DefaultTopTaskCustomer__c}"/>
+		
+		<!--  Dates -->
+		<apex:outputField value="{!project.RFPIssueDate__c}"/>
+		<apex:outputField value="{!project.EstimatedStartDate__c}"/>
+		<apex:outputField value="{!project.ProposalDue__c}"/>
+		<apex:outputField value="{!project.pse__Start_Date__c}"/>
+		<apex:outputField value="{!project.EstAwardDate__c}"/>
+		<apex:outputField value="{!project.pse__End_Date__c}"/>		
+		
+		<!--  Values -->
+		<apex:outputField value="{!project.CapitalValue__c}"/>
+		<apex:outputField value="{!project.AECOMLaborCosts__c}"/>
+		<apex:outputField value="{!project.EstimatedContractValue__c}"/>
+		<apex:outputField value="{!project.SubsCost__c}"/>
+		<apex:outputField value="{!project.NetServicesRevenue__c}"/>
+		<apex:outputField value="{!project.ODCsCost__c}"/>					
+
+	</apex:pageBlockSection>
+
+	<apex:pageBlockSection >
+		<apex:outputField value="{!project.ProjectDescription__c}"/>
+	</apex:pageBlockSection>
+
+	<apex:outputPanel id="requestDetails">	
+	<apex:pageBlockSection title="Request" collapsible="false" columns="1">
+
+		<apex:inputField value="{!ProjectBurdenMultiplierRequest__c.RequestedRateSet__c}">
+			<apex:actionSupport event="onchange" rerender="requestDetails"/>
+		</apex:inputField>
+		
+		<apex:inputField value="{!ProjectBurdenMultiplierRequest__c.EffectiveFrom__c}"/>	
+		<apex:inputField value="{!ProjectBurdenMultiplierRequest__c.EffectiveTo__c}"/>	
+		<apex:outputField value="{!ProjectBurdenMultiplierRequest__c.RequestedRateSet__c}"/>	
+		<apex:inputField style="width: 600px; height:75px;" value="{!ProjectBurdenMultiplierRequest__c.BasisofRequest__c}"/>
+		<apex:outputPanel >
+			<table>
+				<tr>
+					<td><apex:outputLabel styleclass="dmeOutput"><br/>Has this request been discussed with your district/regional finance manager</apex:outputLabel></td>
+					<td><apex:selectRadio layout="lineDirection" value="{!ProjectBurdenMultiplierRequest__c.DiscussedwithManager__c}" >
+    					<apex:selectOptions value="{!YesNoOptions}"/>
+ 					</apex:selectRadio></td>
+				</tr>
+				</table>
+		</apex:outputPanel>
+	</apex:pageBlockSection>
+	<apex:outputPanel >
+				<apex:outputPanel id="field" rendered="{!ProjectBurdenMultiplierRequest__c.RequestedRateSet__c == 'ANZ - Field Projects'}">			
+	<apex:pageBlockSection title="Additional Information - for Field Rate Request" columns="1" collapsible="false">			
+			<apex:outputPanel id="specificWork">
+			<table>
+				<tr>
+					<td><apex:outputLabel styleclass="dmeOutput"><br/>Are the staff working on this project 100% site based with no home office facilities required?</apex:outputLabel></td>
+					<td><apex:selectRadio layout="lineDirection" value="{!ProjectBurdenMultiplierRequest__c.CompleteSiteBased__c}" >
+    					<apex:selectOptions value="{!YesNoOptions}"/>
+ 					</apex:selectRadio></td>
+				</tr>
+				<tr>
+					<td><apex:outputLabel styleclass="dmeOutput" ><br/>Is this request for Field Rates to be applied to a specific person or portion of work which is part of an overall contract?</apex:outputLabel></td>
+					<td><apex:actionRegion ><apex:selectRadio layout="lineDirection" value="{!ProjectBurdenMultiplierRequest__c.SpecificPersonWork__c}" >
+    					<apex:selectOptions value="{!YesNoOptions}"/>
+    					<apex:actionSupport event="onchange" rerender="test"/>
+ 					</apex:selectRadio></apex:actionRegion></td>
+				</tr>
+				<tr>
+					<td colspan="2"><apex:outputLabel styleclass="dmeOutput"><br/>If "Yes", please provide the Task Number for which people will charge their time:  </apex:outputLabel>
+						<br/><apex:inputField value="{!ProjectBurdenMultiplierRequest__c.TaskNumber__c}"/>
+					</td>
+				</tr>
+				<tr>
+					<td colspan="2"><apex:outputLabel styleclass="dmeOutput"><br/>Please provide a list of staff who will be charging time to this project/task</apex:outputLabel>
+					<br/><apex:inputField style="width: 600px; height:75px;" value="{!ProjectBurdenMultiplierRequest__c.StaffList__c}"/></td>
+				</tr>				
+				<tr>
+					<td colspan="2"></td>
+				</tr>	
+				</table>
+				</apex:outputPanel>
+		</apex:pageBlockSection>
+					
+				</apex:outputPanel>
+		
+		</apex:outputPanel>
+		<apex:outputPanel id="custom" rendered="{!ProjectBurdenMultiplierRequest__c.RequestedRateSet__c == 'Custom'}">				
+
+		<apex:pageBlockSection title="Additional Information - for Custom Rate Request"	collapsible="false" columns="1">			
+			<apex:outputPanel >
+				<table>
+				<tr>
+					<td colspan="2">
+					<apex:outputLabel styleclass="dmeOutput">Please provide a description / details of the requested rates:<br/>
+					</apex:outputLabel>
+					<apex:inputField style="width: 600px; height:75px;" value="{!ProjectBurdenMultiplierRequest__c.RequestedRateDetails__c}"/>
+					</td>
+				</tr>	
+				</table>					
+			</apex:outputPanel>
+		
+	</apex:pageBlockSection>
+	</apex:outputPanel>		
+	</apex:outputPanel>
+	</apex:pageBlock>
+
+</apex:form>
+	<apex:relatedList list="ProcessSteps" />
+
+</apex:page>

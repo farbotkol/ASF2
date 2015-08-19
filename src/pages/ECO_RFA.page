@@ -1,0 +1,133 @@
+<apex:page standardController="Form__c" extensions="ECO_RFAController" showHeader="true" sidebar="true">
+
+
+	<style>
+
+
+		/* CUSTOM HELP / GUIDANCE TEXT BOX */
+		.customHelpText{
+			padding:20px 25px;
+			border:1px solid #85B3CE;
+			min-height:30px;
+			display:block;
+			width:auto;
+			margin:0;
+			background-color:#E3F0F8;
+			background-image: url('../img/icon/forecasts24.png');
+			background-position:1% 50%;
+			background-repeat:no-repeat;
+			border-radius:4px;
+			margin-bottom:15px;
+		}
+		.customHelpBody{
+			display:inline-block;
+			color:#;
+			max-width:95%;
+			margin-left:28px;
+		}
+
+	</style>
+
+	<apex:sectionHeader title="Request for Approval (RFA)" subtitle="DOA" />
+
+	<div class="customHelpText">
+		<div class="customHelpBody">
+			To be completed for 1) non-project related DOA matters or 2) project matters that do not require approval by the Enterprise or Group Risk Committee.
+		</div>
+	</div>	
+
+	<apex:form >
+		<apex:pageMessages id="messages" />		
+		<apex:pageblock >
+
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!saveForm}" value="Save" />
+				<apex:commandButton value="Download Form Template" onclick="window.open('{!URLFOR($Resource.DOARFA)}')" />
+				<apex:commandButton action="/{!oForm.DOAApprovalRequest__c}" value="Back to DOA Request" />
+
+			</apex:pageBlockButtons>
+
+
+			<apex:pageBlockSection title="Business Group" collapsible="false">
+				<apex:repeat value="{!$ObjectType.Form__c.FieldSets.RFABusinessGroup}" var="bgItem">
+					<apex:inputField value="{!oForm[bgItem]}" />
+				</apex:repeat>
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection title="Project Related Matters:"  collapsible="false" columns="1">
+				<apex:pageMessage severity="INFO" summary="No Project Related Matters Found" rendered="{!if(DOARegisters.size > 0, false, true)}"/>
+				<apex:pageBlockTable value="{!DOARegisters}" var="DOAReg"  rendered="{!if(DOARegisters.size > 0, true, false)}" >
+
+					<apex:column headerValue="Action">
+						<apex:outputLink value="{!URLFOR($Action.DOARegister__c.View, DOAReg.Id)}" target="_blank">
+							View
+						</apex:outputLink>
+					</apex:column>				
+					<apex:column headerValue="Enterprise">
+						<apex:outputField value="{!DOAReg.EnterpriseDOA__c}" />
+					</apex:column>
+					<apex:column headerValue="Sub-DOA">
+						<apex:outputField value="{!DOAReg.DCSsubDOA__c}" />
+					</apex:column>
+					<apex:column headerValue="Description">
+						<apex:outputField value="{!DOAReg.RiskTitle__c}" />
+					</apex:column>
+				</apex:pageBlockTable>
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection title="Non-Project Related Matters:"  collapsible="false" columns="1">
+			<apex:outputpanel id="NPRList" >
+				<apex:actionStatus id="searchStatus">
+					<apex:facet name="start">
+						<p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+					</apex:facet>
+					<apex:facet name="stop">
+						<apex:outputpanel >							
+							<apex:pageMessage severity="INFO" summary="No Non-Project Related Matters Found" rendered="{!if(NonProjectRelatedMatters.size > 0, false, true)}"/>
+							<apex:pageBlockTable value="{!NonProjectRelatedMatters}" var="DOAReg"  rendered="{!if(NonProjectRelatedMatters.size > 0, true, false)}" >
+
+								<apex:column headerValue="Action">
+					            	<apex:commandLink action="{!RemoveNonProjectRelatedMatter}" value="Remove" reRender="NPRList, messages" status="searchStatus">
+					            		<apex:param assignTo="{!selectedIndex}" name="selectedIndex" value="{!DOAReg.IndexNumber__c}" />
+					            	</apex:commandLink>
+								</apex:column>				
+								<apex:column headerValue="Enterprise">
+									<apex:inputField value="{!DOAReg.EnterpriseDOA__c}" />
+								</apex:column>
+								<apex:column headerValue="Sub-DOA">
+									<apex:inputField value="{!DOAReg.DCSsubDOA__c}" />
+								</apex:column>
+								<apex:column headerValue="Description">
+									<apex:inputField value="{!DOAReg.DOATrigger__c}" />
+								</apex:column>
+							</apex:pageBlockTable>
+							<apex:commandButton value="Add" action="{!AddNonProjectRelatedMatter}" reRender="NPRList, messages" status="searchStatus" />
+							
+						</apex:outputPanel>
+					</apex:facet>
+				</apex:actionStatus>
+			</apex:outputPanel>
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection title="Reason for Request" collapsible="false"  columns="1">
+				<apex:inputField style="width: 75%;" label="" value="{!oForm.ReasonForRequest__c}" />
+			</apex:pageBlockSection>
+			<apex:pageBlockSection title="Project Review Category Variance" collapsible="false"  columns="1" />
+			<div style="padding:0 12px;margin-top:7px">
+				<apex:pageMessage severity="INFO" summary="For Project Requests, unless otherwise noted, this project will be reviewed as a Project Review Category C-1." />
+				<br/><br/>
+				<apex:outputLabel value="Proposed Review Category Change"/>&nbsp;&nbsp;
+				<apex:inputField value="{!oForm.ProposedReviewCategoryChange__c}" />
+				<br/><br/>
+				<apex:outputLabel value="Justification for Review Category Change"/><br/>
+				<apex:inputField label="" style="width: 75.5%;" value="{!oForm.JustificationReviewCategoryChange__c}" />
+			</div>
+
+		</apex:pageblock>
+
+	</apex:form>
+
+	<apex:relatedList title="Risk Assessment/Exposure Mitigation/Justification" subject="{!oForm}" list="CombinedAttachments">
+	</apex:relatedList>
+
+</apex:page>

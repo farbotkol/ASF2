@@ -1,0 +1,280 @@
+<apex:page tabStyle="MarketAssessment__c" standardController="MarketAssessment__c" extensions="ECO_MarketAssessmentController" showHeader="true" sidebar="false">
+	<style>
+
+		/* TABLE */
+		/*======================================*/
+		.questionnaire .table th {
+		  font-size: 1.05em;
+		  font-weight: 600;
+		  border-bottom: 2px solid rgba(0, 0, 0, 0.14);
+		}
+		.questionnaire .table td {
+		  border-top: 1px solid rgba(0, 0, 0, 0.05);
+		}
+		.questionnaire .table table td{
+			border:none !important;
+		}
+		.questionnaire .table.table-vcenter th,
+		.questionnaire .table.table-vcenter td {
+		  vertical-align: middle;
+		}
+		.questionnaire .table .min-width {
+		  width: 1%;
+		  white-space: nowrap;
+		  padding-left: 15px !important;
+		  padding-right: 15px !important;
+		}
+		.questionnaire .table-bordered td,
+		.questionnaire .table-bordered th {
+		  border-color: rgba(0, 0, 0, 0.11);
+		}
+		.questionnaire .table-striped > tbody > tr:nth-child(2n+1) {
+		  background-color: #f9f9f9;
+		}
+		.questionnaire .table-hover > tbody > tr:hover {
+		  background-color: #e3f3ff;
+		}
+		.questionnaire textarea{
+			margin:5px 0 15px 0;
+		}
+		.questionnaire td{
+			padding:8px 0 5px 15px;
+		}
+		table.list table tr td{
+			border:none !important;
+		}
+		table.list .headerRow th{
+			font-size:1.1em !important;
+		}
+		body .pbBody table.list tr th, body .pbBody table.list tr td{
+			border-left:none !important;
+			border-top:none !important;
+			border-right:1px solid #ededed;
+		}
+	</style>
+
+	<apex:sectionHeader title="Market Assessment" subtitle="Editing {!MarketAssessment__c.Name}" />
+	
+	<apex:form >
+
+		<apex:inputField value="{!MarketAssessment__c.QuestionnaireSet__r.ApprovalStatus__c}" rendered="false" />
+
+		<div style="position:relative;">
+			<apex:outputPanel layout="block" styleClass="questionnaire">
+				<apex:pageBlock title="{!MarketAssessment__c.Name} Details">
+					<apex:pageBlockButtons location="both">
+						<apex:commandButton action="{!save}" value="Save" disabled="{!oMarketAssessment.QuestionnaireSet__r.ApprovalStatus__c == 'Approved'}" />
+						<apex:commandButton action="{!ReturnToSummary}" value="Return to Summary" />
+					</apex:pageBlockButtons>
+					<table class="table-hover list" width="100%" cellpadding="0" cellspacing="0">
+						<tr class="headerRow">
+							<th>Question</th>
+							<th width="205px">Answer</th>
+						</tr>
+						<tr>
+							<td class="cell">
+								This work is consistent with our documented business plan, strategic business aims and corporate values
+								 <br/>
+								<apex:inputField value="{!MarketAssessment__c.FreeFormDocumentedBusinessPlan__c}" html-placeholder="additional information. . ." style="width:75%;"/>
+							</td>
+							<td class="cell" valign="top">
+								<apex:selectRadio value="{!MarketAssessment__c.DocumentedBusinessPlan__c}">
+					            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+					            </apex:selectRadio>
+							</td>
+						</tr>
+						<tr>
+							<td class="cell">
+								This is a documented key account or a client from whom we anticipate significant long term revenues
+								 <br/>
+								<apex:inputField value="{!MarketAssessment__c.FreeFormDocumentedKeyAccount__c}" html-placeholder="additional information. . ." style="width:75%;"/>
+							</td>
+							<td class="cell" valign="top">
+								<apex:selectRadio value="{!MarketAssessment__c.DocumentedKeyAccount__c}" >
+					            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+					            </apex:selectRadio>
+							</td>
+						</tr>
+						<tr>
+							<td class="cell">
+								We have a strong relationship with this client
+								 <br/>
+								<apex:inputField value="{!MarketAssessment__c.FreeFormStrongClientRelationship__c}" html-placeholder="additional information. . ." style="width:75%;"/>
+							</td>
+							<td class="cell" valign="bottom">
+								<apex:selectRadio value="{!MarketAssessment__c.StrongClientRelationship__c}" >
+					            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+					            </apex:selectRadio>
+							</td>
+						</tr>
+						<tr>
+							<td class="cell">
+								We have the required and recent project experience to do this project
+								 <br/>
+								<apex:inputField value="{!MarketAssessment__c.FreeFormRecentProjectExperience__c}" html-placeholder="additional information. . ." style="width:75%;"/>
+							</td>
+							<td class="cell" valign="bottom">
+								<apex:selectRadio value="{!MarketAssessment__c.RecentProjectExperience__c}" >
+					            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+					            </apex:selectRadio>
+							</td>
+						</tr>
+						<tr>
+							<td class="cell">
+								We have the required technical personnel available with the right and recent experience to do this project
+								 <br/>
+								<apex:inputField value="{!MarketAssessment__c.FreeFormRequiredTechnicalPersonnel__c}" html-placeholder="additional information. . ." style="width:75%;"/>
+							</td>
+							<td class="cell" valign="bottom">
+								<apex:selectRadio value="{!MarketAssessment__c.RequiredTechnicalPersonnel__c}" >
+					            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+					            </apex:selectRadio>
+							</td>
+						</tr>
+						<tr>
+							<td class="cell">
+								We are in a strong position to win and deliver this project relative to our competitors
+								 <br/>
+								<apex:inputField value="{!MarketAssessment__c.FreeFormStrongPositiveWin__c}" html-placeholder="additional information. . ." style="width:75%;"/>
+							</td>
+							<td class="cell" valign="bottom">
+								<apex:selectRadio value="{!MarketAssessment__c.StrongPositiveWin__c}" >
+					            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+					            </apex:selectRadio>
+							</td>
+						</tr>
+						<tr>
+							<td class="cell">
+								We were aware of this opportunity prior to the RFP being issued and have pre-positioned for this work
+								 <br/>
+								<apex:inputField value="{!MarketAssessment__c.FreeFormAwareofOpportunity__c}" html-placeholder="additional information. . ." style="width:75%;"/>
+							</td>
+							<td class="cell" valign="bottom">
+								<apex:selectRadio value="{!MarketAssessment__c.AwareofOpportunity__c}" >
+					            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+					            </apex:selectRadio>
+							</td>
+						</tr>
+						<tr>
+							<td class="cell">
+								We have sufficient time and the right resources (both technical and marketing) to prepare a winning bid
+								 <br/>
+								<apex:inputField value="{!MarketAssessment__c.FreeFormSufficientTimeandResources__c}" html-placeholder="additional information. . ." style="width:75%;"/>
+							</td>
+							<td class="cell" valign="bottom">
+								<apex:selectRadio value="{!MarketAssessment__c.SufficientTimeandResources__c}" >
+					            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+					            </apex:selectRadio>
+							</td>
+						</tr>
+						<tr>
+							<td class="cell">
+								There is no incumbent or AECOM is the incumbent
+								 <br/>
+								<apex:inputField value="{!MarketAssessment__c.FreeFormIncumbent__c}" html-placeholder="additional information. . ." style="width:75%;"/>
+							</td>
+							<td class="cell" valign="bottom">
+								<apex:selectRadio value="{!MarketAssessment__c.Incumbent__c}" >
+					            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+					            </apex:selectRadio>
+							</td>
+						</tr>
+						<tr>
+							<td class="cell">
+								We know who will be making the decision on the client’s behalf
+								 <br/>
+								<apex:inputField value="{!MarketAssessment__c.FreeFormDecisionMaker__c}" html-placeholder="additional information. . ." style="width:75%;"/>
+							</td>
+							<td class="cell" valign="bottom">
+								<apex:selectRadio value="{!MarketAssessment__c.DecisionMaker__c}" >
+					            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+					            </apex:selectRadio>
+							</td>
+						</tr>
+						<tr>
+							<td class="cell">
+								The client’s decision to appoint will predominantly be made on factors other than price
+								 <br/>
+								<apex:inputField value="{!MarketAssessment__c.FreeFormDecisiontoAppoint__c}" html-placeholder="additional information. . ." style="width:75%;"/>
+							</td>
+							<td class="cell" valign="bottom">
+								<apex:selectRadio value="{!MarketAssessment__c.DecisiontoAppoint__c}" >
+					            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+					            </apex:selectRadio>
+							</td>
+						</tr>
+						<tr>
+							<td class="cell">
+								Potential conflict of interest issues exist
+								&nbsp;&nbsp;&nbsp;
+								<apex:outputLink target="_blank" value="{!URLFOR($Resource.GoNoGoConflictofInterestGuidanceSteps)}">help</apex:outputLink>
+								 <br/>
+								<table>
+									<tr>
+										<td>Expert Witness or Litigation Support</td>
+										<td>
+											<apex:selectRadio value="{!MarketAssessment__c.ExpertWitnessorLitigationSupport__c}" >
+								            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+								            </apex:selectRadio>
+					             		</td>
+					             	</tr>								
+									<tr>
+										<td>JV Involvement</td>
+										<td>
+											<apex:selectRadio value="{!MarketAssessment__c.JVinvolvement__c}" >
+								            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+								            </apex:selectRadio>
+					             		</td>
+					             	</tr>
+									<tr>
+										<td>Program Management Services</td>
+										<td>
+											<apex:selectRadio value="{!MarketAssessment__c.ProgramManagementServices__c}" >
+								            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+								            </apex:selectRadio>
+					             		</td>
+					             	</tr>	
+									<tr>
+										<td>RFP Development Services</td>
+										<td>
+											<apex:selectRadio value="{!MarketAssessment__c.RFPDevelopmentServices__c}" >
+								            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+								            </apex:selectRadio>
+					             		</td>
+					             	</tr>
+									<tr>
+										<td>Staff Augmentation or embedded workforce</td>
+										<td>
+											<apex:selectRadio value="{!MarketAssessment__c.StaffAugmentationorembeddedworkforce__c}" >
+								            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+								            </apex:selectRadio>
+					             		</td>
+					             	</tr>					             						          				             						        
+					            </table>
+								<br/>								 
+								<apex:inputField value="{!MarketAssessment__c.FreeFormPotentialConflictofInterest__c}" html-placeholder="additional information. . ." style="width:75%;"/>
+							</td>
+							<td class="cell" valign="bottom">
+								<apex:selectRadio value="{!MarketAssessment__c.Potentialconflictofinterestissues__c}" >
+					            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+					            </apex:selectRadio>
+							</td>
+						</tr>
+
+
+						<tr>
+							<td class="cell">
+								Additional Information
+								 <br/>
+								<apex:inputField value="{!MarketAssessment__c.AdditionalInformation__c}" html-placeholder="additional information. . ." style="width:75%;"/>
+							</td>
+							<td class="cell" valign="bottom">
+								&nbsp;
+							</td>
+						</tr>
+					</table>
+				</apex:pageBlock>
+			</apex:outputPanel>
+		</div>
+	</apex:form>
+</apex:page>

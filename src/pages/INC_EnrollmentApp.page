@@ -1,0 +1,463 @@
+<apex:page showHeader="true" sidebar="true" standardcontroller="EnrollmentPlan__c" extensions="INC_EnrollmentApp_Controller" action="{!updateCommentsfromApprovals}">
+<apex:form id="fullpage">
+<style>
+	.centersection pbSubheader{
+		text-align: center;
+	}
+	.highlightedfield {
+    	background-color: lightblue;
+	}
+	#budgettable{
+		width: 100%;
+	}
+	.commentinput{
+		width:	90%;
+		height: 30px;
+	}
+	.malabel{
+		padding-top: 10px;
+	}
+	.confirmbaseline{
+		text-align: right;
+		padding-right: 3px;
+		padding-top: 3px;
+	}
+	.confirmcheckbox{
+		margin-left: -1px;
+		margin-top: calc();
+	}
+	.confirmpick{
+		display: none;
+	}
+	.macomments{
+		display:none;
+	}
+</style>
+<apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+	<apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+
+<script type="text/javascript">
+	function switchPages(){  
+	    alert('Comments saved!'); 
+	    window.location = '/apex/INC_EnrollmentApp?id={!EnrollmentPlan__c.ID}';
+	    return false;
+	}	
+	$j = jQuery.noConflict();
+	$j(document).ready(function(){
+		var currentBaseline = $j(".confirmpick").val();
+		if(currentBaseline=="Yes"){
+			$j(".confirmcheckbox").attr("checked",true);
+			$j(".mgmtadjust").attr("disabled","true");
+		}
+		$j(".confirmcheckbox").change(function(){
+			if($j(this).is(":checked")) {
+				$j('.confirmpick').val('Yes');
+				var adjust = false;
+
+				$j('.mgmtadjust').each(function(){
+					var val1 = $j(this).val();
+					if(val1.length > 0 && adjust == false){
+						adjust = true;
+					}
+				});
+				if(adjust == false){
+					//check gm and nm of nsr to compare to scope
+
+					var val1 = $j('input[id$=gmscopepercent]').val();
+					if(val1.length == 0){
+						val1 = $j('input[id$=nmscopepercent]').val();
+					}
+
+					if(val1.length > 0){
+						var val2 = $j('span[id$=gmnsr]').text();
+						if(val2.length > 0){
+							var number1 = parseFloat(val1);
+							var number2 = parseFloat(val2);
+							if(number1 != number2){
+								adjust = true;
+							}
+						}
+					}
+				}
+
+				if(adjust){
+					$j(".macomments").slideDown();
+					$j(".commentinput").attr("required","true");
+					$j(".mgmtadjust").attr("disabled","true");
+				}
+			}else{
+				$j('.confirmpick').val('No');
+				$j(".commentinput").removeAttr("required");
+				$j(".macomments").hide();
+				$j(".mgmtadjust").removeAttr("disabled");
+			}
+			
+		});
+		//$j(".macomments").hide();
+		$j(".mgmtadjust").change(function(){
+			$j(".confirmbaseline").text('Record needs to be saved');
+			$j(".confirmcheckbox").attr("disabled","true");
+		});
+	});
+	$j(window).load(function() {
+    	var hash = window.location.hash.substring(1);
+		if(hash == 'budgetsection'){
+			//alert('here');
+			//$j('.mgmtadjust:first').focus();
+			$j( document.activeElement ).blur();
+			location.hash = "#" + hash;
+			$j('.mgmtadjust:first').focus();
+		}
+	});
+	    
+</script>
+	<apex:sectionHeader title="Enrollment Application" subtitle="{!EnrollmentPlan__c.Name}" id="sectionheader"/>
+	<c:INC_EnrollmentProgress />
+	<apex:pageMessages />
+<apex:outputPanel rendered="{!isRejectedRecType}">
+<apex:pageBlock id="fullpanel">
+		  <apex:pageMessages />
+        <apex:pageBlockButtons location="top">
+		       <apex:commandButton value="Save" action="{!SaveComments}" oncomplete="return switchPages();"/>
+		    </apex:pageBlockButtons>
+			<apex:pageBlockSection columns="1">
+          <apex:outputText styleclass="message" value="{!sMessage}"/>
+			    <apex:inputField value="{!oEnrollComment.Type__c}"/>
+			    <apex:inputField value="{!oEnrollComment.Reason_Codes__c}"/>
+			 <apex:pageBlockSectionItem >
+             	<apex:Outputlabel value="Comments" />
+             	<apex:inputTextarea value="{!oEnrollComment.Comments__c}" rows="5" cols="100"/>
+          </apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+</apex:outputPanel>
+<apex:outputpanel rendered="{!NOT(isRejectedRecType)}">
+	<apex:pageBlock title="Enrollment Application Detail" id="mainblock">
+		<apex:pageBlockButtons location="top">
+			<apex:commandButton value="Save" action="{!Save}"/>
+			<apex:commandButton value="Submit for Approval" action="{!submit}" reRender="fullpage" rendered="{!AND(OR(ISNULL(EnrollmentPlan__c.AppIicationIssues__c),ISBLANK(EnrollmentPlan__c.AppIicationIssues__c)),EnrollmentPlan__c.EnrollmentStatus__c = 'Pending PM Action')}"/> 
+			<apex:commandButton value="Choose Incentive Plan" action="{!chooseplan}" />
+			<apex:commandButton value="Application Metrics" action="{!showAppMetrics}"/>
+			<apex:commandButton value="Assign Approvers" action="{!reassignApprovers}"/>
+			<apex:commandButton value="Create Change Request" action="{!createChangeRequest}" rerender="fullpage" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}"/>
+			<apex:commandButton value="Create Payment Request" action="{!createPaymentRequest}" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}"/>
+		</apex:pageBlockButtons>
+		<apex:pageBlockSection collapsible="false" showHeader="false" columns="2">
+		  <apex:outputField value="{!EnrollmentPlan__c.RecordType.Name}"/>
+		  <apex:inputField value="{!EnrollmentPlan__c.EnrollmentMetrics__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.WorkflowOwner__c}"/>
+		  <apex:inputField value="{!EnrollmentPlan__c.EnrollmentStatus__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.SubmitStatus__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.FormStatusAge__c}"/>
+		  <apex:outputLabel />
+		  <apex:outputField value="{!EnrollmentPlan__c.AgeDays__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.AppIicationIssues__c}"/>
+		  <apex:inputField value="{!EnrollmentPlan__c.Application_Exceptions__c}"/>
+		  <apex:outputLabel />
+		  <apex:inputField value="{!EnrollmentPlan__c.ExceptionComments__c}"/> 
+		  <apex:outputField value="{!EnrollmentPlan__c.InterimPaymentQualified__c}"/>
+		  <apex:inputField value="{!EnrollmentPlan__c.InterimPaymentRequested__c}"/>
+		</apex:pageBlockSection>
+		<apex:outputpanel styleclass="centersection">
+		<apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="Project Master Data">
+		  <apex:outputField value="{!EnrollmentPlan__c.ProjectID__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.ContractType__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.ProjectStartDate__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.CustomerName__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.ScheduledFinishDate__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.Region__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__r.ProjectDirector__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__r.RegionDescription__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__r.ProjectAccountant__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.BusinessLine__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.OrgCarryingOutProject__c}"/>
+		</apex:pageBlockSection>
+		</apex:outputpanel>
+		<apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="DTW Incentive Plan - Financial Metrics">
+		  <apex:outputField value="{!EnrollmentPlan__c.MaxIncentivePool__c}"/>
+
+		  <apex:outputField value="{!EnrollmentPlan__c.ThresholdGMatEAC__c}" rendered="{!NOT(bTandM)}" />
+		  <apex:inputField value="{!EnrollmentPlan__c.EstimatedGMGrowthPercentage__c}" rendered="{!bTandM}" />
+		  
+		  <apex:outputField value="{!EnrollmentPlan__c.EstimatedIncentivePoolEAC__c}"/>
+
+		  <apex:outputField value="{!EnrollmentPlan__c.ThresholdGM__c}" rendered="{!NOT(bTandM)}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.EstimatedGMAmountGrowthPercent__c}" rendered="{!bTandM}"/>
+
+
+		  <apex:outputField value="{!EnrollmentPlan__c.EEACGMPerformance__c}" rendered="{!NOT(bTandM)}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.IncentivePlan__r.ProfitSharingPercent__c}" rendered="{!bTandM}" />
+
+		  <apex:outputField value="{!EnrollmentPlan__c.AdjustedComplete__c}" rendered="{!NOT(bTandM)}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.IncrementalGMvsBaseline__c}" rendered="{!NOT(bTandM)}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.AcutalGMofNSRITD__c}"/>
+		</apex:pageBlockSection>
+	<apex:pageBlockSection title="Project Budget, DTW Baseline and Forecast" collapsible="true" columns="1">
+	<a id="budgetsection" />
+	<apex:commandButton styleclass="budgetbutton" value="Save and recalculate" action="{!saveAndReturnToBudget}"/>
+	<apex:outputPanel >
+			<table id="budgettable">
+				<tr>
+					<th></th>
+					<th>Approved Budget</th>
+					<apex:outputPanel rendered="{!bTandM}">
+					<th>Expected Scope Changes</th>
+					</apex:outputPanel>
+					<th>Mgmt Adjustments</th>
+					<th>DTW Baseline</th>
+					<th>Current Forcast</th>
+				</tr>
+				<apex:outputPanel rendered="{!bTandM}">
+				<tr>
+					<td class="label">Gross Revenue</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedGrossRevenueBudget__c}"/>
+					</td>
+					<td>
+					    <apex:inputField id="scopegrossrev" label="" styleClass="highlightedfield" value="{!EnrollmentPlan__c.GrossRevenueScopeChange__c}"/>
+					</td>
+					<td>
+						<apex:inputField id="scopegrossrevadj" label="" styleClass="highlightedfield mgmtadjust" value="{!EnrollmentPlan__c.GrossRevenueAdjustment__c}"/>
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.BaselineGrossRevenue__c}"/>
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.ForecastRevenueBudget__c}"/>
+					</td>	
+				</tr>
+				<tr>
+					<td class="label">Sub Consultant and ODC</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.ApprovedSubsODC__c}"/>
+					</td>
+					<td>
+					    <apex:inputField id="scopeodcrev" label="" styleClass="highlightedfield" value="{!EnrollmentPlan__c.SubsODCsScopeChange__c}"/>
+					</td>
+					<td>
+						<apex:inputField id="scopeodcadj" label="" styleClass="mgmtadjust highlightedfield" value="{!EnrollmentPlan__c.SubsODCsAdjustment__c}"/>
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.BaselineSubsODC__c}"/>
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.ForecastSubsBudget__c}"/>
+					</td>	
+				</tr>
+				</apex:outputPanel>
+				<tr>
+					<td class="label">Contingency</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedContingencyBudget__c}"/>
+					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+						<apex:inputField styleclass="highlightedfield" label="" value="{!EnrollmentPlan__c.ContingencyScopeChange__c}"/>
+					</td>
+					</apex:outputPanel>
+					<td>
+					   <apex:inputField styleclass="mgmtadjust highlightedfield" rendered="{!bTandM}"  value="{!EnrollmentPlan__c.ContingencyAdjustment__c}" />
+					</td>
+					<td>
+					   <apex:outputField rendered="{!bTandM}" value="{!EnrollmentPlan__c.BaselineContingency__c}"/>
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ForecastContingencyBudget__c}"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="label">NSR</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedNSRBudget__c}"/>
+					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.TotalNSRScopeChange__c}"/>
+					</td>
+					</apex:outputPanel>
+					<td>
+					    <apex:inputField id="nsradjust" label="" styleClass="mgmtadjust highlightedfield" value="{!EnrollmentPlan__c.NSRAdjustment__c}" rendered="{!NOT(bTandM)}"/>
+					    <apex:outputField label="" value="{!EnrollmentPlan__c.TotalNSRManagementAdjustment__c}" rendered="{!bTandM}"/>
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.BaselineNSR__c}"/>
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ForecastNSRBudget__c}"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="label">DPE</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedDPEBudget__c}"/>
+					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.DPEBudgetScopeChange__c}"/>
+					</td>
+					</apex:outputPanel>
+					<td>
+					    <apex:inputField id="dpeadjust" label="" styleClass="mgmtadjust adjust2 highlightedfield" value="{!EnrollmentPlan__c.DPEAdjustment__c}" rendered="{!NOT(bTandM)}"/>
+					    <apex:outputField label="" value="{!EnrollmentPlan__c.DPEBudgetAdjustment__c}" rendered="{!bTandM}"/>
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.BaselineDPE__c}"/>
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ForecastGrossMarginBudget__c}"/>
+					</td>
+				</tr>
+				<apex:outputPanel rendered="{!EnrollmentPlan__c.IncentivePlan__r.ContractSubType__c == 'Gross Margin'}">
+				<tr>
+					<td class="label">Gross Margin</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedGrossMarginBudget__c}"/>
+					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.GrossMarginAmountScopeChange__c}"/>
+					</td>
+					</apex:outputPanel>
+					<td>
+					    <apex:outputField label="" styleClass="highlightedfield" value="{!EnrollmentPlan__c.GrossMarginAdjustment__c}"/>
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.BaselineGrossMargin__c}"/>
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ForecastGrossMarginBudget__c}"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="label">GM % of NSR</td>
+					<td>
+						<apex:outputField id="gmnsr" label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedGrossMarginofNSR__c}"/>
+					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+						<apex:inputField id="gmscopepercent" styleclass="highlightedfield" label="" value="{!EnrollmentPlan__c.GMofNSRScopeChange__c}"/>
+					</td>
+					</apex:outputPanel>
+					<td>
+					   <apex:inputField styleclass="mgmtadjust highlightedfield" rendered="{!bTandM}" value="{!EnrollmentPlan__c.GMofNSRAdjustment__c}" />
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.BaselineGMofNSR__c}" />
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ForecastGrossMarginofNSR__c}"/>
+					</td>
+				</tr>
+				</apex:outputPanel>
+				<apex:outputPanel rendered="{!EnrollmentPlan__c.IncentivePlan__r.ContractSubType__c == 'Net Margin'}">
+				<tr>
+					<td class="label">Net Margin</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedNetMarginBudget__c}"/>
+					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.GrossMarginAmountScopeChange__c}" rendered="{!bTandM}" />
+					</td>
+					</apex:outputPanel>
+					<td>
+					    <apex:outputField label="" value="{!EnrollmentPlan__c.GrossMarginAmountAdjustment__c}"/>
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.BaselineNetMargin__c}"/>
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ForecastNetMarginBudget__c}"/>
+					</td>
+				</tr>
+				<tr>
+					<td class="label">NM % of NSR</td>
+					<td>
+						<apex:outputField id="nmnsr" label="" value="{!EnrollmentPlan__c.NMofNSR__c}"/>
+					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+						<apex:inputField styleclass="highlightedfield" label="" value="{!EnrollmentPlan__c.GMofNSRScopeChange__c}"/>
+					</td>
+					</apex:outputPanel>
+					<td>
+					   <apex:inputField id="nmscopepercent" styleclass="mgmtadjust highlightedfield" rendered="{!bTandM}" value="{!EnrollmentPlan__c.GMofNSRAdjustment__c}" />
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.BaselineNMofNSR__c}" />
+					</td>
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.ForecastNetMarginofNSR__c}"/>
+					</td>
+				</tr>
+				</apex:outputPanel>
+				<tr class="confirmrow">
+					<td></td>
+					<td/>
+					<td class="confirmbaseline">Confirm Baseline</td>
+					<td>
+					  <input class="confirmcheckbox" type="checkbox"/>
+					</td>
+					<td>
+						<apex:inputField label="" styleclass="confirmpick" value="{!EnrollmentPlan__c.ConfirmBaseline__c}"/>
+					</td>
+				
+				</tr>
+				<tr class="macomments">
+					<td class="label malabel">MA Comments</td>
+					<td></td>
+					<td>
+						<apex:inputField id="macomment" label="" styleClass="commentinput highlightedfield" value="{!EnrollmentPlan__c.MA_Comments__c}" required="false$"/>
+					</td>
+					<td></td>
+					<td></td>
+				</tr>
+			</table>
+		</apex:outputPanel>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="DTW Operational Metrics">
+		  <apex:inputField Styleclass="highlightedfield" value="{!EnrollmentPlan__c.DSOTarget__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.ClientSatisfactionDisplay__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.FinalITDDSO__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.SafetyforLifeScoreDisplay__c}"/>
+		</apex:pageBlockSection>
+	</apex:pageBlock>
+</apex:outputpanel>
+</apex:form>
+<apex:outputPanel rendered="{!NOT(isRejectedRecType)}">
+  	<apex:relatedList list="EnrollmentParticipants__r" rendered="{!$ObjectType.EnrollmentParticipant__c.accessible}">
+		<apex:facet name="partheader">DTW Participant Selection</apex:facet>
+	</apex:relatedList>
+</apex:outputPanel>
+<apex:form >
+<apex:outputPanel rendered="{!NOT(isRejectedRecType)}">
+<apex:pageblock >
+	<apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="Application Approval Team">
+		  <apex:outputField value="{!EnrollmentPlan__c.IPProjectManager__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.Approver1__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.Approver2__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.Approver3__c}"/>
+	</apex:pageBlockSection>
+	<apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="Incentive Plan Information">
+		  <apex:outputField value="{!EnrollmentPlan__c.Name}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.FPPOverallEligibility_c__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.IncentivePlan__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.TMPlanOverallEligibility__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.NumberofParticipants__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.PlanType__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.TotalAllocationParticipants__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.ApplicationType__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.ParentApplication__c}"/>
+	</apex:pageBlockSection>
+</apex:pageblock>
+</apex:outputpanel>
+</apex:form>
+<apex:outputpanel rendered="{!NOT(isRejectedRecType)}">
+<apex:relatedList list="Interim_Payment_Schedules__r" rendered="{!$ObjectType.Interim_Payment_Schedule__c.accessible}"></apex:relatedList>
+<apex:relatedList list="Enrollment_Comments__r" rendered="{!$ObjectType.Enrollment_Comments__c.accessible}"></apex:relatedList>
+<apex:relatedList list="ProcessSteps" rendered="{!OR(ISNULL(EnrollmentPlan__c.AppIicationIssues__c),ISBLANK(EnrollmentPlan__c.AppIicationIssues__c))}"></apex:relatedList>
+<apex:relatedList list="CombinedAttachments"  subject="{!$CurrentPage.parameters.id}" />
+<c:INC_ObjectFieldHistory show_more_number="5" imyObject="{!EnrollmentPlan__c}" />
+</apex:outputPanel>
+</apex:page>

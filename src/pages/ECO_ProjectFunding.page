@@ -1,0 +1,312 @@
+<apex:page controller="ECO_ProjectFundingController" tabstyle="pse__Proj__c" action="{!init}">
+
+
+
+<style>
+.table {
+  font-family: 'Arial';
+  margin: 1px auto;
+  border-collapse: collapse;
+  border: 1px solid #eee;
+ /* box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1), 0px 10px 20px rgba(0, 0, 0, 0.05), 0px 20px 20px rgba(0, 0, 0, 0.05), 0px 30px 20px rgba(0, 0, 0, 0.05); */
+  width: 100%;
+  heigth: 20px;
+  table-layout: fixed;
+}
+
+.table tr{
+  border-bottom: 1px solid #f2f3f3;
+}
+
+.table tr:hover {
+  background: #e8f4f8;
+}
+
+.table tr:hover td {
+    background: #e8f4f8;
+}
+
+.table th, .table td {
+  border: 0px solid #eee;
+  padding: 3px 3px 3px 3px;
+  border-collapse: collapse;
+}
+
+.table td {
+  background: #fff;
+}
+
+.table .tdleft{
+    padding-left: 1px;
+    padding-right: 1px;
+}
+
+.table .tdfooter{
+    align: right;
+}
+
+
+.table th {
+
+  background:  #f2f3f3;
+  font-size: .9em;
+  font-weight: bold;  
+  border: 1px solid #D3D3D3;
+}
+
+.table th.last {
+  border-right: none;
+}
+
+
+
+</style>
+
+<script>
+	function setFocusOnLoad() {}
+	
+    function handleNewFunding(taskId) {
+        createNewFunding(taskId);
+    }
+    
+    function functionalRateTypeChange()
+    {
+        rateTypeChange();
+    }
+          
+</script>
+
+<apex:form >
+<apex:pageMessages id="pageMessages" />
+<apex:sectionHeader subtitle="{!project.Name}" title="Project Funding Management"/>
+
+<apex:pageBlock title="Project Funding Managment Edit" id="pb">
+
+<apex:pageBlockButtons >
+    <apex:commandButton id="save" value="Save" action="{!save}" />
+    <apex:commandButton id="cancel" value="Cancel" action="{!cancel}" immediate="true" rendered="{!creatingNewFunding}"/>
+    <apex:commandButton id="segmentation" value="Segmentation" action="{!launchSegmentationQuestionnaire}" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}" />
+    <apex:commandButton value="Return to Project" action="{!returnToProject}" onclick="alert('Please ensure that the documentation to support the funding change has been attached'); return true;"/>
+    <apex:commandButton value="Return to Agreement" action="{!returnToAgreement}" onclick="alert('Please ensure that the documentation to support the funding change has been attached'); return true;"/>
+
+</apex:pageBlockButtons>
+
+<apex:actionFunction name="createNewFunding" action="{!createFunding}"  rerender="pageMessages,pb,taskLevelExchange,taskLevelNoExchange, projectLevelNoExchange, projectLevelExchange, repeat">     
+    <apex:param id="tId" name="taskId" value="" />
+</apex:actionFunction>
+
+<apex:actionFunction name="rateTypeChange" rerender="taskLevel,projectLevel,taskLevel,projectLevel"/>
+
+<apex:actionFunction name="taskChanged" action="{!taskChanged}"  rerender="">     
+    <apex:param id="tId2" name="taskId" value="" />
+</apex:actionFunction>
+
+<apex:outputText value="{!taskId}" style="visibility: hidden;"/>
+<apex:pageBlockSection columns="2">
+<apex:outputField value="{!project.Name}"/>
+<apex:outputField value="{!agreement.Amount__c}"/>
+<apex:pageBlockSectionItem >
+    <apex:outputText value="Agreement Currency"/>
+    <apex:outputField value="{!agreement.FundingCurrencyCode__c}"/>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+    <apex:outputText value="Project Currency"/>
+    <apex:outputField value="{!project.ProjectFunctionalCurrencyCode__c}"/>
+</apex:pageBlockSectionItem>
+<apex:inputField value="{!project.ProjectLevelFundingFlag__c}"/>
+<apex:inputField value="{!project.EnableTopTaskCustomerFlag__c}" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}"/>
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Segmented" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}" />
+<apex:outputField value="{!project.isSegmented__c}" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}"/>
+</apex:pageBlockSectionItem>
+<apex:pageBlockSectionItem >
+<apex:outputLabel value="Segmentation Status" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}" />
+<apex:outputField value="{!project.SegmentationStatus__c}" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}"/>
+</apex:pageBlockSectionItem>
+</apex:pageBlockSection>
+
+<apex:pageblockSection columns="1">
+
+<apex:outputPanel id="taskLevel" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}">
+<table class="table" >
+    <tr>
+        <apex:outputText escape="false" value="<th width=65px></th><th width=85px>Task Name</th>
+                                               <th>Customer</th>
+                                               <th>Classification</th>
+                                               <th>Allocation Amount</th>
+                                               <th>Allocation Date</th>
+                                               <th width=65px>Changed</th>
+                                               <th>Total Funded</th>"
+                                               rendered="{!project.EnableTopTaskCustomerFlag__c && agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}"/>
+                                               
+        <apex:outputText escape="false" value="<th width=65px></th><th width=85px>Task Name</th>
+                                               <th>Customer</th>
+                                               <th>Classification</th>
+                                               <th>Allocation Amount</th>
+                                               <th>Allocation Date</th>
+                                               <th>Rate Type</th>
+                                               <th>Rate</th>
+                                               <th>Rate Date</th>
+                                               <th width=65px>Changed</th>
+                                               <th>Total Funded</th>"
+                                               rendered="{!project.EnableTopTaskCustomerFlag__c && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>
+
+
+        <apex:outputText escape="false" value="<th width=65px></th><th width=85px>Task Name</th>
+                                               <th>Classification</th>
+                                               <th>Allocation Amount</th>
+                                               <th>Allocation Date</th>
+                                              <!--  <th width=65px>Changed</th> -->
+                                               <th>Total Funded</th>"
+                                     rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}"/>                                    
+
+        <apex:outputText escape="false" value="<th width=65px></th><th width=85px>Task Name</th>
+                                               <th>Classification</th>
+                                               <th>Allocation Amount</th>
+                                               <th>Allocation Date</th>
+                                               <th>Rate Type</th>
+                                               <th>Rate</th>
+                                               <th>Rate Date</th>
+                                              <!--  <th width=65px>Changed</th> -->
+                                               <th>Total Funded</th>"
+                                               rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>
+    </tr>   
+    <apex:repeat value="{!projectTasks}" var="projectTask" id="repeat"> 
+    <!-- TASK LINE -->       
+    <tr>
+        <td>
+            <apex:commandLink value="Fund Task" onclick="handleNewFunding('{!projectTask.Id}'); return false;" rendered="{!(projectTask.TopTaskOwningCustomer__r.Account_Name__c == agreement.Account__r.Name && project.EnableTopTaskCustomerFlag__c) || NOT(project.EnableTopTaskCustomerFlag__c)}" rerender="pageMessages"/>
+        </td>
+        <apex:variable value="{!projectTasksFundedAllAgreementsMap[projectTask.Id]}"  var="tasklist" />
+        <td><apex:outputField value="{!projectTask.Name}"/></td>
+
+        <!-- <apex:outputPanel rendered="{!project.EnableTopTaskCustomerFlag__c}"> -->
+        <apex:outputText escape="false" value="<td colspan=8>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c && project.EnableTopTaskCustomerFlag__c}"/> 
+        <apex:outputText escape="false" value="<td colspan=5>" rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c && project.EnableTopTaskCustomerFlag__c}"/> 
+        <apex:outputText escape="false" value="<td colspan=6>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c && NOT(project.EnableTopTaskCustomerFlag__c)}"/> 
+        <apex:outputText escape="false" value="<td colspan=3>" rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c && NOT(project.EnableTopTaskCustomerFlag__c)}"/> 
+<!-- 			onclick="showGearModal();" oncomplete="hideGearModal();"
+ -->
+			<apex:inputField value="{!projectTask.TopTaskOwningCustomer__c}" onchange="taskChanged('{!projectTask.Id}'); return false;" rendered="{!tasklist.size == 0 && project.EnableTopTaskCustomerFlag__c}"/>
+            <apex:outputField value="{!projectTask.TopTaskOwningCustomer__c}" rendered="{!tasklist.size != 0 && project.EnableTopTaskCustomerFlag__c}"/>            
+        <apex:outputText escape="false" value="</td>"/> 
+        <td><apex:outputField value="{!projectTask.TotalFunding__c}"/></td>        
+    </tr>
+        
+    <!-- FUNDING RECORD HISTORY -->
+    <apex:repeat value="{!projectTasksFundedMap[projectTask.Id]}" var="tasksFunding" >
+    <tr>        
+        <apex:outputText escape="false" value="<td></td><td></td><td></td>" rendered="{!project.EnableTopTaskCustomerFlag__c}" />
+        <apex:outputText escape="false" value="<td></td><td></td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c)}" />
+            
+        <td>
+            <apex:inputField value="{!tasksFunding.funding.FundingClassification__c}" rendered="{!tasksFunding.newFunding}" required="true"/>           
+            <apex:outputField value="{!tasksFunding.funding.FundingClassification__c}" rendered="{!NOT(tasksFunding.newFunding)}"/>
+        </td>
+        <td>
+            <apex:inputField value="{!tasksFunding.funding.AllocatedAmount__c}"  rendered="{!tasksFunding.newFunding}" required="true" style="width: 85px"/>
+            <apex:outputField value="{!tasksFunding.funding.AllocatedAmount__c}"  rendered="{!tasksFunding.funding.AllocatedAmount__c != null}" style="width: 85px"/>
+            <apex:outputField value="{!tasksFunding.funding.TotalBaselinedAmount__c}"  rendered="{!tasksFunding.funding.AllocatedAmount__c == null}" style="width: 85px"/>        
+        </td>
+        <td>
+            <apex:inputField value="{!tasksFunding.funding.DateAllocatedDate__c}" rendered="{!tasksFunding.newFunding}" required="true"/>
+            <apex:outputField value="{!tasksFunding.funding.DateAllocatedDate__c}" rendered="{!NOT(tasksFunding.newFunding)}" />    
+        </td>
+         <apex:outputText escape="false" value="<td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>      
+            <apex:inputField value="{!tasksFunding.funding.ProjFuncRateType__c}" rendered="{!(agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c) && NOT(tasksFunding.newFunding) && NOT(tasksFunding.rateLocked)}" onChange="functionalRateTypeChange(); return false;" />
+            <apex:outputField value="{!tasksFunding.funding.ProjFuncRateType__c}" rendered="{!(agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c) && tasksFunding.rateLocked}"  />
+         <apex:outputText escape="false" value="</td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>      
+         <apex:outputText escape="false" value="<td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>      
+            <apex:inputField id="rateRW" value="{!tasksFunding.funding.ProjFuncRateExchangeRate__c}" rendered="{!(tasksFunding.funding.ProjFuncRateType__c == 'User' && NOT(tasksFunding.rateLocked)) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" style="width: 85px" required="true"/>                   
+            <apex:outputField id="rateRO" value="{!tasksFunding.funding.ProjFuncRateExchangeRate__c}" rendered="{!(tasksFunding.funding.ProjFuncRateType__c == 'Spot' || (tasksFunding.funding.ProjFuncRateType__c == 'User' && tasksFunding.rateLocked)) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>
+         <apex:outputText escape="false" value="</td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>      
+         <apex:outputText escape="false" value="<td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>      
+            <apex:inputField id="rateDateRW" value="{!tasksFunding.funding.ProjFuncRateDate__c}" rendered="{!(tasksFunding.funding.ProjFuncRateType__c == 'User' && NOT(tasksFunding.rateLocked)) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" required="true" />           
+            <apex:outputField id="rateDateRO" value="{!tasksFunding.funding.ProjFuncRateDate__c}" rendered="{!(tasksFunding.funding.ProjFuncRateType__c == 'Spot' || (tasksFunding.funding.ProjFuncRateType__c == 'User' && tasksFunding.rateLocked)) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>
+         <apex:outputText escape="false" value="</td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>      
+ <!--        <apex:outputText escape="false" value="<td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />
+            <apex:inputField value="{!tasksFunding.funding.ChangeManagerIsChanged__c}" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>
+        <apex:outputText escape="false" value="</td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />  
+ -->
+         <td></td>
+    </tr>
+    </apex:repeat>
+    </apex:repeat>   
+    <!-- GRAND TOTAL LINE -->   
+    <tr>
+        <apex:outputText escape="false" value="<td colspan=5 align=right><b>Grand Total</b></td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}" />
+        <apex:outputText escape="false" value="<td colspan=6 align=right><b>Grand Total</b></td>" rendered="{!project.EnableTopTaskCustomerFlag__c && agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}" />
+        <apex:outputText escape="false" value="<td colspan=8 align=right><b>Grand Total</b></td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />
+        <apex:outputText escape="false" value="<td colspan=9 align=right><b>Grand Total</b></td>" rendered="{!project.EnableTopTaskCustomerFlag__c && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />
+        <td><apex:outputField value="{!agreement.TotalFundingAmount__c}"/></td>
+    </tr>
+    </table>
+</apex:outputPanel>
+
+<apex:outputPanel id="projectLevel" rendered="{!project.ProjectLevelFundingFlag__c}">
+<table class="table">
+    <tr>
+        <apex:outputText escape="false" value="<th>Classification</th>
+                                               <th>Allocation Amount</th>
+                                               <th>Allocation Date</th>"
+                                               rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}"/>
+
+        <apex:outputText escape="false" value="<th>Classification</th>
+                                               <th>Allocation Amount</th>
+                                               <th>Allocation Date</th>
+                                               <th>Rate Type</th>
+                                               <th>Rate</th>
+                                               <th>Rate Date</th>"
+                                               rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>
+      
+    </tr>   
+    <apex:repeat value="{!projectLevelFunding}" var="fundingItem" id="projectLevelRepeat">
+    <tr>
+        <td>
+        	<apex:inputField value="{!fundingItem.funding.FundingClassification__c}" rendered="{!fundingItem.newFunding}" required="true"/>
+        	<apex:outputField value="{!fundingItem.funding.FundingClassification__c}" rendered="{!NOT(fundingItem.newFunding)}"/>
+        </td>
+        <td>
+        	<apex:inputField value="{!fundingItem.funding.AllocatedAmount__c}" rendered="{!fundingItem.newFunding}" required="true"/>
+        	<apex:outputField value="{!fundingItem.funding.AllocatedAmount__c}"  rendered="{!fundingItem.funding.AllocatedAmount__c != null && NOT(fundingItem.newFunding)}"/>
+            <apex:outputField value="{!fundingItem.funding.TotalBaselinedAmount__c}"  rendered="{!fundingItem.funding.AllocatedAmount__c == null && NOT(fundingItem.newFunding)}"/>
+        </td>
+        <td>
+        	<apex:inputField value="{!fundingItem.funding.DateAllocatedDate__c}" rendered="{!fundingItem.newFunding}" required="true"/>
+        	<apex:outputField value="{!fundingItem.funding.DateAllocatedDate__c}" rendered="{!NOT(fundingItem.newFunding)}"/>
+        </td>
+        <apex:outputText escape="false" value="<td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />      
+        	<apex:inputField value="{!fundingItem.funding.ProjFuncRateType__c}" rendered="{!(agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c) && NOT(fundingItem.newFunding) && NOT(fundingItem.rateLocked)}" onChange="functionalRateTypeChange(); return false;" />
+            <apex:outputField value="{!fundingItem.funding.ProjFuncRateType__c}" rendered="{!(agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c) && fundingItem.rateLocked}"  /> 
+        <apex:outputText escape="false" value="</td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />   
+        
+        <apex:outputText escape="false" value="<td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />      
+        	<apex:inputField value="{!fundingItem.funding.ProjFuncRateExchangeRate__c}" rendered="{!(fundingItem.funding.ProjFuncRateType__c == 'User' && NOT(fundingItem.rateLocked)) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" style="width: 85px" required="true"/>                   
+            <apex:outputField value="{!fundingItem.funding.ProjFuncRateExchangeRate__c}" rendered="{!(fundingItem.funding.ProjFuncRateType__c == 'Spot' || (fundingItem.funding.ProjFuncRateType__c == 'User' && fundingItem.rateLocked)) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>
+        <apex:outputText escape="false" value="</td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />   
+        
+        <apex:outputText escape="false" value="<td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />      
+        	<apex:inputField value="{!fundingItem.funding.ProjFuncRateDate__c}" rendered="{!(fundingItem.funding.ProjFuncRateType__c == 'User' && NOT(fundingItem.rateLocked)) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" style="width: 85px" required="true"/>                   
+            <apex:outputField value="{!fundingItem.funding.ProjFuncRateDate__c}" rendered="{!(fundingItem.funding.ProjFuncRateType__c == 'Spot' || (fundingItem.funding.ProjFuncRateType__c == 'User' && fundingItem.rateLocked)) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>
+        <apex:outputText escape="false" value="</td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />   
+           
+ 
+    </tr>
+    </apex:repeat>
+
+   	<tr>
+        <apex:outputText escape="false" value="<td colspan=2 align=right><b>Grand Total</b></td>" rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}" />             
+        <apex:outputText escape="false" value="<td colspan=5 align=right><b>Grand Total</b></td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />      
+        <td><apex:outputField value="{!agreement.TotalFundingAmount__c}"/></td>
+   	</tr>
+    
+    </table>
+
+    <apex:commandLink value="Fund Project" onclick="handleNewFunding(''); return false;" rendered="{!NOT(creatingNewFunding)}"/>            
+    </apex:outputPanel>
+            
+</apex:pageblockSection>
+</apex:pageBlock>
+
+</apex:form>
+</apex:page>

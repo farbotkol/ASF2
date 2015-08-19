@@ -1,0 +1,976 @@
+<apex:page id="page1" tabstyle="pse__Proj__c" standardController="ChangeManager__c" extensions="ECO_ChangeManagerDetailController" action="{!init}">
+
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+
+    <style>
+.table {
+  font-family: 'Arial';
+  margin: 25px auto;
+  border-collapse: collapse;
+  border: 1px solid #eee;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1), 0px 10px 20px rgba(0, 0, 0, 0.05), 0px 20px 20px rgba(0, 0, 0, 0.05), 0px 30px 20px rgba(0, 0, 0, 0.05);
+  width: 100%
+}
+
+.table tr{
+  border-bottom: 1px solid #f2f3f3;
+}
+
+.table tr:hover {
+  background: #e8f4f8;
+}
+
+.table tr:hover td {
+    background: #e8f4f8;
+}
+
+.table th, .table td {
+  border: 0px solid #eee;
+  padding: 8px 2px 8px 5px;
+  border-collapse: collapse;
+}
+
+.table td {
+  background: #fff;
+}
+
+.table th {
+
+  background:  #f2f3f3;
+  font-size: .9em;
+  font-weight: bold;  
+  border: 1px solid #D3D3D3;
+}
+
+.table th.last {
+  border-right: none;
+}    
+    
+    
+        .changeManagerTable
+        {
+            border-collapse: collapse;
+            border: 1px solid #e8e8e8;
+        }
+        .changeManagerTable tr{
+            border-bottom: 1px solid #e8e8e8;
+        }                   
+        
+        .changeManagerTable td{
+            padding: 10px 10px 10px 10px;
+        }
+        
+        .changeManagerTable tr:hover {
+            background: #e8f4f8;
+        }
+
+        .changeManagerTable tr:hover td {
+            background: #e8f4f8;
+        }       
+        
+        .halfWidthWrapper {
+            width:25%;
+            display:inline-block;
+            float:left;
+            padding-left: 20px;
+        }
+        
+        #notifications{
+            margin-left:25%;
+            padding-left:20px;
+        }
+                
+        .dmeOutput{  
+            font-size: 1.0em;
+            font-weight: bold; 
+            color: #4a4a56;  /*Standrd Salesforce Color*/
+        }               
+        
+        .customHelpText{
+            padding:20px 25px;
+            border:1px solid #85B3CE;
+            min-height:30px;
+            display:block;
+            width:auto;
+            margin:0;
+            background-color:#E3F0F8;
+            background-image: url('../img/icon/forecasts24.png');
+            background-position:3% 50%;
+            background-repeat:no-repeat;
+            border-radius:4px;
+        }
+        
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+            margin-left:50px;
+        }   
+    </style>
+    <apex:form id="frm" >
+    <apex:inputHidden value="{!changeManager.IsApproved__c}"/>
+    <apex:inputHidden value="{!changeManager.RecordType.Name}"/>
+    
+    <apex:sectionHeader title="Change Request" subtitle="{!project.Name + "(" + project.EcoSystemReferenceNumber__c + ")"}"/>
+        <apex:outputPanel id="IntExt" rendered="{!NOT(changeManager.IsPMHandoverChange__c)}">
+        <apex:variable value="{!ChangedProjectClosure}"  var="projectClosure" /> 
+        <apex:pageBlock mode="edit" title="{!changeManager.RecordType.Name & ' Edit'}">
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Edit" action="{!editChangeManager}" rendered="{!NOT(changeManager.IsApproved__c) && mode == ''}"/>
+                <apex:commandButton value="Save" action="{!saveChangeManager}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}" />
+                <apex:commandButton value="Return to Change Manager" action="{!returnToChangeManager}" rendered="{!mode != ''}" immediate="true"/>
+                <apex:commandButton value="Return to Project" action="{!returnToProject}" rendered="{!mode == ''}" immediate="true"/>
+            </apex:pageBlockButtons>
+            <div class="customHelpText">
+                <div class="customHelpBody">
+                The status indicators against each Project Plan element listed on the left hand side indidcates if there are changes to that plan element which require approval.  For each change to be documented in this change order, select the element to see details of what changed and provide commentary to document and support the change.
+                <br /> Once all changes are documented,             
+                </div>
+            </div>            
+            <div class="halfWidthWrapper">       
+            <apex:pageBlockSection columns="1">
+  <!--              <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtProject__c)}">                    
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedProject != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedProject == null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtProject__c}" rendered="{!changeManager.IsApproved__c}" /> 
+                    <apex:inputField value="{!changeManager.IntExtProject__c}" rendered="{!NOT(changeManager.IsApproved__c)}">
+                        <apex:actionSupport event="onchange" rerender="changes" />
+                    </apex:inputField>
+                    <apex:outputLabel value="Project" styleclass="dmeOutput"/>
+                </apex:outputPanel> -->
+       <apex:outputPanel >     
+            <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c)}">
+            <apex:outputLabel styleclass="dmeOutput" value="Change Legend"/>
+            <table class="changeManagerTable">
+                <tr><td><apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}"/><apex:outputLabel styleclass="dmeOutput" value=" No Unapproved Changes"/></td></tr>
+                <tr><td><apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}"/><apex:outputLabel styleclass="dmeOutput" value="Changes Needing Approval"/></td></tr>
+            </table>
+            </apex:outputPanel>    
+        <apex:outputPanel rendered="{!changeManager.IsApproved__c}">
+            <apex:outputLabel styleclass="dmeOutput" value="Approved Changes"/>
+        </apex:outputPanel>         
+        <br/>
+        <table class="changeManagerTable">
+            <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtProjectTasks__c)}">                   
+            <tr ><td>
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedTasks != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedTasks == null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtProjectTasks__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" />         
+                    <apex:inputField value="{!changeManager.IntExtProjectTasks__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes"/>
+                    </apex:inputField>
+                    <apex:outputLabel value="Schedule/WBS" styleclass="dmeOutput"/>         
+            </td></tr>
+            </apex:outputPanel> 
+            <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtKeyMembers__c)}">                     
+
+            <tr ><td>                          
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedKeyMembers != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedKeyMembers == null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtKeyMembers__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" /> 
+                    <apex:inputField value="{!changeManager.IntExtKeyMembers__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes"/>
+                    </apex:inputField>
+                    <apex:outputLabel value="Project Team" styleclass="dmeOutput"/>             
+            </td></tr>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtCustomers__c)}">                      
+            <tr><td>    
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedCustomers != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedCustomers == null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtCustomers__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" /> 
+                    <apex:inputField value="{!changeManager.IntExtCustomers__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes"/>
+                    </apex:inputField>
+                    <apex:outputLabel value="Customers" styleclass="dmeOutput"/>
+
+               </td></tr>
+               </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtClassifications__c)}">                        
+               <tr><td nowrap="nowrap">          
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedClassifications != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedClassifications == null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtClassifications__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" /> 
+                    <apex:inputField value="{!changeManager.IntExtClassifications__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes"/>
+                    </apex:inputField>
+                    <apex:outputLabel value="Project Classifications" styleclass="dmeOutput"/>
+               </td></tr>
+               </apex:outputPanel>  
+               <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtSafetyHealthEnv__c)}">                     
+               <tr><td nowrap="nowrap">               
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedSafetyHealthEnv != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedSafetyHealthEnv == null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtSafetyHealthEnv__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" /> 
+                    <apex:inputField value="{!changeManager.IntExtSafetyHealthEnv__c}" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes" immediate="true"/>
+                    </apex:inputField>
+                    <apex:outputLabel value="Safety, Health & Environment" styleclass="dmeOutput"/>            
+                </td></tr>
+                </apex:outputPanel> 
+                <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtContractManagement__c)}">                     
+                <tr><td nowrap="nowrap">           
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedAgreements != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedAgreements == null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtContractManagement__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" /> 
+                    <apex:inputField value="{!changeManager.IntExtContractManagement__c}" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes"/>
+                    </apex:inputField>
+                    <apex:outputLabel value="Agreements and Funding" styleclass="dmeOutput"/>
+                </td></tr>
+               </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtScope__c)}" >
+                <tr><td nowrap="nowrap">
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedScope != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedScope == null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtScope__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" /> 
+                    <apex:inputField value="{!changeManager.IntExtScope__c}" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes"/>
+                    </apex:inputField>
+                    <apex:outputLabel value="Scope and Packages" styleclass="dmeOutput"/>   
+                </td></tr>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtBudget__c)}">             
+                <tr><td>            
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!changeManager.IntExtBudget__c && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!NOT(changeManager.IntExtBudget__c) && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtBudget__c}" />
+                    <apex:outputLabel value="Budget" styleclass="dmeOutput"/>
+                </td></tr>
+                </apex:outputPanel>                    
+                <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtResources__c)}">
+                <tr><td>
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedResources != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedResources == null && NOT(changeManager.IsApproved__c)}" />     
+                    <apex:outputField value="{!changeManager.IntExtResources__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" />         
+                    <apex:inputField value="{!changeManager.IntExtResources__c}" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes"/>
+                    </apex:inputField>
+                    <apex:outputLabel value="Subs and Vendors" styleclass="dmeOutput"/>
+                 </td></tr>
+                </apex:outputPanel>  
+
+                <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtDeliverables__c)}">
+                 <tr><td>                             
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedDeliverables != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedDeliverables == null && NOT(changeManager.IsApproved__c)}" />     
+                    <apex:outputField value="{!changeManager.IntExtDeliverables__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" />  
+                    <apex:inputField value="{!changeManager.IntExtDeliverables__c}" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes"/>
+                    </apex:inputField>                   
+                    <apex:outputLabel value="Deliverables" styleclass="dmeOutput"/>
+                </td></tr>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtDocumentManagement__c)}">             
+                <tr><td>
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedDocumentManagement != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedDocumentManagement == null && NOT(changeManager.IsApproved__c)}" />     
+                    <apex:outputField value="{!changeManager.IntExtDocumentManagement__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" /> 
+                    <apex:inputField value="{!changeManager.IntExtDocumentManagement__c}" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes"/>
+                    </apex:inputField>                   
+                    <apex:outputLabel value="Document Management" styleclass="dmeOutput"/>
+                </td></tr>
+                </apex:outputPanel>
+
+                <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtStakeholdersComm__c)}">  
+                <tr><td nowrap="nowrap">
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedStakeholders != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedStakeholders == null && NOT(changeManager.IsApproved__c)}" />                                  
+                    <apex:outputField value="{!changeManager.IntExtStakeholdersComm__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" /> 
+                    <apex:inputField value="{!changeManager.IntExtStakeholdersComm__c}" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes"/>      
+                    </apex:inputField>
+                    <apex:outputLabel value="Stakeholder & Communications" styleclass="dmeOutput"/>
+                </td></tr>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtRiskManagement__c)}" >     
+
+                <tr><td>
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedRiskManagement != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedRiskManagement == null && NOT(changeManager.IsApproved__c)}" />                                
+                    <apex:outputField value="{!changeManager.IntExtRiskManagement__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" />            
+                    <apex:inputField value="{!changeManager.IntExtRiskManagement__c}" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes"/>
+                    </apex:inputField>                   
+                    <apex:outputLabel value="Risk Register" styleclass="dmeOutput"/>
+               </td></tr>                             
+                </apex:outputPanel>      
+                <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtSecurity__c)}" >                           
+                <tr><td>         
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedResilience != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedResilience == null && NOT(changeManager.IsApproved__c)}" />                            
+                    <apex:outputField value="{!changeManager.IntExtSecurity__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" />            
+                    <apex:inputField value="{!changeManager.IntExtSecurity__c}" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes" />
+                    </apex:inputField>                   
+                    <apex:outputLabel value="Resilience" styleclass="dmeOutput"/>
+                </td></tr>
+                </apex:outputPanel>
+
+<!--                <tr><td>
+                <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtProjectReview__c)}">                    
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedProjectReviews != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedProjectReviews == null && NOT(changeManager.IsApproved__c)}" />                                
+                    <apex:outputField value="{!changeManager.IntExtProjectReview__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" />
+                    <apex:inputField value="{!changeManager.IntExtProjectReview__c}" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes" />
+                    </apex:inputField>                   
+                    <apex:outputLabel value="Project Review Category" styleclass="dmeOutput"/>
+                </apex:outputPanel>
+                </td></tr>
+ -->
+                <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && (changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c))}">                    
+                <tr><td>
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!(changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c)  && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!(NOT(changeManager.IntExtProjectClosure__c) && NOT(changeManager.IntExtProjectOnHold__c)) && NOT(changeManager.IsApproved__c)}" />                                
+                    <apex:outputField value="{!changeManager.IntExtProjectClosure__c}" rendered="{!changeManager.IntExtProjectClosure__c || NOT(changeManager.IntExtProjectOnHold__c)}" />
+                    <apex:outputField value="{!changeManager.IntExtProjectOnHold__c}" rendered="{!changeManager.IntExtProjectOnHold__c}" />
+                    <apex:outputLabel value="Project Status" styleclass="dmeOutput"/>
+                </td></tr>
+                </apex:outputPanel>
+
+<!--                <tr><td>
+                <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtProjectOnHold__c)}">                    
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!projectOnHold != null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!projectOnHold == null && NOT(changeManager.IsApproved__c)}" />                                
+                    <apex:outputField value="{!changeManager.IntExtProjectOnHold__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" />
+                    <apex:inputField value="{!changeManager.IntExtProjectOnHold__c}" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}">
+                        <apex:actionSupport event="onchange" rerender="changes" />
+                    </apex:inputField>                   
+                    <apex:outputLabel value="Project On Hold" styleclass="dmeOutput"/>
+                </apex:outputPanel>
+                </td></tr> -->
+        </table>
+        </apex:outputPanel>
+            </apex:pageBlockSection>
+    </div>
+        
+    <div id="notifications">
+            <apex:pageBlockSection title="Details" collapsible="false">
+                <apex:outputField value="{!changeManager.Project__c}"/>
+                <apex:outputField value="{!changeManager.ProjectNumber__c}"/>
+                <apex:pageBlockSectionItem >
+                    <apex:outputText value="Change Type"/>
+                    <apex:outputField value="{!changeManager.RecordType.Name}"/>
+                </apex:pageBlockSectionItem>
+                <apex:outputField value="{!changeManager.ApprovalStatus__c}"/>          
+                <apex:inputField value="{!changeManager.ContributingFactor__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
+                <apex:inputField value="{!changeManager.ContributingFactorDetails__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
+                <apex:outputField value="{!changeManager.ContributingFactor__c}" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                <apex:outputField value="{!changeManager.ContributingFactorDetails__c}" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+
+                <apex:inputField value="{!changeManager.ProjectApprover__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
+                <apex:outputPanel />
+                <apex:inputField value="{!changeManager.ProjectAccountantApprover__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
+                <apex:outputPanel />
+                <apex:inputField value="{!changeManager.FinanceApprover__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
+
+                <apex:outputField value="{!changeManager.ProjectApprover__c}" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                <apex:outputPanel />
+                <apex:outputField value="{!changeManager.ProjectAccountantApprover__c}" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                <apex:outputPanel />
+                <apex:outputField value="{!changeManager.FinanceApprover__c}" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                
+            </apex:pageBlockSection>    
+    
+        <apex:pageBlockSection columns="1">
+                                                                
+        </apex:pageBlockSection><br/>
+            <!-- <apex:pageBlockSection title="Project Contract Change Requirements" collapsible="false" columns="1" rendered="{!changeManager.Project__r.ChangeManagerAECOMRequirements__c != null || changeManager.Project__r.ChangeManagerClientsRequirements__c != null}"> -->
+<!--            <apex:pageBlockSection title="Project Contract Change Requirements" collapsible="false" columns="1"> 
+                <apex:outputPanel >
+                    <apex:outputLabel value="AECOM Requirements" styleClass="dmeOutput"/><br/>          
+                    <apex:inputField value="{!changeManager.Project__r.ChangeManagerAECOMRequirements__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
+                    <apex:outputField value="{!changeManager.Project__r.ChangeManagerAECOMRequirements__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+                <br/>
+                <apex:outputPanel >
+                <apex:outputLabel value="Clients Requirements" styleClass="dmeOutput"/><br/>
+                    <apex:inputField value="{!changeManager.Project__r.ChangeManagerClientsRequirements__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
+                    <apex:outputField value="{!changeManager.Project__r.ChangeManagerClientsRequirements__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>         -->
+        <apex:outputPanel id="changes">
+<!--            <apex:pageBlockSection title="Project" collapsible="false" columns="1" rendered="{!changeManager.IntExtProject__c}">  
+                <apex:pageBlockTable value="{!ChangedProject}" var="project" rendered="{!ChangedProject != null && NOT(changeManager.IsApproved__c)}">
+                    <apex:column headervalue="Name"><apex:outputlink value="{!URLFOR($Action.pse__Proj__c.View, project.Id)}"><apex:outputField value="{!project.Name}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Last Modified By"><apex:outputField value="{!project.LastModifiedById}"/></apex:column>
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!project.LastModifiedDate}"/></apex:column>
+                </apex:pageBlockTable>    
+                <apex:outputLabel value="Project Change Notes" styleclass="dmeOutput"/>
+                <apex:outputPanel >
+                    <apex:inputField value="{!changeManager.IntExtProjectComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)}" required="{!changeManager.IntExtProject__c}"/>
+                    <apex:outputField value="{!changeManager.IntExtProjectComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection> -->
+            
+            <apex:pageBlockSection title="Schedule/WBS" collapsible="false" rendered="{!changeManager.IntExtProjectTasks__c}" columns="1">  
+                <apex:pageBlockTable value="{!ChangedTasks}" var="task" rendered="{!ChangedTasks != null && NOT(changeManager.IsApproved__c)}">
+                    <apex:column headerValue="Change Type" width="35px">
+                        <apex:outputText value="New" rendered="{!task.ChangeManagerIsNew__c}"/>
+                        <apex:outputText value="Update" rendered="{!NOT(task.ChangeManagerIsNew__c)}"/>
+                    </apex:column> 
+                    <apex:column headervalue="Task Number"><apex:outputlink value="{!URLFOR($Action.pse__Project_Task__c.View, task.Id)}"><apex:outputField value="{!task.ProjectTaskNumber__c}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Task Name"><apex:outputField value="{!task.Name}"/></apex:column>
+                    <apex:column headervalue="Last Modified By"><apex:outputField value="{!task.LastModifiedById}"/></apex:column>
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!task.LastModifiedDate}"/></apex:column>
+                </apex:pageBlockTable>              
+                <apex:outputLabel value="Schedule/WBS Change Notes" styleclass="dmeOutput"/>
+                <apex:outputPanel >
+                    <apex:inputField value="{!changeManager.IntExtProjectTasksComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtProjectTasksComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>    
+            
+            <apex:pageBlockSection title="Project Team" collapsible="false" rendered="{!changeManager.IntExtKeyMembers__c}" columns="1">  
+                <apex:pageBlockTable value="{!ChangedKeyMembers}" var="teamMember" rendered="{!ChangedKeyMembers != null && NOT(changeManager.IsApproved__c)}">
+                    <apex:column headerValue="Change Type" width="35px">
+                        <apex:outputText value="New" rendered="{!teamMember.ChangeManagerIsNew__c}"/>
+                        <apex:outputText value="Update" rendered="{!NOT(teamMember.ChangeManagerIsNew__c)}"/>
+                    </apex:column> 
+                    <apex:column headervalue="Name"><apex:outputlink value="{!URLFOR($Action.ProjectTeamMember__c.View, teamMember.Id)}"><apex:outputField value="{!teamMember.Name__c}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Role"><apex:outputField value="{!teamMember.ProjectRole__c}"/></apex:column>
+                    <apex:column headervalue="Last Modified By"><apex:outputField value="{!teamMember.LastModifiedById}"/></apex:column>
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!teamMember.LastModifiedDate}"/></apex:column>
+                </apex:pageBlockTable>              
+                <apex:outputLabel value="Project Team Change Notes" styleclass="dmeOutput"/>
+                <apex:outputPanel >
+                    <apex:inputField value="{!changeManager.IntExtKeyMembersComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtKeyMembersComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>                         
+
+            <apex:pageBlockSection title="Customers" collapsible="false" rendered="{!changeManager.IntExtCustomers__c}" columns="1">  
+                <apex:pageBlockTable value="{!ChangedCustomers}" var="customer" rendered="{!ChangedCustomers != null  && NOT(changeManager.IsApproved__c)}">
+                <apex:column headerValue="Change Type" width="35px">
+                        <apex:outputText value="New" rendered="{!customer.ChangeManagerIsNew__c}"/>
+                        <apex:outputText value="Update" rendered="{!NOT(customer.ChangeManagerIsNew__c)}"/>
+                    </apex:column>   
+                    <apex:column headervalue="Name"><apex:outputlink value="{!URLFOR($Action.Project_Site__c.View, customer.Id)}"><apex:outputField value="{!customer.Account_Name__c}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Last Modified By"><apex:outputField value="{!customer.LastModifiedById}"/></apex:column>
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!customer.LastModifiedDate}"/></apex:column>
+                </apex:pageBlockTable>                
+                <apex:outputLabel value="Customers Change Notes" styleclass="dmeOutput"/>
+                <apex:outputPanel >
+                    <apex:inputField value="{!changeManager.IntExtCustomersComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtCustomersComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection> 
+            
+            <apex:pageBlockSection title="Project Classifications" collapsible="false" rendered="{!changeManager.IntExtClassifications__c}" columns="1">  
+            <apex:outputlink value="{!URLFOR('/apex/ECO_ClassificationEditor?Id=' + changeManager.Project__c, null)}">View Classifications</apex:outputlink>
+            <apex:outputPanel rendered="{!ChangedClassifications != null}">
+                <apex:pageBlockTable value="{!ChangedClassifications}" var="classification">
+                    <apex:column >
+                        <apex:facet name="header">Class Category</apex:facet>
+                        {!classification.CLASS_CATEGORY}
+                    </apex:column>
+                    <apex:column >
+                        <apex:facet name="header">Class Code</apex:facet>
+                            {!classification.CLASS_CODE}
+                    </apex:column>
+                </apex:pageBlockTable>
+            </apex:outputPanel>
+            <apex:outputLabel value="Project Classifications Change Notes" styleclass="dmeOutput"/>
+                <apex:outputPanel >
+                    <apex:inputField value="{!changeManager.IntExtClassificationsComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtClassificationsComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>             
+        
+            <apex:pageBlockSection title="Safety, Health & Environment" collapsible="false" rendered="{!changeManager.IntExtSafetyHealthEnv__c}" columns="1">            
+                
+                <apex:pageBlockTable value="{!ChangedSafetyHealthEnv}" var="safetyHealth">
+                    <apex:column headervalue="Action"><apex:outputlink value="{!URLFOR('/apex/ECO_SafetyHealthEnvironment?Id=' + changeManager.Project__c, null)}">View Safety Health and Environment</apex:outputlink></apex:column>
+                <!--    <apex:column headervalue="Last Modified By"><apex:outputField value="{!safetyHealth.ChangeManagerSafetyUpdatedBy__c}"/></apex:column> -->
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!safetyHealth.ChangeManagerSafetyUpdatedDate__c}"/></apex:column>
+                </apex:pageBlockTable>
+                
+                <apex:outputLabel value="Safety, Health & Environment Change Notes" styleclass="dmeOutput"/>                
+                <apex:outputPanel >
+                    <apex:inputField value="{!changeManager.IntExtSafetyHealthEnvComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtSafetyHealthEnvComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Agreements and Funding" collapsible="false" rendered="{!changeManager.IntExtContractManagement__c }" columns="1">
+                <apex:outputLabel value="Agreements" styleclass="dmeOutput" rendered="{!NOT(changeManager.IsApproved__c) && ChangedAgreements != null}" />
+                <apex:pageBlockTable value="{!ChangedAgreements}" var="contractManagement" rendered="{!ChangedAgreements != null && NOT(changeManager.IsApproved__c)}">
+                    <apex:column headerValue="Change Type" width="35px">
+                        <apex:outputText value="New" rendered="{!contractManagement.ChangeManagerIsNew__c}"/>
+                        <apex:outputText value="Update" rendered="{!NOT(contractManagement.ChangeManagerIsNew__c)}"/>
+                    </apex:column> 
+                    <apex:column headervalue="Name"><apex:outputlink value="{!URLFOR($Action.Agreement__c.View, contractManagement.Id)}"><apex:outputField value="{!contractManagement.Name}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Record Type"><apex:outputField value="{!contractManagement.RecordType.Name}"/></apex:column>
+                    <apex:column headervalue="Value"><apex:outputField value="{!contractManagement.TotalContractValue__c}"/></apex:column>
+                    <apex:column headervalue="Last Modified By"><apex:outputField value="{!contractManagement.LastModifiedById}"/></apex:column>
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!contractManagement.LastModifiedDate}"/></apex:column>              
+                </apex:pageBlockTable>              
+                
+                <apex:outputLabel value="Funding" styleclass="dmeOutput" rendered="{!NOT(changeManager.IsApproved__c) && ChangedContractManagementFunding != null}" />          
+                <apex:pageBlockTable value="{!ChangedContractManagementFunding}" var="contractManagementFunding" rendered="{!ChangedContractManagementFunding != null && NOT(changeManager.IsApproved__c)}">
+                    <apex:column headerValue="Change Type" width="35px">
+                        <apex:outputText value="New" rendered="{!contractManagementFunding.ChangeManagerIsNew__c}"/>
+                        <apex:outputText value="Update" rendered="{!NOT(contractManagementFunding.ChangeManagerIsNew__c)}"/>
+                    </apex:column> 
+                    <apex:column headervalue="Name"><apex:outputlink value="{!URLFOR($Action.Funding__c.View, contractManagementFunding.Id)}"><apex:outputField value="{!contractManagementFunding.Name}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Allocated Date"><apex:outputField value="{!contractManagementFunding.DateAllocatedDate__c}"/></apex:column>
+                    <apex:column headervalue="Allocated Amount"><apex:outputField value="{!contractManagementFunding.AllocatedAmount__c}"/></apex:column>               
+                    <apex:column headervalue="Last Modified By"><apex:outputField value="{!contractManagementFunding.LastModifiedById}"/></apex:column>
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!contractManagementFunding.LastModifiedDate}"/></apex:column>   
+                </apex:pageBlockTable>  
+         
+                <apex:outputLabel value="Agreements and Funding Change Notes" styleclass="dmeOutput"/>
+                <apex:outputPanel >
+                    <apex:inputField value="{!changeManager.IntExtContractManagementComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtContractManagementComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>  
+                </apex:outputPanel>          
+            </apex:pageBlockSection>
+                    
+            <apex:pageBlockSection title="Scope and Packages" collapsible="false" rendered="{!changeManager.IntExtScope__c}" columns="1">
+                <apex:pageBlockTable value="{!ChangedScope}" var="scope" rendered="{!ChangedScope != null && NOT(changeManager.IsApproved__c)}">
+                    <apex:column headerValue="Change Type" width="35px">
+                        <apex:outputText value="New" rendered="{!scope.ChangeManagerIsNew__c}"/>
+                        <apex:outputText value="Update" rendered="{!NOT(scope.ChangeManagerIsNew__c)}"/>
+                    </apex:column> 
+                    <apex:column headervalue="Name"><apex:outputlink value="{!URLFOR($Action.Packages__c.View, scope.Id)}"><apex:outputField value="{!scope.Name}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Status"><apex:outputField value="{!scope.Status__c}"/></apex:column>                  
+                    <apex:column headervalue="Last Modified By"><apex:outputField value="{!scope.LastModifiedById}"/></apex:column>
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!scope.LastModifiedDate}"/></apex:column>                                   
+                </apex:pageBlockTable>
+
+                <apex:outputLabel value="Scope and Packages Change Notes" styleclass="dmeOutput"/>
+                <apex:outputPanel >            
+                    <apex:inputField value="{!changeManager.IntExtScopeComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/> 
+                    <apex:outputField value="{!changeManager.IntExtScopeComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>   
+                </apex:outputPanel>         
+            </apex:pageBlockSection>
+            
+            <apex:inputHidden value="{!changeManager.BudgetHeader__c}"/>
+            <apex:pageBlockSection title="Budget" collapsible="false" rendered="{!changeManager.IntExtBudget__c}" columns="1">
+                <apex:pageBlockTable value="{!ChangedBudget}" var="budget" rendered="{!ChangedBudget != null}">
+                    <apex:column headervalue="Budget Name"><apex:outputlink value="{!URLFOR('/apex/ECO_BudgetGrid2?Id=' + budget.Project__c, null)}"><apex:outputField value="{!budget.BudgetName__c}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Cost Charge"><apex:outputField value="{!budget.TotalCost__c}"/></apex:column>
+                    <apex:column headervalue="Revenue Charge"><apex:outputField value="{!budget.TotalRevenue__c}"/></apex:column>
+                    <apex:column headervalue="Status"><apex:outputField value="{!budget.Status__c}"/></apex:column>                 
+                    <apex:column headervalue="Last Modified By"><apex:outputField value="{!budget.LastModifiedById}"/></apex:column>
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!budget.LastModifiedDate}"/></apex:column>
+                </apex:pageBlockTable>    
+                
+                <apex:outputPanel rendered="{ChangedBudgetContingency != null && ChangedBudgetContingency != 0}">
+                    <apex:outputLabel value="Contingency Amount" styleclass="dmeOutput"/>  
+                    <apex:outputText value="{!ChangedBudgetContingency}" />
+                </apex:outputPanel>
+        
+                <apex:outputLabel value="Budget Change Notes" styleclass="dmeOutput"/>              
+                <apex:outputPanel >
+                    <apex:inputField value="{!changeManager.IntExtBudgetComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtBudgetComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Subs and Vendors" collapsible="false" rendered="{!changeManager.IntExtResources__c}" columns="1">
+                <apex:pageBlockTable value="{!ChangedResources}" var="resource" rendered="{!ChangedResources != null}">
+                    <apex:column headerValue="Change Type" width="35px">
+                        <apex:outputText value="New" rendered="{!resource.ChangeManagerIsNew__c}"/>
+                        <apex:outputText value="Update" rendered="{!NOT(resource.ChangeManagerIsNew__c)}"/>
+                    </apex:column>
+                    <apex:column headervalue="Name"><apex:outputlink value="{!URLFOR($Action.VendorSite__c.View, resource.Id)}"><apex:outputField value="{!resource.Name}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Account"><apex:outputField value="{!resource.AccountName__c}"/></apex:column>
+                    <apex:column headervalue="Last Modified By"><apex:outputField value="{!resource.LastModifiedById}"/></apex:column>
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!resource.LastModifiedDate}"/></apex:column>
+                </apex:pageBlockTable>              
+
+                <apex:outputLabel value="Subs and Vendors Change Notes" styleclass="dmeOutput"/>
+                <apex:outputPanel >
+                    <apex:inputField value="{!changeManager.IntExtResourcesComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtResourcesComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection title="Deliverables" collapsible="false" rendered="{!changeManager.IntExtDeliverables__c}" columns="1">
+                    <apex:pageBlockTable value="{!ChangedDeliverables}" var="deliverable" rendered="{!ChangedDeliverables != null}">
+                    <apex:column headerValue="Change Type" width="35px">
+                        <apex:outputText value="New" rendered="{!deliverable.ChangeManagerIsNew__c}"/>
+                        <apex:outputText value="Update" rendered="{!NOT(deliverable.ChangeManagerIsNew__c)}"/>
+                    </apex:column>
+                    <apex:column headervalue="Name"><apex:outputlink value="{!URLFOR($Action.Deliverable__c.View, deliverable.Id)}"><apex:outputField value="{!deliverable.Name}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Type"><apex:outputLink value="{!deliverable.DeliverableType__c}"/></apex:column>
+                    <apex:column headervalue="Deliverable Owner"><apex:outputField value="{!deliverable.DeliverableOwner__c}"/></apex:column>
+                    <apex:column headervalue="Due Date"><apex:outputField value="{!deliverable.DueDate__c}"/></apex:column>
+                    <apex:column headervalue="Last Modified By"><apex:outputField value="{!deliverable.LastModifiedById}"/></apex:column>
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!deliverable.LastModifiedDate}"/></apex:column>
+                </apex:pageBlockTable>              
+ 
+                <apex:outputLabel value="Deliverables Change Notes" styleclass="dmeOutput"/>            
+                <apex:outputPanel >
+                    <apex:inputField value="{!changeManager.IntExtDeliverablesComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtDeliverablesComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>            
+            
+            <apex:pageBlockSection title="Document Management" collapsible="false" rendered="{!changeManager.IntExtDocumentManagement__c}" columns="1">
+                <apex:pageBlockTable value="{!ChangedDocumentManagement}" var="docManage">
+                    <apex:column headervalue="Action"><apex:outputlink value="{!URLFOR('/apex/ECO_DocumentManagement?Id=' + changeManager.Project__c, null)}">View Document Management</apex:outputlink></apex:column>
+           <!--         <apex:column headervalue="Last Modified By"><apex:outputField value="{!docManage.ChangeManagerDocManageUpdatedBy__c}"/></apex:column> -->
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!docManage.ChangeManagerDocManageUpdatedDate__c}"/></apex:column>
+                </apex:pageBlockTable>
+                            
+                <apex:outputLabel value="Document Management Change Notes" styleclass="dmeOutput"/>
+                <apex:outputPanel >
+                    <apex:inputField value="{!changeManager.IntExtDocumentManagementComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtDocumentManagementComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>    
+            
+            <apex:pageBlockSection title="Stakeholder & Communications" collapsible="false" rendered="{!changeManager.IntExtStakeholdersComm__c}" columns="1">
+                <apex:pageBlockTable value="{!ChangedStakeHolders}" var="stakeholder" rendered="{!ChangedStakeHolders != null}">
+                    <apex:column headerValue="Change Type" width="35px">
+                        <apex:outputText value="New" rendered="{!stakeholder.ChangeManagerIsNew__c}"/>
+                        <apex:outputText value="Update" rendered="{!NOT(stakeholder.ChangeManagerIsNew__c)}"/>
+                    </apex:column>
+                <apex:column headervalue="Name"><apex:outputlink value="{!URLFOR($Action.Stakeholder__c.View, stakeHolder.Id)}"><apex:outputField value="{!stakeholder.Name}"/></apex:outputlink></apex:column>
+                <apex:column headervalue="Type"><apex:outputField value="{!stakeHolder.StakeholderType__c}"/></apex:column>
+                <apex:column headervalue="AECOM Contact"><apex:outputField value="{!stakeHolder.AECOMContact__c}"/></apex:column>
+                <apex:column headervalue="Organization"><apex:outputField value="{!stakeHolder.Organization__c}"/></apex:column>
+                <apex:column headervalue="Contact"><apex:outputField value="{!stakeHolder.ContactName__c}"/></apex:column>
+                <apex:column headervalue="Last Modified By"><apex:outputField value="{!stakeHolder.LastModifiedById}"/></apex:column>
+                <apex:column headervalue="Last Modified Date"><apex:outputField value="{!stakeHolder.LastModifiedDate}"/></apex:column>
+                </apex:pageBlockTable>
+                <apex:outputLabel value="Stakeholder & Communications Change Notes" styleclass="dmeOutput"/>
+                <apex:outputPanel >            
+                    <apex:inputField value="{!changeManager.IntExtStakeholdersCommComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtStakeholdersCommComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>    
+            
+            <apex:pageBlockSection title="Risk Register" collapsible="false" rendered="{!changeManager.IntExtRiskManagement__c}" columns="1">
+                <apex:pageBlockTable value="{!ChangedRiskManagement}" var="riskManagement" rendered="{!ChangedRiskManagement != null}">
+                    <apex:column headerValue="Change Type" width="35px">
+                        <apex:outputText value="New" rendered="{!riskManagement.ChangeManagerIsNew__c}"/>
+                        <apex:outputText value="Update" rendered="{!NOT(riskManagement.ChangeManagerIsNew__c)}"/>
+                    </apex:column>
+                <apex:column headervalue="Risk Title"><apex:outputlink value="{!URLFOR($Action.Risk__c.View, riskManagement.Id)}"><apex:outputField value="{!riskManagement.Name}"/></apex:outputlink></apex:column>
+                <apex:column headervalue="Current Status"><apex:outputField value="{!riskManagement.CurrentStatus__c}"/></apex:column>
+                <apex:column headervalue="RiskOwner"><apex:outputField value="{!riskManagement.RiskOwner__c}"/></apex:column>
+                <apex:column headervalue="Category"><apex:outputField value="{!riskManagement.RiskCategory__c}"/></apex:column>
+                <apex:column headervalue="Last Modified By"><apex:outputField value="{!riskManagement.LastModifiedById}"/></apex:column>
+                <apex:column headervalue="Last Modified Date"><apex:outputField value="{!riskManagement.LastModifiedDate}"/></apex:column>
+                </apex:pageBlockTable>
+
+                <apex:outputLabel value="Risk Register Change Notes" styleclass="dmeOutput"/>
+                <apex:outputPanel >           
+                    <apex:inputField value="{!changeManager.IntExtRiskManagementComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtRiskManagementComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>    
+              
+            <apex:pageBlockSection title="Resilience" collapsible="false" rendered="{!changeManager.IntExtSecurity__c}" columns="1">
+                <apex:pageBlockTable value="{!ChangedResilience}" var="resilience">
+                    <apex:column headervalue="Action"><apex:outputlink value="{!URLFOR('/apex/ECO_Resilience?Id=' + changeManager.Project__c, null)}">View Resilience</apex:outputlink></apex:column>
+                    <apex:column headervalue="Last Modified By"><apex:outputField value="{!resilience.ChangeManagerResilienceUpdatedBy__c}"/></apex:column>
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!resilience.ChangeManagerResilienceUpdatedDate__c}"/></apex:column>
+                </apex:pageBlockTable>
+                        
+                <apex:outputLabel value="Resilience Change Notes" styleclass="dmeOutput"/>
+                <apex:outputPanel >            
+                    <apex:inputField value="{!changeManager.IntExtSecurityComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtSecurityComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>                                                                                                
+        
+<!--              <apex:pageBlockSection title="Project Review" collapsible="false" rendered="{!changeManager.IntExtProjectReview__c}" columns="1">
+                    <apex:pageBlockTable value="{!ChangedProjectReviews}" var="projectReview" rendered="{!ChangedProjectReviews != null}">
+                    <apex:column headervalue="Name"><apex:outputlink value="{!URLFOR($Action.ProjectReview__c.View, projectReview.Id)}"><apex:outputField value="{!projectReview.Name}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Type"><apex:outputField value="{!projectReview.RecordType.Name}"/></apex:column>
+                    <apex:column headervalue="Created By"><apex:outputField value="{!projectReview.CreatedById}"/></apex:column>
+                    <apex:column headervalue="Create Date"><apex:outputField value="{!projectReview.CreatedDate}"/></apex:column> 
+                    <apex:column headervalue="Last Modified By"><apex:outputField value="{!projectReview.LastModifiedById}"/></apex:column>
+                    <apex:column headervalue="Last Modified Date"><apex:outputField value="{!projectReview.LastModifiedDate}"/></apex:column>
+                </apex:pageBlockTable>              
+
+                <apex:outputLabel value="Project Review Change Notes" styleclass="dmeOutput"/>
+                <apex:outputPanel >           
+                    <apex:inputField value="{!changeManager.IntExtProjectReviewComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                    <apex:outputField value="{!changeManager.IntExtProjectReviewComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                </apex:outputPanel>
+            </apex:pageBlockSection>  
+ -->            
+            <apex:pageBlockSection title="Project Status" collapsible="false" rendered="{!changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c}" columns="1">
+                <apex:outputPanel rendered="{!ChangedProjectClosure != null}">              
+                    <apex:variable value="{!ChangedProjectClosure[0]}" var="projstatus"/>
+                    
+                    <apex:outputPanel rendered="{!projstatus.RequestedProjectStatus__c == 'Closed'}">
+                    <apex:pageBlockTable value="{!ChangedProjectClosure}" var="closure">
+                        <apex:column headervalue="Action"><apex:commandLink action="{!viewProjectClosureRequest}" value="Project Closure Request"/></apex:column>
+                        <apex:column headervalue="Requested Status"><apex:outputText value="{!closure.RequestedProjectStatus__c}" /></apex:column>
+                        <apex:column headervalue="Closure Date"><apex:outputField value="{!closure.ClosureDate__c}" /></apex:column>
+                        <apex:column headervalue="Modified By"><apex:outputField value="{!closure.ChangeManagerProjectStatusUpdatedBy__c}" /></apex:column>
+                        <apex:column headervalue="Modified Date"><apex:outputField value="{!closure.ChangeManagerProjectStatusUpdatedDate__c}" /></apex:column>                     
+                    </apex:pageBlockTable>
+
+                    <apex:outputLabel value="Closure Notes: " styleclass="dmeOutput"/><br/>  
+                    <apex:outputText value="{!projstatus.ProjectClosureNotes__c}" /> 
+                    
+                    <br/><br/>
+                    <apex:outputLabel value="Project Closure Change Notes" styleclass="dmeOutput"/><br/>
+                    <apex:outputPanel >           
+                        <apex:inputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                        <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                    </apex:outputPanel>
+                    </apex:outputPanel>
+                    
+                    <apex:outputPanel rendered="{!projstatus.RequestedProjectStatus__c == 'On Hold'}">
+                    <apex:pageBlockTable value="{!ChangedProjectClosure}" var="onHold">
+                        <apex:column headervalue="Action"><apex:commandLink action="{!viewProjectClosureRequest}" value="Project On Hold Request"/></apex:column>
+                        <apex:column headervalue="Requested Status"><apex:outputText value="{!onHold.RequestedProjectStatus__c}" /></apex:column>
+                        <apex:column headervalue="Scheduled On Hold Date"><apex:outputField value="{!onHold.ScheduledOnHoldDate__c}" /></apex:column>
+                        <apex:column headervalue="Scheduled Restart Date"><apex:outputField value="{!onHold.ScheduledRestartDate__c}" /></apex:column>
+                        <apex:column headervalue="Modified By"><apex:outputField value="{!onHold.ChangeManagerProjectStatusUpdatedBy__c}" /></apex:column>
+                        <apex:column headervalue="Modified Date"><apex:outputField value="{!onHold.ChangeManagerProjectStatusUpdatedDate__c}" /></apex:column>                                          
+                    </apex:pageBlockTable>
+                    <br/>
+                    <apex:outputLabel value="On Hold Reason: " styleclass="dmeOutput"/><br/> 
+                    <apex:outputText value="{!projstatus.OnHoldReason__c}" />                   
+                    <br/><br/>
+                    <apex:outputLabel value="Project Closure Change Notes" styleclass="dmeOutput"/><br/>
+                    <apex:outputPanel >           
+                        <apex:inputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                        <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                    </apex:outputPanel>
+                    </apex:outputPanel>                 
+<!--                    <apex:outputPanel rendered="{!projectClosure != null && projectClosure[0].RequestedProjectStatus__c == 'Closed'}">
+                        <apex:commandLink action="{!viewProjectClosureRequest}" value="Project Closure Request"/> <br/>
+                        <apex:outputLabel value="Requested Status: " styleclass="dmeOutput"/>  
+                        <apex:outputText value="{!projectClosure[0].RequestedProjectStatus__c}" /><br/>
+                        <apex:outputLabel value="Closure Date: " styleclass="dmeOutput"/>  
+                        <apex:outputField value="{!projectClosure[0].ClosureDate__c}" /><br/><br/>
+
+                    </apex:outputPanel>                 
+                                                    
+                    <br/><br/>
+                    <apex:outputLabel value="Project Closure Change Notes" styleclass="dmeOutput"/><br/>
+                    <apex:outputPanel >           
+                        <apex:inputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                        <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+                
+                <apex:outputPanel rendered="{!projectClosure[0].RequestedProjectStatus__c == 'On Hold'}">
+                    <apex:outputPanel rendered="{!projectClosure != null && projectClosure[0].RequestedProjectStatus__c == 'On Hold'}">
+                        <apex:commandLink action="{!viewProjectClosureRequest}" value="Project On Hold Request"/> <br/>
+                        <apex:outputLabel value="Requested Status: " styleclass="dmeOutput"/>  
+                        <apex:outputText value="{!projectClosure[0].RequestedProjectStatus__c}" /><br/>             
+                        <apex:outputLabel value="Scheduled On Hold Date: " styleclass="dmeOutput"/>  
+                        <apex:outputField value="{!projectClosure[0].ScheduledOnHoldDate__c}" /><br/><br/>
+                        <apex:outputLabel value="On Hold Reason: " styleclass="dmeOutput"/><br/> 
+                        <apex:outputText value="{!projectClosure[0].OnHoldReason__c}" />                    
+                    </apex:outputPanel>                                 
+                    <br/><br/>
+                    <apex:outputLabel value="Project On Hold Change Notes" styleclass="dmeOutput"/><br/>
+                    <apex:outputPanel >           
+                        <apex:inputField value="{!changeManager.IntExtProjectOnHoldComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                        <apex:outputField value="{!changeManager.IntExtProjectOnHoldComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                    </apex:outputPanel> 
+                    
+                    
+                                    -->  
+                </apex:outputPanel>             
+
+                
+            </apex:pageBlockSection>    
+                                                                                                      
+            </apex:outputPanel>    
+            </div>
+            <div style="clear:both;"></div><br/>
+        </apex:pageBlock>
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!changeManager.IsPMHandoverChange__c}">
+            <div class="customHelpText">
+                <div class="customHelpBody">
+                Reminder: Confirm that client approval is not required prior to re-assigning the 
+                Project Manager role. If approval is required, upload the relevant approval documentation.
+                </div>
+            </div><br/>
+            <apex:pageBlock mode="edit" title="{!changeManager.RecordType.Name & ' Change Edit'}">
+                            <apex:pageBlockButtons >
+                                <apex:commandButton value="Save" action="{!save}"/>
+                                <apex:commandButton value="Return to Project" action="{!returnToProject}"/>
+                                <apex:commandButton value="Take Project Snapshot" action="{!takeProjectSnapshot}"/>
+                            </apex:pageBlockButtons>
+            <apex:pageBlockSection title="Project Details" columns="1">
+                <apex:outputField value="{!changeManager.Project__r.Name}"/>
+                <apex:outputField value="{!changeManager.ProjectNumber__c}"/>
+                <apex:outputField value="{!changeManager.Client__c}"/>
+                <apex:outputField value="{!changeManager.ProjectValue__c}"/>    
+                <apex:inputField value="{!changeManager.OutgoingPM__c}"/>   
+                <apex:inputField value="{!changeManager.IncomingPM__c}"/>                   
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="Handover Summary" columns="1" id="pbstest">
+<apex:outputlabel style="font-weight: bold;" value="Answer all the questions below with the incoming Project Manager"/>
+
+
+<apex:outputPanel >
+<apex:outputText style="font-weight: bold;">1. Have all the contractual documents, including scope changes or variations been signed by the Project Approver or Project Manager and the client?</apex:outputText>           
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverContractualDocuments__c}" >
+    <apex:selectOptions value="{!YesNoOptions}"/>
+    <apex:actionSupport event="onchange" rerender="pbstest"/>
+</apex:selectRadio>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!changeManager.HandoverContractualDocuments__c == 'No'}" >
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainContractualDocuments__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+
+
+<apex:outputPanel >
+<apex:outputText style="font-weight: bold;">2. Have all of the contractual obligations been met?</apex:outputText>          
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverContractualObligations__c}" >
+    <apex:selectOptions value="{!YesNoOptions}"/>
+    <apex:actionSupport event="onchange" rerender="pbstest"/>
+</apex:selectRadio>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!changeManager.HandoverContractualObligations__c == 'No'}" >
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainContractObligations__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+
+
+<apex:outputPanel >
+<apex:outputText style="font-weight: bold;">3. Are there subs on the project?</apex:outputText>         
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverSubsonProject__c}" >
+    <apex:selectOptions value="{!YesNoOptions}"/>
+    <apex:actionSupport event="onchange" rerender="pbstest"/>
+</apex:selectRadio>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!listOfVendorSites.size > 0}">
+<apex:outputLabel value="List of Subs" style="font-weight:bold"/><br/>
+    <apex:repeat value="{!listOfVendorSites}" var="site">
+        <apex:commandLink action="{!URLFOR($Action.Account.view, site.Site__r.Account__c)}"><apex:outputField value="{!site.AccountName__c}"/></apex:commandLink><br/><br/>
+    </apex:repeat>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!changeManager.HandoverSubsonProject__c == 'Yes'}" >
+State the current status of payment, scope completion and performance:<br/><apex:inputField value="{!changeManager.HandoverExplainSubsonProject__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+
+<apex:outputPanel >
+<apex:outputText style="font-weight: bold;">4. Have the mandatory project approvals been achieved, such as any DOA matters, and relevant conditions of approval actioned?</apex:outputText>         
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverMandatoryProjectApprovals__c}" >
+    <apex:selectOptions value="{!YesNoOptions}"/>
+    <apex:actionSupport event="onchange" rerender="pbstest"/>
+</apex:selectRadio>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!changeManager.HandoverMandatoryProjectApprovals__c == 'No'}" >
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainMandatoryProjectApprovals__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+
+<apex:outputPanel >
+<apex:outputText style="font-weight: bold;">5. Have all project team members been informed of the handover?</apex:outputText>           
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverProjectTeamInform__c}" >
+    <apex:selectOptions value="{!YesNoOptions}"/>
+    <apex:actionSupport event="onchange" rerender="pbstest"/>
+</apex:selectRadio>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!changeManager.HandoverProjectTeamInform__c == 'No'}" >
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainProjectTeamInform__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+
+<apex:outputPanel >
+<apex:outputText style="font-weight: bold;">6. Have all known risks been identified?</apex:outputText>          
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverKnownRisks__c}" >
+    <apex:selectOptions value="{!YesNoOptions}"/>
+    <apex:actionSupport event="onchange" rerender="pbstest"/>
+</apex:selectRadio>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!changeManager.HandoverKnownRisks__c == 'No'}" >
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainKnownRisks__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+
+<apex:outputPanel >
+<apex:outputText style="font-weight: bold;">7. Has the budget been updated?</apex:outputText>           
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverBudgetUpdated__c}" >
+    <apex:selectOptions value="{!YesNoOptions}"/>
+    <apex:actionSupport event="onchange" rerender="pbstest"/>
+</apex:selectRadio>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!changeManager.HandoverBudgetUpdated__c == 'No'}" >
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainBudgetUpdated__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+
+<apex:outputPanel >
+<apex:outputText style="font-weight: bold;">8. Have all actions raised on the project been closed or in the process of being rectified?</apex:outputText>           
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverActionsRaised__c}" >
+    <apex:selectOptions value="{!YesNoOptions}"/>
+    <apex:actionSupport event="onchange" rerender="pbstest"/>
+</apex:selectRadio>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!changeManager.HandoverActionsRaised__c == 'No'}" >
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainActionsRaised__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+<apex:outputPanel >
+<apex:outputText style="font-weight: bold;">9. Is all critical project paperwork on file and clearly identified?</apex:outputText>          
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverCriticalProjectPaperwork__c}" >
+    <apex:selectOptions value="{!YesNoOptions}"/>
+    <apex:actionSupport event="onchange" rerender="pbstest"/>
+</apex:selectRadio>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!changeManager.HandoverCriticalProjectPaperwork__c == 'No'}" >
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainProjectPaperwork__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+
+<apex:outputPanel >
+<apex:outputText style="font-weight: bold;">10. Are signed copies of all deliverables on file, with transmittals and evidence of verification and approvals?</apex:outputText>          
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverSignedCopies__c}" >
+    <apex:selectOptions value="{!YesNoOptions}"/>
+    <apex:actionSupport event="onchange" rerender="pbstest"/>
+</apex:selectRadio>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!changeManager.HandoverSignedCopies__c == 'No'}">
+    Please Explain:<br/><apex:inputField value="{!changeManager.ExplainHandoverSignedCopies__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+<apex:outputPanel >
+    <apex:outputText style="font-weight: bold;">11. Has access to relevant project files (electronic and hardcopy) for project staff been confirmed?</apex:outputText>          
+    <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverRelevantProjectFiles__c}" >
+        <apex:selectOptions value="{!YesNoOptions}"/>
+        <apex:actionSupport event="onchange" rerender="pbstest"/>
+    </apex:selectRadio>
+    </apex:outputPanel>
+<apex:outputPanel rendered="{!changeManager.HandoverRelevantProjectFiles__c == 'No'}">
+    Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainRelevantProjectFiles__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+
+<apex:outputPanel >
+<apex:outputText style="font-weight: bold;">12. Is communication and reporting process with the client healthy?</apex:outputText>           
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverCommReporting__c}" >
+    <apex:selectOptions value="{!YesNoOptions}"/>
+    <apex:actionSupport event="onchange" rerender="pbstest"/>
+</apex:selectRadio>
+</apex:outputPanel>
+<apex:outputPanel rendered="{!changeManager.HandoverCommReporting__c == 'No'}">
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainCommReporting__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+<apex:outputPanel >
+    <apex:outputText style="font-weight: bold;">13. What is going well with the project?</apex:outputText><br/>
+    <apex:inputField value="{!changeManager.HandoverGoingWell__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+<apex:outputPanel >
+    <apex:outputText style="font-weight: bold;">14. What is not going well with the project?</apex:outputText><br/>
+    <apex:inputField value="{!changeManager.HandoverNotGoingWell__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+<apex:outputPanel >
+    <apex:outputText style="font-weight: bold;">15. State current financial status of project, including any outstanding invoices.</apex:outputText><br/>
+    <apex:inputField value="{!changeManager.HandoverCurrentFinancialStatus__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>
+</apex:pageBlockSection>
+<apex:pageBlockSection title="Handover Outcomes">
+    <apex:outputPanel >
+        <apex:outputText style="font-weight: bold;">List all issues and outcomes from handover process</apex:outputText><br/>
+        <apex:inputField value="{!changeManager.HandoverOutcomes__c}" style="width: 825px; height: 40px"/>
+    </apex:outputPanel>
+</apex:pageBlockSection>
+</apex:pageBlock>
+</apex:outputPanel>
+</apex:form>
+<apex:relatedList list="ProcessSteps" rendered="{!mode == ''}" id="approval"></apex:relatedList>
+<apex:relatedList list="CombinedAttachments" rendered="{!changeManager.RecordType.Name == 'PM Handover'}"/>
+</apex:page>

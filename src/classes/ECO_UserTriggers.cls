@@ -1,14 +1,14 @@
 public without sharing class ECO_UserTriggers {
 	
-	
-	
-	
-	
 	public static Boolean run = true;
 	
 	private static System.LoggingLevel debugLevel = LoggingLevel.INFO;
 	
 	public static void setDefaultInformation (List<User> insertedUsers) {
+		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('User_setDefaultInfo')) {
+			return;
+		}
+		
 		Set<String> orgStringNames = new Set<String>();
 		
 		for (User u : insertedUsers) {
@@ -43,7 +43,5 @@ public without sharing class ECO_UserTriggers {
 			u.ECO_Geography__c =  thisOrgString.GeographyName__c;
 			u.ECO_BusinessLine__c =  thisOrgString.BusinessLineName__c;
 		}
-		
-		ECO_UserTriggers.run = false;
 	}
 }

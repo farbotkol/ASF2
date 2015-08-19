@@ -46,11 +46,12 @@
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
+    <description>The AECOM employees who are associated with a client, contact, opportunity, or community event.</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>true</enableHistory>
-    <enableReports>false</enableReports>
+    <enableReports>true</enableReports>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
@@ -84,47 +85,13 @@
     <fields>
         <fullName>Business_Line__c</fullName>
         <externalId>false</externalId>
-        <formula>IF(Employee_User__c != null,Employee_User__r.Business_Line__c,Employee__r.Business_Line__c)</formula>
+        <formula>Employee__r.Business_Line__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Business Line</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CAM_Relationship_Score__c</fullName>
-        <description>Calculates the relationship status of the AECOM team member with the client team member, used in CAM &quot;heat map&quot; reports</description>
-        <externalId>false</externalId>
-        <formula>CAM_Relationship_Status__c * Contact__r.CAM_Level_of_Influence__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Calculates the relationship status of the AECOM team member with the client team member, used in CAM &quot;heat map&quot; reports</inlineHelpText>
-        <label>CAM Relationship Score</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CAM_Relationship_Status__c</fullName>
-        <description>Used to calculate CAM relationship &quot;heat map&quot;</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Key: 
-0 = No relationship 
-1 = Weak or new relationship 
-2 = Relationship in development 
-3 = Strong established relationship</inlineHelpText>
-        <label>CAM Relationship Status</label>
-        <precision>1</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -172,7 +139,7 @@
     <fields>
         <fullName>Email__c</fullName>
         <externalId>false</externalId>
-        <formula>IF(Employee_User__c != null,Employee_User__r.Email,Employee__r.Email__c)</formula>
+        <formula>Employee__r.Email__c</formula>
         <label>Email</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -181,34 +148,11 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Employee_User__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <description>AECOM employee who owns the relationship.</description>
-        <externalId>false</externalId>
-        <label>Employee</label>
-        <lookupFilter>
-            <active>true</active>
-            <filterItems>
-                <field>User.IsActive</field>
-                <operation>equals</operation>
-                <value>True</value>
-            </filterItems>
-            <isOptional>true</isOptional>
-        </lookupFilter>
-        <referenceTo>User</referenceTo>
-        <relationshipLabel>AECOM Team</relationshipLabel>
-        <relationshipName>AECOM_Team</relationshipName>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
-    </fields>
-    <fields>
         <fullName>Employee__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>AECOM employee who owns the relationship.</description>
         <externalId>false</externalId>
-        <label>Employee Old</label>
+        <label>Employee</label>
         <lookupFilter>
             <active>true</active>
             <filterItems>
@@ -256,7 +200,7 @@
     <fields>
         <fullName>Full_Name__c</fullName>
         <externalId>false</externalId>
-        <formula>IF(Employee_User__c != null,Employee_User__r.FirstName + &quot; &quot; +  Employee_User__r.LastName,Employee__r.First_Name__c + &quot; &quot; +  Employee__r.Last_Name__c)</formula>
+        <formula>Employee__r.First_Name__c + &quot; &quot; +  Employee__r.Last_Name__c</formula>
         <label>Name</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -287,7 +231,7 @@
     <fields>
         <fullName>Office__c</fullName>
         <externalId>false</externalId>
-        <formula>IF(Employee_User__c != null,Employee_User__r.Office__c,Employee__r.Office_City__c + &quot; &quot; + Employee__r.Office_State__c  +  &quot; &quot; + Employee__r.Office_Country__c)</formula>
+        <formula>Employee__r.Office_City__c + &quot; &quot; + Employee__r.Office_State__c  +  &quot; &quot; + Employee__r.Office_Country__c</formula>
         <label>Office</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -312,7 +256,7 @@
     <fields>
         <fullName>Phone__c</fullName>
         <externalId>false</externalId>
-        <formula>IF(Employee_User__c != null,Employee_User__r.Phone,Employee__r.Phone__c)</formula>
+        <formula>Employee__r.Phone__c</formula>
         <label>Phone</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -380,22 +324,6 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Architect</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>BD Contact</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>BD Executive</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>BD Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>BD Lead - Building Engineering</fullName>
                 <default>false</default>
             </picklistValues>
@@ -448,46 +376,6 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Business Line Dir</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Business Line Dir - Client Sector</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Business Line Dir - Market Segment</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Business Line Liaison</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Business Manager</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Business Stream Manager</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Buyer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Capital Projects Delivery - Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Capture Executive</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Capture Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Client Account Leader (inform)</fullName>
                 <default>false</default>
             </picklistValues>
@@ -500,18 +388,6 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Consultant</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contracts/Subcontracts Mgmt</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Contracts Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Country Business Line Leader (Recommend)</fullName>
                 <default>false</default>
             </picklistValues>
@@ -520,55 +396,7 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Deal Shaper</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Deputy Project Manager</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Editor</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>EMEA Chief Exec (Decision, see DOA)</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>End Markets Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>End Markets Monitoring</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>End Markets Support</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Engineer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Engineering Discipline Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Engineering Manager</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Estimator</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Evaluator</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Executive in Charge</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -576,39 +404,11 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Government Technical Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Graphic Artist</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Human Resources Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Interview Coach</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>IT Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>IT Support</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Legal Counsel</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Marketing</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Marketing Lead</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -664,10 +464,6 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>PCC BD Lead</fullName>
                 <default>false</default>
             </picklistValues>
@@ -676,127 +472,11 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Peer Reviewer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>PMA</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pricing Execution</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pricing Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Pricing Support</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Prior Team Member</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Project/Program Director</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Project Cost/Schedule Controls</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Project Engineer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Project Manager</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Project Staff</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Proposal Coordinator</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Proposal Manager</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Proposal Team Member</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Pursuit Manager</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Quality</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Quality Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Regional Liaison</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Resident Project Manager</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Resume Writer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Review Team</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Safety</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Safety Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Scientist</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>SME - Contracts</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>SME - HR</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>SME - Safety</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>SME - Security</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>SME - Tax</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>SME - Technical</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Solution Architect</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -809,18 +489,6 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Technical Proposal Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Technical Writer</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Volume Lead</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Volume Writer</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -871,7 +539,15 @@
                 <fullName>Win Principal - Water</fullName>
                 <default>false</default>
             </picklistValues>
-            <sorted>true</sorted>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Prior Team Member</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
         </picklist>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
@@ -880,7 +556,7 @@
     <fields>
         <fullName>Status__c</fullName>
         <externalId>false</externalId>
-        <formula>IF(Employee_User__c != null,IF(Employee_User__r.IsActive &lt;&gt; False, &apos;Active&apos;,&apos;Inactive&apos;),TEXT(Employee__r.Status__c))</formula>
+        <formula>TEXT(Employee__r.Status__c)</formula>
         <label>Status</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -902,8 +578,8 @@
         <language>en_US</language>
     </listViews>
     <nameField>
-        <displayFormat>TEAM-{000000}</displayFormat>
-        <label>AECOM Team Name</label>
+        <displayFormat>TEAM-{0}</displayFormat>
+        <label>Number</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
@@ -1109,10 +785,6 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Evaluator</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>Other</fullName>
                 <default>false</default>
             </values>
@@ -1175,22 +847,6 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Architect</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BD Contact</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BD Executive</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BD Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>BD Lead - Building Engineering</fullName>
                 <default>false</default>
             </values>
@@ -1239,127 +895,7 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Business Line Dir</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Business Line Dir - Client Sector</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Business Line Dir - Market Segment</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Business Line Liaison</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Business Manager</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Business Stream Manager</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Buyer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Capital Projects Delivery - Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Capture Executive</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Capture Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>Client Manager</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Consultant</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Contracts Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Contracts%2FSubcontracts Mgmt</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Deal Shaper</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Deputy Project Manager</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Editor</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>End Markets Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>End Markets Monitoring</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>End Markets Support</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Engineer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Engineering Discipline Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Engineering Manager</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Estimator</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Evaluator</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Executive in Charge</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Government Technical Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Graphic Artist</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Human Resources Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>IT Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>IT Support</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1415,14 +951,6 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Marketing</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Marketing Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>PCC BD Lead</fullName>
                 <default>false</default>
             </values>
@@ -1431,55 +959,7 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>PMA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Peer Reviewer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pricing Execution</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pricing Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pricing Support</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>Prior Team Member</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project Cost%2FSchedule Controls</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project Engineer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project Manager</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project Staff</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project%2FProgram Director</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Proposal Coordinator</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Proposal Manager</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1491,87 +971,11 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Quality</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Quality Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Regional Liaison</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Resident Project Manager</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Resume Writer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Review Team</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SME - Contracts</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SME - HR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SME - Safety</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SME - Security</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SME - Tax</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SME - Technical</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Safety</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Safety Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Scientist</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Solution Architect</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>Team Member</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Technical Proposal Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Technical Writer</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Volume Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Volume Writer</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1620,14 +1024,7 @@
         <searchFilterFields>NAME</searchFilterFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
-    <validationRules>
-        <fullName>CAM_Relationship_Status_between_0_and_3</fullName>
-        <active>true</active>
-        <description>Prevents user from entering a value greater than 3</description>
-        <errorConditionFormula>CAM_Relationship_Status__c &gt; 3</errorConditionFormula>
-        <errorDisplayField>CAM_Relationship_Status__c</errorDisplayField>
-        <errorMessage>CAM Relationship Status must be 0, 1, 2, or 3. Hover over the orange ? dot for definitions of each level.</errorMessage>
-    </validationRules>
+    <startsWith>Vowel</startsWith>
     <webLinks>
         <fullName>New_Account_Team_Member</fullName>
         <availability>online</availability>

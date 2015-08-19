@@ -1,0 +1,1581 @@
+<apex:page standardController="Agreement__c" showHeader="false" renderAs="pdf" sidebar="false" doctype="html-5.0" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false"  extensions="ECO_AgreementControllerPdf" action="{!init}">
+    <head>
+<style>
+            @page{
+                size:landscape;
+            }
+            body{
+                font-family:arial, sans-serif;
+                font-size:80%;
+            }
+            .headerInfo{
+                height:65px;
+                border-bottom: 2px solid #DDDDDD;
+                padding:0 0 15px 0; 
+                margin: 0 0 25px 0;
+                background-position:top right;
+                background-repeat:no-repeat;
+                background-size:5% auto !important;
+                background-image : url({!URLFOR($Resource.ECO_CustomGraphicAssets, 'PDFLogo.jpg')});
+            }
+            .headerInfo h1{
+                margin:-2px 0 0 0;
+                font-size:16px;
+                line-height:80%;
+            }
+            .headerInfo h2{
+                font-size:16px;
+                line-height:80%;
+            }
+            .headerInfo h5{
+                line-height:80%;
+                margin:0;
+            }
+            .rightHeaderInfo{
+                float:right; 
+                border-left:2px solid #ddd; 
+                height:40px;
+                vertical-align:middle; 
+                padding-left:55px;
+                position:absolute;
+                right:0;
+                top:0;
+                padding:50px 10px 0 25px;
+                width:150px;
+                
+            }
+            table{
+                border: 1px solid #ddd;
+                width:100%; 
+            }
+            table tr th {
+                vertical-align: bottom;
+                background-color: #f8f8f8;
+                
+            }
+            table>caption+thead>tr:first-child>td, table>caption+thead>tr:first-child>th, table>colgroup+thead>tr:first-child>td, table>colgroup+thead>tr:first-child>th, table>thead:first-child>tr:first-child>td, table>thead:first-child>tr:first-child>th {
+                border-top: 0;
+            }
+            table>tbody>tr>td, table>tbody>tr>th, table>tfoot>tr>td, table>tfoot>tr>th, table>thead>tr>td, table>thead>tr>th, table tr td, table tr th {
+                padding: 5px;
+                line-height: 1.42857143;
+                vertical-align: top;
+                border-top: 1px solid #ddd;
+            }
+            table tr > td > td, table tr > td > tr > td, td > td, td > span > table tr td, td > table tr td, td > span > table, td > table {
+                border:none;
+                padding:0;
+            }
+            .notificationAndAlerts > span > div > table > tbody > tr:last-child, .notificationAndAlerts > span > div > table > tbody > tr > td:first-child, .notificationAndAlerts td:first-child, .notificationAndAlerts table tr:last-child {
+                display:none;
+                border:none;
+                padding:0;
+                width:0;
+            }
+            .notificationAndAlerts table > tbody > tr > td:first-child, .notificationAndAlerts table > tbody > tr:last-child{
+                display:none;
+            }
+
+            .pbHeader > table > tbody > tr > td, .pbHeader > table, .pbHeader table td, .pbHeader table{
+                border:none !important;
+                padding: 0;
+            }
+            .pbHeader{
+                
+            }
+            .pbSubheader {
+                margin: 6px 0 0 0;
+                background-color:#008cb2;
+                color:#fff;
+                -moz-border-radius: 4px 4px 0 0;
+                -webkit-border-radius:  4px 4px 0 0;
+                border-radius:  4px 4px 0 0;
+                border-top: 3px solid #f8f8f8;
+                padding:4px 12px 4px 12px;
+            }
+            .pbSubheader h3{
+                margin:0;
+            }
+            .footer{
+                position:absolute; 
+                width:100%; 
+                height:100px; 
+                bottom:0; 
+                border-top:1px solid #4a4a56; 
+                padding-top:15px;
+                margin-top:255px;
+            }
+            .risk{
+                background:#ebebeb;
+            }
+            .notificationAndAlerts table, .notificationAndAlerts td{
+                border:none !important;
+                width:auto;
+                padding:0;
+            }
+            .mainTitle{
+                margin:15px 0 -5px 0;
+            }
+            td >span >div >table >tbody >tr >td, td >span >div >table >tbody >tr >th{
+                border:none;
+                padding:0;
+                width:auto;
+            }
+
+            table table{
+                border:0;
+                padding:0;
+            }
+        </style>    
+    </head>
+
+
+
+    <div class="headerInfo">
+        <h5>{!agreement.Name}</h5>
+        <h2 style="line-height:80%;">Project: {!project.Name}</h2>
+
+        <div class="rightHeaderInfo">
+            Project ID:<br/>
+            {!project.EcoSystemReferenceNumber__c}
+        </div>
+        <!-- dont need this on this page
+        <h1 style="">
+            <apex:outputLabel for="QuestionnaireSetName" value="Version: "/>
+            <apex:outputText value="{!oQuestionnaireSet.Name}" />
+        </h1>
+        -->
+
+    </div>
+
+
+    <div class="footer">
+        {!project.EcoSystemReferenceNumber__c} | {!project.Name} | {!agreement.Name} | <strong>FOR INTERNAL USE ONLY</strong>
+    </div>
+
+
+    <apex:outputPanel rendered="{!agreementRecordType != 'Prime (MSA)' && agreementRecordType != 'Prime' && agreementRecordType != 'Sub' && agreementRecordType != 'Inter-Company' && agreementRecordType != 'Prime Task Order'}">
+        <apex:detail relatedList="false" title="true" inlineEdit="true"/>   
+        <apex:pageBlock >
+            <apex:pageBlockSection >
+                <apex:outputField value="{!agreement.Name}" />
+            </apex:pageBlockSection>
+        
+            <br />
+            <br />
+            <apex:outputText value="Agreement Record Type:"/><apex:outputText value="{agreementRecordType}"/>
+            <apex:outputtext value="Reminder: Prior to initiating a contract review, contact the relevant Client Account Manager, Program Manager or Contract Manager to assess any account-specific procedures or lessons learned from previous contracting exercises, and to avoid potential duplicate reviews." />
+            <br />
+            <br />
+            <br />
+            <br />
+    
+    
+        </apex:pageBlock>
+    
+        <apex:relatedList list="CombinedAttachments"/>
+    
+        <apex:relatedList list="PurchaseOrders__r"/>
+        
+        <apex:relatedList list="Funding__r" />
+    
+    </apex:outputPanel>
+
+    <apex:outputPanel rendered="{!agreementRecordType =='Prime'}">
+        <apex:pageBlock >
+        <h2>Prime Agreement Summary</h2>
+        <apex:pageBlockSection >
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
+                <apex:outputText value="ECO Agreement Number"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.Name}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Ecosystem Project Reference ID"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!project.EcoSystemReferenceNumber__c}" />              
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Agreement Status"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementStatus__c}" />    
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Oracle Project No"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!project.OracleProjectnumber__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementNumber__c.inlineHelpText}">
+                <apex:outputText value="Oracle Agreement No"/>
+                 <apex:outputPanel >
+                <apex:outputField value="{!agreement.AgreementNumber__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Project Name"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!project.Name}"  />
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ParentAgreement__c.inlineHelpText}">
+                <apex:outputText value="Parent Agreement"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ParentAgreement__c}" />        
+                </apex:outputPanel>     
+            </apex:pageBlockSectionItem>            
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProjectTeamMember__c.inlineHelpText}">
+                <apex:outputText value="Agreement Owner"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ProjectTeamMember__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Billing Client"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.Account__c}" />    
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementExecutedBy__c.inlineHelpText}">
+                <apex:outputText value="Agreement Executed By"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementExecutedBy__c}" />    
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.InvoicingClient__c.inlineHelpText}">
+                <apex:outputText value="Invoicing Client"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.InvoicingClient__c}" />        
+                </apex:outputPanel>     
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExecutionDate__c.inlineHelpText}">
+                <apex:outputText value="Execution Date"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ExecutionDate__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ContractTitle__c.inlineHelpText}">
+                <apex:outputText value="Contract Title/Name"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ContractTitle__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FeeType__c.inlineHelpText}">
+                <apex:outputText value="Fee Type"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.FeeType__c}" />        
+                </apex:outputPanel>     
+            </apex:pageBlockSectionItem>            
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ClientContractReferenceNo__c.inlineHelpText}">
+                <apex:outputText value="Client Contract Reference No."/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ClientContractReferenceNo__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>            
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Payment Terms"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.PaymentTerms__c}" />
+                </apex:outputPanel>             
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Contract Type"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementType__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>            
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FundingCurrencyCode__c.inlineHelpText}">
+                <apex:outputText value="Agreement Currency"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.FundingCurrencyCode__c}" />    
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="The date the agreement record was created in Ecosystem (& Oracle)">
+                <apex:outputText value="Create Date"/>
+                <apex:outputField value="{!agreement.CreatedDate}"/>                
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Amount__c.inlineHelpText}">
+                <apex:outputText value="Agreement Amount (confirmed)"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.Amount__c}" /> 
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.StartDate__c.inlineHelpText}">
+                <apex:outputText value="Start Date"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.StartDate__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>                                            
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementAmountEstimated__c.inlineHelpText}">
+                <apex:outputText value="Agreement Amount (estimated)"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementAmountEstimated__c}" />
+                </apex:outputPanel>             
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExpirationDate__c.inlineHelpText}">
+                <apex:outputText value="End Date"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ExpirationDate__c}" /> 
+                </apex:outputPanel>                         
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Total Funding Amount"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.TotalFundingAmount__c}" /> 
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProfIndemnityLiabilityAmt__c.inlineHelpText}">
+                <apex:outputText value="Prof Indemnity/Liability Amt"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ProfIndemnityLiabilityAmt__c}" />
+                </apex:outputPanel>                                         
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Agreement - Funding Variance"/>
+                <apex:outputField value="{!agreement.AgreementFundingVariance__c}"/>                
+            </apex:pageBlockSectionItem>            
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.PublicGeneralLiabilityAmt__c.inlineHelpText}">
+                <apex:outputText value="Public/General Liability Amt"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.PublicGeneralLiabilityAmt__c}" />      
+                </apex:outputPanel>     
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                    <apex:outputText value="Variance Reason"/>
+                    <apex:outputPanel >
+                        <apex:outputField value="{!agreement.VarianceReason__c}" /> 
+                    </apex:outputPanel>                                                 
+            </apex:pageBlockSectionItem>   
+                 
+            <apex:pageBlockSectionItem >
+            	<apex:outputText value="Revenue Limit"/>
+                <apex:outputPanel >
+                        <apex:outputField value="{!agreement.RevenueLimitFlag__c}" />                 
+                </apex:outputPanel>     
+            </apex:pageBlockSectionItem>    
+            
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Action Code"/>
+                <apex:outputPanel >
+                <apex:outputField value="{!agreement.ActionCode__c}"  />   
+                </apex:outputPanel>           	           
+            </apex:pageBlockSectionItem>
+                
+            <apex:pageBlockSectionItem >
+            	<apex:outputText value="Invoice Limit"/>
+                <apex:outputPanel >
+                        <apex:outputField value="{!agreement.InvoiceLimitFlag__c}" />                 
+                </apex:outputPanel>     
+            </apex:pageBlockSectionItem>    
+
+            <apex:pageBlockSectionItem >    
+                <apex:outputText value="Change Manager Approved For Synch"/>  
+               <apex:outputPanel >          
+                	<apex:outputField value="{!agreement.ChangeManagerApprovedForSynch__c}"  />  
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem >    
+                <apex:outputText value="Change Manager Is Changed"/>      
+                <apex:outputPanel >      
+                	<apex:outputField value="{!agreement.ChangeManagerIsChanged__c}"  />  
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+                                                                                                                                   
+        </apex:pageBlockSection>
+        
+        <apex:pageBlockSection columns="2">
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ScopePackage__c.inlineHelpText}">
+                <apex:outputText value="Scope Package"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ScopePackage__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+                
+			<apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ScopeOfServices__c.inlineHelpText}">
+                <apex:outputText value="Scope of Services"/>
+                <apex:outputPanel id="primeScope">
+                    <apex:outputField value="{!agreement.ScopeOfServices__c}" rendered="{!mode == '' && agreement.ScopePackage__c == null}"/>
+                    <apex:outputField value="{!agreement.ScopePackage__r.Scope_Details__c}" rendered="{!agreement.ScopePackage__c != null}"/>
+                </apex:outputPanel>             
+            </apex:pageBlockSectionItem>    
+        </apex:pageBlockSection>        
+        </apex:pageBlock>
+        
+        <apex:pageBlock title="Funding" >
+            <apex:outputPanel rendered="{!fundings.size > 0}">
+            <apex:pageBlockTable value="{!fundings}" var="funding">
+                <apex:column headervalue="Date Allocated">
+                    <apex:outputField value="{!funding.CreatedDate}" rendered="{!funding.DateAllocatedDate__c == null}"></apex:outputField>
+                    <apex:outputField value="{!funding.DateAllocatedDate__c}" rendered="{!funding.DateAllocatedDate__c != null}"></apex:outputField>                    
+                </apex:column>                  
+                <apex:column headervalue="Allocated Amount">
+                    <apex:outputField value="{!funding.TotalBaselinedAmount__c}" rendered="{!funding.AllocatedAmount__c==null}"/>
+                    <apex:outputField value="{!funding.AllocatedAmount__c}" rendered="{!funding.AllocatedAmount__c!=null}"/>
+                </apex:column>
+        </apex:pageBlockTable>      
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!fundings.size == 0}">
+            <apex:outputText value="No records to display"/>
+        </apex:outputPanel> 
+        </apex:pageBlock>     
+<!--         <c:ECO_MSAFlyout MSAId="{!agreement.MSAReference__c}" rendered="{!agreement.MSAReference__c != null}" id="primeMSAFlyout"/>  -->
+<!--  TODO: check these 2 components      
+        <c:ECO_RiskFlyout ProjectId="{!project.Id}" rendered="{!project != null}" PlanElement="" />
+        <c:ECO_AssumptionFlyout ProjectId="{!project.Id}" rendered="{!project != null}" PlanElement="" />
+-->
+
+    <apex:relatedList list="ContractReviews__r" />
+    <apex:relatedList list="CombinedAttachments"  />   
+    </apex:outputPanel> 
+
+    <!-- Sub -->    
+    <apex:outputPanel rendered="{!agreementRecordType =='Sub'}">
+        <apex:pageBlock >
+        <h2>Sub Agreement Summary</h2>
+        <apex:pageBlockSection >
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
+                <apex:outputText value="ECO Agreement Number"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.Name}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Ecosystem Project Reference ID"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!project.EcoSystemReferenceNumber__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Agreement Status"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementStatus__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Oracle Project No"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!project.OracleProjectnumber__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>        
+
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.MSAReference__c.inlineHelpText}">
+                <apex:outputText value="MSA Reference"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.MSAReference__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Project Name"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!project.Name}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ParentAgreement__c.inlineHelpText}">
+                <apex:outputText value="Parent Agreement"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ParentAgreement__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProjectTeamMember__c.inlineHelpText}">
+                <apex:outputText value="Agreement Owner"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ProjectTeamMember__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.VendorName__c.inlineHelpText}">
+                <apex:outputText value="Sub Name"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.VendorName__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>            
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementExecutedBy__c.inlineHelpText}">
+                <apex:outputText value="Agreement Executed By"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementExecutedBy__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ContractTitle__c.inlineHelpText}">
+                <apex:outputText value="Contract Title/Name"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ContractTitle__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExecutionDate__c.inlineHelpText}">
+                <apex:outputText value="Execution Date"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ExecutionDate__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="Enter the Subs reference number (if applicable)">
+                <apex:outputText value="Vendor/Sub Contract Reference No."/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ClientContractReferenceNo__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FeeType__c.inlineHelpText}">
+                <apex:outputText value="Fee Type"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.FeeType__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>            
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Contract Type"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementType__c}" />      
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Payment Terms"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.PaymentTerms__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Back-To-Back with Prime"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.BacktoBackwithPrime__c}" />    
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FundingCurrencyCode__c.inlineHelpText}">
+                <apex:outputText value="Agreement Currency"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.FundingCurrencyCode__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="The date the agreement record was created in Ecosystem (& Oracle)">
+                <apex:outputText value="Create Date"/>
+                <apex:outputField value="{!agreement.CreatedDate}"/>                
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Amount__c.inlineHelpText}">
+                <apex:outputText value="Agreement Amount (confirmed)"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.Amount__c}" />
+                </apex:outputPanel>             
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.StartDate__c.inlineHelpText}">
+                <apex:outputText value="Start Date"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.StartDate__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>                                                
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementAmountEstimated__c.inlineHelpText}">
+                <apex:outputText value="Agreement Amount (estimated)"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementAmountEstimated__c}" />   
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExpirationDate__c.inlineHelpText}">
+                <apex:outputText value="End Date"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ExpirationDate__c}" /> 
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Total Purchase Orders Raised"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.TotalFundingAmount__c}" />
+                </apex:outputPanel>             
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProfIndemnityLiabilityAmt__c.inlineHelpText}">
+                <apex:outputText value="Prof Indemnity/Liability Amt"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ProfIndemnityLiabilityAmt__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Total Invoiced"/>
+                <apex:outputField value="{!agreement.Total_Invoiced__c}"/>              
+            </apex:pageBlockSectionItem>            
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.PublicGeneralLiabilityAmt__c.inlineHelpText}">
+                <apex:outputText value="Public/General Liability Amt"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.PublicGeneralLiabilityAmt__c}" />      
+                </apex:outputPanel>     
+            </apex:pageBlockSectionItem>            
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Total Paid" />
+                <apex:outputField value="{!agreement.TotalPaid__c}" />              
+            </apex:pageBlockSectionItem>        
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="2">
+                <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ScopePackage__c.inlineHelpText}">
+                    <apex:outputText value="Scope Package"/>
+                    <apex:outputPanel >
+                        <apex:outputField value="{!agreement.ScopePackage__c}" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>    
+                
+                <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ScopeOfServices__c.inlineHelpText}">
+                    <apex:outputText value="Scope of Services"/>
+                    <apex:outputPanel id="subScope">
+                        <apex:outputField value="{!agreement.ScopeOfServices__c}" />
+                        <apex:outputField value="{!agreement.ScopePackage__r.Scope_Details__c}" />          
+                    </apex:outputPanel>         
+                </apex:pageBlockSectionItem>                                  
+                                                                                                                            
+            </apex:pageBlockSection>
+        
+        </apex:pageBlock>   
+        <!-- <c:ECO_MSAFlyout MSAId="{!agreement.MSAReference__c}" rendered="{!agreement.MSAReference__c != null}"/>  -->
+        <!--  TODO: check these 2 components     
+        <c:ECO_RiskFlyout ProjectId="{!project.Id}" rendered="{!project != null}" PlanElement="" />
+        <c:ECO_AssumptionFlyout ProjectId="{!project.Id}" rendered="{!project != null}" PlanElement="" />
+        -->
+		<apex:pageBlock title="Purchase Orders" >
+			<apex:pageBlockTable value="{!PurchaseOrders}" var="po" rendered="{!PurchaseOrders != null}">
+				<apex:column headervalue="Purchase Order Number"><apex:outputField value="{!po.Name}"/></apex:column>				
+				<apex:column headervalue="Project"><apex:outputField value="{!po.Project__c}"/></apex:column>				
+				<apex:column headervalue="PO Date"><apex:outputField value="{!po.PODate__c}"/></apex:column>				
+				<apex:column headervalue="PO Type"><apex:outputField value="{!po.POType__c}"/></apex:column>				
+				<apex:column headervalue="Requestor"><apex:outputField value="{!po.Requestor__c}"/></apex:column>				
+				<apex:column headervalue="Status"><apex:outputField value="{!po.Status__c}"/></apex:column>				
+				<apex:column headervalue="Total"><apex:outputField value="{!po.Total__c}"/></apex:column>				
+				<apex:column headervalue="Created Date"><apex:outputField value="{!po.CreatedDate}"/></apex:column>				
+				<apex:column headervalue="Created By"><apex:outputField value="{!po.CreatedById}"/></apex:column>				
+
+			</apex:pageBlockTable>
+			<apex:outputPanel rendered="{!PurchaseOrders == null}">
+            	<apex:outputText value="No records to display"/>
+        	</apex:outputPanel> 
+		</apex:pageBlock>
+    
+    <apex:relatedList list="ContractReviews__r" />
+    <apex:relatedList list="CombinedAttachments" />
+    
+    </apex:outputPanel> 
+    
+    <!-- Inter-Company -->  
+    <apex:outputPanel rendered="{!agreementRecordType =='Inter-Company'}">
+		<apex:pageBlock >
+        <h2>Inter-Company Agreement Summary</h2>         
+        <apex:pageBlockSection >
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
+                <apex:outputText value="ECO Agreement Number"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.Name}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Ecosystem Project Reference ID"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!project.EcoSystemReferenceNumber__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Agreement Status"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementStatus__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Oracle Project No"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!project.OracleProjectnumber__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>        
+
+            <apex:pageBlockSectionItem helptext="Select if any parent agreement is applicable (e.g. standing contract, JV, prime contract for back-to-back with subs)">
+                <apex:outputText value="Prime Agreement"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ParentAgreement__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Project Name"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!project.Name}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ParentAgreement__c.inlineHelpText}">
+                <apex:outputText value="Project Billing Client"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.Account__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProjectTeamMember__c.inlineHelpText}">
+                <apex:outputText value="Agreement Owner"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ProjectTeamMember__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem helptext="">
+                <apex:outputText value="Interco Project"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.IntercoProject__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementExecutedBy__c.inlineHelpText}">
+                <apex:outputText value="Agreement Executed By"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementExecutedBy__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>            
+            
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.VendorName__c.inlineHelpText}">
+                <apex:outputText value="Intercompany Subconsultant"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.IntercompanySubconsultant__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>        
+
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExecutionDate__c.inlineHelpText}">
+                <apex:outputText value="Execution Date"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ExecutionDate__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>                    
+    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.TeamLeaderName__c.inlineHelpText}">
+                <apex:outputText value="Team Leader (Name)"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.TeamLeaderName__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem helptext="">
+                <apex:outputText value="Payment Terms"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.PaymentTerms__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>                    
+
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Team Leader (Title)"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.TeamLeaderTitle__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FundingCurrencyCode__c.inlineHelpText}">
+                <apex:outputText value="Agreement Currency"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.FundingCurrencyCode__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>            
+            
+            <apex:pageBlockSectionItem helptext="Select the type of fee structure to be used." >
+                <apex:outputText value="Interco Fee Type"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.FeeType__c}" />        
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Amount__c.inlineHelpText}">
+                <apex:outputText value="Agreement Amount (confirmed)"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.Amount__c}" />
+                </apex:outputPanel>             
+            </apex:pageBlockSectionItem>            
+    
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Back-To-Back with Prime"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.BacktoBackwithPrime__c}" />    
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>        
+    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementAmountEstimated__c.inlineHelpText}">
+                <apex:outputText value="Agreement Amount (estimated)"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementAmountEstimated__c}" />   
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem helptext="The date the agreement record was created in Ecosystem (& Oracle)">
+                <apex:outputText value="Create Date"/>
+                <apex:outputField value="{!agreement.CreatedDate}"/>                
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Purchase Order (only applicable if not using Cross-Charging)"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.TotalFundingAmount__c}" />
+                </apex:outputPanel>             
+            </apex:pageBlockSectionItem>            
+
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.StartDate__c.inlineHelpText}">
+                <apex:outputText value="Start Date"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.StartDate__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>        
+            
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Total Purchase Orders Raised"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.TotalFundingAmount__c}" />
+                </apex:outputPanel>             
+            </apex:pageBlockSectionItem>                                                    
+        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExpirationDate__c.inlineHelpText}">
+                <apex:outputText value="End Date"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ExpirationDate__c}" /> 
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>    
+                
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Total Invoiced"/>
+                <apex:outputField value="{!agreement.Total_Invoiced__c}"/>              
+            </apex:pageBlockSectionItem>            
+                    
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Total Paid" />
+                <apex:outputField value="{!agreement.TotalPaid__c}" />              
+            </apex:pageBlockSectionItem>        
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="2" title="AECOM General Conditions for Inter-Company Subcontracts">
+            <div class="infoTable">
+                <table cellpadding="0" cellspacing="0">
+                    <TR>
+                        <TD><b>1.0 Application of Main Contract Conditions</b><br/>
+                        The Subconsultant shall be bound by the conditions of the Main Contract, which the Subconsultant is deemed to have reviewed and accepted at proposal stage, to the extent that they are <br/>applicable to the Subconsultancy Services (as defined in Section A Below).</TD>
+                    </TR>   
+                    <TR>
+                        <TD><b>2.0 Responsibility</b><br/>
+                        The Subconsultant shall be responsible for the professional quality, technical accuracy, coordination and timely completion (in accordance with the program requirements set forth <br/>in the scope below) of the Subconsultancy Services, shall correct any errors or deficiencies therein at its own cost, and shall indemnify the Lead Consultant against any resultant costs or liabilities.</TD>
+                    </TR>
+                    <TR >
+                        <TD><b>3.0 Payment</b><br/>
+                        Unless stipulated to the contrary in Section B, the Subconsultant shall invoice the Lead Consultant on the basis of the Main Contract payment schedule.  Payments shall be made by the Lead-Consultant<br/> within 30 days from the date of the submitted invoice.  In the event that all or part of a payment is withheld by the Client for reasons attributable to the Lead-Consultant, the Lead Consultant shall pay the Subconsultant?s invoice in full.   
+                        </TD>   
+                    </TR>   
+                    <TR>
+                        <td><b>4.0 Change Orders</b><br/>
+                        In the event that the Lead Consultant instructs the Subconsultant to proceed with additional or varied work, approval for which is subsequently withheld by the Client, the Lead Consultant shall nonetheless<br/> pay the Subconsultant?s invoice for such work within 30 days of invoice date.
+                        </td>
+                    </TR>
+                    <TR>
+                        <td><b>5.0 Dispute Resolution</b><br/>
+                        Any dispute which cannot be resolved between the Lead Consultant?s Project Manager and the Subconsultant?s Team Leader shall be referred to the Presidents / Regional Chief Executives of the two companies, and<br/> if still not agreed, shall be finally decided on by the Group Chief Executive(s) concerned.</td>
+                    </TR>                   
+                                                                                                                                                                                                        
+                </table>
+            </div>          
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="2" title="Section A - Scope of Services">
+                <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ScopePackage__c.inlineHelpText}">
+                    <apex:outputText value="Scope Package"/>
+                    <apex:outputPanel >
+                        <apex:outputField value="{!agreement.ScopePackage__c}" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem>    
+                
+                <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ScopeOfServices__c.inlineHelpText}">
+                    <apex:outputText value="Scope of Services"/>
+                    <apex:outputPanel id="subScope">
+                        <apex:outputField value="{!agreement.ScopeOfServices__c}" />
+                        <apex:outputField value="{!agreement.ScopePackage__r.Scope_Details__c}" />          
+                    </apex:outputPanel>         
+                </apex:pageBlockSectionItem>                                 
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="2" title="Section B - Commercial Terms">
+                    <apex:pageblockSectionItem >
+                        <apex:outputText value="In accordance with the AECOM Transfer Pricing Policy, the Lead Consultant will be charged FBLR+5% on all labour inputs by the Subconsultant."/>
+                        <apex:outputPanel >
+                        <apex:outputField value="{!agreement.CommericialTerms__c}"  />
+                        </apex:outputPanel>                     
+                    </apex:pageblockSectionItem>
+                    <apex:pageblockSectionItem >
+                        <apex:outputText value="Other (please describe below)"/>
+                        <apex:outputPanel >                     
+                        <apex:outputField value="{!agreement.CommericialTerms__c}" />
+                        </apex:outputPanel>
+                    </apex:pageblockSectionItem>
+                    <apex:pageblockSectionItem >
+                        <apex:outputPanel >
+                            <apex:outputField value="{!agreement.CommericialTermsDescription__c}" />                       
+                        </apex:outputPanel>
+                    </apex:pageblockSectionItem>    
+            </apex:pageBlockSection>
+            
+            <apex:pageBlockSection columns="2" title="Section C - Special Conditions">          
+                <apex:outputField value="{!agreement.SpecialConditions__c}" />                     
+            </apex:pageBlockSection>
+        
+        </apex:pageBlock>  
+		<apex:pageBlock title="Purchase Orders" >
+			<apex:pageBlockTable value="{!PurchaseOrders}" var="po" rendered="{!PurchaseOrders != null}">
+				<apex:column headervalue="Purchase Order Number"><apex:outputField value="{!po.Name}"/></apex:column>				
+				<apex:column headervalue="Project"><apex:outputField value="{!po.Project__c}"/></apex:column>				
+				<apex:column headervalue="PO Date"><apex:outputField value="{!po.PODate__c}"/></apex:column>				
+				<apex:column headervalue="PO Type"><apex:outputField value="{!po.POType__c}"/></apex:column>				
+				<apex:column headervalue="Requestor"><apex:outputField value="{!po.Requestor__c}"/></apex:column>				
+				<apex:column headervalue="Status"><apex:outputField value="{!po.Status__c}"/></apex:column>				
+				<apex:column headervalue="Total"><apex:outputField value="{!po.Total__c}"/></apex:column>				
+				<apex:column headervalue="Created Date"><apex:outputField value="{!po.CreatedDate}"/></apex:column>				
+				<apex:column headervalue="Created By"><apex:outputField value="{!po.CreatedById}"/></apex:column>				
+
+			</apex:pageBlockTable>
+			<apex:outputPanel rendered="{!PurchaseOrders == null}">
+            	<apex:outputText value="No records to display"/>
+        	</apex:outputPanel> 
+		</apex:pageBlock>
+         
+      <!--   <c:ECO_MSAFlyout MSAId="{!agreement.MSAReference__c}" rendered="{!agreement.MSAReference__c != null}"/>  -->
+      <!--  TODO: check these 2 components     
+        <c:ECO_RiskFlyout ProjectId="{!project.Id}" rendered="{!project != null}" PlanElement="" />
+        <c:ECO_AssumptionFlyout ProjectId="{!project.Id}" rendered="{!project != null}" PlanElement="" />
+        -->
+    <apex:relatedList list="ContractReviews__r" />
+    <apex:relatedList list="CombinedAttachments" />
+    
+    </apex:outputPanel>     
+
+    <!-- Prime Task Order -->   
+    <apex:outputPanel rendered="{!agreementRecordType =='Prime Task Order'}" id="primeTaskOrder">
+        <apex:pageBlock >
+        <h2>Prime Task Order Agreement Summary</h2>
+        <apex:pageBlockSection >
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
+                <apex:outputText value="ECO Agreement Number"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.Name}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Ecosystem Project Reference ID"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!project.EcoSystemReferenceNumber__c}" />              
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Agreement Status"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementStatus__c}" />    
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Oracle Project No"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!project.OracleProjectnumber__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementNumber__c.inlineHelpText}">
+                <apex:outputText value="Oracle Agreement No"/>
+                <apex:outputField value="{!agreement.AgreementNumber__c}"/>
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Project Name"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!project.Name}" />
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>    
+            <apex:pageBlockSectionItem helptext="Search and select the MSA that applies to the contract. ">
+                <apex:outputText value="MSA Reference"/>
+                <apex:outputPanel id="testPanel">
+                    <apex:outputField value="{!agreement.MSAReference__c}" />       
+                </apex:outputPanel>     
+            </apex:pageBlockSectionItem>
+                        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProjectTeamMember__c.inlineHelpText}">
+                <apex:outputText value="Agreement Owner"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ProjectTeamMember__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>
+            <apex:pageBlockSectionItem helptext="Search and select the MSA that applies to the contract. ">
+                <apex:outputText value="MSA Period"/>
+                <apex:outputPanel rendered="{!agreement.MSAReference__c != null}">
+                    <apex:outputField value="{!agreement.MSAReference__r.OrderingPeriodStart__c}"  html-placeholder="Start Date"/>
+                    <apex:outputText value=" - "/>
+                    <apex:outputField value="{!agreement.MSAReference__r.OrderingPeriodEnd__c}"  html-placeholder="End Date"/>          
+                </apex:outputPanel>     
+            </apex:pageBlockSectionItem>        
+
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementExecutedBy__c.inlineHelpText}">
+                <apex:outputText value="Agreement Executed By"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementExecutedBy__c}" />    
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="End Client"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.Account__c}" />    
+                </apex:outputPanel>                     
+            </apex:pageBlockSectionItem>
+                            
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExecutionDate__c.inlineHelpText}">
+                <apex:outputText value="Execution Date"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ExecutionDate__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.InvoicingClient__c.inlineHelpText}">
+                <apex:outputText value="Invoicing Client"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.InvoicingClient__c}" />        
+                </apex:outputPanel> 
+            </apex:pageBlockSectionItem>        
+
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FeeType__c.inlineHelpText}">
+                <apex:outputText value="Fee Type"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.FeeType__c}" />        
+                </apex:outputPanel>     
+            </apex:pageBlockSectionItem>    
+            
+            <apex:pageBlockSectionItem helptext="Enter a Title or Name of the Contract">
+                <apex:outputText value="Task Order Title/Name"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ContractTitle__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>        
+
+            <apex:pageBlockSectionItem id="termId">
+                <apex:outputText value="Payment Terms"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.PaymentTerms__c}" />
+                </apex:outputPanel> 
+            </apex:pageBlockSectionItem>
+            
+            <apex:pageBlockSectionItem helptext="Enter the Clients reference number (if applicable)">
+                <apex:outputText value="Task Order Reference No."/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ClientContractReferenceNo__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>            
+
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FundingCurrencyCode__c.inlineHelpText}">
+                <apex:outputText value="Agreement Currency"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.FundingCurrencyCode__c}" />    
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>    
+    
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Contract Type"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementType__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>            
+
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Amount__c.inlineHelpText}">
+                <apex:outputText value="Agreement Amount (confirmed)"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.Amount__c}" /> 
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem helptext="The date the agreement record was created in Ecosystem (& Oracle)">
+                <apex:outputText value="Create Date"/>
+                <apex:outputField value="{!agreement.CreatedDate}"/>                
+            </apex:pageBlockSectionItem>    
+            
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementAmountEstimated__c.inlineHelpText}">
+                <apex:outputText value="Agreement Amount (estimated)"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.AgreementAmountEstimated__c}" />
+                </apex:outputPanel>             
+            </apex:pageBlockSectionItem>            
+    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.StartDate__c.inlineHelpText}">
+                <apex:outputText value="Start Date"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.StartDate__c}" />  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>                    
+            
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Total Funding Amount"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.TotalFundingAmount__c}" /> 
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>                                        
+        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExpirationDate__c.inlineHelpText}">
+                <apex:outputText value="End Date"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ExpirationDate__c}" /> 
+                </apex:outputPanel>                         
+            </apex:pageBlockSectionItem>    
+
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Agreement - Funding Variance"/>
+                <apex:outputField value="{!agreement.AgreementFundingVariance__c}"/>                
+            </apex:pageBlockSectionItem>    
+    
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProfIndemnityLiabilityAmt__c.inlineHelpText}">
+                <apex:outputText value="Prof Indemnity/Liability Amt"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ProfIndemnityLiabilityAmt__c}" />
+                </apex:outputPanel>                                         
+            </apex:pageBlockSectionItem>    
+            
+            <apex:pageBlockSectionItem >
+                    <apex:outputText value="Variance Reason"/>
+                    <apex:outputPanel >
+                        <apex:outputField value="{!agreement.VarianceReason__c}" /> 
+                    </apex:outputPanel>                                                 
+            </apex:pageBlockSectionItem>            
+        
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.PublicGeneralLiabilityAmt__c.inlineHelpText}">
+                <apex:outputText value="Public/General Liability Amt"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.PublicGeneralLiabilityAmt__c}" />      
+                </apex:outputPanel>     
+            </apex:pageBlockSectionItem>
+
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection columns="2">
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ScopePackage__c.inlineHelpText}">
+                <apex:outputText value="Scope Package"/>
+                <apex:outputPanel >
+                    <apex:outputField value="{!agreement.ScopePackage__c}" />
+                </apex:outputPanel>
+            </apex:pageBlockSectionItem>    
+            
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ScopeOfServices__c.inlineHelpText}">
+                    <apex:outputText value="Scope of Services"/>
+                    <apex:outputPanel id="subScope">
+                        <apex:outputField value="{!agreement.ScopeOfServices__c}" />
+                        <apex:outputField value="{!agreement.ScopePackage__r.Scope_Details__c}" />          
+                    </apex:outputPanel>         
+            </apex:pageBlockSectionItem> 
+                                                                                                                                
+        </apex:pageBlockSection>
+                        
+        </apex:pageBlock>   
+
+        <apex:pageBlock title="Funding" >
+            <apex:outputPanel rendered="{!fundings.size > 0}">
+	            <apex:pageBlockTable value="{!fundings}" var="funding">
+	                <apex:column headervalue="Date Allocated">
+	                    <apex:outputField value="{!funding.CreatedDate}" rendered="{!funding.DateAllocatedDate__c == null}"></apex:outputField>
+	                    <apex:outputField value="{!funding.DateAllocatedDate__c}" rendered="{!funding.DateAllocatedDate__c != null}"></apex:outputField>                    
+	                </apex:column>                  
+	                <apex:column headervalue="Allocated Amount">
+	                    <apex:outputField value="{!funding.TotalBaselinedAmount__c}" rendered="{!funding.AllocatedAmount__c==null}"/>
+	                    <apex:outputField value="{!funding.AllocatedAmount__c}" rendered="{!funding.AllocatedAmount__c!=null}"/>
+	                </apex:column>
+	        	</apex:pageBlockTable>      
+        	</apex:outputPanel>
+        
+	        <apex:outputPanel rendered="{!fundings.size == 0}">
+	            <apex:outputText value="No records to display"/>
+	        </apex:outputPanel> 
+        </apex:pageBlock>       
+        
+        <apex:pageBlock title="MSA DOA Conditions of Approval" >
+            <apex:outputPanel rendered="{!msaDOAConditions != null && msaDOAConditions.size > 0}">
+            <apex:pageBlockTable value="{!msaDOAConditions}" var="conditions">
+                <apex:column headervalue="Name"><apex:outputField value="{!conditions.Name}"/></apex:column>                   
+                <apex:column headervalue="Mitigation Plan"><apex:outputField value="{!conditions.Mitigation_Plan__c}"/></apex:column>                   
+                <apex:column headervalue="DOA Approval Request"><apex:outputField value="{!conditions.DOAApprovalRequest__c}"/></apex:column>                   
+                <apex:column headervalue="DOA Trigger Number"><apex:outputField value="{!conditions.DoATriggerNo__c}"/></apex:column>                   
+                <apex:column headervalue="DOA Register"><apex:outputField value="{!conditions.DOARegister__c}"/></apex:column>                   
+                <apex:column headervalue="Compliance Status"><apex:outputField value="{!conditions.ComplianceStatus__c}"/></apex:column>                   
+                <apex:column headervalue="Compliance Date"><apex:outputField value="{!conditions.ComplianceDate__c}"/></apex:column>                   
+                <apex:column headervalue="Completed"><apex:outputField value="{!conditions.Completed__c}"/></apex:column>                   
+                <apex:column headervalue="Level"><apex:outputField value="{!conditions.Level__c}"/></apex:column>                   
+                <apex:column headervalue="Trigger Description"><apex:outputField value="{!conditions.TriggerDescription__c}"/></apex:column>                   
+            </apex:pageBlockTable>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!msaDOAConditions == null || msaDOAConditions.size == 0}">
+                <apex:outputText value="No records to display"/>
+            </apex:outputPanel> 
+        </apex:pageBlock>   
+        
+        <apex:pageBlock title="MSA Management Team Members" >
+            <apex:outputPanel rendered="{!msaManagementTeamMembers != null && msaManagementTeamMembers.size > 0}">
+            <apex:pageBlockTable value="{!msaManagementTeamMembers}" var="managementTeamMember">
+                <apex:column headervalue="Role"><apex:outputField value="{!managementTeamMember.Role__c}"/></apex:column>                   
+                <apex:column headervalue="Name"><apex:outputField value="{!managementTeamMember.TeamMember__r.Name}"/></apex:column>
+                <apex:column headervalue="Phone"><apex:outputField value="{!managementTeamMember.TeamMember__r.Phone}"/></apex:column>                  
+                <apex:column headervalue="Email"><apex:outputField value="{!managementTeamMember.TeamMember__r.Email}"/></apex:column>
+            </apex:pageBlockTable>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!msaManagementTeamMembers == null || msaManagementTeamMembers.size == 0}">
+                <apex:outputText value="No records to display"/>
+            </apex:outputPanel>             
+        </apex:pageBlock>           
+        
+        <!--  TODO: check these 2 components     
+        <c:ECO_RiskFlyout ProjectId="{!project.Id}" PlanElement="" rendered="{!project != null}"/>
+        <c:ECO_AssumptionFlyout ProjectId="{!project.Id}" PlanElement="" rendered="{!project != null}"/>
+        -->
+       <!--  <c:ECO_MSABillRateFlyout ProjectId="{!Agreement__c.Project__c}" rendered="{!Agreement__c.Project__c != null}" />  -->
+        
+       <!--  <c:ECO_MSAFlyout MSAId="{!agreement.Id}" />  -->
+
+    <apex:relatedList list="ContractReviews__r" />
+    <apex:relatedList list="CombinedAttachments" />
+    
+    </apex:outputPanel> 
+
+<!-- MSA -->    
+    <apex:outputPanel rendered="{!agreementRecordType =='Prime (MSA)'}">
+        <apex:pageBlock >
+        <h2>Master Service Agreement Summary</h2>      
+                <div class="halfWidthWrapper">
+                    <apex:pageBlockSection columns="2" title="Contract Details" collapsible="false">
+                        <apex:outputField value="{!agreement.Account__c}" />
+                        <apex:outputField value="{!agreement.ContractTitle__c}" />
+                        <apex:outputField value="{!agreement.Description__c}" style="width: 400px; height: 40px"/>
+                        <apex:outputField value="{!agreement.AgreementNumber__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Ordering Period" />
+                            <apex:outputPanel >
+                                <apex:outputField value="{!agreement.OrderingPeriodStart__c}"  html-placeholder="Start Date"/>
+                                <apex:outputText value=" - " rendered="{!mode!=''}"/>
+                                <apex:outputField value="{!agreement.OrderingPeriodEnd__c}" html-placeholder="End Date"/>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:outputField value="{!agreement.ContractingAgency__c}" />
+                        <apex:outputField value="{!agreement.AgreementType__c}" />
+                        <apex:outputField value="{!agreement.TotalContractValue__c}" />
+             			<apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FundingCurrencyCode__c.inlineHelpText}" >
+                			<apex:outputText value="Agreement Currency" />
+               					 <apex:outputPanel >
+                    				<apex:outputField value="{!agreement.FundingCurrencyCode__c}" />
+                				</apex:outputPanel>         
+            			</apex:pageBlockSectionItem> 
+                         <apex:outputText value="{!agreement.ScopeOfServices__c}" style="width: 400px; height: 40px" /> 
+                        
+                        <apex:outputField value="{!agreement.Account__c}" />                      
+                        <apex:outputField value="{!agreement.ContractTitle__c}" />
+                        <apex:outputField value="{!agreement.Description__c}"  style="width: 400px; height: 40px"/>
+                        <apex:outputField value="{!agreement.AgreementNumber__c}" />
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Ordering Period" />
+                            <apex:outputPanel >
+                                <apex:outputField value="{!agreement.OrderingPeriodStart__c}"  html-placeholder="Start Date"/>
+                                <apex:outputText value=" - " />
+                                <apex:outputField value="{!agreement.OrderingPeriodEnd__c}"  html-placeholder="End Date"/>
+                            </apex:outputPanel>
+                        </apex:pageBlockSectionItem>
+                        <apex:outputField value="{!agreement.ContractingAgency__c}" />
+                        <apex:outputField value="{!agreement.AgreementType__c}" />
+                        <apex:outputField value="{!agreement.TotalContractValue__c}" />
+             			<apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FundingCurrencyCode__c.inlineHelpText}" >
+                			<apex:outputText value="Agreement Currency" />
+               					 <apex:outputPanel >
+                    				<apex:outputField value="{!agreement.FundingCurrencyCode__c}" />    
+                				</apex:outputPanel>         
+            			</apex:pageBlockSectionItem> 
+                         <apex:outputField value="{!agreement.ScopeOfServices__c}" style="width: 400px; height: 40px" />                            
+                    </apex:pageBlockSection>
+                </div>
+                <div id="notifications">
+                <apex:outputPanel >
+                    <apex:pageBlockSection columns="2" title="Management Team Members" collapsible="false">
+                    	<c:ECO_HelpIcon helpText="Use this section to list the contract management team, such as the AECOM Program Manager, Contract Manager, Deputy Program Manager, Contracts Administrator.  This section could also be used to capture the client contact details."/>
+						<!-- <div class="customHelpText">
+ 							<img src="../img/icon/forecasts24.png" class="customHelpIcon"/> 
+							<div class="customHelpBody">
+							
+							</div>
+            			</div> -->        
+                        <apex:outputPanel rendered="{!managementTeamMembers.size > 0}">
+                        <apex:pageBlockTable value="{!managementTeamMembers}" var="managementTeamMember">
+                            <apex:column headervalue="Role"><apex:outputField value="{!managementTeamMember.Role__c}"/></apex:column>                   
+                            <apex:column headervalue="Name"><apex:outputField value="{!managementTeamMember.TeamMember__r.Name}"/></apex:column>
+                            <apex:column headervalue="Phone"><apex:outputField value="{!managementTeamMember.TeamMember__r.Phone}"/></apex:column>                  
+                            <apex:column headervalue="Email"><apex:outputField value="{!managementTeamMember.TeamMember__r.Email}"/></apex:column>
+                        </apex:pageBlockTable>
+                        </apex:outputPanel>
+                        <apex:outputPanel rendered="{!managementTeamMembers.size == 0}">
+                            <apex:outputText value="No records to display"/>
+                        </apex:outputPanel>     
+                    </apex:pageBlockSection>
+
+                </apex:outputPanel>
+                </div>
+                <div style="clear:both;"></div><br/>
+        <!--    </apex:panelGrid> -->
+        </apex:pageBlock>
+                
+        <apex:pageBlock title="List of Projects/Task Orders"  >
+            <apex:outputPanel rendered="{!relatedAgreements.size > 0}">
+            <apex:pageBlockTable value="{!relatedAgreements}" var="relatedAgreement">
+                <apex:column headervalue="Oracle Project Number"><apex:outputField value="{!relatedAgreement.Project__r.OracleProjectnumber__c}"/></apex:column>                   
+                <apex:column headervalue="Project Name"><apex:outputField value="{!relatedAgreement.Project__r.Name}"/></apex:column>
+                <apex:column headervalue="Project Manager"><apex:outputField value="{!relatedAgreement.Project__r.pse__Project_Manager__c}"/></apex:column>
+                <apex:column headervalue="Contract Value (Confirmed)"><apex:outputField value="{!relatedAgreement.Amount__c}"/></apex:column>                   
+                <apex:column headervalue="Approved Cost Budget"><apex:outputField value="{!relatedAgreement.Project__r.TotalApprovedCost__c}"/></apex:column>                 
+                <apex:column headervalue="% Cost Complete"><apex:outputField value="{!relatedAgreement.Project__r.CostComplete__c}"/></apex:column>               
+                <apex:column headervalue="Billed To Date"><apex:outputField value="{!relatedAgreement.Project__r.pse__Billing_Eligible_Last_Updated__c}"/></apex:column>
+        	</apex:pageBlockTable>      
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!relatedAgreements.size == 0}">
+            <apex:outputText value="No records to display"/>
+        </apex:outputPanel> 
+        </apex:pageBlock>
+        
+        <apex:pageBlock title="Project Portfolio Performance" >
+            <apex:chart height="400" width="1000" data="{!data}">
+                  <apex:axis type="Numeric" position="left" fields="data1" 
+                    title="Y Axis" grid="true"/>
+                  <apex:axis type="Category" position="bottom" fields="name" 
+                    title="X Axis">
+                </apex:axis>
+                <apex:lineSeries axis="left" fill="true" xField="name" yField="data1"
+                  markerType="cross" markerSize="4" markerFill="#FF0000"/>
+           </apex:chart>
+        </apex:pageBlock>       
+        
+        <apex:pageBlock title="Contract Documents" >
+                <apex:outputPanel rendered="{!AttachedContractFiles.size > 0}">
+                    <div class="fileList">
+                    <apex:pageBlockTable value="{!AttachedContractFiles}" var="attachedContractFile" style="width: 825px;" rendered="{!agreement.ContractAttachment__c != null}">
+						<apex:column headerValue="Document Type" value="{!attachedContractFile.attachmentType}" />    
+                        <apex:column headerValue="File Name">
+                            <apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachedContractFile.attachmentId)}" target="_blank">
+                                <apex:outputText value="{!attachedContractFile.attachment.Name}" />
+                            </apex:outputLink>
+                        </apex:column>
+                        <apex:column headervalue="Comments" value="{!attachedContractFile.comments}" />
+                        <apex:column value="{!attachedContractFile.attachment.ContentType}" /> 
+                        <apex:column value="{!attachedContractFile.attachment.LastModifiedDate}" />    
+                        <apex:column value="{!attachedContractFile.attachment.LastModifiedById}" />
+                    </apex:pageBlockTable>
+                    </div>      
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!AttachedContractFiles.size == 0}">
+                    <apex:outputText value="No records to display"/><br/><br/>
+                </apex:outputPanel>      
+        		<apex:outputPanel >
+	        		<apex:outputText value="{!contractDocumentType}" />
+	       			<apex:outputText value="{!contractDocumentComments}"/>
+	                <apex:outputText value="{!overrideContractAttachmentName}"/>
+	           </apex:outputPanel>
+               
+        
+        </apex:pageBlock>               
+
+        <apex:pageBlock title="Program Plans" >
+		<div class="customHelpText">
+ 			<img src="../img/icon/forecasts24.png" class="customHelpIcon"/> 
+			<div class="customHelpBody">
+				Plans may include any document prepared to help manage the contract, such as Program Management Plans, Program Health and Safety Plans, Program QA/QC Plans or Communication Plans.
+			</div>
+		</div>	        
+            <apex:outputPanel rendered="{!AttachedProgramPlanFiles.size > 0}">
+                <div class="fileList">
+                <apex:pageBlockTable value="{!AttachedProgramPlanFiles}" var="attachedProgramPlanFile" style="width: 825px;" rendered="{!agreement.ProgramPlanAttachment__c != null}">
+                    <apex:column headerValue="File Name">
+                        <apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachedProgramPlanFile.Attachment.Id)}" target="_blank">
+                            <apex:outputText value="{!attachedProgramPlanFile.Attachment.Name}" />
+                        </apex:outputLink>
+                    </apex:column>
+                    <apex:column headervalue="Comments" value="{!attachedProgramPlanFile.Comments}" /> 
+                    <apex:column value="{!attachedProgramPlanFile.Attachment.ContentType}" />  
+                    <apex:column value="{!attachedProgramPlanFile.Attachment.LastModifiedDate}" /> 
+                    <apex:column value="{!attachedProgramPlanFile.Attachment.LastModifiedById}" />
+                </apex:pageBlockTable>
+                </div>
+            </apex:outputPanel> 
+            <apex:outputPanel rendered="{!AttachedProgramPlanFiles.size == 0}">
+                <apex:outputText value="No records to display"/><br/><br/>
+            </apex:outputPanel> 
+            <apex:outputPanel >
+            	<apex:outputText value="{!programPlanAttachmentComments}" />
+            	<apex:outputText value="{!overrideProgramPlanAttachmentName}" />
+			</apex:outputPanel>
+
+        </apex:pageBlock>
+        
+        <apex:pageBlock title="Guidance Documents" >
+		<div class="customHelpText">
+ 			<img src="../img/icon/forecasts24.png" class="customHelpIcon"/> 
+			<div class="customHelpBody">
+				Program-type documents may include presentation templates/examples, regulatory guidance documents, document control requirements or project proposal templates.
+			</div>
+		</div>	        
+            <apex:outputPanel rendered="{!AttachedGuidanceFiles.size > 0}">
+                <div class="fileList">
+                <apex:pageBlockTable value="{!AttachedGuidanceFiles}" var="attachedGuidanceFile" style="width: 825px;" rendered="{!agreement.GuidanceAttachment__c != null}">
+                    <apex:column headerValue="File Name">
+                        <apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachedGuidanceFile.Attachment.Id)}" target="_blank">
+                            <apex:outputText value="{!attachedGuidanceFile.Attachment.Name}" />
+                        </apex:outputLink>
+                    </apex:column>
+                    <apex:column headervalue="Comments" value="{!attachedGuidanceFile.comments}"/>
+                    <apex:column value="{!attachedGuidanceFile.Attachment.ContentType}" /> 
+                    <apex:column value="{!attachedGuidanceFile.Attachment.LastModifiedDate}" />    
+                    <apex:column value="{!attachedGuidanceFile.Attachment.LastModifiedById}" />
+                </apex:pageBlockTable>
+                </div>
+            </apex:outputPanel>         
+            <apex:outputPanel rendered="{!AttachedGuidanceFiles.size == 0}">
+                <apex:outputText value="No records to display"/><br/><br/>
+            </apex:outputPanel> 
+            
+            <apex:outputPanel >
+            	<apex:outputText value="{!guidanceAttachmentComments}"  />
+            	<apex:outputText value="{!overrideGuidanceAttachmentName}" />
+				</apex:outputPanel>
+        
+        </apex:pageBlock>   
+        
+        <apex:pageBlock title="Business Development" >
+		<div class="customHelpText">
+ 			<img src="../img/icon/forecasts24.png" class="customHelpIcon"/> 
+			<div class="customHelpBody">
+				Business development documents may include contract cut sheets or brochures, client surveys or evaluations (e.g., CPARs), client commendation letters or awards, or program-level presentations.			</div>
+			</div>
+            <apex:outputPanel rendered="{!AttachedBusinessDevelopmentFiles.size > 0}">
+            <div class="fileList">
+            <apex:pageBlockTable value="{!AttachedBusinessDevelopmentFiles}" var="attachedBusinessDevelopmentFile" style="width: 825px;" rendered="{!agreement.BusinessDevelopmentAttachment__c != null}">
+                <apex:column headerValue="File Name">
+                    <apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachedBusinessDevelopmentFile.Attachment.Id)}" target="_blank">
+                        <apex:outputText value="{!attachedBusinessDevelopmentFile.Attachment.Name}" />
+                    </apex:outputLink>
+                </apex:column>
+                <apex:column headervalue="Comments" value="{!attachedBusinessDevelopmentFile.Comments}" />  
+                <apex:column value="{!attachedBusinessDevelopmentFile.Attachment.ContentType}" />  
+                <apex:column value="{!attachedBusinessDevelopmentFile.Attachment.LastModifiedDate}" /> 
+                <apex:column value="{!attachedBusinessDevelopmentFile.Attachment.LastModifiedById}" />
+            </apex:pageBlockTable>
+            </div>          
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!AttachedBusinessDevelopmentFiles.size == 0}">
+                <apex:outputText value="No records to display"/><br/><br/>
+            </apex:outputPanel> 
+            
+            <apex:outputPanel >
+            	<apex:outputText value="{!businessDevelopmentAttachmentComments}"  />
+            	<apex:outputText value="{!overrideBusinessDevelopmentAttachmentName}" />
+            </apex:outputPanel>
+        </apex:pageBlock>   
+
+        <apex:pageBlock title="Approved Subs" >
+            <apex:outputPanel rendered="{!approvedSubs.size > 0}">
+            <apex:pageBlockTable value="{!approvedSubs}" var="approvedSub">
+                <apex:column headervalue="Name"><apex:outputField value="{!approvedSub.Account__r.Name}"/></apex:column>                    
+                <apex:column headervalue="Role"><apex:outputField value="{!approvedSub.Role__c}"/></apex:column>
+                <apex:column headervalue="Contact Name"><apex:outputField value="{!approvedSub.Contact_Name__c}"/></apex:column>                    
+                <apex:column headervalue="Phone"><apex:outputField value="{!approvedSub.Phone__c}"/></apex:column>
+                <apex:column headervalue="Email"><apex:outputField value="{!approvedSub.Email__c}"/></apex:column>
+                <apex:column headervalue="Comments"><apex:outputField value="{!approvedSub.Comments__c}"/></apex:column>
+            </apex:pageBlockTable>      
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!approvedSubs.size == 0}">
+                <apex:outputText value="No records to display"/>
+            </apex:outputPanel>         
+        </apex:pageBlock>
+        
+        <apex:pageBlock title="MSA Teaming Partners" >
+            <apex:outputPanel rendered="{!msaTeamingPartners.size > 0}">
+	            <apex:pageBlockTable value="{!msaTeamingPartners}" var="msaTeamingPartner">
+	                <apex:column headervalue="Name"><apex:outputField value="{!msaTeamingPartner.Account__r.Name}"/></apex:column>                  
+	                <apex:column headervalue="Role"><apex:outputField value="{!msaTeamingPartner.Role__c}"/></apex:column>
+	                <apex:column headervalue="Contact Name"><apex:outputField value="{!msaTeamingPartner.Contact_Name__c}"/></apex:column>                  
+	                <apex:column headervalue="Phone"><apex:outputField value="{!msaTeamingPartner.Phone__c}"/></apex:column>
+	                <apex:column headervalue="Email"><apex:outputField value="{!msaTeamingPartner.Email__c}"/></apex:column>
+	        	</apex:pageBlockTable>      
+        	</apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!msaTeamingPartners.size == 0}">
+            <apex:outputText value="No records to display"/>
+        </apex:outputPanel> 
+        </apex:pageBlock>   
+        
+        <apex:pageBlock title="Contract Billing Rates" >
+            <apex:outputPanel rendered="{!billingRates.size > 0}">
+            <apex:pageBlockTable value="{!billingRates}" var="billingRate">
+                <!-- <apex:column headervalue="Action"></apex:column> -->
+                <apex:column headervalue="Labor Category"><apex:outputField value="{!billingRate.LaborCategory__c}"/></apex:column>
+                <apex:column headervalue="Bill Rate Start"><apex:outputField value="{!billingRate.BillRatePeriod__r.BillRateStart__c}"/></apex:column>
+                <apex:column headervalue="Bill Rate End"><apex:outputField value="{!billingRate.BillRatePeriod__r.BillRateEnd__c}"/></apex:column>
+                <apex:column headervalue="Bill Rate"><apex:outputField value="{!billingRate.BillRate__c}"/></apex:column>
+        </apex:pageBlockTable>      
+        </apex:outputPanel>
+        
+        <apex:outputPanel rendered="{!billingRates.size == 0}">
+            <apex:outputText value="No records to display"/>
+        </apex:outputPanel> 
+        </apex:pageBlock>           
+                
+        <apex:pageBlock title="Other Direct Costs" >
+            <apex:outputPanel rendered="{!otherDirectCosts.size > 0}">
+                <apex:pageBlockTable value="{!otherDirectCosts}" var="otherDirectCost">
+                    <apex:column headervalue="Type"><apex:outputField value="{!otherDirectCost.Type__c}"/></apex:column>
+                    <apex:column headervalue="Description"><apex:outputField value="{!otherDirectCost.Description__c}"/></apex:column>                  
+                    <apex:column headervalue="Markup"><apex:outputField value="{!otherDirectCost.Markup__c}"/></apex:column> 
+                    <apex:column headervalue="Allowable"><apex:outputField value="{!otherDirectCost.Allowable__c}"/></apex:column>
+                    <apex:column headervalue="Comments"><apex:outputField value="{!otherDirectCost.Comments__c}"/></apex:column>                    
+                </apex:pageBlockTable>
+            </apex:outputPanel>
+        <apex:outputPanel rendered="{!otherDirectCosts.size == 0}">
+                <apex:outputText value="No records to display"/>
+        </apex:outputPanel>     
+        </apex:pageBlock>
+        
+       <apex:pageBlock title="Meeting Minutes" >
+            <apex:outputPanel rendered="{!AttachedMeetingMinutesFiles.size > 0}">
+                <div class="fileList">
+                <apex:pageBlockTable value="{!AttachedMeetingMinutesFiles}" var="attachedMeetingMinutesFile" style="width: 825px;">
+                    <apex:column headerValue="File Name">
+                        <apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachedMeetingMinutesFile.Attachment.Id)}" target="_blank">
+                            <apex:outputText value="{!attachedMeetingMinutesFile.Attachment.Name}" />
+                        </apex:outputLink>
+                    </apex:column>
+                    <apex:column value="{!attachedMeetingMinutesFile.Comments}" headervalue="Content Type"/> 
+                    <apex:column value="{!attachedMeetingMinutesFile.Attachment.ContentType}" headervalue="Content Type"/> 
+                    <apex:column value="{!attachedMeetingMinutesFile.Attachment.LastModifiedDate}" headervalue="Last Modified Date"/>  
+                    <apex:column value="{!attachedMeetingMinutesFile.Attachment.LastModifiedById}" headervalue="Last Modified By"/>
+                </apex:pageBlockTable>
+                </div>          
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!AttachedMeetingMinutesFiles.size == 0}">
+                <apex:outputText value="No records to display"/><br/><br/>
+            </apex:outputPanel> 
+            
+            <apex:outputPanel >
+            	<apex:outputText value="{!meetingMinutesAttachmentComments}"  />
+            	<apex:outputText value="{!overrideMeetingMinutesAttachmentName}"  />
+           </apex:outputPanel>
+
+        
+        </apex:pageBlock>  
+        
+        <apex:pageBlock title="Program Notes" >
+            <apex:outputPanel rendered="{!notes.size > 0}">         
+                <apex:pageBlockTable value="{!notes}" var="note">
+                    <apex:column headervalue="Title" value="{!note.Title}"/>
+                    <apex:column headervalue="Body" value="{!note.Body}"/>      
+                </apex:pageBlockTable>
+            </apex:outputPanel>
+            <apex:outputPanel rendered="{!notes.size == 0}">
+                <apex:outputText value="No records to display"/><br/><br/>
+            </apex:outputPanel> 
+        </apex:pageBlock>       
+    
+		<apex:relatedList list="DOAConditions__r"/>
+       	<apex:relatedList list="ContractReviews__r" />
+        <apex:relatedList list="OpenActivities"/> 
+        
+    </apex:outputPanel>
+
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+</apex:page>

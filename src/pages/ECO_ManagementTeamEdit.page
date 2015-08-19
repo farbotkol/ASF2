@@ -1,0 +1,42 @@
+<apex:page standardController="ManagementTeam__c" extensions="ECO_CreateMSAContact">
+		<style>
+	   	.halfWidthWrapper {
+			width:50%;
+			display:inline-block;
+			float:left;
+		}
+		
+		#notifications{
+			margin-left:50%;
+			padding-left:20px;
+		}
+		</style>
+<apex:form >
+<apex:sectionheader title="New Management Team" subtitle="Management Team Edit"/>
+
+<apex:pageBlock title="Management Team Edit" mode="edit">
+	<apex:pageBlockButtons ><apex:commandButton value="Save" action="{!save}"/><apex:commandButton value="Cancel" action="{!cancel}"/><apex:commandButton value="New Contact" action="{!createNewContact}"/></apex:pageBlockButtons>
+	<div class="halfWidthWrapper">
+		<apex:pageblocksection columns="1" title="Information">
+			<apex:outputField value="{!ManagementTeam__c.Agreement__c}"/>
+			<apex:inputField value="{!ManagementTeam__c.TeamMember__c}"/>
+			<apex:inputField value="{!ManagementTeam__c.Role__c}"/>
+		</apex:pageblocksection>
+	</div>
+	
+	<div id="notifications">
+		<apex:pageBlockSection columns="1" title="New Contact" rendered="{!creatingNewContact}">
+		<apex:inputField value="{!contact.FirstName}"/>
+		<apex:inputField value="{!contact.LastName}"/>
+		<apex:inputField value="{!contact.AccountId}"/>
+		<apex:inputField value="{!contact.AccountId}"/>
+		<apex:inputField value="{!contact.AccountId}"/>
+		<apex:inputField value="{!contact.AccountId}"/>
+		<apex:outputPanel ><apex:commandButton value="Save" action="{!saveNewContact}"/><apex:commandButton value="Cancel" action="{!cancelNewContact}"/></apex:outputPanel>
+		</apex:pageBlockSection>
+	</div>
+</apex:pageBlock>
+
+</apex:form>
+
+</apex:page>

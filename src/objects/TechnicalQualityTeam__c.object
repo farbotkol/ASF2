@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>false</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>ApprovalNeeded__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL( Role__c,&quot;Reviewer&quot;), True, 
+IF(ISPICKVAL( Role__c, &quot;Lead Verifier&quot;), True, 
+IF(ISPICKVAL( Role__c,&quot;Independent Reviewer&quot;) ,True, 
+False)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Approval Needed?</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Deliverable__c</fullName>
+        <externalId>false</externalId>
+        <label>Deliverable</label>
+        <referenceTo>Deliverable__c</referenceTo>
+        <relationshipLabel>Technical Quality Team</relationshipLabel>
+        <relationshipName>Technical_Quality_Team</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>RequiredDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Review Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Role__c</fullName>
+        <externalId>false</externalId>
+        <label>Role</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Originator</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Reviewer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lead Verifier</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Independent Reviewer</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Owner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Approver</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <description>Statuses for the technical quality reviewers which will be automatically updated by the approval process.</description>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Assigned</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Recalled</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Submit_For_Approval__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( ApprovalNeeded__c ,HYPERLINK(&quot;/servlet/servlet.Integration?lid=00be0000000ELzv&amp;eid=&quot;&amp; Id&amp; &quot;&amp;ic=1&quot;, &quot;Submit for Approval&quot;,&quot;_self&quot;),&quot;&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Submit For Approval</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TechnicalQualityTeamMember__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Lookup to user for the technical quality team member who will be set as the approver for the approval process.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Reminder: Consider SiD when selecting reviewers for deliverable technical quality reviews</inlineHelpText>
+        <label>Technical Quality Team Member</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Technical_Quality_Team</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <label>Technical Quality Team</label>
+    <nameField>
+        <displayFormat>TQT-{000000}</displayFormat>
+        <label>Technical Quality Team #</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Technical Quality Team</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <webLinks>
+        <fullName>Kill_Approval</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Recall Selected</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>if(&apos;{!Deliverable__c.Status__c}&apos; == &apos;Review Complete&apos;){
+
+alert(&quot;You cannot kill the approval process for a deliverable that has already been approved.&quot;);
+
+} else {
+var r = confirm(&quot;Do you really want to recall all approval processes?&quot;);
+if (r == true) {
+    window.location.href = &apos;/apex/ECO_DeliverableApprovalKillSwitch?id={! Deliverable__c.Id }&apos;
+} else {
+    
+}
+
+}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>New_TQT</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Manage Technical Quality Team</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/ECO_TechnicalQualityTeamOverride?id={! Deliverable__c.Id }</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Submit_for_Approval</fullName>
+        <availability>online</availability>
+        <displayType>link</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Submit for Approval</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>{!URLFOR( $Action.TechnicalQualityTeam__c.Submit,  TechnicalQualityTeam__c.Id )}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Submit_for_Approval_Custom</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>Submit Selected for Review</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>{!REQUIRESCRIPT (&quot;/soap/ajax/13.0/connection.js&quot;)} 
+var records = {!GETRECORDIDS($ObjectType.TechnicalQualityTeam__c)}.toString().replace(/,/g , &quot;&apos;,&apos;&quot;);
+var SubmitRecords = []; 
+if (records[0] == null){ 
+    alert(&quot;Please select at least one row.&quot;) } 
+else {
+     var soqlQ=&quot;SELECT Status__c, ID FROM TechnicalQualityTeam__c WHERE Id in (&apos;&quot;+records+&quot;&apos;)&quot;; 
+     
+      var customObj = sforce.connection.query(soqlQ);
+      var soqlRes = customObj.getArray(&quot;records&quot;); 
+      for(var n=0; n&lt;soqlRes.length; n++){
+          if(soqlRes[n].Status__c != &quot;Submitted&quot;){
+             if(soqlRes[n].Status__c != &quot;Approved&quot;){
+                 SubmitRecords.push(soqlRes[n].Id);
+             }
+          }
+      }
+      if(SubmitRecords != null){
+          var newRecords = [];
+          for (var n=0; n&lt;SubmitRecords.length; n++) { 
+             request = new sforce.ProcessSubmitRequest();
+             request.objectId = trim(SubmitRecords[n]);
+             request.comments=&quot;Submitting request for approval&quot;;
+             newRecords.push(request); 
+          } 
+           var result = sforce.connection.process(newRecords); 
+      }
+window.location.reload(); 
+
+}</url>
+    </webLinks>
+</CustomObject>

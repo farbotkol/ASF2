@@ -12,6 +12,7 @@ public without sharing class ECO_Utils_Alerts {
 														, RecordTypeId
 														, RecordType.Name
 														, Subject__c 
+														, Project_Number__c
 												FROM PortalMessage__c 
 												WHERE EndDate__c >= :theDate
 													AND StartDate__c <= :theDate

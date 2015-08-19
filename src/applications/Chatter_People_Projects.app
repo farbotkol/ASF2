@@ -3,7 +3,6 @@
     <defaultLandingTab>standard-Chatter</defaultLandingTab>
     <description>Force.com license app</description>
     <label>Chatter + People + Projects</label>
-    <logo>CompanyCollateral_2/AECOM_Logo_for_Chatter_Resume_App.png</logo>
     <tab>standard-Chatter</tab>
     <tab>rs_My_Profile</tab>
     <tab>People</tab>
@@ -11,4 +10,10 @@
     <tab>standard-File</tab>
     <tab>Profile_Reviews</tab>
     <tab>Business_Line__c</tab>
+    <tab>Ecosystem</tab>
+    <tab>Revenue__c</tab>
+    <tab>Billing__c</tab>
+    <tab>CostDistLine__c</tab>
+    <tab>EarnedValueHeader__c</tab>
+    <tab>VendorSub__c</tab>
 </CustomApplication>

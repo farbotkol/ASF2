@@ -46,11 +46,11 @@
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
-    <enableActivities>false</enableActivities>
+    <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
-    <enableReports>false</enableReports>
+    <enableReports>true</enableReports>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fieldSets>
@@ -102,16 +102,6 @@
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
-            <field>OracleCustomerNumber__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
-            <field>Address1__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
             <field>City__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
@@ -127,22 +117,23 @@
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
-            <field>Postal_Code__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
             <field>Type__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
-            <field>AccountManager__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
         <label>ClientFinder Display Fieldset</label>
     </fieldSets>
+    <fields>
+        <fullName>AccountID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Site__r.Account__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account ID</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <fields>
         <fullName>AccountManager__c</fullName>
         <externalId>false</externalId>
@@ -158,7 +149,7 @@
         <fullName>Account_Name__c</fullName>
         <externalId>false</externalId>
         <formula>Site__r.Account__r.Name</formula>
-        <label>Account Name</label>
+        <label>Client Name</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -188,11 +179,36 @@
         <fullName>BillingContactID__c</fullName>
         <externalId>false</externalId>
         <label>Billing Contact ID</label>
-        <length>15</length>
+        <length>40</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ChangeManagerApprovedForSynch__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Change Manager Approved For Synch</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ChangeManagerIsChanged__c</fullName>
+        <externalId>false</externalId>
+        <formula>OR(AND(OracleLastSyncDateTime__c &lt; LastModifiedDate, NOT(ChangeManagerApprovedForSynch__c)), AND(ISNULL(OracleLastSyncDateTime__c), NOT(ChangeManagerApprovedForSynch__c)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ChangeManagerIsChanged</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ChangeManagerIsNew__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>ChangeManagerIsNew</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>City__c</fullName>
@@ -205,12 +221,24 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>ClientContact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Client Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Project Sites (Client Contact)</relationshipLabel>
+        <relationshipName>ProjectSitesClientContact</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Contribution__c</fullName>
         <externalId>false</externalId>
         <label>Contribution</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>2</scale>
+        <scale>0</scale>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -239,34 +267,60 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>IsCustomer__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(  ISBLANK(OracleCustomerID__c), false, true)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is Customer</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsVendor__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( ISBLANK( Site__r.VendorSiteID__c ) , false, true)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is Vendor</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Is_Billing__c</fullName>
         <defaultValue>false</defaultValue>
+        <description>Other clients to whom invoices will be sent.  These clients will be available to be selected for assignment to particular tasks during project setup.</description>
         <externalId>false</externalId>
-        <label>Is Billing</label>
+        <inlineHelpText>Other clients to whom invoices will be sent.  These clients will be available to be selected for assignment to particular tasks during project setup.</inlineHelpText>
+        <label>Billing Client</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Is_Default_Top_Task__c</fullName>
         <defaultValue>false</defaultValue>
+        <description>The client to whom invoices will be sent (typically the client on the Prime Contract).  Where multiple billing clients exists, this client will be the default client on all tasks but can be changed to one of the Other Billing clients.</description>
         <externalId>false</externalId>
-        <label>Is Default Top Task</label>
+        <inlineHelpText>The client to whom invoices will be sent (typically the client on the Prime Contract).  Where multiple billing clients exists, this client will be the default client on all tasks but can be changed to one of the Other Billing clients.</inlineHelpText>
+        <label>Primary Billing</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Is_End__c</fullName>
         <defaultValue>false</defaultValue>
+        <description>Be careful when changing the label as it may affect existing merge templates.</description>
         <externalId>false</externalId>
-        <label>Is End</label>
+        <inlineHelpText>Be careful when changing the label as it may affect existing merge templates.</inlineHelpText>
+        <label>Other End</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Is_Primary_End__c</fullName>
         <defaultValue>false</defaultValue>
+        <description>The client to whom invoices will be sent (typically the client on the Prime Contract).  Where multiple billing clients exists, this client will be the default client on all tasks but can be changed to one of the Other Billing clients.</description>
         <externalId>false</externalId>
-        <label>Is Primary End</label>
+        <inlineHelpText>The client to whom invoices will be sent (typically the client on the Prime Contract).  Where multiple billing clients exists, this client will be the default client on all tasks but can be changed to one of the Other Billing clients.</inlineHelpText>
+        <label>Primary End</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -275,6 +329,17 @@
         <externalId>false</externalId>
         <label>Job ID</label>
         <length>240</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OracleBillToAddressId__c</fullName>
+        <externalId>false</externalId>
+        <formula>Site__r.CustomerAccountSiteID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Oracle Bill To Address Id</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -303,6 +368,25 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>OracleLastSyncDateTime__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Last Sync DateTime</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>OracleProjectId__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.OracleProjectId__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Oracle Project Id</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>OracleProjectSiteId__c</fullName>
         <caseSensitive>false</caseSensitive>
         <externalId>true</externalId>
@@ -312,6 +396,17 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>OracleShipToAddressId__c</fullName>
+        <externalId>false</externalId>
+        <formula>Site__r.CustomerAccountSiteID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Oracle Ship To Address Id</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>OracleSyncErrorMessage__c</fullName>
@@ -324,7 +419,15 @@
     </fields>
     <fields>
         <fullName>OracleSyncStatus__c</fullName>
+        <description>P = Pending 
+T = Transfer (Success) 
+E = Error 
+S = Successful</description>
         <externalId>false</externalId>
+        <inlineHelpText>P = Pending 
+T = Transfer (Success) 
+E = Error 
+S = Successful</inlineHelpText>
         <label>Oracle Sync Status</label>
         <picklist>
             <picklistValues>
@@ -377,6 +480,7 @@
         <externalId>false</externalId>
         <label>Project</label>
         <referenceTo>pse__Proj__c</referenceTo>
+        <relationshipLabel>Clients</relationshipLabel>
         <relationshipName>ProjectSites</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
@@ -421,7 +525,7 @@
         <fullName>State__c</fullName>
         <externalId>false</externalId>
         <formula>Site__r.State__c</formula>
-        <label>State</label>
+        <label>State/Province/Emirate</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -447,12 +551,36 @@
     </fields>
     <label>Project Site</label>
     <nameField>
-        <displayFormat>ProjectSite-{0000000000}</displayFormat>
-        <label>Project Site Number</label>
-        <type>AutoNumber</type>
+        <label>Project Site Name</label>
+        <type>Text</type>
     </nameField>
     <pluralLabel>Project Sites</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <customTabListAdditionalFields>Account_Name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Site__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Project__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>City__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>State__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Country__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>OracleCustomerID__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>OracleCustomerNumber__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Account_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Site__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Project__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>City__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>State__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Country__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>OracleCustomerID__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>OracleCustomerNumber__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Account_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Project__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Site__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>City__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>State__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Country__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>OracleCustomerID__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>OracleCustomerNumber__c</searchResultsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <webLinks>
         <fullName>ManageSites</fullName>
@@ -461,7 +589,7 @@
         <encodingKey>UTF-8</encodingKey>
         <height>600</height>
         <linkType>url</linkType>
-        <masterLabel>Manage Sites</masterLabel>
+        <masterLabel>Manage Clients</masterLabel>
         <openType>sidebar</openType>
         <protected>false</protected>
         <requireRowSelection>false</requireRowSelection>

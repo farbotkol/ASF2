@@ -111,20 +111,51 @@
             <active>false</active>
             <keyCommand>SHIFT+K</keyCommand>
         </defaultShortcut>
+        <defaultShortcut>
+            <action>FOCUS_MACRO</action>
+            <active>false</active>
+            <keyCommand>M</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>FOCUS_FOOTER_PANEL</action>
+            <active>false</active>
+            <keyCommand>F</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_LIST_VIEW</action>
+            <active>false</active>
+            <keyCommand>SHIFT+N</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_LEFT_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+LEFT ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_RIGHT_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+RIGHT ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_TOP_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+UP ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_BOTTOM_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+DOWN ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_APP_LEVEL_COMPONENTS</action>
+            <active>false</active>
+            <keyCommand>Z</keyCommand>
+        </defaultShortcut>
     </keyboardShortcuts>
     <listPlacement>
         <location>full</location>
     </listPlacement>
     <listRefreshMethod>none</listRefreshMethod>
-    <pushNotifications>
-        <pushNotification>
-            <fieldNames>Owner</fieldNames>
-            <fieldNames>SS_Category__c</fieldNames>
-            <fieldNames>SS_Is_Uncategorized__c</fieldNames>
-            <fieldNames>Status</fieldNames>
-            <objectName>Case</objectName>
-        </pushNotification>
-    </pushNotifications>
     <saveUserSessions>true</saveUserSessions>
     <tab>standard-Account</tab>
     <tab>standard-Contact</tab>
@@ -141,36 +172,35 @@
     <tab>State_Province_Emirate__c</tab>
     <tab>Account_Plan_Contacts__c</tab>
     <tab>Business_Line__c</tab>
+    <tab>QuestionnaireTemplate__c</tab>
+    <tab>Site__c</tab>
+    <tab>OrganizationString__c</tab>
+    <tab>Ecosystem</tab>
+    <tab>Project_Review_Trigger__c</tab>
+    <tab>KPI_Metric__c</tab>
+    <tab>RoutingMember__c</tab>
+    <tab>CountryRisk__c</tab>
+    <tab>ProjectCountry_Risk__c</tab>
+    <tab>BurdenReference__c</tab>
+    <tab>Load_Test</tab>
+    <tab>Questionnaire__c</tab>
+    <tab>Revenue__c</tab>
+    <tab>Billing__c</tab>
+    <tab>CostDistLine__c</tab>
+    <tab>EarnedValueHeader__c</tab>
+    <tab>VendorSub__c</tab>
     <workspaceMappings>
         <mapping>
-            <tab>iContact_MessageBuilder</tab>
-        </mapping>
-        <mapping>
-            <fieldName>AccountId</fieldName>
-            <tab>standard-Opportunity</tab>
+            <tab>Account_Plan_Contacts__c</tab>
         </mapping>
         <mapping>
             <tab>Awards_Commendations__c</tab>
         </mapping>
         <mapping>
-            <fieldName>AccountId</fieldName>
-            <tab>standard-Case</tab>
+            <tab>Billing__c</tab>
         </mapping>
         <mapping>
-            <tab>Account_Plan_Contacts__c</tab>
-        </mapping>
-        <mapping>
-            <tab>Technical_Document__c</tab>
-        </mapping>
-        <mapping>
-            <tab>Go_No_Go_Conversation__c</tab>
-        </mapping>
-        <mapping>
-            <fieldName>AccountId</fieldName>
-            <tab>standard-Contact</tab>
-        </mapping>
-        <mapping>
-            <tab>standard-Lead</tab>
+            <tab>BurdenReference__c</tab>
         </mapping>
         <mapping>
             <tab>Business_Line__c</tab>
@@ -179,16 +209,85 @@
             <tab>Change_Management__c</tab>
         </mapping>
         <mapping>
+            <tab>CostDistLine__c</tab>
+        </mapping>
+        <mapping>
+            <tab>CountryRisk__c</tab>
+        </mapping>
+        <mapping>
+            <tab>EarnedValueHeader__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Ecosystem</tab>
+        </mapping>
+        <mapping>
+            <tab>Go_No_Go_Conversation__c</tab>
+        </mapping>
+        <mapping>
+            <tab>KPI_Metric__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Load_Test</tab>
+        </mapping>
+        <mapping>
+            <tab>OrganizationString__c</tab>
+        </mapping>
+        <mapping>
+            <tab>ProjectCountry_Risk__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Project_Review_Trigger__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Proposal_Quals_Info__c</tab>
+        </mapping>
+        <mapping>
+            <tab>QuestionnaireTemplate__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Questionnaire__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Revenue__c</tab>
+        </mapping>
+        <mapping>
+            <tab>RoutingMember__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Site__c</tab>
+        </mapping>
+        <mapping>
             <tab>State_Province_Emirate__c</tab>
         </mapping>
         <mapping>
-            <tab>standard-Knowledge</tab>
+            <tab>Technical_Document__c</tab>
+        </mapping>
+        <mapping>
+            <tab>VendorSub__c</tab>
+        </mapping>
+        <mapping>
+            <tab>iContact_MessageBuilder</tab>
         </mapping>
         <mapping>
             <tab>standard-Account</tab>
         </mapping>
         <mapping>
-            <tab>Proposal_Quals_Info__c</tab>
+            <fieldName>AccountId</fieldName>
+            <tab>standard-Case</tab>
+        </mapping>
+        <mapping>
+            <fieldName>AccountId</fieldName>
+            <tab>standard-Contact</tab>
+        </mapping>
+        <mapping>
+            <tab>standard-Knowledge</tab>
+        </mapping>
+        <mapping>
+            <tab>standard-Lead</tab>
+        </mapping>
+        <mapping>
+            <fieldName>AccountId</fieldName>
+            <tab>standard-Opportunity</tab>
         </mapping>
     </workspaceMappings>
 </CustomApplication>

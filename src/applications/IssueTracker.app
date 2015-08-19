@@ -3,7 +3,6 @@
     <defaultLandingTab>standard-home</defaultLandingTab>
     <description>Appirio&apos;s custom requirements and bug management application.</description>
     <label>IssueTracker</label>
-    <logo>CompanyCollateral_2/AppirioTransparentLogoforSFDC.png</logo>
     <tab>Change_Management__c</tab>
     <tab>Technical_Document__c</tab>
     <tab>standard-Workspace</tab>
@@ -15,4 +14,10 @@
     <tab>State_Province_Emirate__c</tab>
     <tab>Account_Plan_Contacts__c</tab>
     <tab>Business_Line__c</tab>
+    <tab>Ecosystem</tab>
+    <tab>Revenue__c</tab>
+    <tab>Billing__c</tab>
+    <tab>CostDistLine__c</tab>
+    <tab>EarnedValueHeader__c</tab>
+    <tab>VendorSub__c</tab>
 </CustomApplication>

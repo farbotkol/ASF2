@@ -59,7 +59,7 @@
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
         <fullName>AECOM_Department__c</fullName>
-        <deleteConstraint>Restrict</deleteConstraint>
+        <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>AECOM Department</label>
         <lookupFilter>
@@ -79,18 +79,6 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Area__c</fullName>
-        <externalId>false</externalId>
-        <formula>Text(AECOM_Department__r.Area__c)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Area</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Business_Line__c</fullName>
@@ -208,18 +196,6 @@
         <formula>AECOM_Department__r.Lead_Region__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Lead Region</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Legacy_Company__c</fullName>
-        <externalId>false</externalId>
-        <formula>TEXT(AECOM_Department__r.Legacy_Company__c)</formula>
-        <inlineHelpText>Displays URS or AECOM (from AECOM Department table)</inlineHelpText>
-        <label>Legacy Company</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -728,29 +704,6 @@ MONTH (TODAY()) &lt; 12
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Office__c</fullName>
-        <externalId>false</externalId>
-        <formula>AECOM_Department__r.Office__c</formula>
-        <label>Office</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Opportunity_Country__c</fullName>
-        <externalId>false</externalId>
-        <formula>AECOM_Department__r.Country__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Opportunity Country</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>Opportunity__c</fullName>
         <externalId>false</externalId>
         <label>Opportunity</label>
@@ -815,18 +768,6 @@ MONTH (TODAY()) &lt; 12
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Region__c</fullName>
-        <externalId>false</externalId>
-        <formula>TEXT(AECOM_Department__r.Region__c)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Region</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Revenue_Split_Program__c</fullName>
@@ -977,7 +918,6 @@ MONTH (TODAY()) &lt; 12
         <customTabListAdditionalFields>Department_Name__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>End_Market__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Geography__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Legacy_Company__c</customTabListAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>

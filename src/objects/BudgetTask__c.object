@@ -1,0 +1,276 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>BudgetHeader__c</fullName>
+        <externalId>false</externalId>
+        <label>Budget Header</label>
+        <referenceTo>BudgetHeader__c</referenceTo>
+        <relationshipLabel>Budget Tasks</relationshipLabel>
+        <relationshipName>BudgetTasks</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>EndDate__c</fullName>
+        <externalId>false</externalId>
+        <label>End Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ExternalId__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>External Id</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>HasChildren__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Has Children</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>HierarchyDepth__c</fullName>
+        <defaultValue>0</defaultValue>
+        <externalId>false</externalId>
+        <label>Hierarchy Depth</label>
+        <precision>18</precision>
+        <required>true</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>HierarchyIds__c</fullName>
+        <externalId>false</externalId>
+        <label>Hierarchy Ids</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>IsAssignable__c</fullName>
+        <externalId>false</externalId>
+        <formula>OR(
+
+AND( ISPICKVAL(BudgetHeader__r.Project__r.BudgetStrategy__c, &apos;Top Task&apos;) , IsTopLevelTask__c)
+
+,
+
+AND( ISPICKVAL(BudgetHeader__r.Project__r.BudgetStrategy__c, &apos;Bottom Task&apos;) , IsBottomLevelTask__c)
+
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is Assignable</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsBottomLevelTask__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Bottom Level Task</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsHidden__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Hidden</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsTopLevelTask__c</fullName>
+        <externalId>false</externalId>
+        <formula>ISBLANK(ParentTask__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is Top Level Task</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>OverrideTotalRevenue__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Total Revenue</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ParentTask__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Parent Task</label>
+        <lookupFilter>
+            <active>true</active>
+            <errorMessage>Parent Budget Tasks must be under same Budget Header.</errorMessage>
+            <filterItems>
+                <field>BudgetTask__c.BudgetHeader__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.BudgetHeader__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>BudgetTask__c</referenceTo>
+        <relationshipLabel>Budget Tasks</relationshipLabel>
+        <relationshipName>ChildTasks</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ProjectTask__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project Task</label>
+        <referenceTo>pse__Project_Task__c</referenceTo>
+        <relationshipLabel>Budget Tasks</relationshipLabel>
+        <relationshipName>BudgetTasks</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>StartDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>TaskName__c</fullName>
+        <externalId>false</externalId>
+        <label>Task Name</label>
+        <length>255</length>
+        <required>true</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TaskNumberCompound__c</fullName>
+        <externalId>false</externalId>
+        <formula>ProjectTask__r.pse__Project__r.ProjectNumber__c + &quot;-&quot; +  ProjectTask__r.ProjectTaskNumber__c</formula>
+        <label>Task Number (Compound)</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TotalApprovedCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Approved Cost</label>
+        <summarizedField>BudgetAssignment__c.FullyBurdenedCost__c</summarizedField>
+        <summaryFilterItems>
+            <field>BudgetAssignment__c.ApprovalStatus__c</field>
+            <operation>equals</operation>
+            <value>Approved</value>
+        </summaryFilterItems>
+        <summaryForeignKey>BudgetAssignment__c.BudgetTask__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TotalForecastCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Forecast Cost</label>
+        <summarizedField>BudgetAssignment__c.FullyBurdenedCost__c</summarizedField>
+        <summaryFilterItems>
+            <field>BudgetAssignment__c.ApprovalStatus__c</field>
+            <operation>equals</operation>
+            <value>Forecast, Approved</value>
+        </summaryFilterItems>
+        <summaryForeignKey>BudgetAssignment__c.BudgetTask__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <label>Budget Task</label>
+    <nameField>
+        <displayFormat>BT-{000000000}</displayFormat>
+        <label>Budget Task Number</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Budget Tasks</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Cannot_Delete_Task_with_Children</fullName>
+        <active>false</active>
+        <errorConditionFormula>HasChildren__c</errorConditionFormula>
+        <errorMessage>You cannot update a budget task that has child tasks.</errorMessage>
+    </validationRules>
+</CustomObject>

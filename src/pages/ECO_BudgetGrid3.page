@@ -1,0 +1,2187 @@
+<apex:page standardController="pse__Proj__c" extensions="ECO_BudgetGridController2" id="thePage" sidebar="false" title="{!theProject.Name} - {!theBudgetHolder.versionMap[selectedVersionId].BudgetName__c}" action="{!onLoad}" standardStylesheets="false" showHeader="false">
+
+    
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.ECO_Bootstrap_3_3_2, 'js/bootstrap.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/nifty.min.js')}"/>
+    <!-- <apex:includeScript value="{!$Resource.ECO_jQuery_LiteAccordion_min_js}"/> -->
+    
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2_Themes, 'themes/smoothness/jquery-ui.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_Bootstrap_3_3_2, 'css/bootstrap.min.css')}" /> 
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/css/nifty.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/css/font-awesome.min.css')}" />
+    <!-- <apex:stylesheet value="{!$Resource.ECO_jQuery_LiteAccordion_css}" /> -->
+    
+    
+
+    <script type="text/javascript" >
+        $z = jQuery.noConflict();
+        
+        var activeItem;
+
+        $z(document).ready(function () {
+            onCompleteAction();
+            
+            $z('#spinnerModal').modal({
+                show: false
+            });
+            
+            activeItem = $z("#accordionHorizontal div.totalsColumnDiv:first").attr('totalscolumnname');
+            
+            stretchStuff();
+            removeEnterBinding();
+//            attachAccordion();
+//            toggleJustGrid(0);
+
+            $z('#accordionHorizontal').sortable();
+            
+        });
+
+        function showHideMT(uid, elem) {
+            if (elem == 'Amount') {
+                $z('.billrateInput1-' + uid).show();
+                $z('.billrateInput2-' + uid).hide();
+            } else if (elem == 'Percent') {
+                $z('.billrateInput1-' + uid).hide();
+                $z('.billrateInput2-' + uid).show();
+            } else {
+                $z('.billrateInput1-' + uid).hide();
+                $z('.billrateInput2-' + uid).hide();
+            }
+        }
+
+        function hey() {
+            alert('hey');
+        }
+        
+        function toggleTotalsRow () {
+            $z('.totalsDiv').toggle(500);
+        }
+        
+        function attachPersonSelect () {
+            $z('.personSelectList').hide();
+            
+            $z('.personName').dblclick(function(){
+                $z(this).next('.personSelectList').show();
+                $z(this).hide();
+                $z('div.personName').show();
+            });
+        }
+        
+        function onCompleteAction () {
+            attachModal();
+            attachPersonSelect();
+            stretchStuff();
+            removeEnterBinding();
+//            attachAccordion();
+            attachDateEditModal();
+
+            attachAccordion2("personDetailToggle", "personColumn");
+            attachAccordion2("subcontractorDetailToggle", "subColumn");
+            attachAccordion2("feeDetailToggle", "FEEColumn");
+            attachAccordion2("contingencyDetailToggle", "contingencyColumn");
+            attachAccordion2("taskDetailToggle", "taskColumnDiv3");
+        }
+        
+        function attachDateEditModal () {
+            $z('.dateFormat').hide();
+            $z('.projectTaskDetailDiv').hide();
+            
+            $z('.editTaskIcon').click(function(){
+                $z(this).next('.projectTaskDetailDiv').css('display', 'inline');
+            });
+        }
+        
+        function attachModal () {
+            $z('#modalWindow').modal({
+                show: true
+                , backdrop: 'static'
+                , keyboard: false
+            });
+            
+        }
+        
+        function showGearModal () {
+            $z('#spinnerModal').modal({
+                show: true
+            });
+        }
+        
+        function hideGearModal () {
+            $z('#spinnerModal').modal('hide');
+        }
+        
+        function stretchStuff () {
+            document.getElementById("thePage:theForm:theBlock:columnBlock:scrollerDiv").style.width = window.innerWidth - "100" + "px";
+        }
+        
+        function removeEnterBinding () {
+            $z( 'form' ).bind('keypress', function(e){
+                if ( e.keyCode == 13 ) {
+                    return false;
+                }
+            });
+        }
+        
+        function attachAccordion () {
+            if (console) {
+                console.log('Attaching Accordion');
+                console.log('Active Item:  '+activeItem);
+            }
+            
+            $z('.columnDiv').hide();
+            
+            $z("#accordionHorizontal div.totalsColumnDiv").click(function(){
+                activeItem = $z(this).attr('totalscolumnname');
+            
+                $z('.columnDiv').hide(); 
+                $z(this).prevUntil('.totalsColumnDiv', '.columnDiv').show(500);
+            
+            });
+            
+            $z( 'div[totalscolumnname="'+activeItem+'"]' ).click();
+        }
+
+        function attachAccordion2(toggleButton, toggledDiv) {
+            $z("." + toggledDiv).hide();
+
+            $z("#" + toggleButton).click(function() {
+                $z("." + toggledDiv).toggle(500);
+            });
+        }
+
+        function toggleAllDetails() {
+            $z(".personColumn .subColumn .FEEColumn .contingencyColumn").toggle(500);
+        }
+        
+        function toggleRatesRow () {
+            $z('.rateCollapsible2').toggle(500);
+            $z('.editableAmount').attr('disabled', 'disabled');
+            //if ($z('.largeCellDiv').size() > 0) {
+            //    $z('.largeCellDiv').addClass('collapsedLargeCellDiv').removeClass('largeCellDiv');
+            //} else {
+            //    $z('.collapsedLargeCellDiv').addClass('largeCellDiv').removeClass('collapsedLargeCellDiv');
+            //}
+        }
+        
+        function toggleJustGrid (animationDelay) {
+            $z('[id$="projectTotalsSection"]').toggle(animationDelay);
+            $z('[id$="changeOrdersSection"]').toggle(animationDelay);
+            $z('[id$="questionnaireResponseSection"]').toggle(animationDelay);
+            $z('[id$="budgetDetailInfoSection"]').toggle(animationDelay);
+            $z('.row').toggle(animationDelay);
+            $z('.bPageTitle').toggle(animationDelay);
+            $z('.bPageFooter').toggle(animationDelay);
+            $z('#phHeader').toggle(animationDelay);
+            $z('#tabBar').toggle(animationDelay);
+            
+            
+            $z('[id$="scrollerDiv"]').toggleClass('scrollerDiv');
+            
+            stretchStuff();
+        }
+
+    </script>
+    
+    <style>
+        .editableAmount {
+        }
+        .hudButton {
+            margin-left: 4px;
+        }
+        div.spinnerModal {
+            display: none;
+        }
+
+        #spinnerModal i{
+            font-size:45px;
+            color:#fff;
+            margin: 0 auto;
+        }
+        
+        .scrollerDiv {
+           /*overflow-x: scroll;*/
+            margin-right:-500px;
+        }
+        
+        .wrapperDiv {
+            display: table;
+            width: 100%;
+            overflow:visible;
+        }
+        
+        .innerWrapperDiv {
+            display: table;
+            width: 100%;
+        }
+        
+        .columnDiv {
+            border: 1px solid #fff;
+            min-width: 300px;
+            width: 300px;
+            display: table-cell;
+        }
+        
+        .taskColumnDiv {
+            border: 1px solid #fff;
+            min-width: 300px;
+            width: 300px;
+            display: table-cell;
+            border-right:none;
+        }
+
+        .taskColumnDiv2 {
+            border: 1px solid #fff;
+            min-width: 150px;
+            display: table-cell;
+            border-right:none;
+        }
+
+        .taskColumnDiv3 {
+            border: 1px solid #fff;
+            min-width: 325px;
+            display: table-cell;
+            border-right:none;
+        }
+        
+        .totalsColumnDiv {
+            border: 1px solid #fff;
+            min-width: 300px;
+            width: 300px;
+            display: table-cell;
+        }
+        
+        .cellDiv {
+            border-bottom: 1px solid #fff;
+            height: 35px;
+            padding:9px;
+        }
+        
+        .cellDiv:last-child{
+            border-bottom:none;
+        }
+
+        .mediumCellDiv {
+            border-bottom: 1px solid #fff;
+            height: 100%;
+        }
+        
+        .largeCellDiv {
+            border-bottom: 1px solid #fff;
+            height: 248px;
+        }
+        
+        .collapsedLargeCellDiv {
+            border-bottom: 1px solid #fff;
+            height: 150px;
+        }
+        
+        .smallInput {
+            width: 46px;
+            float:right;
+            line-height:14px;
+            height: 19px;
+        }
+        .mediumInput{
+            width:128px;
+        }
+        
+        .projectTaskDetailDiv {
+            position: absolute;
+            background-color: #ebebeb;
+            border:1px solid black;
+            -moz-box-sadow: 0 0 10px white; 
+            box-shadow: 0 0 10px white;
+        }
+        a:hover{
+            cursor:pointer;
+        }
+        .headerCell{
+            background-color:#39c;
+            color:#fff;
+            font-weight:bold;
+            padding:9px;
+        }
+        
+        .columnDiv table td{
+            text-align:center;
+            padding:2px 3px 2px 0;
+        }
+        .HRS{
+            text-align:bottom;
+            font-weight:bold;
+            margin-top: -71px;
+            width: 104%;
+            border-bottom: 1px solid #fff;
+            height:22px;
+        }
+        .alignBottom{
+            text-align:bottom;
+        }
+        .percentInput{
+          float: right;
+          z-index: 999;
+          margin-right: -45px;
+          margin-top: 1px;
+          color: #A7A7A7;
+        }
+        .borderLeftBottom{
+            border-left:1px solid #fff !important;
+            border-bottom:1px solid #fff !important;
+        }
+        .borderBottom{
+            border-bottom:1px solid #fff !important;
+        }
+        .borderLeft{
+            border-left:1px solid #fff !important;
+        }
+        .borderTop{
+            border-top:1px solid #fff !important;
+        }
+        .dollarFigure{
+            font-weight:bold;
+            width:100%;
+            line-height:1px;
+        }
+        .resourceTypeName{
+            font-weight:bold;
+        }
+        .totalCost{
+            margin-bottom:-2px;
+        }
+        .totalRevenue{
+            margin-bottom:-8px;
+            width:100%;
+        }
+        .totalCost{
+            margin-bottom:-8px;
+            width:100%;
+        }
+        .totalRate{
+            margin-bottom:-8px;
+            width:100%;
+        }
+        .pushHeight{
+            height:83px;
+        }
+        .alignFix{
+            float:none !important;
+        }
+        .paddingFix{
+            padding: 9px 5px !important;
+        }
+        .cellDiv a img{
+            width:13px;
+            opacity:0.8;
+        }
+        .cellDiv a img:hover{
+            opacity:0.2;
+        }
+        .trashPaddingFix{
+            padding: 7px 0 0 7px !important;
+        }
+        .synchronizeLineRates{
+            vertical-align:middle;
+        }
+        .synchronizeLineRates input{
+            margin-top:0;
+            vertical-align:middle;
+            margin-left:4px;
+        }
+        .personName{
+            font-weight:bold;
+        }
+        .totalsDiv{
+            height:45px;
+            padding:0 !important;
+        }
+        .totalsDiv table td{
+            height:45px;
+        }
+        .alignRight{
+            text-align:right !important;
+        }
+        .alignLeft{
+            text-align:left !important;
+        }
+        .noPadding{
+            padding:0 !important;
+        }
+        .Foreign{
+            width:14px;
+            height:14px;
+            background-size:14px 14px;
+            display:inline-block;
+            margin-left:2px;
+            vertical-align:top;
+        }
+        .Local{
+            display:none;
+        }
+        .personColumn, .personTotalsColumn{
+            background-color:#e7edee;
+        }
+        .personTotalsColumn{
+            background-color:#d7e1e3;
+        }
+/*        
+        .personColumn:hover, .personTotalsColumn:hover{
+            background-color:#e1f5f8;
+        }
+*/        
+        .personColumn .headerCell, .personTotalsColumn .headerCell{
+            background-color:#39c;
+        }
+        .subColumn{
+            background-color:#e7f4e4;
+        }
+        .subsTotalsColumn{
+            background-color:#cddec8;
+        }
+/*      
+        .subColumn:hover, .subsTotalsColumn:hover{
+            background-color:#e5f9e0;
+        }
+*/
+        .subColumn .headerCell, .subsTotalsColumn .headerCell{
+            background-color:#53cc33;
+        }
+        .FEEColumn{
+            background-color:#f4e5e0;
+        }
+        .feeTotalsColumn{
+            background-color:#eedbd5;
+        }
+/*        
+        .FEEColumn:hover, .feeTotalsColumn:hover{
+            background-color:#f9e6e1;
+        }
+*/        
+        .FEEColumn .headerCell, .feeTotalsColumn .headerCell{
+            background-color:#d1603d;
+        }
+        .contingencyColumn{
+            background-color:#f2e8f6;
+        }
+        .contingencyTotalsColumn{
+            background-color:#efe3f4;
+        }
+/*        
+        .contingencyColumn:hover, .contingencyTotalsColumn:hover{
+            background-color:#f2e6f8;
+        }
+*/        
+        .contingencyColumn .headerCell, .contingencyTotalsColumn .headerCell{
+            background-color:#a944d8;
+        }
+        .resourceType{
+            background-color:#ebebeb;
+        }
+        .resourceType .headerCell{
+            background-color:#868686;
+        }
+        .totalActualCost{
+            text-align:right;
+            font-weight:bold;
+            font-size:13px;
+            padding-right:5px;
+            line-height:100%;
+        }
+        .minHeightFix{
+            height:34px;
+        }
+        .floatButtonRight{
+            float:right;
+            display:inline;
+            margin-top:-30px;
+        }
+        div[id$=questionnaireResponseSection] .floatButtonRight{
+            margin-right:1.7%;
+        }
+        div[id$=changeOrdersSection] .floatButtonRight{
+            margin-right:1.5%;
+        }
+        .lookupIconOn, .lookupIcon{
+            background-image:url('../img/sprites/master.png');
+              background-position: 0 -698px;
+            width:24px;
+            height:24px;
+        }
+
+
+        /* MODAL STYLING */
+        .modal-content{
+            border-radius:5px !important;
+        }
+        .modal-body{
+            min-height:120px;
+            padding:25px;
+        }
+        .modal-dialog{
+            max-width:550px !important;
+        }
+        .modal-dialog .fa-cog{
+            margin:0 auto !important;
+        }
+
+
+        /* NEW STYLES AFTER WE REMOVED DEFAULT SF STYLES -- ADDED BY ANDREW 5/8/2015 */
+
+        body{
+            padding:15px 35px 25px 35px;
+        }
+        label{
+          font-weight: normal;
+          font-size: 11px;
+          display: inline-block;
+          line-height: 17px;
+        }
+        #accordionHorizontal{
+            margin-right:50px;
+        }
+        .titleSeparatingColon{
+            display:none;
+        }
+        .brandSecondaryBrd td.pbTitle{
+            display:none;
+        }
+        .pbHeader td input, .pbBottomButtons td input{
+            margin-right:5px;
+        }
+        .rateCollapsible table {
+            //height:143px;
+        }
+        .rateCollapsible2 table {
+            //height:143px;
+        }
+        .individualPalette .pbBody div[id$=changeOrdersSection]{
+            display:inline-block;
+            width:48%;
+            margin-right:15px;
+        }
+        .individualPalette .pbBody div[id$=changeOrdersSection] table{
+            width:98.7%;
+        }
+        .individualPalette .pbBody .projectTotalsSection{
+            display:inline-block;
+            width:48%;
+        }
+        .individualPalette .pbBody .projectTotalsSection table{
+            width:97%;
+        }
+        .individualPalette .pbBody div[id$=questionnaireResponseSection]{
+            display:inline-block;
+            width:48%;
+            vertical-align:top;
+        }
+        .individualPalette .pbBody div[id$=questionnaireResponseSection] table{
+            margin-bottom:20px;
+            width:98.5%;
+        }
+        .individualPalette .pbBody div.budgetDetailInfoSection{
+            display:inline-block;
+            width:48%;
+            padding-top:70px;
+        }
+        .individualPalette .pbBody div.budgetDetailInfoSection table{
+            width:97%;
+        }
+        .row{
+            margin-bottom:25px;
+            padding:5px 0 5px 15px;
+        }
+        .budgetGridButtons input[type="button"]{
+            margin-right:5px;
+            margin-bottom:10px;
+        }
+
+
+
+        /* TABLE STYLES -- not the actual budget grid though */
+        .styledTable, .detailSectionWrapper .detailList {
+            border: solid 1px #EFF6F9 !important;
+            border-collapse: collapse;
+            border-spacing: 0;
+            font: normal 13px Arial, sans-serif;
+            overflow: hidden;
+            z-index: 1;
+        }
+        .styledTable th, .detailSectionWrapper .detailList th {
+            background-color: #D3E6EF !important;
+            border: solid 1px #EFF6F9 !important;
+            color: #336B6B !important;
+            padding: 10px;
+            text-align: left;
+        }
+        .styledTable tbody td, .detailSectionWrapper .detailList tbody td {
+            border: solid 1px #EFF6F9 !important;
+            color: #333;
+            padding: 10px;
+        }
+        .styledTable tbody td, .styledTable th, .detailSectionWrapper .detailList tbody td, .detailSectionWrapper .detailList th {
+            position: relative;
+        }
+        .styledTable tbody td:hover::before, .detailSectionWrapper .detailList tbody td:hover::before {
+            background-color: #c1dce9;
+            content:'\00a0';
+            height: 100%;
+            left: -5000px;
+            position: absolute;
+            top: 0;
+            width: 10000px;
+            z-index: -1;
+        }
+        .styledTable tbody td:hover::after, .detailSectionWrapper .detailList tbody td:hover::after {
+            background-color: #c1dce9;
+            content:'\00a0';
+            height: 10000px;
+            left: 0;
+            position: absolute;
+            top: -5000px;
+            width: 100%;
+            z-index: -1;
+        }
+
+        #HUD{
+            position: fixed;
+            padding:8px;
+            padding-left:5px;
+            background:#d0d0d0;
+            top:20px;
+            right:20px;
+        }
+
+        .toggleBudgetDetails{
+            margin:10px 0;
+            background-color:grey;
+            padding:10px;
+            cursor:pointer;
+            text-align: center;
+            color:#f1f1f1;
+        }
+
+        .toggleBudgetDetails:hover{
+            background-color:#a1a1a1;
+        }
+
+    </style>
+    
+    <apex:sectionHeader title="{!theProject.Name}" subtitle="{!theBudgetHolder.versionMap[selectedVersionId].BudgetName__c}" id="sectionHeader" />
+    
+    <apex:pageMessages id="pageMessages" />
+    
+    <apex:form id="theForm" >
+        <apex:pageBlock id="theBlock">
+            <div class="row">
+
+                <!--<div class="detailSectionWrapper projectTotalsSection">
+                    <apex:pageBlockSection id="projectTotalsSection" collapsible="false" title="Project Info: {!theProject.Name}" columns="2">
+                                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Total Forecast Cost" />
+                            <apex:outputField value="{!theProject.TotalForecastCost__c}" />
+                        </apex:pageBlockSectionItem>
+
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Total Forecast Revenue" />
+                             <apex:outputField value="{!theProject.TotalForecastRevenue__c}" />
+                        </apex:pageBlockSectionItem>
+
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Total Approved Cost" />
+                             <apex:outputField value="{!theProject.TotalApprovedCost__c}" />
+                        </apex:pageBlockSectionItem>
+
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Total Approved Revenue" />
+                             <apex:outputField value="{!theProject.TotalApprovedRevenue__c}" />
+                        </apex:pageBlockSectionItem>
+                        
+                        
+
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Total Actual Revenue" />
+                             <apex:outputText value="{!actualsHolder.totalRevenue}" />
+                        </apex:pageBlockSectionItem>
+                        
+
+                        
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Total Actual Cost" />
+                             <apex:outputText value="{!actualsHolder.totalCost}" />
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                </div>  -->
+
+                <apex:pageBlockSection id="changeOrdersSection" collapsible="false" title="Budgets & Change Orders" columns="1">
+                    <apex:pageBlockTable value="{!theBudgetHolder.versionMap}" var="budgetVersion" styleClass="styledTable">
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:outputText value="Budget Name" />
+                            </apex:facet>
+                            <strong>
+                                <apex:outputField value="{!theBudgetHolder.versionMap[budgetVersion].BudgetName__c}" rendered="{!budgetVersion == selectedVersionId}" />
+                            </strong>
+                            <a href="#" onClick="showGearModal();selectDifferentVersion('{!budgetVersion}');">
+                                <apex:outputField value="{!theBudgetHolder.versionMap[budgetVersion].BudgetName__c}" rendered="{!budgetVersion != selectedVersionId}" />
+                            </a>
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:outputText value="Cost" />
+                            </apex:facet>
+                            <apex:outputField value="{!theBudgetHolder.versionMap[budgetVersion].TotalCost__c}" />
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:outputText value="Revenue" />
+                            </apex:facet>
+                            <apex:outputField value="{!theBudgetHolder.versionMap[budgetVersion].TotalRevenue__c}" />
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:outputText value="Status" />
+                            </apex:facet>
+                            <apex:outputField value="{!theBudgetHolder.versionMap[budgetVersion].Status__c}" />
+                        </apex:column>
+                        <apex:column >                      
+                            <apex:facet name="header">
+                                <apex:outputText value="Created Date" />
+                            </apex:facet>
+                            <apex:outputField value="{!theBudgetHolder.versionMap[budgetVersion].CreatedDate}" />
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                <apex:outputText value="Change Manager" />
+                            </apex:facet>                       
+<!--                            <apex:commandButton action="{!submitForApproval}" rerender="changeOrdersSection, pageMessages, projectTotalsSection" value="Submit For Approval" onclick="showGearModal();" oncomplete="hideGearModal();" rendered="{!theBudgetHolder.versionMap[budgetVersion].Status__c == 'Estimate' || theBudgetHolder.versionMap[budgetVersion].Status__c == 'Forecast'}">
+                                <apex:param name="selectedBudgetVersion" assignTo="{!submitForApprovalId}" value="{!budgetVersion}" />
+                            </apex:commandButton>
+-->
+                            <apex:commandButton value="Submit Internal Change" onclick="showGearModal();" oncomplete="hideGearModal();" action="{!createInternalChange}" rerender="changeOrdersSection, pageMessages, projectTotalsSection" rendered="{!theBudgetHolder.versionMap[budgetVersion].Status__c == 'Estimate' && LEN(theBudgetHolder.budgetHeaderChangeManagerMap[budgetVersion]['Internal Change']) == 0}">
+                                <apex:param name="selectedBudgetVersionInt" assignTo="{!submitForApprovalId}" value="{!budgetVersion}" />                           
+                            </apex:commandButton>
+                            <apex:commandButton value="Submit External Change" onclick="showGearModal();" oncomplete="hideGearModal();" action="{!createExternalChange}" rerender="changeOrdersSection, pageMessages, projectTotalsSection" rendered="{!(theBudgetHolder.versionMap[budgetVersion].Status__c == 'Estimate' || theBudgetHolder.versionMap[budgetVersion].Status__c == 'Forecast') && LEN(theBudgetHolder.budgetHeaderChangeManagerMap[budgetVersion]['External Change']) == 0}">
+                                <apex:param name="selectedBudgetVersionInt" assignTo="{!submitForApprovalId}" value="{!budgetVersion}" />                           
+                            </apex:commandButton>   
+                            
+                            <apex:commandButton value="View Internal Change" action="{!viewChangeManager}" rerender="changeOrdersSection, pageMessages, projectTotalsSection" rendered="{!LEN(theBudgetHolder.budgetHeaderChangeManagerMap[budgetVersion]['Internal Change']) > 0}">
+                                <apex:param name="selectedChangeManager" assignTo="{!selectedChangeManagerId}" value="{!theBudgetHolder.budgetHeaderChangeManagerMap[budgetVersion]['Internal Change']}" />                            
+                            </apex:commandButton>        
+                            
+                            <apex:commandButton value="View External Change" action="{!viewChangeManager}" rerender="changeOrdersSection, pageMessages, projectTotalsSection" rendered="{!LEN(theBudgetHolder.budgetHeaderChangeManagerMap[budgetVersion]['External Change']) > 0}">
+                                <apex:param name="selectedChangeManager" assignTo="{!selectedChangeManagerId}" value="{!theBudgetHolder.budgetHeaderChangeManagerMap[budgetVersion]['External Change']}" />                            
+                            </apex:commandButton>                                                  
+                                                    
+                        </apex:column>
+                    </apex:pageBlockTable>
+                    
+                </apex:pageBlockSection>
+            </div> <!-- END FIRST ROW -->
+
+            <!--<div class="row">
+                <apex:pageBlockSection id="questionnaireResponseSection" collapsible="false" title="Budget Setup Questionnaire" columns="1">
+
+                    <apex:pageBlockSectionItem >
+                        <apex:outputPanel layout="block">
+                            <strong>Cost Totals:</strong>
+                            <div class="detailSectionWrapper">
+                                <table width="100%" class="detailList">
+                                    <tr>
+                                        <th width="25%"></th>
+                                        <th width="25%">Resources</th>
+                                        <th width="25%">Contingency</th>
+                                        <th width="25%">Contingency not Budgeted</th>
+                                    </tr>
+                                    <tbody>
+                                        <tr>
+                                            <td>Dollars: </td>
+                                            <td>{!theBudgetHolder.versionMap[selectedVersionId].TotalResourceAmount__c}</td>
+                                            <td>{!theBudgetHolder.versionMap[selectedVersionId].TotalContingencyAmount__c}</td>
+                                            <td>&nbsp;</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                
+
+                                <strong>By Resource Type:</strong>
+                                <table width="100%" class="detailList">
+                                    <tr>
+                                        <th width="25%"></th>
+                                        <th width="25%">Labor</th>
+                                        <th width="25%">Subs</th>
+                                        <th width="25%">FEEs</th>
+                                    </tr>
+                                    <tobdy>
+                                        <tr>
+                                            <td>Dollars: </td>
+                                            <td>{!theBudgetHolder.versionMap[selectedVersionId].TotalLaborAmount__c}</td>
+                                            <td>{!theBudgetHolder.versionMap[selectedVersionId].TotalSubAmount__c}</td>
+                                            <td>{!theBudgetHolder.versionMap[selectedVersionId].TotalFeeAmount__c}</td>
+                                        </tr>
+                                    </tobdy>
+                                </table>
+                            </div>
+                        </apex:outputPanel>
+                    </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+
+            <div class="detailSectionWrapper budgetDetailInfoSection">
+            
+                <apex:pageBlockSection id="budgetDetailInfoSection" columns="2">
+                    <apex:outputField value="{!theProject.BudgetOffline__c}" />
+                    <apex:outputField value="{!theProject.DefaultUpliftLabor__c}" />
+                    <apex:outputField value="{!theProject.DefaultUpliftSubs__c}" />
+                    <apex:outputField value="{!theProject.DefaultUpliftODCs__c}" />
+                    <apex:outputField value="{!theProject.DefaultBillRate__c}" />
+                    <apex:outputField value="{!theProject.DefaultMarginType__c}" />
+                    <apex:outputField value="{!theProject.EscalationApplies__c}" />
+                    <apex:outputField value="{!theProject.EscalationDescription__c}" rendered="{!theProject.EscalationApplies__c}" />
+                    <apex:pageBlockSectionItem rendered="{!theProject.EscalationApplies__c}"/>
+                    <apex:outputField value="{!theProject.PaymentTerms__c}" />
+                    <apex:outputField value="{!theProject.BillingStructure__c}" />
+                    <apex:outputField value="{!theProject.MilestoneFrequency__c}" />
+                    <apex:outputField value="{!theProject.DateOfFirstInvoice__c}" />
+                    <apex:outputField value="{!theProject.BudgetStrategy__c}" />
+                </apex:pageBlockSection>
+
+            </div>
+        </div>
+        -->
+        <!-- END SECOND ROW --> 
+            
+
+
+            <apex:pageBlockSection collapsible="false" columns="1" id="columnBlock">
+                
+                <!-- <apex:commandButton action="{!showAddResource}" value="Add Column" onClick="showGearModal();" /> -->
+
+<!--                
+                <div class="toggleBudgetDetails" onclick="toggleJustGrid(500);">
+                    <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                    View Budget Details
+                    <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+                </div>
+-->                
+
+                <apex:outputPanel layout="block" id="scrollerDiv" styleClass="scrollerDiv">
+                    <apex:outputPanel layout="block" id="wrapperDiv" styleClass="wrapperDiv">
+                    
+                    <!-- TASK COLUMN -->
+                    
+                        <apex:outputPanel layout="block" id="leftColumn" styleClass="taskColumnDiv2 resourceType">
+                            <apex:outputPanel layout="block" styleClass="largeCellDiv">
+                                <apex:outputPanel layout="block" styleClass="innerWrapperDiv">
+                                    <apex:outputPanel layout="block" styleClass="">
+                                        <apex:outputPanel layout="block" styleClass="cellDiv headerCell">
+                                            <apex:outputText value="Resource Type" />
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="">
+                                            <!-- <apex:selectRadio value="{!selectedType}" onChange="simpleRefresh();" >
+                                                <apex:selectOptions value="{!availableTypes}" />
+                                            </apex:selectRadio> -->
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                <a href="#" onClick="" id="taskDetailToggle">
+                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'toggle.png')}" style="width:13px;opacity: 0.8; margin: 6px; margin-top: 10px;" title="Toggle Details" />
+                                    Details
+                                </a><br />
+                                <a href="#" onClick="toggleRatesRow();">
+                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'toggle.png')}" style="width:13px;opacity: 0.8; margin: 6px;" title="Toggle Cost and Revenue" />
+                                    Cost and Revenue
+                                </a><br />
+                                <a href="#" onClick="toggleTotalsRow();">
+                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'toggle.png')}" style="width:13px;opacity: 0.8; margin: 6px;" title="Toggle Totals Row" />
+                                    Totals Row
+                                </a><br />
+                                <a href="#" onClick="toggleAllDetails();">
+                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'toggle.png')}" style="width:13px;opacity: 0.8; margin: 6px;" title="Toggle All Details" />
+                                    All Details
+                                </a>
+                            </apex:outputPanel>
+                            <apex:repeat value="{!theBudgetHolder.taskMap[selectedVersionId]}" var="taskId">
+                                <apex:outputPanel layout="block" styleClass="cellDiv" style="padding-left: CALC(15px * {!theBudgetHolder.taskMap[selectedVersionId][taskId].HierarchyDepth__c})" >
+                                    <a onClick="showGearModal();removeThisTaskRowApex('{!taskId}');">
+                                        <img style="margin: 5px;" src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" title="Delete" />
+                                    </a>
+
+                                    <strong><apex:outputLabel for="thisProjectTaskName" value=""/></strong>
+                                    <apex:outputText value="{!theBudgetHolder.taskMap[selectedVersionId][taskId].TaskName__c}" styleClass="resourceTypeName" id="thisProjectTaskName" />
+<!--                                    
+                                    <a class="editTaskIcon">
+                                        <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'edit.png')}" title="Edit" />
+                                    </a>
+-->                                    
+
+
+                                    
+<!--                                    
+                                    <apex:outputPanel layout="inline" id="projectTaskEdit" styleClass="projectTaskDetailDiv">
+                                        Start:  <apex:inputField value="{!theBudgetHolder.taskMap[selectedVersionId][taskId].StartDate__c}" />
+                                        End:  <apex:inputField value="{!theBudgetHolder.taskMap[selectedVersionId][taskId].EndDate__c}" />
+                                        Parent Task:  <apex:inputField value="{!theBudgetHolder.taskMap[selectedVersionId][taskId].ParentTask__c}" />
+                                    </apex:outputPanel>
+-->                                    
+                                </apex:outputPanel>
+                            </apex:repeat>
+                            <apex:outputPanel layout="block" styleClass="cellDiv alignRight totalsDiv" style="padding-bottom:" onClick="toggleTotalsRow();">
+                                <strong>Total</strong>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        
+                    <!-- END TASK COLUMN -->
+
+                    <!-- TASK DETAIL COLUMN -->
+                    
+                        <apex:outputPanel layout="block" id="leftColumn2" styleClass="taskColumnDiv3 resourceType">
+                            <apex:outputPanel layout="block" styleClass="largeCellDiv">
+                                <apex:outputPanel layout="block" styleClass="innerWrapperDiv">
+                                    <apex:outputPanel layout="block" styleClass="">
+                                        <apex:outputPanel layout="block" styleClass="cellDiv headerCell">
+                                            <apex:outputText value="Resource Type" />
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="">
+                                            <!-- <apex:selectRadio value="{!selectedType}" onChange="simpleRefresh();" >
+                                                <apex:selectOptions value="{!availableTypes}" />
+                                            </apex:selectRadio> -->
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            <apex:repeat value="{!theBudgetHolder.taskMap[selectedVersionId]}" var="taskId">
+                                <apex:outputPanel layout="block" styleClass="cellDiv" style="padding-left: CALC(15px * {!theBudgetHolder.taskMap[selectedVersionId][taskId].HierarchyDepth__c})" >
+<!--                                
+                                    <a onClick="showGearModal();removeThisTaskRowApex('{!taskId}');">
+                                        <img style="margin: 5px;" src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" title="Delete" />
+                                    </a>
+
+                                    <strong><apex:outputLabel for="thisProjectTaskName" value=""/></strong>
+                                    <apex:outputText value="{!theBudgetHolder.taskMap[selectedVersionId][taskId].TaskName__c}" styleClass="resourceTypeName" id="thisProjectTaskName" />
+-->                                    
+<!--                                    
+                                    <a class="editTaskIcon">
+                                        <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'edit.png')}" title="Edit" />
+                                    </a>
+-->                                    
+
+                                    <div style="margin-left: 5px;">
+                                    <apex:inputField value="{!theBudgetHolder.taskMap[selectedVersionId][taskId].StartDate__c}" rendered="true" html-placeholder="Start Date" style="width: 75px"/>
+                                    &nbsp;to&nbsp;&nbsp;
+                                    <apex:inputField value="{!theBudgetHolder.taskMap[selectedVersionId][taskId].EndDate__c}" rendered="true" html-placeholder="End Date" style="width: 75px"/>
+                                    &nbsp;&nbsp;
+                                    <apex:inputField value="{!theBudgetHolder.taskMap[selectedVersionId][taskId].ProjectTask__r.EarnedValueCurve__c}" rendered="true" />
+                                    </div>
+
+                                    
+<!--                                    
+                                    <apex:outputPanel layout="inline" id="projectTaskEdit" styleClass="projectTaskDetailDiv">
+                                        Start:  <apex:inputField value="{!theBudgetHolder.taskMap[selectedVersionId][taskId].StartDate__c}" />
+                                        End:  <apex:inputField value="{!theBudgetHolder.taskMap[selectedVersionId][taskId].EndDate__c}" />
+                                        Parent Task:  <apex:inputField value="{!theBudgetHolder.taskMap[selectedVersionId][taskId].ParentTask__c}" />
+                                    </apex:outputPanel>
+-->                                    
+                                </apex:outputPanel>
+                            </apex:repeat>
+                            <apex:outputPanel layout="block" styleClass="cellDiv alignRight totalsDiv" style="padding-bottom:" onClick="toggleTotalsRow();">
+                                <strong>Total</strong>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        
+                    <!-- END TASK DETAIL COLUMN -->
+                        
+                        <div id="accordionHorizontal">
+
+                        <!-- PERSON TOTALS COLUMN -->
+                        <apex:outputPanel layout="block" styleClass="totalsColumnDiv personTotalsColumn" html-totalscolumnname="personTotalsColumn" >
+                            
+                            <apex:outputPanel layout="block" styleClass="largeCellDiv">
+                                <apex:outputPanel layout="block" styleClass="wrapperDiv">
+                                    <apex:outputPanel layout="block" styleClass="">
+                                        <apex:outputPanel layout="block" styleClass="cellDiv headerCell">
+                                            Labor/Person Totals
+                                            <a onClick="showGearModal();showAddLaborPersonApex();" style="margin-left:3px;">
+                                                <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'add.png')}" title="Add" />
+                                            </a>
+                                            <!-- <a class="totalsColumnExpander" style="margin-left:3px;">
+                                                <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'EXPAND')}" title="Add" />
+                                            </a> -->
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="cellDiv personName">
+                                            <a><img title="Toggle Detail" src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'toggle.png')}" id="personDetailToggle" style="margin-right: 5px;"/></a>
+                                            Toggle Details
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="cellDiv synchronizeLineRates rateCollapsible">
+                                            &nbsp;
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="rateCollapsible">
+                                            <table width="100%">
+                                                <tr>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                </tr>
+                                                <tr class="rateCollapsibleRow">
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                </tr>
+                                                <tr class="rateCollapsibleRow">
+                                                    <td width="33%" class="alignBottom borderBottom borderTop" style="text-align:center;">
+                                                        <strong>Actual Cost</strong>
+                                                    </td>
+                                                    <td width="33%" class="borderLeftBottom borderTop" style="padding:0 0 0 5px;text-align:center;">
+                                                        <strong>Budget Cost</strong>
+                                                    </td>
+                                                    <td width="33%" class="borderLeftBottom borderTop" style="padding:0 0 0 5px;text-align:center">
+                                                        <strong>Budget Revenue</strong>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        
+                            <apex:repeat value="{!theBudgetHolder.taskMap[selectedVersionId]}" var="taskId">
+                                <apex:outputPanel styleClass="cellDiv paddingFix noPadding" layout="block">
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="33%" class="paddingFix alignRight">
+                                                <strong>
+                                                    <apex:outputText value="{!actualsHolder.taskPerTypeTotalMap[theBudgetHolder.taskMap[selectedVersionId][taskId].ProjectTask__c].totalCostLabor}" />
+                                                    <!-- {!actualsHolder.taskPerTypeTotalMap[theBudgetHolder.taskMap[selectedVersionId][taskId].ProjectTask__c].totalCostLabor} -->
+                                                </strong>
+                                            </td>
+                                            <td width="33%" class="alignRight borderLeft paddingFix">
+                                                <strong>
+                                                    <apex:outputText value="{!personTotalColumn.rows[taskId].totalBudgetCost}" />
+                                                </strong>
+                                            </td>
+                                            <td width="33%" class="alignRight borderLeft paddingFix">
+                                                <strong>
+                                                    <apex:outputText value="{!personTotalColumn.rows[taskId].totalBudgetRevenue}" />
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </apex:outputPanel>
+                            </apex:repeat>
+                            
+                            <apex:outputPanel styleclass="cellDiv totalsDiv" layout="block"  onClick="toggleTotalsRow();">
+                                <table style="width:100%">
+                                    <tr>
+                                        <td width="33%" class="alignBottom alignRight totalActualCost">
+                                            Total Actual Cost:   <apex:outputText value="{!actualsHolder.totalCostLabor}" />
+                                        </td>
+                                        <td width="33%" class="borderLeftBottom pushHeight alignRight paddingFix">
+                                            &nbsp;
+                                        </td>
+                                        <td width="33%" class="borderLeftBottom alignRight paddingFix">
+                                            &nbsp;
+                                        </td>
+                                    </tr>
+                                </table>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <!-- END PERSON TOTALS COLUMN -->
+                        
+                        <!-- <apex:repeat value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId]}" var="columnId" > -->
+                        <!-- <apex:repeat value="{!theBudgetHolder.sortedMapList[selectedVersionId]}" var="columnId" > -->
+                        <apex:repeat value="{!peopleColumns}" var="columnId" >
+                            
+                            <!-- PERSON COLUMN -->
+                            <apex:outputPanel layout="block" id="personColumn" styleClass="columnDiv personColumn">
+                                <apex:outputPanel layout="block" styleClass="largeCellDiv">
+                                    <apex:outputPanel layout="block" styleClass="wrapperDiv">
+                                        <apex:outputPanel layout="block" styleClass="">
+                                            <apex:outputPanel layout="block" styleClass="cellDiv headerCell">
+                                                <apex:outputLabel for="thisPersonTitle" value=""/>
+                                                
+                                                <apex:outputText value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].ResourceType__c}" id="thisPersonTitle" styleClass="" />
+                                                
+                                                
+                                                <a onClick="showGearModal();removeThisColumnApex('{!columnId}');">
+                                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" title="Delete" />
+                                                </a>
+                                                
+                                                <a onClick="showGearModal();cloneThisColumnApex('{!columnId}');" style="margin-left:3px;">
+                                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'clone.png')}" title="Clone" />
+                                                </a>
+                                                <a onClick="showGearModal();showAddLaborPersonApex();" style="margin-left:3px;">
+                                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'add.png')}" title="Add" />
+                                                </a>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="cellDiv personName">
+                                                <apex:outputLabel for="thisPersonName"/>   
+                                                <apex:outputText value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].ColumnHeader__c}" id="thisPersonName" styleClass="personName" /> 
+                                                
+                                                <apex:selectList value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].ProjectTeamMember__c}" title="Choose a Team Member" multiselect="false" size="1" styleClass="personSelectList" >
+                                                    <apex:selectOptions value="{!allProjectTeamMembers}"/>
+                                                </apex:selectList>
+                                                
+                                                <div class="{!theBudgetHolder.columnMap[selectedVersionId][columnId].ForeignResource__c}" style="background-image:url({!URLFOR($Resource.ECO_CustomGraphicAssets, 'globe.png')});" title="This Resource is Foreign">
+                                                </div>
+                                                
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="cellDiv synchronizeLineRates rateCollapsible">
+                                                Synchronize Line Rates:  <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideRatesOnLines__c}" />
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="rateCollapsible">
+                                                <table width="100%">
+                                                    <tr>
+                                                        <!-- <td rowspan="3" width="33%" class="alignBottom">
+                                                            HRS
+                                                        </td> -->
+                                                        <td width="33%" class="borderBottom"><strong>Hours</strong></td>
+                                                        <td width="33%" class="borderLeftBottom"><strong>Cost</strong></td>
+                                                        <td width="33%" class="borderLeftBottom"><strong>Revenue</strong></td>
+                                                    </tr>
+                                                    <tr class="rateCollapsibleRow">
+                                                        <td width="33%" class="borderBottom"/>
+                                                        <td width="33%" class="borderLeftBottom alignRight">
+                                                            <div class="totalRate"><apex:outputLabel value="Total Rate:" /></div>
+                                                            <strong><apex:outputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].CostRate__c}" styleClass="dollarFigure"/></strong>
+                                                        </td>
+                                                        <td width="33%" class="borderLeftBottom">
+                                                            <div class="billrateInput1-{!selectedVersionId}-{!columnId}">
+                                                            <label>Rate:</label> <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideBillRate__c}" id="billrateInput1" styleClass="smallInput editableAmount"/></div>
+                                                            <div class="billrateInput2-{!selectedVersionId}-{!columnId}">
+                                                            <label>Percent:</label> <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideUplift__c}" id="billrateInput2" styleClass="smallInput editableAmount"/><div class="percentInput">%</div></div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="rateCollapsibleRow rateCollapsible2">
+                                                        <td width="33%" class=""/>
+                                                        <td width="33%" class="borderLeft">
+                                                            <apex:outputLabel value="Raw:  "/>
+                                                            <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideRawCost__c}"  styleClass="smallInput"/>
+                                                            <br/>
+                                                            <apex:outputLabel value="Finge:  " />
+                                                            <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideFringeMultiplier__c}"  styleClass="smallInput"/><div class="percentInput">%</div>
+                                                            <br/>
+                                                            <apex:outputLabel value="O/H:  " />
+                                                            <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideOverheadMultiplier__c}"  styleClass="smallInput"/><div class="percentInput">%</div>
+                                                        </td>
+                                                        <td width="33%" class="borderLeft">
+                                                            M/T:
+                                                            <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].MarginType__c}" styleClass="smallInput" onChange="showHideMT('{!selectedVersionId}-{!columnId}', this.value); return true;"/>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                
+                                <apex:repeat value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId]}" var="taskId">
+<!--                                
+                                    <apex:outputPanel styleClass="cellDiv paddingFix noPadding" layout="block" rendered="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].Id != null}">
+-->                                    
+                                    <apex:outputPanel styleClass="cellDiv paddingFix noPadding" layout="block" rendered="true">
+                                        <!-- BL ID:  {!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].Id}
+                                        PTA ID:  {!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].ProjectTaskAssignment__c} -->
+                                        <table width="100%" >
+                                            <tr>
+                                                <td width="33%" class="paddingFix alignRight">
+<!--                                                
+                                                    <a onClick="showGearModal();removeThisProjectTaskApex('{!columnId}', '{!taskId}');">
+                                                        <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" title="Delete" />
+                                                    </a>
+-->                                                    
+                                                    <apex:inputField value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].Quantity__c}" id="thisPersonHours" styleClass="smallInput alignFix alignRight" />
+                                                </td>
+                                                <td width="33%" class="alignRight borderLeft paddingFix">
+                                                    <strong><apex:outputField value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].FullyBurdenedCost__c}" id="thisPersonCost" /></strong>
+                                                </td>
+                                                <td width="33%" class="alignRight borderLeft paddingFix">
+                                                    <strong><apex:outputField value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].CalculatedRevenue__c}" id="thisPersonBillRate" /></strong>
+                                                </td>
+                                                
+                                            </tr>
+                                        </table>
+                                    </apex:outputPanel>
+<!--                                    
+                                    <apex:outputPanel styleClass="cellDiv noPadding" layout="block" rendered="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].Id == null}">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td width="33%" class="alignLeft paddingFix minHeightFix">
+                                                    <apex:outputPanel layout="none" rendered="{!theBudgetHolder.taskMap[selectedVersionId][taskId].IsAssignable__c}" >
+                                                        <a onClick="showGearModal();assignThisResourceToThisTaskApex('{!columnId}', '{!taskId}');">
+                                                            Assignx
+                                                        </a>
+                                                    </apex:outputPanel>
+                                                </td>
+                                                <td width="33%" class="borderLeft">
+                                                    <br />
+                                                </td>
+                                                <td width="33%" class="borderLeft">
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </apex:outputPanel>
+-->                                    
+                                </apex:repeat>
+                                <apex:outputPanel styleclass="cellDiv totalsDiv" layout="block"  onClick="toggleTotalsRow();">
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td width="33%" class="alignBottom">
+                                            </td>
+                                            <td width="33%" class="borderLeftBottom pushHeight alignRight paddingFix">
+                                                <strong><apex:outputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].TotalCost__c}"  styleClass="dollarFigure" /></strong>
+                                            </td>
+                                            <td width="33%" class="borderLeftBottom alignRight paddingFix">
+                                                <strong><apex:outputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].TotalRevenue__c}"  styleClass="dollarFigure" /></strong>
+                                                <br/>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            <!-- END PERSON COLUMN -->
+                            
+                        </apex:repeat>
+
+                        <!-- SUBCONTRACTOR TOTALS COLUMN -->
+                        <apex:outputPanel layout="block" styleClass="totalsColumnDiv subsTotalsColumn" html-totalscolumnname="subsTotalsColumn" >
+                            
+                            <apex:outputPanel layout="block" styleClass="largeCellDiv">
+                                <apex:outputPanel layout="block" styleClass="wrapperDiv">
+                                    <apex:outputPanel layout="block" styleClass="">
+                                        <apex:outputPanel layout="block" styleClass="cellDiv headerCell">
+                                            Subcontractor Totals 
+                                            <a onClick="showGearModal();showAddSubApex();" style="margin-left:3px;">
+                                                <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'add.png')}" title="Add" />
+                                            </a>
+                                            <!-- <a class="totalsColumnExpander" style="margin-left:3px;">
+                                                <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'EXPAND')}" title="Add" />
+                                            </a> -->
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="cellDiv personName">
+                                            <a><img title="Toggle Detail" src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'toggle.png')}" id="subcontractorDetailToggle" style="margin-right: 5px;"/></a>
+                                            Toggle Details
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="cellDiv synchronizeLineRates rateCollapsible">
+                                            &nbsp;
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="rateCollapsible">
+                                            <table width="100%">
+                                                <tr>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                </tr>
+                                                <tr class="rateCollapsibleRow">
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                </tr>
+                                                <tr class="rateCollapsibleRow">
+                                                    <td width="33%" class="alignBottom borderBottom borderTop" style="text-align:center;">
+                                                        <strong>Actual Cost</strong>
+                                                    </td>
+                                                    <td width="33%" class="borderLeftBottom borderTop" style="padding:0 0 0 5px;text-align:center;">
+                                                        <strong>Budget Cost</strong>
+                                                    </td>
+                                                    <td width="33%" class="borderLeftBottom borderTop" style="padding:0 0 0 5px;text-align:center;">
+                                                        <strong>Budget Revenue</strong>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        
+                            <apex:repeat value="{!theBudgetHolder.taskMap[selectedVersionId]}" var="taskId">
+                                <apex:outputPanel styleClass="cellDiv paddingFix noPadding" layout="block">
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="33%" class="paddingFix alignRight">
+                                                <strong>
+                                                    <apex:outputText value="{!actualsHolder.taskPerTypeTotalMap[theBudgetHolder.taskMap[selectedVersionId][taskId].ProjectTask__c].totalCostSubs}" />
+                                                </strong>
+                                            </td>
+                                            <td width="33%" class="alignRight borderLeft paddingFix">
+                                                <strong>
+                                                    <apex:outputText value="{!subTotalColumn.rows[taskId].totalBudgetCost}" />
+                                                </strong>
+                                            </td>
+                                            <td width="33%" class="alignRight borderLeft paddingFix">
+                                                <strong>
+                                                    <apex:outputText value="{!subTotalColumn.rows[taskId].totalBudgetRevenue}" />
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </apex:outputPanel>
+                            </apex:repeat>
+                            
+                            <apex:outputPanel styleclass="cellDiv totalsDiv" layout="block"  onClick="toggleTotalsRow();">
+                                <table style="width:100%">
+                                    <tr>
+                                        <td width="33%" class="alignBottom alignRight totalActualCost">
+                                            Total Actual Cost:   <apex:outputText value="{!actualsHolder.totalCostSubs}" />
+                                        </td>
+                                        <td width="33%" class="borderLeftBottom pushHeight alignRight paddingFix">
+                                            &nbsp;
+                                        </td>
+                                        <td width="33%" class="borderLeftBottom alignRight paddingFix">
+                                            &nbsp;
+                                        </td>
+                                    </tr>
+                                </table>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <!-- END SUBCONTRACTOR TOTALS COLUMN -->
+                        
+                        <apex:repeat value="{!subColumns}" var="columnId">
+                        
+                            
+                            <!-- SUBCONTRACTOR COLUMN -->
+                            <apex:outputPanel layout="block" id="subColumn" styleClass="columnDiv subColumn" >
+                                <apex:outputPanel layout="block" styleClass="largeCellDiv">
+                                    <apex:outputPanel layout="block" styleClass="wrapperDiv">
+                                        <apex:outputPanel layout="block" styleClass="">
+                                            <apex:outputPanel layout="block" styleClass="cellDiv headerCell">
+                                                <apex:outputLabel for="thisSubTitle" value=""/>   
+                                                <apex:outputText value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].ResourceType__c}" id="thisSubTitle" />
+                                                <a onClick="showGearModal();removeThisColumnApex('{!columnId}');">
+                                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" title="Delete" />
+                                                </a>
+                                                
+                                                <a onClick="showGearModal();cloneThisColumnApex('{!columnId}');"  style="margin-left:3px;">
+                                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'clone.png')}" title="Clone" />
+                                                </a>
+                                                <a onClick="showGearModal();showAddSubApex();" style="margin-left:3px;">
+                                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'add.png')}" title="Add" />
+                                                </a>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="cellDiv personName">
+                                                <apex:outputLabel for="thisSubName" value=""/>   
+                                                <apex:outputText value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].ResourceName__c}" id="thisSubName" />
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="cellDiv synchronizeLineRates rateCollapsible">
+                                                Synchronize Line Rates:  <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideRatesOnLines__c}" />
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="rateCollapsible">
+                                                <table width="100%">
+                                                    <tr>
+                                                        <!-- <td rowspan="3" width="33%" class="alignBottom">
+                                                            HRS
+                                                        </td> -->
+                                                        <td width="33%" class="borderBottom"><strong>Hours</strong></td>
+                                                        <td width="33%" class="borderLeftBottom"><strong>Cost</strong></td>
+                                                        <td width="33%" class="borderLeftBottom"><strong>Revenue</strong></td>
+                                                    </tr>
+                                                    <tr class="rateCollapsibleRow">
+                                                        <td width="33%" class="borderLeftBottom"/>
+                                                        <td width="33%" class="borderLeftBottom alignRight">
+                                                            <div class="totalRate"><apex:outputLabel value="Total Rate:" /></div>
+                                                            <strong><apex:outputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].CostRate__c}"  styleClass="dollarFigure"/></strong>
+                                                        </td>
+                                                        <td width="33%" class="borderLeftBottom">
+                                                            <label>Rate:</label>  <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideBillRate__c}" styleClass="smallInput"/>
+                                                            <br/>
+                                                            <label>Percent:</label>  <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideUplift__c}" styleClass="smallInput"/><div class="percentInput">%</div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="rateCollapsibleRow">
+                                                        <td width="33%" class=""/>
+                                                        <td width="33%" class="borderLeft">
+                                                            <apex:outputLabel value="Raw:  " />
+                                                            <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideRawCost__c}" styleClass="smallInput"/>
+                                                            <br/>
+                                                            <apex:outputLabel value="Finge:  " />
+                                                            <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideFringeMultiplier__c}" styleClass="smallInput"/><div class="percentInput">%</div>
+                                                            <br/>
+                                                            <apex:outputLabel value="O/H:  " />
+                                                            <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideOverheadMultiplier__c}" styleClass="smallInput"/><div class="percentInput">%</div>
+                                                        </td>
+                                                        <td width="33%" class="borderLeft">
+                                                            M/T:
+                                                            <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].MarginType__c}" styleClass="smallInput"/>
+                                                        </td>
+                                                    </tr>
+
+                                                </table>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                
+                                <apex:repeat value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId]}" var="taskId">
+                                    <apex:outputPanel styleClass="cellDiv paddingFix  noPadding" layout="block" rendered="true">
+                                        <!-- BL ID:  {!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].Id} -->
+                                        <table width="100%">
+                                            <tr>
+                                                <td width="33%" class="paddingFix alignRight">
+<!--                                                
+                                                    <a onClick="showGearModal();removeThisProjectTaskApex('{!columnId}', '{!taskId}');">
+                                                        <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" title="Delete" />
+                                                    </a>
+-->                                                    
+                                                    <apex:inputField value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].Quantity__c}" id="thisPersonHours" styleClass="smallInput alignFix alignRight" />
+                                                </td>
+                                                <td width="33%" class="alignRight borderLeft paddingFix">
+                                                    <strong><apex:outputField value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].FullyBurdenedCost__c}" id="thisPersonCost" /></strong>
+                                                </td>
+                                                <td width="33%" class="alignRight borderLeft paddingFix">
+                                                    <strong><apex:outputField value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].CalculatedRevenue__c}" id="thisPersonBillRate" /></strong>
+                                                </td>
+                                                
+                                            </tr>
+                                        </table>
+                                    </apex:outputPanel>
+<!--                                    
+                                    <apex:outputPanel styleClass="cellDiv noPadding" layout="block" rendered="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].Id == null}">
+                                        <table style="width:100%">
+                                            <tr>
+                                                <td width="33%" class="alignLeft paddingFix minHeightFix">
+                                                    <apex:outputPanel layout="none" rendered="{!theBudgetHolder.taskMap[selectedVersionId][taskId].IsAssignable__c}}" >
+                                                        <a onClick="showGearModal();assignThisResourceToThisTaskApex('{!columnId}', '{!taskId}');">
+                                                            Assign
+                                                        </a>
+                                                    </apex:outputPanel>
+                                                </td>
+                                                <td width="33%" class="borderLeft">
+                                                    <br />
+                                                </td>
+                                                <td width="33%" class="borderLeft">
+                                                </td>
+                                            </tr>
+                                        </table>
+                                    </apex:outputPanel>
+-->                                    
+                                </apex:repeat>
+                                <apex:outputPanel styleClass="cellDiv totalsDiv" layout="block"  onClick="toggleTotalsRow();">
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td width="32%" >
+                                            </td>
+                                            <td width="35.5%" class="borderLeftBottom pushHeight alignRight" style="padding:9px;">
+                                                <strong><apex:outputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].TotalCost__c}"/></strong>
+                                            </td>
+                                            <td width="33%" class="borderLeftBottom alignRight" style="padding:9px;">
+                                                <strong><apex:outputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].TotalRevenue__c}" /></strong><br />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                            <!-- END SUBCONTRACTOR COLUMN -->
+                            
+                        </apex:repeat>
+
+                        <!-- ODC/FEE TOTALS COLUMN -->
+                        <apex:outputPanel layout="block" styleClass="totalsColumnDiv feeTotalsColumn" html-totalscolumnname="feeTotalsColumn" >
+                            
+                            <apex:outputPanel layout="block" styleClass="largeCellDiv">
+                                <apex:outputPanel layout="block" styleClass="wrapperDiv">
+                                    <apex:outputPanel layout="block" styleClass="">
+                                        <apex:outputPanel layout="block" styleClass="cellDiv headerCell">
+                                            FEE/ODC Totals 
+                                            <a onClick="showGearModal();showAddFeeApex();" style="margin-left:3px;">
+                                                <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'add.png')}" title="Add" />
+                                            </a>
+                                            <!-- <a class="totalsColumnExpander" style="margin-left:3px;">
+                                                <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'EXPAND')}" title="Add" />
+                                            </a> -->
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="cellDiv personName">
+                                            <a><img title="Toggle Detail" src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'toggle.png')}" id="feeDetailToggle" style="margin-right: 5px;"/></a>
+                                            Toggle Details
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="cellDiv synchronizeLineRates rateCollapsible">
+                                            &nbsp;
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="rateCollapsible">
+                                            <table width="100%">
+                                                <tr>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                </tr>
+                                                <tr class="rateCollapsibleRow">
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                </tr>
+                                                <tr class="rateCollapsibleRow">
+                                                    <td width="33%" class="alignBottom borderTop borderBottom" style="text-align:center;">
+                                                        <strong>Actual Cost</strong>
+                                                    </td>
+                                                    <td width="33%" class="borderLeftBottom borderTop" style="padding:0 0 0 5px;text-align:center;">
+                                                        <strong>Budget Cost</strong>
+                                                    </td>
+                                                    <td width="33%" class="borderLeftBottom borderTop" style="padding:0 0 0 5px;text-align:center;">
+                                                        <strong>Budget Revenue</strong>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        
+                            <apex:repeat value="{!theBudgetHolder.taskMap[selectedVersionId]}" var="taskId">
+                                <apex:outputPanel styleClass="cellDiv paddingFix noPadding" layout="block">
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="33%" class="paddingFix alignRight">
+                                                <strong>
+                                                    <apex:outputText value="{!actualsHolder.taskPerTypeTotalMap[theBudgetHolder.taskMap[selectedVersionId][taskId].ProjectTask__c].totalCostFees}" />
+                                                </strong>
+                                            </td>
+                                            <td width="33%" class="alignRight borderLeft paddingFix">
+                                                <strong>
+                                                    <apex:outputText value="{!feeTotalColumn.rows[taskId].totalBudgetCost}" />
+                                                </strong>
+                                            </td>
+                                            <td width="33%" class="alignRight borderLeft paddingFix">
+                                                <strong>
+                                                    <apex:outputText value="{!feeTotalColumn.rows[taskId].totalBudgetRevenue}" />
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </apex:outputPanel>
+                            </apex:repeat>
+                            
+                            <apex:outputPanel styleclass="cellDiv totalsDiv" layout="block"  onClick="toggleTotalsRow();">
+                                <table style="width:100%">
+                                    <tr>
+                                        <td width="33%" class="alignBottom alignRight totalActualCost">
+                                            Total Actual Cost:   <apex:outputText value="{!actualsHolder.totalCostFees}" />
+                                        </td>
+                                        <td width="33%" class="borderLeftBottom pushHeight alignRight paddingFix">
+                                            &nbsp;
+                                        </td>
+                                        <td width="33%" class="borderLeftBottom alignRight paddingFix">
+                                            &nbsp;
+                                        </td>
+                                    </tr>
+                                </table>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <!-- END ODC/FEE TOTALS COLUMN -->
+                        
+                        <apex:repeat value="{!feeColumns}" var="columnId">
+                            
+                            <!-- ODC/FEE COLUMN -->
+                            <apex:outputPanel layout="block" id="FEEColumn" styleClass="columnDiv FEEColumn" >
+                                <apex:outputPanel layout="block" styleClass="largeCellDiv">
+                                    <apex:outputPanel layout="block" styleClass="wrapperDiv">
+                                        <apex:outputPanel layout="block" styleClass="">
+                                            <apex:outputPanel layout="block" styleClass="cellDiv headerCell">
+                                                <apex:outputLabel for="thisFeeTitle" value=""/>   
+                                                <apex:outputText value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].ResourceType__c}" id="thisFeeTitle" />
+                                                <a onClick="showGearModal();removeThisColumnApex('{!columnId}');">
+                                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" title="Delete" />
+                                                </a>
+                                                
+                                                <a onClick="showGearModal();cloneThisColumnApex('{!columnId}');" style="margin-left:3px;">
+                                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'clone.png')}" title="Clone" />
+                                                </a>
+                                                <a onClick="showGearModal();showAddFeeApex();" style="margin-left:3px;">
+                                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'add.png')}" title="Add" />
+                                                </a>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="cellDiv personName">
+                                                <apex:outputLabel for="thisFeeName" value=""/>   
+                                                <apex:outputText value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].ResourceName__c}" id="thisFeeName" />
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="cellDiv synchronizeLineRates rateCollapsible">
+                                                &nbsp;
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="mediumCellDiv rateCollapsible">
+                                                <table width="100%">
+                                                    <tr>
+                                                        <td rowspan="3" width="33%" >
+                                                            &nbsp;
+                                                        </td>
+                                                        <td width="33%">
+                                                            <strong>Cost</strong>
+                                                        </td>
+                                                        <td width="33%">
+                                                            <strong>Revenue</strong>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="rateCollapsibleRow">
+                                                        <td width="33%">
+                                                            
+                                                        </td>
+                                                        <td width="33%">
+                                                            <label>Rate:</label>  <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideBillRate__c}" styleClass="smallInput"/>
+                                                            <br/>
+                                                            <label>Percent:</label>  <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideUplift__c}" styleClass="smallInput"/><div class="percentInput">%</div>
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="rateCollapsibleRow">
+                                                        <td width="33%">
+                                                            <!-- <apex:outputLabel value="Amount:  "/>
+                                                            <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideRawCost__c}"  styleClass="smallInput"/> -->
+                                                        </td>
+                                                        <td width="33%">
+
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="rateCollapsibleRow">
+                                                        <td width="50%" class="alignRight">
+                                                            <!-- <div class="totalCost"><apex:outputLabel value="Total Cost:" /></div>
+                                                            <strong><apex:outputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].TotalCost__c}"  styleClass="dollarFigure"/></strong> -->
+                                                        </td>
+                                                        <td width="25%" >
+                                                            
+                                                        </td>
+                                                        <td width="25%">
+                                                            M/T:
+                                                            <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].MarginType__c}" styleClass="smallInput"/>
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                
+                                <apex:repeat value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId]}" var="taskId">
+                                    <apex:outputPanel styleClass="cellDiv paddingFix" layout="block" rendered="true">
+                                        <!-- BL ID:  {!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].Id} -->
+                                        <table width="100%">
+                                            <tr>
+                                                <td width="3%" class="trashPaddingFix">
+<!--                                                
+                                                    <a onClick="showGearModal();removeThisProjectTaskApex('{!columnId}', '{!taskId}');">
+                                                        <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" title="Delete" />
+                                                    </a>
+-->                                                    
+                                                </td>
+                                                <td width="30%">
+                                                    <apex:inputField value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].OverrideTotalCost__c}" styleClass="alignFix mediumInput alignRight" />
+                                                </td>
+                                                <td width="33%">
+                                                    
+                                                </td>
+                                                <td width="33%">
+                                                    <apex:inputField value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].OverrideTotalRevenue__c}" styleClass="alignFix mediumInput alignRight" />
+                                                    <apex:outputField value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].CalculatedRevenue__c}" styleClass="alignFix mediumInput alignRight" />
+                                                </td>
+                                                
+                                            </tr>
+                                        </table>
+                                    </apex:outputPanel>
+<!--                                    
+                                    <apex:outputPanel styleClass="cellDiv" layout="block" rendered="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].Id == null}">
+                                        <apex:outputPanel layout="none" rendered="{!theBudgetHolder.taskMap[selectedVersionId][taskId].IsAssignable__c}" >
+                                            <a onClick="showGearModal();assignThisResourceToThisTaskApex('{!columnId}', '{!taskId}');">
+                                                Assign
+                                            </a>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+-->                                    
+                                </apex:repeat>
+                                <apex:outputPanel styleClass="cellDiv totalsDiv" layout="block"  onClick="toggleTotalsRow();">
+                                    <table style="width:100%">
+                                        <tr>
+                                            <td width="32%" >
+                                            </td>
+                                            <td width="35.5%" class="borderLeftBottom pushHeight alignRight" style="padding:9px;">
+                                                <strong><apex:outputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].TotalCost__c}"/></strong>
+                                            </td>
+                                            <td width="33%" class="borderLeftBottom alignRight" style="padding:9px;">
+                                                <strong><apex:outputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].TotalRevenue__c}" /></strong><br />
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </apex:outputPanel>
+                                
+                            </apex:outputPanel>
+                            <!-- END ODC/FEE COLUMN COLUMN -->
+                            
+                        </apex:repeat>                        
+                        
+                        <!-- CONTINGENCY TOTALS COLUMN -->
+                        <apex:outputPanel layout="block" styleClass="totalsColumnDiv contingencyTotalsColumn" html-totalscolumnname="contingencyTotalsColumn" >
+                            
+                            <apex:outputPanel layout="block" styleClass="largeCellDiv ">
+                                <apex:outputPanel layout="block" styleClass="wrapperDiv">
+                                    <apex:outputPanel layout="block" styleClass="">
+                                        <apex:outputPanel layout="block" styleClass="cellDiv headerCell">
+                                            Contingency Totals 
+                                            <a onClick="showGearModal();showAddContingencyApex();" style="margin-left:3px;">
+                                                <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'add.png')}" title="Add" />
+                                            </a>
+                                            <!-- <a class="totalsColumnExpander" style="margin-left:3px;">
+                                                <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'EXPAND')}" title="Add" />
+                                            </a> -->
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="cellDiv personName">
+                                            <a><img title="Toggle Detail" src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'toggle.png')}" id="contingencyDetailToggle" style="margin-right: 5px;"/></a>
+                                            Toggle Details
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="cellDiv synchronizeLineRates rateCollapsible">
+                                            &nbsp;
+                                        </apex:outputPanel>
+                                        <apex:outputPanel layout="block" styleClass="rateCollapsible">
+                                            <table width="100%">
+                                                <tr>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                </tr>
+                                                <tr class="rateCollapsibleRow">
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                    <td width="33%" class="">
+                                                        &nbsp;
+                                                    </td>
+                                                </tr>
+                                                <tr class="rateCollapsibleRow">
+                                                    <td width="33%" class="alignBottom borderBottom borderTop" style="text-align:center;">
+                                                        <strong>Actual Cost</strong>
+                                                    </td>
+                                                    <td width="33%" class="borderLeftBottom borderTop" style="padding:0 0 0 5px;text-align:center;">
+                                                        <strong>Budget Cost</strong>
+                                                    </td>
+                                                    <td width="33%" class="borderLeftBottom borderTop" style="padding:0 0 0 5px;text-align:center;">
+                                                        <strong>Budget Revenue</strong>
+                                                    </td>
+                                                </tr>
+                                            </table>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                            </apex:outputPanel>
+                        
+                            <apex:repeat value="{!theBudgetHolder.taskMap[selectedVersionId]}" var="taskId">
+                                <apex:outputPanel styleClass="cellDiv paddingFix noPadding" layout="block">
+                                    <table width="100%">
+                                        <tr>
+                                            <td width="33%" class="paddingFix alignRight">
+                                                <strong>
+                                                    <apex:outputText value="{!actualsHolder.taskPerTypeTotalMap[theBudgetHolder.taskMap[selectedVersionId][taskId].ProjectTask__c].totalCostContingency}" />
+                                                </strong>
+                                            </td>
+                                            <td width="33%" class="alignRight borderLeft paddingFix">
+                                                <strong>
+                                                    <apex:outputText value="{!contingencyTotalColumn.rows[taskId].totalBudgetCost}" />
+                                                </strong>
+                                            </td>
+                                            <td width="33%" class="alignRight borderLeft paddingFix">
+                                                <strong>
+                                                    <apex:outputText value="{!contingencyTotalColumn.rows[taskId].totalBudgetRevenue}" />
+                                                </strong>
+                                            </td>
+                                        </tr>
+                                    </table>
+                                </apex:outputPanel>
+                            </apex:repeat>
+                            
+                            <apex:outputPanel styleclass="cellDiv totalsDiv" layout="block"  onClick="toggleTotalsRow();">
+                                <table style="width:100%">
+                                    <tr>
+                                        <td width="33%" class="alignBottom">
+                                            &nbsp;
+                                        </td>
+                                        <td width="33%" class="borderLeftBottom pushHeight alignRight paddingFix">
+                                            &nbsp;
+                                        </td>
+                                        <td width="33%" class="borderLeftBottom alignRight paddingFix">
+                                            &nbsp;
+                                        </td>
+                                    </tr>
+                                </table>
+                            </apex:outputPanel>
+                        </apex:outputPanel>
+                        <!-- END CONTINGENCY TOTALS COLUMN -->
+
+                        <apex:repeat value="{!contingencyColumns}" var="columnId">
+                            
+                            <!-- CONTINGENCY COLUMN -->
+                            <apex:outputPanel layout="block" id="contingencyColumn" styleClass="columnDiv contingencyColumn" >
+                                <apex:outputPanel layout="block" styleClass="largeCellDiv">
+                                    <apex:outputPanel layout="block" styleClass="wrapperDiv">
+                                        <apex:outputPanel layout="block" styleClass="">
+                                            <apex:outputPanel layout="block" styleClass="cellDiv headerCell">
+                                                <apex:outputLabel for="thisContingencyTitle" value=""/>
+                                                <apex:outputText value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].ResourceType__c}" id="thisContingencyTitle" />
+                                                <a onClick="showGearModal();removeThisColumnApex('{!columnId}');">
+                                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" title="Delete" />
+                                                </a>
+                                                
+                                                <a onClick="showGearModal();cloneThisColumnApex('{!columnId}');" style="margin-left:3px;">
+                                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'clone.png')}" title="Clone" />
+                                                </a>
+                                                <a onClick="showGearModal();showAddContingencyApex();" style="margin-left:3px;">
+                                                    <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'add.png')}" title="Add" />
+                                                </a>
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="cellDiv personName">
+                                                <apex:outputLabel for="thisContingencyName" value=""/>   
+                                                <apex:outputText value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].ResourceName__c}" id="thisContingencyName" />
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="cellDiv synchronizeLineRates rateCollapsible">
+                                                &nbsp;
+                                            </apex:outputPanel>
+                                            <apex:outputPanel layout="block" styleClass="mediumCellDiv rateCollapsible">
+                                                <table width="100%">
+                                                    <tr>
+                                                        <td rowspan="3" width="33%" >
+                                                            &nbsp;
+                                                        </td>
+                                                        <td width="33%">
+                                                        </td>
+                                                        <td width="33%">
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="rateCollapsibleRow">
+                                                        <td width="33%">
+                                                            
+                                                        </td>
+                                                        <td width="33%">
+                                                            
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="rateCollapsibleRow">
+                                                        <td width="33%">
+                                                            <!-- <apex:outputLabel value="Amount:  "/>
+                                                            <apex:inputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].OverrideRawCost__c}"  styleClass="smallInput"/> -->
+                                                        </td>
+                                                        <td width="33%">
+
+                                                        </td>
+                                                    </tr>
+                                                    <tr class="rateCollapsibleRow">
+                                                        <td width="50%" class="alignRight">
+                                                            <div class="totalCost"><apex:outputLabel value="Total Cost:" /></div>
+                                                            <strong><apex:outputField value="{!theBudgetHolder.columnMap[selectedVersionId][columnId].TotalCost__c}" styleClass="dollarFigure"/></strong>
+                                                        </td>
+                                                        <td width="25%" >
+                                                            
+                                                        </td>
+                                                        
+                                                        <td width="25%">
+
+                                                        </td>
+                                                    </tr>
+                                                </table>
+                                            </apex:outputPanel>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+                                </apex:outputPanel>
+                                
+                                <apex:repeat value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId]}" var="taskId">
+                                    <apex:outputPanel styleClass="cellDiv paddingFix" layout="block" rendered="true">
+                                        <!-- BL ID:  {!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].Id} -->
+                                        <table width="100%">
+                                            <tr>
+                                                <td width="3%" class="trashPaddingFix">
+<!--                                                
+                                                    <a onClick="showGearModal();removeThisProjectTaskApex('{!columnId}', '{!taskId}');">
+                                                        <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" title="Delete" />
+                                                    </a>
+-->                                                    
+                                                </td>
+                                                <td width="30%">
+                                                    <apex:inputField value="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].OverrideTotalCost__c}" id="thisPersonHours" styleClass="alignFix mediumInput alignRight" />
+                                                </td>
+                                                <td width="33%">
+                                                    
+                                                </td>
+                                                <td width="33%">
+                                                    
+                                                </td>
+                                                
+                                            </tr>
+                                        </table>
+                                    </apex:outputPanel>
+<!--                                    
+                                    <apex:outputPanel styleClass="cellDiv" layout="block" rendered="{!theBudgetHolder.versionToColumnToTaskToCellMap[selectedVersionId][columnId][taskId].Id == null}">
+                                        <apex:outputPanel layout="none" rendered="{!theBudgetHolder.taskMap[selectedVersionId][taskId].IsAssignable__c}" >
+                                            <a onClick="showGearModal();assignThisResourceToThisTaskApex('{!columnId}', '{!taskId}');">
+                                                Assign
+                                            </a>
+                                        </apex:outputPanel>
+                                    </apex:outputPanel>
+-->                                    
+                                </apex:repeat>
+                                
+                            </apex:outputPanel>
+                            
+                            <!-- END CONTINGENCY COLUMN -->
+                            
+                        </apex:repeat>
+                        
+                        
+                        
+                        </div>
+                        
+                    </apex:outputPanel>
+                    
+                    <div style="clear:both;">&nbsp;</div>
+                    
+                </apex:outputPanel>
+                
+                
+            
+            </apex:pageBlockSection>
+            
+        </apex:pageBlock>
+
+
+        <div id="HUD">
+            <!-- Single button -->
+            <div class="btn-group dropdown" style="padding-left:1px;">
+              <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                Add New... <span class="caret"></span>
+              </button>
+              <ul class="dropdown-menu" role="menu">
+                <li><apex:commandLink action="{!showAddLaborPerson}" value="Labor/Person" onClick="showGearModal();" rerender="pageMessages, columnBlock,  allModals" onComplete="hideGearModal();onCompleteAction();"/></li>
+                <li><apex:commandLink action="{!showAddSub}" value="Subcontractor" onClick="showGearModal();" rerender="pageMessages, columnBlock,  allModals" onComplete="hideGearModal();onCompleteAction();"/></li>
+                <li><apex:commandLink action="{!showAddFee}" value="ODC/FEE" onClick="showGearModal();" rerender="pageMessages, columnBlock,  allModals" onComplete="hideGearModal();onCompleteAction();"/></li>
+                <li><apex:commandLink action="{!showAddContingency}" value="Contingency" onClick="showGearModal();" rerender="pageMessages, columnBlock,  allModals" onComplete="hideGearModal();onCompleteAction();"/></li>
+
+                <li class="divider"></li>
+
+                <li><apex:commandLink action="{!showAddTask}" value="Task Row" onClick="showGearModal();" rerender="pageMessages, columnBlock,  allModals" onComplete="hideGearModal();onCompleteAction();" rendered="{!theProject.BudgetStrategy__c != 'Project Level'}"/></li>
+
+                <li class="divider"></li>
+                
+                <li><apex:commandLink action="{!showCreateChangeOrder}" value="Change Order" onClick="showGearModal();" rerender="pageMessages, columnBlock, allModals"  onComplete="hideGearModal();onCompleteAction();" rendered="true"/></li>
+              </ul>
+
+            </div>
+
+            <apex:commandButton action="{!copyTasksAndAssignments}" value="Copy WBS" rerender="pageMessages, columnBlock,  allModals" onComplete="onCompleteAction();hideGearModal();" styleClass="btn btn-default hudButton"/>
+
+            <apex:commandButton action="{!goToQuestionnaire}" value="Edit Questionnaire" styleClass="btn btn-default hudButton"/>
+
+            <apex:commandButton action="{!quickSave}" value="Save" onClick="showGearModal();" rerender="pageMessages, columnBlock,  allModals, theBlock" onComplete="onCompleteAction();hideGearModal();" styleClass="btn btn-default hudButton"/>
+
+            <apex:commandButton action="{!cancel}" value="Exit" onClick="showGearModal();" rerender="pageMessages, columnBlock,  allModals" onComplete="onCompleteAction();hideGearModal();" styleClass="btn btn-default hudButton"/>
+
+            <!-- <apex:commandButton action="{!copyContingencyFromRiskRegister}" value="Copy Contingency from Risk Register" rerender="pageMessages, columnBlock,  allModals" onComplete="onCompleteAction();hideGearModal();"/> -->
+
+<!--
+            <button onclick="toggleJustGrid(500);return false;" type="button" class="btn btn-default" aria-label="Left Align">
+              <span class="glyphicon glyphicon-chevron-up" aria-hidden="true"></span>
+            </button>
+-->            
+        </div>
+        
+        
+        <apex:outputPanel layout="inline" id="allModals">
+        
+            <apex:outputPanel layout="none" id="modalWindow" rendered="{!showAddResourceBoolean}" >
+                <div class="modal" id="modalWindow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <apex:outputLabel value="Select Type of Resource:  " for="newResourceTypeSelect" />
+                                <apex:inputField value="{!newBudgetColumn.ResourceType__c}" id="newResourceTypeSelect" onChange="doNextAddResource();"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:outputPanel>
+            
+            <apex:outputPanel layout="none" id="modalWindowPerson" rendered="{!showAddResourcePerson}" >
+                <div class="modal" id="modalWindow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                Resource:  <!-- <apex:inputField value="{!newBudgetColumn.ProjectTeamMember__c}" /> -->
+                                <apex:selectList value="{!newBudgetColumn.ProjectTeamMember__c}" title="Choose a Team Member" multiselect="false" size="1">
+                                    <apex:selectOptions value="{!allProjectTeamMembers}"/>
+                                </apex:selectList>
+                                <br />
+                                <apex:commandButton action="{!saveNewResource}" value="Save New Resource" rerender="pageMessages, columnBlock,  allModals" onComplete="onCompleteAction();hideGearModal();" />
+                                <apex:commandButton action="{!cancelModal}" value="Cancel" immediate="true" rerender="pageMessages, columnBlock,  allModals" onComplete="onCompleteAction();hideGearModal();" />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:outputPanel>
+            
+            <apex:outputPanel layout="none" id="modalWindowSub" rendered="{!showAddResourceSub}" >
+                <div class="modal" id="modalWindow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                Vendor/Sub:  <apex:inputField value="{!newBudgetColumn.SubsAndVendors__c}" />
+                                <br/>
+                                <apex:commandButton action="{!saveNewResource}" value="Save New Resource" rerender="pageMessages, columnBlock,  allModals" onComplete="onCompleteAction();hideGearModal();"/>
+                                <apex:commandButton action="{!cancelModal}" value="Cancel" immediate="true" rerender="pageMessages, columnBlock,  allModals" onComplete="onCompleteAction();hideGearModal();"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:outputPanel>
+            
+            <apex:outputPanel layout="none" id="modalWindowFEEODC" rendered="{!showAddResourceFEEODC}" >
+                <div class="modal" id="modalWindow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                Name of FEE/ODC:  <apex:inputField value="{!newBudgetColumn.ResourceName__c}" />
+                                <br/>
+                                <apex:commandButton action="{!saveNewResource}" value="Save New Resource" rerender="pageMessages, columnBlock,  allModals" onComplete="onCompleteAction();hideGearModal();"/>
+                                <apex:commandButton action="{!cancelModal}" value="Cancel" immediate="true" rerender="pageMessages, columnBlock,  allModals" onComplete="onCompleteAction();hideGearModal();"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:outputPanel>
+            
+            <apex:outputPanel layout="none" id="modalWindowContingency" rendered="{!showAddResourceContingency}" >
+                <div class="modal" id="modalWindow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                Name for Contingency:  <apex:inputField value="{!newBudgetColumn.ResourceName__c}" />
+                                <br/>
+                                <apex:commandButton action="{!saveNewResource}" value="Save Column" rerender="pageMessages, columnBlock,  allModals" onComplete="onCompleteAction();hideGearModal();"/>
+                                <apex:commandButton action="{!cancelModal}" value="Cancel" immediate="true" rerender="pageMessages, columnBlock,  allModals" onComplete="onCompleteAction();hideGearModal();"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:outputPanel>
+            
+            <apex:outputPanel layout="none" id="taskRow" rendered="{!showAddTaskBoolean}" >
+                <div class="modal" id="modalWindow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                <apex:inputField value="{!newBudgetTask.TaskName__c}" />
+                                <apex:commandButton action="{!saveNewTask}" value="Save New Task" rerender="pageMessages, columnBlock,  allModals" onComplete="onCompleteAction();hideGearModal();"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:outputPanel>
+            
+            <apex:outputPanel layout="none" id="changeOrderWindow" rendered="{!showAddChangeOrderBoolean}" >
+                <div class="modal" id="modalWindow" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+                    <div class="modal-dialog modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-body">
+                                Change Order Name:  <apex:inputField value="{!newBudgetHeader.BudgetName__c}" />
+                                <br />
+                                <apex:commandButton action="{!createChangeOrder}" value="Save New Change Order" rerender="pageMessages, columnBlock, theBlock, allModals" onComplete="onCompleteAction();hideGearModal();"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </apex:outputPanel>
+        
+        </apex:outputPanel>
+        
+        <apex:actionFunction name="createExternalChange" action="{!createExternalChange}">
+            <apex:param name="selectedBudetId" value="" assignTo="{!submitForApprovalId}" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="doNextAddResource" action="{!doNextAddResource}" rerender="pageMessages, columnBlock,  allModals" />
+        
+        <apex:actionFunction name="cloneThisColumnApex" action="{!cloneResource}" rerender="allModals, pageMessages, columnBlock, theBlock," onComplete="onCompleteAction();hideGearModal();">
+            <apex:param name="columnId" value="" assignTo="{!selectedColumnId}" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="assignThisResourceToThisTaskApex" action="{!assignThisResourceToExistingTask}" rerender="allModals, pageMessages, columnBlock" onComplete="onCompleteAction();hideGearModal();" >
+            <apex:param name="columnId" value="" assignTo="{!selectedColumnId}" />
+            <apex:param name="taskId" value="" assignTo="{!selectedTaskId}" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="selectDifferentVersion" action="{!refreshHolder}" rerender="pageMessages, theBlock, sectionHeader" oncomplete="onCompleteAction();hideGearModal();" >
+            <apex:param name="headerId" value="" assignTo="{!selectedVersionId}" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="editThisProjectTaskApex" action="{!showProjectTaskModal}" rerender="pageMessages, projectTaskEdit" onComplete="onCompleteAction();hideGearModal();" >
+            <apex:param name="projectTaskId" value="" assignTo="{!selectedProjectTaskId}" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="removeThisProjectTaskApex" action="{!removeSingleTask}" rerender="pageMessages, columnBlock" oncomplete="onCompleteAction();hideGearModal();">
+            <apex:param name="columnId" value="" assignTo="{!selectedColumnId}" />
+            <apex:param name="taskId" value="" assignTo="{!selectedTaskId}" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="removeThisColumnApex" action="{!removeEntireColumn}" rerender="pageMessages, columnBlock,  allModals" oncomplete="onCompleteAction();hideGearModal();">
+            <apex:param name="columnId" value="" assignTo="{!selectedColumnId}" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="removeThisTaskRowApex" action="{!removeEntireRow}" rerender="pageMessages, columnBlock,  allModals" oncomplete="onCompleteAction();hideGearModal();">
+            <apex:param name="taskId" value="" assignTo="{!selectedTaskId}" />
+        </apex:actionFunction>
+        
+        <apex:actionFunction name="simpleRefresh" action="{!simpleRefresh}" rerender="pageMessages, columnBlock,  allModals" />
+        
+        <apex:actionFunction name="showAddLaborPersonApex" action="{!showAddLaborPerson}" rerender="pageMessages, columnBlock,  allModals" oncomplete="hideGearModal();onCompleteAction();" />
+        <apex:actionFunction name="showAddSubApex" action="{!showAddSub}" rerender="pageMessages, columnBlock,  allModals" oncomplete="hideGearModal();onCompleteAction();" />
+        <apex:actionFunction name="showAddFeeApex" action="{!showAddFee}" rerender="pageMessages, columnBlock,  allModals" oncomplete="hideGearModal();onCompleteAction();" />
+        <apex:actionFunction name="showAddContingencyApex" action="{!showAddContingency}" rerender="pageMessages, columnBlock,  allModals" oncomplete="hideGearModal();onCompleteAction();" />
+        
+        <c:ECO_RiskFlyout PlanElement="Budget" ProjectID="{!theProject.Id}" />
+        <c:ECO_AssumptionFlyout PlanElement="Budget" ProjectID="{!theProject.Id}" />
+        
+        
+    </apex:form>
+    
+    <div class="modal" id="spinnerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+        <div class="modal-dialog modal-sm">
+            <i class="fa fa-cog fa-spin"></i>
+        </div>
+    </div>
+    
+</apex:page>

@@ -48,6 +48,7 @@
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
+    <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>true</enableReports>
@@ -83,18 +84,78 @@
         </displayedFields>
         <label>Clone Project Team Member Fields</label>
     </fieldSets>
+    <fieldSets>
+        <fullName>TeamMemberFlyout</fullName>
+        <description>For the Flyout</description>
+        <displayedFields>
+            <field>Contact__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Role__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>ProjectRole__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Name</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>TeamMemberFlyout</label>
+    </fieldSets>
+    <fields>
+        <fullName>Active__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(EndDate__c &lt; TODAY(), false, true)</formula>
+        <label>Active</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ChangeManagerApprovedForSynch__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Change Manager Approved For Synch</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ChangeManagerIsChanged__c</fullName>
+        <externalId>false</externalId>
+        <formula>OR(AND(OracleLastSyncDateTime__c &lt; LastModifiedDate, NOT(ChangeManagerApprovedForSynch__c)), AND(ISNULL(OracleLastSyncDateTime__c), NOT(ChangeManagerApprovedForSynch__c)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ChangeManagerIsChanged</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ChangeManagerIsNew__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>Change Manager Is New</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
     <fields>
         <fullName>Contact__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
-        <description>Displays only PSA resouces</description>
+        <description>Record Type must be PSA_Resource</description>
         <externalId>false</externalId>
-        <label>Contact</label>
+        <inlineHelpText>Record Type must be PSA_Resource</inlineHelpText>
+        <label>Name</label>
         <lookupFilter>
             <active>true</active>
+            <errorMessage>Record Type must be PSA_Resource</errorMessage>
             <filterItems>
-                <field>Contact.RecordTypeId</field>
+                <field>Contact.RecordType.DeveloperName</field>
                 <operation>equals</operation>
-                <value>PSA Resource</value>
+                <value>PSA_Resource</value>
             </filterItems>
             <isOptional>false</isOptional>
         </lookupFilter>
@@ -104,6 +165,14 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CreateAssignment__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Create Assignment</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Email__c</fullName>
@@ -137,6 +206,63 @@
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>InvoicingClient__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.DefaultTopTaskCustomer__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Invoicing Client</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IsUserInSameOUAsProject__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(  Contact__r.User__r.ECO_OrganizationName__c !=  Project__r.OrgId__c ,
+
+&apos;No&apos;
+
+, 
+
+&apos;Yes&apos;
+
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is User in same OU as Project?</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Is_Active__c</fullName>
+        <defaultValue>true</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Active</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF (NOT(ISBLANK(Contact__c)), Contact__r.User__r.FirstName + &apos; &apos; + Contact__r.User__r.LastName, Contact__r.FirstName + &apos; &apos; + Contact__r.LastName)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NotifyChange__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Notify Change</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>OracleEmployeeNumber__c</fullName>
         <externalId>false</externalId>
         <formula>Contact__r.pse__Salesforce_User__r.EmployeeNumber</formula>
@@ -148,11 +274,29 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>OracleLastSyncDateTime__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Last Sync DateTime</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
         <fullName>OraclePersonId__c</fullName>
         <externalId>false</externalId>
         <formula>Contact__r.pse__Salesforce_User__r.PersonId__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Oracle Person Id</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OracleProjectId__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.OracleProjectId__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Oracle Project Id</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -164,6 +308,37 @@
         <formula>Project__r.OracleProjectnumber__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Oracle Project Number</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OracleProjectRoleTypeId__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( ISBLANK(ProjectRole__r.Name ) ,&apos;&apos;, 
+ CASE(ProjectRole__r.Name, 
+&apos;Project Manager&apos;, &apos;PROJECT MANAGER&apos;, 
+&apos;Project Administrator&apos;, &apos;1062&apos;,
+&apos;Project Director&apos;, &apos;1002&apos;,
+&apos;Project Accountant&apos;, &apos;1003&apos;,
+&apos;Project Director 2&apos;, &apos;1221&apos;,
+&apos;Project Accountant Alternate&apos;, &apos;1222&apos;,
+&apos;Finance Lead&apos;, &apos;1223&apos;,
+&apos;Finance Lead 2&apos;, &apos;1202&apos;,
+&apos;Deputy Project Manager&apos;, &apos;1241&apos;,
+&apos;FCAP Subcontract Administrator&apos;, &apos;1281&apos;,
+&apos;CFO or Delegate&apos;, &apos;1261&apos;,
+&apos;Discipline Lead&apos;, &apos;1281&apos;,
+&apos;HS&amp;E Manager&apos;, &apos;1241&apos;,
+&apos;Project Accountant 2&apos;, &apos;1222&apos;,
+&apos;Project Approver&apos;, &apos;1002&apos;,
+&apos;Project Approver 2&apos;, &apos;1221&apos;,
+&apos;Project Biller&apos;, &apos;1042&apos;,
+&apos;&apos;) 
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Oracle Project Role Type Id</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -224,6 +399,17 @@ S = Successful</inlineHelpText>
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>PMSupervisor__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>PM Supervisor</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>ProjectTeamMembersPMSupervisor</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>PersonId__c</fullName>
         <externalId>false</externalId>
         <label>Person Id</label>
@@ -239,6 +425,51 @@ S = Successful</inlineHelpText>
         <formula>Contact__r.pse__Salesforce_User__r.Phone</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Phone</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectApproverforInactiveNotify__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>This field is set via a trigger when the Project Manager becomes inactive.</description>
+        <externalId>false</externalId>
+        <label>Project Approver for Inactive Notify</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>ProjectTeamMembersProjApproverInact</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ProjectIdFormula__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Id Formula</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectLongName__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.ProjectLongName__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Long Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectName__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Name</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -265,17 +496,6 @@ S = Successful</inlineHelpText>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
-    </fields>
-    <fields>
-        <fullName>Project_ID__c</fullName>
-        <externalId>false</externalId>
-        <label>Project ID</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Project__c</fullName>
@@ -349,12 +569,33 @@ S = Successful</inlineHelpText>
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>TeamMemberName__c</fullName>
+        <externalId>false</externalId>
+        <formula>Contact__r.FirstName + &quot; &quot; +  Contact__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Team Member Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TestField__c</fullName>
+        <externalId>false</externalId>
+        <label>TestField</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>User__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>User must be active</description>
         <externalId>false</externalId>
         <inlineHelpText>User must be active</inlineHelpText>
-        <label>Name</label>
+        <label>User</label>
         <lookupFilter>
             <active>true</active>
             <errorMessage>User must be active</errorMessage>
@@ -372,33 +613,10 @@ S = Successful</inlineHelpText>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
-    <fields>
-        <fullName>xxOracleProjectNumber__c</fullName>
-        <externalId>false</externalId>
-        <formula>Project__r.OracleProjectnumber__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>xxOracle Project Number</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>xxProject_ID__c</fullName>
-        <externalId>false</externalId>
-        <label>xxProject ID</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
     <label>Project Team Member</label>
     <nameField>
-        <displayFormat>PTM-{0000000}</displayFormat>
         <label>Project Team Member</label>
-        <type>AutoNumber</type>
+        <type>Text</type>
     </nameField>
     <pluralLabel>Project Team Members</pluralLabel>
     <recordTypes>
@@ -436,73 +654,6 @@ S = Successful</inlineHelpText>
             </values>
             <values>
                 <fullName>Finance Lead 2</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project Accountant</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project Accountant Alternate</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project Director</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project Director 2</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project Manager</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-    </recordTypes>
-    <recordTypes>
-        <fullName>Stakeholder</fullName>
-        <active>true</active>
-        <label>Stakeholder</label>
-        <picklistValues>
-            <picklist>OracleSyncStatus__c</picklist>
-            <values>
-                <fullName>E</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>P</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>S</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>T</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Role__c</picklist>
-            <values>
-                <fullName>CFO or Delegate</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Discipline Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Finance Lead</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Finance Lead 2</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>HS%26E Manager</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -566,6 +717,18 @@ S = Successful</inlineHelpText>
             </values>
         </picklistValues>
     </recordTypes>
-    <searchLayouts/>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Contact__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Project__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ProjectRole__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ProjectRoleTitle__c</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>EcoStartDateMustBeGreaterThanHireDate</fullName>
+        <active>true</active>
+        <description>Key member start date must be greater than or equal to the user&apos;s hire date.</description>
+        <errorConditionFormula>AND(NOT(ISBLANK(StartDate__c)),StartDate__c &lt; Contact__r.pse__Salesforce_User__r.Original_Hire_Date__c)</errorConditionFormula>
+        <errorMessage>Key member start date must be greater than or equal to the user&apos;s hire date.</errorMessage>
+    </validationRules>
 </CustomObject>

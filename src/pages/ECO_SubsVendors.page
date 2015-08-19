@@ -1,0 +1,165 @@
+<apex:page standardController="pse__Proj__c" extensions="ECO_SubsVendorsController" showHeader="true" sidebar="false">
+	<apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+	<script>
+		$(document).keypress(function(e) 
+		{
+		    if(e.which == 13) 
+		    {
+		    	e.preventDefault();
+		        $("form[id$='topForm']").find("input[id$='SearchButton']").click();
+		    }
+		});
+	</script>
+	<apex:form id="topForm">
+		<div style="position:relative">
+			<apex:sectionHeader title="Subs and Vendors" subtitle="{!pse__Proj__c.Name}" />
+		</div>
+		<apex:pageMessages id="messages" />
+		<apex:pageBlock title="Subs and Vendors">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!CreateUpdateVendor}" value="Create/Update Vendor" />
+		        <apex:commandlink style="text-decoration: none;" action="{!AddPO}" target="_blank">
+		            <apex:commandButton value="Add PO"/>
+		        </apex:commandLink>
+				<apex:commandButton action="{!ReturnToProject}" value="Return to Project" />
+			</apex:pageBlockButtons>
+			<!--
+			<apex:pageBlockSection title="Subs Team" columns="1" collapsible="false">
+				<apex:pageBlockTable value="{!lVendorSubs}" var="item" width="100%" columnsWidth="60px" id="VendorSubTable">
+					<apex:facet name="footer">
+						<apex:commandLink action="{!addRecord}" value="Add New Sub" rerender="VendorSubTable" status="subsStatus">
+							<apex:param name="object" value="VendorSub__c" assignTo="{!recordObjectType}"/>
+						</apex:commandLink>
+					</apex:facet>
+					<apex:column >
+						<apex:facet name="header">Actions</apex:facet>
+						<apex:commandLink action="{!removeRecord}" value="Remove" rerender="VendorSubTable" status="subsStatus">
+							<apex:param name="object" value="VendorSub__c" assignTo="{!recordObjectType}" />
+							<apex:param name="objID" value="{!item.Id}" assignTo="{!recordObjectId}" />
+						</apex:commandLink>
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header">Company</apex:facet>
+						<apex:inputField value="{!item.Account__c}" />
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header">Services Type</apex:facet>
+						<apex:inputField value="{!item.ServicesType__c}" />
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header">Contact Name</apex:facet>
+						<apex:inputField value="{!item.ContactName__c}" />
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header">Phone</apex:facet>
+						<apex:outputField value="{!item.Phone__c}" />
+					</apex:column>
+					<apex:column >
+						<apex:facet name="header">Email</apex:facet>
+						<apex:outputField value="{!item.Email__c}" />
+					</apex:column>
+				</apex:pageBlockTable>
+				<apex:actionStatus id="subsStatus">
+					<apex:facet name="start">
+						<p style="padding-bottom:20px;text-align:center;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+					</apex:facet>
+				</apex:actionStatus>
+			</apex:pageBlockSection>
+			-->
+			<apex:outputPanel id="SiteTab">
+			<apex:actionRegion >
+				<apex:pageBlockSection title="Selected Subs/Vendors"  columns="1" collapsible="false"></apex:pageBlockSection>
+				<apex:outputPanel id="SitePanel">
+					<apex:actionStatus id="SiteSelectUpdateStatus">
+						<apex:facet name="start">
+							<p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+						</apex:facet>
+						<apex:facet name="stop">
+							<apex:outputPanel >
+									​<apex:pageMessage severity="INFO" rendered="{!IF(lstVendorSites.size > 0, false, true)}" summary="No Subs/Vendors Were Selected."></apex:pageMessage> 
+									<apex:outputPanel id="SiteSelect" rendered="{!if(lstVendorSites.size > 0, true, false)}">
+
+									<div style="padding:0 12px;margin-top:7px">
+										<apex:pageBlockTable value="{!lstVendorSites}" var="Site" rendered="{!if(lstVendorSites.size > 0, true, false)}">
+											<apex:repeat value="{!$ObjectType.VendorSite__c.FieldSets.VendorFinder_Display_Fieldset}" var="SearchField">
+												<apex:column value="{!Site[SearchField]}" />
+											</apex:repeat>
+										</apex:pageBlockTable>
+									</div>
+									<BR /><BR /><BR />	
+									
+								</apex:outputPanel>	
+							</apex:outputPanel>						
+						</apex:facet>
+					</apex:actionStatus>
+				</apex:outputPanel>	
+
+				<apex:outputPanel id="AddressInput">
+					<apex:actionFunction action="{!SearchSites}" name="SearchSites" rerender="SiteTab" status="SiteSearchUpdateStatus" />
+
+					<div id="AddressInput" >
+					<apex:pageBlockSection title="Search for Subs/Vendors" columns="2" collapsible="false">
+						<apex:repeat value="{!$ObjectType.Site__c.FieldSets.pse_ClientFinder_Search_Fieldset}" var="FieldsForSearch">
+							<apex:pageBlockSectionItem >
+								<apex:outputLabel value="{!FieldsForSearch.Label}" />
+								<apex:inputField value="{!oSite[FieldsForSearch]}" required="false" />
+							</apex:pageBlockSectionItem>
+						</apex:repeat>
+					</apex:pageBlockSection>
+					</div>
+					
+					
+					<div style="text-align:center;">
+						<apex:commandButton id="SearchButton" action="{!SearchSites}" value="Search" rerender="SiteSearch" status="SiteSearchUpdateStatus"/>
+					</div>
+					
+					<BR /><BR /><BR />
+				</apex:outputPanel>
+
+				<apex:outputPanel id="SiteSearch">						
+					<apex:actionStatus id="SiteSearchUpdateStatus">
+						<apex:facet name="start">
+							<p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Updating...</p>
+						</apex:facet>
+						<apex:facet name="stop">
+							<apex:outputPanel >
+							<apex:outputtext value="{!strSearchResults}"/>
+
+							<apex:outputPanel id="SiteSearchResult" rendered="{!booDisplaySiteSearchResult}">
+								<apex:pageBlockSection title="Search Results"  columns="1" collapsible="false"></apex:pageBlockSection>
+								<div style="padding:0 12px;margin-top:7px">
+
+									<apex:outputText Value="No Results Were Found." rendered="{!IF(lstSitesSearchResults.size > 0, false, true)}" />
+
+									<apex:pageBlockTable value="{!lstSitesSearchResults}" rendered="{!IF(lstSitesSearchResults.size > 0, true, false)}" var="Site">
+										<apex:column width="200">
+											<apex:facet name="header">Action</apex:facet>
+							            	<apex:commandLink action="{!SelectSiteAsSub}" value="Add as Sub" rerender="SitePanel,messages" status="SiteSelectUpdateStatus">
+							            		<apex:param assignTo="{!idSiteID}" name="SiteID" value="{!Site.id}" />
+							            	</apex:commandLink>&nbsp;&nbsp;&nbsp;&nbsp;
+							            	<apex:commandLink action="{!SelectSiteAsVendor}" value="Add as Vendor" rerender="SitePanel,messages" status="SiteSelectUpdateStatus">
+							            		<apex:param assignTo="{!idSiteID}" name="SiteID" value="{!Site.id}" />
+							            	</apex:commandLink>&nbsp;&nbsp;
+										</apex:column>
+										<apex:repeat value="{!$ObjectType.Site__c.FieldSets.pse_ClientFinder_Search_Result_Fieldset}" var="SearchField">
+											<apex:column value="{!Site[SearchField]}" rendered="{!NOT(SearchField.label == 'Client Name')}" />
+											<apex:column rendered="{!SearchField.label == 'Client Name'}">
+												<apex:facet name="header">Sub/Vendor Name</apex:facet>
+												{!Site[SearchField]}
+											</apex:column>
+
+										</apex:repeat>
+									</apex:pageBlockTable>
+								</div>
+								<BR /><BR /><BR />
+							</apex:outputPanel>
+							</apex:outputPanel>
+						</apex:facet>
+					</apex:actionStatus>
+				</apex:outputPanel>	
+			</apex:actionRegion>
+			</apex:outputPanel>
+		</apex:pageBlock>
+	</apex:form>
+
+</apex:page>

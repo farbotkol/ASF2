@@ -33,6 +33,7 @@ private class ECO_ApplicationCustomizerControllerTest {
 		c1.IsActive__c = true;
 		c1.IsRemovable__c = false;
 		c1.User__c = null;
+		c1.IsDefault__c = true;
 		c1.RecordTypeId = ECO_Utils_Meta.getRecordTypeId(Configuration__c.sObjectType, 'Application Template');
 		testConfigs.add(c1);
 		
@@ -44,6 +45,7 @@ private class ECO_ApplicationCustomizerControllerTest {
 		c2.IsActive__c = true;
 		c2.IsRemovable__c = true;
 		c2.User__c = null;
+		c2.IsDefault__c = true;
 		c2.RecordTypeId = ECO_Utils_Meta.getRecordTypeId(Configuration__c.sObjectType, 'Application Template');
 		testConfigs.add(c2);
 		
@@ -57,12 +59,13 @@ private class ECO_ApplicationCustomizerControllerTest {
 		System.runAs(testUser) {
 			ECO_ApplicationCustomizerController controller = new ECO_ApplicationCustomizerController();
 			controller.onLoad();
+			controller.applySearchFilter();
 			controller.returnToPage();
 		}
 		Test.stopTest();
 		
 		List<Configuration__c> configsAfterLoad = [SELECT Id FROM Configuration__c WHERE User__c = :testUser.Id];
-		//system.assertEquals(2, configsAfterLoad.size());
+		system.assertEquals(2, configsAfterLoad.size());
     }
 
     static testMethod void testPageLoadShowHide () {
@@ -98,6 +101,7 @@ private class ECO_ApplicationCustomizerControllerTest {
 		c1.IsActive__c = true;
 		c1.IsRemovable__c = false;
 		c1.User__c = null;
+		c1.IsDefault__c = true;
 		c1.RecordTypeId = ECO_Utils_Meta.getRecordTypeId(Configuration__c.sObjectType, 'Application Template');
 		testConfigs.add(c1);
 		
@@ -109,6 +113,7 @@ private class ECO_ApplicationCustomizerControllerTest {
 		c2.IsActive__c = true;
 		c2.IsRemovable__c = true;
 		c2.User__c = null;
+		c2.IsDefault__c = true;
 		c2.RecordTypeId = ECO_Utils_Meta.getRecordTypeId(Configuration__c.sObjectType, 'Application Template');
 		testConfigs.add(c2);
 		
@@ -127,17 +132,23 @@ private class ECO_ApplicationCustomizerControllerTest {
 			ApexPages.currentPage().getParameters().put('selectedConfigId', a2.Id);
 			//controller.hideApplication();
 			//controller.showApplication();
+			controller.clearSearchTerm();
 			
 			controller.serializedOrder = '';
+			/*
 			for (Application__c a : testApps) {
 				controller.serializedOrder += 'id='+a.Id+'&';
 			}
+			*/
+			controller.serializedOrder += 'id='+testApps[0].Id+'&';  // Changed to this method to simulate adding of only one app.
 			controller.serializedOrder = controller.serializedOrder.subString(0, controller.serializedOrder.length()-1);
-			controller.serializedOrder += 'hidden';
+			//controller.serializedOrder += 'hidden';
 			
 			controller.savePositions();
 			Test.stopTest();
 		}
 		
+		List<Configuration__c> configsAfterLoad = [SELECT Id FROM Configuration__c WHERE User__c = :testUser.Id AND IsHidden__c = false];
+		system.assertEquals(1, configsAfterLoad.size());
     }
 }

@@ -1,0 +1,82 @@
+<apex:component >
+	<apex:attribute name="pageController" description="controller" type="ECO_CloseoutApprovalPhaseController" required="true"/>
+	<apex:attribute name="questionField" description="question field" type="string" required="true"/>
+	<apex:attribute name="questionText" description="question text" type="string" required="true"/>
+	<apex:attribute name="noField" description="no field" type="string" required="true"/>
+	<apex:attribute name="yesno" description="true or false" type="boolean" required="true"/>
+
+	<style>
+
+		.colA {
+			text-align:right;
+			vertical-align:middle !important;
+		}
+
+		.colB {
+			text-align:left;
+			vertical-align:middle !important;
+		}
+
+		.colC {
+			text-align:left s!important;
+			vertical-align:middle !important;
+		}	
+
+		.questions{
+			vertical-align:middle !important;
+			margin-left:3px;
+		}
+
+		/* CUSTOM HELP / GUIDANCE TEXT BOX */
+		.customHelpText{
+			padding:20px 25px;
+			border:1px solid #85B3CE;
+			min-height:30px;
+			display:block;
+			width:auto;
+			margin:0;
+			background-color:#E3F0F8;
+			background-image: url('../img/icon/forecasts24.png');
+			background-position:1% 50%;
+			background-repeat:no-repeat;
+			border-radius:4px;
+			margin-bottom:15px;
+		}
+		.customHelpBody{
+			display:inline-block;
+			color:#;
+			max-width:95%;
+			margin-left:28px;
+		}
+
+	</style>
+
+	<apex:actionRegion >
+		<table width="100%" cellpadding="0" cellspacing="0">
+
+			<tr>
+				<td class="questions">
+					<apex:outputLabel value="{!questionText}" />
+				</td>
+				<td class="questions" width="255px">
+					<apex:selectRadio value="{!pageController.oProject[questionField]}" layout="lineDirection">
+	                    <apex:selectOptions value="{!pageController.types}"></apex:selectoptions>
+	                    <apex:actionSupport event="onchange" reRender="showText"/>
+	 				</apex:selectRadio>			
+				</td>
+			</tr>
+		</table>
+	</apex:actionRegion>
+	<apex:outputPanel id="showText">
+		<apex:outputPanel rendered="{!if(AND(pageController.oProject[questionField] == 'No',  NOT(yesno)), true, false)}">
+			<apex:outputLabel value="If no, explain why:" />
+			<apex:inputField value="{!pageController.oProject[noField]}" required="true" />
+		</apex:outputPanel>
+		<apex:outputPanel rendered="{!if(AND(pageController.oProject[questionField] == 'Yes', yesno), true, false)}">
+			<apex:outputLabel value="If yes, explain why:" />
+			<apex:inputField value="{!pageController.oProject[noField]}" required="true" />
+		</apex:outputPanel>
+		<br /><br />
+	</apex:outputPanel>
+
+</apex:component>

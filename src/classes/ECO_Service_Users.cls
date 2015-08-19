@@ -13,6 +13,7 @@ public without sharing class ECO_Service_Users {
 								, Geography__c
 								, Business_Line__c
 								, Region__c
+								, Certified_PM__c
 						FROM User 
 						WHERE Id = :userId];
 						
@@ -57,6 +58,7 @@ public without sharing class ECO_Service_Users {
 						, Subject
 						, Type
 						, What.Name
+						, Priority
 				FROM Task 
 				WHERE IsClosed = false
 					AND OwnerId = :userId];

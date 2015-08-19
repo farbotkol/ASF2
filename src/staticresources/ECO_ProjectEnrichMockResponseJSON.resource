@@ -1,0 +1,7 @@
+{
+"SFDC_ID":"a32e0000000XXXX",
+"JOB_ID":"a4ve00000000XXX",
+"RECORD_STATUS":"Success",
+"ERROR_MESSAGE":""
+}
+		

@@ -1,0 +1,183 @@
+<apex:page standardController="pse__Proj__c" showHeader="false" sidebar="false" standardStylesheets="false">
+	<style>
+		.breadcrumb { 
+			list-style: none; 
+			overflow: hidden; 
+			font: 9px Helvetica, Arial, Sans-Serif;
+			padding:0;
+			margin:10px 0;
+			background:#ededed;
+		}
+
+		.breadcrumb li { 
+			float: left;
+			width:10%;
+			min-width:75px;
+		}
+		.breadcrumb li a {
+			color: white;
+			text-decoration: none; 
+			padding: 10px 0;
+			position: relative; 
+			display: block;
+			float: left;
+			background:#A6A6A6;
+			text-align: center;
+			white-space:nowrap;
+			cursor: default;
+			font-weight:bold;
+			width:100%;
+		}
+
+		.breadcrumb li a span{
+			padding-left:8px;
+			display:block;
+		}
+
+		.breadcrumb li.wide {
+			min-width:95px;
+		}
+
+		.breadcrumb li.short {
+			min-width:65px;
+		}
+
+		.breadcrumb li.Complete a {
+			background:#4F81BD;
+		}
+
+		.breadcrumb li.Pending a {
+			background:#A6A6A6;
+		}
+
+		.breadcrumb li.approval a {
+			background:#A6B5A6;
+		}
+
+		.breadcrumb li.approval.Pending a {
+			background:#A6B5A6;
+		}
+
+		.breadcrumb li.approval.Complete a {
+			background:#00B050;
+		}
+		
+		.breadcrumb li.approval.Approved a {
+			background:#00B050;
+		}
+		
+		.breadcrumb li.approval.Incomplete a {
+			background:#E6E600;
+		}		
+		
+		.breadcrumb li.approval.Rejected a {
+			background: #FF0000;
+		}		
+
+		.breadcrumb li.Complete a:after{
+			border-left: 10px solid #4F81BD;
+		}
+		
+		.breadcrumb li.Approved a:after{
+			border-left: 10px solid #4F81BD;
+		}
+
+		.breadcrumb li.Pending a:after{
+			border-left: 10px solid #A6A6A6;
+		}
+
+		.breadcrumb li.approval a:after{
+			border-left: 10px solid #A6B5A6;
+		}
+
+		.breadcrumb li.approval.Pending a:after{
+			border-left: 10px solid #A6B5A6;
+		}
+
+		.breadcrumb li.approval.Complete a:after{
+			border-left: 10px solid #00B050;
+		}
+		
+		.breadcrumb li.approval.Approved a:after{
+			border-left: 10px solid #00B050;
+		}
+		
+		.breadcrumb li.approval.Incomplete a:after{
+			border-left: 10px solid #E6E600;
+		}
+		
+		.breadcrumb li.approval.Rejected a:after{
+			border-left: 10px solid #FF0000;
+		}
+		
+		
+
+		.breadcrumb li a:after { 
+			content: " "; 
+			display: block; 
+			width: 0; 
+			height: 0;
+			border-top: 20px solid transparent;           /* Go big on the size, and let overflow hide */
+			border-bottom: 20px solid transparent;
+			border-left: 10px solid #A6A6A6;
+			position: absolute;
+			top: 50%;
+			margin-top: -20px; 
+			left: 100%;
+			z-index: 2; 
+		}
+
+		.breadcrumb li a:before { 
+			content: " "; 
+			display: block; 
+			width: 0; 
+			height: 0;
+			border-top: 20px solid transparent;       
+			border-bottom: 20px solid transparent;
+			border-left: 10px solid white;
+			position: absolute;
+			top: 50%;
+			margin-top: -20px; 
+			margin-left: 1px;
+			left: 100%;
+			z-index: 1; 
+		}
+	<!--#FFFF00-->	
+
+	
+	</style>
+ 	<div style="font: 12px Helvetica, Arial, Sans-Serif;font-weight:bold">Project Command Console</div> 
+	<!-- <a href="http://www.animatedimages.org/cat-ants-183.htm"><img src="http://www.animatedimages.org/data/media/183/animated-ant-image-0001.gif" border="0" alt="animated-ant-image-0001"/></a> -->
+	<ul class="breadcrumb">
+		<li class="{!pse__Proj__c.ProgBarCreateProjectRecord__c}">
+			<a href="#"><span>Create<br/>Project Record</span></a>
+		</li>
+		<li class="{!pse__Proj__c.ProgBarCompleteRMAssessment__c} wide">
+			<a href="#"><span>Complete<br/>R&amp;M Assessment</span></a>
+		</li>
+		<li class="{!pse__Proj__c.ProgBarGoNoGoApproval__c} approval">
+			<a href="#"><span>Go/No Go<br/>Approval</span></a>
+		</li>
+		<li class="{!pse__Proj__c.ProgBarDOAReviewApproval2__c} approval">
+			<a href="#"><span>DOA Review<br/>and Approval</span></a>
+		</li>		
+		<li class="{!pse__Proj__c.ProgBarPrepareProjectPlan__c}">
+			<a href="#"><span>Prepare<br/>Project Plan</span></a>
+		</li>
+		<li class="{!pse__Proj__c.ProgBarProjectPlanApproval__c} approval">
+			<a href="#"><span>Project Plan<br/>Approval</span></a>
+		</li>
+		<li class="{!pse__Proj__c.ProgBarProjectCreatedinOracle__c} wide">
+			<a href="#"><span>Project Created<br/>in Oracle</span></a>
+		</li>
+		<li class="{!pse__Proj__c.ProgBarProjectExecution__c} short">
+			<a href="#"><span>Project<br/>Execution</span></a>
+		</li>
+		<li class="{!pse__Proj__c.ProgBarProjectExecution__c} short">
+			<a href="#"><span>Changes<br/>Pending</span></a>
+		</li>
+		<li class="{!pse__Proj__c.ProgBarCompleteCloseout__c} short">
+			<a href="#"><span>Complete<br/>Closeout</span></a>
+		</li>
+	</ul>
+</apex:page>

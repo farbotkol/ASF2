@@ -1,0 +1,354 @@
+<apex:page standardController="pse__Proj__c" extensions="ECO_BudgetQuestionnaireController" id="thePage" sidebar="false" title="{!theProject.Name} - Budget Setup Questionnaire" >
+	
+	<!-- <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+	<apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+	<apex:includeScript value="{!URLFOR($Resource.ECO_Bootstrap_3_3_2, 'js/bootstrap.min.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/nifty.min.js')}"/>
+	
+	<apex:stylesheet value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2_Themes, 'themes/smoothness/jquery-ui.css')}"/>
+	<apex:stylesheet value="{!URLFOR($Resource.ECO_Bootstrap_3_3_2, 'css/bootstrap.min.css')}" /> 
+	<apex:stylesheet value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/css/nifty.css')}" />
+	<apex:stylesheet value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/css/font-awesome.min.css')}" /> -->
+	
+	<script type="text/javascript" >
+		var activeItem;
+		
+		$(document).ready(function () {
+			onCompleteAction();
+			
+			$('#spinnerModal').modal({
+				show: false
+			});
+			
+		});
+		
+		function onCompleteAction () {
+			attachModal();
+			hideGearModal();
+		}
+		
+		function showGearModal () {
+			$('#spinnerModal').modal({
+				show: true
+			});
+		}
+		
+		function hideGearModal () {
+			$('#spinnerModal').modal('hide');
+		}
+		
+		function attachModal () {
+			$('#modalWindow').modal({
+				show: true
+				, backdrop: 'static'
+				, keyboard: false
+			});
+	    }
+	    
+	    function showAttachmentModal () {
+	    	$('#attachmentModal').show();
+	    }
+
+    	function fileChosen(attachButton,documentField,overrideField)
+    	{
+    		if(documentField.value != '')
+    		{
+				document.getElementById(attachButton).style.visibility = 'visible';			
+				document.getElementById(overrideField).value = '';
+				document.getElementById(overrideField).style.visibility = 'visible';				
+			}
+			else
+			{
+				document.getElementById(attachButton).style.visibility= 'hidden';
+				document.getElementById(overrideField).style.visibility= 'hidden';			
+			}		
+    	}	    
+	    	    
+	</script>
+	
+	<style>
+		.largerTextBox {
+			width: 85%;
+		}
+		
+		div.attachmentModal {
+			//display: none;
+		}
+		
+		.percentInput{
+		  float: right;
+		  z-index: 999;
+		  margin-right: -45px;
+		  margin-top: 1px;
+		  color: #A7A7A7;
+		}
+		
+		.smallInput {
+			width: 46px;
+			float:right;
+			line-height:14px;
+			height: 19px;
+		}
+		.fileList
+		{
+			padding-top: 5px;
+			padding-bottom: 5px;
+		}		
+		
+  		.attachNewFile{
+  			visibility: hidden;
+  		}		
+	</style>
+	
+	<apex:sectionHeader title="{!theProject.Name}" subtitle="Budget Setup Questionnaire" id="sectionHeader" />
+	
+	<apex:pageMessages id="pageMessages" />
+	
+	<apex:form id="theForm">
+		<apex:pageBlock id="theBlock">
+			<apex:pageBlockButtons >
+				<apex:commandButton action="{!saveAndReturn}" value="Save" />
+				<apex:commandButton action="{!cancelAndReturn}" value="Return to Budget" immediate="true" />
+			</apex:pageBlockButtons>
+			
+			<apex:pageBlockSection id="projectInfo" title="Project Info" columns="1" collapsible="false">
+				<apex:pageBlockSectionItem >
+					<apex:outputPanel layout="inline">
+						<apex:outputLabel value="Budget Strategy" />
+						<apex:inputField value="{!theProject.BudgetStrategy__c}" required="true" />
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+				<apex:pageBlockSectionItem >
+					<apex:outputPanel layout="inline">
+						<apex:inputField value="{!theProject.BudgetOffline__c}" />
+						<apex:outputLabel value="This project is offline." />
+					</apex:outputPanel>
+				</apex:pageBlockSectionItem>
+			</apex:pageBlockSection>
+			
+			<apex:pageBlockSection id="theSection" columns="2">
+				<apex:actionRegion >
+					
+					<apex:actionFunction name="toggleEscalationSectionApex" action="{!toggleEscalationSection}" rerender="escalationSection, pageMessages" />
+					
+					<apex:pageBlockSection title="Fee Basis" collapsible="false" columns="1" id="escalationSection">
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Comm Structure" />
+							<apex:inputField value="{!theProject.DefaultMarginType__c}" onChange="toggleEscalationSectionApex();" required="true" />
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem rendered="{!theProject.DefaultMarginType__c == 'Amount'}">
+							<apex:outputLabel value="Default Bill Rate" />
+							<apex:inputField value="{!theProject.DefaultBillRate__c}" styleClass="defaultBillRate" />
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem rendered="{!theProject.DefaultMarginType__c == 'Percent'}">
+							<apex:outputLabel value="Default Mark Up Labor" />
+							<apex:outputPanel >
+								<apex:inputField value="{!theProject.DefaultUpliftLabor__c}" styleClass="upliftField smallInput" />
+								<div class="percentInput">%</div>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem rendered="{!theProject.DefaultMarginType__c == 'Percent'}">
+							<apex:outputLabel value="Default Mark Up Subs" />
+							<apex:outputPanel >
+								<apex:inputField value="{!theProject.DefaultUpliftSubs__c}" styleClass="upliftField smallInput" />
+								<div class="percentInput">%</div>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem rendered="{!theProject.DefaultMarginType__c == 'Percent'}">
+							<apex:outputLabel value="Default Mark Up ODCs" />
+							<apex:outputPanel >
+								<apex:inputField value="{!theProject.DefaultUpliftODCs__c}" styleClass="upliftField smallInput" />
+								<div class="percentInput">%</div>
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Escalation Applies" />
+							<apex:inputField value="{!theProject.EscalationApplies__c}" onChange="toggleEscalationSectionApex();" />
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem id="escalationSection1" rendered="{!theProject.EscalationApplies__c}">
+							<apex:outputLabel value="Next Escalation Date" />
+							<apex:inputField value="{!theProject.EscalationDate__c}" />
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem id="escalationSection2" rendered="{!theProject.EscalationApplies__c}">
+							<apex:outputPanel layout="inline">
+								<apex:outputLabel value="Escalation Description" />
+								<br/>
+								<apex:inputField value="{!theProject.EscalationDescription__c}" styleClass="largerTextBox" />
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+					</apex:pageBlockSection>
+				</apex:actionRegion>
+				
+				<!-- <apex:pageBlockSection title="Project Offline" collapsible="false" columns="1">
+					<apex:pageBlockSectionItem >
+						<apex:outputPanel layout="inline">
+							<apex:inputField value="{!theProject.BudgetOffline__c}" />
+							<apex:outputLabel value="This project is offline." />
+						</apex:outputPanel>
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection> -->
+				
+				<apex:pageBlockSection title="Segmentation" collapsible="false" columns="1">
+					Coming Soon!
+				</apex:pageBlockSection>
+				
+				<apex:pageBlockSection title="Billing Setup" collapsible="false" columns="1" id="milestoneSection" >
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="Payment Terms" for="paymentTerms" />
+						<apex:inputField value="{!theProject.PaymentTerms__c}" required="true" id="paymentTerms"/>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:outputLabel value="Billing Structure" />
+						<apex:actionRegion >
+							<apex:actionFunction name="toggleMilestoneSectionApex" action="{!toggleMilestoneSection}" rerender="milestoneSection, pageMessages" immediate="false" />
+							<apex:inputField value="{!theProject.BillingStructure__c}" onChange="toggleMilestoneSectionApex();" required="true" />
+						</apex:actionRegion>
+					</apex:pageBlockSectionItem>
+					<apex:pageBlockSectionItem >
+						<apex:pageBlockTable value="{!milestones}" var="milestoneNumber" id="milestoneTable">
+							<apex:column >
+								<apex:facet name="header">
+									<apex:commandbutton action="{!addMilestone}" rerender="pageMessages, milestoneTable" value="ADD" immediate="true"/>
+								</apex:facet>
+								<apex:commandButton action="{!removeMilestone}" value="DEL" rerender="pageMessages, milestoneTable" immediate="true" >
+									<apex:param name="selectedRecordNumber" assignTo="{!selectedRecordNumber}" value="{!milestoneNumber}"/>
+								</apex:commandButton>
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">
+									Ex. Date
+								</apex:facet>
+								<apex:inputField value="{!milestones[milestoneNumber].ExDate__c}"  />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">
+									Description
+								</apex:facet>
+								<apex:inputField value="{!milestones[milestoneNumber].Description__c}"  />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">
+									Amount
+								</apex:facet>
+								<apex:inputField value="{!milestones[milestoneNumber].Amount__c}"  />
+							</apex:column>
+						</apex:pageBlockTable>
+					</apex:pageBlockSectionItem>
+					
+					<apex:actionRegion >
+						<apex:pageBlockSectionItem rendered="{!theProject.BillingStructure__c == 'Progress'}">
+							<apex:outputPanel layout="block">
+								<apex:outputLabel value="Frequency" />
+								<apex:inputField value="{!theProject.MilestoneFrequency__c}" />
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem rendered="{!theProject.BillingStructure__c == 'Progress'}">
+							<apex:outputPanel layout="block">
+								<apex:outputLabel value="Project Start Date" />
+								<apex:outputField value="{!theProject.pse__Start_Date__c}" />
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem >
+							<apex:outputPanel layout="block">
+								<apex:outputLabel value="Project End Date" />
+								<apex:outputField value="{!theProject.pse__End_Date__c}" />
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+						<apex:pageBlockSectionItem rendered="{!theProject.BillingStructure__c == 'Progress'}">
+							<apex:outputPanel layout="block">
+								<apex:commandButton action="{!calculateMilestones}" value="Calculate Milestones" rerender="pageMessages, milestoneSection" />
+							</apex:outputPanel>
+						</apex:pageBlockSectionItem>
+					</apex:actionRegion>
+				</apex:pageBlockSection>
+				
+				<apex:pageBlockSection title="Forex" collapsible="false" columns="1">
+					Coming Soon!
+				</apex:pageBlockSection>
+				
+				<apex:pageBlockSection title="Relocations / Secondments" collapsible="false" columns="1">
+					<apex:pageBlockSectionItem id="relocSection">
+						<apex:pageBlockTable value="{!relocs}" var="relocNumber" id="relocTable">
+							<apex:column >
+								<apex:facet name="header">
+									<apex:commandbutton action="{!addReloc}" rerender="pageMessages, relocTable" value="ADD" immediate="true"/>
+								</apex:facet>
+								<apex:commandButton action="{!removeReloc}" value="DEL" rerender="pageMessages, relocTable" immediate="true" >
+									<apex:param name="selectedRecordNumber" assignTo="{!selectedRecordNumber}" value="{!relocNumber}" />
+								</apex:commandButton>
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">
+									Name
+								</apex:facet>
+								<apex:inputField value="{!relocs[relocNumber].Name__c}"  />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">
+									Home Loc.
+								</apex:facet>
+								<apex:inputField value="{!relocs[relocNumber].HomeLocation__c}"  />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">
+									Secondment Loc.
+								</apex:facet>
+								<apex:inputField value="{!relocs[relocNumber].SecondmentLocation__c}"  />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">
+									Est. Costs
+								</apex:facet>
+								<apex:inputField value="{!relocs[relocNumber].EstimatedCost__c}"  />
+							</apex:column>
+							<apex:column >
+								<apex:facet name="header">
+									Attachments
+								</apex:facet>
+								<apex:repeat value="{!relocs[relocNumber].Attachments}" var="attach">
+									<a href="/servlet/servlet.FileDownload?file={!attach.Id}" title="{!attach.Name}">
+										<img src="PaperClip Icon" />
+									</a>
+								</apex:repeat>
+								<apex:commandButton action="{!goToAttachmentPage}" value="+" rerender="pageMessages">
+									<apex:param name="relocNumber" value="{!relocNumber}" assignTo="{!selectedRecordNumber}"/>
+								</apex:commandButton>
+							</apex:column>
+						</apex:pageBlockTable>
+					</apex:pageBlockSectionItem>
+				</apex:pageBlockSection>
+				
+				<apex:pageBlockSection title="Custom Multiplier" collapsible="false" columns="1">
+					Coming Soon!
+				</apex:pageBlockSection>
+			</apex:pageBlockSection>
+			
+			<apex:pageBlockSection title="Budget Questionnaire Attachments">
+				<div class="fileList">
+				<apex:pageBlockTable value="{!AttachedBudgetQuestionnaireFiles}" var="attachedBudgetQuestionnaireFile" style="width: 825px;" rendered="{!theProject.BudgetQuestionnaireAttachments__c != null}">
+					<apex:column headerValue="File Name">
+						<apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachedBudgetQuestionnaireFile.Id)}" target="_blank">
+							<apex:outputText value="{!attachedBudgetQuestionnaireFile.Name}" />
+						</apex:outputLink>
+					</apex:column>
+					<apex:column value="{!attachedBudgetQuestionnaireFile.ContentType}" />	
+					<apex:column value="{!attachedBudgetQuestionnaireFile.LastModifiedDate}" />	
+					<apex:column value="{!attachedBudgetQuestionnaireFile.LastModifiedById}" />
+				</apex:pageBlockTable>
+				</div>			
+				<apex:inputFile id="docBudgetQuestionnaireAttachment" value="{!docBudgetQuestionnaireAttachment.Body}" contentType="{!docBudgetQuestionnaireAttachment.ContentType}" fileName="{!docBudgetQuestionnaireAttachment.Name}" onchange="fileChosen('{!$Component.cmdBudgetQuestionnaireAttachment}', this, '{!$Component.overrideBudgetQuestionnaireName}'); return false;"/>
+				<apex:inputText id="overrideBudgetQuestionnaireName" value="{!overrideBudgetQuestionnaireName}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
+				<apex:commandButton id="cmdBudgetQuestionnaireAttachment" value="Attach" action="{!saveBudgetQuestionnaireAttachmentAndProject}" styleclass="attachNewFile"/><br/>			
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+		
+		<div class="modal" id="spinnerModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" >
+			<div class="modal-dialog modal-sm">
+				<i class="fa fa-cog fa-spin"></i>
+			</div>
+		</div>
+		
+		<apex:pageBlock id="dummyBlock" />
+
+	</apex:form>
+</apex:page>

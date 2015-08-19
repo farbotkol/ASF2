@@ -1,0 +1,102 @@
+<apex:page controller="ECO_BillRateManagement" tabstyle="Agreement__c">
+<head>
+	<apex:stylesheet value="https://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"  />
+    <apex:includeScript value="https://code.jquery.com/jquery-1.9.1.js" />
+    <apex:includeScript value="https://code.jquery.com/ui/1.10.3/jquery-ui.js" />
+</head>
+<style>
+.ctable, .ctr, .ctd, .cth {
+  border: 1px solid #dbdbdb;
+  padding: 10px;
+  border-collapse:separate; 
+  border-spacing:1em;  
+}
+
+.cth span {
+  padding: 0 .5em;
+  writing-mode: tb-rl;
+  filter: flipv fliph;
+  -webkit-transform:rotate(-45deg); 
+  white-space:nowrap; 
+  display:block;
+}
+</style>
+
+<script>
+	function updateBillRate(input, key)
+	{
+		updateBillRateApex(key, input.value);
+	}
+</script>
+
+<apex:form >
+<apex:actionFunction id="updateBillRateApex" name="updateBillRateApex" rerender="updatedKey, updatedValue" action="{!updateBillRateApex}" immediate="true">
+	<apex:param id="updatedKey" name="updatedKey" assignto="{!updatedKey}" value=""/>
+	<apex:param id="updatedValue" name="updatedValue" assignto="{!updatedValue}" value=""/>	
+</apex:actionFunction>
+<apex:sectionHeader subtitle="{!agreement.Name}" title="Agreement Bill Rate Edit"/>
+<apex:pageBlock title="Agreement Bill Rate Edit" mode="edit">
+<apex:pageBlockButtons location="top"><apex:commandButton value="Save" action="{!saveBillRates}" immediate="false"/><apex:commandButton value="Return To Agreement" action="{!returnToAgreement}"/></apex:pageBlockButtons>
+
+<apex:pageBlockSection columns="1">
+	<apex:outputField value="{!agreement.AgreementNumber__c}"/>
+	<apex:pageBlockSectionItem >
+	<apex:outputText value="Agreement Currency"/>
+	<apex:outputField value="{!agreement.FundingCurrencyCode__c}"/>
+	</apex:pageBlockSectionItem>
+</apex:pageBlockSection>
+
+<apex:pageBlockSection title="Bill Rates" columns="1">
+<apex:outputPanel >
+<table cellpadding="5" cellspacing="3" >
+	<tr>
+		<th></th>
+		<apex:repeat value="{!periods}" var="period">
+			<th><span>
+				<apex:outputText value="{0,date,MM/dd/yyyy}' - '">
+					<apex:param value="{!period.BillRateStart__c}"/>
+				</apex:outputText>
+				<apex:outputText value="{0,date,MM/dd/yyyy}">
+					<apex:param value="{!period.BillRateEnd__c}"/>
+				</apex:outputText>
+			</span></th>
+		</apex:repeat>
+	</tr>
+	<apex:repeat value="{!laborCategories}" var="laborCategory">
+		<tr>
+			<td><apex:outputText value="{!laborCategory}"></apex:outputText></td>
+ 				<apex:repeat value="{!periods}" var="period">
+ 					<apex:variable var="key" value="{!period.Id}-{!laborCategory}"/>
+ 					<td>
+ 						<apex:inputField value="{!billRatePeriodCategoryRateMap[key].BillRate__c}" onChange="updateBillRate(this, '{!key}');" html-placeholder="{!period.Id}-{!laborCategory}" />					
+ 					</td>			
+				</apex:repeat> 
+		</tr>
+	</apex:repeat>
+</table></apex:outputPanel>
+
+<apex:outputPanel >
+<apex:commandButton value="Create New Labor Category" rendered="{!NOT(creatingNewBillRate) && NOT(creatingNewBillRatePeriod) && periods.size > 0}" action="{!createNewBillRate}" />
+<apex:outputPanel rendered="{!creatingNewBillRate}" styleclass="test">
+	<apex:outputLabel value=" Labor Category"/>
+	<apex:inputField value="{!newBillRate.LaborCategory__c}"/>
+	<apex:commandButton value="Save" action="{!saveNewBillRate}"/>
+	<apex:commandButton value="Cancel" action="{!cancelNewBillRate}"/>	
+</apex:outputPanel>
+<apex:outputPanel ><apex:commandButton value="Create New Bill Rate Period" rendered="{!NOT(creatingNewBillRate) && NOT(creatingNewBillRatePeriod)}" action="{!createNewBillRatePeriod}" /></apex:outputPanel>
+<apex:outputPanel rendered="{!creatingNewBillRatePeriod}" styleclass="test">
+	<apex:outputLabel value=" Bill Rate Start"/>
+	<apex:inputField value="{!newBillRatePeriod.BillRateStart__c}"/> 
+	<apex:outputLabel value=" Bill Rate End"/>	
+	<apex:inputField value="{!newBillRatePeriod.BillRateEnd__c}"/> 
+	<apex:commandButton value="Save" action="{!saveNewBillRatePeriod}"/>
+	<apex:commandButton value="Cancel" action="{!cancelNewBillRatePeriod}"/>
+</apex:outputPanel>
+</apex:outputPanel>
+</apex:pageBlockSection>
+</apex:pageBlock>
+<apex:inputText value="{!updatedKey}" id="updatedKeyInput" style="width: 0px; visibility: hidden;"/>
+<apex:inputText value="{!updatedValue}" id="updatedValueInput" style="width: 0px; visibility: hidden;"/>
+</apex:form>
+
+</apex:page>

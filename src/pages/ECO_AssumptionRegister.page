@@ -1,0 +1,151 @@
+<apex:page showHeader="true" sidebar="false" standardController="Assumption__c" extensions="ECO_AssumptionRegisterController">
+	<style>
+		/* tables */
+		table.tablesorter {
+			font-family:arial;
+			background-color: #919191;
+			margin:10px 0pt 15px;
+			font-size: 9pt;
+			width: 600px;
+			text-align: left;
+		}
+		table.tablesorter thead tr th, table.tablesorter tfoot tr th, table.tablesorter tr th {
+			background-color: #39c;
+			border: 1px solid #FFF;
+			font-size: 9pt;
+			padding: 4px 7px;
+			color:white;
+		}
+
+		table.tablesorter thead tr .header {
+			background-image: url(bg.gif);
+			background-repeat: no-repeat;
+			background-position: center right;
+			cursor: pointer;
+		}
+		table.tablesorter tbody td {
+			color: #3D3D3D;
+			padding: 4px 7px;
+			background-color: #FFF;
+			vertical-align: top;
+			height: 20px;
+		}
+
+		table.tablesorter tbody tr:hover td{
+			background-color:#FFFFEB !important;
+		}
+
+		table.tablesorter tbody tr.odd td {
+			background-color:#F0F0F6;
+		}
+		table.tablesorter thead tr .headerSortUp {
+			background-image: url(asc.gif);
+		}
+		table.tablesorter thead tr .headerSortDown {
+			background-image: url(desc.gif);
+		}
+		table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+		background-color: #8dbdd8;
+		}
+
+		table.tablesorter thead tr th.budget{
+			background-color:#AFBCA0;
+		}
+
+		table.tablesorter tbody tr td.budget input, table.tablesorter tbody tr td.budget{
+			text-align:right;
+		}
+
+		table.tablesorter tbody tr:nth-child(odd) td.budget{
+			background-color:#EDF1E8;
+		}
+
+		table.tablesorter tbody tr:nth-child(even) td.budget{
+			background-color:#F9FAF8;
+		}
+
+		table.tablesorter tbody tr:nth-child(odd) td{
+			background-color:#EBF5FA;
+			white-space: nowrap;
+		}
+
+		table.tablesorter tbody tr:nth-child(even) td{
+			background-color:white;
+			white-space: nowrap;
+		}
+
+		table.tablesorter tbody tr input, table.tablesorter tbody tr select{
+			width:100%;
+		}
+
+		table.tablesorter tbody tr textarea{
+			width:100%;
+			height:200px;
+		}
+
+		.percSign{
+			position:relative;
+			top:1px;
+			padding-left:2px;
+		}
+
+		.budgetDetail{
+			display:none;
+		}
+
+		.budgetTotal{
+			cursor:pointer;
+		}
+	</style>
+	
+	<apex:sectionHeader title="Assumption Register" subtitle="{!oProject.Name}" id="theSectionHeader" />
+	
+	<apex:pageMessages id="pageMessages" />
+	
+	<apex:form id="theForm" >
+		
+		<apex:actionStatus startText="loading" id="theStatus" />
+		
+		<apex:pageBlock id="assumptionRegister" title="Project Assumption List" >
+		
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!addAssumption}" value="Add New Assumption" rerender="pageMessages, assumptionRegister"/>
+				<apex:commandButton action="{!save}" value="Save" />
+				<apex:commandButton action="{!backToProject}" value="Back to Project" immediate="true"/>
+			</apex:pageBlockButtons>
+					
+				<table class="tablesorter" cellspacing="0" cellpadding="0">
+					<thead>
+						<tr>
+							<th width="70px">
+								Action
+							</th>
+							<th width="160px">
+								Plan Element
+							</th>
+							<th>
+								Assumption
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						<apex:repeat value="{!lAssumptions}" var="assumption">
+							<tr class="firstRow">
+								<td>
+									<apex:commandLink action="{!removeAssumption}" value="Remove" reRender="assumptionRegister">
+										<apex:param assignTo="{!sSelectedAssumptionId}" value="{!assumption.Id}" name="AssumptionId" />
+									</apex:commandLink>
+								</td>
+								<td>
+									<apex:inputField value="{!assumption.PlanElement__c}" />
+								</td>
+								<td>
+									<apex:inputTextarea rows="12" value="{!assumption.Assumption__c}" />
+								</td>
+							</tr>
+						</apex:repeat>
+					</tbody>
+				</table>
+		</apex:pageBlock>
+	</apex:form>
+</apex:page>

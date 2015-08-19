@@ -365,37 +365,6 @@
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>ANZ Approver</label>
-        <lookupFilter>
-            <active>false</active>
-            <booleanFilter>(1 AND 2 AND 3) OR (4 AND 5)</booleanFilter>
-            <filterItems>
-                <field>User.IsActive</field>
-                <operation>equals</operation>
-                <value>True</value>
-            </filterItems>
-            <filterItems>
-                <field>User.NA_GNG_Approver__c</field>
-                <operation>equals</operation>
-                <value>True</value>
-            </filterItems>
-            <filterItems>
-                <field>User.UserType</field>
-                <operation>equals</operation>
-                <value>Standard</value>
-            </filterItems>
-            <filterItems>
-                <field>User.IsActive</field>
-                <operation>equals</operation>
-                <value>False</value>
-            </filterItems>
-            <filterItems>
-                <field>$Source.Approval_Status__c</field>
-                <operation>equals</operation>
-                <value>Submitted for Approval - Pending, Approved, Rejected</value>
-            </filterItems>
-            <infoMessage>Enter first or last name of approver and click go</infoMessage>
-            <isOptional>false</isOptional>
-        </lookupFilter>
         <referenceTo>User</referenceTo>
         <relationshipName>Go_No_Go_Conversation_ANZ_Approver</relationshipName>
         <required>false</required>
@@ -510,7 +479,6 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <label>Approver</label>
         <lookupFilter>
             <active>true</active>
-            <booleanFilter>(1 AND 2 AND 3 AND 7) OR (4 AND 5 AND 7) OR (6 AND (8 OR 2)) OR ((8 OR 2) AND 5 AND 7)</booleanFilter>
             <filterItems>
                 <field>User.IsActive</field>
                 <operation>equals</operation>
@@ -525,31 +493,6 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
                 <field>User.UserType</field>
                 <operation>equals</operation>
                 <value>Standard</value>
-            </filterItems>
-            <filterItems>
-                <field>User.IsActive</field>
-                <operation>equals</operation>
-                <value>False</value>
-            </filterItems>
-            <filterItems>
-                <field>$Source.Approval_Status__c</field>
-                <operation>equals</operation>
-                <value>Submitted for Approval - Pending, Approved, Rejected</value>
-            </filterItems>
-            <filterItems>
-                <field>$Profile.Name</field>
-                <operation>contains</operation>
-                <value>API Access, API Access Restricted, System Administrator, System Admin - No Expiration</value>
-            </filterItems>
-            <filterItems>
-                <field>$Profile.Name</field>
-                <operation>notContain</operation>
-                <value>API Access, API Access Restricted, System Administrator, System Admin - No Expiration</value>
-            </filterItems>
-            <filterItems>
-                <field>User.NA_GNG_Approver__c</field>
-                <operation>notEqual</operation>
-                <value>True</value>
             </filterItems>
             <infoMessage>Enter first or last name of approver and click Go</infoMessage>
             <isOptional>false</isOptional>
@@ -697,31 +640,6 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <type>Lookup</type>
     </fields>
     <fields>
-        <fullName>Bid_Proposal_Budget__c</fullName>
-        <externalId>false</externalId>
-        <label>Bid &amp; Proposal Budget</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Business_Line__c</fullName>
-        <description>Opportunity&apos;s Business Line</description>
-        <externalId>false</externalId>
-        <label>Business Line</label>
-        <length>255</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>CM_and_PM_Comments__c</fullName>
         <description>Field is no longer used.</description>
         <externalId>false</externalId>
@@ -732,57 +650,6 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
-    </fields>
-    <fields>
-        <fullName>Capabilities_Assessment_Notes__c</fullName>
-        <externalId>false</externalId>
-        <label>Capabilities Assessment Notes</label>
-        <length>32768</length>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>5</visibleLines>
-    </fields>
-    <fields>
-        <fullName>Capabilities_Assessment_Questions_D1__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Capabilities Assessment Questions D1</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Capabilities_Assessment_Questions_D2__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Capabilities Assessment Questions D2</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Capabilities_Assessment_Questions_D3__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Capabilities Assessment Questions D3</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Capabilities_Assessment_Questions_D4__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Capabilities Assessment Questions D4</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Capabilities_Assessment__c</fullName>
@@ -829,7 +696,7 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
     <fields>
         <fullName>Capture_Manager_from_OPP__c</fullName>
         <externalId>false</externalId>
-        <formula>Opportunity__r.Capture_Manager_User__r.frm_Name__c</formula>
+        <formula>Opportunity__r.Capture_Manager__r.Name</formula>
         <inlineHelpText>Sales Manager (Capture Manager) entered on the Opportunity - to change, return to Opportunity record.</inlineHelpText>
         <label>Sales (Capture) Manager from Opportunity</label>
         <required>false</required>
@@ -840,74 +707,17 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
     </fields>
     <fields>
         <fullName>Client_Assessment_Notes__c</fullName>
+        <description>Brief notes about the wisdom of starting or continuing to do business with this client.</description>
         <externalId>false</externalId>
-        <label>Client Assessment Notes</label>
-        <length>32768</length>
+        <inlineHelpText>•  Do we have / want a relationship with the client?  
+•  Is it profitable work? Adequate funding?</inlineHelpText>
+        <label>Client Documentation</label>
+        <length>3000</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>5</visibleLines>
-    </fields>
-    <fields>
-        <fullName>Client_Assessment_Questions_C1__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Client Assessment Questions C1</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Client_Assessment_Questions_C2__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Client Assessment Questions C2</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Client_Assessment_Questions_C3__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Client Assessment Questions C3</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Client_Assessment_Questions_C4__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Client Assessment Questions C4</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Client_Assessment_Questions_C5__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Client Assessment Questions C5</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Client_Assessment_Questions_C6__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Client Assessment Questions C6</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Client_Assessment__c</fullName>
@@ -962,37 +772,6 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Competetive_Assessment_Notes__c</fullName>
-        <externalId>false</externalId>
-        <label>Competetive Assessment Notes</label>
-        <length>32768</length>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>5</visibleLines>
-    </fields>
-    <fields>
-        <fullName>Competetive_Assessment_Questions_B1__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Competetive Assessment Questions B1</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Competetive_Assessment_Questions_B2__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Competetive Assessment Questions B2</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
         <fullName>Competitive_Position_Assessment__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Not used after 1 October 2013</description>
@@ -1032,64 +811,18 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
     </fields>
     <fields>
         <fullName>Contract_Assessment_Notes__c</fullName>
+        <description>DOA link: http://premy.aecomnet.com/deployedfiles/Intranet/About/About%20AECOM/Documents/Delegation%20of%20Authority_July%202012_12.pdf</description>
         <externalId>false</externalId>
-        <label>Contract Assessment Notes</label>
-        <length>32768</length>
+        <inlineHelpText>•  Are contract terms acceptable/ reviewed by Legal? 
+•  Will the pursuit trigger the DOA approval process?
+•  Is the opportunity subject to HUB/MPRC approval?</inlineHelpText>
+        <label>Contract/DOA Documentation</label>
+        <length>3000</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
-        <visibleLines>5</visibleLines>
-    </fields>
-    <fields>
-        <fullName>Contract_Assessment_Question_A1__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Contract Assessment Question A1</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Contract_Assessment_Question_A2__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Contract Assessment Question A2</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Contract_Assessment_Question_A3__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Contract Assessment Question A3</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Contract_Assessment_Question_A4__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Contract Assessment Question A4</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Contract_Assessment_Question_A5__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Contract Assessment Question A5</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>Contract_Assessment__c</fullName>
@@ -1102,67 +835,6 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Cost_Assessment_E1__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Cost Assessment E1</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Cost_Assessment_E2__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Cost Assessment E2</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Cost_Assessment_E3__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Cost Assessment E3</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Cost_Assessment_E4__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Cost Assessment E4</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Cost_Assessment_E5__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Cost Assessment E5</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
-        <fullName>Cost_Assessment_Notes__c</fullName>
-        <externalId>false</externalId>
-        <label>Cost Assessment Notes</label>
-        <length>32768</length>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>5</visibleLines>
     </fields>
     <fields>
         <fullName>Cost_Assessment__c</fullName>
@@ -1558,14 +1230,12 @@ Do not click &quot;Submit for Approval&quot; for opportunities that already have
         <fullName>Key_Account__c</fullName>
         <description>Inherited from Account related to Opportunity</description>
         <externalId>false</externalId>
-        <formula>IF ( NOT (ISBLANK (  Client_Name__r.FY14_Key_Client__c )), &quot;Yes: &quot; +  Opportunity__r.Account.Oracle_Task__c , 
-
-IF (NOT( ISBLANK ( Opportunity__r.Account.Oracle_Task__c )),&quot;Yes: &quot; +  Opportunity__r.Account.Oracle_Task__c , 
+        <formula>IF (NOT( ISBLANK ( Opportunity__r.Account.Oracle_Task__c )),&quot;Yes: &quot; +  Opportunity__r.Account.Oracle_Task__c , 
 
 IF (NOT( ISBLANK (  Opportunity__r.Account.Oracle_Name__c )),&quot;Yes: &quot; +  Opportunity__r.Account.Oracle_Name__c , 
 
 
-&quot;No&quot;)))</formula>
+&quot;No&quot;))</formula>
         <inlineHelpText>Automatically populated from Account related to the Opportunity</inlineHelpText>
         <label>Key Account?</label>
         <required>false</required>
@@ -2526,19 +2196,6 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Marketing_Proposal_Lead_email__c</fullName>
-        <description>Used to send B&amp;P numbers to the proposal lead. Populated by a field update.</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Used to send B&amp;P numbers to the proposal lead</inlineHelpText>
-        <label>Marketing Proposal Lead email</label>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Email</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>NM_NSR_Comment__c</fullName>
         <externalId>false</externalId>
         <formula>IF( Total_Markup__c &lt; 0.15,&apos;Low Margin Approval May Be Required. Refer Local DoA&apos; ,&apos;&apos;)</formula>
@@ -2572,30 +2229,6 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Net_Revenue_Program__c</fullName>
-        <externalId>false</externalId>
-        <label>Net Revenue (Program)</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Net_Revenue_TO_Project__c</fullName>
-        <externalId>false</externalId>
-        <label>Net Revenue (TO/Project)</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
@@ -2682,6 +2315,18 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
         <inlineHelpText>Inherited from Opportunity, determined by lead department</inlineHelpText>
         <label>Opportunity Lead Region</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Name_Searchable__c</fullName>
+        <externalId>true</externalId>
+        <label>Opportunity Name</label>
+        <length>120</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -2932,7 +2577,7 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
     <fields>
         <fullName>Project_Duration__c</fullName>
         <externalId>false</externalId>
-        <label>Work End Date</label>
+        <label>Project Duration</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -3026,7 +2671,7 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
     <fields>
         <fullName>Project_Start_Date__c</fullName>
         <externalId>false</externalId>
-        <label>Estimated Work Start Date</label>
+        <label>Project Start Date</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -3477,17 +3122,6 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
         <type>Date</type>
     </fields>
     <fields>
-        <fullName>Proposal_Submission_Date__c</fullName>
-        <externalId>false</externalId>
-        <formula>Opportunity__r.Submittal_Date_Proposal__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Submittal Date - Proposal</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Date</type>
-    </fields>
-    <fields>
         <fullName>Pursuit_Cost_Total__c</fullName>
         <description>Calculated value: Pursuit Labor Cost + Pursuit Fringe Cost + Pursuit ODCs</description>
         <externalId>false</externalId>
@@ -3806,7 +3440,7 @@ US: 42% of Pursuit Labor Cost</inlineHelpText>
     <fields>
         <fullName>RFT_Issue_Date__c</fullName>
         <externalId>false</externalId>
-        <label>Date RFP Expected</label>
+        <label>RFT Issue Date</label>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -4433,16 +4067,6 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Skip_Approval__c</fullName>
-        <defaultValue>false</defaultValue>
-        <externalId>false</externalId>
-        <label>Skip Approval</label>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
-    </fields>
-    <fields>
         <fullName>Staff_Time_FBLR_Bid_Cost__c</fullName>
         <defaultValue>0</defaultValue>
         <externalId>false</externalId>
@@ -4532,18 +4156,6 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Status__c</fullName>
-        <externalId>false</externalId>
-        <formula>TEXT(Opportunity__r.StageName)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Opportunity Stage</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Strategic_Reasons_to_Go__c</fullName>
@@ -4875,6 +4487,38 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Capture_Manager_from_OPP__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Other_Depts_from_OPP__c</columns>
+        <columns>Additional_Notes_Comments__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Decision__c</field>
+            <operation>equals</operation>
+            <value>Pending</value>
+        </filters>
+        <label>All-Middle East pending</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All1</fullName>
+        <columns>NAME</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Decision__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Other_Depts_from_OPP__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Canadian_National_GNG_Status</fullName>
         <columns>NAME</columns>
         <columns>Opportunity_Name__c</columns>
@@ -4895,127 +4539,6 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
             <value>LAST_N_DAYS:7</value>
         </filters>
         <label>Canadian National-GNG Status</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>Europe_GNG_Approved</fullName>
-        <columns>NAME</columns>
-        <columns>Account__c</columns>
-        <columns>Opportunity_Name__c</columns>
-        <columns>Opportunity_Record__c</columns>
-        <columns>Status__c</columns>
-        <columns>Project_Director__c</columns>
-        <columns>Decision__c</columns>
-        <columns>Decision_Date__c</columns>
-        <columns>CREATED_DATE</columns>
-        <columns>UPDATEDBY_USER</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>RECORDTYPE</field>
-            <operation>equals</operation>
-            <value>Go_No_Go_Conversation__c.Europe_GNG</value>
-        </filters>
-        <filters>
-            <field>Decision__c</field>
-            <operation>equals</operation>
-            <value>Go</value>
-        </filters>
-        <filters>
-            <field>CREATED_DATE</field>
-            <operation>greaterOrEqual</operation>
-            <value>2/23/2015 12:00 AM</value>
-        </filters>
-        <filters>
-            <field>Approval_Status__c</field>
-            <operation>equals</operation>
-            <value>Approved</value>
-        </filters>
-        <label>Europe GNG - Go</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>Europe_GNG_Pending</fullName>
-        <columns>NAME</columns>
-        <columns>Account__c</columns>
-        <columns>Opportunity_Name__c</columns>
-        <columns>Opportunity_Record__c</columns>
-        <columns>Status__c</columns>
-        <columns>Project_Director__c</columns>
-        <columns>Decision__c</columns>
-        <columns>CREATED_DATE</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>RECORDTYPE</field>
-            <operation>equals</operation>
-            <value>Go_No_Go_Conversation__c.Europe_GNG</value>
-        </filters>
-        <filters>
-            <field>Decision__c</field>
-            <operation>equals</operation>
-            <value>Pending</value>
-        </filters>
-        <filters>
-            <field>CREATED_DATE</field>
-            <operation>greaterOrEqual</operation>
-            <value>2/23/2015 12:00 AM</value>
-        </filters>
-        <label>Europe GNG - Pending</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>Europe_GNG_Rejected</fullName>
-        <columns>NAME</columns>
-        <columns>Account__c</columns>
-        <columns>Opportunity_Name__c</columns>
-        <columns>Opportunity_Record__c</columns>
-        <columns>Status__c</columns>
-        <columns>Project_Director__c</columns>
-        <columns>Decision__c</columns>
-        <columns>Decision_Date__c</columns>
-        <columns>CREATED_DATE</columns>
-        <columns>UPDATEDBY_USER</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>RECORDTYPE</field>
-            <operation>equals</operation>
-            <value>Go_No_Go_Conversation__c.Europe_GNG</value>
-        </filters>
-        <filters>
-            <field>Decision__c</field>
-            <operation>equals</operation>
-            <value>No-Go</value>
-        </filters>
-        <filters>
-            <field>CREATED_DATE</field>
-            <operation>greaterOrEqual</operation>
-            <value>2/23/2015 12:00 AM</value>
-        </filters>
-        <label>Europe GNG - No Go</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>Europe_GNG_all</fullName>
-        <columns>NAME</columns>
-        <columns>Account__c</columns>
-        <columns>Opportunity_Name__c</columns>
-        <columns>Opportunity_Record__c</columns>
-        <columns>Status__c</columns>
-        <columns>Project_Director__c</columns>
-        <columns>Decision__c</columns>
-        <columns>Decision_Date__c</columns>
-        <columns>CREATED_DATE</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>RECORDTYPE</field>
-            <operation>equals</operation>
-            <value>Go_No_Go_Conversation__c.Europe_GNG</value>
-        </filters>
-        <filters>
-            <field>CREATED_DATE</field>
-            <operation>greaterOrEqual</operation>
-            <value>2/23/2015 12:00 AM</value>
-        </filters>
-        <label>Europe GNG - All</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -5094,6 +4617,30 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>GoNoGos_by_Created_By</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>Decision__c</columns>
+        <columns>Approval_Status__c</columns>
+        <columns>Approver__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Capture_Manager_from_OPP__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATEDBY_USER</field>
+            <operation>contains</operation>
+            <value>arline clark</value>
+        </filters>
+        <filters>
+            <field>Approval_Status__c</field>
+            <operation>notContain</operation>
+            <value>approved</value>
+        </filters>
+        <label>GoNoGos by Created By</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>HansenChris_GNG_Approvals</fullName>
         <columns>NAME</columns>
         <columns>Account__c</columns>
@@ -5115,165 +4662,6 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>Middle_East_GNG_All</fullName>
-        <columns>NAME</columns>
-        <columns>Account__c</columns>
-        <columns>Opportunity_Name__c</columns>
-        <columns>Opportunity_Record__c</columns>
-        <columns>Status__c</columns>
-        <columns>Primary_Department_from_Opportunity__c</columns>
-        <columns>CREATED_DATE</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>RECORDTYPE</field>
-            <operation>equals</operation>
-            <value>Go_No_Go_Conversation__c.View_Only</value>
-        </filters>
-        <filters>
-            <field>Primary_Department_from_Opportunity__c</field>
-            <operation>notContain</operation>
-            <value>China,Hong Kong,Thailand,Malaysia,Singapore,Taiwan,Philippines,Asia</value>
-        </filters>
-        <filters>
-            <field>CREATED_DATE</field>
-            <operation>greaterOrEqual</operation>
-            <value>2/23/2015 12:00 AM</value>
-        </filters>
-        <label>Middle East/Africa/India GNG</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>Neese_GNGs</fullName>
-        <columns>NAME</columns>
-        <columns>Account__c</columns>
-        <columns>Opportunity__c</columns>
-        <columns>Decision__c</columns>
-        <columns>Approval_Status__c</columns>
-        <columns>Net_Revenue_from_Opp__c</columns>
-        <columns>Primary_Department_from_Opportunity__c</columns>
-        <columns>Decision_Date__c</columns>
-        <columns>Approver__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Approver__c</field>
-            <operation>contains</operation>
-            <value>Neese</value>
-        </filters>
-        <label>Neese GNGs</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>Pacific_Group_GNG_Converations_ALL</fullName>
-        <booleanFilter>(1 AND  7 AND 2) OR (1 AND 7 AND 3) OR (1 AND 7 AND 4) OR (1 AND 7 AND 5) OR (1 AND 7 AND 6)</booleanFilter>
-        <columns>RFT_Issue_Date__c</columns>
-        <columns>Decision_Date__c</columns>
-        <columns>NAME</columns>
-        <columns>Approval_Status__c</columns>
-        <columns>Approver__c</columns>
-        <columns>Business_Line__c</columns>
-        <columns>AECOM_Gross_Fee__c</columns>
-        <columns>Account__c</columns>
-        <columns>Opportunity__c</columns>
-        <columns>Participants__c</columns>
-        <columns>Bid_Manager__c</columns>
-        <columns>B_P_Charge_Number__c</columns>
-        <columns>OWNER.LAST_NAME</columns>
-        <columns>Marketing_Proposal_Lead_email__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>CREATED_DATE</field>
-            <operation>greaterThan</operation>
-            <value>1/1/2015 12:00 AM</value>
-        </filters>
-        <filters>
-            <field>Approver__c</field>
-            <operation>equals</operation>
-            <value>Eric Haase</value>
-        </filters>
-        <filters>
-            <field>Approver__c</field>
-            <operation>equals</operation>
-            <value>Eric E. Zagol</value>
-        </filters>
-        <filters>
-            <field>Approver__c</field>
-            <operation>equals</operation>
-            <value>Simon Kim</value>
-        </filters>
-        <filters>
-            <field>Approver__c</field>
-            <operation>equals</operation>
-            <value>Jerald G Smith</value>
-        </filters>
-        <filters>
-            <field>Approver__c</field>
-            <operation>equals</operation>
-            <value>Shawn Kelly</value>
-        </filters>
-        <filters>
-            <field>Approval_Status__c</field>
-            <operation>contains</operation>
-            <value>Not Submitted,Submitted for Approval - Pending,Approved,Rejected,Not Submitt,No</value>
-        </filters>
-        <label>SF Bay Metro GNG Converations_ALL</label>
-        <language>en_US</language>
-        <sharedTo>
-            <group>All_Users</group>
-            <role>Americas</role>
-        </sharedTo>
-    </listViews>
-    <listViews>
-        <fullName>Recent_SW_Area_GNG_Decisions</fullName>
-        <booleanFilter>1 AND (2 OR 3 OR 4 OR 5 OR 6)</booleanFilter>
-        <columns>NAME</columns>
-        <columns>Opportunity__c</columns>
-        <columns>Decision__c</columns>
-        <columns>Decision_Date__c</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
-        <columns>Approval_Status__c</columns>
-        <columns>Approver__c</columns>
-        <columns>B_P_Charge_Number__c</columns>
-        <columns>Marketing_Proposal_Lead_email__c</columns>
-        <columns>CREATED_DATE</columns>
-        <columns>CREATEDBY_USER</columns>
-        <columns>Primary_Department_from_Opportunity__c</columns>
-        <columns>Other_Depts_from_OPP__c</columns>
-        <columns>Account__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Decision_Date__c</field>
-            <operation>equals</operation>
-            <value>LAST_N_DAYS:30</value>
-        </filters>
-        <filters>
-            <field>Approver__c</field>
-            <operation>equals</operation>
-            <value>randall beck</value>
-        </filters>
-        <filters>
-            <field>Approver__c</field>
-            <operation>equals</operation>
-            <value>scott russell</value>
-        </filters>
-        <filters>
-            <field>Approver__c</field>
-            <operation>equals</operation>
-            <value>maher salah</value>
-        </filters>
-        <filters>
-            <field>Approver__c</field>
-            <operation>equals</operation>
-            <value>tim volz</value>
-        </filters>
-        <filters>
-            <field>Approver__c</field>
-            <operation>equals</operation>
-            <value>william neese</value>
-        </filters>
-        <label>Recent SW Area GNG Decisions</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
         <fullName>Recent_US_BP_Go_Decisions</fullName>
         <columns>NAME</columns>
         <columns>Opportunity__c</columns>
@@ -5285,19 +4673,26 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <columns>Other_Depts_from_OPP__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Bid_Manager__c</field>
+            <field>Primary_Department_from_Opportunity__c</field>
             <operation>contains</operation>
-            <value>Revell</value>
+            <value>B+P</value>
+        </filters>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>contains</operation>
+            <value>- 41.</value>
         </filters>
         <filters>
             <field>Decision__c</field>
             <operation>equals</operation>
+            <value>Go</value>
         </filters>
         <filters>
             <field>Decision_Date__c</field>
             <operation>equals</operation>
+            <value>LAST_N_DAYS:7</value>
         </filters>
-        <label>Go NoGo by Capture Manager</label>
+        <label>Recent US B+P Go Decisions</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -5364,6 +4759,33 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
             <value>LAST_N_DAYS:42</value>
         </filters>
         <label>Recent US TRA Go Decisions</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Royston_GNGs_Approvals</fullName>
+        <booleanFilter>1 AND 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Approval_Status__c</columns>
+        <columns>Decision__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Approver__c</columns>
+        <columns>Opportunity_Lead_Region__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Approver__c</field>
+            <operation>contains</operation>
+            <value>royston</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>LAST_N_DAYS:30</value>
+        </filters>
+        <label>Royston-GNGs Approvals</label>
         <language>en_US</language>
     </listViews>
     <nameField>
@@ -7197,1352 +6619,6 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
             </values>
         </picklistValues>
     </recordTypes>
-    <recordTypes>
-        <fullName>View_Only</fullName>
-        <active>true</active>
-        <label>View Only</label>
-        <picklistValues>
-            <picklist>AECOM_Delivery_Method__c</picklist>
-            <values>
-                <fullName>AECOM Capital Finance</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Construction %28at risk%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Construction Management</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Consulting %28Technical Services%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Operations and Maintentance</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tender Services</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>AECOM_Project_Type__c</picklist>
-            <values>
-                <fullName>Alliance</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Architecture</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Capital Project</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Construction Management</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Consulting</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Design Construct</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Design and Build Project</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Enviro Services %26 Planning</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Indirect Project</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Operations and Maintenance</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Outsourcing Project</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Program Management</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Surveying</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Unassigned</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>AECOM_Work_primary__c</picklist>
-            <values>
-                <fullName>Aviation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Building Repositioning</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Civic Plans</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Cogeneration</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Commercial %26 Mixed Use</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Commercial Interiors</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Compliance</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Defense</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Disaster Recovery</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Education</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Energy Efficiency</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Freight Rail</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Gas Utilities</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Healthcare</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Highway %26 Bridge</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Hydropower</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Impact Assmt %26 Permitting</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Industrial %26 Manufacturing</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Justice</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Leisure</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Management Support Services</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Mining %26 Metals</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Office %E2%80%90 Core %26 Shell</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Port %26 Marine</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Rail %26 Transit Systems</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Remediation</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Residential</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Specialty %26 Emerging Tech</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Sports</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Technology %26 Data Centers</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Thermal %26 Geothermal Gen</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Transit</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Transmission %26 Distribution</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Transp Planning %26 Advisory</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tunnels</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Wastewater Systems</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Water Resources</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Water Systems</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Wind %26 Solar</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Approval_Status__c</picklist>
-            <values>
-                <fullName>Approved</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Not Submitted</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Rejected</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted for Approval - Pending</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>BD_Accreditation__c</picklist>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PM3</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SPM1</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SPM2</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SPM3</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>BM_Accreditation__c</picklist>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PM1</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PM2</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PM3</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SPM1</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SPM2</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SPM3</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Decision__c</picklist>
-            <values>
-                <fullName>GNG FastPass</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Go</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Go Pending</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>No-Go</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pending</fullName>
-                <default>true</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>KAM_Client__c</picklist>
-            <values>
-                <fullName>No</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Yes</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>MPQ10Ana__c</picklist>
-            <values>
-                <fullName>Good</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Neutral</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Poor</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>MPQ11Ana__c</picklist>
-            <values>
-                <fullName>Good</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Neutral</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Poor</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>MPQ12Ana__c</picklist>
-            <values>
-                <fullName>Good</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Neutral</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Poor</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>MPQ1Ana__c</picklist>
-            <values>
-                <fullName>Good</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Neutral</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Poor</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>MPQ2Ana__c</picklist>
-            <values>
-                <fullName>Good</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Neutral</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Poor</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>MPQ3Ana__c</picklist>
-            <values>
-                <fullName>Good</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Neutral</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Poor</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>MPQ4Ana__c</picklist>
-            <values>
-                <fullName>Good</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Neutral</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Poor</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>MPQ5Ana__c</picklist>
-            <values>
-                <fullName>Good</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Neutral</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Poor</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>MPQ6Ana__c</picklist>
-            <values>
-                <fullName>Good</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Neutral</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Poor</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>MPQ7Ana__c</picklist>
-            <values>
-                <fullName>Good</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Neutral</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Poor</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>MPQ8Ana__c</picklist>
-            <values>
-                <fullName>Good</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Neutral</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Poor</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>MPQ9Ana__c</picklist>
-            <values>
-                <fullName>Good</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Neutral</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Poor</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Market_Position_Q10__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Market_Position_Q1__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Market_Position_Q2__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Market_Position_Q3__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Market_Position_Q4__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Market_Position_Q5__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Market_Position_Q6__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Market_Position_Q7__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Market_Position_Q8__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Market_Position_Q9__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Open_a_discrete_B_P_Number__c</picklist>
-            <values>
-                <fullName>No</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Yes</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>PD_Accreditation__c</picklist>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PM3</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SPM1</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SPM2</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SPM3</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>PM_Accreditation__c</picklist>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PM1</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PM2</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PM3</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SPM1</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SPM2</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SPM3</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Project_Risk_Level_Submitter__c</picklist>
-            <values>
-                <fullName>High</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Low</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medium</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Decision__c</picklist>
-            <values>
-                <fullName>Go</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>No-Go</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q10__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q11__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q12__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q13__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q14__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q1__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q2__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q3a__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q3b__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q3c__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q3d__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q4__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q5__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q6__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q7__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q8__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Prop_Rev_Q9__c</picklist>
-            <values>
-                <fullName>False</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>True</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RAQ10L__c</picklist>
-            <values>
-                <fullName>High</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Low</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medium</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RAQ1L__c</picklist>
-            <values>
-                <fullName>High</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Low</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medium</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RAQ3L__c</picklist>
-            <values>
-                <fullName>High</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Low</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medium</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RAQ4L__c</picklist>
-            <values>
-                <fullName>High</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Low</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medium</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RAQ5L__c</picklist>
-            <values>
-                <fullName>High</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Low</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medium</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RAQ6L__c</picklist>
-            <values>
-                <fullName>High</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Low</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medium</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RAQ7L__c</picklist>
-            <values>
-                <fullName>High</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Low</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medium</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RAQ8L__c</picklist>
-            <values>
-                <fullName>High</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Low</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medium</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RAQ9L__c</picklist>
-            <values>
-                <fullName>High</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Low</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medium</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RAnQ2L__c</picklist>
-            <values>
-                <fullName>High</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Low</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medium</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Risk_Analysis_Q10__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Risk_Analysis_Q1__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Risk_Analysis_Q2__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Risk_Analysis_Q3__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Risk_Analysis_Q4__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Risk_Analysis_Q5__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Risk_Analysis_Q6__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Risk_Analysis_Q7__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Risk_Analysis_Q8__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Risk_Analysis_Q9__c</picklist>
-            <values>
-                <fullName>FALSE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>N%2FA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRUE</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Risk_Factors__c</picklist>
-            <values>
-                <fullName>Expert witness or litigation support</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>JV involvement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>No Risk Factors</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Program Management services</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>RFP development services included</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Staff augmentation or embedded workforce</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Submitter_Go_No_Go_Recommendation__c</picklist>
-            <values>
-                <fullName>Go</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Neutral</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>No-Go</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Subs__c</picklist>
-            <values>
-                <fullName>No</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Yes %28Not on Subs Register%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Yes %28On Subs Register%29</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-    </recordTypes>
     <searchLayouts>
         <customTabListAdditionalFields>Opportunity__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Decision__c</customTabListAdditionalFields>
@@ -8559,16 +6635,13 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <fullName>Approver_Required_for_Go_Decision</fullName>
         <active>true</active>
         <description>Approver must be selected if decision is Go or FastPass</description>
-        <errorConditionFormula>( 
-ISBLANK ( Approver__c ) 
+        <errorConditionFormula>(
+ISBLANK (  Approver__c  ) 
 &amp;&amp; 
-ISBLANK ( ANZ_Approver__c ) 
-) 
-&amp;&amp; 
-( ISPICKVAL(Decision__c , &quot;Go&quot; ) || ISPICKVAL (Decision__c , &quot;GNG FastPass&quot;)|| ISPICKVAL (Decision__c , &quot;Go Pending&quot;)) 
-
-&amp;&amp; NOT(CONTAINS( $RecordType.DeveloperName , &quot;Europe&quot;))
-&amp;&amp;  DateTIMEValue(CreatedDate) &gt; DATETimeValue(&quot;2013-10-01 0:00:00&quot;)</errorConditionFormula>
+ISBLANK (  ANZ_Approver__c )  
+)
+&amp;&amp;
+( ISPICKVAL(Decision__c , &quot;Go&quot; ) || ISPICKVAL (Decision__c , &quot;GNG FastPass&quot;)|| ISPICKVAL (Decision__c , &quot;Go Pending&quot;))</errorConditionFormula>
         <errorDisplayField>Approver__c</errorDisplayField>
         <errorMessage>For all Go decisions, an Approver must be selected.</errorMessage>
     </validationRules>
@@ -8578,8 +6651,7 @@ ISBLANK ( ANZ_Approver__c )
         <description>To save a Go decision, requires user to select at least one value in the Potential Conflicts of Interest field</description>
         <errorConditionFormula>AND ( ISBLANK ( Risk_Factors__c ), 
  ( ISPICKVAL(Decision__c , &quot;Go&quot; )),
-NOT(CONTAINS( $RecordType.DeveloperName , &quot;ANZ&quot;) || CONTAINS( $RecordType.DeveloperName , &quot;Europe&quot;))
-&amp;&amp; DateTIMEValue(CreatedDate) &gt; DATETimeValue(&quot;2013-10-01 0:00:00&quot;)
+NOT(CONTAINS( $RecordType.DeveloperName , &quot;ANZ&quot;))
 )</errorConditionFormula>
         <errorMessage>Select at least one value in the Potential Conflict of Interest Issues field in the Assessments section. If there are none, select &quot;None Identified.&quot;</errorMessage>
     </validationRules>
@@ -8587,12 +6659,11 @@ NOT(CONTAINS( $RecordType.DeveloperName , &quot;ANZ&quot;) || CONTAINS( $RecordT
         <fullName>Cost_Required_for_Go_decision</fullName>
         <active>true</active>
         <description>To save a Go decision, user must enter labor and ODCs</description>
-        <errorConditionFormula>DateTIMEValue(CreatedDate) &gt; DATETimeValue(&quot;2013-10-01 0:00:00&quot;)&amp;&amp;
-(( Pursuit_Cost_Total__c &lt; 1)
+        <errorConditionFormula>(( Pursuit_Cost_Total__c &lt; 1) 
+&amp;&amp; 
+( (Program_Ceiling__c  &gt;= 1000000) || ( Project_TO_Contract_Rev__c &gt;= 1000000) || ( Pursuit_Cost_Total__c &gt;= 50000))
 &amp;&amp;
-( (Program_Ceiling__c &gt;= 1000000) || ( Project_TO_Contract_Rev__c &gt;= 1000000) || ( Pursuit_Cost_Total__c &gt;= 50000))
-&amp;&amp;
-( ISPICKVAL(Decision__c , &quot;Go&quot; ) || ISPICKVAL (Decision__c , &quot;GNG FastPass&quot;))) &amp;&amp; (NOT(CONTAINS( $RecordType.DeveloperName , &quot;ANZ&quot;)) &amp;&amp; (NOT(CONTAINS( $RecordType.DeveloperName , &quot;Europe&quot;))))</errorConditionFormula>
+( ISPICKVAL(Decision__c , &quot;Go&quot; ) || ISPICKVAL (Decision__c , &quot;GNG FastPass&quot;))) &amp;&amp; (NOT(CONTAINS( $RecordType.DeveloperName , &quot;ANZ&quot;)))</errorConditionFormula>
         <errorMessage>For all Go decisions, Pursuit Labor Cost and Pursuit ODCs must be entered.</errorMessage>
     </validationRules>
     <validationRules>
@@ -8621,8 +6692,7 @@ OR (
 		ISBLANK ( Contract_Assessment_Notes__c ) 
 	), 
 ISPICKVAL(Decision__c , &quot;Go&quot; ),
-NOT(CONTAINS( $RecordType.DeveloperName , &quot;ANZ&quot;) || CONTAINS( $RecordType.DeveloperName , &quot;Europe&quot;))
-&amp;&amp; DateTIMEValue(CreatedDate) &gt; DATETimeValue(&quot;2013-10-01 0:00:00&quot;))</errorConditionFormula>
+NOT(CONTAINS( $RecordType.DeveloperName , &quot;ANZ&quot;)))</errorConditionFormula>
         <errorMessage>Please document each of the assessments in the Assessments section.</errorMessage>
     </validationRules>
     <validationRules>
@@ -8677,7 +6747,7 @@ ISBLANK ( Project_Sponsor__c  )
         <fullName>Specify_if_Discrete_BP_Number_is_requir</fullName>
         <active>true</active>
         <description>Requires user to select Yes or No in the &quot;Open a discrete B&amp;P Number?&quot; field if the value in the Decision field is &quot;Go&quot; or &quot;No-Go&quot; or FastPass.</description>
-        <errorConditionFormula>DateTIMEValue(CreatedDate) &gt; DATETimeValue(&quot;2013-10-01 0:00:00&quot;)&amp;&amp; ISPICKVAL ( Open_a_discrete_B_P_Number__c , &quot;&quot; )&amp;&amp; 
+        <errorConditionFormula>ISPICKVAL ( Open_a_discrete_B_P_Number__c , &quot;&quot; )&amp;&amp; 
 (ISPICKVAL ( Decision__c , &quot;Go&quot; ) || 
 ISPICKVAL ( Decision__c, &quot;No-Go&quot;) || 
 ISPICKVAL ( Decision__c, &quot;GNG FastPass&quot;) 

@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>CalculatedIncentive__c</fullName>
+        <description>&quot;After hitting save and recalc, display final payment pool X target % for each participant&quot;- confirm if this is EnrollmentPlan__r.EstimatedIncentivePoolEAC__c</description>
+        <externalId>false</externalId>
+        <formula>TargetIncentivePoolAllocated__c *  EnrollmentPlan__r.FinalIncentivePoolAdjusted__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Calculated Incentive</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>EAStatusUpdate__c</fullName>
+        <externalId>false</externalId>
+        <label>EAStatusUpdate</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Unenrolled</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>On Hold</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>EAStatus__c</fullName>
+        <description>Associated Enrollment Application Status</description>
+        <externalId>false</externalId>
+        <formula>TEXT(EnrollmentPlan__r.EnrollmentStatus__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>EA Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EmployeeIDNumberOld__c</fullName>
+        <externalId>false</externalId>
+        <label>Employee ID NumberOld</label>
+        <length>20</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EmployeeID__c</fullName>
+        <externalId>false</externalId>
+        <formula>EmployeeName__r.Person_ID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The &quot;Person ID&quot; on the related Employee Contact</inlineHelpText>
+        <label>Employee ID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EmployeeName__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Employee Name</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Contact.RecordType.Name</field>
+                <operation>equals</operation>
+                <value>PSA Resource, AECOM Employee</value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Enrollment Participants</relationshipLabel>
+        <relationshipName>Enrollment_Participants</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>EmployeeStatusAlert__c</fullName>
+        <description>A hazard icon will display in the &quot;Attn:&quot; column when the participant section is incomplete.  Each application must contain at least one enrolled participant, with all all information fields entered.  The total target % allocated to all participants cannot exceed 60% for the purposes of enrollment.  At the time of payment, 100% of the incentive pool can be allocated.</description>
+        <externalId>false</externalId>
+        <formula>/*If(OR(EmployeeStatus__c =&quot;Employee - Active&quot;,EmployeeStatus__c =&quot;Active&quot;, EmployeeStatus__c =&quot;A&quot; ), null,IMAGE(&quot;/resource/1429552689000/ExclamationMark&quot;, &quot;Alert&quot;, 25, 25))*/
+
+IF(
+
+AND (
+     OR(
+        EmployeeStatus__c =&quot;Employee - Active&quot;,
+        EmployeeStatus__c =&quot;Active&quot;, 
+        EmployeeStatus__c =&quot;A&quot;   
+        ),
+       EnrollmentPlan__r.TotalAllocationParticipants__c &lt;= 0.6
+        ) ,             
+null,IMAGE(&quot;/resource/1429552689000/ExclamationMark&quot;, &quot;Alert&quot;, 25, 25))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>A hazard icon will display in the &quot;Attn:&quot; column when the participant section is incomplete.  Each application must contain at least one enrolled participant, with all all information fields entered.  The total target % allocated to all participants canno</inlineHelpText>
+        <label>Attn.</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EmployeeStatusFlow__c</fullName>
+        <externalId>false</externalId>
+        <label>EmployeeStatusFlow</label>
+        <length>30</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EmployeeStatusNo__c</fullName>
+        <description>Used for employee status rollup and alert.</description>
+        <externalId>false</externalId>
+        <formula>If( EmployeeStatusAlert__c =&quot;&quot;, 0,1)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Used for employee status rollup and alert.</inlineHelpText>
+        <label>EmployeeStatusNo</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EmployeeStatus__c</fullName>
+        <externalId>false</externalId>
+        <formula>If(OR(TEXT(EmployeeName__r.Status__c)=&quot;Employee - Active&quot;,TEXT(EmployeeName__r.Status__c)=&quot;Active&quot;, TEXT(EmployeeName__r.Status__c)=&quot;A&quot;), &quot;Active&quot;,
+&quot;Inactive&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Employee Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EndDateonProject__c</fullName>
+        <externalId>false</externalId>
+        <label>End Date on Project</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>EnrollmentPlan__c</fullName>
+        <externalId>false</externalId>
+        <label>Enrollment Plan</label>
+        <referenceTo>EnrollmentPlan__c</referenceTo>
+        <relationshipLabel>Enrollment Participants</relationshipLabel>
+        <relationshipName>EnrollmentParticipants</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>EstimatedPayout__c</fullName>
+        <description>TargetIncentivePoolAllocated__c *  
+CASE( EnrollmentPlan__r.IncentivePlan__r.ContractType__c ,
+&quot;Fixed Plan&quot;, EnrollmentPlan__r.MaxIncentivePool__c,
+&quot;Time &amp; Materials&quot;,EnrollmentPlan__r.EstimatedIncentivePoolEAC__c
+,0
+)</description>
+        <externalId>false</externalId>
+        <formula>TargetIncentivePoolAllocated__c * EnrollmentPlan__r.MaxIncentivePool__c</formula>
+        <label>Estimated Payout</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>HRJobTitle__c</fullName>
+        <externalId>false</externalId>
+        <formula>EmployeeName__r.Title 
+
+/*HR Job Title is stored on the SalesForce User record so the assumption is that the PSA Contact Record will have this relationship established on the Contact Record*/</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>HR Job Title</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>IncentiveProjectName__c</fullName>
+        <externalId>false</externalId>
+        <formula>EnrollmentPlan__r.IncentiveProject__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OfficeAddress__c</fullName>
+        <externalId>false</externalId>
+        <formula>EmployeeName__r.Other_Street__c 
+
+/*Assumption is that &quot;Other Street&quot; is referred to &quot;Street&quot; on Chris&apos;s excel mapping document*/</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Office Address</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ParticipantCategory__c</fullName>
+        <externalId>false</externalId>
+        <label>Participant Category</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Project Director</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Project Manager</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Project Controls</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Support</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Technical Leader</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>PaymentAdjReason__c</fullName>
+        <description>Similar to MA Exception Field.  Force Comment if a payment adjustment is made.  If possible, capture employee number for participant in the comment.</description>
+        <externalId>false</externalId>
+        <label>Payment Adj Reason</label>
+        <length>32768</length>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>PaymentAdjustments__c</fullName>
+        <description>Insert column for manual user entry.  Validation rules, whole numbers only</description>
+        <externalId>false</externalId>
+        <label>Payment Adjustments</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PaymentAmount__c</fullName>
+        <externalId>false</externalId>
+        <label>Payment Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PaymentDate__c</fullName>
+        <description>Manual entry field for Admin only.  Used to log date of payment to employee</description>
+        <externalId>false</externalId>
+        <label>Payment Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ProjectEndDate__c</fullName>
+        <externalId>false</externalId>
+        <formula>EnrollmentPlan__r.ScheduledFinishDate__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project End Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ProjectStartDate__c</fullName>
+        <externalId>false</externalId>
+        <formula>EnrollmentPlan__r.ProjectStartDate__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>RoleTitle__c</fullName>
+        <externalId>false</externalId>
+        <label>Role/Title</label>
+        <length>30</length>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>StartDateonProjectDDMMYY__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF (
+    ISBLANK( StartDateonProject__c ), 
+    &quot;NoDate&quot;, 
+            (RIGHT(TEXT(StartDateonProject__c),2)&amp;                               
+             CASE(
+             (Month(StartDateonProject__c)),
+              01, &quot;Jan&quot;,
+              02, &quot;Feb&quot;,
+              03, &quot;Mar&quot;,
+              04, &quot;Apr&quot;,
+              05, &quot;May&quot;,
+              06, &quot;Jun&quot;,
+              07, &quot;Jul&quot;,
+              08, &quot;Aug&quot;,
+              09, &quot;Sep&quot;,
+              10, &quot;Oct&quot;,
+              11, &quot;Nov&quot;,
+              12, &quot;Dec&quot;, &quot;Oops&quot;
+              ) &amp;
+              MID(TEXT(StartDateonProject__c),3,2)
+            )
+     )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Start Date on Project</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>StartDateonProject__c</fullName>
+        <externalId>false</externalId>
+        <label>Start Date on Project</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>StatusFlag__c</fullName>
+        <externalId>false</externalId>
+        <label>StatusFlag</label>
+        <precision>1</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TargetIncentivePoolAllocated__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Target % Incentive Pool Allocated</inlineHelpText>
+        <label>Target %</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Unallocated__c</fullName>
+        <description>Final Payment</description>
+        <externalId>false</externalId>
+        <formula>EnrollmentPlan__r.FinalIncentivePoolAdjusted__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Unallocated</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <label>Enrollment Participant</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>OBJECT_ID</columns>
+        <columns>EmployeeName__c</columns>
+        <columns>EAStatusUpdate__c</columns>
+        <columns>EnrollmentPlan__c</columns>
+        <columns>EAStatus__c</columns>
+        <columns>EmployeeStatusFlow__c</columns>
+        <columns>EmployeeStatus__c</columns>
+        <columns>RECORDTYPE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>PN-{0000}</displayFormat>
+        <label>Participant Number</label>
+        <trackHistory>true</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Enrollment Participants</pluralLabel>
+    <recordTypeTrackHistory>false</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>Edit_Participant</fullName>
+        <active>true</active>
+        <label>Edit Participant</label>
+        <picklistValues>
+            <picklist>EAStatusUpdate__c</picklist>
+            <values>
+                <fullName>On Hold</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unenrolled</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ParticipantCategory__c</picklist>
+            <values>
+                <fullName>Project Controls</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Director</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Support</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Technical Leader</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Read_Only_Participant</fullName>
+        <active>true</active>
+        <label>Read Only Participant</label>
+        <picklistValues>
+            <picklist>EAStatusUpdate__c</picklist>
+            <values>
+                <fullName>On Hold</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unenrolled</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ParticipantCategory__c</picklist>
+            <values>
+                <fullName>Project Controls</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Director</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Manager</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Support</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Technical Leader</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>EmployeeName__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>EmployeeID__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>EmployeeStatus__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>RoleTitle__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>StartDateonProject__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>EndDateonProject__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>EmployeeName__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>EmployeeID__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>EmployeeStatus__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>RoleTitle__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>StartDateonProject__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>EndDateonProject__c</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>EmployeeName__c</searchFilterFields>
+        <searchFilterFields>EmployeeID__c</searchFilterFields>
+        <searchFilterFields>EmployeeStatus__c</searchFilterFields>
+        <searchFilterFields>RoleTitle__c</searchFilterFields>
+        <searchFilterFields>StartDateonProject__c</searchFilterFields>
+        <searchFilterFields>EndDateonProject__c</searchFilterFields>
+        <searchResultsAdditionalFields>EmployeeName__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>EmployeeID__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>EmployeeStatus__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>RoleTitle__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>StartDateonProject__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>EndDateonProject__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>Allocation_Percent_Compare_to_Enrollment</fullName>
+        <active>true</active>
+        <description>The participant&apos;s allocation percent must be equal to or greater than the Incentive Plan</description>
+        <errorConditionFormula>TargetIncentivePoolAllocated__c   
+&lt;
+EnrollmentPlan__r.IncentivePlan__r.MinAllocationPer__c</errorConditionFormula>
+        <errorMessage>The Participant Allocation must be equal to or greater than the Enrollment Application</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>End_Date_on_Project_Compare_to_Project</fullName>
+        <active>true</active>
+        <description>End Date on Project cannot be before Project Start Date or after Project End Date</description>
+        <errorConditionFormula>OR
+(
+ EndDateonProject__c  &lt; ProjectStartDate__c,
+ EndDateonProject__c  &gt; ProjectEndDate__c 
+)</errorConditionFormula>
+        <errorDisplayField>EndDateonProject__c</errorDisplayField>
+        <errorMessage>End Date on Project cannot be before Project Start Date or after Project End Date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Minimum_Participant_Payout_Amount</fullName>
+        <active>false</active>
+        <description>The participant&apos;s estimated payout is below the incentive plan template guideline for the minimum amount</description>
+        <errorConditionFormula>EstimatedPayout__c  &lt;  EnrollmentPlan__r.IncentivePlan__r.MinAllocationAmount__c</errorConditionFormula>
+        <errorDisplayField>TargetIncentivePoolAllocated__c</errorDisplayField>
+        <errorMessage>The participant&apos;s estimated payout is below the incentive plan template guideline for the minimum amount</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Pmt_Adj_Reason_Required</fullName>
+        <active>true</active>
+        <description>If there is a payment adjustment entered, there must be a payment adjustment reason supplied.</description>
+        <errorConditionFormula>AND ( 
+      PaymentAdjustments__c &lt;&gt;0,
+      ISBLANK(PaymentAdjReason__c)
+     )</errorConditionFormula>
+        <errorDisplayField>PaymentAdjReason__c</errorDisplayField>
+        <errorMessage>If there is a payment adjustment entered, there must be a payment adjustment reason supplied.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Start_Date_on_Project_Compare_to_Project</fullName>
+        <active>true</active>
+        <description>Start Date on Project cannot be before Project Start Date or after Project End Date</description>
+        <errorConditionFormula>OR
+(
+StartDateonProject__c  &lt; ProjectStartDate__c,
+ StartDateonProject__c &gt; ProjectEndDate__c 
+)</errorConditionFormula>
+        <errorDisplayField>StartDateonProject__c</errorDisplayField>
+        <errorMessage>Start Date on Project cannot be before Project Start Date or after Project End Date</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Target_Percent_Less_Than_or_Equal_Zero</fullName>
+        <active>false</active>
+        <description>numeric and ≠0.  Positive whole numbers only.</description>
+        <errorConditionFormula>TargetIncentivePoolAllocated__c &lt;= 0.0</errorConditionFormula>
+        <errorDisplayField>TargetIncentivePoolAllocated__c</errorDisplayField>
+        <errorMessage>The Target Percentage can not be less than or equal to zero</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Target_percent_cannot_exceed_100</fullName>
+        <active>true</active>
+        <description>The target percentage cannot exceed 100%</description>
+        <errorConditionFormula>TargetIncentivePoolAllocated__c &gt;1.00</errorConditionFormula>
+        <errorDisplayField>TargetIncentivePoolAllocated__c</errorDisplayField>
+        <errorMessage>The target percentage cannot exceed 100%</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>Add_Enrollment_Participants</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Add/Edit Enrollment Participants</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/INC_EnrollmentParticipantEntry?id={!EnrollmentPlan__c.Id}</url>
+    </webLinks>
+</CustomObject>
