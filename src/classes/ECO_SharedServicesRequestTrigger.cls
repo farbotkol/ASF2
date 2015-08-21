@@ -325,6 +325,8 @@ public class ECO_SharedServicesRequestTrigger {
 				oAccount.SmallDisadvnBusiness__c = oSharedServicesRequest.SocioSmallDisadvantagedBusinessSDB__c;
 				oAccount.MK_Denial__c = oSharedServicesRequest.MKDenialStatus__c;
 				oAccount.HubZone__c = oSharedServicesRequest.SocioHUBZone__c;
+				oAccount.Client_Group__c = 'Industrial/Commercial';
+				oAccount.Client_Subgroup__c = 'Other Industrial/Commercial';
 
 				oAccount.Type__c = 'Vendor';
 				oAccount.Type = 'Vendor';
@@ -352,8 +354,11 @@ public class ECO_SharedServicesRequestTrigger {
 				oAccount.SmallDisadvnBusiness__c = oSharedServicesRequest.SocioSmallDisadvantagedBusinessSDB__c;
 				oAccount.MK_Denial__c = oSharedServicesRequest.MKDenialStatus__c;
 				oAccount.HubZone__c = oSharedServicesRequest.SocioHUBZone__c;
+				oAccount.Client_Group__c = 'Industrial/Commercial';
+				oAccount.Client_Subgroup__c = 'Other Industrial/Commercial';	
 				oAccount.Type__c = 'Subcontractor';
 				oAccount.Type = 'Subcontractor';
+			
 
 			}
 
@@ -370,6 +375,7 @@ public class ECO_SharedServicesRequestTrigger {
 					oAccount.street__c += ', ' + oSharedServicesRequest.Address4StreetPOBox__c;
 				}	
 
+				oAccount.phone = oSharedServicesRequest.OfficePhone__c;
 				oAccount.City__c = oSharedServicesRequest.City__c;
 				oAccount.State_Province_Emerate__c = oSharedServicesRequest.StateProvinceEmirate__c;
 				oAccount.Zip__c = oSharedServicesRequest.ZipPostalCode__c;
@@ -389,6 +395,7 @@ public class ECO_SharedServicesRequestTrigger {
 					oAccount.street__c += ', ' + oSharedServicesRequest.BillingAddress4StreetPOBox__c;
 				}
 
+				oAccount.phone = oSharedServicesRequest.BillingOfficePhone__c;
 				oAccount.City__c = oSharedServicesRequest.BillingAddressCity__c;
 				oAccount.State_Province_Emerate__c = oSharedServicesRequest.BillingStateProvinceEmirate__c;
 				oAccount.Zip__c = oSharedServicesRequest.BillingZipPostalCode__c;				
@@ -401,6 +408,7 @@ public class ECO_SharedServicesRequestTrigger {
 					oAccount.street__c += ', ' + oSharedServicesRequest.RemitToAddressLine2__c;
 				}
 
+				oAccount.phone = oSharedServicesRequest.RemitToOfficePhone__c;
 				oAccount.City__c = oSharedServicesRequest.RemitToCity__c;
 				oAccount.State_Province_Emerate__c = oSharedServicesRequest.RemitToStateProvinceEmirate__c;
 				oAccount.Zip__c = oSharedServicesRequest.RemitToZipPostalCode__c;
