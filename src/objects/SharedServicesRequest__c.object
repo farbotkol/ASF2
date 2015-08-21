@@ -3801,7 +3801,7 @@
         <fullName>DecisionPointAsia__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
-        <label>Decision Point (Asia)</label>
+        <label>Decision Point</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -3810,7 +3810,7 @@
         <fullName>DesktopCheckAsia__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
-        <label>Desktop Check (Asia)</label>
+        <label>Desktop Check</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -5358,6 +5358,18 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>RecordType__c</fullName>
+        <externalId>false</externalId>
+        <formula>RecordType.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Record Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>ReferenceAccount__c</fullName>
@@ -7201,7 +7213,12 @@
             <operation>equals</operation>
             <value>Processing</value>
         </filters>
-        <label>EXL Processing</label>
+        <filters>
+            <field>Geography__c</field>
+            <operation>equals</operation>
+            <value>EMEA&amp;I</value>
+        </filters>
+        <label>EXL Processing EMEA</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -37911,6 +37928,13 @@
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <validationRules>
+        <fullName>Cannot_Update_Record_in_Processing</fullName>
+        <active>true</active>
+        <errorConditionFormula>ISPICKVAL(Status__c, &apos;Processing&apos;) &amp;&amp;   NOT(ISCHANGED(Status__c) )</errorConditionFormula>
+        <errorDisplayField>Status__c</errorDisplayField>
+        <errorMessage>This record cannot be edited while in Processing</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>EcoContact1RequiredFields</fullName>
         <active>true</active>
         <description>Contact1: First Name, Last Name and Email or Phone are required.</description>
@@ -38091,7 +38115,7 @@ ISBLANK(PrimaryContactFirstName__c))))</errorConditionFormula>
         <protected>false</protected>
         <url>{!REQUIRESCRIPT(&quot;/soap/ajax/34.0/connection.js&quot;)}
 
-if (confirm(&apos;Are you sure you would like to submit to Shared Services?&apos;)) {
+if (confirm(&apos;Are you sure you would like to submit to Global Business Services?&apos;)) {
 
 
 if(&quot;{!SharedServicesRequest__c.Geography__c}&quot; !== &quot;&quot;){
@@ -38122,7 +38146,7 @@ else
 }
 else
     {
-    alert(&quot;Geography is required for Shared Services submission&quot;);
+    alert(&quot;Geography is required for Global Business Services submission&quot;);
     }
 
 

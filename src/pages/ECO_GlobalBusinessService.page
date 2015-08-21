@@ -58,18 +58,19 @@
 
 <apex:form >
 
-<apex:sectionHeader title="New Global Business Services" subtitle="Select Global Business Services Record Type" />
+<apex:sectionHeader title="{!$Label.EcoGBSTitle}" subtitle="{!$Label.EcoGBSSubTitle}" />
 
 <apex:pageBlock >
 	<apex:pageBlockButtons location="top">
-		<apex:commandButton action="{!cancel}" value="Cancel" />
+		<apex:commandButton action="{!cancel}" value="{!$Label.ECOGBSRecordTypeCancel}" />
 	</apex:pageBlockButtons>
 
 
 
 		<div class="customHelpText">
 			<div class="customHelpBody">
-				Before you proceed with requesting a new record please use the search box at the top of the screen to ensure the record you are requesting doesn't already exist.  Duplicate records will be rejected in Oracle and merged or deleted in Salesforce if requested.
+				<!--Before you proceed with requesting a new record please use the search box at the top of the screen to ensure the record you are requesting doesn't already exist.  Duplicate records will be rejected in Oracle and merged or deleted in Salesforce if requested.-->
+				{!$Label.EcoGBSHelpText}
 			</div>
 		</div>
 	<apex:outputPanel >
@@ -77,17 +78,60 @@
 	<apex:inputHidden value="{!selectedRecordType}" id="rtypeid"/>
 	<table class="table" style="width:100%;">
 		<tr>
-			<th>Record Type Name</th>
-			<th>Record Type Description</th>
+			<th>{!$Label.EcoGBSRecordTypeName}</th>
+			<th>{!$Label.EcoGBSRecordTypeDesc}</th>
 			<th></th>
 		</tr>
-		<apex:repeat value="{!GBSRecordTypes}" var="gbsRecordType">
+		<!--<apex:repeat value="{!GBSRecordTypes}" var="gbsRecordType">
 			<tr>	
 				<td><apex:outputField value="{!gbsRecordType.Name}"/></td>
 				<td><apex:outputField value="{!gbsRecordType.Description}"/></td>
-				<!--<td><apex:commandButton value="Select" onclick="recordTypeSelected('{!gbsRecordType.Id}'); return false;"/></td>-->
-				<td><apex:commandButton value="Select" action="{!URLFOR($Action.SharedServicesRequest__c.New, null,[RecordType=gbsRecordType.Id, retURL=$CurrentPage.Parameters.retURL], True)}"/></td>
+				<td><apex:commandButton value="{!$Label.ECOGBSRecordTypeSelect}" action="{!URLFOR($Action.SharedServicesRequest__c.New, null,[RecordType=gbsRecordType.Id, retURL=$CurrentPage.Parameters.retURL], True)}"/></td>
 			</tr>		
+		</apex:repeat>-->
+		<apex:repeat value="{!GBSRecordTypes}" var="gbsRecordType">
+		<apex:outputPanel rendered="{!gbsRecordType.DeveloperName=='AddSite'}">
+		<tr>
+			<td>{!$Label.ECOGBSRecAddSite}</td>
+			<td>{!$Label.ECOGBSRecAddSiteDesc}</td>
+			<td><apex:commandButton value="{!$Label.ECOGBSRecordTypeSelect}" action="{!URLFOR($Action.SharedServicesRequest__c.New, null,[RecordType=gbsRecordType.Id, retURL=$CurrentPage.Parameters.retURL], True)}"/></td>
+		</tr>
+		</apex:outputPanel>
+		<apex:outputPanel rendered="{!gbsRecordType.DeveloperName=='CreateCustomer'}">
+		<tr>
+			<td>{!$Label.ECOGBSRecCreateCustomer}</td>
+			<td>{!$Label.ECOGBSRecCreateCustomerDesc}</td>
+			<td><apex:commandButton value="{!$Label.ECOGBSRecordTypeSelect}" action="{!URLFOR($Action.SharedServicesRequest__c.New, null,[RecordType=gbsRecordType.Id, retURL=$CurrentPage.Parameters.retURL], True)}"/></td>
+		</tr>
+		</apex:outputPanel>
+		<apex:outputPanel rendered="{!gbsRecordType.DeveloperName=='CreateSub'}">
+		<tr>
+			<td>{!$Label.ECOGBSRecCreateSub}</td>
+			<td>{!$Label.ECOGBSRecCreateSubDesc}</td>
+			<td><apex:commandButton value="{!$Label.ECOGBSRecordTypeSelect}" action="{!URLFOR($Action.SharedServicesRequest__c.New, null,[RecordType=gbsRecordType.Id, retURL=$CurrentPage.Parameters.retURL], True)}"/></td>
+		</tr>
+		</apex:outputPanel>
+		<apex:outputPanel rendered="{!gbsRecordType.DeveloperName=='CreateVendor'}">
+		<tr>
+			<td>{!$Label.ECOGBSRecCreateVendor}</td>
+			<td>{!$Label.ECOGBSRecCreateVendorDesc}</td>
+			<td><apex:commandButton value="{!$Label.ECOGBSRecordTypeSelect}" action="{!URLFOR($Action.SharedServicesRequest__c.New, null,[RecordType=gbsRecordType.Id, retURL=$CurrentPage.Parameters.retURL], True)}"/></td>
+		</tr>
+		</apex:outputPanel>
+		<apex:outputPanel rendered="{!gbsRecordType.DeveloperName=='GeneralRequest'}">
+		<tr>
+			<td>{!$Label.ECOGBSRecGeneralRequest}</td>
+			<td>{!$Label.ECOGBSRecGeneralRequestDesc}</td>
+			<td><apex:commandButton value="{!$Label.ECOGBSRecordTypeSelect}" action="{!URLFOR($Action.SharedServicesRequest__c.New, null,[RecordType=gbsRecordType.Id, retURL=$CurrentPage.Parameters.retURL], True)}"/></td>
+		</tr>
+		</apex:outputPanel>
+		<apex:outputPanel rendered="{!gbsRecordType.DeveloperName=='UpdateSite'}">
+		<tr>
+			<td>{!$Label.ECOGBSRecUpdateSite}</td>
+			<td>{!$Label.ECOGBSRecUpdateSiteDesc}</td>
+			<td><apex:commandButton value="{!$Label.ECOGBSRecordTypeSelect}" action="{!URLFOR($Action.SharedServicesRequest__c.New, null,[RecordType=gbsRecordType.Id, retURL=$CurrentPage.Parameters.retURL], True)}"/></td>
+		</tr>
+		</apex:outputPanel>
 		</apex:repeat>
 	</table>
 	
