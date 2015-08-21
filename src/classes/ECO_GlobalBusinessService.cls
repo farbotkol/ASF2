@@ -21,6 +21,6 @@ public with sharing class ECO_GlobalBusinessService {
     
     public list<RecordType> getGBSRecordTypes()
     {
-        return [select Id, Name, Description from RecordType where sObjectType = 'SharedServicesRequest__c'];
+        return [select Id, toLabel(Name), DeveloperName, Description from RecordType where sObjectType = 'SharedServicesRequest__c'];
     }
 }
