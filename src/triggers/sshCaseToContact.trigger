@@ -29,7 +29,7 @@ trigger sshCaseToContact on Case (before insert)
 		Map<String, User> userMap = new Map<String, User>();
 		for (User usr : [select Id, FirstName, LastName, Department, Title, Email, ssh_AECOM_Email__c, LanguageLocaleKey, Shared_Services_Is_Executive__c 
 						from User 
-						where IsActive = true AND ((Email IN :casesByEmail.keySet()) OR (ssh_AECOM_Email__c IN :casesByEmail.keySet()))])
+						where IsActive = true AND ((Email IN :casesByEmail.keySet()) OR (ssh_AECOM_Email__c IN :casesByEmail.keySet())) LIMIT 99999])
 		{
 			if (String.isNotBlank(usr.ssh_AECOM_Email__c))
 				userMap.put(usr.ssh_AECOM_Email__c.toLowerCase(), usr);
