@@ -277,6 +277,13 @@ public class ECO_SharedServicesRequestTrigger {
 		map<string, id> mapNameToID = new map<string, id>();
 		list<recordtype> lstRT = [select id, developername from recordtype where sobjecttype='SharedServicesRequest__c' and (developername='CreateCustomer' OR developername='CreateSub' OR developername='CreateVendor' OR developername='AddSite')];
 
+		list<Country__c> lstCounty = [select id, name from Country__c];
+		map<string, id> mapCountry = new map<string, id>();
+
+		for(Country__c c: lstCounty){
+			mapCountry.put(c.name, c.id);
+		}
+
 		for(recordtype rt: lstRT){
 			mapNameToID.put(rt.developername, rt.id);
 		}
@@ -380,6 +387,10 @@ public class ECO_SharedServicesRequestTrigger {
 				oAccount.State_Province_Emerate__c = oSharedServicesRequest.StateProvinceEmirate__c;
 				oAccount.Zip__c = oSharedServicesRequest.ZipPostalCode__c;
 
+				if(mapCountry.containskey(oSharedServicesRequest.Country__c)){
+					oAccount.CountryLookup__c = mapCountry.get(oSharedServicesRequest.Country__c);
+				}
+
 			} else if (oSharedServicesRequest.BillingAddress1isPrimary__c) {
 
 
@@ -398,7 +409,10 @@ public class ECO_SharedServicesRequestTrigger {
 				oAccount.phone = oSharedServicesRequest.BillingOfficePhone__c;
 				oAccount.City__c = oSharedServicesRequest.BillingAddressCity__c;
 				oAccount.State_Province_Emerate__c = oSharedServicesRequest.BillingStateProvinceEmirate__c;
-				oAccount.Zip__c = oSharedServicesRequest.BillingZipPostalCode__c;				
+				oAccount.Zip__c = oSharedServicesRequest.BillingZipPostalCode__c;		
+				if(mapCountry.containskey(oSharedServicesRequest.BillingAddressCountry__c)){
+					oAccount.CountryLookup__c = mapCountry.get(oSharedServicesRequest.BillingAddressCountry__c);
+				}		
 
 			} else if (oSharedServicesRequest.RemitIsPrimaryAddress__c) {
 
@@ -412,6 +426,11 @@ public class ECO_SharedServicesRequestTrigger {
 				oAccount.City__c = oSharedServicesRequest.RemitToCity__c;
 				oAccount.State_Province_Emerate__c = oSharedServicesRequest.RemitToStateProvinceEmirate__c;
 				oAccount.Zip__c = oSharedServicesRequest.RemitToZipPostalCode__c;
+
+				if(mapCountry.containskey(oSharedServicesRequest.RemitToCountry__c)){
+					oAccount.CountryLookup__c = mapCountry.get(oSharedServicesRequest.RemitToCountry__c);
+				}		
+
 
 			}
 		}else{
