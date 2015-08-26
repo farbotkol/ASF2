@@ -54,6 +54,19 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
+        <fullName>AppliedBillRate__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( ISPICKVAL(MarginType__c , &apos;Fixed&apos;),  OverrideBillRate__c , 
+IF( ISPICKVAL(MarginType__c , &apos;Amount&apos;),  OverrideBillRate__c ,  OverrideUplift__c *  CostRate__c))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Applied Bill Rate</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>AppliedResourceAlias__c</fullName>
         <externalId>false</externalId>
         <formula>BLANKVALUE( OriginalResourceAlias__c ,  CASE( TEXT(ResourceType__c) , &apos;Labor/Person&apos;, &apos;People&apos;, &apos;Subcontractor&apos;, &apos;Subs1&apos;, &apos;ODC/FEE&apos;, &apos;Financial Elements&apos;, &apos;Contingency&apos;, &apos;Contingency&apos;, &apos;ERROR&apos;) )</formula>
@@ -89,7 +102,7 @@
     <fields>
         <fullName>ColumnHeader__c</fullName>
         <externalId>false</externalId>
-        <formula>IF(ISBLANK(
+        <formula>BLANKVALUE(IF(ISBLANK(
    IF(ISBLANK( ProjectTeamMember__c )
    ,
    ResourceName__c
@@ -106,8 +119,7 @@ IF(ISBLANK( ProjectTeamMember__c )
    ,
    ProjectTeamMember__r.Contact__r.FirstName + &apos; &apos; + ProjectTeamMember__r.Contact__r.LastName
    )
-)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+), &apos;Generic Resource&apos;)</formula>
         <label>Column Header</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -385,6 +397,46 @@ IF(  ISPICKVAL( ResourceType__c , &apos;ODC/FEE&apos;) , 3
         <externalId>false</externalId>
         <label>Total Cost</label>
         <summarizedField>BudgetAssignment__c.FullyBurdenedCost__c</summarizedField>
+        <summaryForeignKey>BudgetAssignment__c.BudgetResource__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TotalFringe__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Fringe</label>
+        <summarizedField>BudgetAssignment__c.TotalFringe__c</summarizedField>
+        <summaryForeignKey>BudgetAssignment__c.BudgetResource__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TotalHours__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Hours</label>
+        <summarizedField>BudgetAssignment__c.Quantity__c</summarizedField>
+        <summaryForeignKey>BudgetAssignment__c.BudgetResource__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TotalOverhead__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Overhead</label>
+        <summarizedField>BudgetAssignment__c.TotalOverhead__c</summarizedField>
+        <summaryForeignKey>BudgetAssignment__c.BudgetResource__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TotalRawCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Raw Cost</label>
+        <summarizedField>BudgetAssignment__c.TotalRawCost__c</summarizedField>
         <summaryForeignKey>BudgetAssignment__c.BudgetResource__c</summaryForeignKey>
         <summaryOperation>sum</summaryOperation>
         <trackTrending>false</trackTrending>
