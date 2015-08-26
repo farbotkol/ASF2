@@ -59,7 +59,7 @@
     <fieldUpdates>
         <fullName>Update_Status_to_Submitted_for_Approved</fullName>
         <field>Status__c</field>
-        <literalValue>Submitted for Approved</literalValue>
+        <literalValue>Submitted for Approval</literalValue>
         <name>Update Status to Submitted for Approved</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>

@@ -139,6 +139,66 @@
         <unique>true</unique>
     </fields>
     <fields>
+        <fullName>GMNSR__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(NetServicesRevenue__c = 0, 0,GrossMargin__c / NetServicesRevenue__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>GM/NSR</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>GrossMargin__c</fullName>
+        <externalId>false</externalId>
+        <formula>TotalRevenue__c - TotalOverhead__c -  TotalFeeAmount__c -  TotalSubAmount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Gross Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>NMNSR__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(NetServicesRevenue__c = 0, 0, NetMargin__c / NetServicesRevenue__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NM/NSR</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>NetMargin__c</fullName>
+        <externalId>false</externalId>
+        <formula>TotalRevenue__c - TotalCost__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Net Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>NetServicesRevenue__c</fullName>
+        <externalId>false</externalId>
+        <formula>TotalRevenue__c -  TotalSubAmount__c -  TotalFeeAmount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Net Services Revenue</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>OverrideTotalRevenue__c</fullName>
         <description>Flat rate revenue amount, overriding estimated revenue.</description>
         <externalId>false</externalId>
@@ -195,6 +255,10 @@
                 <fullName>Submitted for Forecast</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>Work at Risk</fullName>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackTrending>false</trackTrending>
@@ -249,6 +313,16 @@
         <type>Summary</type>
     </fields>
     <fields>
+        <fullName>TotalFringe__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Fringe</label>
+        <summarizedField>BudgetResource__c.TotalFringe__c</summarizedField>
+        <summaryForeignKey>BudgetResource__c.BudgetHeader__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
         <fullName>TotalLaborAmount__c</fullName>
         <externalId>false</externalId>
         <label>Total Labor Amount</label>
@@ -273,6 +347,26 @@
             <operation>notEqual</operation>
             <value>Labor/Person</value>
         </summaryFilterItems>
+        <summaryForeignKey>BudgetResource__c.BudgetHeader__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TotalOverhead__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Overhead</label>
+        <summarizedField>BudgetResource__c.TotalOverhead__c</summarizedField>
+        <summaryForeignKey>BudgetResource__c.BudgetHeader__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TotalRawCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Raw Cost</label>
+        <summarizedField>BudgetResource__c.TotalRawCost__c</summarizedField>
         <summaryForeignKey>BudgetResource__c.BudgetHeader__c</summaryForeignKey>
         <summaryOperation>sum</summaryOperation>
         <trackTrending>false</trackTrending>
@@ -372,6 +466,10 @@
                 <fullName>Submitted for Forecast</fullName>
                 <default>false</default>
             </values>
+            <values>
+                <fullName>Work at Risk</fullName>
+                <default>false</default>
+            </values>
         </picklistValues>
     </recordTypes>
     <recordTypes>
@@ -417,6 +515,10 @@
             </values>
             <values>
                 <fullName>Submitted for Forecast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Work at Risk</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
