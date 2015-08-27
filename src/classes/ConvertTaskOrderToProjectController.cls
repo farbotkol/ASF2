@@ -131,6 +131,8 @@ public with sharing class ConvertTaskOrderToProjectController {
             sArea = 'Americas';
         if(opp.RecordType.name.indexOf('CS')>=0)
             sArea = 'CS';
+        if(opp.RecordType.name.indexOf('MS')>=0)
+            sArea = 'MS';
         string sProj='Project - ' + sArea;
         string sProg ='Program - ' + sArea;
         string sTO ='Task Order - ' + sArea;
