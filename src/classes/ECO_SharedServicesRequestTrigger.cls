@@ -8,6 +8,7 @@ public class ECO_SharedServicesRequestTrigger {
 	public Site__c oSiteBilling {get;set;}
 	public Site__c oSiteRemit {get;set;}
 	
+	public contact oPrimaryContact {get;set;}
 	public contact oBillingContact {get;set;}
 	public contact oContact {get;set;}
 	public contact oContact2 {get;set;}
@@ -205,6 +206,10 @@ public class ECO_SharedServicesRequestTrigger {
 			if(wrapper.oContact2 != null){
 				lstContactsToInsert.add(wrapper.oContact2);
 			}
+			if(wrapper.oPrimaryContact != null){
+				lstContactsToInsert.add(wrapper.oPrimaryContact);
+			}
+			
 		}
 
 
@@ -570,6 +575,25 @@ public class ECO_SharedServicesRequestTrigger {
 			}
 
 		}
+
+		if(oSharedServicesRequest.PrimaryContactLastName__c != null){
+
+			oPrimaryContact = new contact();
+
+			oPrimaryContact.lastname = oSharedServicesRequest.PrimaryContactLastName__c;
+			oPrimaryContact.firstname = oSharedServicesRequest.PrimaryContactFirstName__c;
+			oPrimaryContact.email = oSharedServicesRequest.PrimaryContactEmail__c;
+			oPrimaryContact.phone = oSharedServicesRequest.PrimaryContactPhone__c;
+
+			if(oPrimaryContact.lastname == null ||
+				oPrimaryContact.lastname == null ||
+				(oPrimaryContact.email == null && 
+					oPrimaryContact.phone==null)){
+				oPrimaryContact = null;
+			}
+
+		}
+
 	}
 
 
@@ -585,6 +609,10 @@ public class ECO_SharedServicesRequestTrigger {
 		if(oContact2 != null){
 			oContact2.AccountId = oAccount.id;
 		}
+		if(oPrimaryContact != null){
+			oPrimaryContact.AccountId = oAccount.id;
+		}
+
 	}
 
 	Public void AssociateSite(){
