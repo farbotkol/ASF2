@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <fields>
+        <fullName>AECOM_Recompete__c</fullName>
+        <externalId>false</externalId>
+        <label>AECOM Recompete</label>
+        <picklist>
+            <picklistValues>
+                <fullName>N/A</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>New Opportunity</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>AECOM Recompete</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Non-AECOM Recompete</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Contract_Type__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Select the type that best represents the pricing and at-risk terms of the contract.</inlineHelpText>
@@ -19,7 +47,7 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Cost Plus incentive fee</fullName>
+                <fullName>Cost Plus Incentive Fee</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -144,6 +172,27 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>MS_Stage__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+OR(
+BEGINS(TEXT(StageName),&quot;0&quot;),
+BEGINS(TEXT(StageName),&quot;1&quot;),
+BEGINS(TEXT(StageName),&quot;2&quot;),
+BEGINS(TEXT(StageName),&quot;3&quot;)),
+
+RIGHT(TEXT(StageName), (LEN(TEXT(StageName)) - 2)),
+
+TEXT(StageName))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>MS Stage</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Pricing_Notes__c</fullName>
         <externalId>false</externalId>
         <label>Pricing Conclusions</label>
@@ -197,11 +246,308 @@
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
+    <fields>
+        <fullName>StageName</fullName>
+        <inlineHelpText>Select the stage that represents how far the opportunity has progressed through AECOM&apos;s process. As the opportunity matures, update the stage.</inlineHelpText>
+        <picklist>
+            <picklistValues>
+                <fullName>0 Unqualified</fullName>
+                <closed>false</closed>
+                <color>#FF6666</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>0</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>0-0-Planning</fullName>
+                <closed>false</closed>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>10</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>0-1-Qualification</fullName>
+                <closed>false</closed>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>10</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>1 Lead</fullName>
+                <closed>false</closed>
+                <color>#66FFFF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>10</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>1-2-Solution Development</fullName>
+                <closed>false</closed>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>1A Lead - Scout</fullName>
+                <closed>false</closed>
+                <color>#33CCFF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>10</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>1B Lead - Engage</fullName>
+                <closed>false</closed>
+                <color>#33CCFF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>10</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>1C Lead - Position</fullName>
+                <closed>false</closed>
+                <color>#00CCCC</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>10</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2 Capture</fullName>
+                <closed>false</closed>
+                <color>#FF99FF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2-3-Pre-proposal</fullName>
+                <closed>false</closed>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2-4-Proposal</fullName>
+                <closed>false</closed>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2A Capture - LOI</fullName>
+                <closed>false</closed>
+                <color>#F96FB7</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2B Capture - EOI</fullName>
+                <closed>false</closed>
+                <color>#F96FB7</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2C Capture - SOQ</fullName>
+                <closed>false</closed>
+                <color>#CC33CC</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2D Capture - RFI</fullName>
+                <closed>false</closed>
+                <color>#993399</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2E Capture - RFP</fullName>
+                <closed>false</closed>
+                <color>#A845DC</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3 Submitted</fullName>
+                <closed>false</closed>
+                <color>#3366FF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>30</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3-5-Post-Submittal</fullName>
+                <closed>false</closed>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>30</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3A Capture - Proposal Submitted</fullName>
+                <closed>false</closed>
+                <color>#3333FF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>30</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3B Capture - Short List</fullName>
+                <closed>false</closed>
+                <color>#3333FF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>30</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3C Capture - Interview</fullName>
+                <closed>false</closed>
+                <color>#000099</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>30</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4 Project on hold</fullName>
+                <closed>false</closed>
+                <color>#F3D904</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5 SNB/Win/Award</fullName>
+                <closed>false</closed>
+                <color>#33FF33</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>50</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5A Program in Negotiation</fullName>
+                <closed>false</closed>
+                <color>#66FF99</color>
+                <default>false</default>
+                <description>AECOM has been notified of the award, and the program/contract is currently in negotiation. Contract has not been and no task orders have been awarded.</description>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>90</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5B Program Signed and Active</fullName>
+                <closed>true</closed>
+                <color>#78C953</color>
+                <default>false</default>
+                <description>Active program – contract has been signed and AECOM is receiving or awaiting task order assignments. Opportunity stays in this stage during the period of performance, moving to 6A when the period of performance ends.</description>
+                <forecastCategory>Closed</forecastCategory>
+                <probability>100</probability>
+                <won>true</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>6 Contracted/Booked/Won</fullName>
+                <closed>true</closed>
+                <color>#009900</color>
+                <default>false</default>
+                <forecastCategory>Closed</forecastCategory>
+                <probability>100</probability>
+                <won>true</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>6A Program Closed/Completed</fullName>
+                <closed>true</closed>
+                <color>#419249</color>
+                <default>false</default>
+                <description>Closed program – contract term has expired, period of performance has ended, or contract ceiling has been reached. No additional task orders are expected.</description>
+                <forecastCategory>Closed</forecastCategory>
+                <probability>100</probability>
+                <won>true</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>7 Canceled by Client</fullName>
+                <closed>true</closed>
+                <color>#DDDDDD</color>
+                <default>false</default>
+                <forecastCategory>Omitted</forecastCategory>
+                <probability>0</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>8 No-Go</fullName>
+                <closed>true</closed>
+                <color>#999999</color>
+                <default>false</default>
+                <forecastCategory>Omitted</forecastCategory>
+                <probability>0</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>9 Lost</fullName>
+                <closed>true</closed>
+                <color>#666666</color>
+                <default>false</default>
+                <forecastCategory>Omitted</forecastCategory>
+                <probability>0</probability>
+                <won>false</won>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
     <recordTypes>
         <fullName>Program_MS</fullName>
         <active>true</active>
         <businessProcess>MS Sales Process</businessProcess>
         <label>Program - MS</label>
+        <picklistValues>
+            <picklist>AECOM_Recompete__c</picklist>
+            <values>
+                <fullName>AECOM Recompete</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>N%2FA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Opportunity</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Non-AECOM Recompete</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
         <picklistValues>
             <picklist>Contract_Type__c</picklist>
             <values>
@@ -213,11 +559,11 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cost Plus Percent Fee</fullName>
+                <fullName>Cost Plus Incentive Fee</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cost Plus incentive fee</fullName>
+                <fullName>Cost Plus Percent Fee</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -457,6 +803,25 @@
         <description>This is used for legacy URS Management Services projects.</description>
         <label>Project - MS</label>
         <picklistValues>
+            <picklist>AECOM_Recompete__c</picklist>
+            <values>
+                <fullName>AECOM Recompete</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>N%2FA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Opportunity</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Non-AECOM Recompete</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Contract_Type__c</picklist>
             <values>
                 <fullName>Cost Plus Award Fee</fullName>
@@ -467,11 +832,11 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cost Plus Percent Fee</fullName>
+                <fullName>Cost Plus Incentive Fee</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cost Plus incentive fee</fullName>
+                <fullName>Cost Plus Percent Fee</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -710,6 +1075,25 @@
         <businessProcess>MS Sales Process</businessProcess>
         <label>Task Order - MS</label>
         <picklistValues>
+            <picklist>AECOM_Recompete__c</picklist>
+            <values>
+                <fullName>AECOM Recompete</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>N%2FA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Opportunity</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Non-AECOM Recompete</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Contract_Type__c</picklist>
             <values>
                 <fullName>Cost Plus Award Fee</fullName>
@@ -720,11 +1104,11 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cost Plus Percent Fee</fullName>
+                <fullName>Cost Plus Incentive Fee</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cost Plus incentive fee</fullName>
+                <fullName>Cost Plus Percent Fee</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -958,6 +1342,26 @@
         </picklistValues>
     </recordTypes>
     <validationRules>
+        <fullName>AECOM_Recompete_Competition_Type</fullName>
+        <active>true</active>
+        <description>AECOM Recompete and Competition Type are required for all MS Record Types for Stages 0,1,2,3 and 5</description>
+        <errorConditionFormula>AND(NOT(CONTAINS( $User.CommunityNickname, &apos;SystemNA&apos;)) ,
+NOT(CONTAINS( $Profile.Name, &apos;API Access&apos;)),
+NOT(CONTAINS( $User.CommunityNickname, &apos;APIC&apos;)),
+AND(CONTAINS( $RecordType.Name ,&quot;MS&quot;),
+
+OR(BEGINS(TEXT( StageName ),&quot;0-1-Qualification&quot;),
+BEGINS(TEXT( StageName ),&quot;1&quot;),
+BEGINS(TEXT( StageName ),&quot;2&quot;),
+BEGINS(TEXT( StageName ),&quot;3&quot;),
+BEGINS(TEXT( StageName ),&quot;5&quot;)),
+
+OR(ISPICKVAL( AECOM_Recompete__c ,&apos;&apos;),
+ISPICKVAL( Competition_Type__c ,&apos;&apos;)
+)))</errorConditionFormula>
+        <errorMessage>AECOM Recompete (Opportunity Detail section) and Competition Type (Opportunity Detail section) are required for MS Opportunities in Stages 1,2,3 and 5.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>Ceiling_Amount_and_Program_IDIQ_Required</fullName>
         <active>true</active>
         <description>Ceiling Amount Total and Program IDIQ Type fields required for Program - MS Opportunities.</description>
@@ -1010,7 +1414,7 @@ ISNULL( Link_to_Proposal_File__c )
 ))</errorConditionFormula>
         <errorMessage>Link to Proposal File is required for MS Opportunities in Stage 2-4 Proposal,3 and 5 and MS Priority = 1 or 2.</errorMessage>
     </validationRules>
-    <validationRules>
+	<validationRules>
         <fullName>MS_Required_Fields</fullName>
         <active>true</active>
         <description>These fields are required for all MS Record Types for Stages 1,2,3 and 5:
@@ -1041,8 +1445,8 @@ Contract Type, Pricing Lead, Project Manager, Bid Manager, Acquisition Strategy,
     <validationRules>
         <fullName>MS_Required_Fields_Stage_0_1_2_3_and_5</fullName>
         <active>true</active>
-        <description>These fields are required for all MS Record Types for Stages 0,1,2,3 and 5:
-Date RFP Received, Submittal Date Proposal, Estimated Work Start Date, Contract Est Months, AECOM Recompete and Competition Type.</description>
+        <description>These fields (Key Dates section) are required for all MS Record Types for Stages 0,1,2,3 and 5:
+Date RFP Received, Submittal Date Proposal, Estimated Work Start Date, Contract Est Months.</description>
         <errorConditionFormula>AND(NOT(CONTAINS( $User.CommunityNickname, &apos;SystemNA&apos;)) ,
 NOT(CONTAINS( $Profile.Name, &apos;API Access&apos;)),
 NOT(CONTAINS( $User.CommunityNickname, &apos;APIC&apos;)),
@@ -1057,11 +1461,9 @@ BEGINS(TEXT( StageName ),&quot;5&quot;)),
 OR(ISNULL( Date_RFP_received__c ),
 ISNULL( Submittal_Date_Proposal__c ),
 ISNULL( Estimated_work_start_date__c ),
-ISNULL( Contract_Est_Months__c ),
-ISPICKVAL( AECOM_Recompete__c ,&apos;&apos;),
-ISPICKVAL( Competition_Type__c ,&apos;&apos;)
+ISNULL( Contract_Est_Months__c )
 )))</errorConditionFormula>
-        <errorMessage>These fields are required for MS Opportunities in Stages 1,2,3,5: Date RFP Received, Submittal Date Proposal, Estimated Work Start Date, Contract Est Months, AECOM Recompete and Competition Type.</errorMessage>
+        <errorMessage>These fields are required for MS Opportunities in Stages 1,2,3,5: Date RFP Received (Key Dates section), Submittal Date Proposal (Key Dates section), Estimated Work Start Date (Key Dates section), Contract Est Months (Key Dates section).</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>Primary_BD_MS_Priority_Total_Award</fullName>
@@ -1095,6 +1497,28 @@ BEGINS(TEXT( StageName ),&quot;3-5-Post-Submittal&quot;)
 )</errorConditionFormula>
         <errorDisplayField>Probability_Stage__c</errorDisplayField>
         <errorMessage>Probability must be greater than 10% for MS Opportunities in Stage: 2-3-Pre-proposal or 2-4-Proposal or 3-5-Post-Submittal.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Project_Manager_Bid_Manager_Required</fullName>
+        <active>true</active>
+        <description>These fields are required for all MS Record Types for Stages 1,2,3 and 5:
+Project Manager and Bid Manager</description>
+        <errorConditionFormula>AND(NOT(CONTAINS( $User.CommunityNickname, &apos;SystemNA&apos;)) ,
+NOT(CONTAINS( $Profile.Name, &apos;API Access&apos;)),
+NOT(CONTAINS( $User.CommunityNickname, &apos;APIC&apos;)),
+AND(CONTAINS( $RecordType.Name ,&quot;MS&quot;),
+
+OR(BEGINS(TEXT( StageName ),&quot;1&quot;),
+BEGINS(TEXT( StageName ),&quot;2&quot;),
+BEGINS(TEXT( StageName ),&quot;3&quot;),
+BEGINS(TEXT( StageName ),&quot;5&quot;)
+)
+,
+
+OR(ISBLANK( Project_ManagerUser__c  ), 
+ISBLANK( Bid_ManagerUser__c )
+)))</errorConditionFormula>
+        <errorMessage>Project Manager (Team section) and Bid Manager (Team section) are required for MS Opportunities in Stages 1,2,3 and 5.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>Proposal_Location_Required_for_MS</fullName>
@@ -1136,270 +1560,4 @@ ISPICKVAL( TO_Procurement_Method__c ,&apos;&apos;)
         <errorDisplayField>TO_Procurement_Method__c</errorDisplayField>
         <errorMessage>Task Order Procurement Method is required in Stage 1,2,3 and 5 for &apos;Program - MS&apos; Opportunities.</errorMessage>
     </validationRules>
-    <webLinks>
-        <fullName>New_Task_Order_On_Program</fullName>
-        <availability>online</availability>
-        <displayType>massActionButton</displayType>
-        <linkType>javascript</linkType>
-        <masterLabel>New Task Order Opportunity</masterLabel>
-        <openType>onClickJavaScript</openType>
-        <protected>false</protected>
-        <requireRowSelection>true</requireRowSelection>
-        <url>{!REQUIRESCRIPT(&quot;/soap/ajax/8.0/connection.js&quot;)}
-var abc=&quot;&quot;;
-var recType =&quot;&quot;;
-if(&quot;{!Opportunity.RecordType}&quot;.indexOf(&quot;APAC&quot;)&gt;=0)
-          abc=&apos;Task Order - APAC&apos;;
-
-if(&quot;{!Opportunity.RecordType}&quot;.indexOf(&quot;EMEA&quot;)&gt;=0)
-          abc=&apos;Task Order - EMEA&apos;;
-
-if(&quot;{!Opportunity.RecordType}&quot;.indexOf(&quot;Americas&quot;)&gt;=0)
-          abc=&apos;Task Order - Americas&apos;;
-
-if(&quot;{!Opportunity.RecordType}&quot;.indexOf(&quot;CS&quot;)&gt;=0)
-          abc=&apos;Task Order - CS&apos;;
-
-if(&quot;{!Opportunity.RecordType}&quot;.indexOf(&quot;MS&quot;)&gt;=0)
-          abc=&apos;Task Order - MS&apos;;
-
-result = sforce.connection.query(&quot;Select Name, Id from RecordType Where Name=&apos;&quot; + abc +&quot;&apos;&quot;);
-records = result.getArray(&quot;records&quot;);
-for (var i=0; i&lt; records.length; i++) 
-recType = records[i].Id;
-window.top.location.href = &quot;/006/e?CF00N30000004picT={!Opportunity.Name}&amp;CF00N30000004picT_lkid={!Opportunity.Id}&amp;retURL=%2F{!Opportunity.Id}&amp;RecordType=&quot; +recType +&quot;&amp;ent=Opportunity&amp;opp4={!Opportunity.Account}&amp;opp4_lkid={!Opportunity.AccountId}&amp;nooverride=1&amp;saveURL=%2Fapex%2FModifyDepartment&quot;;
-
-// Original Before Multiple Geography Support - pdeschenes
-// Display in existing window WO side/head
-// URL
-// /006/e?CF00N30000004picT={!Opportunity.Name}&amp;CF00N30000004picT_lkid={!Opportunity.Id}&amp;retURL=%2F{!Opportunity.Id}&amp; // RecordType={!$Setup.Opportunity_Record_Type__c.Record_Type_Task_Order__c}&amp;ent=Opportunity&amp; 
-// opp4={!Opportunity.Account}&amp;opp4_lkid={!Opportunity.AccountId}</url>
-    </webLinks>
-    <webLinks>
-        <fullName>APXT_CMSL_B__Conga_SL_Basic</fullName>
-        <availability>online</availability>
-        <displayType>button</displayType>
-        <encodingKey>UTF-8</encodingKey>
-        <height>600</height>
-        <linkType>url</linkType>
-        <masterLabel>Conga SL Basic</masterLabel>
-        <openType>sidebar</openType>
-        <protected>false</protected>
-        <url>/apex/APXT_CMSL_B__Launch
-?Id={!Opportunity.Id}</url>
-    </webLinks>
-    <webLinks>
-        <fullName>Add_Service_CO_Variation</fullName>
-        <availability>online</availability>
-        <description>Creates a new TO or Project record linked to this record to log a change order to the original. Copies some fields and autopopulates others.</description>
-        <displayType>button</displayType>
-        <encodingKey>UTF-8</encodingKey>
-        <linkType>url</linkType>
-        <masterLabel>Add Service/Change Order/Variation</masterLabel>
-        <openType>replace</openType>
-        <protected>false</protected>
-        <url>/006/e?CF00N30000009QxrT={!Opportunity.Name}
-&amp;CF00N30000009QxrT_lkid={!Opportunity.Id}
-&amp;CF00N30000004piZy={!Opportunity.AECOM_Job_number__c}
-&amp;RecordType={!Opportunity.RecordTypeId}
-&amp;opp3={!Opportunity.Name}: Change order/Variation
-&amp;opp4={!Opportunity.Account}
-&amp;opp14=Change Order to:  {!Opportunity.Description}
-&amp;00N30000004pia8=Yes
-&amp;CF00N30000004qZT8={!Opportunity.Capture_Manager__c}
-&amp;00N30000004qSm2={!Opportunity.ProjectCountry__c}
-&amp;00N30000004piMG={!Opportunity.Project_City__c}
-&amp;00N30000004ps0K={!Opportunity.Project_State_Province__c}
-&amp;00N30000004piar={!Opportunity.Project_Delivery_Method__c}
-&amp;CF00N30000004piop={!Opportunity.AECOM_Primary_Dept_Lookup__c}
-&amp;00N30000007fMSJ={!Opportunity.PCC_End_Market__c}
-&amp;00N30000007fMSK={!Opportunity.PCC_Sub_Market__c}
-&amp;00N30000004pial={!Opportunity.PDD_General_Market_Sector__c}
-&amp;00N30000004piaj={!Opportunity.PDD_D_P_E_Primary_Global_Practice_Line__c}
-&amp;00N30000004pibB={!Opportunity.Transportation_Initiatives__c}
-&amp;00N30000004pib0={!Opportunity.Services__c}
-&amp;CF00N30000009PCFM={!Opportunity_Department__c.Practice_Area__c}
-&amp;CF00N30000009PCFH={!Opportunity.Sub_Practice_Area_of_Primary_AECOM_Dept__c}
-&amp;00N30000004pia9={!Opportunity.Client_Solicitation_ID_number__c}
-&amp;00N30000004piMC={!Opportunity.Competitive_Bid_or_Sole_source__c}
-&amp;00N30000004pia7={!Opportunity.Capture_plan_in_place__c}
-&amp;00N30000004qCDh={!Opportunity.MMR_Report__c}
-&amp;00N30000007fTrS={!Opportunity.OJEU_Number__c}
-&amp;00N30000004pib5={!Opportunity.Strategic_Pursuit__c}
-&amp;00N30000004piZz={!Opportunity.AECOM_Role__c}
-&amp;CF00N30000004picT={!Opportunity.Master_Contract_lookup__c}
-&amp;CF00N30000006Frp7={!Opportunity.Bid_Cost_Manager__c}
-&amp;CF00N30000006FrpK={!Opportunity.Project_Manager__c}
-&amp;CF00N30000006FrpJ={!Opportunity.Project_Director__c}
-&amp;CF00N30000006FrpI={!Opportunity.Executive_Sponsor__c}
-&amp;CF00N30000006FrpE={!Opportunity.Market_Sector_Lead__c}
-&amp;CF00N30000004piZz={!Opportunity.AECOM_Role__c}
-&amp;CF00N30000004piaB={!Opportunity.Contract_Type__c}
-&amp;nooverride=1
-&amp;saveURL=/apex/modifydepartment</url>
-    </webLinks>
-    <webLinks>
-        <fullName>Convert_Program_to_Project</fullName>
-        <availability>online</availability>
-        <displayType>button</displayType>
-        <encodingKey>UTF-8</encodingKey>
-        <height>600</height>
-        <linkType>url</linkType>
-        <masterLabel>Convert Program to Project</masterLabel>
-        <openType>noSidebar</openType>
-        <protected>false</protected>
-        <url>/apex/ConvertTaskOrderToProject?id={!Opportunity.Id}&amp;prog2proj=1</url>
-    </webLinks>
-    <webLinks>
-        <fullName>Convert_to_Program</fullName>
-        <availability>online</availability>
-        <description>Custom button to convert a project to a program</description>
-        <displayType>button</displayType>
-        <encodingKey>UTF-8</encodingKey>
-        <linkType>url</linkType>
-        <masterLabel>Convert to Program</masterLabel>
-        <openType>replace</openType>
-        <protected>false</protected>
-        <url>/apex/ConvertTaskOrderToProject?id={!Opportunity.Id}&amp;proj2prog=1</url>
-    </webLinks>
-    <webLinks>
-        <fullName>Convert_to_Project</fullName>
-        <availability>online</availability>
-        <displayType>button</displayType>
-        <linkType>page</linkType>
-        <masterLabel>Convert to Project</masterLabel>
-        <openType>replace</openType>
-        <page>ConvertTaskOrderToProject</page>
-        <protected>false</protected>
-    </webLinks>
-    <webLinks>
-        <fullName>Convert_to_TO</fullName>
-        <availability>online</availability>
-        <description>Button to convert project to task order</description>
-        <displayType>button</displayType>
-        <linkType>page</linkType>
-        <masterLabel>Convert to TO</masterLabel>
-        <openType>replace</openType>
-        <page>ConvertProjectToTaskOrder</page>
-        <protected>false</protected>
-    </webLinks>
-    <webLinks>
-        <fullName>Create_Project_Profile</fullName>
-        <availability>online</availability>
-        <description>This button is used to create a record in the Projects object from a record in the Opportunities object. Use is restricted to Sys Admin, Content Managers, and Geography Admins.</description>
-        <displayType>button</displayType>
-        <linkType>javascript</linkType>
-        <masterLabel>Create Project Profile</masterLabel>
-        <openType>onClickJavaScript</openType>
-        <protected>false</protected>
-        <url>var enabled = {!$Setup.Project_Settings__c.Opportunity_To_Project_Enabled__c};
-var isChangeOrder = &apos;{! Opportunity.Change_Order_Add_Services__c }&apos;;
-
-if (enabled) {
-    if (isChangeOrder == &apos;Yes&apos;) {
-        alert(&apos;Cannot Create Projects that have a Change Order&apos;);
-    } else {
-        window.location.href=&apos;/apex/ProjectFromOpportunity?id={!Opportunity.Id}&apos;;
-    }
-} else {
-    alert(&apos;Use of this button is restricted to Content Managers&apos;);
-}</url>
-    </webLinks>
-    <webLinks>
-        <fullName>Export_Records</fullName>
-        <availability>online</availability>
-        <displayType>massActionButton</displayType>
-        <height>600</height>
-        <linkType>page</linkType>
-        <masterLabel>Export Records</masterLabel>
-        <openType>sidebar</openType>
-        <page>opportunityCustomDepartmentReport</page>
-        <protected>false</protected>
-        <requireRowSelection>false</requireRowSelection>
-    </webLinks>
-    <webLinks>
-        <fullName>Export_records_New</fullName>
-        <availability>online</availability>
-        <description>Workaround for department split reporting prior to redesign. No longer needed.</description>
-        <displayType>massActionButton</displayType>
-        <height>600</height>
-        <linkType>page</linkType>
-        <masterLabel>Export records(New)</masterLabel>
-        <openType>sidebar</openType>
-        <page>OpportunityExport</page>
-        <protected>false</protected>
-        <requireRowSelection>false</requireRowSelection>
-    </webLinks>
-    <webLinks>
-        <fullName>New_TaskOrder_Opportunity</fullName>
-        <availability>online</availability>
-        <displayType>massActionButton</displayType>
-        <encodingKey>UTF-8</encodingKey>
-        <linkType>url</linkType>
-        <masterLabel>New Task Order Opportunity(OLD)</masterLabel>
-        <openType>replace</openType>
-        <protected>false</protected>
-        <requireRowSelection>true</requireRowSelection>
-        <url>/apex/QuickCreateOpportunity?oppid={!Opportunity.Id}&amp;scontrolCaching=1&amp;RecordType={!$Setup.Opportunity_Record_Type__c.Record_Type_Task_Order__c}&amp;ent=Opportunity&amp;sfdc.override=1&amp;retURL={!Opportunity.Id}&amp;save_new=1</url>
-    </webLinks>
-    <webLinks>
-        <fullName>Opportunity_Report_Filter</fullName>
-        <availability>online</availability>
-        <displayType>massActionButton</displayType>
-        <encodingKey>UTF-8</encodingKey>
-        <height>600</height>
-        <linkType>url</linkType>
-        <masterLabel>Opportunity Report(Filter)</masterLabel>
-        <openType>sidebar</openType>
-        <protected>false</protected>
-        <requireRowSelection>false</requireRowSelection>
-        <url>/apex/opportunityCustomDepartmentReport?export=0</url>
-    </webLinks>
-    <webLinks>
-        <fullName>Transfer_Task_Order</fullName>
-        <availability>online</availability>
-        <displayType>button</displayType>
-        <encodingKey>UTF-8</encodingKey>
-        <linkType>url</linkType>
-        <masterLabel>Transfer Task Order</masterLabel>
-        <openType>replace</openType>
-        <protected>false</protected>
-        <url>/apex/TransferTaskOrder?taskOrderID={!Opportunity.Id}</url>
-    </webLinks>
-    <webLinks>
-        <fullName>pse__Create_Change_Request</fullName>
-        <availability>online</availability>
-        <displayType>massActionButton</displayType>
-        <linkType>javascript</linkType>
-        <masterLabel>Create Change Request</masterLabel>
-        <openType>onClickJavaScript</openType>
-        <protected>false</protected>
-        <requireRowSelection>true</requireRowSelection>
-        <url>// Get the Account Id
-var accId  = &apos;{!Account.Id}&apos;;
-
-// The same button is shared at two places 
-// 1. Account Details
-// 2. Opportunity List View
-// In case the call is from Account Details, account Id will be there. We want that account Id to be used in filtering the projects.
-// So In case the call is from Opportunity List the Account Id will be NULL
-// In that case the request will be sent to Project Lookup Page for creating CR
-if (accId == null || accId == &apos;&apos;) {
-      window.parent.location = &quot;{!URLFOR(&apos;/apex/CreateCRFromProjectLookup&apos;, &apos;&apos;)}&quot;;
-} else {
-      window.parent.location = &quot;{!URLFOR(&apos;/apex/CreateCRFromAccountDetails&apos;, &apos;&apos;, [accountId=Account.Id] )}&quot;;
-}</url>
-    </webLinks>
-    <webLinks>
-        <fullName>pse__Create_Project</fullName>
-        <availability>online</availability>
-        <displayType>button</displayType>
-        <height>600</height>
-        <linkType>page</linkType>
-        <masterLabel>Create Project</masterLabel>
-        <openType>sidebar</openType>
-        <page>pse__CreateProjectFromOpportunityForward</page>
-        <protected>false</protected>
-    </webLinks>
->>>>>>> bad54d9... EMEAGoNoGo - AEGNG-261 and AECR-1439
 </CustomObject>
