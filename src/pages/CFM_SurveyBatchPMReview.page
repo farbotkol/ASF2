@@ -1,0 +1,346 @@
+<apex:page standardController="CFM_Survey_Project_Review__c" extensions="CFM_SurveyBatchPMReviewController" showHeader="true" sidebar="false" standardStylesheets="true" applyBodyTag="true" applyHtmlTag="true" docType="html-5.0">
+
+<link rel="stylesheet" href="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css" />
+<script src="//code.jquery.com/jquery-1.10.2.js"></script>
+<script src="//code.jquery.com/ui/1.11.4/jquery-ui.js"></script>
+
+
+<script type="text/javascript">
+
+
+  $(function() {
+    $("#rejectionReason").change(function() {
+      var value = $("#rejectionReason").val();
+
+      if (value.toLowerCase().indexOf("other") > -1) {
+        $("#otherRationalePanel").css("display", "block");
+      }
+      else {
+        $("#otherRationalePanel").css("display", "none");
+      }
+    });
+  });
+
+  function promptRejectionReason(evt, surveyProjectId) {
+    if (evt.preventDefault) evt.preventDefault();
+    evt.returnValue = false;
+
+    window.currentSurveyProjectId = surveyProjectId;
+
+    $("#otherRationalePanel").css("display", "none");
+    $("#rejectionReason").val("");
+    $("#otherRationale").val("");
+
+
+    $("#dialog").dialog({
+      modal: true,
+      width: 400,
+    });
+  }
+
+  function submitRejection() {
+      var rejectionReason = $("#rejectionReason").val();
+      var otherRationale = $("#otherRationale").val();
+
+      if (!rejectionReason) {
+        alert("Please enter a rejection reason");
+        return;
+      }
+
+      if (rejectionReason.toLowerCase().indexOf("other") > -1) {
+        if (!otherRationale) {
+          alert("Please enter an 'Other' rationale");
+          return;
+        }
+      }
+
+      $("#dialog").dialog("close");
+
+      $("#rejectionReason").val("");
+      $("#otherRationale").val("");
+
+      rejectAction(window.currentSurveyProjectId, rejectionReason, otherRationale);
+  }
+
+  function openContactEditWindow(evt, projectId) {
+    if (evt.preventDefault) evt.preventDefault();
+    evt.returnValue = false;
+
+    window.open ("/apex/CFM_ProjectContactEdit?id=" + projectId,"contactWindow","resizable=1,scrollbars=1,width=600,height=600");
+  }
+</script>
+
+<style>
+    .pageTitle {
+        padding: 10px; 
+        display: block;
+        font-size: 15px;
+    }
+    .pmReviewPage .styledButton, .rejectionDialog .styledButton  {
+        padding: 5px 20px;
+        font-size: 12px;
+        color: white;
+        background: #1E9EAF;
+        border-radius: 6px;
+        font-weight: normal;
+        margin-top: 10px;
+        margin-left: auto; /*Center the button*/
+        margin-right: auto;
+        display: block;
+    }
+
+    .styledButton:hover {
+      background: #3FCFBF;
+    }
+
+    .projectTable {
+        border: 1px #1E9EAF solid !important;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+    .projectTable th {
+        background: #1E9EAF !important;
+    }
+    .projectTable th div {
+        color: white;
+    }
+    .projectTable tr:first-child {
+        border-top-left-radius: 4px;
+    }
+    .projectTable tr:last-child {
+        border-top-right-radius: 4px;
+    }
+    .projectTable tr:nth-child(even) {
+        background-color: #F0F0F0;
+    }
+    .actionStepText {
+        padding-left: 5px;
+        padding-bottom: 10px;
+    }
+
+    .centeredIcon {
+      margin-left: auto;
+      margin-right: auto;
+      display: block;
+    }
+
+    /*Salesforce Overrides*/
+    .pbHeader {
+        background-color: #1E9EAF !important;
+    }
+    .mainTitle {
+        color: white !important;
+    }
+    .secondaryPalette {
+        border-color: #1E9EAF !important;
+    }
+
+    .hiddenPageBlock .bPageBlock {
+        visibility: hidden;
+    }
+    .hiddenPageBlock .pbBody {
+        visibility: visible;
+        margin: 0 !important;
+    }
+    .pageTitleIcon {
+      background-image: none !important;
+    }
+
+    .ui-dialog-titlebar {
+      color: white;
+      background: #1E9EAF;
+      background-image: none;
+    }
+
+    .brandSecondaryBrd {
+      border-color: #1E9EAF !important;
+    }
+
+    .ui-widget-header {
+        border: 0 !important;
+    }
+
+</style>
+
+<div id="dialog" class="rejectionDialog" title="Rejection Rationale" style="display: none">
+    <p>
+      Please enter your reason excluding project from survey:
+    </p>
+
+      <!-- {!$Component.rejectionList} -->
+      <select id="rejectionReason" size="1">
+        <apex:repeat value="{!rejectionReasons}" var="reason">
+          <option value="{!reason.value}">{!reason.label}</option>
+        </apex:repeat>
+      </select>
+
+      <br/>
+
+      <div id="otherRationalePanel" style="display: none; margin-top: 10px">
+        <label for="name">Other Reason Comments:</label>
+
+        <br/><br/>
+
+        <input type="text" name="otherRationale" id="otherRationale" class="text ui-widget-content ui-corner-all" style="width: 80%" />
+
+        <br/>
+
+        <p><i>Please note</i> that acceptance is subject to approval by the Client Care Team.</p>
+
+      </div>
+
+      <button type="button" onclick="submitRejection();" class="styledButton" >REJECT</button>
+
+</div>
+
+
+<apex:form styleClass="pmReviewPage" id="mainForm">
+
+    <apex:actionFunction action="{!rejectAction}" name="rejectAction"  rerender="mainForm">
+        <apex:param name="surveyProjectId" assignTo="{!surveyProjectId}" value="" />
+        <apex:param name="rejectReason" assignTo="{!rejectReason}" value="" />
+        <apex:param name="otherRejectReason" assignTo="{!otherRejectReason}" value="" />
+    </apex:actionFunction>
+
+    <div class="bPageTitle">
+        <div class="ptBody">
+            <div class="content">
+                <apex:image url="{!URLFOR($Resource.CFM_Images, 'Survey_Icon.png')}" styleClass="pageTitleIcon" />
+                <h1 class="pageType">Project Surveys<span class="titleSeparatingColon">:</span></h1>
+                <h2 class="pageDescription"> Review your projects</h2>
+                <div class="blank">&nbsp;</div>
+            </div>
+        </div>
+    </div>
+
+     <apex:pageMessages />
+
+    <apex:pageBlock title="Transactional Client Surveys">
+        <apex:pageBlockSection >
+            <apex:outputField value="{!surveyBatch.obj.Name}"/>
+            <apex:outputField value="{!surveyBatch.obj.Survey_Name__c}"/>
+            <apex:outputField value="{!surveyBatch.obj.Target_Survey_Date__c}"/>
+            <apex:outputField value="{!surveyBatch.obj.Survey_Close_Date__c}"/>
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+
+    <apex:pageBlock >
+
+            <apex:outputPanel layout="none" rendered="{!!isClosed && !isCompleted}"> <!-- Rendered if prior to Close date -->
+            <div>
+                <p>
+                Thank you for responding to the email from the AECOM Client Survey Administrator requesting your action to provide Client Contact information.  You have until <b><abbr title="[Survey Close Date]"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}"><apex:param value="{!surveyBatch.obj.Survey_Close_Date__c}" /></apex:outputText></abbr></b> to complete your updates.
+                </p>
+                <p>
+                Please review the project(s) listed below and provide or update the Client Contact information as required.   Projects are selected based on a random selection process for projects that are at least 20% complete and do not meet a set of exclusion criteria.  Please complete the requested actions by following the steps below.
+                </p>
+                <p>
+                For each of the projects listed below, the Client Contact you identify will be sent a survey invitation soon after <b><abbr title="[Target Survey Date]"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}"><apex:param value="{!surveyBatch.obj.Target_Survey_Date__c}" /></apex:outputText></abbr></b>.
+                </p>
+                <p>
+                <b>Actions Requested:</b>
+                </p>
+                <p>
+                  <div class="actionStepText">
+                      <b>Step 1:</b> For each of the listed projects, review the Project Contact information by clicking on the 'Edit Contact' link next to the Project Name and then ensure that the client first and last name, email address and phone number are up to date. Make any changes that are necessary. If the fields are blank, please provide the required information.
+                  </div>
+                  <div class="actionStepText">
+                        <b>Step 2:</b> Once Project Contact information is up to date, click the ‘Confirm’ link next to the Project Name to indicate that your review is complete and to include the Client Contact information in the project record.
+                  </div>
+                  <div class="actionStepText">
+                        <b>Step 3:</b> If you believe that a Client Contact or project should not be surveyed, click on the ‘Reject’ link next to the Project Name. You will be asked to provide the rationale for removing the project or Client Contact from the survey batch by picking from a list of valid reasons. If none of the listed reasons apply, pick “Other” and provide a concise reason - the survey administrator reserves the right to accept or reject this rejection request.
+                  </div>
+                </p>
+            </div>
+            </apex:outputPanel>
+
+            <apex:outputPanel layout="none" rendered="{!isClosed && !isCompleted}"> <!-- Rendered if after Close date -->
+            <div>
+                <p>
+                Thank you for responding to the email from the AECOM Client Survey Administrator requesting your action to provide Client Contact information.  Unfortunately, the Close date for this request, <abbr title="[Survey Close Date]"><apex:outputText value="{0,date,MM'/'dd'/'yyyy}"><apex:param value="{!surveyBatch.obj.Survey_Close_Date__c}" /></apex:outputText></abbr>, has passed and we are no longer able to send a survey invitation for the project listed below this month.  However, you are still able to provide or update Client Contact information for these projects.  Your input will be saved for use in the future.  If any of these projects are randomly selected in future months, your input now will be available for your confirmation.
+                </p>
+               <p>
+                Please review the project(s) listed below and provide or update the Client Contact information as required.   Your projects were selected based on a random selection process for projects that were at least 20% complete and did not meet a set of exclusion criteria.  Please complete the requested actions by following the steps below.
+                </p>
+                <p>
+                <b>Actions Requested:</b>
+                </p>
+                <p>
+                <div class="actionStepText">
+                    <b>Step 1:</b> For each of the listed projects, review the Project Contact information by clicking on the 'Edit Contact' link next to the Project Name and then ensure that the client first and last name, email address and phone number are up to date. Make any changes that are necessary. If the fields are blank, please provide the required information.
+                </div>
+                <div class="actionStepText">
+                    <b>Step 2:</b> Once Project Contact information is up to date, click the ‘Confirm’ link next to the Project Name to indicate that your review is complete and to include the Client Contact information in the project record.
+                </div>
+                <div class="actionStepText">
+                    <b>Step 3:</b> If you believe that a Client Contact or project should not be surveyed, click on the ‘Reject’ link next to the Project Name. You will be asked to provide the rationale for removing the project or Client Contact from the survey batch by picking from a list of valid reasons. If none of the listed reasons apply, pick “Other” and provide a concise reason - the survey administrator reserves the right to accept or reject this rejection request.
+                </div>
+               </p>
+            </div>
+            </apex:outputPanel>
+
+        <apex:outputPanel layout="none" rendered="{!isCompleted}">
+        <div style="width: 100%; text-align: center">
+
+            <h2>Response Successfully Submitted </h2>
+
+            <p>
+              Thank you for your response. For each of the projects listed below, the Client Contact (if confirmed) will be sent a survey invitation soon after <b><apex:outputText value="{0,date,MM'/'dd'/'yyyy}"><apex:param value="{!surveyBatch.obj.Target_Survey_Date__c}" /></apex:outputText></b>.
+            </p>
+
+        </div>
+        </apex:outputPanel>
+
+            <apex:commandButton value="SUBMIT" styleClass="styledButton" action="{!submitAction}" rendered="{!!isCompleted}" />
+
+    </apex:pageBlock>
+
+  <div class="hiddenPageBlock">
+    <apex:pageBlock >
+        <apex:pageBlockTable value="{!surveyBatchProjects}" var="project" styleClass="projectTable">
+            <apex:column headerValue="Action" rendered="{!!isCompleted}">
+          <apex:commandLink value="Confirm" action="{!confirmAction}">
+            <apex:param name="projectId" value="{!project.obj.Id}" />
+          </apex:commandLink>
+                &nbsp;|&nbsp;
+                <apex:commandLink value="Reject" onclick="promptRejectionReason(event,'{!project.obj.Id}'); return false;" />
+          &nbsp;|&nbsp;
+
+          <apex:outputLink onclick="openContactEditWindow(event, '{!project.obj.Project__c}')">Edit Contact</apex:outputLink>
+<!--           <apex:commandLink value="Edit Contact" action="{!editContactAction}">
+            <apex:param name="projectId" value="{!project.obj.Id}" />
+          </apex:commandLink> -->
+            </apex:column>
+
+        <apex:column >
+            <apex:image url="{!URLFOR($Resource.CFM_Images, 'CFM_redcross.png')}" styleClass="centeredIcon" width="20" height="20" rendered="{!project.obj.PM_Status__c == 'Rejected'}" />
+            <apex:image url="{!URLFOR($Resource.CFM_Images, 'checkmarkicon.png')}" styleClass="centeredIcon" width="20" height="20" rendered="{!project.obj.PM_Status__c == 'Confirmed'}" />
+            <apex:image url="{!URLFOR($Resource.CFM_Images, 'graycircle.png')}" styleClass="centeredIcon" width="20" height="20" rendered="{!project.obj.PM_Status__c != 'Confirmed' && project.obj.PM_Status__c != 'Rejected'}"/>
+
+
+        </apex:column>
+
+            <apex:column value="{!project.obj.Project__c}" />
+
+            <apex:column value="{!project.obj.Project_Status__c}" />
+
+            <apex:column value="{!project.obj.Oracle_Complete__c}" />
+
+            <apex:column value="{!project.obj.Account__c}" />
+
+            <apex:column value="{!project.obj.Survey_Contact__c}" />
+
+            <apex:column value="{!project.obj.Survey_Contact_Email__c}" />
+
+            <apex:column value="{!project.obj.PM_Status__c}" headerValue="Confirm Status" />
+
+            <apex:column value="{!project.obj.PM_Reject_Reason__c}" headerValue="Rejection Rationale" />
+
+            <apex:column value="{!project.obj.PM_Reject_Other__c}" headerValue="Other Reason Comments" />
+        </apex:pageBlockTable>
+    </apex:pageBlock>
+  </div>
+    
+  
+</apex:form>
+</apex:page>
