@@ -1,6 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <fields>
+        <fullName>AECOM_Recompete__c</fullName>
+        <externalId>false</externalId>
+        <label>AECOM Recompete</label>
+        <picklist>
+            <picklistValues>
+                <fullName>N/A</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>New Opportunity</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>AECOM Recompete</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Non-AECOM Recompete</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Contract_Type__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Select the type that best represents the pricing and at-risk terms of the contract.</inlineHelpText>
@@ -19,7 +47,7 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Cost Plus incentive fee</fullName>
+                <fullName>Cost Plus Incentive Fee</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -144,6 +172,27 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>MS_Stage__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+OR(
+BEGINS(TEXT(StageName),&quot;0&quot;),
+BEGINS(TEXT(StageName),&quot;1&quot;),
+BEGINS(TEXT(StageName),&quot;2&quot;),
+BEGINS(TEXT(StageName),&quot;3&quot;)),
+
+RIGHT(TEXT(StageName), (LEN(TEXT(StageName)) - 2)),
+
+TEXT(StageName))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>MS Stage</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Pricing_Notes__c</fullName>
         <externalId>false</externalId>
         <label>Pricing Conclusions</label>
@@ -197,11 +246,308 @@
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
+    <fields>
+        <fullName>StageName</fullName>
+        <inlineHelpText>Select the stage that represents how far the opportunity has progressed through AECOM&apos;s process. As the opportunity matures, update the stage.</inlineHelpText>
+        <picklist>
+            <picklistValues>
+                <fullName>0 Unqualified</fullName>
+                <closed>false</closed>
+                <color>#FF6666</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>0</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>0-0-Planning</fullName>
+                <closed>false</closed>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>10</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>0-1-Qualification</fullName>
+                <closed>false</closed>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>10</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>1 Lead</fullName>
+                <closed>false</closed>
+                <color>#66FFFF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>10</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>1-2-Solution Development</fullName>
+                <closed>false</closed>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>1A Lead - Scout</fullName>
+                <closed>false</closed>
+                <color>#33CCFF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>10</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>1B Lead - Engage</fullName>
+                <closed>false</closed>
+                <color>#33CCFF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>10</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>1C Lead - Position</fullName>
+                <closed>false</closed>
+                <color>#00CCCC</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>10</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2 Capture</fullName>
+                <closed>false</closed>
+                <color>#FF99FF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2-3-Pre-proposal</fullName>
+                <closed>false</closed>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2-4-Proposal</fullName>
+                <closed>false</closed>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2A Capture - LOI</fullName>
+                <closed>false</closed>
+                <color>#F96FB7</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2B Capture - EOI</fullName>
+                <closed>false</closed>
+                <color>#F96FB7</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2C Capture - SOQ</fullName>
+                <closed>false</closed>
+                <color>#CC33CC</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2D Capture - RFI</fullName>
+                <closed>false</closed>
+                <color>#993399</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2E Capture - RFP</fullName>
+                <closed>false</closed>
+                <color>#A845DC</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3 Submitted</fullName>
+                <closed>false</closed>
+                <color>#3366FF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>30</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3-5-Post-Submittal</fullName>
+                <closed>false</closed>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>30</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3A Capture - Proposal Submitted</fullName>
+                <closed>false</closed>
+                <color>#3333FF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>30</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3B Capture - Short List</fullName>
+                <closed>false</closed>
+                <color>#3333FF</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>30</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3C Capture - Interview</fullName>
+                <closed>false</closed>
+                <color>#000099</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>30</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4 Project on hold</fullName>
+                <closed>false</closed>
+                <color>#F3D904</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>20</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5 SNB/Win/Award</fullName>
+                <closed>false</closed>
+                <color>#33FF33</color>
+                <default>false</default>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>50</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5A Program in Negotiation</fullName>
+                <closed>false</closed>
+                <color>#66FF99</color>
+                <default>false</default>
+                <description>AECOM has been notified of the award, and the program/contract is currently in negotiation. Contract has not been and no task orders have been awarded.</description>
+                <forecastCategory>Pipeline</forecastCategory>
+                <probability>90</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5B Program Signed and Active</fullName>
+                <closed>true</closed>
+                <color>#78C953</color>
+                <default>false</default>
+                <description>Active program – contract has been signed and AECOM is receiving or awaiting task order assignments. Opportunity stays in this stage during the period of performance, moving to 6A when the period of performance ends.</description>
+                <forecastCategory>Closed</forecastCategory>
+                <probability>100</probability>
+                <won>true</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>6 Contracted/Booked/Won</fullName>
+                <closed>true</closed>
+                <color>#009900</color>
+                <default>false</default>
+                <forecastCategory>Closed</forecastCategory>
+                <probability>100</probability>
+                <won>true</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>6A Program Closed/Completed</fullName>
+                <closed>true</closed>
+                <color>#419249</color>
+                <default>false</default>
+                <description>Closed program – contract term has expired, period of performance has ended, or contract ceiling has been reached. No additional task orders are expected.</description>
+                <forecastCategory>Closed</forecastCategory>
+                <probability>100</probability>
+                <won>true</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>7 Canceled by Client</fullName>
+                <closed>true</closed>
+                <color>#DDDDDD</color>
+                <default>false</default>
+                <forecastCategory>Omitted</forecastCategory>
+                <probability>0</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>8 No-Go</fullName>
+                <closed>true</closed>
+                <color>#999999</color>
+                <default>false</default>
+                <forecastCategory>Omitted</forecastCategory>
+                <probability>0</probability>
+                <won>false</won>
+            </picklistValues>
+            <picklistValues>
+                <fullName>9 Lost</fullName>
+                <closed>true</closed>
+                <color>#666666</color>
+                <default>false</default>
+                <forecastCategory>Omitted</forecastCategory>
+                <probability>0</probability>
+                <won>false</won>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
     <recordTypes>
         <fullName>Program_MS</fullName>
         <active>true</active>
         <businessProcess>MS Sales Process</businessProcess>
         <label>Program - MS</label>
+        <picklistValues>
+            <picklist>AECOM_Recompete__c</picklist>
+            <values>
+                <fullName>AECOM Recompete</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>N%2FA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Opportunity</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Non-AECOM Recompete</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
         <picklistValues>
             <picklist>Contract_Type__c</picklist>
             <values>
@@ -213,11 +559,11 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cost Plus Percent Fee</fullName>
+                <fullName>Cost Plus Incentive Fee</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cost Plus incentive fee</fullName>
+                <fullName>Cost Plus Percent Fee</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -457,6 +803,25 @@
         <description>This is used for legacy URS Management Services projects.</description>
         <label>Project - MS</label>
         <picklistValues>
+            <picklist>AECOM_Recompete__c</picklist>
+            <values>
+                <fullName>AECOM Recompete</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>N%2FA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Opportunity</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Non-AECOM Recompete</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Contract_Type__c</picklist>
             <values>
                 <fullName>Cost Plus Award Fee</fullName>
@@ -467,11 +832,11 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cost Plus Percent Fee</fullName>
+                <fullName>Cost Plus Incentive Fee</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cost Plus incentive fee</fullName>
+                <fullName>Cost Plus Percent Fee</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -710,6 +1075,25 @@
         <businessProcess>MS Sales Process</businessProcess>
         <label>Task Order - MS</label>
         <picklistValues>
+            <picklist>AECOM_Recompete__c</picklist>
+            <values>
+                <fullName>AECOM Recompete</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>N%2FA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Opportunity</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Non-AECOM Recompete</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Contract_Type__c</picklist>
             <values>
                 <fullName>Cost Plus Award Fee</fullName>
@@ -720,11 +1104,11 @@
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cost Plus Percent Fee</fullName>
+                <fullName>Cost Plus Incentive Fee</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Cost Plus incentive fee</fullName>
+                <fullName>Cost Plus Percent Fee</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -958,6 +1342,26 @@
         </picklistValues>
     </recordTypes>
     <validationRules>
+        <fullName>AECOM_Recompete_Competition_Type</fullName>
+        <active>true</active>
+        <description>AECOM Recompete and Competition Type are required for all MS Record Types for Stages 0,1,2,3 and 5</description>
+        <errorConditionFormula>AND(NOT(CONTAINS( $User.CommunityNickname, &apos;SystemNA&apos;)) ,
+NOT(CONTAINS( $Profile.Name, &apos;API Access&apos;)),
+NOT(CONTAINS( $User.CommunityNickname, &apos;APIC&apos;)),
+AND(CONTAINS( $RecordType.Name ,&quot;MS&quot;),
+
+OR(BEGINS(TEXT( StageName ),&quot;0-1-Qualification&quot;),
+BEGINS(TEXT( StageName ),&quot;1&quot;),
+BEGINS(TEXT( StageName ),&quot;2&quot;),
+BEGINS(TEXT( StageName ),&quot;3&quot;),
+BEGINS(TEXT( StageName ),&quot;5&quot;)),
+
+OR(ISPICKVAL( AECOM_Recompete__c ,&apos;&apos;),
+ISPICKVAL( Competition_Type__c ,&apos;&apos;)
+)))</errorConditionFormula>
+        <errorMessage>AECOM Recompete (Opportunity Detail section) and Competition Type (Opportunity Detail section) are required for MS Opportunities in Stages 1,2,3 and 5.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>Ceiling_Amount_and_Program_IDIQ_Required</fullName>
         <active>true</active>
         <description>Ceiling Amount Total and Program IDIQ Type fields required for Program - MS Opportunities.</description>
@@ -1010,7 +1414,7 @@ ISNULL( Link_to_Proposal_File__c )
 ))</errorConditionFormula>
         <errorMessage>Link to Proposal File is required for MS Opportunities in Stage 2-4 Proposal,3 and 5 and MS Priority = 1 or 2.</errorMessage>
     </validationRules>
-    <validationRules>
+	<validationRules>
         <fullName>MS_Required_Fields</fullName>
         <active>true</active>
         <description>These fields are required for all MS Record Types for Stages 1,2,3 and 5:
@@ -1041,8 +1445,8 @@ Contract Type, Pricing Lead, Project Manager, Bid Manager, Acquisition Strategy,
     <validationRules>
         <fullName>MS_Required_Fields_Stage_0_1_2_3_and_5</fullName>
         <active>true</active>
-        <description>These fields are required for all MS Record Types for Stages 0,1,2,3 and 5:
-Date RFP Received, Submittal Date Proposal, Estimated Work Start Date, Contract Est Months, AECOM Recompete and Competition Type.</description>
+        <description>These fields (Key Dates section) are required for all MS Record Types for Stages 0,1,2,3 and 5:
+Date RFP Received, Submittal Date Proposal, Estimated Work Start Date, Contract Est Months.</description>
         <errorConditionFormula>AND(NOT(CONTAINS( $User.CommunityNickname, &apos;SystemNA&apos;)) ,
 NOT(CONTAINS( $Profile.Name, &apos;API Access&apos;)),
 NOT(CONTAINS( $User.CommunityNickname, &apos;APIC&apos;)),
@@ -1057,11 +1461,9 @@ BEGINS(TEXT( StageName ),&quot;5&quot;)),
 OR(ISNULL( Date_RFP_received__c ),
 ISNULL( Submittal_Date_Proposal__c ),
 ISNULL( Estimated_work_start_date__c ),
-ISNULL( Contract_Est_Months__c ),
-ISPICKVAL( AECOM_Recompete__c ,&apos;&apos;),
-ISPICKVAL( Competition_Type__c ,&apos;&apos;)
+ISNULL( Contract_Est_Months__c )
 )))</errorConditionFormula>
-        <errorMessage>These fields are required for MS Opportunities in Stages 1,2,3,5: Date RFP Received, Submittal Date Proposal, Estimated Work Start Date, Contract Est Months, AECOM Recompete and Competition Type.</errorMessage>
+        <errorMessage>These fields are required for MS Opportunities in Stages 1,2,3,5: Date RFP Received (Key Dates section), Submittal Date Proposal (Key Dates section), Estimated Work Start Date (Key Dates section), Contract Est Months (Key Dates section).</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>Primary_BD_MS_Priority_Total_Award</fullName>
@@ -1095,6 +1497,28 @@ BEGINS(TEXT( StageName ),&quot;3-5-Post-Submittal&quot;)
 )</errorConditionFormula>
         <errorDisplayField>Probability_Stage__c</errorDisplayField>
         <errorMessage>Probability must be greater than 10% for MS Opportunities in Stage: 2-3-Pre-proposal or 2-4-Proposal or 3-5-Post-Submittal.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Project_Manager_Bid_Manager_Required</fullName>
+        <active>true</active>
+        <description>These fields are required for all MS Record Types for Stages 1,2,3 and 5:
+Project Manager and Bid Manager</description>
+        <errorConditionFormula>AND(NOT(CONTAINS( $User.CommunityNickname, &apos;SystemNA&apos;)) ,
+NOT(CONTAINS( $Profile.Name, &apos;API Access&apos;)),
+NOT(CONTAINS( $User.CommunityNickname, &apos;APIC&apos;)),
+AND(CONTAINS( $RecordType.Name ,&quot;MS&quot;),
+
+OR(BEGINS(TEXT( StageName ),&quot;1&quot;),
+BEGINS(TEXT( StageName ),&quot;2&quot;),
+BEGINS(TEXT( StageName ),&quot;3&quot;),
+BEGINS(TEXT( StageName ),&quot;5&quot;)
+)
+,
+
+OR(ISBLANK( Project_ManagerUser__c  ), 
+ISBLANK( Bid_ManagerUser__c )
+)))</errorConditionFormula>
+        <errorMessage>Project Manager (Team section) and Bid Manager (Team section) are required for MS Opportunities in Stages 1,2,3 and 5.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>Proposal_Location_Required_for_MS</fullName>

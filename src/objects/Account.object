@@ -4490,6 +4490,176 @@ CountryLookup__r.Name ))))))))))</formula>
         <trackHistory>false</trackHistory>
         <type>Picklist</type>
     </fields>
+<fields>
+        <fullName>Account_Survey_Rating__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Average_Likelihood_to_recommend_AECOM__c  &lt;= 6, IMAGE(&quot;https://aecom--npssurvey--c.cs7.content.force.com/servlet/servlet.FileDownload?file=015M0000000XIyp&quot;, &quot;Detractor&quot;), 
+IF(Average_Likelihood_to_recommend_AECOM__c &gt;=8.5, IMAGE(&quot;https://aecom--npssurvey--c.cs7.content.force.com/servlet/servlet.FileDownload?file=015M0000000XIz4&quot;,&quot;Promoter&quot;), 
+IMAGE(&quot;https://aecom--npssurvey--c.cs7.content.force.com/servlet/servlet.FileDownload?file=015M0000000XIyz&quot;, &quot;Passive&quot;)))</formula>
+        <label>Net Promoter Score</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Average_Likelihood_to_recommend_AECOM__c</fullName>
+        <externalId>false</externalId>
+        <formula>sumoflikelihoodtorecommend__c  /  Count_of_Survey_Responses__c</formula>
+        <label>Average Likelihood to recommend AECOM</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CFM_DNS_Reason__c</fullName>
+        <description>Tracks the Reason for choosing Do Not Survey on the Account record.</description>
+        <externalId>false</externalId>
+        <label>DNS Reason</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Do_Not_Survey__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Marks the Account as Do Not Survey</description>
+        <externalId>false</externalId>
+        <label>Do Not Survey</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Last_Survey_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Survey Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Count_of_Survey_Responses__c</fullName>
+        <externalId>false</externalId>
+        <label>Count of Survey Responses</label>
+        <summaryForeignKey>CFM_Survey_Response__c.Account__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>NPS_Response_Ratio__c</fullName>
+        <externalId>false</externalId>
+        <formula>IMAGE(&quot;https://aecom--npssurvey--c.cs7.content.force.com/servlet/servlet.FileDownload?file=015M0000000XTYi&quot;,&quot;NPS Ratio&quot;, 275,325)</formula>
+        <label>NPS Response Ratio</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NPS_Score_NUM__c</fullName>
+        <externalId>false</externalId>
+        <formula>(((Number_of_promoters__c / Count_of_Survey_Responses__c)*100)-((Number_of_Detractors__c / Count_of_Survey_Responses__c)*100))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NPS Score NUM</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackHistory>false</trackHistory>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NPS_Score__c</fullName>
+        <externalId>false</externalId>
+        <formula>((Number_of_promoters__c / Count_of_Survey_Responses__c)-(Number_of_Detractors__c / Count_of_Survey_Responses__c))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NPS Score</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackHistory>false</trackHistory>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Number_of_Detractors__c</fullName>
+        <externalId>false</externalId>
+        <label>Number of Detractors</label>
+        <summaryFilterItems>
+            <field>CFM_Survey_Response__c.Likelihood_to_Recommend__c</field>
+            <operation>lessOrEqual</operation>
+            <value>6</value>
+        </summaryFilterItems>
+        <summaryForeignKey>CFM_Survey_Response__c.Account__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Number_of_Passive__c</fullName>
+        <externalId>false</externalId>
+        <label>Number of Passive</label>
+        <summaryFilterItems>
+            <field>CFM_Survey_Response__c.Likelihood_to_Recommend__c</field>
+            <operation>greaterThan</operation>
+            <value>6</value>
+        </summaryFilterItems>
+        <summaryFilterItems>
+            <field>CFM_Survey_Response__c.Likelihood_to_Recommend__c</field>
+            <operation>lessThan</operation>
+            <value>9</value>
+        </summaryFilterItems>
+        <summaryForeignKey>CFM_Survey_Response__c.Account__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Number_of_promoters__c</fullName>
+        <externalId>false</externalId>
+        <label>Number of promoters</label>
+        <summaryFilterItems>
+            <field>CFM_Survey_Response__c.Likelihood_to_Recommend__c</field>
+            <operation>greaterThan</operation>
+            <value>8</value>
+        </summaryFilterItems>
+        <summaryForeignKey>CFM_Survey_Response__c.Account__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Oracle_Only_Read_Only__c</fullName>
+        <description>Read only notification to users for Oracle Only Accounts.</description>
+        <externalId>false</externalId>
+        <formula>&quot;This Account has been created by Oracle and is for linking customer survey results only. This Account is Read Only and cannot be edited. If a matching Salesforce account exists- please add the Oracle Customer ID from this Account to the Existing Salesforce Account.&quot;</formula>
+        <label>.</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>sumoflikelihoodtorecommend__c</fullName>
+        <externalId>false</externalId>
+        <label>Sum of Likelihood to recommend</label>
+        <summaryForeignKey>CFM_Survey_Response__c.Account__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <type>Summary</type>
+    </fields>
     <listViews>
         <fullName>AGL_Resources</fullName>
         <booleanFilter>1 OR 2</booleanFilter>
