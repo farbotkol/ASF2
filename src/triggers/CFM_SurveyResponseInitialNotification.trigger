@@ -9,8 +9,7 @@ trigger CFM_SurveyResponseInitialNotification on CFM_Survey_Response__c (after i
     }
 
     // Get the project manager/project director information
-    Map<Id, Project__c> projects = new Map<Id, Project__c>([Select Id, Oracle_Project_Manager_lookup__c, Oracle_Project_Director__c, CFM_Department__r.Area__c, CFM_Department__r.Operating_Group__c, CFM_Department__r.Business_Line_Lookup__c
-                                    from Project__c where Id in :projectIds]);
+    Map<Id, Project__c> projects = new Map<Id, Project__c>([Select Id, Oracle_Project_Manager_lookup__c, Oracle_Project_Director__c from Project__c where Id in :projectIds]);
 
 
     List<Id> usersNeedingNotification = new List<Id>();
