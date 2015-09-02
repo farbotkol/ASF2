@@ -2943,6 +2943,32 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
+     <fields>
+        <fullName>AECOM_Firm__c</fullName>
+        <description>Placeholder for AECOM Firm names.</description>
+        <externalId>false</externalId>
+        <formula>&quot;AECOM&quot;</formula>
+        <label>AECOM Firm</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CFM_Account_Days_Since_Last_Survey__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISNULL(  Owner__r.CFM_Last_Survey_Date__c  ), 9999, TODAY() - Owner__r.CFM_Last_Survey_Date__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Days Since Last Survey</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
     <fields>
         <fullName>CFM_Account_Do_Not_Survey__c</fullName>
         <description>Account Do Not Survey</description>
@@ -3012,20 +3038,6 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CFM_Department__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
-        <externalId>false</externalId>
-        <label>Department</label>
-        <referenceTo>AECOM_Primary_Department__c</referenceTo>
-        <relationshipLabel>Project Profiles</relationshipLabel>
-        <relationshipName>Project_Profiles</relationshipName>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>CFM_Do_Not_Survey__c</fullName>
@@ -3339,42 +3351,6 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <type>Date</type>
     </fields>
     <fields>
-        <fullName>OracleDepartmentBusinessLine__c</fullName>
-        <externalId>false</externalId>
-        <formula>CFM_Department__r.Business_Line_Lookup__r.Name</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Oracle Department Business Line</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>OracleDepartmentDistrict__c</fullName>
-        <externalId>false</externalId>
-        <formula>CFM_Department__r.Lead_District__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Oracle Department District</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>OracleDepartmentLeadRegion__c</fullName>
-        <externalId>false</externalId>
-        <formula>CFM_Department__r.Lead_Region__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Oracle Department Lead Region</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>OracleEstimatedCompletionDate__c</fullName>
         <externalId>false</externalId>
         <label>Oracle Date Estimated Completion</label>
@@ -3573,7 +3549,7 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <externalId>false</externalId>
         <label>Oracle Project Director</label>
         <referenceTo>User</referenceTo>
-        <relationshipName>Project_Profiles</relationshipName>
+        <relationshipName>Project_Profiles_PD</relationshipName>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
