@@ -16,6 +16,7 @@ public class CFM_DefaultInclusionCriteriaController {
 		// Must do setup in Page action as DML in constructor is not allowed
 
 		defaultInclusionCriteria = CFM_SavedSearch.find.findDefaultInclusionCriteria();
+        showFilterLogic = false;
 
 		if (defaultInclusionCriteria == null) {
 			setupLogicRows();
