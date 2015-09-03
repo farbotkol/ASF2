@@ -3,7 +3,11 @@
     <defaultLandingTab>standard-home</defaultLandingTab>
     <description>Customer Feedback Management application to manage survey responses and cases</description>
     <label>CFM</label>
+<<<<<<< HEAD
     <logo>Logo/AECOM_logo.png</logo>
+=======
+    <logo>Logo/AECOM_logo_nps.png</logo>
+>>>>>>> INT
     <tab>standard-Account</tab>
     <tab>standard-Contact</tab>
     <tab>Project__c</tab>
