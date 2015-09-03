@@ -4,6 +4,7 @@
     <customButtons>Convert_to_Program</customButtons>
     <customButtons>Add_Service_CO_Variation</customButtons>
     <customButtons>Create_Project_Profile</customButtons>
+    <customButtons>CoveoInsightPopup</customButtons>
     <excludeButtons>Clone</excludeButtons>
     <excludeButtons>Share</excludeButtons>
     <excludeButtons>Submit</excludeButtons>
@@ -11,7 +12,20 @@
         <customLabel>true</customLabel>
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
-        <label>Fields</label>
+        <label>New Section</label>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Record_Type_Bar_del__c</field>
+            </layoutItems>
+        </layoutColumns>
+        <style>OneColumn</style>
+    </layoutSections>
+    <layoutSections>
+        <customLabel>false</customLabel>
+        <detailHeading>false</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Opportunity Information</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Readonly</behavior>
@@ -30,12 +44,20 @@
                 <field>MS_Stage__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>Probability</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>Probability_Stage__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Enterprise_Service__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Practice_Area_of_Primary_AECOM_Dept__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -69,11 +91,30 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Enterprise_Service__c</field>
+                <field>Change_Order_Add_Services__c</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Required</behavior>
+                <field>CurrencyIsoCode</field>
+            </layoutItems>
+        </layoutColumns>
+        <style>TwoColumnsTopToBottom</style>
+    </layoutSections>
+    <layoutSections>
+        <customLabel>true</customLabel>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Restricted Information</label>
+        <layoutColumns>
+            <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Change_Order_Add_Services__c</field>
+                <field>Restricted__c</field>
+            </layoutItems>
+        </layoutColumns>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Restricted_Project_Comments__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
@@ -89,7 +130,7 @@
                 <field>Total_Award_Value__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>Amount</field>
             </layoutItems>
             <layoutItems>
@@ -100,11 +141,21 @@
                 <behavior>Readonly</behavior>
                 <field>Net_Revenue_TO_Project__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>B_P_Budget__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
+                <emptySpace>true</emptySpace>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>Forecast_Net_amount__c</field>
+            </layoutItems>
+            <layoutItems>
+                <emptySpace>true</emptySpace>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
@@ -113,10 +164,6 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>B_P_Actual_to_date__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>B_P_Budget__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
@@ -128,7 +175,7 @@
         <label>Priority Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Readonly</behavior>
+                <behavior>Edit</behavior>
                 <field>MS_Priority__c</field>
             </layoutItems>
             <layoutItems>
@@ -155,7 +202,7 @@
         <label>Client Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>AccountId</field>
             </layoutItems>
             <layoutItems>
@@ -201,10 +248,6 @@
                 <behavior>Readonly</behavior>
                 <field>Primary_Department_read_only__c</field>
             </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Practice_Area_of_Primary_AECOM_Dept__c</field>
-            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
@@ -216,7 +259,7 @@
                 <field>Project_State_Province__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>ProjectCountry__c</field>
             </layoutItems>
         </layoutColumns>
@@ -229,7 +272,7 @@
         <label>Team</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>Capture_Manager_User__c</field>
             </layoutItems>
             <layoutItems>
@@ -340,6 +383,10 @@
                 <behavior>Edit</behavior>
                 <field>Initial_RFP_Date__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Book_date__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>
@@ -347,7 +394,7 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>Post-Proposal Information</label>
+        <label>Post Proposal Information</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -395,23 +442,18 @@
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Total_Submitted_Price__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Total_Evaluated_Price__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Target_Price_From_PTW__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>Pricing_SharePoint_Log_ID__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
+                <field>Pricing_Lead__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
                 <field>Additional_Pricing_Resource__c</field>
+            </layoutItems>
+            <layoutItems>
+                <emptySpace>true</emptySpace>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -434,22 +476,15 @@
                 <field>RFP_Mandated_Labor_Categories__c</field>
             </layoutItems>
             <layoutItems>
+                <emptySpace>true</emptySpace>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>PTW_Performed__c</field>
             </layoutItems>
-        </layoutColumns>
-        <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Pricing_Notes__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Pricing_Lead__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Net_Margin_Percent__c</field>
+                <field>Weighted_Average_Sell_Rate__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -457,7 +492,28 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Weighted_Average_Sell_Rate__c</field>
+                <field>of_Submitted_Price_Tied_to_Plug_Value__c</field>
+            </layoutItems>
+        </layoutColumns>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Total_Submitted_Price__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Total_Evaluated_Price__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Target_Price_From_PTW__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Net_Margin_Percent__c</field>
+            </layoutItems>
+            <layoutItems>
+                <emptySpace>true</emptySpace>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -469,17 +525,20 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>of_Submitted_Price_Tied_to_Plug_Value__c</field>
+                <field>Customer_Indicated_Should_Adjust_Price__c</field>
+            </layoutItems>
+            <layoutItems>
+                <emptySpace>true</emptySpace>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Customer_Indicated_Should_Adjust_Price__c</field>
+                <field>Pricing_Notes__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>
     <layoutSections>
-        <customLabel>true</customLabel>
+        <customLabel>false</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
         <label>System Information</label>
@@ -510,8 +569,16 @@
         <style>TwoColumnsLeftToRight</style>
     </layoutSections>
     <layoutSections>
+        <customLabel>false</customLabel>
+        <detailHeading>false</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Description Information</label>
+        <layoutColumns/>
+        <style>OneColumn</style>
+    </layoutSections>
+    <layoutSections>
         <customLabel>true</customLabel>
-        <detailHeading>true</detailHeading>
+        <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
         <label>Custom Links</label>
         <layoutColumns/>
@@ -519,6 +586,38 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
+    <quickActionList>
+        <quickActionListItems>
+            <quickActionName>FeedItem.TextPost</quickActionName>
+        </quickActionListItems>
+        <quickActionListItems>
+            <quickActionName>FeedItem.ContentPost</quickActionName>
+        </quickActionListItems>
+        <quickActionListItems>
+            <quickActionName>Opportunity.Add_Me</quickActionName>
+        </quickActionListItems>
+        <quickActionListItems>
+            <quickActionName>NewTask</quickActionName>
+        </quickActionListItems>
+        <quickActionListItems>
+            <quickActionName>LogACall</quickActionName>
+        </quickActionListItems>
+        <quickActionListItems>
+            <quickActionName>NewCase</quickActionName>
+        </quickActionListItems>
+        <quickActionListItems>
+            <quickActionName>NewNote</quickActionName>
+        </quickActionListItems>
+        <quickActionListItems>
+            <quickActionName>NewEvent</quickActionName>
+        </quickActionListItems>
+        <quickActionListItems>
+            <quickActionName>FeedItem.LinkPost</quickActionName>
+        </quickActionListItems>
+        <quickActionListItems>
+            <quickActionName>FeedItem.PollPost</quickActionName>
+        </quickActionListItems>
+    </quickActionList>
     <relatedContent>
         <relatedContentItems>
             <layoutItem>
@@ -534,27 +633,70 @@
         </relatedContentItems>
     </relatedContent>
     <relatedLists>
+        <customButtons>New_Opportunity_Team_Member</customButtons>
+        <excludeButtons>New</excludeButtons>
         <fields>NAME</fields>
+        <fields>Full_Name__c</fields>
+        <fields>Role__c</fields>
+        <fields>Status__c</fields>
+        <fields>InActive_Date__c</fields>
+        <fields>Office__c</fields>
+        <fields>Business_Line__c</fields>
+        <fields>Email__c</fields>
+        <fields>Phone__c</fields>
         <relatedList>AECOM_team__c.Opportunity__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>CAMPAIGN.NAME</fields>
+        <fields>CONTACT.FULL_NAME</fields>
+        <fields>OCR.ROLE</fields>
+        <fields>CM.RESPONDED</fields>
+        <fields>PRIMARY</fields>
+        <relatedList>RelatedCampaignInfluenceList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>ACCOUNT.NAME</fields>
+        <fields>PARTNER.PRIMARY</fields>
+        <fields>PARTNER.ROLE</fields>
+        <fields>ACCOUNT.ADDRESS1_CITY</fields>
+        <relatedList>RelatedPartnerList</relatedList>
     </relatedLists>
     <relatedLists>
         <relatedList>RelatedContactRoleList</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>ACCOUNT.NAME</fields>
-        <fields>PARTNER.ROLE</fields>
-        <fields>PARTNER.PRIMARY</fields>
-        <relatedList>RelatedPartnerList</relatedList>
+        <fields>TASK.SUBJECT</fields>
+        <fields>CORE.USERS.FULL_NAME</fields>
+        <fields>EVENT.START_DATE_TIME</fields>
+        <fields>EVENT.END_DATE_TIME</fields>
+        <fields>Level_of_Effort__c</fields>
+        <fields>TASK.DUE_DATE</fields>
+        <fields>TASK.WHO_NAME</fields>
+        <relatedList>RelatedActivityList</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>NAME</fields>
+        <fields>TASK.SUBJECT</fields>
+        <fields>ACTIVITY.TASK</fields>
+        <fields>TASK.DUE_DATE</fields>
+        <fields>TASK.WHO_NAME</fields>
+        <fields>CORE.USERS.FULL_NAME</fields>
+        <fields>TASK.LAST_UPDATE</fields>
+        <relatedList>RelatedHistoryList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <relatedList>RelatedNoteList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <customButtons>New_Edit_Opportunity_Departments</customButtons>
+        <excludeButtons>New</excludeButtons>
         <fields>AECOM_Department__c</fields>
+        <fields>Primary__c</fields>
         <fields>split__c</fields>
+        <fields>Revenue_Split_TO_Proj__c</fields>
+        <fields>TO_Project_Net_Revenue__c</fields>
         <fields>Practice_Area__c</fields>
+        <fields>Sub_Practice_Area__c</fields>
         <fields>Business_Line__c</fields>
-        <fields>Department_Name__c</fields>
-        <fields>End_Market__c</fields>
-        <fields>Geography__c</fields>
         <fields>Legacy_Company__c</fields>
         <relatedList>Opportunity_Department__c.Opportunity__c</relatedList>
     </relatedLists>
@@ -568,58 +710,14 @@
         <relatedList>Opportunity.Original_Opportunity__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>TASK.SUBJECT</fields>
-        <fields>TASK.WHO_NAME</fields>
-        <fields>ACTIVITY.TASK</fields>
-        <fields>TASK.DUE_DATE</fields>
-        <fields>TASK.STATUS</fields>
-        <fields>TASK.PRIORITY</fields>
-        <fields>CORE.USERS.FULL_NAME</fields>
-        <relatedList>RelatedActivityList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>TASK.SUBJECT</fields>
-        <fields>TASK.WHO_NAME</fields>
-        <fields>ACTIVITY.TASK</fields>
-        <fields>TASK.DUE_DATE</fields>
-        <fields>CORE.USERS.FULL_NAME</fields>
-        <fields>TASK.LAST_UPDATE</fields>
-        <relatedList>RelatedHistoryList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <relatedList>RelatedNoteList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>CAMPAIGN.NAME</fields>
-        <fields>CONTACT.FULL_NAME</fields>
-        <fields>OCR.ROLE</fields>
-        <fields>CM.RESPONDED</fields>
-        <fields>PRIMARY</fields>
-        <relatedList>RelatedCampaignInfluenceList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <fields>Decision__c</fields>
-        <fields>Approver__c</fields>
-        <fields>LAST_UPDATE</fields>
-        <fields>CREATEDBY_USER</fields>
-        <relatedList>Go_No_Go_Conversation__c.Opportunity__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <fields>Review_Request_Type__c</fields>
-        <fields>Client_Vendor__c</fields>
-        <fields>Opportunity_Name__c</fields>
-        <fields>Contract_Type__c</fields>
-        <fields>Status_Review__c</fields>
-        <fields>Date_Required__c</fields>
-        <relatedList>Contract_Review__c.Opportunity__c</relatedList>
-    </relatedLists>
-    <relatedLists>
         <relatedList>RelatedOpportunityHistoryList</relatedList>
     </relatedLists>
     <relatedLists>
         <relatedList>RelatedEntityHistoryList</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <relatedList>Forms__c.Opportunity__c</relatedList>
     </relatedLists>
     <relatedObjects>AccountId</relatedObjects>
     <showEmailCheckbox>false</showEmailCheckbox>
@@ -628,7 +726,7 @@
     <showRunAssignmentRulesCheckbox>false</showRunAssignmentRulesCheckbox>
     <showSubmitAndAttachButton>false</showSubmitAndAttachButton>
     <summaryLayout>
-        <masterLabel>00h19000001WlSU</masterLabel>
+        <masterLabel>00he0000000NRtG</masterLabel>
         <sizeX>4</sizeX>
         <sizeY>0</sizeY>
         <summaryLayoutStyle>Default</summaryLayoutStyle>

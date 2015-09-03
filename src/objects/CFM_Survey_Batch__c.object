@@ -1,0 +1,382 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>CFM: Enables Survey Admin to search for projects and generate a batch of projects (random and manual) to be surveyed.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Description__c</fullName>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Manual_Batch_Projects__c</fullName>
+        <description># of manually-added projects included in the survey batch</description>
+        <externalId>false</externalId>
+        <inlineHelpText># of manually-added projects included in the survey batch</inlineHelpText>
+        <label># Manual Batch Projects</label>
+        <summaryFilterItems>
+            <field>CFM_Survey_Batch_Project__c.Add_Method__c</field>
+            <operation>equals</operation>
+            <value>Manual Selection</value>
+        </summaryFilterItems>
+        <summaryForeignKey>CFM_Survey_Batch_Project__c.Survey_Batch__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+<<<<<<< HEAD
+=======
+        <fullName>No_Action__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Total_Batch_Projects__c == 0, 0, (Total_Batch_Projects__c - (PM_Confirmed_Projects__c + PM_Rejected_Projects__c )) / Total_Batch_Projects__c)</formula>
+        <label>% No Action</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+>>>>>>> INT
+        <fullName>PM_Confirmed_Projects__c</fullName>
+        <description># of PM confirmed projects to date</description>
+        <externalId>false</externalId>
+        <inlineHelpText># of PM confirmed projects to date</inlineHelpText>
+        <label># PM Confirmed Projects</label>
+        <summaryFilterItems>
+            <field>CFM_Survey_Batch_Project__c.PM_Status__c</field>
+            <operation>equals</operation>
+            <value>Confirmed</value>
+        </summaryFilterItems>
+        <summaryForeignKey>CFM_Survey_Batch_Project__c.Survey_Batch__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>PM_Rejected_Projects__c</fullName>
+        <description># of PM requests for project exclusion from survey batch</description>
+        <externalId>false</externalId>
+        <inlineHelpText># of PM requests for project exclusion from survey batch</inlineHelpText>
+        <label># PM Rejected Projects</label>
+        <summaryFilterItems>
+            <field>CFM_Survey_Batch_Project__c.PM_Status__c</field>
+            <operation>equals</operation>
+            <value>Rejected</value>
+        </summaryFilterItems>
+        <summaryForeignKey>CFM_Survey_Batch_Project__c.Survey_Batch__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+<<<<<<< HEAD
+=======
+        <fullName>Projects_Confirmed__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Total_Batch_Projects__c == 0, 0, PM_Confirmed_Projects__c / Total_Batch_Projects__c)</formula>
+        <label>% Projects Confirmed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Projects_Rejected__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(Total_Batch_Projects__c == 0, 0, PM_Rejected_Projects__c  / Total_Batch_Projects__c)</formula>
+        <label>% Projects Rejected</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+>>>>>>> INT
+        <fullName>Purpose__c</fullName>
+        <externalId>false</externalId>
+        <label>Purpose</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Random_Batch_Projects__c</fullName>
+        <description># of randomly added projects included in the survey batch</description>
+        <externalId>false</externalId>
+        <inlineHelpText># of randomly added projects included in the survey batch</inlineHelpText>
+        <label># Random Batch Projects</label>
+        <summaryFilterItems>
+            <field>CFM_Survey_Batch_Project__c.Add_Method__c</field>
+            <operation>equals</operation>
+            <value>Random</value>
+        </summaryFilterItems>
+        <summaryForeignKey>CFM_Survey_Batch_Project__c.Survey_Batch__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <description>Survey batch status</description>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>New</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pending PM review</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Closed but not sent</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pending Qualtrics submittal</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sent to Qualtrics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Survey_Close_Date__c</fullName>
+        <description>Date the survey projects will be closed for confirmation/exclusion requests by PMs</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Date the survey projects will be closed for confirmation/exclusion requests by PMs</inlineHelpText>
+        <label>Survey Close Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Survey_Name__c</fullName>
+        <description>Name for the survey to describe the filter criteria</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Name for the survey describing the filter criteria</inlineHelpText>
+        <label>Survey Name</label>
+        <length>100</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Survey_Sent_Date__c</fullName>
+        <description>Date survey batch was sent to Qualtrics</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Date survey batch was sent to Qualtrics</inlineHelpText>
+        <label>Survey Sent Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Target_Survey_Date__c</fullName>
+        <description>Date survey batch is planned to be sent to Qualtrics</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Date survey batch is planned to be sent to Qualtrics</inlineHelpText>
+        <label>Target Survey Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Total_Batch_Projects__c</fullName>
+        <description>Count of the survey batch projects included in the survey batch</description>
+        <externalId>false</externalId>
+        <inlineHelpText># of projects included in the survey batch</inlineHelpText>
+        <label>Total Batch Projects</label>
+        <summaryForeignKey>CFM_Survey_Batch_Project__c.Survey_Batch__c</summaryForeignKey>
+        <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>of_Projects_PM_Reviewed__c</fullName>
+        <description>calculates Projects confirmed and rejected divided by total projects</description>
+        <externalId>false</externalId>
+        <formula>IF(Total_Batch_Projects__c == 0, 0, (PM_Confirmed_Projects__c  +  PM_Rejected_Projects__c ) /  Total_Batch_Projects__c)</formula>
+        <inlineHelpText>What % have been confirmed or rejected by PMs?</inlineHelpText>
+        <label>% of Projects PM Reviewed</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <label>Survey Batch</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Survey_Name__c</columns>
+        <columns>Target_Survey_Date__c</columns>
+        <columns>Survey_Close_Date__c</columns>
+        <columns>Survey_Sent_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>SB-{000000}</displayFormat>
+        <label>Survey Batch Number</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Survey Batches</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Survey_Name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Target_Survey_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Survey_Close_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Survey_Sent_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Survey_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Target_Survey_Date__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Survey_Name__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Target_Survey_Date__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Status__c</lookupPhoneDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Survey_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Target_Survey_Date__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>Add_Projects</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Add Projects</masterLabel>
+        <openType>sidebar</openType>
+        <page>CFM_SurveyBatchAddProjects</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Close_Survey</fullName>
+        <availability>online</availability>
+        <description>Close survey for further edits to Projects by PMs</description>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Close Survey</masterLabel>
+        <openType>sidebar</openType>
+        <page>CFM_SurveyBatchClose</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Notify_PM</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Notify PM</masterLabel>
+        <openType>sidebar</openType>
+        <page>CFM_SurveyBatchNotifyPM</page>
+        <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>Submit_Survey</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Submit to Qualtrics</masterLabel>
+        <openType>sidebar</openType>
+        <page>CFM_SurveyBatchSubmit</page>
+        <protected>false</protected>
+    </webLinks>
+</CustomObject>

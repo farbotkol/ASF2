@@ -52,12 +52,14 @@ public with sharing class ConvertProjectToTaskOrderController {
             sArea = 'APAC';
         if(projOrder.RecordType.name.indexOf('EMEA')>=0)
             sArea = 'EMEA&I';
-                   if(projOrder.RecordType.name.indexOf('Americas')>=0)
+        if(projOrder.RecordType.name.indexOf('Americas')>=0)
             sArea = 'Americas';
         if(projOrder.RecordType.name.indexOf('CS')>=0)
             sArea = 'CS';
+        if(projOrder.Recordtype.name.indexOf('MS')>=0)
+            sArea = 'MS';
         string RecordTypename ='Program - ' + sArea;
-        taskOrderNAME = 'Task_Order_'+sArea.replace(' ','_');
+        taskOrderNAME = 'Task Order - ' + sArea;
         //string RecordTypename ='Program - North America';
         //if(projOrder.RecordType.Name.indexOf('Asia')>=0)
         //    RecordTypename ='Program - Asia';
