@@ -1,0 +1,306 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>CFM: Identifies based on certain attributes the Survey Case Follow-up Owner, Escalation Owner, and Client Care owner</description>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Area__c</fullName>
+        <externalId>false</externalId>
+        <label>Area</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Business_Line__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Business Line</label>
+        <referenceTo>Business_Line__c</referenceTo>
+        <relationshipName>Survey_Case_Rules</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Hierarchy_Name__c</fullName>
+        <description>Optional name to describe the hierarchy</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Optional name to describe the hierarchy</inlineHelpText>
+        <label>Hierarchy Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Is_Default_Rule__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box if this is the default survey case rule for the system.</inlineHelpText>
+        <label>Is Default Rule</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Lead_District__c</fullName>
+        <externalId>false</externalId>
+        <label>Lead District</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Operating_Group__c</fullName>
+        <externalId>false</externalId>
+        <label>Operating Group</label>
+        <picklist>
+            <picklistValues>
+                <fullName>CS-BC</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CS-EIC</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DCS AME</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DCS APAC</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DCS EMEA+I</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>MS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Step_1_Assign_To__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Case is assigned to Follow-up Owner on Step 1</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Designates FUO that is assigned the case</inlineHelpText>
+        <label>S1 Assign To</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Survey_Case_Rules</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Step_1_Days__c</fullName>
+        <description># of business days before escalation email alerts are sent to Step 2 Assignee</description>
+        <externalId>false</externalId>
+        <inlineHelpText># of business days + survey receipt date for escalation email alert to be sent to Step 2 EO</inlineHelpText>
+        <label>Days</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Step_1_Email__c</fullName>
+        <description>This is the e-mail template that will be sent for this step.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Email Template Unique Name for email sent for Step 1</inlineHelpText>
+        <label>Email</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Step_2_Assign_To__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Designates EO that receives escalation email alert for Step 2</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Designates EO that receives escalation email alert</inlineHelpText>
+        <label>S2 Assign To</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Survey_Case_Rules1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Step_2_Days__c</fullName>
+        <description># of business days before escalation email alerts are sent to Step 3 Assignee</description>
+        <externalId>false</externalId>
+        <inlineHelpText># of business days + survey receipt date for escalation email alert to be sent to Step 3 Client Care</inlineHelpText>
+        <label>Days</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Step_2_Email__c</fullName>
+        <description>This is the e-mail template that will be sent for this step.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Email Template Unique Name for email sent for Step 2</inlineHelpText>
+        <label>Email</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Step_3_Assign_To__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Email is sent for escalation to this Client Care member on step 3</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Designates Client Care  that receives escalation email alert</inlineHelpText>
+        <label>S3 Assign To</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Survey_Case_Rules2</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Step_3_Email__c</fullName>
+        <description>This is the e-mail template that will be sent for this step.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Email Template Unique Name for email sent for Step 3</inlineHelpText>
+        <label>Email</label>
+        <length>255</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <label>Survey Case Hierarchy</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Hierarchy_Name__c</columns>
+        <columns>Operating_Group__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Is_Default_Rule__c</columns>
+        <columns>Step_1_Assign_To__c</columns>
+        <columns>Step_1_Email__c</columns>
+        <columns>Step_2_Assign_To__c</columns>
+        <columns>Step_1_Days__c</columns>
+        <columns>Step_2_Email__c</columns>
+        <columns>Step_3_Assign_To__c</columns>
+        <columns>Step_2_Days__c</columns>
+        <columns>Step_3_Email__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>SCH-{0000}</displayFormat>
+        <label>Survey Case Hierarchy Number</label>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Survey Case Hierarchies</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Hierarchy_Name__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Operating_Group__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Lead_District__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Step_1_Assign_To__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Step_1_Email__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Step_2_Assign_To__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Step_2_Email__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Is_Default_Rule__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Hierarchy_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Operating_Group__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Business_Line__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Area__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Is_Default_Rule__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Operating_Group__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Business_Line__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Area__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Hierarchy_Name__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Is_Default_Rule__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+</CustomObject>

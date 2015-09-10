@@ -1,0 +1,714 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>CFM: This record is created based on survey responses, identifies severity level, response type, case owners</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>true</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Action_Items__c</fullName>
+        <description>Action items to take based on follow up with the client.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Provide specific action items necessary to resolve client issue.</inlineHelpText>
+        <label>Action Items</label>
+        <length>32768</length>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Assignee__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Employee responsible for managing the case.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Employee who is responsible for following up with the client.</inlineHelpText>
+        <label>Assignee</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Survey_Cases</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Client_Care__c</fullName>
+        <description>This is the Client Care team member, looking up from the Survey Escalation Hierarchy Step 3 assignment.</description>
+        <externalId>false</externalId>
+        <formula>Survey_Case_Hierarchy__r.Step_3_Assign_To__r.frm_Name__c</formula>
+        <inlineHelpText>Designates who receives escalation email alert on Step 3 (Only for Level 1 &amp; 2 Cases)</inlineHelpText>
+        <label>Client Care</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Customer_Survey_Response__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Customer Survey Response</label>
+        <referenceTo>CFM_Survey_Response__c</referenceTo>
+        <relationshipName>Survey_Response_Cases</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Date_Time_Closed__c</fullName>
+        <externalId>false</externalId>
+        <label>Date/Time Closed</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Date_Time_Opened__c</fullName>
+        <externalId>false</externalId>
+        <label>Date/Time Opened</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Department__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>AECOM Department</label>
+        <referenceTo>AECOM_Primary_Department__c</referenceTo>
+        <relationshipLabel>Survey Cases</relationshipLabel>
+        <relationshipName>Survey_Cases</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Description__c</fullName>
+        <externalId>false</externalId>
+        <label>Description</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Escalation_Owner_EO__c</fullName>
+        <description>This is the Escalation Owner, looking up from the Survey Escalation Hierarchy Step 2 assignment.</description>
+        <externalId>false</externalId>
+        <formula>Survey_Case_Hierarchy__r.Step_2_Assign_To__r.frm_Name__c</formula>
+        <inlineHelpText>Designates who receives escalation email alert on Step 2</inlineHelpText>
+        <label>Escalation Owner (EO)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Escalation__c</fullName>
+        <externalId>false</externalId>
+        <label>Escalation</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Level 1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Level 2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Level 3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Follow_Up_Owner_FUO__c</fullName>
+        <description>This is the Follow-Up Owner, looking up from the Survey Escalation Hierarchy Step 1 assignment.</description>
+        <externalId>false</externalId>
+        <formula>Survey_Case_Hierarchy__r.Step_1_Assign_To__r.frm_Name__c</formula>
+        <inlineHelpText>Designates who is assigned the case on Step 1</inlineHelpText>
+        <label>Follow-Up Owner(FUO)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Follow_up_Date__c</fullName>
+        <description>Date that follow up with the client should be conducted.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter the date when client follow up should be conducted.</inlineHelpText>
+        <label>Follow up Date</label>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Follow_up_Summary__c</fullName>
+        <description>A summary of the follow up conversation.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Provide a summary of the follow up conversation with the client.</inlineHelpText>
+        <label>Follow up Summary</label>
+        <length>32768</length>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Follow_up_required__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Checked if follow-up with the client is required.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Check this box if a follow up call with the client is required.</inlineHelpText>
+        <label>Follow up required?</label>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Initial_Discussion_Date__c</fullName>
+        <description>Date of the initial discussion.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter the date when you had the initial discussion with the client.</inlineHelpText>
+        <label>Initial Discussion Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Initial_Discussion_Summary__c</fullName>
+        <description>A summary of the initial discussion with the client.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Please provide a summary of your initial discussion with the client.</inlineHelpText>
+        <label>Initial Discussion Summary</label>
+        <length>32768</length>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>25</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Last_Reminder_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Last Reminder Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Likelihood_to_Recommend__c</fullName>
+        <description>Survey response Likelihood to Recommend</description>
+        <externalId>false</externalId>
+        <formula>Customer_Survey_Response__r.Likelihood_to_Recommend__c</formula>
+        <label>Likelihood to Recommend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Next_Escalation_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Next Escalation Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Next_Reminder_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Next Reminder Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Oracle_Client_Name__c</fullName>
+        <description>Project&apos;s Oracle Client Name</description>
+        <externalId>false</externalId>
+        <formula>Survey_Batch_Project__r.Project__r.OracleClientName__c</formula>
+        <label>Oracle Client Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Project_Director__c</fullName>
+        <description>Project Profile Oracle Project Director</description>
+        <externalId>false</externalId>
+        <formula>Survey_Batch_Project__r.Project__r.Oracle_Project_Director__r.frm_Name__c</formula>
+        <label>Oracle Project Director</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Project_Manager__c</fullName>
+        <description>Project Profile Oracle Project Manager</description>
+        <externalId>false</externalId>
+        <formula>Survey_Batch_Project__r.Project__r.Oracle_Project_Manager_lookup__r.frm_Name__c</formula>
+        <label>Oracle Project Manager</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Project_Number__c</fullName>
+        <description>Project&apos;s Oracle Number</description>
+        <externalId>false</externalId>
+        <formula>Survey_Batch_Project__r.Project__r.Oracle_Project_Number__c</formula>
+        <label>Oracle Project Number</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Priority__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(
+ISPICKVAL( Severity_Level__c , &quot;Severity Level 1&quot;),
+IMAGE(&quot;/resource/CFM_Images/AECOM-Survey-Status-Icon-Level-1.png&quot;, &quot;AECOM Survey Status Icon Level 1&quot;, 20, 9),
+
+IF(
+ISPICKVAL( Severity_Level__c , &quot;Severity Level 2&quot;),
+IMAGE(&quot;/resource/CFM_Images/AECOM-Survey-Status-Icon-Level-2.png&quot;, &quot;AECOM Survey Status Icon Level 2&quot;, 20, 9),
+
+IF(
+ISPICKVAL( Severity_Level__c , &quot;Severity Level 3&quot;),
+IMAGE(&quot;/resource/CFM_Images/AECOM-Survey-Status-Icon-Level-3.png&quot;, &quot;AECOM Survey Status Icon Level 3&quot;, 20, 9),
+
+IF(
+ISPICKVAL( Severity_Level__c , &quot;Severity Level 4&quot;),
+IMAGE(&quot;/resource/CFM_Images/AECOM-Survey-Status-Icon-Level-4.png&quot;, &quot;AECOM Survey Status Icon Level 4&quot;, 20, 9),
+&quot; &quot;
+)
+)
+)
+)</formula>
+        <label>Priority</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project_Profile_Project_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Survey_Batch_Project__r.Project__r.Name</formula>
+        <label>Project Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regional_Quality_Manager__c</fullName>
+        <description>Regional Quality Manager name from AECOM Departments</description>
+        <externalId>false</externalId>
+        <formula>Department__r.Quality_Manager__r.frm_Name__c</formula>
+        <label>Regional Quality Manager</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Regional_Risk_Manager__c</fullName>
+        <description>Regional Risk Manager name from AECOM Departments</description>
+        <externalId>false</externalId>
+        <formula>Department__r.Risk_Manager__r.frm_Name__c</formula>
+        <label>Regional Risk Manager</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Request_for_Contact__c</fullName>
+        <description>Survey response client request for contact</description>
+        <externalId>false</externalId>
+        <formula>Text(Customer_Survey_Response__r.Request_for_Contact__c)</formula>
+        <label>Request for Contact</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Resolution_Date__c</fullName>
+        <description>Date that the issue will be resolved.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter a date that the client issue will be resolved.</inlineHelpText>
+        <label>Resolution Date</label>
+        <required>false</required>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Satisfaction_Health_Safety__c</fullName>
+        <description>Overall Satisfaction Health &amp; Safety score</description>
+        <externalId>false</externalId>
+        <formula>Customer_Survey_Response__r.Satisfaction_Health_Safety__c</formula>
+        <label>Satisfaction: Health + Safety</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Severity_Level__c</fullName>
+        <externalId>false</externalId>
+        <label>Severity Level</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Severity Level 1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Severity Level 2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Severity Level 3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Severity Level 4</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No Alerts</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Severity_Type__c</fullName>
+        <externalId>false</externalId>
+        <label>Severity Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Promoter, No H&amp;S, &amp; No Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Non-Detractor &amp; Contact Request</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Non-Detractor &amp; H&amp;S Issue</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Detractor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Open</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>FUO - In Progress</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>EO - In Progress</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>PM - In Progress</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>ES/Client Care - In Progress</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Closed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>true</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Subject__c</fullName>
+        <externalId>false</externalId>
+        <label>Subject</label>
+        <length>32768</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Survey_Batch_Project__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Survey Batch Project</label>
+        <referenceTo>CFM_Survey_Batch_Project__c</referenceTo>
+        <relationshipLabel>Survey Cases</relationshipLabel>
+        <relationshipName>Survey_Cases</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Survey_Case_Hierarchy__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Survey Case Hierarchy</label>
+        <referenceTo>CFM_Survey_Case_Hierarchy__c</referenceTo>
+        <relationshipLabel>Survey Cases</relationshipLabel>
+        <relationshipName>Survey_Cases</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Survey_Contact_Email__c</fullName>
+        <description>Email of survey contact designated on the Project Profile</description>
+        <externalId>false</externalId>
+        <formula>Survey_Batch_Project__r.Project__r.CFM_Survey_Contact__r.Email</formula>
+        <label>Survey Contact Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Survey_Contact_Phone__c</fullName>
+        <description>Project&apos;s Survey Contact Phone</description>
+        <externalId>false</externalId>
+        <formula>Survey_Batch_Project__r.Project__r.CFM_Survey_Contact__r.Phone</formula>
+        <label>Survey Contact Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Survey_Contact__c</fullName>
+        <description>The survey contact designated on the Project Profile</description>
+        <externalId>false</externalId>
+        <formula>Survey_Batch_Project__r.Project__r.CFM_Survey_Contact__r.FirstName &amp; &quot; &quot; &amp; Survey_Batch_Project__r.Project__r.CFM_Survey_Contact__r.LastName</formula>
+        <label>Survey Contact</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Survey_Received_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Survey Received Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <label>Survey Case</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Customer_Survey_Response__c</columns>
+<<<<<<< HEAD
+        <columns>Project_Profile_Project_Name__c</columns>
+        <columns>Escalation__c</columns>
+=======
+        <columns>Assignee__c</columns>
+        <columns>Project_Profile_Project_Name__c</columns>
+>>>>>>> INT
+        <columns>Severity_Level__c</columns>
+        <columns>Severity_Type__c</columns>
+        <columns>Date_Time_Opened__c</columns>
+        <columns>Date_Time_Closed__c</columns>
+<<<<<<< HEAD
+=======
+        <columns>Escalation__c</columns>
+>>>>>>> INT
+        <columns>Status__c</columns>
+        <columns>Priority__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <nameField>
+        <displayFormat>SC-{000000}</displayFormat>
+        <label>Survey Case Number</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Survey Cases</pluralLabel>
+    <searchLayouts>
+        <customTabListAdditionalFields>Customer_Survey_Response__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Severity_Level__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Severity_Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Escalation__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Assignee__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Customer_Survey_Response__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Severity_Level__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Severity_Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Customer_Survey_Response__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Severity_Level__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Severity_Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Escalation__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>Read</sharingModel>
+    <validationRules>
+<<<<<<< HEAD
+=======
+        <fullName>Prevent_escalation_date_delay</fullName>
+        <active>true</active>
+        <description>This validation rule prevents the user from moving the escalation date to a date in the future.</description>
+        <errorConditionFormula>AND(ISCHANGED( Next_Escalation_Date__c ), Next_Escalation_Date__c &gt; PRIORVALUE( Next_Escalation_Date__c ), NOT(ISCHANGED( Escalation__c )))</errorConditionFormula>
+        <errorMessage>You cannot move the next escalation to a later date.</errorMessage>
+    </validationRules>
+    <validationRules>
+>>>>>>> INT
+        <fullName>Require_discuss_summary_on_close</fullName>
+        <active>true</active>
+        <description>This rule requires the user to enter the initial discussion summary when the case is marked as closed.</description>
+        <errorConditionFormula>AND(LEN(Initial_Discussion_Summary__c) = 0, ISPICKVAL( Status__c , &apos;Closed&apos;) )</errorConditionFormula>
+        <errorMessage>In order to close this case you must fill out the initial discussion summary.</errorMessage>
+    </validationRules>
+</CustomObject>

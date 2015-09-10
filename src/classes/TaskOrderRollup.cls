@@ -41,6 +41,7 @@ public class TaskOrderRollup {
             for(RecordType recType1:[select id,name,DeveloperName from RecordType where RecordType.SobjectType ='Opportunity'])
             {
                 MapOpportunityRecordTypeByName.put(recType1.DeveloperName.toLowerCase(),recType1);
+                MapOpportunityRecordTypeByName.put(recType1.Name.toLowerCase(),recType1);
                 MapOpportunityRecordTypeById.put(recType1.Id,recType1);
             }
       }

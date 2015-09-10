@@ -2943,6 +2943,670 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
+     <fields>
+        <fullName>AECOM_Firm__c</fullName>
+        <description>Placeholder for AECOM Firm names.</description>
+        <externalId>false</externalId>
+        <formula>&quot;AECOM&quot;</formula>
+        <label>AECOM Firm</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CFM_Account_Days_Since_Last_Survey__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISNULL(  Owner__r.CFM_Last_Survey_Date__c  ), 9999, TODAY() - Owner__r.CFM_Last_Survey_Date__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Days Since Last Survey</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CFM_Account_Do_Not_Survey__c</fullName>
+        <description>Account Do Not Survey</description>
+        <externalId>false</externalId>
+        <formula>Owner__r.CFM_Do_Not_Survey__c</formula>
+        <label>Account Do Not Survey</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Contact_Days_Since_Last_Survey__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISNULL( CFM_Contact_Last_Survey_Date_Sent__c ), 9999,  TODAY() - CFM_Contact_Last_Survey_Date_Sent__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contact Days Since Last Survey</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CFM_Contact_Last_Survey_Date_Sent__c</fullName>
+        <externalId>false</externalId>
+        <formula>CFM_Survey_Contact__r.CFM_Last_Survey_Date_Sent__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contact Last Survey Date Sent</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>CFM_DNS_Reason__c</fullName>
+        <description>Tracks the reasoning for the Project manager to deem the project as Do Not Survey.</description>
+        <externalId>false</externalId>
+        <label>DNS Reason</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Pending Claim</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Days_Since_Last_Survey__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( ISNULL( CFM_Last_Survey_Date__c) , 9999, TODAY() -  CFM_Last_Survey_Date__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Days Since Last Survey</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CFM_Do_Not_Survey__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Marks the Project as Do Not Survey</description>
+        <externalId>false</externalId>
+        <label>Do Not Survey</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Last_Survey_Complete__c</fullName>
+        <description>Shows the date of the most recent survey that was submitted and mapped by a Survey Candidate.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Displays the Date of the most recent survey submitted by a survey candidate.</inlineHelpText>
+        <label>Last Survey Complete</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Last_Survey_Date__c</fullName>
+        <description>This is the date which the most recent Survey for this Project was distributed.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The most recent date which a survey was sent through Qualtrics to the Survey Contact.</inlineHelpText>
+        <label>Last Survey Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Survey_Contact_Do_Not_Survey__c</fullName>
+        <description>Project&apos;s Survey Contact is Do Not Survey</description>
+        <externalId>false</externalId>
+        <formula>CFM_Survey_Contact__r.CFM_Do_Not_Survey__c</formula>
+        <label>Survey Contact Do Not Survey</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Survey_Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Identifies the Contact to send the Survey of a project to.</description>
+        <externalId>false</externalId>
+        <label>Survey Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Project Profiles</relationshipLabel>
+        <relationshipName>Project_Profiles</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Survey_Project_Name__c</fullName>
+        <description>This field is used in CFM when generating a CSV file to send to Qualtrics. If the modified project name is present, it returns that value, otherwise it returns the standard project name</description>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK(Modified_Project_Name__c), Name, Modified_Project_Name__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Survey Project Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Modified_Project_Name__c</fullName>
+        <description>Allows the PM to enter a more appropriate or user friendly Project Name to be used on the Survey.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Allows the PM to enter a more appropriate or user friendly Project Name to be used on the Survey.</inlineHelpText>
+        <label>Modified Project Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OracleAecomRole__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle AECOM Role</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Prime</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Joint Venture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Subconsultant</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Joint Venture Majority Partner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>OracleBusinessLine__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Business Line</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Water</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Architecture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Building Engineering</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Construction Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DP&amp;E</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Energy</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Government Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mining and Metals</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>PCC</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Planning, Design and Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Transportation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>OracleClientName__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Client Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OracleContractType__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Contract Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Cost Plus Award Fee</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost Plus Fixed Fee</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost Plus Fixed Fee and Lump Sum</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost Plus Fixed Fee Labor Rate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost Plus Materials</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost Reimbursable</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Firm Fixed Price</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fixed Price</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Guaranteed Maximum</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Indefinite Quantity Contract</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lump Sum</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lump Sum, Time &amp; Materials</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lump Sum/Fixed Fee</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lump Sum/Time Charge Materials</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lump Sum and Cost Plus Fixed Fee</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Percentage of Construction</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Per Diem</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Task Order/On-Call</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time &amp; Materials</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time &amp; Materials Not to Exceed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time and Materials</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time-Charge</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time Charge w/Max</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time Charge with Upset Limits</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Unit Price</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>OracleDateStarted__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Date Started</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>OracleEstimatedCompletionDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Date Estimated Completion</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>OracleFinalFeeValue__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Final Fee Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OracleInitialFeeValue__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Initial Fee Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OracleModifiedFeeValue__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Modified Fee Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OracleProjectCity__c</fullName>
+        <description>Tracks the Oracle Project City field from the Oracle feed.</description>
+        <externalId>false</externalId>
+        <label>Oracle Project City</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OracleProjectCountryState__c</fullName>
+        <description>Tracks the Oracle Project Country / State  field from the Oracle Feed.</description>
+        <externalId>false</externalId>
+        <label>Oracle Project Country / State</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Booked_Amount_edit__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Booked Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Oracle_CRM_Opp__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle CRM Opp</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Client__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Oracle Client</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Project Profiles (Oracle Client)</relationshipLabel>
+        <relationshipName>Project_Profiles</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Oracle_Completion_Date_edit__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Completion Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Oracle_Currency__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Currency</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Geography__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Geography</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_ITD_Cost__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle ITD Cost</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Location__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Location</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Location_status__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Location status</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Project_Director_2__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Oracle Project Director 2</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Profiles_PD2</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Oracle_Project_Director__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Oracle Project Director</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Profiles_PD</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Oracle_Project_Manager_lookup__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Oracle Project Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Profiles_PM</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Oracle_Region__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Region</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Super_Geography__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Super Geography</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Group_Customer_Name__c</fullName>
+        <description>Group Customer Name from Oracle Feed</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Group Customer Name from Oracle Feed</inlineHelpText>
+        <label>Oracle Group Customer Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <label>Project Profile</label>
     <listViews>
         <fullName>Air_Force_Base_Projects</fullName>
