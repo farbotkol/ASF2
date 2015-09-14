@@ -1,7 +1,9 @@
-<apex:page controller="ECO_ApplicationCustomizerController" showheader="false" sidebar="false" title="Pick Applications" standardStylesheets="false" action="{!onLoad}">
-    
-    <script>
+<apex:page controller="ECO_ApplicationCustomizerController"  showheader="false" sidebar="false" title="{!$Label.ECOAppCusPickApplications}" standardStylesheets="false" action="{!onLoad}">
+	<script>
+	
         $(document).ready(function(){
+            init();
+            
            $(".showAllApps").click(function(){
                 $(".hiddenOnMobile").toggle();
             });
@@ -18,14 +20,10 @@
                 $("i.fa-eye-slash").toggleClass("fa-eye");
               }
             });
-        });
-
-        $(document).ready(function() {
-            
-            init();
             
             $('img[id$="theImageHidden"]').closest('a').fadeTo(1, .45);
         });
+
         
         function attachSortable() {
             $( "#sortable" ).sortable({});
@@ -35,9 +33,7 @@
             attachSortable();
             
             $('.form-control').keydown(function(event){
-                if(console){
-                    console.log('Captured!! '+event.keyCode);
-                }
+
                 if(event.keyCode == 13) {
                     event.preventDefault();
                     $('.search').click();
@@ -47,18 +43,18 @@
         }
         
         function savePositionsPageFunction(mode) {
+        	// alert('inside savePositionsPageFunction ');
             var serializedIds = $("#sortable").sortable("serialize", { 
                 key: "id"
                 , attribute: "orderId" 
             });
-            
-            if (console) {
-                console.log(serializedIds);
-            }
 
+			// alert('calling savePositions with serializedIds: ' + serializedIds);
             savePositions(serializedIds);
         };
-        
+
+
+		/* Use 'toggleApp' instead
         function toggleApplication (theId) {
             if (console) {
                 console.log($("a[orderId='id_"+theId+"']").length);
@@ -71,18 +67,11 @@
                 $("a[orderId='id_"+theId+"hidden']").fadeTo(500, 1);
                 $("a[orderId='id_"+theId+"hidden']").attr('orderId', 'id_'+theId).find('.fa-check-circle').addClass('fa-times-circle').removeClass('fa-check-circle');
             }
-            /*
-            if ($('#id_'+theId).length) {
-                $('#id_'+theId).fadeTo(500, .25);
-                $('#id_'+theId).attr('id', 'id_'+theId+'hidden').find('.fa-times-circle').removeClass('fa-times-circle').addClass('fa-check-circle');
-            } else {
-                $('#id_'+theId+'hidden').fadeTo(500, 1);
-                $('#id_'+theId+'hidden').attr('id', 'id_'+theId).find('.fa-check-circle').addClass('fa-times-circle').removeClass('fa-check-circle');
-            }
-            */
         }
+		*/
 
         function toggleApp (theId){
+        	// alert('in toggle app');
             if ($("#sortable div[orderId='id_"+theId+"']").length) {
                 $("div[orderId='id_"+theId+"']").appendTo('#availableApps').find('.fa-times-circle').removeClass('fa-times-circle').addClass('fa-check-circle');
                 $("div[orderId='id_"+theId+"']").find('*').removeAttr('id');
@@ -92,18 +81,11 @@
             }
         }
 
-        function removeApplication (theId){
-            
-        }
-        
         var timer;
         
         function applyFilter (theField) {
             clearTimeout(timer);
             timer=setTimeout(function validate(){
-                if (console) {
-                    console.log(theField.value);
-                }
                 
                 //applyFilterApex();
             },300);
@@ -115,6 +97,7 @@
         
     </script>
 
+  
     <style>
         h2{
             color:white;
@@ -331,76 +314,26 @@
             }
             
         }
+        
+        .fa-times-circle {
+            z-index: 99999;
+        }
+        
+        .fa-check-circle {
+            z-index: 99999;
+        }
     </style>
     
     <apex:composition template="ECO_Temp_Portal">
         
         <apex:define name="head">
-            
+            <script>var AWAN_online = false;</script>
+            <script src="{!awanJSPath}"></script>
         </apex:define>
 
+        <apex:define name="mainContent">
 
-        
-        <apex:define name="content">
-
-                <!--NAVBAR-->
-        <!--===================================================-->
-        <header id="navbar">
-            <div id="navbar-container" class="boxed">
-
-                <!--Brand logo & name-->
-                <!--================================-->
-                <div class="navbar-header">
-                    <a href="#" class="navbar-brand">
-                        <div class="brand-title">
-                            <span class="brand-text">ECOSYSTEM</span>
-                        </div>
-                    </a>
-                </div>
-                <!--================================-->
-                <!--End brand logo & name-->
-
-                <!--Navbar Dropdown-->
-                <!--================================-->
-                <div class="navbar-content clearfix">
-                    <ul class="nav navbar-top-links pull-left">
-
-                        <li class="dropdown hidden-xs">
-                            <h3 style="margin:10px 0 0 8px;">Application Customizer</h3>
-                        </li>
-
-                    </ul>
-                    <ul class="nav navbar-top-links pull-right">
-                        <!--User dropdown-->
-                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <li id="dropdown-user" class="dropdown">
-                            <a href="#" data-toggle="dropdown" class="dropdown-toggle text-right" style="cursor: default !important;background: white !important;" >
-                                <span class="pull-right">
-                                    <!-- <apex:image value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/av1.png')}" styleClass="img-circle img-user media-object"/> -->
-                                    <apex:image value="{!photoUrl}" styleClass="img-circle img-user media-object"/>
-                                </span>
-                                <div class="username hidden-xs"><strong><apex:outputText value="{!theUser.Name}'s" /></strong> Ecosystem</div>
-                            </a>
-
-                        
-                        </li>
-                        <!--~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~-->
-                        <!--End user dropdown-->
-
-                        <li class="logo" style="padding:12px 15px 0 8px;">
-                            <img src="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'AECOMLogo.jpg')}" height="25px" class="hidden-xs" />
-                            <img src="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/img/EcosystemMark.jpg')}" class="visible-xs" height="25px" />
-                        </li>
-
-                    </ul>
-                </div>
-                <!--================================-->
-                <!--End Navbar Dropdown-->
-
-            </div>
-        </header>
-
-        <apex:form id="theForm" >
+        <apex:form id="theAppCustomizerForm" >
         <div class="portalPageWrapper"> 
             
             
@@ -420,14 +353,14 @@
                     <div class="col-sm-12">
                         <div class="panel panel-default appPanel">
                             <div class="panel-heading">
-                                <h4>Edit Visible Apps and Order</h4>
+                                <h4>{!$Label.ECOAppCusEditVisibleApps}</h4>
                             </div>
                             
 
                             <div class="panel-body">
                                 <div class="row">
                                     <div style="float:left;padding:10px;position:relative; width:100%;color:#fff; margin-bottom:5px;" class="visible-xs">
-                                        Applications that are <span style="opacity:0.65;font-weight:bold;">grayed out</span> are non-mobile accessible applications
+                                        Applications that are <span style="opacity:0.65;font-weight:bold;">greyed out</span> are non-mobile accessible applications
                                     </div>
                                     <div style="float:right;padding:0 10px 0 0;position:relative;right:20px;width:100%;" class="visible-xs">
                                         <button type="button" class="btn btn-default visible-xs btn-lrg showAllApps showHideSwap hidden-xs" style="margin:0 0 10px 10px; float:right;"><i class="fa fa-eye"></i> Hide non-mobile Apps</button>
@@ -437,11 +370,11 @@
 
                                     <div style="float:right;padding:0 10px 10px 0;position:relative;right:20px;width:100%;">
 
-                                        <apex:commandButton style="float:right;" styleClass="btn btn-danger btn-lrg floatRight" value="Cancel" action="{!returnToPage}" immediate="true" />
+                                        <apex:commandButton style="float:right;" styleClass="btn btn-danger btn-lrg floatRight" value="{!$Label.ECOCancel}" action="{!returnToPage}" immediate="true" />
 
                                         <apex:outputPanel layout="none" rendered="{!!inSearchResultsMode}">
                                             <button type="button" class="btn btn-primary btn-lrg floatRight" style="margin-right:10px;" onclick="savePositionsPageFunction();">
-                                                Save and Return
+                                                {!$Label.ECOSaveandReturn}
                                             </button>
                                         </apex:outputPanel>
 
@@ -466,19 +399,20 @@
                                                 <div class="col-sm-6">
                                                     <apex:pageBlockSection id="theSelectedApps" columns="1"></apex:pageBlockSection>
 
-                                                        <h2>Selected Applications</h2>
+                                                        <h2>{!$Label.ECOAppCusSelectedApplications}</h2>
                                                         <apex:outputPanel styleClass="iconMatrix">
                                                             <div id="sortable" class="row">
                                                                 <apex:repeat value="{!selectedApplications}" var="configItem">
                                                                     <apex:outputpanel layout="none" >
                                                                         <div class="{!IF(configItem.Application__r.MobileEnabled__c, '', 'hiddenOnMobile')} ui-state-default appIcon" orderId="id_{!configItem.Application__c}">
+                                                                        <!-- <div class="ui-state-default appIcon" orderId="id_{!configItem.Application__c}"> -->
                                                                             <apex:outputpanel layout="inline" styleClass="appPanel">
                                                                                 <apex:image id="theImage" value="{!URLFOR($Resource.ECO_CustomGraphicAssets, configItem.Application__r.ImageName__c)}" width="45px" height="45px" />
                                                                                 <apex:outputPanel rendered="{!configItem.ConfigurationTemplate__r.IsRemovable__c}" layout="none" >
                                                                                     <apex:outputPanel layout="inline" styleClass="fa fa-times-circle removeApp hoverHand" onClick="toggleApp('{!configItem.Application__c}');"/>
                                                                                 </apex:outputPanel>
                                                                             </apex:outputpanel>
-                                                                            <apex:outputText value="{!configItem.Application__r.ApplicationName__c}" styleClass="smallText" />
+                                                                            <apex:outputText value="{!$Label[configItem.Application__r.ApplicationName__c]}" styleClass="smallText" />
                                                                         </div>
                                                                     </apex:outputpanel>
                                                                 </apex:repeat>
@@ -488,17 +422,17 @@
                                                     </div>
                                             
                                                     <apex:outputPanel id="availableAppsSection" styleClass="col-sm-6">
-                                                        <h2>Available Applications</h2>
+                                                        <h2>{!$Label.ECOAppCusAvailableApplications}</h2>
 
-                                                        <div class="searchBox"><span class="header">Search Criteria</span><br/>
-                                                            <apex:inputText html-placeholder="Name Search" style="width:180px;display:inline;margin-right:20px" value="{!searchTerm}" styleClass="categoryFilterInput form-control" />
+                                                        <div class="searchBox"><span class="header">{!$Label.ECOAppCusSearchCriteria}</span><br/>
+                                                            <apex:inputText html-placeholder="{!$Label.ECOAppCusNameSearch}" style="width:180px;display:inline;margin-right:20px" value="{!searchTerm}" styleClass="categoryFilterInput form-control" />
 
                                                             <apex:selectList styleClass="categoryFilterInput form-control" style="width:180px;display:inline;margin-right:20px" size="1" value="{!selectedCategory}">
                                                                 <apex:selectOptions value="{!categories}" />
                                                             </apex:selectList>
-
-                                                            <apex:outputPanel layout="none" rendered="{!inSearchResultsMode}" id="clearButton">
-                                                                <apex:commandButton style="width:90px;" styleClass="btn btn-primary btn-lrg" value="Clear Filter" action="{!clearSearchTerm}" rerender="pageMessages, availableAppsSection" oncomplete="init();" />
+															
+                                                            <apex:outputPanel layout="none" rendered="{!inSearchResultsMode}" id="clearButton" styleClass="hidden-xs">
+                                                                <apex:commandButton style="width:85px;" styleClass="hidden-xs btn btn-primary btn-lrg" value="Clear Filter" action="{!clearSearchTerm}" rerender="pageMessages, availableAppsSection" oncomplete="init();" />
                                                             </apex:outputPanel>
 
                                                             <apex:selectList styleClass="categoryFilterInput form-control" style="width:180px;display:inline;margin-right:20px" size="1" value="{!selectedGeography}">
@@ -509,9 +443,10 @@
                                                                 <apex:selectOptions value="{!businesslines}" />
                                                             </apex:selectList>
 
-                                                            <button class="btn btn-primary btn-lrg search" style="width:90px;" type="button" onclick="applySearchFilter();" >
-                                                                Search
+                                                            <button class="btn btn-primary btn-lrg search" style="width:85px;" type="button" onclick="applySearchFilter();" >
+                                                                {!$Label.ECOSearch}
                                                             </button>
+
                                                             
                                                         </div>
                                                         <apex:outputPanel styleClass="iconMatrix">
@@ -529,7 +464,7 @@
                                                                                     <apex:outputPanel layout="inline" styleClass="fa fa-check-circle selectApp hoverHand" onClick="toggleApp('{!configItem.Application__c}');"/>
                                                                                 </apex:outputPanel>
                                                                             </apex:outputpanel>
-                                                                            <apex:outputText value="{!configItem.Application__r.ApplicationName__c}" styleClass="smallText" />
+                                                                            <apex:outputText value="{!$Label[configItem.Application__r.ApplicationName__c]}" styleClass="smallText" />
                                                                         </div>
                                                                     </apex:outputpanel>
                                                                 </apex:repeat>
@@ -551,6 +486,10 @@
             </div><!-- .container -->
         </div><!-- .portalPageWrapper -->
         </apex:form>
+        </apex:define>
+        
+        <apex:define name="rightNav">
+
         </apex:define>
     </apex:composition>
 </apex:page>

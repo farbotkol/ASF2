@@ -1,8 +1,14 @@
 @isTest
 private class sshCalculateResolveByTest {
-	
+
 	//--Test the "after insert" functionality
 	@isTest static void testCalculateResolveByAfterInsert() {
+
+		Account acct = new Account(Name = 'Uncategorized Vendor');
+		insert acct;
+
+		Account acct2 = new Account(Name = 'AECOM Internal Account');
+		insert acct2;
 
 		//--Insert custom settings so that the other triggers don't freak out
 		ssh_User_Contact_Settings__c custSetting = new ssh_User_Contact_Settings__c();
@@ -31,6 +37,12 @@ private class sshCalculateResolveByTest {
 
 	//--Test the "before update" functionality
 	@isTest static void testCalculateResolveByBeforeUpdate() {
+
+		Account acct = new Account(Name = 'Uncategorized Vendor');
+		insert acct;
+
+		Account acct2 = new Account(Name = 'AECOM Internal Account');
+		insert acct2;
 		//--Insert custom settings so that the other triggers don't freak out
 		ssh_User_Contact_Settings__c custSetting = new ssh_User_Contact_Settings__c();
 		custSetting.Name = 'Default';
@@ -51,12 +63,12 @@ private class sshCalculateResolveByTest {
 		update cs;
 
 		cs = [select CreatedDate, SS_SLA_Target__c, SS_Resolve_By__c from Case where Id = :cs.Id];
-		
+
 		System.assertEquals(bhs.size(), 1);
 
 		System.assertEquals(cs.SS_SLA_Target__c, 48); //--Change to 48 hours to make sure Before Update component works too
 
 		System.assertEquals(cs.SS_Resolve_By__c, BusinessHours.add(bhs[0].Id, cs.CreatedDate, (Long)(cs.SS_SLA_Target__c * 3600000) ));
 	}
-	
+
 }

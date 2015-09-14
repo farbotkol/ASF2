@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <enableActivities>false</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>false</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Capability_Rating_Level__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>This is a 5 star rating system with 0 being the worst and 5 being the best score.</inlineHelpText>
+        <label>Capability Rating Level</label>
+        <picklist>
+            <picklistValues>
+                <fullName>0</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>1</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>2</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>3</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>4</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>5</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Feedback__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Provide Feedback on the capability rating you provided.</inlineHelpText>
+        <label>Feedback</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Rating_Sum_Hold__c</fullName>
+        <externalId>false</externalId>
+        <formula>VALUE(TEXT(Capability_Rating_Level__c))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Rating Sum Hold</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Star_Rating_Indicator__c</fullName>
+        <externalId>false</externalId>
+        <formula>IMAGE( 
+CASE(Capability_Rating_Level__c,
+&quot;0&quot;, &quot;/img/samples/stars_000.gif&quot;,  
+&quot;1&quot;, &quot;/img/samples/stars_100.gif&quot;, 
+&quot;2&quot;, &quot;/img/samples/stars_200.gif&quot;, 
+&quot;3&quot;, &quot;/img/samples/stars_300.gif&quot;, 
+&quot;4&quot;, &quot;/img/samples/stars_400.gif&quot;, 
+&quot;5&quot;, &quot;/img/samples/stars_500.gif&quot;, 
+&quot;/img/samples/stars_000.gif&quot;), 
+&quot;rating&quot;)</formula>
+        <label>Star Rating Indicator</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Technology_Service_Catalog_Entry__c</fullName>
+        <externalId>false</externalId>
+        <label>Technology Service Catalog Entry</label>
+        <referenceTo>Service_Catalog_Entry__c</referenceTo>
+        <relationshipLabel>Customer Ratings</relationshipLabel>
+        <relationshipName>Service_Catalog_Entry_Ratings</relationshipName>
+        <relationshipOrder>0</relationshipOrder>
+        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackTrending>false</trackTrending>
+        <type>MasterDetail</type>
+        <writeRequiresMasterRead>true</writeRequiresMasterRead>
+    </fields>
+    <label>Customer Rating</label>
+    <nameField>
+        <displayFormat>Rating-{0}</displayFormat>
+        <label>Service Catalog Entry Ratings Name</label>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Customer Ratings</pluralLabel>
+    <searchLayouts/>
+    <sharingModel>ControlledByParent</sharingModel>
+</CustomObject>

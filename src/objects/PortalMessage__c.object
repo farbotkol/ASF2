@@ -55,6 +55,24 @@
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
+        <fullName>EmailAlertType__c</fullName>
+        <externalId>false</externalId>
+        <label>Email Alert Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>PM Supervisor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>PM Inactive</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>EndDate__c</fullName>
         <externalId>false</externalId>
         <label>End Date</label>
@@ -73,6 +91,22 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>IsEmailAlert__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Email Alert</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsEscalationAlert__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Escalation Alert</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>LinkToRecord__c</fullName>
         <externalId>false</externalId>
         <label>Link to Record</label>
@@ -81,12 +115,13 @@
         <type>Url</type>
     </fields>
     <fields>
-        <fullName>LongDescription__c</fullName>
+        <fullName>LongDescriptionMaxLength__c</fullName>
         <externalId>false</externalId>
         <label>Long Description</label>
-        <required>false</required>
+        <length>131072</length>
         <trackTrending>false</trackTrending>
-        <type>TextArea</type>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>Order__c</fullName>
@@ -98,6 +133,24 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Number</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Resolved__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Resolved</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>StartDate__c</fullName>
@@ -133,10 +186,11 @@
         <fullName>All</fullName>
         <columns>NAME</columns>
         <columns>Subject__c</columns>
-        <columns>LongDescription__c</columns>
+        <columns>LongDescriptionMaxLength__c</columns>
         <columns>StartDate__c</columns>
         <columns>EndDate__c</columns>
         <columns>RECORDTYPE</columns>
+        <columns>CREATEDBY_USER</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
         <language>en_US</language>
@@ -145,7 +199,7 @@
         <fullName>All_Active</fullName>
         <columns>NAME</columns>
         <columns>Subject__c</columns>
-        <columns>LongDescription__c</columns>
+        <columns>LongDescriptionMaxLength__c</columns>
         <columns>StartDate__c</columns>
         <columns>EndDate__c</columns>
         <columns>RECORDTYPE</columns>
@@ -163,6 +217,43 @@
         <label>All Active</label>
         <language>en_US</language>
     </listViews>
+    <listViews>
+        <fullName>NewsFeedAlerts</fullName>
+        <columns>NAME</columns>
+        <columns>Subject__c</columns>
+        <columns>LongDescriptionMaxLength__c</columns>
+        <columns>StartDate__c</columns>
+        <columns>EndDate__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PortalMessage__c.NewsFeedItem</value>
+        </filters>
+        <label>News Feed Alerts</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Ticker_Alerts</fullName>
+        <columns>NAME</columns>
+        <columns>Subject__c</columns>
+        <columns>FullImageUrl__c</columns>
+        <columns>StartDate__c</columns>
+        <columns>EndDate__c</columns>
+        <columns>LongDescriptionMaxLength__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>UPDATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>PortalMessage__c.NewsTicker</value>
+        </filters>
+        <label>Ticker Alerts</label>
+        <language>en_US</language>
+    </listViews>
     <nameField>
         <displayFormat>PM-{0000000000}</displayFormat>
         <label>Portal Message Number</label>
@@ -174,18 +265,51 @@
         <active>true</active>
         <description>An alert that should be displayed on the EcoSystem portal</description>
         <label>Alert</label>
+        <picklistValues>
+            <picklist>EmailAlertType__c</picklist>
+            <values>
+                <fullName>PM Inactive</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PM Supervisor</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
     </recordTypes>
     <recordTypes>
         <fullName>NewsFeedItem</fullName>
         <active>true</active>
         <description>Used for the news feed items - the ones with pics and links.</description>
         <label>News Feed Item</label>
+        <picklistValues>
+            <picklist>EmailAlertType__c</picklist>
+            <values>
+                <fullName>PM Inactive</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PM Supervisor</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
     </recordTypes>
     <recordTypes>
         <fullName>NewsTicker</fullName>
         <active>true</active>
         <description>Used for the news ticker along the top of the portal.</description>
         <label>News Ticker</label>
+        <picklistValues>
+            <picklist>EmailAlertType__c</picklist>
+            <values>
+                <fullName>PM Inactive</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PM Supervisor</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
     </recordTypes>
     <searchLayouts>
         <customTabListAdditionalFields>RECORDTYPE</customTabListAdditionalFields>
@@ -193,19 +317,19 @@
         <customTabListAdditionalFields>StartDate__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>EndDate__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Subject__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>LongDescription__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>LongDescriptionMaxLength__c</customTabListAdditionalFields>
         <lookupDialogsAdditionalFields>RECORDTYPE</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>User__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>StartDate__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>EndDate__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Subject__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>LongDescription__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>LongDescriptionMaxLength__c</lookupDialogsAdditionalFields>
         <searchResultsAdditionalFields>RECORDTYPE</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>User__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>StartDate__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>EndDate__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Subject__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>LongDescription__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>LongDescriptionMaxLength__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <validationRules>
