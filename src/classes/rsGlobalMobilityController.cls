@@ -4,6 +4,8 @@ public with sharing class rsGlobalMobilityController extends rsSectionController
 	public List<SelectOption> locationRelocateCurr {get;set;} 
 	public List<SelectOption> locationRelocateDiff {get;set;}
 	public List<SelectOption> lengthOfTimeAbroad {get; set;}
+	public List<SelectOption> timeToRelocate {get; set;}
+	public List<SelectOption> accompaniedStatus {get; set;}
 	public List<SelectOption> countries {get; set;}
 	public List<SelectOption> regions {get; set;}
 
@@ -28,6 +30,8 @@ public with sharing class rsGlobalMobilityController extends rsSectionController
 		locationRelocateCurr = rsDataUtils.getPicklistValues(sObjUser, 'Interest_Relocating_Current_Country__c');
 		locationRelocateDiff = rsDataUtils.getPicklistValues(sObjUser, 'Interest_Relocating_Different_Country__c');
 		lengthOfTimeAbroad = rsDataUtils.getPicklistValues(sObjUser, 'Length_of_Time_Abroad__c');
+		timeToRelocate = rsDataUtils.getPicklistValues(sObjUser, 'rs_Time_To_Relocate__c');
+		accompaniedStatus = rsDataUtils.getPicklistValues(sObjUser, 'rs_Accompanied_Status__c');
 		regions = rsDataUtils.getPicklistValues(sObjUser, 'Interest_Regions__c');
 
 	}

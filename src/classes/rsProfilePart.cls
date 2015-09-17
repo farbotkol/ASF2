@@ -609,6 +609,18 @@ public class rsProfilePart extends rsModel {
     public void setReferenceTitle(String title) {
         mObj.put('Reference_Title__c', title);
     }
+
+    public void setReferenceDateLastChecked(String startDate) {
+        if (String.isNotBlank(startDate)) {
+            mObj.put('Reference_Date_Last_Checked__c', Date.parse(startDate));
+        } else {
+            mObj.put('Reference_Date_Last_Checked__c', null);
+        }
+    }
+
+    public String getReferenceDateLastChecked() {
+        return this.mObj.get('Reference_Date_Last_Checked__c') != null ? Date.valueOf(this.mObj.get('Reference_Date_Last_Checked__c')).format() : null;
+    }
     //--End Reference Fields
 
     //--Attachment fields
@@ -777,9 +789,9 @@ public class rsProfilePart extends rsModel {
             String whereStr = ' where User__r.Profile_Reviewer__c = null AND Next_Part__c = null AND ( (Status__c =' + rsStringUtil.quote(rsProfilePart.S_INREVIEW) + ' OR Status__c = ' + rsStringUtil.quote(rsProfilePart.S_PENDING) + ') AND (User__r.Status__c =' + rsStringUtil.quote(rsProfile.S_INREVIEW) + ' OR User__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_PENDING) + ') )' ;
             if ( !String.isBlank(superGeography) ) {
                 if (rs_Additional_Geography_Countries__c.getInstance(superGeography) != null) {
-                    whereStr += ' AND (User__r.supergeography__c =' + rsStringUtil.quote(superGeography) + ' OR User__r.Country IN ' + createStringInSet(rs_Additional_Geography_Countries__c.getInstance(superGeography).Countries__c) + ') ';
+                    whereStr += ' AND (User__r.supergeography__c LIKE ' + rsStringUtil.quote(superGeography + '%') + ' OR User__r.Country IN ' + createStringInSet(rs_Additional_Geography_Countries__c.getInstance(superGeography).Countries__c) + ') ';
                 } else {
-                    whereStr += ' AND (User__r.supergeography__c =' + rsStringUtil.quote(superGeography) + ')';
+                    whereStr += ' AND (User__r.supergeography__c LIKE ' + rsStringUtil.quote(superGeography + '%') + ')';
                 }
             }
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);

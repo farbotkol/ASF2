@@ -209,7 +209,7 @@ public virtual with sharing class rsSectionController {
     }
 
 
-    public PageReference saveAndApprove() {
+    public virtual PageReference saveAndApprove() {
         savePart(true);
         return null;
     }

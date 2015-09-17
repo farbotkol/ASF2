@@ -61,6 +61,8 @@ private class rsSearchTest {
 		System.assertNotEquals(0,rSearch.getCountryList().size());
 		System.assertNotEquals(0,rSearch.getGeographyList().size());
 		System.assertNotEquals(0,rSearch.getOfficeLocationList().size());
+		System.assertNotEquals(0,rSearch.getOfficeLocation2List().size());
+		System.assertNotEquals(0,rSearch.getOfficeLocation3List().size());
 
 	}
 

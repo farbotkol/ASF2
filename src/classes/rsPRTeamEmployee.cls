@@ -359,9 +359,9 @@ public class rsPRTeamEmployee extends rsModel {
             String whereStr = ' EmployeeUser__r.Profile_Reviewer__c = null AND Next_Project_Part__c = null AND ( (Status__c =' + rsStringUtil.quote(rsPRTeamEmployee.S_INREVIEW) + ' OR Status__c = ' + rsStringUtil.quote(rsPRTeamEmployee.S_PENDING) + ') AND (EmployeeUser__r.Status__c =' + rsStringUtil.quote(rsProfile.S_INREVIEW) + ' OR EmployeeUser__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_PENDING) + ') )' ;
             if ( !String.isBlank(superGeography) ) {
                 if (rs_Additional_Geography_Countries__c.getInstance(superGeography) != null) {
-                    whereStr += ' AND (EmployeeUser__r.Supergeography__c =' + rsStringUtil.quote(superGeography) + ' OR EmployeeUser__r.Country IN ' + createStringInSet(rs_Additional_Geography_Countries__c.getInstance(superGeography).Countries__c) + ') ';
+                    whereStr += ' AND (EmployeeUser__r.Supergeography__c LIKE ' + rsStringUtil.quote(superGeography + '%') + ' OR EmployeeUser__r.Country IN ' + createStringInSet(rs_Additional_Geography_Countries__c.getInstance(superGeography).Countries__c) + ') ';
                 } else {
-                    whereStr += ' AND (EmployeeUser__r.Supergeography__c =' + rsStringUtil.quote(superGeography) + ')';
+                    whereStr += ' AND (EmployeeUser__r.Supergeography__c LIKE ' + rsStringUtil.quote(superGeography + '%') + ')';
                 }
             }
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);

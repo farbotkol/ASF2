@@ -33,9 +33,10 @@ public with sharing class rsProfileReviewsController {
 		mProfileReviewView.add(new SelectOption(REV_UN_AMERICAS, REV_UNASSIGNED + ' - ' + REV_UN_AMERICAS));
 		mProfileReviewView.add(new SelectOption(REV_UN_AMERICAS_CS, REV_UNASSIGNED + ' - ' + REV_UN_AMERICAS_CS));
 		mProfileReviewView.add(new SelectOption(REV_UN_APAC, REV_UNASSIGNED + ' - ' + REV_UN_APAC));
-		mProfileReviewView.add(new SelectOption(REV_UN_CORPORATE, REV_UNASSIGNED + ' - ' + REV_UN_CORPORATE));
+		mProfileReviewView.add(new SelectOption(REV_UN_CORPORATE_VAL, REV_UNASSIGNED + ' - ' + REV_UN_CORPORATE));
 		mProfileReviewView.add(new SelectOption(REV_UN_EMEA, REV_UNASSIGNED + ' - ' + REV_UN_EMEA));
 		mProfileReviewView.add(new SelectOption(REV_UN_GLOBAL_IT, REV_UNASSIGNED + ' - ' + REV_UN_GLOBAL_IT));
+		mProfileReviewView.add(new SelectOption(REV_UN_MS_VAL, REV_UNASSIGNED + ' - ' + REV_UN_MS));
 		mProfileReviewView.add(new SelectOption(REV_ASSIGNED, REV_ASSIGNED));
 		mProfileReviewView.add(new SelectOption(REV_ASSIGNEDTOME, REV_ASSIGNEDTOME));
 		mProfileReviewView.add(new SelectOption(REV_COMPLETED, REV_COMPLETED));
@@ -46,8 +47,8 @@ public with sharing class rsProfileReviewsController {
 	public List<Id> getReviewProfiles() {
 		List<rs_Profile_Part__c> mReviewProfiles = new List<rs_Profile_Part__c>();
 		if (ProfileReviewViewType == REV_UN_AMERICAS || ProfileReviewViewType == REV_UN_AMERICAS_CS
-		        || ProfileReviewViewType == REV_UN_APAC || ProfileReviewViewType == REV_UN_CORPORATE || ProfileReviewViewType == REV_UN_EMEA ||
-		        ProfileReviewViewType == REV_UN_GLOBAL_IT) {
+		        || ProfileReviewViewType == REV_UN_APAC || ProfileReviewViewType == REV_UN_CORPORATE_VAL || ProfileReviewViewType == REV_UN_EMEA ||
+		        ProfileReviewViewType == REV_UN_GLOBAL_IT || ProfileReviewViewType == REV_UN_MS_VAL) {
 			mReviewProfiles = rsProfilePart.find.reviewUnassigned(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, ProfileReviewViewType, SortDir);
 			PartWhereClause = 'User__r.Profile_Reviewer__c = null AND Next_Part__c = null AND ( (Status__c =' + rsStringUtil.quote(rsProfilePart.S_INREVIEW) + ' OR Status__c = ' + rsStringUtil.quote(rsProfilePart.S_PENDING) + ') AND (User__r.Status__c =' + rsStringUtil.quote(rsProfile.S_INREVIEW) + ' OR User__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_PENDING) + ') )';
 		} else if (ProfileReviewViewType == REV_ASSIGNED) {
@@ -80,8 +81,8 @@ public with sharing class rsProfileReviewsController {
 	public List<Id> getReviewProjects() {
 		List<rsPRTeamEmployee> mReviewProjects = new List<rsPRTeamEmployee>();
 		if (ProfileReviewViewType == REV_UN_AMERICAS || ProfileReviewViewType == REV_UN_AMERICAS_CS
-		        || ProfileReviewViewType == REV_UN_APAC || ProfileReviewViewType == REV_UN_CORPORATE || ProfileReviewViewType == REV_UN_EMEA ||
-		        ProfileReviewViewType == REV_UN_GLOBAL_IT) {
+		        || ProfileReviewViewType == REV_UN_APAC || ProfileReviewViewType == REV_UN_CORPORATE_VAL || ProfileReviewViewType == REV_UN_EMEA ||
+		        ProfileReviewViewType == REV_UN_GLOBAL_IT || ProfileReviewViewType == REV_UN_MS_VAL) {
 			mReviewProjects = rsPRTeamEmployee.find.reviewUnassigned(dummyUser.Date_Time_Sent_for_Review__c, dummyUser2.Date_Time_Sent_for_Review__c, SearchLastName, SearchFirstName, SearchGeography, SearchCountry, SearchAssignee, ProfileReviewViewType, SortDir);
 			ProjectWhereClause = ' EmployeeUser__r.Profile_Reviewer__c = null AND Next_Project_Part__c = null AND ( (Status__c =' + rsStringUtil.quote(rsPRTeamEmployee.S_INREVIEW) + ' OR Status__c = ' + rsStringUtil.quote(rsPRTeamEmployee.S_PENDING) + ') AND (EmployeeUser__r.Status__c =' + rsStringUtil.quote(rsProfile.S_INREVIEW) + ' OR EmployeeUser__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_PENDING) + ') )' ;
 		} else if (ProfileReviewViewType == REV_ASSIGNED) {
@@ -131,8 +132,11 @@ public with sharing class rsProfileReviewsController {
 	public static final String REV_UN_AMERICAS_CS = Label.Unassigned_Profiles_Americas_CS;
 	public static final String REV_UN_APAC = Label.Unassigned_Profiles_APAC;
 	public static final String REV_UN_CORPORATE = Label.Unassigned_Profiles_Corporate;
+	public static final String REV_UN_CORPORATE_VAL = Label.Unassigned_Profiles_Corporate_Value;
 	public static final String REV_UN_EMEA = Label.Unassigned_Profiles_EMEA;
 	public static final String REV_UN_GLOBAL_IT = Label.Unassigned_Profiles_Global_IT;
+	public static final String REV_UN_MS = Label.Unassigned_Profiles_MS;
+	public static final String REV_UN_MS_VAL = Label.Unassigned_Profiles_MS_Value;
 
 	public static final String REV_ASSIGNED = Label.Assigned_Profiles;
 	public static final String REV_ASSIGNEDTOME = Label.Assigned_to_Me;
