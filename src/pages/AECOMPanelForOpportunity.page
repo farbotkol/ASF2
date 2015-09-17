@@ -1,15 +1,13 @@
 <apex:page standardController="Opportunity" extensions="ECO_SmartSearch_TokenExt" cache="false" showheader="false" sidebar="false" standardstylesheets="false">
     <script>
-    	Coveo.$(function () {
-            Coveo.$('.CoveoPanel').on('beforeInitialization', function (e){
-                Coveo.Rest.SearchEndpoint.endpoints['default'].options.accessToken = '{!coveoToken}'; 
-            });    
+        Coveo.$(function () {
+        	Coveo.Rest.SearchEndpoint.endpoints['default'].options.accessToken = '{!coveoToken}'; 
         });
     </script>
     <div class="search-more">
         <a href="/apex/ECO_SmartSearch" target="_blank"><img src="/resource/1434652833000/ECO_SmartSearchAssets/ss_searchIcon.png" />&ensp;SEARCH FOR MORE</a>
     </div>
-    <CoveoSolutions:CoveoPanel type="opportunity" recordId="{!record.id}" fields="accountid;name;ownerid;description;Project_DirectorUser__c;Project_ManagerUser__c;Marketing_Lead_User__c;Capture_Manager__c;Client_Group__c;Client_Subgroup__c;Practice_Area_of_Primary_AECOM_Dept__c;APD_Client_Name__c;AECOM_Role__c;" />
+    <CoveoSolutions:CoveoPanel debug="true" type="opportunity" recordId="{!record.id}" fields="accountid;name;ownerid;description;Project_DirectorUser__c;Project_ManagerUser__c;Marketing_Lead_User__c;Capture_Manager__c;Client_Group__c;Client_Subgroup__c;Practice_Area_of_Primary_AECOM_Dept__c;APD_Client_Name__c;AECOM_Role__c;" />
     <style>
         body {
             font-family: "Open Sans", Arial, sans-serif;
