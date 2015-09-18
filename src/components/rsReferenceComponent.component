@@ -100,6 +100,14 @@
 	        				</div>
 	            		</td>
 	            	</tr>
+	            	<tr>
+	            		<td>
+	            			<apex:outputLabel for="refDateLastChecked" value="{!$Label.Reference_Date_Last_Checked}" styleClass="helpButton"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Reference_Date_Last_Checked__c'].inlineHelpText}"/></apex:outputLabel>
+	            		</td>
+	            		<td colspan="3">
+	            			<apex:inputField id="refDateLastChecked" value="{!CurrentPart.Obj['Reference_Date_Last_Checked__c']}" />
+	            		</td>
+	            	</tr>
 	            </table>
 				<br/><br/>
 	            <div class="text-center"> 
@@ -171,6 +179,14 @@
 				            <apex:outputText id="refEmailView" value="{!CurrentPart.ReferenceEmail}" styleClass=""></apex:outputText>
 	            		</td>
 	            	</tr>
+	            	<tr>
+	            		<td>
+	            			<apex:outputLabel for="refDateLastCheckedView" value="{!$Label.Reference_Date_Last_Checked}" styleClass="helpButton"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Reference_Date_Last_Checked__c'].inlineHelpText}"/></apex:outputLabel>
+	            		</td>
+	            		<td colspan="3">
+	            			<apex:outputField id="refDateLastCheckedView" value="{!CurrentPart.Obj['Reference_Date_Last_Checked__c']}" />
+	            		</td>
+	            	</tr>
 	            </table>
 		    </apex:outputPanel>
            
@@ -221,7 +237,14 @@
 				        		<span class="toggleClassDown glyphicon glyphicon-chevron-down"></span>
 				        		<span class="toggleClassUp glyphicon glyphicon-chevron-up"></span> 
 				        	</apex:commandLink>
-				        </th>			        
+				        </th>
+				        <th>
+				        	<apex:commandLink action="{!sortParts}" reRender="refPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);" value="{!$Label.Reference_Date_Last_Checked}">
+				        		<apex:param name="sortField" value="Reference_Date_Last_Checked__c"/>
+				        		<span class="toggleClassDown glyphicon glyphicon-chevron-down"></span>
+				        		<span class="toggleClassUp glyphicon glyphicon-chevron-up"></span> 
+				        	</apex:commandLink>
+				        </th>				        
 				        <th class="text-center">{!$Label.Attachment}</th>				        
 				    </tr>
 				</thead>
@@ -282,6 +305,7 @@
 				            <td>{!part.ProfilePart.ReferenceTitle}</td>
 				            <td>{!part.ProfilePart.ReferenceEmail}</td>
 				            <td>{!part.ProfilePart.ReferencePhone}</td>		
+				            <td>{!part.ProfilePart.ReferenceDateLastChecked}</td>
 				            <td>
 				            	<div class="text-center">
 					            	<apex:outputLink value="/servlet/servlet.FileDownload?file={!part.ProfilePart.AttachmentId}" target="_blank">{!part.ProfilePart.AttachmentName}</apex:outputLink>

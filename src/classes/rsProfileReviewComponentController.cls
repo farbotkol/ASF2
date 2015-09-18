@@ -166,9 +166,10 @@ public with sharing class rsProfileReviewComponentController {
         mShowAssignToMe = (ViewType == rsProfileReviewsController.REV_UN_AMERICAS ||
                            ViewType == rsProfileReviewsController.REV_UN_AMERICAS_CS ||
                            ViewType == rsProfileReviewsController.REV_UN_APAC ||
-                           ViewType == rsProfileReviewsController.REV_UN_CORPORATE ||
+                           ViewType == rsProfileReviewsController.REV_UN_CORPORATE_VAL ||
                            ViewType == rsProfileReviewsController.REV_UN_EMEA ||
                            ViewType == rsProfileReviewsController.REV_UN_GLOBAL_IT ||
+                           ViewType == rsProfileReviewsController.REV_UN_MS_VAL ||
                            ViewType == rsProfileReviewsController.REV_ALL_PENDING
                           );
         return mShowAssignToMe;

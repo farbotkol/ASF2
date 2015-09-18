@@ -298,6 +298,20 @@
   <div class="hiddenPageBlock">
     <apex:pageBlock >
         <apex:pageBlockTable value="{!surveyBatchProjects}" var="project" styleClass="projectTable">
+<<<<<<< HEAD
+            <apex:column headerValue="Action" rendered="{!!isCompleted}">
+          <apex:commandLink value="Confirm" action="{!confirmAction}">
+            <apex:param name="projectId" value="{!project.obj.Id}" />
+          </apex:commandLink>
+                &nbsp;|&nbsp;
+                <apex:commandLink value="Reject" onclick="promptRejectionReason(event,'{!project.obj.Id}'); return false;" />
+          &nbsp;|&nbsp;
+
+          <apex:outputLink onclick="openContactEditWindow(event, '{!project.obj.Project__c}')">Edit Contact</apex:outputLink>
+<!--           <apex:commandLink value="Edit Contact" action="{!editContactAction}">
+            <apex:param name="projectId" value="{!project.obj.Id}" />
+          </apex:commandLink> -->
+=======
             <apex:column headerValue="Action" rendered="{!!isCompleted}" style="width: 200px">
               <apex:commandLink value="Confirm" action="{!confirmAction}">
                 <apex:param name="projectId" value="{!project.obj.Id}" />
@@ -307,6 +321,7 @@
               &nbsp;|&nbsp;
 
               <apex:outputLink onclick="openContactEditWindow(event, '{!project.obj.Project__c}')">Edit Contact</apex:outputLink>
+>>>>>>> INT
             </apex:column>
 
         <apex:column >

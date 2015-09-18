@@ -7,8 +7,8 @@ private class rsUserProjectsSummaryTriggerTest {
 		for(String str : mRtInfo.keySet()) {
 			recordIdToName.put(mRtInfo.get(str).getRecordTypeId(),str);
 		}
-		rsTestUtil.createTestProfileParts(1,0,50,rsProfilePart.RT_AWARD,rsPRTeamEmployee.RT_AECOMPROJECT);
-		rsTestUtil.createTestProfileParts(1,0,50,rsProfilePart.RT_AWARD,rsPRTeamEmployee.RT_NONAECOMPROJECT);
+		rsTestUtil.createTestProfileParts(1,0,850,rsProfilePart.RT_AWARD,rsPRTeamEmployee.RT_AECOMPROJECT);
+		rsTestUtil.createTestProfileParts(1,0,850,rsProfilePart.RT_AWARD,rsPRTeamEmployee.RT_NONAECOMPROJECT);
 
 		List<PR_Team_Employee__c> projs = [Select Status__c,EmployeeUser__c,RecordTypeId from PR_Team_Employee__c];
 		Map<Id,String> userIdToProjRecordType = new Map<Id,String>();

@@ -304,6 +304,22 @@ public with sharing class rsProfile extends rsModel {
         mObj.put('No_Interest_Regions__c', countries);
     }
 
+    public String getTimeToRelocate() {
+        return (String)mObj.get('rs_Time_To_Relocate__c');
+    }
+
+    public void setTimeToRelocate(String TimeToRelocate) {
+        mObj.put('rs_Time_To_Relocate__c', TimeToRelocate);
+    }
+
+    public String getAccompaniedStatus() {
+        return (String)mObj.get('rs_Accompanied_Status__c');
+    }
+
+    public void setAccompaniedStatus(String AccompaniedStatus) {
+        mObj.put('rs_Accompanied_Status__c', AccompaniedStatus);
+    }
+
     public Id getManagerId() {
         return (Id)mObj.get('ManagerId');
     }

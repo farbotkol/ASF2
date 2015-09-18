@@ -17,7 +17,10 @@ public with sharing class CFM_QualtricsSendSurveyToPanelCallout extends CFM_Qual
     public static final String PARAM_KEY_PANEL_LIB_ID = 'PanelLibraryID';
     public static final String PARAM_KEY_EXP_DATE     = 'ExpirationDate';
     public static final String QUALTRICS_DATE_FORMAT  = 'yyyy-MM-dd hh:mm:ss';
+<<<<<<< HEAD
+=======
     public static final String QUALTRICS_TIME_ZONE    = 'US/Pacific';
+>>>>>>> INT
 
     private String          mPanelId;
     private CFM_SurveyBatch mSurveyBatch;
@@ -77,7 +80,11 @@ public with sharing class CFM_QualtricsSendSurveyToPanelCallout extends CFM_Qual
     }
 
     public String getSendDateFormatted() {
+<<<<<<< HEAD
+        return getSendDate().format(QUALTRICS_DATE_FORMAT);
+=======
         return getSendDate().format(QUALTRICS_DATE_FORMAT, QUALTRICS_TIME_ZONE);
+>>>>>>> INT
     }
 
     public Datetime getExpirationDate() {
@@ -85,7 +92,11 @@ public with sharing class CFM_QualtricsSendSurveyToPanelCallout extends CFM_Qual
     }
 
     public String getExpirationDateFormatted() {
+<<<<<<< HEAD
+        return getExpirationDate().format(QUALTRICS_DATE_FORMAT);
+=======
         return getExpirationDate().format(QUALTRICS_DATE_FORMAT, QUALTRICS_TIME_ZONE);
+>>>>>>> INT
     }
 
     public String getSentFromEmail() {

@@ -46,12 +46,7 @@ public with sharing class ContractReviewTest {
     @isTest 
     private static void TestContractReviewSharing() 
     {
-        
-      User user = TestCoverageSmokeMocks.mockUser(true);
-      //Profile p = [select id from profile where name='Chatter + Resumes + Projects'];
-      //update user;
-      
-      //User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = false and isactive = true limit 1 ];
+      User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = false and isactive = true limit 1 ];
 
 
       Country__c ctry = new Country__c(Name='Someplace', Country_Code__c='SP');
@@ -75,15 +70,11 @@ public with sharing class ContractReviewTest {
     @isTest 
     private static void TestLegalFlagTrigger1()
     {
-      
+    	
       StaticHelper.excludeIt = false;
-      
         
-      User user = TestCoverageSmokeMocks.mockUser(true);
-      //Profile p = [select id from profile where name='Chatter + Resumes + Projects'];
-      //update user;
         // Test a 'Salesforce' licence user 
-      //User user = [SELECT id, Legal__c  FROM user WHERE Geography_Allocation__c = 'ANZ' and profile.UserLicense.Name = 'salesforce' and Legal__c = false and isactive = true limit 1 ];
+      User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'salesforce' and Legal__c = false and isactive = true limit 1 ];
       
       Test.startTest();
       user.Legal__c = false;  
@@ -101,31 +92,21 @@ public with sharing class ContractReviewTest {
     @isTest 
     private static void TestLegalFlagTrigger2()
     {
-        StaticHelper.excludeIt = false;
+      StaticHelper.excludeIt = false;
 
-        Profile p = [select id from profile where name='AECOM Standard User - APAC'];
-        User u = new User(LastName = 'Test User', Alias = 'A123' , Username = 'Test1@aecom.com', CommunityNickname = 'n2343'  , Email='SFDCTestCase@aecom.com', emailencodingkey='UTF-8', languagelocalekey='en_US', localesidkey='en_US', profileid = p.Id, timezonesidkey='America/Los_Angeles', EmployeeNumber = '1234443' );
-        //u.Legal__c = true;
+      User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'salesforce' and Legal__c = true and isactive = true limit 1 ];
 
-        insert u;	
+      Test.startTest();
 
-        User user = u;
+      user.Nationality__c = 'Australia';
+      user.Legal__c = false; 
+      update user ;        
+      Test.stopTest();
 
-
-
-        //User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'salesforce' and Legal__c = true and isactive = true limit 1 ];
-        system.debug('xxlfxx' + user);
-        Test.startTest();
-
-        user.Nationality__c = 'Australia';
-        user.Legal__c = false; 
-        update user ;        
-        Test.stopTest();
-        system.debug('xxlfxx' + user);
-        Integer i = [SELECT COUNT()  From PermissionSetAssignment p
-        where p.PermissionSet.Name = 'Contract_Reviewer_SF' and p.AssigneeId  = :user.Id];
-        //There should NOT be a Contract_Reviewer_SF PermissionSet for the user
-        System.assert(i == 0, i);
+      Integer i = [SELECT COUNT()  From PermissionSetAssignment p
+      where p.PermissionSet.Name = 'Contract_Reviewer_SF' and p.AssigneeId  = :user.Id];
+      //There should NOT be a Contract_Reviewer_SF PermissionSet for the user
+      System.assert(i == 0, i);
 
     }
 
@@ -134,17 +115,9 @@ public with sharing class ContractReviewTest {
     private static void TestLegalFlagTrigger3()
     {
       StaticHelper.excludeIt = false;
-
-      Profile p = [select id from profile where name='Chatter + Resumes + Projects'];
-      User u = new User(LastName = 'Test User', Alias = 'A123' , Username = 'Test1@aecom.com', CommunityNickname = 'n2343'  , Email='SFDCTestCase@aecom.com', emailencodingkey='UTF-8', languagelocalekey='en_US', localesidkey='en_US', profileid = p.Id, timezonesidkey='America/Los_Angeles', EmployeeNumber = '1234443' );
-      u.Legal__c = true;
-
-      insert u;	
-
-      User user = u;
       //Test a 'Force.com - App Subscription' licence user 
-      //User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = false and isactive = true limit 1 ];
-
+      User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = false and isactive = true limit 1 ];
+      
       Test.startTest();
       user.Legal__c = true; 
       update user ;
@@ -161,16 +134,8 @@ public with sharing class ContractReviewTest {
     private static void TestLegalFlagTrigger4()
     {
       StaticHelper.excludeIt = false;
-
-      Profile p = [select id from profile where name='Chatter + Resumes + Projects'];
-      User u = new User(LastName = 'Test User', Alias = 'A123' , Username = 'Test1@aecom.com', CommunityNickname = 'n2343'  , Email='SFDCTestCase@aecom.com', emailencodingkey='UTF-8', languagelocalekey='en_US', localesidkey='en_US', profileid = p.Id, timezonesidkey='America/Los_Angeles', EmployeeNumber = '1234443' );
-      u.Legal__c = false;
-
-      insert u;	
-
-      User user = u;  
       //Test a 'Force.com - App Subscription' licence user 
-      //User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = true and isactive = true limit 1 ];
+      User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = true and isactive = true limit 1 ];
 
       Test.startTest();      
       user.Nationality__c = 'Australia';
@@ -190,18 +155,8 @@ public with sharing class ContractReviewTest {
     private static void TestLegalFlagTrigger5()
     {
       StaticHelper.excludeIt = false;
-
-
-
-      Profile p = [select id from profile where name='AECOM Standard User - APAC'];
-      User u = new User(LastName = 'Test User', Alias = 'A123' , Username = 'Test1@aecom.com', CommunityNickname = 'n2343'  , Email='SFDCTestCase@aecom.com', emailencodingkey='UTF-8', languagelocalekey='en_US', localesidkey='en_US', profileid = p.Id, timezonesidkey='America/Los_Angeles', EmployeeNumber = '1234443' );
-      u.Legal__c = true;
-
-      insert u;	
-
-      User user = u;
       //Test a 'Force.com - App Subscription' licence user 
-      //User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'salesforce' and Legal__c = false and isactive = true limit 1 ];
+      User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'salesforce' and Legal__c = false and isactive = true limit 1 ];
 
       Test.startTest();      
       user.Nationality__c = 'Australia 1';
@@ -220,16 +175,8 @@ public with sharing class ContractReviewTest {
     private static void TestLegalFlagTrigger6()
     {
       StaticHelper.excludeIt = false;
-        
-      Profile p = [select id from profile where name='Chatter + Resumes + Projects'];
-      User u = new User(LastName = 'Test User', Alias = 'A123' , Username = 'Test1@aecom.com', CommunityNickname = 'n2343'  , Email='SFDCTestCase@aecom.com', emailencodingkey='UTF-8', languagelocalekey='en_US', localesidkey='en_US', profileid = p.Id, timezonesidkey='America/Los_Angeles', EmployeeNumber = '1234443' );
-      u.Legal__c = true;
-
-      insert u;	
-
-      User user = u;
-
-      //User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = false and isactive = true limit 1 ];
+ 
+      User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = false and isactive = true limit 1 ];
 
       Test.startTest();      
       user.Nationality__c = 'Australia 1';
@@ -239,7 +186,7 @@ public with sharing class ContractReviewTest {
 
       Integer i = [SELECT COUNT()  From PermissionSetAssignment p
       where p.PermissionSet.Name = 'Contract_Reviewer_General_User' and p.AssigneeId  = :user.Id];
-
+    
       System.assert(i == 1, i);
     }
 
@@ -260,15 +207,7 @@ public with sharing class ContractReviewTest {
       User admin = mockAdmin() ;
 
       //Test a 'Force.com - App Subscription' licence user 
-      Profile p = [select id from profile where name='Chatter + Resumes + Projects'];
-      User u = new User(LastName = 'Test User', Alias = 'A123' , Username = 'Test1@aecom.com', CommunityNickname = 'n2343'  , Email='SFDCTestCase@aecom.com', emailencodingkey='UTF-8', languagelocalekey='en_US', localesidkey='en_US', profileid = p.Id, timezonesidkey='America/Los_Angeles', EmployeeNumber = '1234443' );
-      u.Legal__c = false;
-
-      insert u; 
-
-      User user = u;
-
-      //User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = false and isactive = true limit 1 ];
+      User user = [SELECT id, Legal__c  FROM user WHERE profile.UserLicense.Name = 'Force.com - App Subscription' and Legal__c = false and isactive = true limit 1 ];
 
       
 
@@ -339,7 +278,7 @@ public with sharing class ContractReviewTest {
       cr.Country__c = ctry.Id;
       cr.Date_Required__c = Date.today();
       cr.Opportunity_GNG__c = gng.Id; 
-            
+        		
       insert cr; 
 
       ContractReviewVariable crv = new ContractReviewVariable();
@@ -351,8 +290,8 @@ public with sharing class ContractReviewTest {
       crvl.add(crv);
 
       ContractReview.Assign(crvl);
-    
-    
+		
+		
     }
     
     
@@ -374,15 +313,15 @@ public with sharing class ContractReviewTest {
       insert a;   
 
 
-      Test.StartTest();   
-      BatchUpdateOpportunityNameSearchable batchprocess = new BatchUpdateOpportunityNameSearchable();
-      ID batchprocessid = Database.executeBatch(batchprocess);
-      
-      Test.StopTest();          
-      Go_No_Go_Conversation__c gng = [select Opportunity_Name__c, Opportunity_Name_Searchable__c 
-                          from Go_No_Go_Conversation__c limit 1];                       
-      System.assert(gng.Opportunity_Name__c == gng.Opportunity_Name_Searchable__c);
-    
+  		Test.StartTest();   
+  		BatchUpdateOpportunityNameSearchable batchprocess = new BatchUpdateOpportunityNameSearchable();
+  		ID batchprocessid = Database.executeBatch(batchprocess);
+  		
+  		Test.StopTest();    		 	
+  		Go_No_Go_Conversation__c gng = [select Opportunity_Name__c, Opportunity_Name_Searchable__c 
+  		    		 						from Go_No_Go_Conversation__c limit 1];						 						
+  		System.assert(gng.Opportunity_Name__c == gng.Opportunity_Name_Searchable__c);
+		
    }
    
    
@@ -392,18 +331,18 @@ public with sharing class ContractReviewTest {
 
       User user = TestCoverageSmokeMocks.mockUser(true);
 
-      Test.StartTest();   
-      
+  		Test.StartTest();   
+  		
       BatchUpdateUserCRSPermissionSets batchprocess = new BatchUpdateUserCRSPermissionSets();
-      ID batchprocessid = Database.executeBatch(batchprocess);
-      
-      Test.StopTest();   
+  		ID batchprocessid = Database.executeBatch(batchprocess);
+  		
+  		Test.StopTest();   
 
       integer cnt = [select count() from PermissionSetAssignment where PermissionSet.Name like '%Contract_Reviewer%' and AssigneeId = :user.Id];
 
       System.assert(cnt == 1, cnt);
  
-    
+		
    }
 
 

@@ -75,6 +75,11 @@ public with sharing class rsProjectController extends rsSectionController {
     }
 
     public override PageReference savePart() {
+        savePart(false);
+        return null;
+    }
+
+    public override PageReference savePart(Boolean saveAndApprove) {
         mIsError = false;
         //First check if their profile has been locked while they were editing this part, unless they are a content manager that locked it, in which case they can save just fine
         User profileRequery = getUser();
@@ -115,7 +120,7 @@ public with sharing class rsProjectController extends rsSectionController {
             clone.ChkUniqueEmp__c = null;
             CurrentProject = new rsPRTeamEmployee(clone);
         }
-        setFieldsForSave(CurrentProject, profileRequery);
+        setFieldsForSave(CurrentProject, profileRequery, saveAndApprove);
 
 
         //TODO We might be able to remove this if statement (below) that checks if we auto-approve, since in setFieldsForSave() called above,
@@ -173,10 +178,15 @@ public with sharing class rsProjectController extends rsSectionController {
         return null;
     }
 
-    private void setFieldsForSave(rsPRTeamEmployee projectPart, User currentUser) {
+    public override PageReference saveAndApprove() {
+        savePart(true);
+        return null;
+    }
+
+    private void setFieldsForSave(rsPRTeamEmployee projectPart, User currentUser, Boolean saveAndApprove) {
         setTrackingFields();
         projectPart.setAddedByEmployee(true);
-        if (isReviewable(mRecordType, currentUser)) {
+        if (isReviewable(mRecordType, currentUser) || (!saveAndApprove && projectPart.getIsPendingOrInReview())) {
             projectPart.setDateTimeSentForReview(Datetime.now());
             if (profile.getDateTimeSentforReview() == null) {
                 profile.setDateTimeSentforReview(Datetime.now());
@@ -489,7 +499,7 @@ public with sharing class rsProjectController extends rsSectionController {
                         break;
                     }
                 }
-                while ((originalPlace + 1) >= projectGroups.size() && originalPlace > 0) {
+                while ((originalPlace + 1) >= projectGroups.get(i).groupProjects.size() && originalPlace > 0) {
                     originalPlace--;
                 }
                 //Updating Group Sequence

@@ -12,6 +12,7 @@
     		}
     		setPublicationRequiredFields();
     		setUpPubParts();
+    		helpTextSetup();
     	});
     	function setPublicationRequiredFields() {
     		///Required Fields for this component.
@@ -60,7 +61,9 @@
 			    <table id="editPubTable" class="table">
 			    	<tbody>
 			    		<tr>
-			    			<td style="border-top:none;"><apex:outputLabel for="pubTitle" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].Label}"/></td>
+			    			<td style="border-top:none;">
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td style="border-top:none;">
 			    				<div class="rsRequired">
                             		<div class="rsRequiredBlock"/>
@@ -68,11 +71,15 @@
 					    			<span class="rsError"><br/>{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].Label} {!$Label.Is_Required}</span>
 					    		</div>
 			    			</td>
-			    			<td style="border-top:none;"><apex:outputLabel for="pubDate" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].Label}"/></td>
+			    			<td style="border-top:none;">
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td style="border-top:none;"><apex:inputField id="pubDate" value="{!CurrentPart.Obj['Publication_Date__c']}"/></td>
 			    		</tr>
 			    		<tr>
-			    			<td><apex:outputLabel for="pub" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].Label}"/></td>
+			    			<td>
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td>
 			    				<div class="rsRequired">
                             		<div class="rsRequiredBlock"/>
@@ -80,7 +87,9 @@
 				    				<span class="rsError"><br/>{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].Label} {!$Label.Is_Required}</span>
 				    			</div>
 			    			</td>
-			    			<td><apex:outputLabel for="pubAuthor" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].Label}"/></td>
+			    			<td>
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td><apex:inputText id="pubAuthor" value="{!CurrentPart.PublicationAuthor}" maxlength="255"/></td>
 			    		</tr>
 			    	</tbody>
@@ -114,15 +123,23 @@
 			    <table class="table">
 			    	<tbody>
 			    		<tr>
-			    			<td><apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].Label}"/></td>
+			    			<td>
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td><apex:outputText value="{!CurrentPart.PublicationTitle}"/></td>
-			    			<td><apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].Label}"/></td>
+			    			<td>
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td><apex:outputText value="{!CurrentPart.PublicationDate}"/></td>
 			    		</tr>
 			    		<tr>
-			    			<td><apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].Label}"/></td>
+			    			<td>
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td><apex:outputText value="{!CurrentPart.Publication}"/></td>
-			    			<td><apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].Label}"/></td>
+			    			<td>
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td><apex:outputText value="{!CurrentPart.PublicationAuthor}"/></td>
 			    		</tr>
 			    	</tbody>
