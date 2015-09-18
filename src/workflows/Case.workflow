@@ -34,6 +34,26 @@
         <template>Shared_Services_AP_Resolution_Emails/SS_AP_Case_Resolved_FR</template>
     </alerts>
     <alerts>
+            <fullName>SS_AP_Case_Resolved_New_Email_EN</fullName>
+            <description>SS-AP Case Closed New Email EN</description>
+            <protected>false</protected>
+            <recipients>
+                <type>owner</type>
+            </recipients>
+            <senderType>CurrentUser</senderType>
+            <template>Shared_Services_AP_Response_Emails/SS_AP_Closed_Case_New_Email_Received</template>
+        </alerts>
+        <alerts>
+            <fullName>SS_AP_Case_Resolved_New_Email_FR</fullName>
+            <description>SS-AP Case Closed New Email FR</description>
+            <protected>false</protected>
+            <recipients>
+                <type>owner</type>
+            </recipients>
+            <senderType>CurrentUser</senderType>
+            <template>Shared_Services_AP_Response_Emails/SS_AP_Closed_Case_New_Email_Received_FR</template>
+        </alerts>
+        <alerts>
         <fullName>SS_AP_Special_Handling_Agent_Notification</fullName>
         <description>SS-AP Special Handling Agent Notification</description>
         <protected>false</protected>
@@ -286,6 +306,46 @@
         <triggerType>onCreateOnly</triggerType>
     </rules>
     <rules>
+            <fullName>SS-AP Case Reopened EN</fullName>
+            <actions>
+                <name>SS_AP_Case_Resolved_New_Email_EN</name>
+                <type>Alert</type>
+            </actions>
+            <active>true</active>
+            <criteriaItems>
+                <field>Case.Status</field>
+                <operation>equals</operation>
+                <value>Reopened</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Language_Type__c</field>
+                <operation>equals</operation>
+                <value>EN</value>
+            </criteriaItems>
+            <description>Shared Services AP - Rule to send an email alert in English when a closed case becomes reopened</description>
+            <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        </rules>
+        <rules>
+            <fullName>SS-AP Case Reopened FR</fullName>
+            <actions>
+                <name>SS_AP_Case_Resolved_New_Email_FR</name>
+                <type>Alert</type>
+            </actions>
+            <active>true</active>
+            <criteriaItems>
+                <field>Case.Status</field>
+                <operation>equals</operation>
+                <value>Reopened</value>
+            </criteriaItems>
+            <criteriaItems>
+                <field>Case.Language_Type__c</field>
+                <operation>equals</operation>
+                <value>FR</value>
+            </criteriaItems>
+            <description>Shared Services AP - Rule to send an email alert in French when a closed case becomes reopened</description>
+            <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        </rules>
+        <rules>
         <fullName>SS-AP Case Resolved EN</fullName>
         <actions>
             <name>SS_AP_Case_Resolved_EN</name>
