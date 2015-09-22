@@ -1,0 +1,829 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <actionOverrides>
+        <actionName>Accept</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>CancelEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Clone</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Delete</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Edit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Follow</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>List</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>New</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>SaveEdit</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>Tab</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>View</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <deploymentStatus>Deployed</deploymentStatus>
+    <description>Used by DTW Project Incentive as a placeholder for a Digital Acknowledgement as well as for participants , refer to User Story 00864 and related work items.</description>
+    <enableActivities>true</enableActivities>
+    <enableBulkApi>true</enableBulkApi>
+    <enableFeeds>false</enableFeeds>
+    <enableHistory>true</enableHistory>
+    <enableReports>true</enableReports>
+    <enableSharing>true</enableSharing>
+    <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Acknowledged__c</fullName>
+        <externalId>false</externalId>
+        <label>Acknowledged?</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>AgeRange__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( TEXT(ResponseDate__c) =&quot;&quot;,
+   IF( TODAY() - Sent_Date__c &lt; 6, &quot;d. 0 - 5 days&quot;,
+      IF( TODAY() - Sent_Date__c &lt; 11, &quot;c. 6 - 10 days&quot;,
+         IF( TODAY() - Sent_Date__c &lt; 16, &quot;b. 11 - 15 days&quot;,&quot;a. 21 days+&quot;)
+)),NULL)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Age Range</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Approver1Email__c</fullName>
+        <externalId>false</externalId>
+        <label>Approver 1 Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Approver1__c</fullName>
+        <externalId>false</externalId>
+        <formula>ParticipantID__r.EnrollmentPlan__r.Approver1__r.Email</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Approver1</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ClientName__c</fullName>
+        <externalId>false</externalId>
+        <formula>ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.CustomerName__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Client Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DTWFixedPricePlanEmployeeGuide__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;http://my.aecomnet.com/deployedfiles/Intranet/About/Global%20Project%20Excellence/Documents/DTW-Fixed%20Price%20Employee%20Guide%20rev%20Aug2015%20Final.pdf&quot;, &quot;DTW Fixed Price Plan Employee Guide&quot; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>DTW Fixed Price Plan Employee Guide</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DTWTMPlanEmployeeGuide__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;http://my.aecomnet.com/deployedfiles/Intranet/About/Global%20Project%20Excellence/Documents/DTW-T&amp;M%20Employee%20Guide%204Aug2015%20Final.pdf&quot;, &quot;DTW T&amp;M Plan Employee Guide&quot; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>DTW T&amp;M Plan Employee Guide</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DTWWebpage__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;http://my.aecomnet.com/Intranet/About/Delivery+Excellence/Design+and+Consulting+Services?appInstanceName=intranet&amp;vgnextrefresh=1&quot;, &quot;Deliver to Win&quot; )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>DTWWebpage</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DeclinedReasonOther__c</fullName>
+        <externalId>false</externalId>
+        <label>Declined Reason Other</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Declined_Reason__c</fullName>
+        <externalId>false</externalId>
+        <label>Declined Reason</label>
+        <picklist>
+            <picklistValues>
+                <fullName>I don’t believe this project can earn an award</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>I feel this program should include the full project team, not just a select group</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>I do not wish to have my information shared</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>EnrollmentAppName__c</fullName>
+        <externalId>false</externalId>
+        <formula>ParticipantID__r.EnrollmentPlan__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>EnrollmentAppName</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EnrollmentAppNameatSnapshot__c</fullName>
+        <externalId>false</externalId>
+        <label>Enrollment App Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EnrollmentApplicationID__c</fullName>
+        <externalId>false</externalId>
+        <formula>ParticipantID__r.EnrollmentPlan__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>EnrollmentApplicationID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EnrollmentParticipantURL__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;https://aecom--ecosysdev.cs15.my.salesforce.com/&quot;&amp;ParticipantID__r.Id, &quot;Enrollment Participant&quot;)
+
+/*HYPERLINK(&quot;https://test.salesforce.com/&quot;&amp;ParticipantID__r.Id, &quot;Enrollment Participant&quot; )*/</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Enrollment Participant URL</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EnrollmentStatus__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(ParticipantID__r.EnrollmentPlan__r.EnrollmentStatus__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Enrollment Status</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enrollment_Application__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Enrollment Application</label>
+        <referenceTo>EnrollmentPlan__c</referenceTo>
+        <relationshipLabel>Participant Acknowledgements</relationshipLabel>
+        <relationshipName>Participant_Acknowledgements</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>IncentiveProject__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Incentive Project</label>
+        <referenceTo>IncentiveProject__c</referenceTo>
+        <relationshipLabel>Participant Acknowledgements</relationshipLabel>
+        <relationshipName>Participant_Acknowledgements</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Info__c</fullName>
+        <description>I, EMPLOYEE NAME, agree to participate in the Deliver to Win Fixed Price Incentive Plan (“the Plan”).  I acknowledge that I have read and understand the terms of this letter, the attached Employee Guide, and the terms of the Plan. I acknowledge and understand that the Plan contains provisions under which awards can be delayed, reduced or forfeited.  I understand and agree that awards under the Plan are discretionary and do not affect or form part of my terms and conditions of employment nor are they considered to form part of my fixed pay.</description>
+        <externalId>false</externalId>
+        <formula>/*&quot;By checking the box below I, &quot; &amp; ParticipantID__r.EmployeeName__r.FirstName &amp;&quot; &quot;&amp; ParticipantID__r.EmployeeName__r.LastName &amp;&quot;, do hereby acknowledge my enrollment into the incentive program for project &quot;&amp;  ParticipantID__r.EnrollmentPlan__r.ProjectID__c  &amp; &quot; &quot; &amp;  ParticipantID__r.IncentiveProjectName__c &amp;&quot;.&quot;*/
+
+
+
+&quot;I,&quot;&amp;Owner:User.FirstName&amp;&quot; &quot;&amp;Owner:User.LastName&amp;&quot;, agree to participate in the Deliver to Win Fixed Price Incentive Plan (“the Plan”).  I acknowledge that I have read and understand the terms of this letter, the attached Employee Guide, and the terms of the Plan. I acknowledge and understand that the Plan contains provisions under which awards can be delayed, reduced or forfeited.  I understand and agree that awards under the Plan are discretionary and do not affect or form part of my terms and conditions of employment nor are they considered to form part of my fixed pay.&quot;</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Info</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Manager__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Participant_Enrollments</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ParticipantEMailAddress__c</fullName>
+        <externalId>false</externalId>
+        <formula>Owner:User.Email</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ParticipantE-Mail</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ParticipantID__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Participant ID</label>
+        <referenceTo>EnrollmentParticipant__c</referenceTo>
+        <relationshipName>Acknowledgments</relationshipName>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ParticipantProjectEndDateSnapshot__c</fullName>
+        <externalId>false</externalId>
+        <label>Participant End Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ParticipantProjectStartDateSnapshot__c</fullName>
+        <externalId>false</externalId>
+        <label>Participant Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>PaymentDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Payment Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>PlanType__c</fullName>
+        <externalId>false</externalId>
+        <formula>ParticipantID__r.EnrollmentPlan__r.PlanType__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>PlanType</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PotentialPayout__c</fullName>
+        <externalId>false</externalId>
+        <formula>ParticipantID__r.EstimatedPayout__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>PotentialPayout</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PotentialPayoutatSnapshot__c</fullName>
+        <externalId>false</externalId>
+        <label>Potential Payout</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ProjectEndDate__c</fullName>
+        <externalId>false</externalId>
+        <formula>ParticipantID__r.ProjectEndDate__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ProjectEndDate</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ProjectEndDateatSnapshot__c</fullName>
+        <externalId>false</externalId>
+        <label>Project End Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ProjectManagerEmail__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Manager Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectManager__c</fullName>
+        <externalId>false</externalId>
+        <formula>ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.Owner:User.Email</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Manager</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectNameSnapshot__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Name</label>
+        <length>80</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectName__c</fullName>
+        <externalId>false</externalId>
+        <formula>ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ProjectName</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectNumber__c</fullName>
+        <externalId>false</externalId>
+        <formula>ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.ProjectID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Number</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectStartDate__c</fullName>
+        <externalId>false</externalId>
+        <formula>ParticipantID__r.ProjectStartDate__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ProjectStartDateatSnapshot__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>RegionEmail__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( 
+   BEGINS(ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.SuperGeography__c,&quot;Americas&quot;), &quot;AmericasDTWIncentivePlan@aecom.com&quot;,
+   IF(
+      BEGINS(ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.SuperGeography__c,&quot;EMEA&quot;), &quot;EMEADTWIncentivePlan@aecom.com&quot;,
+      IF(
+         BEGINS(ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.SuperGeography__c,&quot;APAC&quot;), &quot;APACDTWIncentivePlan@aecom.com&quot;,&quot;N/A&quot;)
+)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Region Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ReplyTo__c</fullName>
+        <description>Translates the Incentive Project&apos;s Super Geography into the appropriate Reply To e-mail address, used in e-mail alerts</description>
+        <externalId>false</externalId>
+        <formula>CASE(
+       ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.SuperGeography__c  , 
+                     &quot;Americas&quot;, &quot;americasdtwincentiveplan@aecom.com&quot;, 
+                     &quot;EMEA&quot;, &quot;emeadtwincentiveplan@aecom.com&quot;,
+                     &quot;EMEAI&quot;, &quot;emeadtwincentiveplan@aecom.com&quot;,
+                     &quot;APAC&quot;, &quot;apacdtwincentiveplan@aecom.com&quot;, &quot;&quot;
+     )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Reply To</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ResponseDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Response Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Sent_Date__c</fullName>
+        <defaultValue>Today()</defaultValue>
+        <externalId>false</externalId>
+        <label>Sent Date</label>
+        <required>false</required>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Status__c</fullName>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Sent</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Declined</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>TM1AcknowledgementKey__c</fullName>
+        <caseSensitive>false</caseSensitive>
+        <externalId>true</externalId>
+        <label>TM1 Acknowledgement Key</label>
+        <length>25</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>true</unique>
+    </fields>
+    <fields>
+        <fullName>TargetAtSnapshot__c</fullName>
+        <externalId>false</externalId>
+        <label>Target %</label>
+        <precision>2</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Target__c</fullName>
+        <externalId>false</externalId>
+        <formula>ParticipantID__r.TargetIncentivePoolAllocated__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Target%</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <label>Participant Acknowledgement</label>
+    <listViews>
+        <fullName>All_Acknowledgements</fullName>
+        <columns>NAME</columns>
+        <columns>Status__c</columns>
+        <columns>Sent_Date__c</columns>
+        <columns>ResponseDate__c</columns>
+        <columns>AgeRange__c</columns>
+        <columns>OWNER.FIRST_NAME</columns>
+        <columns>OWNER.LAST_NAME</columns>
+        <columns>EnrollmentAppName__c</columns>
+        <columns>ProjectNameSnapshot__c</columns>
+        <columns>EnrollmentApplicationID__c</columns>
+        <columns>ParticipantID__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All Acknowledgements</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_My_Acknowledgements</fullName>
+        <columns>NAME</columns>
+        <columns>Status__c</columns>
+        <columns>Sent_Date__c</columns>
+        <columns>ResponseDate__c</columns>
+        <columns>OWNER.FIRST_NAME</columns>
+        <columns>OWNER.LAST_NAME</columns>
+        <columns>ProjectName__c</columns>
+        <columns>ProjectNumber__c</columns>
+        <columns>ProjectNameSnapshot__c</columns>
+        <columns>Acknowledged__c</columns>
+        <filterScope>Mine</filterScope>
+        <label>All My Acknowledgements</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>DTW_Corp_Admin_ParticapantEnrollments</fullName>
+        <filterScope>Queue</filterScope>
+        <label>DTW Corp Admin</label>
+        <queue>DTW_Corp_Admin</queue>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
+        </sharedTo>
+    </listViews>
+    <nameField>
+        <displayFormat>A-{0000}</displayFormat>
+        <label>Participant Acknowledgement</label>
+        <trackHistory>true</trackHistory>
+        <type>AutoNumber</type>
+    </nameField>
+    <pluralLabel>Participant Acknowledgements</pluralLabel>
+    <recordTypeTrackHistory>true</recordTypeTrackHistory>
+    <recordTypes>
+        <fullName>Received</fullName>
+        <active>true</active>
+        <label>Received</label>
+        <picklistValues>
+            <picklist>Acknowledged__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Declined_Reason__c</picklist>
+            <values>
+                <fullName>I do not wish to have my information shared</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>I don%E2%80%99t believe this project can earn an award</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>I feel this program should include the full project team%2C not just a select group</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Status__c</picklist>
+            <values>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Declined</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sent</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>Sent</fullName>
+        <active>true</active>
+        <label>Sent</label>
+        <picklistValues>
+            <picklist>Acknowledged__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Declined_Reason__c</picklist>
+            <values>
+                <fullName>I do not wish to have my information shared</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>I don%E2%80%99t believe this project can earn an award</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>I feel this program should include the full project team%2C not just a select group</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Status__c</picklist>
+            <values>
+                <fullName>Accepted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Declined</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sent</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <searchLayouts>
+        <customTabListAdditionalFields>Status__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Sent_Date__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>ResponseDate__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>OWNER.FIRST_NAME</customTabListAdditionalFields>
+        <customTabListAdditionalFields>OWNER.LAST_NAME</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Sent_Date__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ResponseDate__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>OWNER.FIRST_NAME</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>OWNER.LAST_NAME</lookupDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Status__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>Sent_Date__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>ResponseDate__c</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>OWNER.FIRST_NAME</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>OWNER.LAST_NAME</lookupPhoneDialogsAdditionalFields>
+        <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Status__c</searchFilterFields>
+        <searchFilterFields>Sent_Date__c</searchFilterFields>
+        <searchFilterFields>ResponseDate__c</searchFilterFields>
+        <searchFilterFields>OWNER.FIRST_NAME</searchFilterFields>
+        <searchFilterFields>OWNER.LAST_NAME</searchFilterFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Sent_Date__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ResponseDate__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>OWNER.FIRST_NAME</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>OWNER.LAST_NAME</searchResultsAdditionalFields>
+    </searchLayouts>
+    <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Decline_Reason_Other_Needs_Detail</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND (
+     ISPICKVAL(Declined_Reason__c , &quot;Other&quot;),
+     ISBLANK( DeclinedReasonOther__c )
+)</errorConditionFormula>
+        <errorDisplayField>DeclinedReasonOther__c</errorDisplayField>
+        <errorMessage>Please provide more detailed information</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Declined_Needs_Reason</fullName>
+        <active>true</active>
+        <description>If Status Declined, Need Reason Why</description>
+        <errorConditionFormula>AND(
+    ISPICKVAL( Acknowledged__c , &apos;No&apos;),
+    ISBLANK(TEXT( Declined_Reason__c ))
+    )</errorConditionFormula>
+        <errorDisplayField>Declined_Reason__c</errorDisplayField>
+        <errorMessage>If Declining Participation, Please Give Reason Why</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>View_Application_Status</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <linkType>javascript</linkType>
+        <masterLabel>View Application Status</masterLabel>
+        <openType>onClickJavaScript</openType>
+        <protected>false</protected>
+        <url>var URL = &apos;/apex/INC_ShowEnrollmentMetrics&apos;;
+URL = URL +&apos;?id={!ParticipantAcknowledgement__c.EnrollmentApplicationID__c}&apos;;
+URL = URL +&apos;&amp;PR={!ParticipantAcknowledgement__c.Id}&amp;loc=2&apos;;
+window.open(URL,&apos;_self&apos;);</url>
+    </webLinks>
+</CustomObject>
