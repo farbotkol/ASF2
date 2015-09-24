@@ -58,7 +58,7 @@ public without sharing class ECO_Utils_Testing {
 		testProject.pse__Account__c = testAccount.Id;
 		//set some oracle classification fields
 		testProject.clACLOfficeLocation__c = 'CAN - Burnaby';
-		testProject.clBillableWorkersComp__c = 'Yes';
+		testProject.clBillableWorkersComp__c = true;
 		testProject.pse__Project_Manager__c = pm.Id;
 		insert testProject;
 
@@ -212,9 +212,9 @@ public without sharing class ECO_Utils_Testing {
 		testProject.ProjectLongName__c = projName + ' long name';
 		testProject.ContractTypes__c = 'Fixed Priece - Hard Bid';
 		testProject.DistributionRule__c = 'COST/WORK';
-		testProject.ProjectFunctionalCurrencyCode__c = 'AUD';
-		testProject.ProjectCurrencyCode__c = 'AUD';
-		testProject.COSTINDRATESCHID__c = '6748';
+		// testProject.ProjectFunctionalCurrencyCode__c = 'AUD';
+		// testProject.ProjectCurrencyCode__c = 'AUD';
+		// testProject.COSTINDRATESCHID__c = '6748';
 		testProject.pse__Start_Date__c = Date.today();
 		return testProject;
 	}

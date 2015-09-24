@@ -1,10 +1,10 @@
-<messaging:emailTemplate subject="Participant Notification for Time & Material DTW Incentive Projects" recipientType="Contact" relatedToType="ParticipantAcknowledgement__c">
+<messaging:emailTemplate subject="Participant Notification for Time & Material DTW Incentive Projects" recipientType="User" relatedToType="ParticipantAcknowledgement__c">
 <messaging:htmlEmailBody >
     <apex:outputpanel >
         <p>Congratulations!  You have been selected to participate in the <b><i>Deliver to Win Time and Materials Incentive Plan</i></b>, which is a project specific incentive plan designed to drive improvement in project delivery, including financial and operational results such as safety, client satisfaction and cash collection, and to reward strong team performance in these areas.</p>
         
         <p>Project Number: {!relatedTo.ProjectNumber__c} </p>
-        <p>Project Name: {!relatedTo.ProjectNameSnapshot__c}</p>
+        <p>Project Name: {!relatedTo.ProjectName__c}</p>
         <p>Customer Name: {!relatedTo.ClientName__c}</p>
         
         <p>Your personalized enrollment letter is attached, which includes project specific metrics and an overview of the plan is available by clicking here.  
@@ -30,7 +30,7 @@
         
         Project Number: {!relatedTo.ProjectNumber__c} 
         
-        Project Name: {!relatedTo.ProjectNameSnapshot__c} 
+        Project Name: {!relatedTo.ProjectName__c} 
         
         Customer Name: {!relatedTo.ClientName__c} 
         
@@ -46,7 +46,7 @@
     </messaging:plainTextEmailBody>
      
 
-<messaging:attachment renderAs="PDF" filename="letter.pdf">
+<messaging:attachment renderAs="PDF" filename="{!relatedTo.ProjectNumber__c}-{!relatedTo.ParticipantID__r.EmployeeName__r.name}-DTWLetter-{!YEAR(TODAY())}{!RIGHT(TEXT(MONTH(TODAY())+100),2)}{!RIGHT(TEXT(DAY(TODAY())+100),2)}.pdf">
     <c:INC_EnrollmentLetterComponent EP="{!relatedTo.ParticipantID__c}" pa="{!relatedTo}" />
 </messaging:attachment>
 </messaging:emailTemplate>
