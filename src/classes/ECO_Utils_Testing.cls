@@ -53,7 +53,8 @@ public without sharing class ECO_Utils_Testing {
 		//create create source project 		
 		pse__Proj__c testProject = createTestProject('test project 1');
 		//testProject.PrimaryOrganization__c = testOrg.Id;
-		testProject.CarryingOutOrganization__c = testOrg.Id;
+                // Commented CarryingOutOrganization__c for DTW by Sujit
+		// testProject.CarryingOutOrganization__c = testOrg.Id;
 		testProject.pse__Account__c = testAccount.Id;
 		//set some oracle classification fields
 		testProject.clACLOfficeLocation__c = 'CAN - Burnaby';
@@ -194,7 +195,8 @@ public without sharing class ECO_Utils_Testing {
 		//create create source project 		
 		pse__Proj__c testProject = createTestProject('test project1');
 		//testProject.PrimaryOrganization__c = testOrg.Id;
-		testProject.CarryingOutOrganization__c = testOrg.Id;
+                // Commented CarryingOutOrganization__c for DTW by Sujit 
+		// testProject.CarryingOutOrganization__c = testOrg.Id;
 		testProject.pse__Account__c = testAccount.Id;
 		insert testProject;
 	
