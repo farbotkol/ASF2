@@ -13,8 +13,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
     public string sFirstMessageClass {get;set;}
     public string sSecondMessageClass {get;set;}
     public string sThirdMessageClass {get;set;}
-   
-
+    
     public list<Schema.FieldSetMember> listApprovedFlds{get;set;}
     public String firstColumnHeader {get;set;}
     
@@ -62,6 +61,31 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         buildAtualsList();
         buildBaselineList();
         buildIncVals();
+    }
+
+    public Integer getPanelToRender()
+    {
+        Integer iReturn = 1;
+        if(oEnrollmentPlan.ContractType__c == 'AMPS - Fixed Price'  || 
+            oEnrollmentPlan.ContractType__c == 'CPFF - Hard Bid' || 
+            oEnrollmentPlan.ContractType__c == 'CPFF - Negotiated' || 
+            oEnrollmentPlan.ContractType__c == 'Unassigned'
+            ){
+               iReturn = 2;
+        }
+
+        return iReturn;
+    }
+
+    public String getEACvsBaseline(){
+            double forcastMargin = oEnrollmentPlan.IncentivePlan__r.ContractSubType__c == 'Gross Margin' ? oEnrollmentPlan.IncentiveProject__r.ForecastGrossMarginofNSR__c
+                              :oEnrollmentPlan.IncentiveProject__r.ForecastNMofNSR__c;
+            double baselineMargin = oEnrollmentPlan.IncentivePlan__r.ContractSubType__c == 'Gross Margin' ? oEnrollmentPlan.BaselineGMofNSR__c 
+                              :oEnrollmentPlan.BaselineNMofNSR__c;
+
+            double value = forcastMargin - baselineMargin;
+
+            return value.format() + '%';
     }
 
     private void getEnrollmentPlan() {
@@ -112,7 +136,11 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         if(sID == null){
             sID = oEnrollmentPlan.ID;
         }
-        pageReference returnPage = new pageReference('/apex/INC_EnrollmentApp?id=' + sID);
+        String sPage = '/apex/INC_EnrollmentApp?id=' + sID;
+        if(Apexpages.currentpage().getParameters().get('loc') == '2'){
+            sPage = '/' + sID;
+        }
+        pageReference returnPage = new pageReference(sPage);
         returnPage.setRedirect(True);
         return returnPage;
     }

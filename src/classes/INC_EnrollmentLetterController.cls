@@ -1,6 +1,7 @@
 public with sharing class INC_EnrollmentLetterController {
 
 	public EnrollmentParticipant__c oEP;
+	public ParticipantAcknowledgement__c oPA {get;set;}
 	public calcHolder oCH;
 	public string epID {get;set;}
 
@@ -20,17 +21,51 @@ public with sharing class INC_EnrollmentLetterController {
 		public decimal AC {get;set;}
 		public decimal AD {get;set;}
 		public decimal AE {get;set;}	
-		public string gmtm {get;set;}	
+		public string gmnm {get;set;}	
+
+		public decimal fixedAB {get;set;}
+		public decimal fixedAF {get;set;}
+		public decimal fixedAO {get;set;}
+		public decimal fixedAC {get;set;}
+		public decimal fixedAG {get;set;}
+		public decimal fixedAP {get;set;}
+		public decimal fixedZ {get;set;}
+		public decimal fixedAD {get;set;}
+		public decimal fixedAH {get;set;}
+		public decimal fixedAI {get;set;}
+		public decimal fixedAK {get;set;}
+		public decimal fixedAL {get;set;}
+		public decimal fixedAM {get;set;}
 
 		public void calculate(EnrollmentParticipant__c ep){
 			letterDate = date.today();
 
 			if(ep.EnrollmentPlan__r.IncentivePlan__r.ContractSubType__c == 'Gross Margin'){
-				gmtm = 'GM';
+				gmnm = 'GM';
 			} else {
-				gmtm = 'NM';
+				gmnm = 'NM';
 			}
 
+
+			fixedAB = (EP.EnrollmentPlan__r.BaselineGMofNSR__C + 0.03)*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
+			fixedAF = (EP.EnrollmentPlan__r.BaselineGMofNSR__C + 0.05)*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
+			fixedAO = (EP.EnrollmentPlan__r.BaselineGMofNSR__C + 0.06)*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
+
+			fixedAC = fixedAB - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
+			fixedAG = fixedAF - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
+			fixedAP = fixedAO - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
+
+			fixedZ = 1 - EP.EnrollmentPlan__r.DTWComplete__c/100;
+
+			fixedAD = fixedZ*fixedAC*0.5;
+			fixedAH = fixedZ*fixedAG*0.5;
+			fixedAI = EP.EnrollmentPlan__r.MaxIncentivePool__c;
+
+			if(EP.TargetIncentivePoolAllocated__c != null){
+				fixedAK = fixedAD*EP.TargetIncentivePoolAllocated__c/100;
+				fixedAL = fixedAH*EP.TargetIncentivePoolAllocated__c/100;
+				fixedAM = fixedAI*EP.TargetIncentivePoolAllocated__c/100;
+			}
 
 			V = EP.EnrollmentPlan__r.BaselineGrossMargin__c * 1.1;
 			Y = EP.EnrollmentPlan__r.BaselineGrossMargin__c * 1.25;
@@ -38,14 +73,14 @@ public with sharing class INC_EnrollmentLetterController {
 			AF = AE - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
 			W = V - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
 			Z = Y - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
-			AG = AF * EP.EnrollmentPlan__r.IncentivePlan__r.ProfitSharingPercent__c;
-			X =  W * EP.EnrollmentPlan__r.IncentivePlan__r.ProfitSharingPercent__c;
-			AA = Z * EP.EnrollmentPlan__r.IncentivePlan__r.ProfitSharingPercent__c;
+			AG = AF * EP.EnrollmentPlan__r.IncentivePlan__r.ProfitSharingPercent__c/100;
+			X =  W * EP.EnrollmentPlan__r.IncentivePlan__r.ProfitSharingPercent__c/100;
+			AA = Z * EP.EnrollmentPlan__r.IncentivePlan__r.ProfitSharingPercent__c/100;
 
 			if(EP.TargetIncentivePoolAllocated__c != null){
-				AH = AG * EP.TargetIncentivePoolAllocated__c;
-				AC = X  * EP.TargetIncentivePoolAllocated__c;
-				AD = AA * EP.TargetIncentivePoolAllocated__c;	
+				AH = AG * EP.TargetIncentivePoolAllocated__c/100;
+				AC = X  * EP.TargetIncentivePoolAllocated__c/100;
+				AD = AA * EP.TargetIncentivePoolAllocated__c/100;	
 			}		
 		}
 	}
@@ -61,13 +96,19 @@ public with sharing class INC_EnrollmentLetterController {
 								, EmployeeName__r.name
 								, EmployeeName__r.firstname
 								, EnrollmentPlan__r.IncentiveProject__r.name
+								, EnrollmentPlan__r.IncentivePlan__r.contracttype__c
 								, EnrollmentPlan__r.IncentiveProject__r.contracttype__c
 								, EnrollmentPlan__r.IncentivePlan__r.name
 								, EnrollmentPlan__r.IncentivePlan__r.ProfitSharingPercent__c
 								, EnrollmentPlan__r.IncentivePlan__r.ContractSubType__c
 								, EnrollmentPlan__r.BaselineGrossMargin__c
 								, EnrollmentPlan__r.BaselineGMofNSR__c	
-								, EnrollmentPlan__r.DSOTarget__c					
+								, EnrollmentPlan__r.ThresholdGM__c	
+								, EnrollmentPlan__r.ThresholdGMatEAC__c	
+								, EnrollmentPlan__r.DSOTarget__c	
+								, EnrollmentPlan__r.ForecastNSRBudget__c	
+								, EnrollmentPlan__r.DTWComplete__c	
+								, EnrollmentPlan__r.MaxIncentivePool__c	
 
 						from EnrollmentParticipant__c
 						where id=:epID];
@@ -85,10 +126,14 @@ public with sharing class INC_EnrollmentLetterController {
 		if(oCH == null){
 			oCH = new calcHolder();
 			oCH.calculate(oEP);
+
+
+
 		}
 
 		return oCH;
 	}
+
 
 
 	public INC_EnrollmentLetterController() {

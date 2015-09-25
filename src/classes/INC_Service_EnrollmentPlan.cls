@@ -27,6 +27,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                                                   		   , PaymentDate__c
                                                          , ParticipantType__c
                                                          , HRJobTitle__c
+                                                         , ExistedAtEnrollment__c
                                                   From EnrollmentParticipant__c
                                                   Where EnrollmentPlan__c =: EnrollmentPlans]){
 
@@ -578,11 +579,12 @@ public without sharing class INC_Service_EnrollmentPlan {
           map<id,list<Enrollment_Comments__c>> mapComments = getCommentsbyEnrollmentPlan(enrollmentPlans);
           System.Debug(logginglevel.error,'mapComments: ' + mapComments);
           map<id,List<ProcessInstance>> mapApprovalByEnrollment = getApprovalInfoByEnrollment(enrollmentPlans);
-     
+          System.debug(logginglevel.error,'mapApprovalByEnrollment ' + mapApprovalByEnrollment);
   
           //now loop through approval history to create comment records
           for(ID enrollmentplanID: mapApprovalByEnrollment.KeySet()){
             list<ProcessInstance> lProcessInstance = mapApprovalByEnrollment.get(enrollmentplanID);
+            System.Debug(logginglevel.error,'lProcessInstance: ' + lProcessInstance);
             for(ProcessInstance oprocessInstance: lProcessInstance){
               if(mapComments.ContainsKey(enrollmentplanID)){
                 for(ProcessInstanceStep processStep: oprocessInstance.Steps){
@@ -600,46 +602,46 @@ public without sharing class INC_Service_EnrollmentPlan {
                     }//end enrollment comment loop
 
                     if(!bCommentFound){
-                        if(processStep.Comments != null){
                            System.Debug('Creating new comment');
                            String sType = 'Approved';
+                           String sFlag = 'No';
                           if(processStep.StepStatus == 'Rejected'){
                             sType = 'Rejection';
+                            sFlag = 'Yes';
                           }
                           System.Debug(logginglevel.error,'ProcessStep ' + ProcessStep);
                           listNewComments.add(new Enrollment_Comments__c(EnrollmentApplication__c = enrollmentplanID,
                                                                    ApprovalID__c = processStep.id,
-                                                                   Comments__c = processStep.Comments,
+                                                                   Comments__c = processStep.Comments!=null?processStep.Comments:'Please enter a comment.',
                                                                    Type__c = sType,
+                                                                   IsRejection__c = sFlag,
                                                                    Approver__c = processStep.ActorId));
-                         }
-                    }//end bCommentFound
+                         
+                    }
                   }//end process step loop
-
                 }//end comment is approved or rejected
               }else{
                   //create comment record because no comments exist
                   for(ProcessInstanceStep processStep: oprocessInstance.Steps){
                   if(processStep.StepStatus == 'Approved' || processStep.StepStatus == 'Rejected'){
-                      if(processStep.Comments != null){
-                        String sType = 'Approved';
-                        if(processStep.StepStatus == 'Rejected'){
-                          sType = 'Rejection';
-                        }
+                      if(processStep.StepStatus == 'Rejected'){
+                        String sType = 'Rejection';
+                        String sFlag = 'Yes';
                         System.Debug(logginglevel.error,'Creating comments');
                         listNewComments.add(new Enrollment_Comments__c(EnrollmentApplication__c = enrollmentplanID,
                                                                    ApprovalID__c = processStep.id,
-                                                                   Comments__c = processStep.Comments,
+                                                                   Comments__c = processStep.Comments !=null?processStep.Comments:'Please enter a comment.',
                                                                    Type__c = sType,
+                                                                   IsRejection__c = sFlag,
                                                                    Approver__c = processStep.ActorId));
-                      }
+                      } 
                     }
                   }
                 }
             }//end process step loop
           }//end enrollmentplan loop
         }//end enrollment plans
-
+        System.debug(logginglevel.error,'listNewComments: ' + listNewComments);
         if(listNewComments != null && listNewComments.size() > 0){
           System.savePoint sp = Database.setSavePoint();
           try{

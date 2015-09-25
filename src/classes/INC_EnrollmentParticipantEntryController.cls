@@ -13,6 +13,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
     public Boolean bTMorFixed{get;set;}
     public Boolean bFixed{get;set;}
     public Boolean bTM{get;set;}
+    public Boolean bEnableCCR{get;set;}
 
     public integer rowNumber {get;set;}
 
@@ -24,6 +25,11 @@ public with sharing class INC_EnrollmentParticipantEntryController {
         enrollID = ApexPages.CurrentPage().getParameters().get('id');
         oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{enrollID})[0];
         setUpPage();
+
+        bEnableCCR = false;
+        if(oEnrollmentPlan.ApplicationType__c == 'CCR'){
+            bEnableCCR = true;
+        }
 
         if(oEnrollmentPlan.ContractType__c == 'AMPS - Fixed Price'  || 
             oEnrollmentPlan.ContractType__c == 'CPFF - Hard Bid' || 
@@ -40,6 +46,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
                 bTM = true;
             }            
         }
+
         
     }
 
@@ -58,6 +65,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
         }
         if(oEnrollmentPlan.Name.StartsWith('CCR')){
             bChangeRequest = true;
+           // editParticipants = false;
         }else{
             bChangeRequest = false;
         }
@@ -108,10 +116,18 @@ public with sharing class INC_EnrollmentParticipantEntryController {
                 listParticipant = new list<EnrollmentParticipant__c>();
             }
         	if(iSize > = 5){
-        		listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID));
+                if(oEnrollmentPlan.ApplicationType__c != 'CCR'){
+        		  listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID));
+                }else{
+                    listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID,ExistedAtEnrollment__c = 'No'));
+                }
         	}else{
         		for(Integer i = iSize; i<5; i++){
-        			listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID));
+        			if(oEnrollmentPlan.ApplicationType__c != 'CCR'){
+                        listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID));
+                    }else{
+                        listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID,ExistedAtEnrollment__c = 'No'));
+                    }
         		}
         	}
         } 
@@ -128,9 +144,11 @@ public with sharing class INC_EnrollmentParticipantEntryController {
         System.Debug(logginglevel.error,'listParticipant.size '+ listParticipant.size());
         //if(listParticipant[listParticipant.size()-1].EmployeeName__c != null){
          if(oEnrollmentPlan.ApplicationType__c == 'PAY'){
-            listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID, ParticipantType__c = 'Discretionary'));
+            listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID, ParticipantType__c = 'Discretionary',ExistedAtEnrollment__c='No'));
          }
-         else if (oEnrollmentPlan.EnrollmentStatus__c != 'Enrolled'){
+         else if(oEnrollmentPlan.ApplicationType__c == 'CCR'){
+              listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID, ExistedAtEnrollment__c='No'));
+            } else if (oEnrollmentPlan.EnrollmentStatus__c != 'Enrolled'){
             listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID));
          }
          
@@ -214,20 +232,33 @@ public with sharing class INC_EnrollmentParticipantEntryController {
     }
 
     private boolean validate(list<EnrollmentParticipant__c>lSave){
+
+        decimal pool = null;
+        if(bTM){
+            pool = oEnrollmentPlan.EstimatedPoolBaseline10__c;
+        }
+        if(bFixed){
+            pool = oEnrollmentPlan.EstimatedPoolBaseline__c;
+        }
+
+
         for(EnrollmentParticipant__c oEnrollmentParticipant: lSave){
             if(oEnrollmentParticipant.ParticipantCategory__c == null){
                 ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have a defined role.'));
                 return false;
             }
-            if((oEnrollmentParticipant.TargetIncentivePoolAllocated__c == null || oEnrollmentParticipant.TargetIncentivePoolAllocated__c <= 0) && (oEnrollmentParticipant.ParticipantType__c == 'Incentive' || oEnrollmentPlan.ApplicationType__c == 'ENR')){
+            if((oEnrollmentParticipant.TargetIncentivePoolAllocated__c == null || oEnrollmentParticipant.TargetIncentivePoolAllocated__c <= 0) && (oEnrollmentParticipant.ParticipantType__c != 'Discretionary' && oEnrollmentPlan.ApplicationType__c == 'ENR')){
                 ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have an allocation greater than 0'));
                 return false;
             }
 
-
-            if(oEnrollmentParticipant.ParticipantType__c == 'Incentive' && (((oEnrollmentParticipant.TargetIncentivePoolAllocated__c * oEnrollmentPlan.MaxIncentivePool__c/100) > 0) && ((oEnrollmentParticipant.TargetIncentivePoolAllocated__c * oEnrollmentPlan.MaxIncentivePool__c/100) < oEnrollmentPlan.MinParticipantPayout__c))){
-                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have a estimated payout must be 0 or >= $' + oEnrollmentPlan.MinParticipantPayout__c));
-                return false;
+            if(bTM || bFixed){
+                if(oEnrollmentPlan.ApplicationType__c != 'Pay'){
+                    if((((oEnrollmentParticipant.TargetIncentivePoolAllocated__c * pool/100) < oEnrollmentPlan.MinParticipantPayout__c)) && oEnrollmentPlan.ApplicationType__c == 'ENR'){
+                        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants estimated payout must be >= $' + oEnrollmentPlan.MinParticipantPayout__c + ', Currently: $' + oEnrollmentParticipant.TargetIncentivePoolAllocated__c * pool/100));
+                        return false;
+                    }
+                }
             }
 
             if(oEnrollmentParticipant.EmployeeName__c == null){

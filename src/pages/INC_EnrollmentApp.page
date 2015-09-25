@@ -65,9 +65,18 @@
 
 <apex:outputPanel id="script">
 <script type="text/javascript">
-	function switchPages(){  
-	    alert('Comments saved!'); 
-	    window.location = '/apex/INC_EnrollmentApp?id={!EnrollmentPlan__c.ID}';
+	function switchPages(){ 
+		//debugger; 
+		var list = document.getElementsByTagName("textarea");
+    	var val = list[0].value;
+    	var reason = document.getElementsByTagName("select")[1];
+    	var val2 = reason.value;
+    	if(val != '' && val != 'Please enter a comment.' && val2 != ''){
+	    	alert('Comments saved!'); 
+	    	window.location = '/apex/INC_EnrollmentApp?id={!EnrollmentPlan__c.ID}';
+	    }else{
+	    	alert('Please enter a valid Comment and Reason Code.');
+	    }
 	    return false;
 	}	
 	function rejectMessage(){
@@ -95,12 +104,8 @@
 	    return false;
 	}
 	function submitMessage(){
-		if({!bSubmitWorked}){
-			alert('Application Submitted'); 
-			window.location = 'apex/INC_DeliverToWinLanding';
-		}else{
-			alert('There are still issues with your application. Please correct before submitting.');
-		}
+		alert('Application Submitted'); 
+		window.location = 'apex/INC_DeliverToWinLanding';
 		return false;
 	}
 	function rejectionCommentsMessage(){
@@ -207,6 +212,7 @@
 		}else{
 			rejectionCommentsMessage();
 		}
+		document.querySelector('[id*="rejectReason"]').disabled = true;
 	});
     
     
@@ -244,6 +250,7 @@
 		<apex:tabPanel switchType="client" value="{!activeTab}" id="theTabPanel">
 	        <apex:tab label="Step 1 - Review Project Master Data" name="step1" id="tabOne">
 	       		<div class="buttonwrapper">
+	        	<apex:commandButton styleclass="nextbtn" action="{!proposeOptOut}" value="Opt-Out"  onclick="return confirm('Are you sure you want to Opt-out?');"/>
 	        	<apex:commandButton styleclass="nextbtn" action="{!steptwo}" value="Next" reRender="tabs"/>
 	        	</div>
 	        	   <apex:pageBlockSection collapsible="false" showHeader="True" columns="2" Title="Project Master Data">
@@ -263,8 +270,8 @@
 	        </apex:tab>
 	        <apex:tab label="Step 2 - Choose Incentive Plan" name="step2" id="tabTwo">
 	        <div class="buttonwrapper">
-	        	<apex:commandButton styleclass="nextbtn" action="{!stepone}" value="Back" reRender="tabs" />
 	        	<apex:commandButton styleclass="nextbtn" action="{!stepthree}" value="Next" reRender="tabs" />
+	        	<apex:commandButton styleclass="nextbtn" action="{!stepone}" value="Back" reRender="tabs" />
 	        </div>
 	        	<apex:outputPanel rendered="{!activeTab = 'step2'}" >
 	        	<c:INC_ChoseIncentivePlanComponent fromWizardVal="Yes"/>
@@ -298,11 +305,12 @@
 		    </apex:pageBlockButtons>
 			<apex:pageBlockSection columns="1">
           <apex:outputText styleclass="message" value="{!sMessage}"/>
-			    <apex:inputField value="{!oEnrollComment.Type__c}"/>
+    		    <apex:inputField value="{!oEnrollComment.Type__c}"/>
+	      		<apex:inputField id="rejectReason" value="{!oEnrollComment.IsRejection__c}" />
 			    <apex:inputField value="{!oEnrollComment.Reason_Codes__c}"/>
 			 <apex:pageBlockSectionItem >
              	<apex:Outputlabel value="Comments" />
-             	<apex:inputTextarea value="{!oEnrollComment.Comments__c}" rows="5" cols="100"/>
+             	<apex:inputTextarea id="comments" value="{!oEnrollComment.Comments__c}" rows="5" cols="100"/>
           </apex:pageBlockSectionItem>
 			</apex:pageBlockSection>
 		</apex:pageBlock>
@@ -318,7 +326,7 @@
 			<apex:commandButton value="Assign Approvers" action="{!reassignApprovers}"  styleClass="hidebutton"/>
 			<apex:commandButton value="Create Change Request" action="{!createChangeRequest}" rerender="fullpage" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}" styleClass="hidebutton"/>
 			<apex:commandButton value="Create Payment Request" action="{!createPaymentRequest}" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}"  styleClass="hidebutton"/>
-			<apex:commandButton value="Reject Application" action="{!rejectAll}"  oncomplete="return rejectMessage();"  styleClass="hidebutton"/>
+			<apex:commandButton value="Reject Application" action="{!finalRejectButton}"  onclick="if(!confirm('Are you sure you want to reject the application?')){return};" oncomplete="return rejectMessage();"  styleClass="hidebutton"/>
 			<apex:commandButton value="Close Application" action="{!closeApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton"/>
 			<apex:commandButton value="Close Application (No Award)" action="{!closeNoAwardApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton"/>
 
@@ -363,6 +371,11 @@
 		  <apex:outputfield value="{!EnrollmentPlan__c.IncentivePlan__c}" />
 		  <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__r.ProjectStatus__c}"/>
 	
+		</apex:pageBlockSection>
+		<apex:pageBlockSection Title="DTW Admin Fields" columns="1" rendered="{!And(OR(UserType=2,UserType=3),EnrollmentPlan__c.ApplicationType__c='CCR')}">
+		<apex:repeat value="{!$ObjectType.EnrollmentPlan__c.FieldSets.DTWAdminCloseout}" var="f">
+			<apex:inputField value="{!EnrollmentPlan__c[f]}" />
+        </apex:repeat>
 		</apex:pageBlockSection>
 		</apex:outputpanel>
 		<apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="DTW Incentive Plan - Financial Metrics" rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c ='PAY')}">
@@ -412,6 +425,7 @@
 	<apex:pageBlockSection title="{!if(NOT(EnrollmentPlan__c.ApplicationType__c='PAY'),'Project Budget, DTW Baseline and Forecast','Project Financial Results')}" collapsible="true" columns="1">
 	<a id="budgetsection" />
 	<apex:commandButton styleclass="budgetbutton" value="Save and recalculate" action="{!saveAndReturnToBudget}" rendered="{!bRenderInputFinFields}"/>
+	<apex:outputfield value="{!EnrollmentPlan__c.ParentApplication__c}" rendered="{!EnrollmentPlan__c.ApplicationType__c='CCR'}"/>
 	<apex:outputPanel >
 			<table id="budgettable">
 				<tr>
@@ -424,7 +438,7 @@
 					<th>Mgmt Adjustments</th>
 					</apex:outputPanel>
 					<th>DTW Baseline</th>
-					<th>Current Forcast</th>
+					<th>Current Forecast</th>
 					<apex:outputPanel rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}">
 					<th>Inception to Date Actuals</th>
 					</apex:outputPanel>
@@ -740,7 +754,17 @@
 		  <apex:outputField value="{!EnrollmentPlan__c.FinalIncentivePoolITD__c}"/>
 		  <apex:inputField Styleclass="highlightedfield" value="{!EnrollmentPlan__c.FinalIncentivePoolAdjusted__c}"/>
 		</apex:pageBlockSection>
-		
+		<apex:pageBlockSection Title="Snapshot Fields" columns="2" rendered="{!UserType=2}">
+		<apex:repeat value="{!$ObjectType.EnrollmentPlan__c.FieldSets.DTWAdminSnapshot}" var="f">
+			<apex:inputField value="{!EnrollmentPlan__c[f]}" />
+        </apex:repeat>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection Title="Snapshot Fields" columns="2" rendered="{!UserType=3}">
+		<apex:repeat value="{!$ObjectType.EnrollmentPlan__c.FieldSets.DTWAdminSnapshot}" var="f">
+        	<apex:outputField value="{!EnrollmentPlan__c[f]}" />
+	    </apex:repeat>
+		</apex:pageBlockSection>
+	
 		<!--<div id="bottombuttondiv" class="hide">
 		<apex:commandButton value="Save" action="{!save}" styleClass="bottomButton" />
 		</div> -->
@@ -772,7 +796,7 @@
 		  <apex:outputField value="{!EnrollmentPlan__c.NumberofParticipants__c}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.PlanType__c}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.TotalAllocationParticipants__c}"/>
-		  <apex:outputField value="{!EnrollmentPlan__c.ApplicationType__c}"/>
+		  <apex:inputField id="rejectReason2" value="{!EnrollmentPlan__c.ApplicationType__c}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.ParentApplication__c}"/>
 	</apex:pageBlockSection>
 </apex:pageblock>
