@@ -22,24 +22,24 @@ public with sharing class INC_DeliverToWinLandingController {
         public id objectId {get;set;}
         public string type {get;set;}
         public date submitDate {get;set;}
+        public decimal formstatusage {get;set;}
         public string status {get;set;}
         public string projectNum {get;set;}
         public string lastActor {get;set;}
+        public decimal GrossRevenueBacklog {get;set;}
 
 
         public ApprovalItem(EnrollmentPlan__c oEP, ProcessInstance oPI){
         	this.oEP = oEP;
         	this.oPI = oPI;
-        	this.type = 'Enrollment Application';
+        	this.type = this.oEP.ApplicationType__c;
         	this.name = this.oEP.name;
         	this.objectId = this.oEP.id;
-        	this.submitDate = this.oPI.createddate.date();
+        	this.formstatusage = this.oEP.FormStatusAge__c;
             this.status = this.oEP.EnrollmentStatus__c;
             this.projectNum = this.oEP.ProjectID__c;
+            this.GrossRevenueBacklog = this.oEP.IncentiveProject__r.GRBacklog__c;
 
-            if(this.oPI.StepsAndWorkitems.size() >0){
-                this.lastActor = this.oPI.StepsAndWorkitems[0].Actor.name;
-            }
         }
 
         public ApprovalItem(ParticipantAcknowledgement__c oPA){
@@ -192,14 +192,14 @@ public with sharing class INC_DeliverToWinLandingController {
     		lstEPPending.put(PI.targetObjectId, PI);
     	}
 
-    	lstEnrollmentPlan = [select id, name, EnrollmentStatus__c, ProjectID__c from EnrollmentPlan__c where id IN:lstEPPending.keyset() limit 1000];
+    	lstEnrollmentPlan = [select id, name, EnrollmentStatus__c, ProjectID__c, ApplicationType__c, FormStatusAge__c, IncentiveProject__r.GRBacklog__c from EnrollmentPlan__c where id IN:lstEPPending.keyset() order by FormStatusAge__c desc limit 1000];
 
     	for(EnrollmentPlan__c ep:lstEnrollmentPlan){
     		lstApprovalItem.add(new ApprovalItem(ep, lstEPPending.get(ep.id)));
     	}
 
     	//lstPartAck = [select id, EnrollmentAppName__c, ProjectName__c, Sent_Date__c from ParticipantAcknowledgement__c where Acknowledged__c != 'Yes' and ParticipantID__c != null and ownerid=:UserInfo.getUserId() limit 5];
-    	lstPartAck = [select id, EnrollmentAppName__c, ProjectName__c, Sent_Date__c, Status__c, ParticipantID__r.EnrollmentPlan__r.ProjectID__c from ParticipantAcknowledgement__c where OwnerId=:UserInfo.getUserId() and Acknowledged__c != 'Yes' and ParticipantID__c != null limit 1000];
+    	lstPartAck = [select id, EnrollmentAppName__c, ProjectName__c, Sent_Date__c, Status__c, ParticipantID__r.EnrollmentPlan__r.ProjectID__c from ParticipantAcknowledgement__c where OwnerId=:UserInfo.getUserId() and Acknowledged__c != 'Yes' and ParticipantID__c != null order by Sent_Date__c desc limit 1000];
 
     	for(ParticipantAcknowledgement__c pa:lstPartAck){
     		lstApprovalItemPA.add(new ApprovalItem(pa));

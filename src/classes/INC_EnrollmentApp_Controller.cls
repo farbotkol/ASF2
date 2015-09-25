@@ -18,7 +18,8 @@ public with sharing class INC_EnrollmentApp_Controller {
     public boolean bSubmitWorked{get;set;}
     public boolean bRenderInputFinFields{get;set;}
     public String sExceptions{get;set;}
- 
+    
+
     public INC_EnrollmentApp_Controller(ApexPages.StandardController stdController) {
         activeTab = 'step1';
         bRenderInputFinFields = true;
@@ -37,37 +38,14 @@ public with sharing class INC_EnrollmentApp_Controller {
                                                   ,'IncentiveProject__r.ContractTypeShortName__c'
                                                   ,'WizardStatus__c'
                                                   ,'AppIicationIssues__c'
+                                                  ,'InterimPaymentRequested__c'
                                                   , 'ApplicationExceptionsPay__c'
                                                   ,'IncentiveProject__r.DTWAdmin__c'});
         }
 
         this.oEnrollmentApp = (EnrollmentPlan__c)stdController.getRecord();
-        if(oEnrollmentApp.Application_Exceptions__c != null){
-          sExceptions = oEnrollmentApp.Application_Exceptions__c;
-        } 
-        if(oEnrollmentApp.ApplicationExceptionsFP__c != null){ 
-          if(sExceptions != null){
-            sExceptions += oEnrollmentApp.ApplicationExceptionsFP__c;
-          }else{
-            sExceptions = oEnrollmentApp.ApplicationExceptionsFP__c;
-          }
-          
-        }
-        if(oEnrollmentApp.ApplicationExceptionsTM__c != null){
-          if(sExceptions != null){
-            sExceptions += oEnrollmentApp.ApplicationExceptionsTM__c;
-          }else{
-            sExceptions = oEnrollmentApp.ApplicationExceptionsTM__c;
-          }
-        }
-
-        if(oEnrollmentApp.ApplicationExceptionsPay__c != null){
-          if(sExceptions != null){
-            sExceptions += oEnrollmentApp.ApplicationExceptionsPay__c;
-          }else{
-            sExceptions = oEnrollmentApp.ApplicationExceptionsPay__c;
-          }
-        }
+        
+        setExceptions();
 
         System.debug(logginglevel.error,UserInfo.getUserId() + ' ' + oEnrollmentApp.IPProjectManager__c);
         if((oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c == '')&&
@@ -108,7 +86,11 @@ public with sharing class INC_EnrollmentApp_Controller {
             if(oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c == ''){
               bShowApprovalHistory = true;
             }else{
-              bShowApprovalHistory = false;
+              if(oEnrollmentApp.ApplicationType__c=='Opt-Out'){
+                bShowApprovalHistory = true;
+              }else{
+                bShowApprovalHistory = false;
+              }
             }
 
             enrollcharId = String.ValueOF(oEnrollmentApp.id).mid(0,15);
@@ -131,18 +113,75 @@ public with sharing class INC_EnrollmentApp_Controller {
 
     }
 
+    
+
+    public integer getUserType(){
+      User currentUser = [Select id, DTWApplicationLevel__c from User where id=:UserInfo.getUserId()][0];
+      Integer iReturn = 1;
+      if(currentUser.DTWApplicationLevel__c=='Corporate'){
+        iReturn = 2;
+      }
+      if(currentUser.DTWApplicationLevel__c == 'DTW Admin'){
+        iReturn = 3;
+      }
+      return iReturn;
+    }
+
+    private void setExceptions(){
+        if(oEnrollmentApp.Application_Exceptions__c != null){
+          sExceptions = oEnrollmentApp.Application_Exceptions__c;
+        } 
+        if(oEnrollmentApp.ApplicationExceptionsFP__c != null){ 
+          if(sExceptions != null){
+            sExceptions += oEnrollmentApp.ApplicationExceptionsFP__c;
+          }else{
+            sExceptions = oEnrollmentApp.ApplicationExceptionsFP__c;
+          }
+          
+        }
+        if(oEnrollmentApp.ApplicationExceptionsTM__c != null){
+          if(sExceptions != null){
+            sExceptions += oEnrollmentApp.ApplicationExceptionsTM__c;
+          }else{
+            sExceptions = oEnrollmentApp.ApplicationExceptionsTM__c;
+          }
+        }
+
+        if(oEnrollmentApp.ApplicationExceptionsPay__c != null){
+          if(sExceptions != null){
+            sExceptions += oEnrollmentApp.ApplicationExceptionsPay__c;
+          }else{
+            sExceptions = oEnrollmentApp.ApplicationExceptionsPay__c;
+          }
+        }
+    }
+
     public boolean RenderInputFinFields(){
       boolean bReturn = true;
       if(oEnrollmentApp.ApplicationType__c == 'PAY'){
         bReturn = false;
       }else{
-        if(oEnrollmentApp.StatusNumber__c >= 6){
+        if(oEnrollmentApp.StatusNumber__c >= 6 && oEnrollmentApp.EnrollmentStatus__c != 'Rejected for Correction'){
           bReturn = false;
         }
       }
 
       return bReturn;
 
+    }
+
+    public pageReference proposeOptOut(){
+      oEnrollmentApp.WizardStatus__c = 'Complete';
+      oEnrollmentApp.EnrollmentStatus__c='Opt-Out';
+      try{
+        update oEnrollmentApp;
+        submit();
+        return new pageReference('/' + oEnrollmentApp.ID);
+      }catch(Exception e){
+        System.Debug('Trapping error when opting out: ' + e.getMessage());
+      }
+
+      return null;
     }
 
     public pageReference enableNextButton(){
@@ -266,8 +305,10 @@ public with sharing class INC_EnrollmentApp_Controller {
       oEnrollmentApp = [Select id, AppIicationIssues__c from EnrollmentPlan__c where id=:oEnrollmentApp.ID][0];
       System.Debug(logginglevel.error,'submit: ' + bSubmitWorked);
       if(oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c == ''){
+         System.Debug(logginglevel.error,'Submitting app');
          bSubmitWorked = true;
          PageReference pr = submit();
+         pr=finishWizard();
          /*if(pr != null){
              //return pr;
              return null;
@@ -277,6 +318,7 @@ public with sharing class INC_EnrollmentApp_Controller {
 
          return null;
       }else{
+        System.Debug(logginglevel.error,'Submit Failed');
         bSubmitWorked = false;
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'There are still issues with your application: <br/> ' + oEnrollmentApp.AppIicationIssues__c));
       }
@@ -289,11 +331,23 @@ public with sharing class INC_EnrollmentApp_Controller {
 
     public PageReference submit(){
 
-        list<ProcessInstance> existingApprovals = [SELECT Id, TargetObjectId
+        list<ProcessInstance> existingApprovals = [SELECT Id, TargetObjectId,Status
                                             FROM ProcessInstance 
                                             WHERE TargetObjectId  =:oEnrollmentApp.ID];
         //this is a check in case they click the button twice or the page doesn't refresh.
-        if(existingApprovals == null || existingApprovals.size() == 0){
+        System.Debug(logginglevel.error,'existingApprovals: ' + existingApprovals);
+        //to allow for resubmit, need to check to see if existing approvals are "Removed"
+        Boolean bContinue = true;
+        if(existingApprovals != null && existingApprovals.size() > 0){
+          bContinue = false;
+          for(ProcessInstance pr: existingApprovals){
+            if(pr.Status == 'Removed'){
+              bContinue = true;
+            }
+          }
+        }
+        bSubmitWorked = true;
+        if(bContinue){
           Approval.ProcessSubmitRequest req1 = new Approval.ProcessSubmitRequest();  
           req1.setComments('Submitted for Approval');
           req1.setObjectId(oEnrollmentApp.ID);
@@ -302,7 +356,7 @@ public with sharing class INC_EnrollmentApp_Controller {
               Approval.ProcessResult result = Approval.process(req1); 
               }catch(Exception e){
                   bSubmitWorked = false;
-                  System.Debug(logginglevel.error,'Exception: ' + e.getMessage());
+                  System.Debug(logginglevel.error,'Exception from Submit: ' + e.getMessage());
                   ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'All criteria has not be met.'));
               }
         }
@@ -313,23 +367,36 @@ public with sharing class INC_EnrollmentApp_Controller {
         return null;
     } 
 
+    public pageReference finalRejectButton(){
+      ID workItem = getWorkItemId(oEnrollmentApp.ID);
+       Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
+       //req.setComments('Please enter a comment.');
+       req.setAction('Reject');
+       req.setWorkitemId(workItem);
+       Approval.ProcessResult result =  Approval.process(req);
+       if(!result.isSuccess()){
+           ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'Error Rejecting Application.'));
+       }
+       
+       System.Debug(logginglevel.error,'finalRejectButton clicked');
+       return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.ID);
+    }
+
     public pageReference rejectAll(){
       /*ID workItem = getWorkItemId(oEnrollmentApp.ID);
       while(workItem != null){
-        Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
-          req.setComments('Final Rejection.');
-          req.setAction('Reject');
           //req.setNextApproverIds(new Id[] {UserInfo.getUserId()});
           req.setWorkitemId(workItem);
               // Submit the request for approval
-          Approval.ProcessResult result =  Approval.process(req);
           workItem = getWorkItemId(oEnrollmentApp.id);
        
       }
       return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.id);*/
 
       ID workItem = getWorkItemId(oEnrollmentApp.ID);
-      If(workItem != null){
+     /* 
+        No longer reject, step will be rejected during normal process
+        If(workItem != null){
         Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
           req.setComments('Final Rejection.');
           req.setAction('Reject');
@@ -339,7 +406,7 @@ public with sharing class INC_EnrollmentApp_Controller {
           Approval.ProcessResult result =  Approval.process(req);
           workItem = getWorkItemId(oEnrollmentApp.id);
        
-      }
+      }*/
 
       If(workItem != null){
             List<ProcessInstanceWorkitem> workitems = new List<ProcessInstanceWorkitem>([select Id from ProcessInstanceWorkitem where ProcessInstance.TargetObjectId =:oEnrollmentApp.id]);
@@ -442,6 +509,9 @@ public with sharing class INC_EnrollmentApp_Controller {
       if(oEnrollmentApp.EnrollmentStatus__c == 'Enrolled'){
         String sName = INC_Service_EnrollmentPlan.cloneEnrollment(oEnrollmentApp.id,INC_Service_EnrollmentPlan.RequestType.PAYMENT);
           if(sName != null && sName != ''){
+            oEnrollmentApp = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{sName})[0];
+            System.Debug(logginglevel.error,'oEnrollmentApp.Id ' + oEnrollmentApp.ID + ' sName:' + sName);
+            submit();
             pr = new pageReference('/apex/INC_EnrollmentApp?id='+ sName);
             pr.setredirect(true);
           }else{
@@ -454,6 +524,7 @@ public with sharing class INC_EnrollmentApp_Controller {
         return pr;
     }
 
+    
     public void updateCommentsfromApprovals(){
         oEnrollmentApp = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentApp.ID})[0];
         if(oEnrollmentApp.ApprovalRecentlyProcessed__c){
@@ -470,6 +541,7 @@ public with sharing class INC_EnrollmentApp_Controller {
                                                           , Reason_Codes__c
                                                           , Approver__c
                                                           , Approver__r.Name
+                                                          , IsRejection__c
                                                  From Enrollment_Comments__c
                                                  Where EnrollmentApplication__c =: oEnrollmentApp.ID
                                                  and (Type__c = 'Rejection' or Type__c ='Rejection for Corrections')
@@ -495,6 +567,8 @@ public with sharing class INC_EnrollmentApp_Controller {
             System.debug(logginglevel.error,'oEnrollComment.Reason_Codes__c ');
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'You must choose a reason code before saving.'));
         }else{
+          if(oEnrollComment.Comments__c != null && oEnrollComment.Comments__c != 'Please enter a comment.'
+             && oEnrollComment.Comments__c != ''){
             ID workFlowID = ECO_Utils_sObject.getRecordTypeId(EnrollmentPlan__c.sObjectType,'Workflow');
             ID paymentID = ECO_Utils_sObject.getRecordTypeId(EnrollmentPlan__c.sObjectType,'Payment Request');
             System.Debug(logginglevel.error,'Workflowid ' + workFlowID);
@@ -513,23 +587,34 @@ public with sharing class INC_EnrollmentApp_Controller {
               try{
                   system.debug(logginglevel.error,'Updating records');
                   update oEnrollmentApp;
-                  return null;
               }catch(Exception e){
                   system.debug('Handling Exception:  '+e.getMessage() + ' ' + e.getStackTraceString());
                   system.debug(logginglevel.error, 'enrollmentPlan update error: ' + e);
                   Database.rollBack(sp);
               }
               try{
-                  system.debug(logginglevel.error,'Updating records');
+                  system.debug(logginglevel.error,'Updating Comments');
                   upsert oEnrollComment;
-                  return null;
               }catch(Exception e){
                   system.debug('Handling Exception:  '+e.getMessage() + ' ' + e.getStackTraceString());
                   system.debug(logginglevel.error, 'comment creation error: ' + e);
                   Database.rollBack(sp);
               }  
      
+              if(oEnrollComment.Reason_Codes__c == 'Project in Litigation' ||
+                 oEnrollComment.Reason_Codes__c == 'Project is Intercompany - Client is AECOM' ||
+                 oEnrollComment.Reason_Codes__c == 'Project on Hold' ||
+                 oEnrollComment.Reason_Codes__c == 'Project Nearing Completion' ||
+                 oEnrollComment.Reason_Codes__c == 'Poor Project Performance'){
+                  
+                  rejectAll();
+              }
             }
+          }else{
+                System.Debug(logginglevel.error,'Not saving comments');
+                  ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'You must enter a valid comment.'));
+            
+          }
               
         }
 

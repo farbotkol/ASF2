@@ -1,0 +1,94 @@
+<messaging:emailTemplate recipientType="User"
+  relatedToType="EnrollmentPlan__c"
+  subject="DTW Action Required: Deliver to Win Enrollment Application or Change Form submitted for your approval"
+  replyTo="{!relatedTo.ReplyTo__c}"> <!--make this dynamic custom setting or somethin -->
+  <messaging:htmlEmailBody >
+    <html>
+      <body>
+        <STYLE type="text/css">
+          TH {font-size: 11px; font-face: arial;background: #CCCCCC;
+               border-width: 1;  text-align: center }
+          TD  {font-size: 11px; font-face: verdana }
+          TABLE {border: solid #CCCCCC; border-width: 1}
+          TR {border: solid #CCCCCC; border-width: 1}
+        </STYLE>
+        <font face="arial" size="2">
+          <p>A Deliver to Win Enrollment Application or Change Form has been submitted for your approval.<br/>
+If an Enrollment Application is pending your review, it requires your confirmation of the plan selection (Fixed Price or T&amp;M), the baseline margin and DSO targets, and participants/target awards.  
+If a Change Form is pending your review, someone has requested a change to one or more of these key elements on an enrolled project, and your approval is required.</p>
+          
+          <P>
+            Project Number: {!relatedTo.ProjectID__c}<br/>
+            Project Name: {!relatedTo.Name}<br/>
+            Client Name: {!relatedTo.CustomerName__c}  <br/> 
+            Form Type: {!relatedTo.ApplicationType__c}  <br/>   
+          </P>    
+         
+          <p>Please click the link below review the form.<br/>   
+          Enrollment Plan: <apex:outputlink value="{!relatedTo.EAURL__c}" >{!relatedTo.Name}</apex:outputlink> </p>
+          <p>Below is a list of Participants.</p>
+          <table border="0" >
+            <tr >
+               <th>Employee</th>
+               <th>Employee Number</th>
+               <th>Role/Title</th>
+               <th>Participant Category</th>
+               <th>Target %</th>
+            </tr>
+            <apex:repeat var="cx" value="{!relatedTo.EnrollmentParticipants__r}">
+              <tr>
+                <td>{!cx.EmployeeName__r.Name}</td>
+                <td>{!cx.EmployeeID__c}</td>
+                <td>{!cx.RoleTitle__c}</td>
+                <td>{!cx.ParticipantCategory__c}</td>
+                <td>{!cx.TargetIncentivePoolAllocated__c}</td>
+              </tr>
+            </apex:repeat>                
+          </table>
+          <p />
+          <P>
+          Exceptions:<BR />
+          <apex:outputfield value="{!relatedTo.ExceptionComments__c}" />
+          </P>          
+          
+          <P>For more information please review the <a href="http://my.aecomnet.com/portal/site/Intranet/menuitem.4bb5ad8d27dddb3d13bd6e20c43611ca/?vgnextoid=4699bc2ceae8e410VgnVCM100000089e1bacRCRD&vgnextchannel=c7e1b267a0f9c410VgnVCM100000089e1bacRCRD&vgnextfmt=default">Approver Resources</a> on the 
+          <a href="http://my.aecomnet.com/Intranet/About/Delivery+Excellence/Design+and+Consulting+Services?appInstanceName=intranet&vgnextrefresh=1">DTW webpage</a>.  A short video and more information about the plan are available.</P>
+          <P>
+          Thank you, <BR/>
+          DTW Administrator <BR />
+          <a href="mailto:{!relatedTo.ReplyTo__c}" target="_blank">{!relatedTo.ReplyTo__c}</a>
+          </P>
+        </font>
+      </body>
+    </html>
+  </messaging:htmlEmailBody>  
+    <messaging:plainTextEmailBody >
+
+    A Deliver to Win Enrollment Application or Change Form has been submitted for your approval. 
+If an Enrollment Application is pending your review, it requires your confirmation of the plan selection (Fixed Price or T&amp;M), the baseline margin and DSO targets, and participants/target awards.  
+If a Change Form is pending your review, someone has requested a change to one or more of these key elements on an enrolled project, and your approval is required.
+
+    Project Number: {!relatedTo.ProjectID__c}
+    Project Name: {!relatedTo.Name}
+    Client Name: {!relatedTo.CustomerName__c} 
+    Form Type: {!relatedTo.ApplicationType__c}  
+
+    
+    Below is a list of Participants related to the Enrollment Plan: {!relatedTo.name}.
+     
+    [ Employee ] - [ Employee ID ] - [ Role/Title ] - [ Participant Category ] - [ Target % ]
+     
+    <apex:repeat var="cx" value="{!relatedTo.EnrollmentParticipants__r}">
+      [ {!cx.EmployeeName__r.Name} ] - [ {!cx.EmployeeID__c} ] - [ {!cx.RoleTitle__c} ] - [ {!cx.ParticipantCategory__c} ] - [ {!cx.TargetIncentivePoolAllocated__c} ]
+    </apex:repeat>
+     
+    Exceptions:
+    {!relatedTo.ExceptionComments__c}     
+     
+    For more information please review the Approver Resources on the DTW webpage. A short video and more information about the plan are available.
+    
+    Thank you, 
+    DTW Administrator
+    {!relatedTo.ReplyTo__c}
+  </messaging:plainTextEmailBody>
+</messaging:emailTemplate>

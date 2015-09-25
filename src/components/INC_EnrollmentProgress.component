@@ -188,7 +188,7 @@
 			</ul>
 		</div>
 	</apex:outputPanel>
-	<apex:outputPanel id="progress2" rendered="{!And(bShowProgress,oEnrollmentPlan.ExceptionFlag__c='Yes')}">
+	<apex:outputPanel id="progress2" rendered="{!And(bShowProgress,AND(oEnrollmentPlan.ExceptionFlag__c='Yes',NOT(oEnrollmentPlan.InterimPaymentRequested__c='Yes'),NOT(AggregatedProject)))}">
 		<div class="breadcrumb" title="{!ProgressToolTip}">
 			<ul class="breadcrumb">
 				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 1 ,'Current',If(oEnrollmentPlan.StatusNumber__c > 1,'Complete wide', 'Pending wide')) }">
@@ -212,7 +212,35 @@
 			</ul>
 		</div>
 	</apex:outputPanel>
-	<apex:outputPanel id="progress3" rendered="{!Not(bShowProgress)}">
+	<apex:outputPanel id="progress3" rendered="{!And(bShowProgress,OR(oEnrollmentPlan.InterimPaymentRequested__c='Yes',AggregatedProject))}">
+		<div class="breadcrumb" title="{!ProgressToolTip}">
+			<ul class="breadcrumb">
+				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 1 ,'Current',If(oEnrollmentPlan.StatusNumber__c > 1,'Complete wide', 'Pending wide')) }">
+					<a href="#"><span>Pending<br/>PM Action</span></a>
+				</li>
+				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 2 ,'Current',If(oEnrollmentPlan.StatusNumber__c > 2,'Complete wide', 'Pending wide')) }">
+					<a href="#"><span>Pending<br/>Approver 1 Action</span></a>
+				</li>
+				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 3 ,'Current',If(oEnrollmentPlan.StatusNumber__c > 3,'Complete wide', 'Pending wide')) }">
+					<a href="#"><span>Pending <br/>Approver 2 Action</span></a>
+				</li>
+				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 4 ,'Current',If(oEnrollmentPlan.StatusNumber__c > 4,'Complete wide', 'Pending3 wide')) }">
+					<a href="#"><span>Pending<br/>Approver 3 Action</span></a>
+				</li>
+				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 4.5 ,'Current',If(oEnrollmentPlan.StatusNumber__c > 4.5,'Complete wide', 'Pending3 wide')) }">
+					<a href="#"><span>Pending<br/>Pending Corp Review</span></a>
+				</li>
+				
+				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 5 ,'Current',If(oEnrollmentPlan.StatusNumber__c > 5,'Complete wide', 'Pending wide')) }">
+					<a href="#"><span>Pending<br/>DTW Admin</span></a>
+				</li>
+				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 6 ,'Current lastli',If(oEnrollmentPlan.StatusNumber__c > 6,'Complete wide lastli', 'Pending wide lastli'))}">
+					<a href="#"><span>Project<br/>Enrolled</span></a>
+				</li>
+			</ul>
+		</div>
+	</apex:outputPanel>
+	<apex:outputPanel id="progress4" rendered="{!Not(bShowProgress)}">
 		<div class="breadcrumb">
 			<ul class="breadcrumb" title="{!ProgressToolTip}">
 				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 7,'pastEnrolled','pastEnrolledHide')}">
@@ -227,6 +255,10 @@
 				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 10,'pastEnrolled','pastEnrolledHide')}">
 					<a title="{!tenTooltip}" href="#"><span>Unenrolled</span></a>
 				</li>
+				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 11,'pastEnrolled','pastEnrolledHide')}">
+					<a title="{!tenTooltip}" href="#"><span>Project Manager has requested Opt-Out</span></a>
+				</li>
+
 			</ul>
 		</div>
 	</apex:outputPanel>

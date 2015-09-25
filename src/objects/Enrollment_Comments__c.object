@@ -122,6 +122,26 @@
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <fields>
+        <fullName>IsRejection__c</fullName>
+        <description>Hidden system field set by code to Yes if record created by rejection process</description>
+        <externalId>false</externalId>
+        <label>IsRejection</label>
+        <picklist>
+            <picklistValues>
+                <fullName>No</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Reason_Codes__c</fullName>
         <description>When rejection is required, use the dropdown list to select from the most commonly noted reasons.  Comments must be logged with each rejection for the reference of the original submitter, prior approvers, and DTW Admin.  If corrections to the application are needed, address these in the comments field.</description>
         <externalId>false</externalId>
@@ -131,53 +151,47 @@
             <controllingField>Type__c</controllingField>
             <picklistValues>
                 <fullName>Poor Project Performance</fullName>
-                <controllingFieldValues>Final Rejection</controllingFieldValues>
                 <controllingFieldValues>Rejection</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Project on Hold</fullName>
-                <controllingFieldValues>Final Rejection</controllingFieldValues>
                 <controllingFieldValues>Rejection</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Project in Litigation</fullName>
-                <controllingFieldValues>Final Rejection</controllingFieldValues>
                 <controllingFieldValues>Rejection</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Project Nearing Completion</fullName>
-                <controllingFieldValues>Final Rejection</controllingFieldValues>
+                <controllingFieldValues>Rejection</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>More Suitable for T&amp;M Plan</fullName>
                 <controllingFieldValues>Rejection</controllingFieldValues>
-                <controllingFieldValues>Rejection for Corrections</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>More Suitable for FP Plan</fullName>
                 <controllingFieldValues>Rejection</controllingFieldValues>
-                <controllingFieldValues>Rejection for Corrections</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Other</fullName>
                 <controllingFieldValues>Rejection</controllingFieldValues>
-                <controllingFieldValues>Rejection for Corrections</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Project is Intercompany – Client is AECOM</fullName>
-                <controllingFieldValues>Final Rejection</controllingFieldValues>
+                <controllingFieldValues>Rejection</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Rejected For Corrections (explain in comments)</fullName>
-                <controllingFieldValues>Rejection for Corrections</controllingFieldValues>
+                <controllingFieldValues>Rejection</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -203,24 +217,30 @@
         <externalId>false</externalId>
         <label>Comment Type</label>
         <picklist>
+            <controllingField>IsRejection__c</controllingField>
             <picklistValues>
                 <fullName>General</fullName>
+                <controllingFieldValues>No</controllingFieldValues>
                 <default>true</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Exception</fullName>
+                <controllingFieldValues>No</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Management Adjustment</fullName>
+                <controllingFieldValues>No</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Approval</fullName>
+                <controllingFieldValues>No</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Rejection</fullName>
+                <controllingFieldValues>Yes</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -233,10 +253,12 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Participant</fullName>
+                <controllingFieldValues>No</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Interim Payment</fullName>
+                <controllingFieldValues>No</controllingFieldValues>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -263,6 +285,17 @@
             <values>
                 <fullName>FP</fullName>
                 <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>IsRejection__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
             </values>
         </picklistValues>
         <picklistValues>
@@ -349,6 +382,17 @@
             <values>
                 <fullName>T%26M</fullName>
                 <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>IsRejection__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
             </values>
         </picklistValues>
         <picklistValues>

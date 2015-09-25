@@ -80,13 +80,15 @@
         <apex:outputField value="{!oEnrollmentPlan.ScheduledFinishDate__c}" />
         <apex:outputField value="{!oEnrollmentPlan.MinParticipantPayout__c}" />
         <apex:outputField value="{!oEnrollmentPlan.UnallocatedPercent__c}" />
-        <apex:outputField value="{!oEnrollmentPlan.EstimatedPoolBaseline__c}" rendered="{!bFixed}" />
-        <apex:outputField value="{!oEnrollmentPlan.EstimatedPoolBaseline10__c}" rendered="{!bTM}" />
-        <apex:outputtext value="" rendered="{!AND(NOT(bTM), NOT(bFixed))}" />
+        <apex:outputField value="{!oEnrollmentPlan.EstimatedPoolBaseline__c}" rendered="{!AND(bFixed, oEnrollmentPlan.ApplicationType__c != 'PAY')}" />
+        <apex:outputField value="{!oEnrollmentPlan.EstimatedPoolBaseline10__c}" rendered="{!AND(bTM, oEnrollmentPlan.ApplicationType__c != 'PAY')}" />
+        <apex:outputtext value="" rendered="{!OR(oEnrollmentPlan.ApplicationType__c == 'PAY', AND(NOT(bTM), NOT(bFixed)))}" />
         <apex:outputField value="{!oEnrollmentPlan.UnallocatedAmount__c}" />
-        <apex:outputField value="{!oEnrollmentPlan.FinalIncentivePoolAdjusted__c}" rendered="{!not(bTMorFixed)}"/>
-        <apex:outputtext value="" rendered="{!bTMorFixed}" />
-        <apex:outputField value="{!oEnrollmentPlan.ApplicationIssuesPay__c}" />
+        <apex:outputField value="{!oEnrollmentPlan.FinalIncentivePoolAdjusted__c}" rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}"/>
+        <apex:outputtext value="" rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}" />
+         <apex:outputField value="{!oEnrollmentPlan.ApplicationIssuesPay__c}" rendered="{!oEnrollmentPlan.ApplicationType__c='PAY'}" />
+
+        <apex:outputField value="{!oEnrollmentPlan.AppIicationIssues__c}" rendered="{!oEnrollmentPlan.ApplicationType__c!='PAY'}" />
         
       </apex:pageBlockSection>
     </apex:pageblock>
@@ -109,17 +111,25 @@
       </div> 
     </div>
     
-    <p class="projmessage">At the time a project is enrolled in DTW, up to 60% of the incentive pool can be allocated to participants as “Target %”.  If additional employees are later identified as key project leaders, they may be added to the plan and the total allocation can exceed 60%.  The total allocation can never exceed 100%.  (Note: if the project is within several months of completion, the full pool may be allocated with exception approval.)<br/><br/>
+    <apex:outputPanel rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}">
+      <p class="projmessage">At the time a project is enrolled in DTW, up to 60% of the incentive pool can be allocated to participants as “Target %”.  If additional employees are later identified as key project leaders, they may be added to the plan and the total allocation can exceed 60%.  The total allocation can never exceed 100%.  (Note: if the project is within several months of completion, the full pool may be allocated with exception approval.)<br/><br/>
 
-    <apex:outputPanel rendered="{!bFixed}">
-    * For the purposes of allocating potential award earnings to employees, we use the estimated incentive pool at that would be calculated if the project achieved 3% better than the baseline margin.  This is a hypothetical value and it will be communicated to employees in their Enrollment Letter, as an example of how a pool is calculated.  The “Estimated Payout” for a participant is the  Estimated Pool @ Baseline + 3% x the participant’s allocation percent.  In order for potential awards to be meaningful and motivational, no participant may be allocated less than the predetermined “Min Participant Payout $” for this incentive plan, as shown in the table at the top of this page.
+      <apex:outputPanel rendered="{!bFixed}">
+      * For the purposes of allocating potential award earnings to employees, we use the estimated incentive pool at that would be calculated if the project achieved 3% better than the baseline margin.  This is a hypothetical value and it will be communicated to employees in their Enrollment Letter, as an example of how a pool is calculated.  The “Estimated Payout” for a participant is the  Estimated Pool @ Baseline + 3% x the participant’s allocation percent.  In order for potential awards to be meaningful and motivational, no participant may be allocated less than the predetermined “Min Participant Payout $” for this incentive plan, as shown in the table at the top of this page.
+      </apex:outputPanel>
+
+      <apex:outputPanel rendered="{!bTM}">
+      * For the purposes of allocating potential award earnings to employees, we use the estimated incentive pool at that would be calculated if the project achieved 10% growth on above the baseline margin dollars. This is a hypothetical value and it will be communicated to employees in their Enrollment Letter, as an example of how a pool is calculated. The “Estimated Payout” for a participant is the Estimated Pool @ Baseline x 10% x profit sharing % x the participant’s allocation percent. In order for potential awards to be meaningful and motivational, no participant may be allocated less than the predetermined “Min Participant Payout $” for this incentive plan, as shown in the table at the top of this page.
+      </apex:outputPanel>
+
+      </p>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}">
+      <p class="projmessage">TIM CHIANG ROCKS!!!!!
+
+      </p>
     </apex:outputPanel>
 
-    <apex:outputPanel rendered="{!bTM}">
-    * For the purposes of allocating potential award earnings to employees, we use the estimated incentive pool at that would be calculated if the project achieved 10% growth on above the baseline margin dollars. This is a hypothetical value and it will be communicated to employees in their Enrollment Letter, as an example of how a pool is calculated. The “Estimated Payout” for a participant is the Estimated Pool @ Baseline x 10% x profit sharing % x the participant’s allocation percent. In order for potential awards to be meaningful and motivational, no participant may be allocated less than the predetermined “Min Participant Payout $” for this incentive plan, as shown in the table at the top of this page.
-    </apex:outputPanel>
-
-    </p>
     <br/>
     <a href="#" id="viewpdf">View Participant Guidelines</a>
     
@@ -153,8 +163,8 @@
                </center>
           </apex:column>
            <apex:Column headervalue="Employee">
-              <apex:inputField value="{!Participant.EmployeeName__c}" rendered="{!OR(AND(editParticipants, NOT(AND(bPaid, Participant.ParticipantType__c = 'Incentive'))), AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))}"/>
-              <apex:OutputField value="{!Participant.EmployeeName__c}" rendered="{!OR(AND(editParticipants = false, NOT(AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaid, Participant.ParticipantType__c = 'Incentive')) }"/>
+              <apex:inputField value="{!Participant.EmployeeName__c}" rendered="{!AND(OR(AND(editParticipants, NOT(AND(bPaid, Participant.ParticipantType__c = 'Incentive'))), AND(bPaid, Participant.ParticipantType__c = 'Discretionary')),Participant.ExistedAtEnrollment__c='No')}"/>
+              <apex:OutputField value="{!Participant.EmployeeName__c}" rendered="{!OR(OR(AND(editParticipants = false, NOT(AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaid, Participant.ParticipantType__c = 'Incentive')),NOT(Participant.ExistedAtEnrollment__c='No')) }"/>
            </apex:Column>
            <apex:Column headervalue="Employee Number">
               <apex:inputField value="{!Participant.EmployeeID__c}" rendered="{!OR(AND(editParticipants, NOT(AND(bPaid, Participant.ParticipantType__c = 'Incentive'))), AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))}"/>

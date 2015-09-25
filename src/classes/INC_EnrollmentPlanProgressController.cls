@@ -27,11 +27,13 @@ public with sharing class INC_EnrollmentPlanProgressController {
         oEnrollmentPlan = getValues(EnrollID);
         System.Debug(logginglevel.error,'Enrollment status in progress: ' + oEnrollmentPlan.EnrollmentStatus__c);
         bShowProgress = true;
-         if(oEnrollmentPlan.StatusNumber__c > 6){
+        ID rejectedRecTypeID = Schema.SObjectType.EnrollmentPlan__c.getRecordTypeInfosByName().get('Rejected Application').getRecordTypeId();
+            
+        if(oEnrollmentPlan.StatusNumber__c > 6){
             bShowProgress = false;
 
         }
-
+        //onload();
         setToolTips();
     }
   
@@ -62,6 +64,8 @@ public with sharing class INC_EnrollmentPlanProgressController {
                          , WorkflowProcess__c
                          , ExceptionFlag__c
                          ,ApprovalRecentlyProcessed__c
+                         ,InterimPaymentRequested__c
+                         ,IncentiveProject__r.recordTypeID
                 From EnrollmentPlan__c
                 Where Id =: ID];
 
@@ -74,9 +78,19 @@ public with sharing class INC_EnrollmentPlanProgressController {
                          , WorkflowProcess__c
                          , ExceptionFlag__c
                          ,ApprovalRecentlyProcessed__c
+                         ,IncentiveProject__r.recordTypeID
+                         ,InterimPaymentRequested__c
                 From EnrollmentPlan__c
                 Where Id =: oEnrollmentPlan.iD][0];
 
+    }
+
+    public boolean getAggregatedProject(){
+     Id recTypeIdAg = ECO_Utils_sObject.getRecordTypeId(IncentiveProject__c.sObjectType,'Aggregated Project');
+      if(oEnrollmentPlan.IncentiveProject__r.RecordTypeID == recTypeIdAg){
+        return true;
+      } 
+      return false;
     }
 
     public void setToolTips(){

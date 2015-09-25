@@ -283,7 +283,7 @@
 		</div>
 		<div class="status3 {!sThirdMessageClass}">
 		   <li>Project performing above Threshold % of NSR</li>
-		   <li>(If EAC margin &lt; threshold)</li>
+		   <li>(If EAC margin &gt; threshold)</li>
 		</div>
 		</div>
 	</apex:outputpanel>
@@ -295,28 +295,82 @@
 		</div>
 		<div class="status3 {!sThirdMessageClass}">
 		   <li>Project Performing Above Baseline Margin $</li>
-		   <li>(EAC Margin &lt; Baseline Margin)</li>
+		   <li>(EAC Margin &gt; Baseline Margin)</li>
 		</div>
 		</div>
 	</apex:outputpanel>
 	</div>
 	</apex:pageBlockSection>
-	<apex:pageBlockSection showHeader="false" collapsible="false" columns="2">
-	<apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.ForecastNMofNSR__c}" rendered="{!bNMPlan}" />
+	<apex:pageBlockSection showHeader="false" collapsible="false" columns="2" rendered="{!PanelToRender=1}">
+		<apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.ForecastNetMarginBudget__c}" rendered="{!bNMPlan}" />
 
-	<apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.ForecastGrossMarginofNSR__c}" rendered="{!NOT(bNMPlan)}"/>
-	
-	<apex:outputField id="eacval" value="{!oEnrollmentPlan.EstimatedIncentivePoolEAC__c}"/>
+		<apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.ForecastGrossMarginBudget__c}" rendered="{!NOT(bNMPlan)}"/>
 
-    <apex:outputField value="{!oEnrollmentPlan.ThresholdNM__c}" rendered="{!AND(bNMPlan, IF(oEnrollmentPlan.IncentivePlan__r.ContractType__c='Fixed Price', true, false))}" />
-    <apex:outputField value="{!oEnrollmentPlan.ThresholdGM__c}" rendered="{!AND(NOT(bNMPlan), IF(oEnrollmentPlan.IncentivePlan__r.ContractType__c='Fixed Price', true, false))}"/>
-    <apex:outputField value="{!oEnrollmentPlan.BaselineGMofNSRatSnapshot__c}" rendered="{!IF(oEnrollmentPlan.IncentivePlan__r.ContractType__c='Time & Material', true, false)}" />
+		<apex:outputField value="{!oEnrollmentPlan.DSOTarget__c}" />
+		
+		<apex:outputField value="{!oEnrollmentPlan.BaselineGrossMargin__c}"/>
+		
+		<apex:outputField value="{!oEnrollmentPlan.FinalITDDSO__c}" />
+		
+		<apex:outputField value="{!oEnrollmentPlan.IncentivePlan__r.ProfitSharingPercent__c}" />
+		
+		<apex:outputtext value="" rendered="{!oEnrollmentPlan.IncentivePlan__r.ContractType__c='Fixed Price'}"/>
+		<apex:outputField value="{!oEnrollmentPlan.BaselineGMofNSR__c}" rendered="{!oEnrollmentPlan.IncentivePlan__r.ContractType__c='Fixed Price'}" />
+		
+		
+		<apex:pageBlockSectionItem helpText="{!$ObjectType.EnrollmentPlan__c.Fields.EstimatedIncentivePoolEAC__c.InlineHelpText}">
+		<apex:outputLabel for="eac" styleClass="raised1">{!$ObjectType.EnrollmentPlan__c.Fields.EstimatedIncentivePoolEAC__c.LABEL}</apex:outputLabel>
+		<apex:outputField id="eac" value="{!oEnrollmentPlan.EstimatedIncentivePoolEAC__c}"/>
+		</apex:pageBlockSectionItem>
 
-	<apex:outputField value="{!oEnrollmentPlan.MaxIncentivePool__c}" />
-
-	
+		<apex:outputField value="{!oEnrollmentPlan.ClientSatisfactionNPS__c}" />
+		<apex:outputText value=""/>
+		<apex:outputField value="{!oEnrollmentPlan.ClientSatisfactionCurrent__c}" />
+		<apex:outputText value=""/>
+		<apex:outputField value="{!oEnrollmentPlan.ScoreOnSafetyforLifeMetrics__c}"/>
+		<apex:outputText value=""/>
+		<apex:outputField value="{!oEnrollmentPlan.ScoreOnSafetyforLifeMetricsCurrent__c}"/>
+		<apex:outputText value=""/>
+		<apex:outputField value="{!oEnrollmentPlan.NumberofParticipants__c}"/>
+		<apex:outputText value=""/>
+		<apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.DataRefreshDate__c}"/>
 	</apex:pageBlockSection>
-	<apex:pageBlockSection columns="1">
+
+	<apex:pageBlockSection showHeader="false" collapsible="false" columns="2" rendered="{!PanelToRender=2}">
+		<apex:pageBlockSectionItem helpText="{!$ObjectType.IncentiveProject__c.Fields.ForecastNMofNSR__c.InlineHelpText}" rendered="{!bNMPlan}">
+		<apex:outputLabel value="Current EAC Margin % of NSR" />
+		<apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.ForecastNMofNSR__c}"  />
+		</apex:pageBlockSectionItem>
+
+		<apex:pageBlockSectionItem helpText="{!$ObjectType.IncentiveProject__c.Fields.ForecastGrossMarginofNSR__c.InlineHelpText}" rendered="{!NOT(bNMPlan)}">
+		<apex:outputLabel value="Current EAC Margin % of NSR" />
+		<apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.ForecastGrossMarginofNSR__c}" />
+		</apex:pageBlockSectionItem>
+		
+		<apex:pageBlockSectionItem helpText="{!$ObjectType.EnrollmentPlan__c.Fields.MaxIncentivePool__c.InlineHelpText}">
+		<apex:outputLabel for="eac" >{!$ObjectType.EnrollmentPlan__c.Fields.MaxIncentivePool__c.LABEL}</apex:outputLabel>
+		<apex:outputField id="eac" value="{!oEnrollmentPlan.MaxIncentivePool__c}"/>
+		</apex:pageBlockSectionItem> 
+
+		<apex:outputField value="{!oEnrollmentPlan.ThresholdGM__c}" rendered="{!NOT(bNMPlan)}" />
+		<apex:outputField value="{!oEnrollmentPlan.ThresholdNM__c}" rendered="{!bNMPlan}"/>
+
+		<apex:outputField value="{!oEnrollmentPlan.NumberofParticipants__c}"/>
+		
+		<apex:outputField value="{!oEnrollmentPlan.BaselineGMofNSR__c}" rendered="{!NOT(bNMPlan)}" />
+		
+		<apex:outputField value="{!oEnrollmentPlan.BaselineNMofNSR__c}" rendered="{!bNMPlan}"/>
+	
+		<apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.DataRefreshDate__c}"/>
+
+		<apex:outputText value="{!EACvsBaseline}" label="EAC Margin vs. Baseline" />
+		
+		<apex:outputText />
+
+		<apex:outputText value="{!IF(oEnrollmentPlan.EEACGMPerformance__c == 'Above Threshold','Yes','No')}" label="Is Project Forecasting an Incentive"/>
+	</apex:pageBlockSection>
+	
+	<!--<apex:pageBlockSection columns="1">
 	<apex:outputPanel id="inctable" layout="block">
 			<table id="incentivetable" class="table1">
 				<apex:repeat value="{!listIncValues}" var="incrow">
@@ -335,16 +389,16 @@
 				</apex:repeat>
 			</table>
 	</apex:outputPanel>
-	</apex:pageblocksection>
+	</apex:pageblocksection> -->
 	<apex:pageBlockSection columns="1">
 	 <apex:outputpanel >
 	 <div class="firstmessage">
-        <apex:outputPanel rendered="{!IF(oEnrollmentPlan.IncentivePlan__r.ContractType__c='Fixed Price', true, false)}">
+       <apex:outputPanel rendered="{!AND(IF(oEnrollmentPlan.IncentivePlan__r.ContractType__c='Fixed Price', true, false),PanelToRender=1)}"> 
             <p class="incentivemessage" >
                 The estimated incentive pool is based on the latest Forecast Margin % of NSR. This is a point in time measure that changes with any subsequent EAC updates made by the PM. Final incentive pool calculations are based on final project result, including assessment of operational metrics
             </p>
         </apex:outputPanel>
-        <apex:outputPanel rendered="{!IF(oEnrollmentPlan.IncentivePlan__r.ContractType__c='Time & Material', true, false)}">
+       <apex:outputPanel rendered="{!AND(IF(oEnrollmentPlan.IncentivePlan__r.ContractType__c='Time & Material', true, false),PanelToRender=1)}"> 
             <p class="incentivemessage" >
                 The Estimated Incentive Pool shown here is calculated based on the latest Forecast Margin $ in comparison to the Baseline Margin $.  This is a point in time measure that changes with any subsequent EAC updates made by the PM.  Final incentive pool calculations are based on final project margin results, final margin as a percent of NSR, and assessment of operational metrics.   Approvers will assess operational metrics and margin % of NSR at project completion.
             </p>

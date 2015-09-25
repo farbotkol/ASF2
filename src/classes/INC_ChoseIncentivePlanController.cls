@@ -101,7 +101,7 @@ public class INC_ChoseIncentivePlanController {
 			return true;
 		return false;
 	}
-	
+	/*
 	public String getGeographyAllocation(String projectGeography)
 	{
 		if(projectGeography == 'Midwest' || projectGeography ==  'Southeast' || projectGeography ==  'Northeast' || projectGeography == 'Pacific' || projectGeography == 'West/Gulf Coast' )
@@ -110,12 +110,12 @@ public class INC_ChoseIncentivePlanController {
 		if(projectGeography == 'UK & Ireland')
 			return 'EMEA';
 		
-		if(projectGeography =='SE Asia' || projectGeography == 'Greater China')
+		if(projectGeography =='SE Asia' || projectGeography == 'Greater China' || projectGeography == 'ANZ')
 			return 'APAC';
 		
 		return 'Americas';		
 	}	
-	
+	*/
 	public boolean getIsMultiPlanEligible()
 	{
 		if(getIsFixedPriceEligible() && getIsTMEligible())
@@ -149,7 +149,7 @@ public class INC_ChoseIncentivePlanController {
 
 	public PageReference submitQuestionnairre()
 	{
-		string geoAlloc = getGeographyALlocation(enrollmentPlan.ProjectGeography__c);
+		string geoAlloc = enrollmentPlan.IncentiveProject__r.SuperGeography__c;//getGeographyALlocation(enrollmentPlan.ProjectGeography__c);
 		string mainType = '';
 		string subType = '';
 		
