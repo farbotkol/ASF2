@@ -2057,9 +2057,11 @@ IF(IncentiveProject__r.ActualNetMarginITD__c &gt; 0,
         <fullName>AgeDays__c</fullName>
         <externalId>false</externalId>
         <formula>CASE(EnrollmentStatus__c,
-      &quot;Rejected&quot;, (LastModifiedDate - CreatedDate),
-      &quot;Enrolled&quot;, (FormEnrollmentDate__c - DATEVALUE(CreatedDate)),
-      &quot;Model&quot;, NULL, (NOW() - CreatedDate) 
+      &quot;Rejected&quot;, 
+      (DATEVALUE(LastModifiedDate) - IF( TEXT(LegacyFormCreateDate__c) = &quot;&quot;, DATEVALUE(CreatedDate), LegacyFormCreateDate__c)),
+      &quot;Enrolled&quot;, (FormEnrollmentDate__c -
+      IF( TEXT(LegacyFormCreateDate__c) = &quot;&quot;, DATEVALUE(CreatedDate), LegacyFormCreateDate__c)),
+      NULL
 )</formula>
         <inlineHelpText>Total age in days</inlineHelpText>
         <label>Form Age</label>
@@ -5573,6 +5575,15 @@ The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An i
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LegacyFormCreateDate__c</fullName>
+        <externalId>false</externalId>
+        <label>LegacyFormCreateDate</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>MACommentBox__c</fullName>
