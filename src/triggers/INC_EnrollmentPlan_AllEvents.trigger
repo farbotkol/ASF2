@@ -17,14 +17,36 @@ trigger INC_EnrollmentPlan_AllEvents on EnrollmentPlan__c (
 	    			System.debug(logginglevel.error,'creating createApprovalComments');
 	    			handler.createEnrollmentCommentsFromExceptionandMA(trigger.new);
 	    			handler.finishenrollmentOfChangeRequest(trigger.newMap,trigger.oldMap);
+                    
+                    
+                    //Check Approval process
+                    //Harold to add.
+                    //
+                    System.debug(logginglevel.error,'CurrentForm owner');
+                    handler.setIDOnStatusChange(trigger.newMap, trigger.OldMap);
+                    
 	    		}
 
 	 		}else{//end is before
 	 			if(Trigger.isUpdate && INC_EnrollmentPlanTriggers.afterRunOnce()){
 	 				System.debug(logginglevel.error,'After update trigger EnrollmentPlan__c.');
-	 				handler.setParticipantstoReadOnly(Trigger.newMap, Trigger.oldMap);
+	 				handler.updateParticipants(Trigger.newMap, Trigger.oldMap);
               		
                     handler.createParticipantAcknowledgement(Trigger.NewMap, Trigger.OldMap);
+                    
+                    //Move Into Handler ~ML
+                    list<EnrollmentParticipant__c> lEnrollmentParticipantToUpdate = new list<EnrollmentParticipant__c>();
+                    
+                    for(EnrollmentParticipant__c oEnrollmentParticipant : [Select id
+				       						  From EnrollmentParticipant__c
+				       						  Where EnrollmentPlan__c =: Trigger.NewMap.keySet()]){
+                                                  
+                        oEnrollmentParticipant.PaymentAmount__c = 0;
+                                                  
+                    	lEnrollmentParticipantToUpdate.add(oEnrollmentParticipant);
+                    }
+                    
+                    update lEnrollmentParticipantToUpdate;
 	 			}
 	 		}
 		}

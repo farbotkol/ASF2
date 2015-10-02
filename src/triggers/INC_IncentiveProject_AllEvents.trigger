@@ -22,6 +22,9 @@ trigger INC_IncentiveProject_AllEvents on IncentiveProject__c (before insert,bef
         }
         
         if (Trigger.isAfter && Trigger.isUpdate) {
+            handler.checkForBaselineChanges(Trigger.newMap, trigger.oldMap);
+            //the code below doesn't work for formula fields, at least in determining if the field value has changed
+            //the field doesn't show a change.  
             system.debug('Re-evaluate Enrollment Plans');
             
             set<Id> lIncentiveProjectIds = new set<Id>();

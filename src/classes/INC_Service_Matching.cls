@@ -8,6 +8,7 @@ public with sharing class INC_Service_Matching {
 	list<IncentiveProject__c> listIncentiveProjects = new List<IncentiveProject__c>();
 	list<OrganizationString__c> lOrgString = new list<OrganizationString__c>();
 	RoutingMember_Wrapper oGlobalDefaultMember;
+	map<id,RoutingMember_Wrapper> mapRoutingMembers = new map<id,RoutingMember_Wrapper>();
 
 	public list<RoutingMember_Wrapper> getRoutingMembers(boolean bDTWAdmin){
 		list<Schema.FieldSetMember> listFieldSet = getFieldSet(bDTWAdmin);
@@ -28,6 +29,7 @@ public with sharing class INC_Service_Matching {
 										From RoutingMember__c]){
 
 			listReturn.add(new RoutingMember_Wrapper(oMember,listFieldSet));
+			mapRoutingMembers.put(oMember.ID,new RoutingMember_Wrapper(oMember,listFieldSet));
 		}
 
 		return listReturn;
@@ -47,6 +49,7 @@ public with sharing class INC_Service_Matching {
 
 		
 		listRoutingMembers = getRoutingMembers(false);
+		System.Debug(logginglevel.error,'listRoutingMembers: ' + listRoutingMembers);
 		//first loop through the Incentive Projects
 		for(IncentiveProject__c IncProj : listIncentiveProjects){
 			
@@ -73,7 +76,7 @@ public with sharing class INC_Service_Matching {
 							if(mapReturn.containsKey(IncProj.Id)){
 								mapTemp = mapReturn.get(IncProj.Id);
 								System.Debug(logginglevel.error,'before nulling out ' + mapTemp);
-								if(mapTemp.get(1).oRoutingMember.Approver1__c != RW.oRoutingMember.Approver1__c){
+								/*if(mapTemp.get(1).oRoutingMember.Approver1__c != RW.oRoutingMember.Approver1__c){
 									//if we find non-duplicates ie multiple records we want to null it out.
 								   mapTemp.put(1,null);
 								}
@@ -84,7 +87,7 @@ public with sharing class INC_Service_Matching {
 								if(mapTemp.get(3).oRoutingMember.Approver3__c != RW.oRoutingMember.Approver3__c){
 									//if we find non-duplicates ie multiple records we want to null it out.
 								   mapTemp.put(3,null);
-								}
+								}*/
 							}
 							else{
 								mapTemp = new map<Integer,RoutingMember_Wrapper>();
@@ -171,21 +174,26 @@ public with sharing class INC_Service_Matching {
 				oGlobalDefaultMember = oRoutingWrapper;
 			}
 				if(oIncProj != Null){
-					for(String sFieldName : oRoutingWrapper.setFieldsContained){
-						String sIncProjVal = (String) oIncProj.get(sFieldName);
-						String sRoutingValue = (String) oRoutingWrapper.oRoutingMember.get(sFieldName);
-						if(sIncProjVal != null && sIncProjVal != ''){
-							if(!sIncProjVal.toUpperCase().equals(sRoutingValue.toUpperCase())){
-								oRoutingWrapper.bExactMatch = false;
-								break; //no need to continue
-							}
-							else{
-								oRoutingWrapper.bExactMatch = true;
+					if(oIncProj.RoutingMemberRule__c != null){
+						listExactMatch.add(mapRoutingMembers.get(oIncProj.RoutingMemberRule__c));
+					}else{
+
+						for(String sFieldName : oRoutingWrapper.setFieldsContained){
+							String sIncProjVal = (String) oIncProj.get(sFieldName);
+							String sRoutingValue = (String) oRoutingWrapper.oRoutingMember.get(sFieldName);
+							if(sIncProjVal != null && sIncProjVal != ''){
+								if(!sIncProjVal.toUpperCase().equals(sRoutingValue.toUpperCase())){
+									oRoutingWrapper.bExactMatch = false;
+									break; //no need to continue
+								}
+								else{
+									oRoutingWrapper.bExactMatch = true;
+								}
 							}
 						}
-					}
-					if(oRoutingWrapper.bExactMatch){
-						listExactMatch.add(oRoutingWrapper);
+						if(oRoutingWrapper.bExactMatch){
+							listExactMatch.add(oRoutingWrapper);
+						}
 					}
 				}
 		}//end routing member loop
@@ -282,7 +290,7 @@ public with sharing class INC_Service_Matching {
 							listRoutingMembersFound.add(listExactMatch[0]);
 						}
 					}else{
-							listRoutingMembersFound = null;
+							listRoutingMembersFound.add(oGlobalDefaultMember);
 					}
 
 				}

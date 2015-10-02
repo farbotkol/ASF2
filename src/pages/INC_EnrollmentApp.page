@@ -104,8 +104,10 @@
 	    return false;
 	}
 	function submitMessage(){
+		//debugger;
 		alert('Application Submitted'); 
 		window.location = 'apex/INC_DeliverToWinLanding';
+		
 		return false;
 	}
 	function rejectionCommentsMessage(){
@@ -126,9 +128,15 @@
 		$j("#nmnsrline").attr("class","boldline");
 
 	}
+
+	function checkappstatusfunc(){
+		checkappstatus();
+		return false;
+	}
+
 	$j = jQuery.noConflict();
 	$j(document).ready(function(){
-		
+	
 		if({!EnrollmentPlan__c.ApplicationType__c = "PAY"} && {!bTandM}){
 			boldLine();
 		}
@@ -218,11 +226,13 @@
     
 
 </script>
+<apex:actionFunction name="checkappstatus" action="{!checkStatus}" rerender="step3buttons" />
+<apex:actionFunction name="submitfromwizardjava" action="{!submitfromwizard}" />
 </apex:outputPanel>	
 <apex:outputPanel id="tabs" rendered="{!showWizard}">
 <apex:actionFunction name="enableNextButton" action="{!enableNextButton}" rerender="tabs"/>
 	<apex:outputPanel rendered="true" >
-	<apex:pageblock >
+	<apex:pageblock id="thewizard">
 	  <apex:outputPanel rendered="fromWizardVal='Yes'">
 	  <apex:pageMessages escape="false" />
 
@@ -270,18 +280,23 @@
 	        </apex:tab>
 	        <apex:tab label="Step 2 - Choose Incentive Plan" name="step2" id="tabTwo">
 	        <div class="buttonwrapper">
-	        	<apex:commandButton styleclass="nextbtn" action="{!stepthree}" value="Next" reRender="tabs" />
 	        	<apex:commandButton styleclass="nextbtn" action="{!stepone}" value="Back" reRender="tabs" />
+	        	<apex:commandButton styleclass="nextbtn" action="{!stepthree}" value="Next" reRender="tabs" />
 	        </div>
 	        	<apex:outputPanel rendered="{!activeTab = 'step2'}" >
 	        	<c:INC_ChoseIncentivePlanComponent fromWizardVal="Yes"/>
 	        	</apex:outputPanel>
 	        </apex:tab>
 	        <apex:tab label="Step 3 - Participant Allocations" name="step3" id="stepTwo">
+	         <div>
+	        	<apex:outputText escape="false" styleclass="submitMessage" value="{!sSubmitMessage}" />
+	        </div>
 	         <div class="buttonwrapper">
+	         <apex:outputpanel id="step3buttons">
 	        	<apex:commandButton styleclass="nextbtn" action="{!steptwo}" value="Back" reRender="tabs"/>
 	        	<apex:commandButton styleclass="nextbtn" action="{!finishwizard}" value="Finish and Review App" reRender="tabs" oncomplete="return finishWizardMsg();"/>
-	        	<apex:commandButton styleclass="nextbtn" value="Submit for Approval" action="{!submitfromwizard}"  oncomplete="return submitMessage();" reRender="tabs, script"/> 
+	        	<apex:commandButton styleclass="nextbtn" value="Submit for Approval" action="{!submitfromwizard}"  oncomplete="return submitMessage();" reRender="tabs, script" rendered="{!bShowWizardSubmit}"/> 
+	         </apex:outputPanel>
 	        </div>
 	        <apex:outputPanel rendered="{!activeTab = 'step3'}" >
 	        	<c:INC_EnrollmentParticipantComponent fromWizardVal="Yes"/>
@@ -496,18 +511,18 @@
 						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedContingencyBudget__c}"/>
 					</td>
 					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
-					<apex:outputPanel rendered="{!bTandM}">
-					<td>
-						<apex:inputField styleclass="mgmtadjust highlightedfield" label="" value="{!EnrollmentPlan__c.ContingencyScopeChange__c}" rendered="{!bRenderInputFinFields}"/>
-						<apex:outputField label="" value="{!EnrollmentPlan__c.ContingencyScopeChange__c}" rendered="{!NOT(bRenderInputFinFields)}"/>
-					</td>
-					</apex:outputPanel>
-					<apex:outputPanel rendered="{!bTandM}">
-					<td>
-					   <apex:inputField styleclass="mgmtadjust highlightedfield" rendered="{!bRenderInputFinFields}"  value="{!EnrollmentPlan__c.ContingencyAdjustment__c}"/>
-					   <apex:outputField rendered="{!NOT(bRenderInputFinFields)}"  value="{!EnrollmentPlan__c.ContingencyAdjustment__c}"/>
-					</td>
-					</apex:outputPanel>
+						<apex:outputPanel rendered="{!bTandM}">
+							<td>
+								<apex:inputField styleclass="mgmtadjust highlightedfield" label="" value="{!EnrollmentPlan__c.ContingencyScopeChange__c}" rendered="{!bRenderInputFinFields}"/>
+								<apex:outputField label="" value="{!EnrollmentPlan__c.ContingencyScopeChange__c}" rendered="{!NOT(bRenderInputFinFields)}"/>
+							</td>
+						</apex:outputPanel>
+						<apex:outputPanel rendered="{!bTandM}">
+							<td>
+							   <apex:inputField styleclass="mgmtadjust highlightedfield" rendered="{!bRenderInputFinFields}"  value="{!EnrollmentPlan__c.ContingencyAdjustment__c}"/>
+							   <apex:outputField rendered="{!NOT(bRenderInputFinFields)}"  value="{!EnrollmentPlan__c.ContingencyAdjustment__c}"/>
+							</td>
+						</apex:outputPanel>
 					</apex:outputPanel>
 					<td>
 					   <apex:outputField rendered="{!bTandM}" value="{!EnrollmentPlan__c.BaselineContingency__c}"/>
@@ -529,13 +544,13 @@
 					</td>
 					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
 					<apex:outputPanel rendered="{!bTandM}">
-					<td>
-						<apex:outputField label="" value="{!EnrollmentPlan__c.TotalNSRScopeChange__c}"/>
-					</td>
+						<td>
+							<apex:outputField label="" value="{!EnrollmentPlan__c.TotalNSRScopeChange__c}"/>
+						</td>
 					</apex:outputPanel>
 					<td>
 					    <apex:inputField id="nsradjust" label="" styleClass="mgmtadjust highlightedfield" value="{!EnrollmentPlan__c.NSRAdjustment__c}" rendered="{!AND(NOT(bTandM),bRenderInputFinFields)}"/>
-					    <apex:outputField label="" value="{!EnrollmentPlan__c.TotalNSRManagementAdjustment__c}" rendered="{!OR(bTandM,NOT(bRenderInputFinFields))}"/>
+					    <apex:outputField label="" value="{!EnrollmentPlan__c.NSRAdjustment__c}" rendered="{!OR(bTandM,NOT(bRenderInputFinFields))}"/>
 					</td>
 					</apex:outputPanel>
 					<td>
@@ -565,7 +580,7 @@
 					</apex:outputPanel>
 					<td>
 					    <apex:inputField id="dpeadjust" label="" styleClass="mgmtadjust adjust2 highlightedfield" value="{!EnrollmentPlan__c.DPEAdjustment__c}" rendered="{!AND(NOT(bTandM),bRenderInputFinFields)}"/>
-					    <apex:outputField label="" value="{!EnrollmentPlan__c.DPEBudgetAdjustment__c}" rendered="{!OR(bTandM,NOT(bRenderInputFinFields))}"/>
+					    <apex:outputField label="" value="{!EnrollmentPlan__c.DPEAdjustment__c}" rendered="{!OR(bTandM,NOT(bRenderInputFinFields))}"/>
 					</td>
 					</apex:outputPanel>
 					<td>

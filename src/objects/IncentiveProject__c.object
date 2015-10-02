@@ -2069,6 +2069,27 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
         <fullName>All</fullName>
         <columns>ProjectID__c</columns>
         <columns>NAME</columns>
+        <columns>CustomerName__c</columns>
+        <columns>ContractType__c</columns>
+        <columns>ProjectStartDate__c</columns>
+        <columns>ScheduledFinishDate__c</columns>
+        <columns>EnrollmentStatus__c</columns>
+        <columns>GRBacklog__c</columns>
+        <columns>RegionDescription__c</columns>
+        <columns>GeographyDescription__c</columns>
+        <columns>SuperGeography__c</columns>
+        <columns>ProjectManager__c</columns>
+        <columns>ProjectStatus__c</columns>
+        <columns>FPPOverallEligibility__c</columns>
+        <columns>TMPlanOverallEligibility__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>AllBoth</fullName>
+        <columns>ProjectID__c</columns>
+        <columns>NAME</columns>
         <columns>OrgCarryingOutProject__c</columns>
         <columns>CustomerName__c</columns>
         <columns>ContractType__c</columns>
@@ -2076,14 +2097,24 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
         <columns>ScheduledFinishDate__c</columns>
         <columns>EnrollmentStatus__c</columns>
         <columns>GRBacklog__c</columns>
-        <columns>CURRENCY_ISO_CODE</columns>
         <columns>RegionDescription__c</columns>
         <columns>GeographyDescription__c</columns>
-        <columns>DTWAdminInitiated__c</columns>
         <columns>ProjectManager__c</columns>
         <columns>ProjectStatus__c</columns>
+        <columns>FPPOverallEligibility__c</columns>
+        <columns>TMPlanOverallEligibility__c</columns>
         <filterScope>Everything</filterScope>
-        <label>All</label>
+        <filters>
+            <field>FPPOverallEligibility__c</field>
+            <operation>equals</operation>
+            <value>Yes</value>
+        </filters>
+        <filters>
+            <field>TMPlanOverallEligibility__c</field>
+            <operation>equals</operation>
+            <value>Yes</value>
+        </filters>
+        <label>All - Eligible for both</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -2253,14 +2284,14 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
         <columns>CustomerName__c</columns>
         <columns>ContractType__c</columns>
         <columns>ProjectStartDate__c</columns>
-        <columns>EnrollmentStatus__c</columns>
         <columns>GRBacklog__c</columns>
         <columns>CURRENCY_ISO_CODE</columns>
-        <columns>RegionDescription__c</columns>
         <columns>GeographyDescription__c</columns>
         <columns>DTWAdminInitiated__c</columns>
         <columns>ProjectManager__c</columns>
         <columns>FPPOverallEligibility__c</columns>
+        <columns>EnrollmentPlan__c</columns>
+        <columns>LAST_UPDATE</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>EnrollmentStatus__c</field>
@@ -2756,6 +2787,16 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
             <field>CountEnrollmentPlan__c</field>
             <operation>lessOrEqual</operation>
             <value>0</value>
+        </filters>
+        <filters>
+            <field>TMPlanOverallEligibility__c</field>
+            <operation>equals</operation>
+            <value>Yes</value>
+        </filters>
+        <filters>
+            <field>FPPOverallEligibility__c</field>
+            <operation>equals</operation>
+            <value>Yes</value>
         </filters>
         <label>Projects without Enrollment Plans</label>
         <language>en_US</language>
