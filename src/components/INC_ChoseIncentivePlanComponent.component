@@ -119,8 +119,8 @@
 					<!--<apex:column headervalue=""><apex:commandButton value="Select Plan" onclick="selectPlanFromList('{!plan.Id}'); return false;" rerender="tabs" status="planSelect"/></apex:column>  -->
 					<apex:column headerValue="Select"><apex:inputCheckbox styleClass="plansClass" value="{!plan.Selected}" /></apex:column>
 					<apex:column headervalue="Contract Type" value="{!plan.plan.ContractType__c}"></apex:column>
-					<apex:column headervalue="Available">
-						<apex:image styleclass="{!IF(plan.plan.ContractType__c = enrollmentplan.IncentiveProject__r.ContractTypeShortName__c, 'validicon', 'notvalid')}" value="/img/func_icons/util/checkmark16.gif" id="someImage" width="16" height="16"/>
+					<apex:column headervalue="Valid">
+						<apex:image styleclass="{!IF(Contains(enrollmentplan.IncentiveProject__r.ContractTypeShortName__c, plan.plan.ContractType__c), 'validicon', 'notvalid')}" value="/img/func_icons/util/checkmark16.gif" id="someImage" width="16" height="16"/>
 					</apex:column>
 					<apex:column headervalue="Contract Sub Type" value="{!plan.plan.ContractSubType__c}"></apex:column>
 					<apex:column headervalue="Plan Criteria" value="{!plan.plan.PlanCriteria__c}"></apex:column>

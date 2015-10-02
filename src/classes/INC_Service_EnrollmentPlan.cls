@@ -28,6 +28,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                                                          , ParticipantType__c
                                                          , HRJobTitle__c
                                                          , ExistedAtEnrollment__c
+                                                         ,Baseline_Margin_Change__c
                                                   From EnrollmentParticipant__c
                                                   Where EnrollmentPlan__c =: EnrollmentPlans]){
 
@@ -42,6 +43,11 @@ public without sharing class INC_Service_EnrollmentPlan {
   
         return mapReturn;
     } 
+
+    public static string getUserDTWAppLevel(id UserID){
+      User USR = [Select Id, DTWApplicationLevel__c from User where id =:UserID][0];
+      return USR.DTWApplicationLevel__c;
+    }
 
     public static map<id,list<Interim_Payment_Schedule__c>> getInterimPaymentSchedules(set<id> EnrollmentPlans){
       map<id,List<Interim_Payment_Schedule__c>> mapReturn = new map<id,list<Interim_Payment_Schedule__c>>();
@@ -88,6 +94,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                                                         , BusinessLineDescription__c
                                                         , LegalEntityDescription__c
                                                         , CurrencyIsoCode
+                                                        , RoutingMemberRule__c
                                                         ,(Select ID, Name from Enrollment_Plans__r)
                                                From IncentiveProject__c 
                                                Where ID =: setIncentiveID ]);
@@ -371,15 +378,35 @@ public without sharing class INC_Service_EnrollmentPlan {
               mapIncentiveProjects.get(incentID).EnrollmentApprover1__c = mapFoundApprovers.get(incentID).get(1).oRoutingMember.Approver1__c;
             }
         }
+  
+        updateIncentiveProjects(mapIncentiveProjects.values());
         
         if(setIncentivesToProcess.size() > 0){
                 INC_Service_EnrollmentPlan.createEnrollmentPlanfromIncentiveProject(mapIncentiveProjects,mapFoundApprovers,bRevive);
         }
-        updateIncentiveProjects(mapIncentiveProjects.values());
         return bReturn;
 
     }
     
+    public static void updateBaselineChangedFlagforParticipants(set<id> setEnrollmentplans){
+        map<id,list<EnrollmentParticipant__c>> mapParts = INC_Service_EnrollmentPlan.getPlanParticipants(setEnrollmentplans);
+        list<EnrollmentParticipant__c> lParts = new list<EnrollmentParticipant__c>();
+
+        for(list<EnrollmentParticipant__c> lvalues : mapParts.Values()){
+          for(EnrollmentParticipant__c part: lValues){
+            part.Baseline_Margin_Change__c = true;
+            lParts.add(part);
+          }
+        }
+
+        try{
+          System.Debug(logginglevel.error,'updateing baseline flag: ' + lparts);
+          update lParts;
+          }catch(Exception e){
+            System.Debug(logginglevel.error,'Problem updateing participants baseline flag');
+          }
+    }
+
     public static boolean createEnrollmentPlanfromIncentiveProject(map<id,IncentiveProject__c> MapIncentiveProjects,map<id,map<Integer,INC_Service_Matching.RoutingMember_Wrapper>> mapFoundApprovers,boolean bRevive){
         boolean bReturn = true;
         map<id,IncentiveProject__c> mapProjects = mapIncentiveProjects; //getIncentiveProject(IncentiveProjectIDs);

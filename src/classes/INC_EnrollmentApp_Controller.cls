@@ -18,12 +18,16 @@ public with sharing class INC_EnrollmentApp_Controller {
     public boolean bSubmitWorked{get;set;}
     public boolean bRenderInputFinFields{get;set;}
     public String sExceptions{get;set;}
-    
+    public String sSubmitMessage{get;set;}
+    public boolean bShowWizardSubmit{get;set;}
+    public String sUserLevel{get;set;}
 
     public INC_EnrollmentApp_Controller(ApexPages.StandardController stdController) {
         activeTab = 'step1';
+        bShowWizardSubmit = false;
         bRenderInputFinFields = true;
         bCommentFound = true; //do not move this line.
+        sUserLevel = INC_Service_EnrollmentPlan.getUserDTWAppLevel(UserInfo.getUserId());
         System.debug(logginglevel.error,'activeTab: ' + activeTab);
         
         this.stdController = stdController;
@@ -52,7 +56,7 @@ public with sharing class INC_EnrollmentApp_Controller {
                 oEnrollmentApp.EnrollmentStatus__c == 'Pending PM Action'){
             bShowSubmit = true;
         }else{
-            bShowSubmit = false;
+             bShowSubmit = false;
         }
 
         if(oEnrollmentApp.EnrollmentStatus__c == 'Pending PM Action'){
@@ -76,6 +80,9 @@ public with sharing class INC_EnrollmentApp_Controller {
                 System.debug(logginglevel.error,'disableStep2 ' + disableStep2);
               }else{
                 activeTab = 'step3';
+                if(oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c ==''){
+                  bShowWizardSubmit = true;
+                }
               }
             }
         }else{
@@ -89,7 +96,11 @@ public with sharing class INC_EnrollmentApp_Controller {
               if(oEnrollmentApp.ApplicationType__c=='Opt-Out'){
                 bShowApprovalHistory = true;
               }else{
-                bShowApprovalHistory = false;
+                 if(sUserLevel == 'DTW Admin' || sUserLevel == 'Corporate'){
+                    bShowApprovalHistory = true;
+                    }else{
+                      bShowApprovalHistory = false;
+                    }
               }
             }
 
@@ -113,7 +124,23 @@ public with sharing class INC_EnrollmentApp_Controller {
 
     }
 
-    
+
+
+    public void checkStatus(){
+      System.Debug(logginglevel.error,'Check Status');
+      bShowWizardSubmit = false;
+      EnrollmentPlan__c plan = [Select id, AppIicationIssues__c from EnrollmentPlan__c where id=:oEnrollmentApp.id][0];
+      System.debug(logginglevel.error,'plan: ' + plan.AppIicationIssues__c);
+      if(plan.AppIicationIssues__c == null || plan.AppIicationIssues__c == ''){
+          bShowWizardSubmit = true;
+          System.debug(logginglevel.error,'set submit to true:' + bShowWizardSubmit);
+        }
+
+      System.debug(logginglevel.error,'bShowWizardSubmit 2 ' + bShowWizardSubmit);
+
+      //return null;
+    }
+   
 
     public integer getUserType(){
       User currentUser = [Select id, DTWApplicationLevel__c from User where id=:UserInfo.getUserId()][0];
@@ -301,7 +328,7 @@ public with sharing class INC_EnrollmentApp_Controller {
     public PageReference submitFromWizard(){
       
       bSubmitWorked = false;
-
+      sSubmitMessage='';
       oEnrollmentApp = [Select id, AppIicationIssues__c from EnrollmentPlan__c where id=:oEnrollmentApp.ID][0];
       System.Debug(logginglevel.error,'submit: ' + bSubmitWorked);
       if(oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c == ''){
@@ -320,12 +347,13 @@ public with sharing class INC_EnrollmentApp_Controller {
       }else{
         System.Debug(logginglevel.error,'Submit Failed');
         bSubmitWorked = false;
+        sSubmitMessage='There are still issues with your application: <br/> ' + oEnrollmentApp.AppIicationIssues__c;
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'There are still issues with your application: <br/> ' + oEnrollmentApp.AppIicationIssues__c));
-      }
+      } 
       
       //pageReference pf = new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.Id);
 
-      //return pf;
+      //return pf; 
       return null;
     }
 

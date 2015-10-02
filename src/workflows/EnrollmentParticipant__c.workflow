@@ -96,7 +96,7 @@
         <fullName>Calculate_Payment_Amount</fullName>
         <description>(Multiply the Participant Target % * FinalIncentivePoolAdjusted__c)</description>
         <field>PaymentAmount__c</field>
-        <formula>CalculatedIncentive__c  + PaymentAdjustments__c</formula>
+        <formula>BLANKVALUE(CalculatedIncentive__c,0) + BLANKVALUE(PaymentAdjustments__c,0)</formula>
         <name>Calculate Payment Amount</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
@@ -160,15 +160,43 @@
         <operation>Formula</operation>
         <protected>false</protected>
     </fieldUpdates>
+    <fieldUpdates>
+        <fullName>X15_Set_Close_No_Reward_Flag</fullName>
+        <description>Sets Close_No_Award field to false.</description>
+        <field>Closed_No_Award__c</field>
+        <literalValue>0</literalValue>
+        <name>15)Set Close No Reward Flag</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>X19_Set</fullName>
+        <description>Updates Baseline Margin Change field to false.</description>
+        <field>Baseline_Margin_Change__c</field>
+        <literalValue>0</literalValue>
+        <name>19)Update Baseline Margin Change</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
     <rules>
         <fullName>15Notify Participant that an enrolled project has closed and no award earned</fullName>
         <actions>
             <name>Notify_Participant_that_an_enrolled_project_has_closed_and_no_award_earned</name>
             <type>Alert</type>
         </actions>
+        <actions>
+            <name>X15_Set_Close_No_Reward_Flag</name>
+            <type>FieldUpdate</type>
+        </actions>
         <active>true</active>
+        <criteriaItems>
+            <field>EnrollmentParticipant__c.Closed_No_Award__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
         <description>15Notify Participant that an enrolled project has closed and no award earned</description>
-        <formula>ISPICKVAL(EnrollmentPlan__r.EnrollmentStatus__c , &quot;Closed - No Award&quot;)</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
@@ -185,6 +213,24 @@
      EmployeeName__r.pse__Salesforce_User__r.IsActive    
      )</formula>
         <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>19%29Notify Participant of change in baseline</fullName>
+        <actions>
+            <name>Notify_Participant_of_change_in_baseline</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>X19_Set</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>EnrollmentParticipant__c.Baseline_Margin_Change__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>5Notify PM %28and approver 1%29 of change in proposed participant allocation</fullName>

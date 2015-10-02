@@ -24,4 +24,23 @@ public with sharing class INC_IncentiveProject_Triggers {
 		}
 	}
 	
+	public void checkForBaselineChanges(map<id,IncentiveProject__c>mapNew, map<id,IncentiveProject__c> mapOld){
+		System.debug(logginglevel.error,'checking for baseline: ');
+			
+		set<id> setEnrollmentPlans = new set<id>();
+		for(IncentiveProject__c ip: mapNew.Values()){
+			System.debug(logginglevel.error,'approved old: ' + mapOld.get(ip.id).ApprovedGrossMarginBudget__c);
+			System.debug(logginglevel.error,'approved new: ' + ip.ApprovedGrossMarginBudget__c);
+			
+			if((ip.ApprovedGrossMarginBudget__c != mapOld.get(ip.id).ApprovedGrossMarginBudget__c) ||
+			   (ip.ApprovedNetMarginBudget__c != mapOld.get(ip.id).ApprovedNetMarginBudget__c)){
+			   	if(ip.EnrollmentPlan__c != null){
+					setEnrollmentPlans.add(ip.EnrollmentPlan__c);
+				}
+			}
+		}
+		System.Debug(logginglevel.error,'setEnrollmentplans: ' + setEnrollmentplans);
+		INC_Service_EnrollmentPlan.updateBaselineChangedFlagforParticipants(setEnrollmentplans);
+	}
+
 }

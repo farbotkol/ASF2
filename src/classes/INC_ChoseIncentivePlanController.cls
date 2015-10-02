@@ -60,7 +60,11 @@ public class INC_ChoseIncentivePlanController {
 				planMapByContractType.put(plan.ContractType__c + '-' + plan.ContractSubType__c + '-' + plan.GeographyAllocation__c, new list<IncentivePlanTemplate__c>());
 
 			planMapByContractType.get(plan.ContractType__c + '-' + plan.ContractSubType__c + '-' + plan.GeographyAllocation__c).add(plan);
-		}				
+		}		
+
+		System.debug(logginglevel.error,'planMapByRegion: ' + planMapByRegion);
+		System.debug(logginglevel.error,'planMapByContractType: ' + planMapByContractType);
+
 	}
 	
 	public list<SelectOption> getYesNoOptions()
@@ -81,19 +85,7 @@ public class INC_ChoseIncentivePlanController {
 	    return options;		
 	}
 	
-	public boolean getIsFixedPriceEligible()
-	{
-		if(enrollmentPlan.FPPOverallEligibility_c__c == null ||enrollmentPlan.FPPOverallEligibility_c__c == 'No')
-			return false;
-		return true;
-	}
 	
-	public boolean getIsTMEligible()
-	{
-		if(enrollmentPlan.TMPlanOverallEligibility__c == null || enrollmentPlan.TMPlanOverallEligibility__c == 'No')
-			return false;
-		return true;
-	}
 	
 	public boolean getIsANZRegion()
 	{
@@ -125,15 +117,36 @@ public class INC_ChoseIncentivePlanController {
 	
 	private String getFixedPriceOrTAndM()
 	{
-		if(getIsMultiPlanEligible() && question3Answer == 'Yes' && question4Answer == 'Yes')
+		System.Debug(logginglevel.error,'FP OR TM: ' + getIsMultiPlanEligible() + ' ' + question3Answer + question4Answer);
+		if(question3Answer == 'Yes' && question4Answer == 'Yes'){
 			return 'Fixed Price';
-		if(getIsMultiPlanEligible())
+		}
+		
+		if(question3Answer=='No' && question4Answer=='Yes'){
+			return 'Both';
+		}
+		
+		if(question3Answer=='Yes' && question4Answer=='No'){
 			return 'Time & Material';
-		if(getIsFixedPriceEligible())	
-			return 'Fixed Price';
+		}
+
 		return 'Time & Material';
 	}
+
+	public boolean getIsFixedPriceEligible()
+	{
+		if(enrollmentPlan.FPPOverallEligibility_c__c == null ||enrollmentPlan.FPPOverallEligibility_c__c == 'No')
+			return false;
+		return true;
+	}
 	
+	public boolean getIsTMEligible()
+	{
+		if(enrollmentPlan.TMPlanOverallEligibility__c == null || enrollmentPlan.TMPlanOverallEligibility__c == 'No')
+			return false;
+		return true;
+	}
+
 	private String getNetMarginOrGrossMargin()
 	{
 		if(question2Answer == 'Yes')
@@ -153,6 +166,8 @@ public class INC_ChoseIncentivePlanController {
 		string mainType = '';
 		string subType = '';
 		
+		System.Debug(logginglevel.error,'selectedSelectionMethod ' + selectedSelectionMethod);
+
 		if(question1Answer == 'No' && selectedSelectionMethod != 'Manual')
 		{
 			ApexPages.addmessage(new ApexPages.Message(ApexPages.Severity.Error, 'Application should not be started until contract is fully executed!'));
@@ -163,16 +178,19 @@ public class INC_ChoseIncentivePlanController {
 		{
 			availablePlans.clear();
 			//availablePlans.addall(planMapByRegion.get(geoAlloc));
+			System.debug(logginglevel.error,'planMapByRegion: ' + planMapByRegion);
+			System.Debug(logginglevel.error,'geoAllo Manual: '+ geoAlloc);
 			buildAvailablePlans(planMapByRegion.get(geoAlloc));
 			showsave = true;
 			return null;		
 		}
 		
-		if(getIsANZRegion())
+
+		/*if(getIsANZRegion())
 		{
 			selectedIncentivePlan = 'TM-NM-ANZ Plan';
 			return null;
-		}
+		}*/
 
 		if(selectedSelectionMethod == 'Guided')
 		{		
@@ -183,7 +201,16 @@ public class INC_ChoseIncentivePlanController {
 			System.debug(logginglevel.error,'Values: ' + mainType + '-' + subType + '-' + geoAlloc);
 			System.debug(logginglevel.error,'availablePlans: ' + planMapByContractType.KeySet());
 			//availablePlans.addall(planMapByContractType.get(mainType + '-' + subType + '-' + geoAlloc));
-			buildAvailablePlans(planMapByContractType.get(mainType + '-' + subType + '-' + geoAlloc));
+			System.Debug(logginglevel.error,'Key: ' + maintype + SubType + geoAlloc);
+			System.Debug(logginglevel.error,planMapByContractType.KeySet());
+			if(mainType !='Both'){
+				buildAvailablePlans(planMapByContractType.get(mainType + '-' + subType + '-' + geoAlloc));
+			}else{
+				mainType='Fixed Price';
+				buildAvailablePlans(planMapByContractType.get(mainType + '-' + subType + '-' + geoAlloc));
+				mainType='Time & Material';
+				buildAvailablePlans(planMapByContractType.get(mainType + '-' + subType + '-' + geoAlloc));
+			}
 			showsave=true;
 			return null;
 		}
@@ -196,6 +223,7 @@ public class INC_ChoseIncentivePlanController {
 	}
 	
 	public void buildAvailablePlans(list<IncentivePlanTemplate__c> listLoad){
+		System.debug(logginglevel.error,'listLoad: ' + listLoad);
 		for(IncentivePlanTemplate__c icp: listLoad){
 			planWrapper pw = new planWrapper(icp);
 			if(icp.ID == enrollmentPlan.IncentivePlan__c){
@@ -233,6 +261,7 @@ public class INC_ChoseIncentivePlanController {
 	public class planWrapper{
 		public IncentivePlanTemplate__c plan {get;set;}
 		public boolean selected{get;set;}
+		
 		public planWrapper( IncentivePlanTemplate__c oplan){
 			plan = oplan;
 		}

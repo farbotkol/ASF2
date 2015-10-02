@@ -27,6 +27,32 @@ public with sharing class INC_EnrollmentPlanTriggers {
 		
 	}
 
+	public void setIDOnStatusChange(map<id,EnrollmentPlan__c>mapNew, map<id,EnrollmentPlan__c>mapOld){
+		set<id> setEP = new set<id>();
+		for(EnrollmentPlan__c ep: mapNew.Values()){
+			if(ep.EnrollmentStatus__c != mapOld.get(ep.id).EnrollmentStatus__c &&
+				(ep.EnrollmentStatus__c == 'Rejected' || ep.EnrollmentStatus__c == 'Rejected for Correction')){
+				setEP.add(ep.id);
+			}
+		}
+
+		if(setEP != null && setEP.size() > 0){
+
+
+			for(ProcessInstance pi: [Select id,LastActorId, TargetObjectId, (SELECT Id, ActorID, CreatedDate, StepStatus, Comments FROM Steps order by CreatedDate desc)
+											  ,(SELECT Id, ActorId, ProcessInstanceId FROM Workitems)
+											  ,(Select Id, ActorId, IsPending, StepStatus from StepsandWorkItems)
+ 				from ProcessInstance where TargetObjectId =: setEP]){
+ 								System.debug(logginglevel.error, 'pi: ' + pi.LastActorId);
+
+ 				
+ 				mapNew.get(pi.TargetObjectId).CurrentApprovalOwner__c = pi.Steps[0].ActorID;
+ 				
+			}
+		}
+
+	}
+
 	public void createEnrollmentCommentsFromExceptionandMA(list<EnrollmentPlan__c> listEnrollmentPlans){
 		INC_Service_EnrollmentPlan.createEnrollmentcomment(listEnrollmentplans);
 		for(EnrollmentPlan__c ep: listEnrollmentplans){
@@ -63,28 +89,67 @@ public with sharing class INC_EnrollmentPlanTriggers {
 		}
 	} 
 
-	public void setParticipantstoReadOnly(map<id,EnrollmentPlan__c> mapNew, map<id,EnrollmentPlan__c> mapOld){
+
+	public void updateParticipants(map<id,EnrollmentPlan__c> mapNew, map<id,EnrollmentPlan__c> mapOld){
 		set<id> enrollmentPlans = new set<id>();
-		set<id> rejectedPlans = new set<id>();
+		set<id> closedPlans = new set<id>();
+		set<id> baselineGrossPlans = new set<id>();
+
+		set<id> allPlans = new set<id>();
 		for(EnrollmentPlan__c EnrollPlan: mapNew.Values()){
 			if(EnrollPlan.EnrollmentStatus__c == 'Enrolled' && 
 				(EnrollPlan.EnrollmentStatus__c != mapOld.get(EnrollPlan.ID).EnrollmentStatus__c)){
 				enrollmentPlans.add(EnrollPlan.ID);
+				allPlans.add(EnrollPlan.ID);
 			}
+			if(EnrollPlan.EnrollmentStatus__c == 'Closed - No Award' &&
+				(EnrollPlan.EnrollmentStatus__c != mapOld.get(EnrollPlan.ID).EnrollmentStatus__c)){
+				closedPlans.add(EnrollPlan.id);
+				allPlans.add(EnrollPlan.ID);
+			}
+
+			if((EnrollPlan.GrossMarginAmountScopeChange__c != mapOld.get(EnrollPlan.ID).GrossMarginAmountScopeChange__c)||
+				(EnrollPlan.GrossMarginAmountAdjustment__c != mapOld.get(EnrollPlan.ID).GrossMarginAmountAdjustment__c)){
+				baselineGrossPlans.add(EnrollPlan.ID);
+				allPlans.add(EnrollPlan.ID);
+			}
+
+
 		}
 		System.Debug(logginglevel.error,'Plans to fix participants ' + enrollmentPlans);
-		if(enrollmentPlans != null && enrollmentPlans.size() > 0){
+		if(allPlans != null && allPlans.size() > 0){
 			list<EnrollmentParticipant__c> listUpdates = new list<EnrollmentParticipant__c>();
 			Id readOnlyTypeId = ECO_Utils_sObject.getRecordTypeId(EnrollmentParticipant__c.sObjectType,'Read Only Participant');
 			System.Debug(logginglevel.error,'Readonly ID ' + readOnlyTypeId);
 
 			for(EnrollmentParticipant__c EP: [Select id
 													   ,RecordTypeId
+													   ,EnrollmentPlan__c
+													   ,Closed_No_Award__c
+													   ,Baseline_Margin_Change__c
 				       						  From EnrollmentParticipant__c
-				       						  Where EnrollmentPlan__c =: enrollmentPlans]){
+				       						  Where EnrollmentPlan__c =: allPlans]){
 				System.Debug(logginglevel.error,'Found participants: ' + EP);
-				EP.RecordTypeId = readOnlyTypeId;
-				listUpdates.add(EP);
+				boolean bUpdated = false;
+				if(enrollmentPlans.Contains(ep.EnrollmentPlan__c)){
+					EP.RecordTypeId = readOnlyTypeId;
+					bUpdated = true;
+				}
+
+				if(closedPlans.Contains(EP.EnrollmentPlan__c)){
+					EP.Closed_No_Award__c = true;
+					System.Debug(logginglevel.error,'Setting closed award to true. ' + ep);
+					bUpdated = true;
+				}
+
+				if(baselineGrossPlans.Contains(EP.EnrollmentPlan__c)){
+					EP.Baseline_Margin_Change__c = true;
+					bUpdated = true;
+				}
+
+				if(bUpdated){
+					listUpdates.add(EP);
+				}
 			}
 
 			if(listUpdates != null && listUpdates.size() > 0){
@@ -222,26 +287,11 @@ public with sharing class INC_EnrollmentPlanTriggers {
             
             try{
                 Insert participantAcknowledgementsToCreate;
-
- 				set<string> sPAid = new set<string>();
-
- 				for(ParticipantAcknowledgement__c p: participantAcknowledgementsToCreate){
- 					if(p.id != null){
- 						sPAid.add(p.id);
- 					}
-            	}
-
-            	if(sPAid.size() >0){
-            		INC_EnrollmentLetterAttach.attachEnrollmentLetter(sPAid);
-            	}
-
-
             }catch(Exception e){
                 system.debug('Handling Exception:  ' + e.getMessage() + ' ' + e.getStackTraceString());
                 system.debug(logginglevel.error, 'participant acknowledgement creation error: ' + e);
                 Database.rollBack(sp);
             }
-
         }
     }	
 }

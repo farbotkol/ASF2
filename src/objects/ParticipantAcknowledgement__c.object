@@ -74,6 +74,17 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>AcknowledgementURL__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;https://aecom--ecosysdev.cs15.my.salesforce.com/&quot;&amp; Id , &quot;Participant Acknowledgement&quot;)</formula>
+        <label>Acknowledgement URL</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>AgeRange__c</fullName>
         <externalId>false</externalId>
         <formula>IF( TEXT(ResponseDate__c) =&quot;&quot;,
@@ -206,7 +217,15 @@
         <label>Declined Reason</label>
         <picklist>
             <picklistValues>
-                <fullName>I don’t believe this project can earn an award</fullName>
+                <fullName>I don&apos;t believe this project can earn an award</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>I don’t believe I can impact project results to earn an award</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>I do not feel this project should be eligible for an incentive award</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -214,7 +233,11 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>I do not wish to have my information shared</fullName>
+                <fullName>I feel another employee(s) should be enrolled in my place</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>I am not actively working on this project</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -322,7 +345,7 @@
 
 
 
-&quot;I,&quot;&amp;Owner:User.FirstName&amp;&quot; &quot;&amp;Owner:User.LastName&amp;&quot;, agree to participate in the Deliver to Win Fixed Price Incentive Plan (“the Plan”).  I acknowledge that I have read and understand the terms of this letter, the attached Employee Guide, and the terms of the Plan. I acknowledge and understand that the Plan contains provisions under which awards can be delayed, reduced or forfeited.  I understand and agree that awards under the Plan are discretionary and do not affect or form part of my terms and conditions of employment nor are they considered to form part of my fixed pay.&quot;</formula>
+&quot;I,&quot;&amp;Owner:User.FirstName&amp;&quot; &quot;&amp;Owner:User.LastName&amp;&quot;, agree to participate in the Deliver to Win Fixed Price Incentive Plan (“the Plan”).  I acknowledge that I have read and understand the terms of the letter sent to me, the Employee Guide, and the terms of the Plan. I acknowledge and understand that the Plan contains provisions under which awards can be delayed, reduced or forfeited.  I understand and agree that awards under the Plan are discretionary and do not affect or form part of my terms and conditions of employment nor are they considered to form part of my fixed pay.&quot;</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Info</label>
         <required>false</required>
@@ -724,11 +747,23 @@
         <picklistValues>
             <picklist>Declined_Reason__c</picklist>
             <values>
-                <fullName>I do not wish to have my information shared</fullName>
+                <fullName>I am not actively working on this project</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>I don%E2%80%99t believe this project can earn an award</fullName>
+                <fullName>I do not feel this project should be eligible for an incentive award</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>I don%27t believe this project can earn an award</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>I don%E2%80%99t believe I can impact project results to earn an award</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>I feel another employee%28s%29 should be enrolled in my place</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -774,11 +809,23 @@
         <picklistValues>
             <picklist>Declined_Reason__c</picklist>
             <values>
-                <fullName>I do not wish to have my information shared</fullName>
+                <fullName>I am not actively working on this project</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>I don%E2%80%99t believe this project can earn an award</fullName>
+                <fullName>I do not feel this project should be eligible for an incentive award</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>I don%27t believe this project can earn an award</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>I don%E2%80%99t believe I can impact project results to earn an award</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>I feel another employee%28s%29 should be enrolled in my place</fullName>
                 <default>false</default>
             </values>
             <values>

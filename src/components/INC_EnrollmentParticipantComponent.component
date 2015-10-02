@@ -70,15 +70,17 @@
 </script>
 <!--<apex:form > -->
     <apex:SectionHeader title="Enrollment Information" />
-    <apex:pageblock >
-      <apex:pageBlockSection >
+    <apex:pageblock id="thepage">
+      <apex:pageBlockSection id="wizardheaderinfo">
         <apex:outputField value="{!oEnrollmentPlan.Name}"/>
         <apex:outputField value="{!oEnrollmentPlan.EnrollmentStatus__c}"/>
         <apex:outputField value="{!oEnrollmentPlan.MaxIncentivePool__c}" />
         <apex:outputField value="{!oEnrollmentPlan.ProjectStartDate__c}" />
         <apex:outputField value="{!oEnrollmentPlan.NSRBudget__c}"/>
         <apex:outputField value="{!oEnrollmentPlan.ScheduledFinishDate__c}" />
-        <apex:outputField value="{!oEnrollmentPlan.MinParticipantPayout__c}" />
+        <apex:outputField value="{!oEnrollmentPlan.MinParticipantPayout__c}" rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}" />
+        <apex:outputtext value="" rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}" />
+        <apex:outputtext value="" />
         <apex:outputField value="{!oEnrollmentPlan.UnallocatedPercent__c}" />
         <apex:outputField value="{!oEnrollmentPlan.EstimatedPoolBaseline__c}" rendered="{!AND(bFixed, oEnrollmentPlan.ApplicationType__c != 'PAY')}" />
         <apex:outputField value="{!oEnrollmentPlan.EstimatedPoolBaseline10__c}" rendered="{!AND(bTM, oEnrollmentPlan.ApplicationType__c != 'PAY')}" />
@@ -112,7 +114,7 @@
     </div>
     
     <apex:outputPanel rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}">
-      <p class="projmessage">At the time a project is enrolled in DTW, up to 60% of the incentive pool can be allocated to participants as “Target %”.  If additional employees are later identified as key project leaders, they may be added to the plan and the total allocation can exceed 60%.  The total allocation can never exceed 100%.  (Note: if the project is within several months of completion, the full pool may be allocated with exception approval.)<br/><br/>
+      <p class="projmessage">At the time a project is enrolled in DTW, up to 60% of the incentive pool can be allocated to participants as “Target %”.  If additional employees are later identified as key project leaders, they may be added to the plan and the total allocation can exceed 60%.  The total allocation can never exceed 100%.  (Note: if the project is within several months of completion, the full pool may be allocated with exception approval.)<br/><br/>
 
       <apex:outputPanel rendered="{!bFixed}">
       * For the purposes of allocating potential award earnings to employees, we use the estimated incentive pool at that would be calculated if the project achieved 3% better than the baseline margin.  This is a hypothetical value and it will be communicated to employees in their Enrollment Letter, as an example of how a pool is calculated.  The “Estimated Payout” for a participant is the  Estimated Pool @ Baseline + 3% x the participant’s allocation percent.  In order for potential awards to be meaningful and motivational, no participant may be allocated less than the predetermined “Min Participant Payout $” for this incentive plan, as shown in the table at the top of this page.
@@ -141,14 +143,16 @@
             </apex:commandButton>
             <apex:commandButton value="Add Discretionary Participant" action="{!addBlankRow}" reRender="partTable,Participants" rendered="{!AND(OR(editParticipants, bPaid), AND(oEnrollmentPlan.ApplicationType__c == 'PAY', bTMorFixed))}">
             </apex:commandButton>
-            <apex:commandButton value="Save and Recalculate" action="{!SaveandRecalc}">
+            <apex:commandButton styleclass="participantsave" id="participantsave" value="Save and Recalculate" action="{!SaveandRecalc}" oncomplete="checkappstatusfunc()" reRender="message,wizardheaderinfo,partTable ">
             </apex:commandButton>
             <apex:commandButton value="Save and Continue" action="{!SaveAndContinue}" rendered="{!NOT(fromWizard='Yes')}">
             </apex:commandButton>
             <apex:commandButton value="Cancel" action="{!Cancel}" rendered="{!NOT(fromWizard='Yes')}">
             </apex:commandButton>
         </apex:pageBlockButtons>
+        <apex:outputpanel id="message">
          <apex:pagemessages escape="false"></apex:pagemessages>
+        </apex:outputpanel>
         <apex:pageMessage severity="INFO" rendered="{!bPaid}" summary="Only Discretionary Participants can be added at this time." />
 
 
@@ -163,70 +167,68 @@
                </center>
           </apex:column>
            <apex:Column headervalue="Employee">
-              <apex:inputField value="{!Participant.EmployeeName__c}" rendered="{!AND(OR(AND(editParticipants, NOT(AND(bPaid, Participant.ParticipantType__c = 'Incentive'))), AND(bPaid, Participant.ParticipantType__c = 'Discretionary')),Participant.ExistedAtEnrollment__c='No')}"/>
-              <apex:OutputField value="{!Participant.EmployeeName__c}" rendered="{!OR(OR(AND(editParticipants = false, NOT(AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaid, Participant.ParticipantType__c = 'Incentive')),NOT(Participant.ExistedAtEnrollment__c='No')) }"/>
+              <apex:inputField value="{!Participant.participant.EmployeeName__c}" rendered="{!Participant.bEnableEmpName}"/>
+              <apex:OutputField value="{!Participant.participant.EmployeeName__c}" rendered="{!NOT(Participant.bEnableEmpName)}"/>
            </apex:Column>
            <apex:Column headervalue="Employee Number">
-              <apex:inputField value="{!Participant.EmployeeID__c}" rendered="{!OR(AND(editParticipants, NOT(AND(bPaid, Participant.ParticipantType__c = 'Incentive'))), AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))}"/>
-              <apex:OutputField value="{!Participant.EmployeeID__c}" rendered="{!OR(AND(editParticipants = false, NOT(AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaid, Participant.ParticipantType__c = 'Incentive')) }"/>
+              <apex:OutputField value="{!Participant.participant.EmployeeID__c}"/>
            </apex:Column>
-           <!--<apex:Column headervalue="Role/Title">
-              <apex:inputField value="{!Participant.RoleTitle__c}" rendered="{!OR(AND(editParticipants, NOT(AND(bPaid, Participant.ParticipantType__c = 'Incentive'))), AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))}"/>
-              <apex:OutputField value="{!Participant.RoleTitle__c}" rendered="{!OR(AND(editParticipants = false, NOT(AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaid, Participant.ParticipantType__c = 'Incentive')) }"/>
-           </apex:Column>-->
            <apex:Column headervalue="Title">
-              <apex:inputField value="{!Participant.HRJobTitle__c}" rendered="{!OR(AND(editParticipants, NOT(AND(bPaid, Participant.ParticipantType__c = 'Incentive'))), AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))}"/>
-              <apex:OutputField value="{!Participant.HRJobTitle__c}" rendered="{!OR(AND(editParticipants = false, NOT(AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaid, Participant.ParticipantType__c = 'Incentive')) }"/>
+              <apex:OutputField value="{!Participant.participant.HRJobTitle__c}"/>
            </apex:Column>
            <apex:Column headervalue="Participant Category">
-              <apex:inputField value="{!Participant.ParticipantCategory__c}" rendered="{!OR(AND(editParticipants, NOT(AND(bPaid, Participant.ParticipantType__c = 'Incentive'))), AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))}"/>
-              <apex:OutputField value="{!Participant.ParticipantCategory__c}" rendered="{!OR(AND(editParticipants = false, NOT(AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaid, Participant.ParticipantType__c = 'Incentive')) }"/>
+              <apex:inputField value="{!Participant.participant.ParticipantCategory__c}" rendered="{!Participant.bPaymentEnabledField}"/>
+              <apex:OutputField value="{!Participant.participant.ParticipantCategory__c}" rendered="{!NOT(Participant.bPaymentEnabledField)}"/>
            </apex:Column>
            <apex:Column headervalue="Target %">
-               <apex:inputField value="{!Participant.TargetIncentivePoolAllocated__c}" rendered="{!NOT(bPaid)}"/>
-               <apex:OutputField value="{!Participant.TargetIncentivePoolAllocated__c}" rendered="{!bPaid}"/>
+               <apex:inputField value="{!Participant.participant.TargetIncentivePoolAllocated__c}" rendered="{!Participant.bCCREnabledField}"/>
+               <apex:OutputField value="{!Participant.participant.TargetIncentivePoolAllocated__c}" rendered="{!NOT(Participant.bCCREnabledField)}"/>
            </apex:Column>
            <apex:Column headervalue="Estimated Payout*" rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}">
-              <apex:inputField value="{!Participant.EstimatedPayout__c}" rendered="{!OR(AND(editParticipants, NOT(AND(bPaid, Participant.ParticipantType__c = 'Incentive'))), AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))}"/>
-              <apex:OutputField value="{!Participant.EstimatedPayout__c}" rendered="{!OR(AND(editParticipants = false, NOT(AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaid, Participant.ParticipantType__c = 'Incentive')) }"/>
+              <apex:OutputField value="{!Participant.participant.EstimatedPayout__c}"/>
            </apex:Column>
            <apex:Column headervalue="Calculated Incentive" rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}">
-              <apex:inputField value="{!Participant.CalculatedIncentive__c}" rendered="{!OR(AND(editParticipants, NOT(AND(bPaid, Participant.ParticipantType__c = 'Incentive'))), AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))}"/>
-              <apex:OutputField value="{!Participant.CalculatedIncentive__c}" rendered="{!OR(AND(editParticipants = false, NOT(AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaid, Participant.ParticipantType__c = 'Incentive')) }"/>
+              <apex:OutputField value="{!Participant.participant.CalculatedIncentive__c}"/>
            </apex:Column>
            <apex:Column headervalue="Payment Adjustments" rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}">
-              <apex:inputField value="{!Participant.PaymentAdjustments__c}" rendered="{!OR(AND(editParticipants, NOT(AND(bPaidAndEnrolled, Participant.ParticipantType__c = 'Incentive'))), AND(bPaidAndEnrolled, Participant.ParticipantType__c = 'Discretionary'))}"/>
-              <apex:outputField value="{!Participant.PaymentAdjustments__c}" rendered="{!OR(AND(editParticipants = false, NOT(AND(bPaidAndEnrolled, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaidAndEnrolled, Participant.ParticipantType__c = 'Incentive')) }"/>
+              <apex:inputField value="{!Participant.participant.PaymentAdjustments__c}" rendered="true"/>
            </apex:Column>
            <apex:Column headervalue="Pmt Adj Reason" rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}">
-              <apex:inputField value="{!Participant.PaymentAdjReason__c}" rendered="{!OR(AND(editParticipants, NOT(AND(bPaidAndEnrolled, Participant.ParticipantType__c = 'Incentive'))), AND(bPaidAndEnrolled, Participant.ParticipantType__c = 'Discretionary'))}"/>
-              <apex:outputField value="{!Participant.PaymentAdjReason__c}" rendered="{!OR(AND(editParticipants = false, NOT(AND(bPaidAndEnrolled, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaidAndEnrolled, Participant.ParticipantType__c = 'Incentive')) }"/>
+              <apex:inputField value="{!Participant.participant.PaymentAdjReason__c}" rendered="true"/>
            </apex:Column>
            <apex:Column headervalue="Payment Amount" rendered="{!AND(oEnrollmentPlan.ApplicationType__c == 'PAY', bTMorFixed)}">
-              <apex:outputField value="{!Participant.PaymentAmount__c}" />
+              <apex:outputField value="{!Participant.participant.PaymentAmount__c}" />
+                <apex:facet name="footer">
+                    <apex:outputPanel >
+                    <apex:outputText value="Total Payment Amount:"  rendered="{!AND(oEnrollmentPlan.ApplicationType__c == 'PAY', bTMorFixed)}" />&nbsp;&nbsp;
+                    <apex:outputField value="{!oEnrollmentPlan.TotalPaymentAmount__c}" rendered="{!AND(oEnrollmentPlan.ApplicationType__c == 'PAY', bTMorFixed)}" /><br/>
+                    Unallocated Amount:&nbsp;&nbsp;
+                    <apex:outputField value="{!oEnrollmentPlan.UnallocatedAmount__c}" />                 
+                    </apex:outputPanel>
+                </apex:facet>
            </apex:Column>
            <apex:Column headervalue="Payment Date" rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}">
-              <apex:inputField value="{!Participant.PaymentDate__c}" rendered="{!OR(AND(editParticipants, NOT(AND(bPaid, Participant.ParticipantType__c = 'Incentive'))), AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))}"/>
-              <apex:outputField value="{!Participant.PaymentDate__c}" rendered="{!OR(AND(editParticipants = false, NOT(AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaid, Participant.ParticipantType__c = 'Incentive')) }"/>
+              <apex:inputField value="{!Participant.participant.PaymentDate__c}" rendered="{!Participant.bPaymentDateEnabled}"/>
+              <apex:outputField value="{!Participant.participant.PaymentDate__c}" rendered="{!NOT(Participant.bPaymentDateEnabled)}"/>
            </apex:Column>
            <apex:Column headervalue="Start Date on Project">
-              <apex:inputField value="{!Participant.StartDateonProject__c}" rendered="{!OR(AND(editParticipants, NOT(AND(bPaid, Participant.ParticipantType__c = 'Incentive'))), AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))}"/>
-              <apex:outputField value="{!Participant.StartDateonProject__c}" rendered="{!OR(AND(editParticipants = false, NOT(AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaid, Participant.ParticipantType__c = 'Incentive')) }"/>
+              <apex:inputField value="{!Participant.participant.StartDateonProject__c}" rendered="{!Participant.bStartDateEnabled}"/>
+              <apex:outputField value="{!Participant.participant.StartDateonProject__c}" rendered="{!NOT(Participant.bStartDateEnabled)}"/>
            </apex:Column>
-           <apex:Column headervalue="End Date on Project" rendered="{!bChangeRequest && oEnrollmentPlan.ApplicationType__c != 'PAY'}">
-              <apex:inputField value="{!Participant.EndDateonProject__c}" rendered="{!OR(AND(editParticipants, NOT(AND(bPaid, Participant.ParticipantType__c = 'Incentive'))), AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))}"/>
-              <apex:outputField value="{!Participant.EndDateonProject__c}" rendered="{!OR(AND(editParticipants = false, NOT(AND(bPaid, Participant.ParticipantType__c = 'Discretionary'))), AND(bPaid, Participant.ParticipantType__c = 'Incentive')) }"/>
+           <apex:Column headervalue="End Date on Project" rendered="false">
+              <apex:inputField value="{!Participant.participant.EndDateonProject__c}" rendered="{!Participant.bEndDateEnabled}"/>
+              <apex:outputField value="{!Participant.participant.EndDateonProject__c}" rendered="{!NOT(Participant.bEndDateEnabled)}"/>
            </apex:Column>
            <apex:Column headervalue="Employee Status">
-              <apex:inputField value="{!Participant.EmployeeStatus__c}"/>
+              <apex:inputField value="{!Participant.participant.EmployeeStatus__c}"/>
            </apex:Column>
           <apex:Column headervalue="">
-               <apex:inputField value="{!Participant.EmployeeStatusAlert__c}"/>
+               <apex:inputField value="{!Participant.participant.EmployeeStatusAlert__c}"/>
            </apex:Column>
           </apex:pageBlockTable>
           <br />
           <apex:pageBlockSection columns="1">
-          <apex:outputField value="{!oEnrollmentPlan.TotalPaymentAmount__c}" rendered="{!AND(oEnrollmentPlan.ApplicationType__c == 'PAY', bTMorFixed)}" />
+          
           <apex:pageBlockSectionItem >
              <apex:Outputlabel value="Comments" />
              <apex:inputTextarea value="{!partComments}" rows="5" cols="100"/>

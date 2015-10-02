@@ -2,8 +2,8 @@ public with sharing class INC_EnrollmentParticipantEntryController {
 
 	public EnrollmentPlan__c oEnrollmentPlan {get;set;}
     public ID enrollID {get;set;}
-    public list<EnrollmentParticipant__c> listParticipant {get;set;}
-    public list<EnrollmentParticipant__c> listParticipantDelete {get;set;}
+    public list<CommentWrapper> listParticipant {get;set;}
+    public list<CommentWrapper> listParticipantDelete {get;set;}
     public String partComments {get;set;}
     public Boolean editParticipants {get;set;}
     public Boolean bChangeRequest{get;set;}
@@ -70,6 +70,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
             bChangeRequest = false;
         }
         System.Debug(logginglevel.error,'Start loadExistingParticipants ' + System.Now());
+
         loadExistingParticipants();
         System.Debug(logginglevel.error,'Start addblankRows ' + System.Now());
         addblankRows();
@@ -86,17 +87,17 @@ public with sharing class INC_EnrollmentParticipantEntryController {
             bPaid = false;
         }
 
-        listParticipantDelete = new list<EnrollmentParticipant__c>();
+        listParticipantDelete = new list<CommentWrapper>();
     }
 
     private void addblankRows(){
-    	Integer iSize = 0;
+        Integer iSize = 0;
 
         if(oEnrollmentPlan.ApplicationType__c == 'PAY'){
             if(listParticipant != null && listParticipant.size() > 0){
                 iSize = listParticipant.size();
             }else{
-                listParticipant = new list<EnrollmentParticipant__c>();
+                listParticipant = new list<CommentWrapper>();
             }
 
             //listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID, ParticipantType__c = 'Discretionary'));
@@ -113,43 +114,50 @@ public with sharing class INC_EnrollmentParticipantEntryController {
             if(listParticipant != null && listParticipant.size() > 0){
                 iSize = listParticipant.size();
             }else{
-                listParticipant = new list<EnrollmentParticipant__c>();
+                listParticipant = new list<CommentWrapper>();
             }
-        	if(iSize > = 5){
+            if(iSize > = 5){
                 if(oEnrollmentPlan.ApplicationType__c != 'CCR'){
-        		  listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID));
+                  listParticipant.add(new CommentWrapper(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID,ExistedAtEnrollment__c='Yes', ParticipantType__c = oEnrollmentPlan.ApplicationType__c=='ENR'?'Incentive':'Discretionary'),oEnrollmentPlan));
                 }else{
-                    listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID,ExistedAtEnrollment__c = 'No'));
+                    listParticipant.add(new CommentWrapper(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID,ExistedAtEnrollment__c = 'No'),oEnrollmentPlan));
                 }
-        	}else{
-        		for(Integer i = iSize; i<5; i++){
-        			if(oEnrollmentPlan.ApplicationType__c != 'CCR'){
-                        listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID));
+            }else{
+                for(Integer i = iSize; i<5; i++){
+                    if(oEnrollmentPlan.ApplicationType__c != 'CCR'){
+                        listParticipant.add(new CommentWrapper(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID,ExistedAtEnrollment__c='Yes', ParticipantType__c = 'Incentive'),oEnrollmentPlan));
                     }else{
-                        listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID,ExistedAtEnrollment__c = 'No'));
+                        listParticipant.add(new CommentWrapper(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID,ExistedAtEnrollment__c = 'No'),oEnrollmentPlan));
                     }
-        		}
-        	}
+                }
+            }
         } 
     }
 
     private void loadExistingParticipants(){
         System.Debug(logginglevel.error,'Particpants load: ' + oEnrollmentPlan.ID);
+        listParticipant = new list<CommentWrapper>();
         map<id,List<EnrollmentParticipant__c>> mapEnrollmentParticipants = INC_Service_EnrollmentPlan.getPlanParticipants(new set<id>{oEnrollmentPlan.id});
         System.Debug(logginglevel.error,'parts: ' + mapEnrollmentParticipants);
-        listParticipant = mapEnrollmentParticipants.get(oEnrollmentPlan.Id);
+        for(List<EnrollmentParticipant__c> lpart: mapEnrollmentParticipants.Values()){
+            for(EnrollmentParticipant__c part: lpart){
+                System.Debug(logginglevel.error,'part: ' + part + ' ' + oEnrollmentPlan);
+                listParticipant.add(new CommentWrapper(part,oEnrollmentPlan));
+            }
+        }
+        //listParticipant = mapEnrollmentParticipants.get(oEnrollmentPlan.Id);
     }
 
     public void addBlankRow(){
         System.Debug(logginglevel.error,'listParticipant.size '+ listParticipant.size());
         //if(listParticipant[listParticipant.size()-1].EmployeeName__c != null){
          if(oEnrollmentPlan.ApplicationType__c == 'PAY'){
-            listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID, ParticipantType__c = 'Discretionary',ExistedAtEnrollment__c='No'));
+            listParticipant.add(new CommentWrapper(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID, ParticipantType__c = 'Discretionary',ExistedAtEnrollment__c='No'),oEnrollmentPlan));
          }
          else if(oEnrollmentPlan.ApplicationType__c == 'CCR'){
-              listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID, ExistedAtEnrollment__c='No'));
+              listParticipant.add(new CommentWrapper(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID, ExistedAtEnrollment__c='No'),oEnrollmentPlan));
             } else if (oEnrollmentPlan.EnrollmentStatus__c != 'Enrolled'){
-            listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID));
+            listParticipant.add(new CommentWrapper(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID),oEnrollmentPlan));
          }
          
         //}
@@ -157,7 +165,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
     }
 
     public void addParticipant(){
-        listParticipant.add(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID));
+        listParticipant.add(new CommentWrapper(new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.ID),oEnrollmentPlan));
     }
 
     public pageReference Cancel(){
@@ -180,7 +188,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
     }
 
     public pageReference SaveandRecalc(){
-
+        System.debug('save and recalc');
         save();
 
         return null;
@@ -196,10 +204,14 @@ public with sharing class INC_EnrollmentParticipantEntryController {
         System.savePoint sp = Database.setSavePoint();
         try{
             upsert lSave;
-
+            System.Debug(logginglevel.error,'Saved participant');
             if(listParticipantDelete.size() > 0){
-                delete listParticipantDelete;
-                listParticipantDelete = new list<EnrollmentParticipant__c>();
+                list<EnrollmentParticipant__c> lDelete = new list<EnrollmentParticipant__c>();
+                for(CommentWrapper cm: listParticipantDelete){
+                    lDelete.add(cm.participant);
+                }
+                delete lDelete;
+                listParticipantDelete = new list<CommentWrapper>();
             }
 
 
@@ -304,10 +316,10 @@ public with sharing class INC_EnrollmentParticipantEntryController {
     }*/
 
     public PageReference RemoveEP(){
-        EnrollmentParticipant__c ep = listParticipant[rowNumber-1];
+        CommentWrapper cw = listParticipant[rowNumber-1];
 
-        if(ep.id != null){
-            listParticipantDelete.add(ep);
+        if(cw.participant.id != null){
+            listParticipantDelete.add(cw);
         }
 
         listParticipant.remove(rowNumber-1);
@@ -324,16 +336,92 @@ public with sharing class INC_EnrollmentParticipantEntryController {
 
     private list<EnrollmentParticipant__c> prepareForSave(){
         list<EnrollmentParticipant__c> lReturn = new list<EnrollmentParticipant__c>();
-        for(EnrollmentParticipant__c oPart: listParticipant){
-            System.Debug(logginglevel.error,'Enrollment plan: ' + oPart.EnrollmentPlan__c);
-            System.Debug(logginglevel.error,'EmployeeName__c: ' + oPart.EmployeeName__c);
-            if(oPart.EmployeeName__c != null){
-                oPart.CurrencyIsoCode = oEnrollmentPlan.CurrencyIsoCode;
-                lReturn.add(oPart);
+        for(CommentWrapper oWrapper: listParticipant){
+            System.Debug(logginglevel.error,'Enrollment plan: ' + oWrapper.participant.EnrollmentPlan__c);
+            System.Debug(logginglevel.error,'EmployeeName__c: ' + oWrapper.participant.EmployeeName__c);
+            if(oWrapper.participant.EmployeeName__c != null){
+                oWrapper.participant.CurrencyIsoCode = oEnrollmentPlan.CurrencyIsoCode;
+                lReturn.add(oWrapper.participant);
             }
         }
 
         return lReturn;
     } 
-    
+
+    public class CommentWrapper{
+        public boolean bEnableEmpName{get;set;}
+        public boolean bCCREnabledField{get;set;}
+        public boolean bPaymentEnabledField{get;set;}
+        public boolean bStartDateEnabled{get;set;}
+        public boolean bPaymentDateEnabled{get;set;}
+        public boolean bEndDateEnabled{get;set;}
+        public EnrollmentParticipant__c participant{get;set;}
+
+        public CommentWrapper(EnrollmentParticipant__c oParticipant,EnrollmentPlan__c oEnrollmentPlan){
+            participant = oParticipant;
+            setfieldEnabled(oEnrollmentPlan);
+        }
+
+        private void setfieldEnabled(EnrollmentPlan__c oEnrollmentPlan){
+             /*Employee name should be enabled in the following.
+                1. Unenrolled ENR application
+                2. Payment App wait Discrtionary payment type
+                3. CCR App with ExistedAtEnrollment = 'NO'
+            */
+            bEnableEmpName = true;
+            bCCREnabledField = true;
+            bPaymentEnabledField = true;
+            bStartDateEnabled = false;
+            bPaymentDateEnabled = false;
+            bEndDateEnabled = false;
+
+            /*if(participant.StartDateonProject__c != null){
+                bStartDateEnabled = false;
+            }
+
+            if(participant.PaymentDate__c != null){
+                bPaymentEnabledField = false;
+            }
+
+            if(participant.EndDateonProject__c != null){
+                bEndDateEnabled = false;
+            }*/
+
+            if(oEnrollmentPlan.ApplicationType__c == 'ENR'){
+                if(oEnrollmentPlan.EnrollmentStatus__c == 'Enrolled'){
+                    bEnableEmpName = false;
+                    bCCREnabledField = false;
+                    bPaymentEnabledField = false;
+                }else{
+                    bStartDateEnabled = true;
+                    bPaymentDateEnabled = true;
+                    bEndDateEnabled = true;
+                }
+            }else if(oEnrollmentPlan.ApplicationType__c=='PAY'){
+                if(participant.ParticipantType__c == null || participant.ParticipantType__c != 'Discretionary'){
+                    bEnableEmpName = false;
+                    bCCREnabledField = false;
+                    bPaymentEnabledField = true;
+                }else{
+                    bCCREnabledField = false;
+                    bStartDateEnabled = true;
+                    bPaymentDateEnabled = true;
+                    bEndDateEnabled = true;
+                }
+            }else if(oEnrollmentPlan.ApplicationType__c =='CCR'){
+
+                if(participant.ExistedAtEnrollment__c == null || participant.ExistedAtEnrollment__c == 'Yes'){
+                    bEnableEmpName = false;
+                    bCCREnabledField = true;
+                    bPaymentEnabledField = true;
+                }else{
+                    bStartDateEnabled = true;
+                    bPaymentDateEnabled = true;
+                    bEndDateEnabled = true;
+                }
+            }
+
+        }
+    }
+
 }
