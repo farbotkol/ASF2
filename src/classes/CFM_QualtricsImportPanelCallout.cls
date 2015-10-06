@@ -4,6 +4,7 @@ public with sharing class CFM_QualtricsImportPanelCallout extends CFM_QualtricsB
     public static final String PARAM_KEY_COL_HEADERS = 'ColumnHeaders';
     public static final String PARAM_KEY_LIB_ID      = 'LibraryID';
     public static final String PARAM_KEY_EMAIL       = 'Email';
+    public static final String PARAM_KEY_LANG        = 'Language';
 
     private String mSurveyBatchProjectCSV;
 
@@ -24,6 +25,7 @@ public with sharing class CFM_QualtricsImportPanelCallout extends CFM_QualtricsB
         };
         headers.put(PARAM_KEY_LIB_ID, getLibraryID());
         headers.put(PARAM_KEY_EMAIL,  String.valueOf(getEmailColumn()));
+        headers.put(PARAM_KEY_LANG, String.valueOf(getLanguageColumn()));
         return headers;
     }
 
@@ -49,6 +51,10 @@ public with sharing class CFM_QualtricsImportPanelCallout extends CFM_QualtricsB
     public Integer getEmailColumn() {
         //---Index starts at 0, Qualtrics starts at 1
         return CFM_SurveyBatchProjectCSVGenerator.getEmailColumnIndex() + 1;
+    }
+
+    public Integer getLanguageColumn() {
+        return CFM_SurveyBatchProjectCSVGenerator.getLanguageColumnIndex() + 1;
     }
 
     public override String getBodyForPost() {

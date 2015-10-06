@@ -28,6 +28,10 @@ public with sharing class CFM_SurveyBatchCSVColumn extends CFM_BaseModel impleme
         return obj.Is_Email_Column__c;
     }
 
+    public Boolean getIsLanguageColumn() {
+        return obj.Is_Language_Column__c;
+    }
+
     public Boolean getIsCustomImplementation() {
         return obj.Is_Custom_Implementation__c;
     }
