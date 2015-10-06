@@ -126,8 +126,15 @@
             <apex:pageBlockSection title="Project Information" columns="1">
                 <apex:outputField value="{!project.obj.Oracle_Project_Number__c}" />
                 <apex:outputField value="{!project.obj.OracleName__c}" />
+
                 <apex:outputField value="{!project.obj.Modified_Project_Name__c}" rendered="{!!isEditMode}" />
-                <apex:inputField value="{!project.obj.Modified_Project_Name__c}" rendered="{!isEditMode}" />
+                <apex:pageBlockSectionItem rendered="{!isEditMode}">
+                    <apex:outputLabel value="Modified Project Name" />
+                    <apex:inputText value="{!modifiedProjectName}" />
+                </apex:pageBlockSectionItem>
+
+                
+                
             </apex:pageBlockSection>
 
             <apex:pageBlockSection title="Enter Contact Information" rendered="{!!hasExistingContact}" columns="1">

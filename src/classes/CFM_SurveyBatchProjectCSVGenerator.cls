@@ -3,6 +3,7 @@ public class CFM_SurveyBatchProjectCSVGenerator extends CFM_CSVGenerator {
     public static List<String>        COLUMN_HEADERS;
     public static Map<String, String> COLUMNS_TO_FIELDS;
     public static String              HEADER_EMAIL;
+    public static String              HEADER_LANGUAGE;
     public static Set<String>         CUSTOM_FIELDS;
 
     private Map<String, String>       mSignatoriesByDepartmentName;
@@ -23,6 +24,15 @@ public class CFM_SurveyBatchProjectCSVGenerator extends CFM_CSVGenerator {
 
     public static List<String> getAllFields() {
         return COLUMNS_TO_FIELDS.values();
+    }
+
+    public static Integer getLanguageColumnIndex() {
+        for (Integer i = 0; i < COLUMN_HEADERS.size(); i++) {
+            if (COLUMN_HEADERS[i] == HEADER_LANGUAGE) {
+                return i;
+            }
+        }
+        return -1;
     }
 
     public static Integer getEmailColumnIndex() {
@@ -59,6 +69,9 @@ public class CFM_SurveyBatchProjectCSVGenerator extends CFM_CSVGenerator {
 
             if (column.getIsEmailColumn()) {
                 HEADER_EMAIL = column.getColumnLabel();
+            }
+            if (column.getIsLanguageColumn()) {
+                HEADER_LANGUAGE = column.getColumnLabel();
             }
 
             if (column.getIsCustomImplementation()) {

@@ -5,15 +5,16 @@ public without sharing class CFM_ProjectContactEditController {
 	public CFM_Project project { get; set; }
 	public Contact surveyContact { get; set; }
 
+	public String modifiedProjectName { get; set; }
+
 	public String contactMode { get; set; }
 
 	public Boolean wasSaved { get; set; }
 
 	public CFM_ProjectContactEditController(ApexPages.StandardController sc) {
 		isEditMode = false;
-		project = CFM_Project.findAllFields.findById(sc.getId());
+		getProject(sc.getId());
 		wasSaved = false;
-
 
 		if (project.obj.CFM_Survey_Contact__c != null) {
 			contactMode = '1'; // Contact information is correct
@@ -22,6 +23,11 @@ public without sharing class CFM_ProjectContactEditController {
 		else {
 			surveyContact = new Contact(); // Placeholder obj for user to put in contact information
 		}
+	}
+
+	private void getProject(Id projectId) {
+		project = CFM_Project.findAllFields.findById(projectId);
+		modifiedProjectName = project.obj.Modified_Project_Name__c;
 	}
 
 	public Boolean getHasExistingContact() {
@@ -62,7 +68,7 @@ public without sharing class CFM_ProjectContactEditController {
 
 	public PageReference cancelEdit() {
 		contactMode = '1';
-		project = CFM_Project.findAllFields.findById(project.getId());
+		getProject(project.getId());
 		isEditMode = false;
 		return null;
 	}
@@ -97,6 +103,8 @@ public without sharing class CFM_ProjectContactEditController {
 
 			project.obj.CFM_Survey_Contact__c = surveyContact.Id;
 		}
+
+		project.obj.Modified_Project_Name__c = modifiedProjectName;
 	
 		project.save();
 
