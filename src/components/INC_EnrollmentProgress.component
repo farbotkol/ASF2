@@ -170,9 +170,11 @@
 	<apex:outputPanel id="progress" rendered="{!And(bShowProgress,oEnrollmentPlan.ExceptionFlag__c='No')}">
 		<div class="breadcrumb" title="{!ProgressToolTip}">
 			<ul class="breadcrumb">
+				<outputpanel rendered="{!NOT(oEnrollmentPlan.ApplicationType__c == 'PAY')}">
 				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 1 ,'Current',If(oEnrollmentPlan.StatusNumber__c > 1,'Complete wide', 'Pending wide')) }">
 					<a href="#"><span>Pending<br/>PM Action</span></a>
 				</li>
+				</outputpanel>
 				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 2 ,'Current',If(oEnrollmentPlan.StatusNumber__c > 2,'Complete wide', 'Pending wide')) }">
 					<a href="#"><span>Pending<br/>Approver 1 Action</span></a>
 				</li>
@@ -191,9 +193,11 @@
 	<apex:outputPanel id="progress2" rendered="{!And(bShowProgress,AND(oEnrollmentPlan.ExceptionFlag__c='Yes',NOT(oEnrollmentPlan.InterimPaymentRequested__c='Yes'),NOT(AggregatedProject)))}">
 		<div class="breadcrumb" title="{!ProgressToolTip}">
 			<ul class="breadcrumb">
+				<apex:outputpanel rendered="{!NOT(oEnrollmentPlan.ApplicationType__c == 'PAY')}" >
 				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 1 ,'Current',If(oEnrollmentPlan.StatusNumber__c > 1,'Complete wide', 'Pending wide')) }">
 					<a href="#"><span>Pending<br/>PM Action</span></a>
 				</li>
+				</apex:outputpanel>
 				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 2 ,'Current',If(oEnrollmentPlan.StatusNumber__c > 2,'Complete wide', 'Pending wide')) }">
 					<a href="#"><span>Pending<br/>Approver 1 Action</span></a>
 				</li>
@@ -215,9 +219,11 @@
 	<apex:outputPanel id="progress3" rendered="{!And(bShowProgress,OR(oEnrollmentPlan.InterimPaymentRequested__c='Yes',AggregatedProject))}">
 		<div class="breadcrumb" title="{!ProgressToolTip}">
 			<ul class="breadcrumb">
+			<outputpanel rendered="{!NOT(oEnrollmentPlan.ApplicationType__c == 'PAY')}">
 				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 1 ,'Current',If(oEnrollmentPlan.StatusNumber__c > 1,'Complete wide', 'Pending wide')) }">
 					<a href="#"><span>Pending<br/>PM Action</span></a>
 				</li>
+			</outputpanel>
 				<li class="{! If(oEnrollmentPlan.StatusNumber__c = 2 ,'Current',If(oEnrollmentPlan.StatusNumber__c > 2,'Complete wide', 'Pending wide')) }">
 					<a href="#"><span>Pending<br/>Approver 1 Action</span></a>
 				</li>

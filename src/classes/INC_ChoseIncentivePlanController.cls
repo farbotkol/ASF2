@@ -160,6 +160,14 @@ public class INC_ChoseIncentivePlanController {
 		return PR;
 	}
 
+	public PageReference manualSelection(){
+		if(selectedSelectionMethod == 'Manual'){
+			return submitQuestionnairre();
+		}
+		availablePlans.clear();
+		return null;
+	}
+
 	public PageReference submitQuestionnairre()
 	{
 		string geoAlloc = enrollmentPlan.IncentiveProject__r.SuperGeography__c;//getGeographyALlocation(enrollmentPlan.ProjectGeography__c);

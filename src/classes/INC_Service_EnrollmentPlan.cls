@@ -95,6 +95,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                                                         , LegalEntityDescription__c
                                                         , CurrencyIsoCode
                                                         , RoutingMemberRule__c
+                                                        , DTWAdmin__c
                                                         ,(Select ID, Name from Enrollment_Plans__r)
                                                From IncentiveProject__c 
                                                Where ID =: setIncentiveID ]);
@@ -156,6 +157,8 @@ public without sharing class INC_Service_EnrollmentPlan {
 
     public static string cloneEnrollment(ID EnrollmentPlan,requestType RT){
       
+      System.Debug(logginglevel.Error,'Clone Enrollment app');
+
       list<Schema.FieldSetMember> listFields;
 
       if(RT == requestType.CHANGE){
@@ -177,6 +180,7 @@ public without sharing class INC_Service_EnrollmentPlan {
       IncentiveProject__c INC_PROJ = mapProjects.get(currentPlan.IncentiveProject__c);
       EnrollmentPlan__c oEnroll = new EnrollmentPlan__c();
       
+
       Integer iCnt = 1;
       System.Debug(logginglevel.error,'currentPlan.name: ' + currentPlan.Name);
       If(currentPlan.Name.StartsWith('CCR')){
@@ -221,7 +225,8 @@ public without sharing class INC_Service_EnrollmentPlan {
       oEnroll.ParentApplication__c = currentPlan.ID;
       oEnroll.ApplicationType__c = RT == requestType.CHANGE?'CCR':'PAY';
       oEnroll.CurrencyIsoCode = currentPlan.IncentiveProject__r.CurrencyIsoCode;
-      
+       oEnroll.DTWAdmin__c = mapProjects.get(currentPlan.IncentiveProject__c).DTWAdmin__c;
+     
       for(FieldSetMember fsm: listFields){
         if(currentPlan.get(fsm.getFieldPath()) != null){
           oEnroll.put(fsm.getFieldPath(), currentPlan.get(fsm.getFieldPath()));
@@ -384,6 +389,8 @@ public without sharing class INC_Service_EnrollmentPlan {
         if(setIncentivesToProcess.size() > 0){
                 INC_Service_EnrollmentPlan.createEnrollmentPlanfromIncentiveProject(mapIncentiveProjects,mapFoundApprovers,bRevive);
         }
+        updateIncentiveProjects(mapIncentiveProjects.values());
+
         return bReturn;
 
     }
@@ -439,6 +446,7 @@ public without sharing class INC_Service_EnrollmentPlan {
               oEnroll.Approver2__c = mapFoundApprovers.get(oIncent.ID).get(2).oRoutingMember.Approver2__c;
               oEnroll.Approver3__c = mapFoundApprovers.get(oIncent.ID).get(3).oRoutingMember.Approver3__c;
             }
+              oEnroll.DTWAdmin__c = mapProjects.get(oIncent.ID).DTWAdmin__c;
             System.Debug(logginglevel.error,'oEnroll from create by project: ' + oEnroll.CurrencyIsoCode);
             System.Debug(logginglevel.error,'IncentiveProject__c CurrencyIsoCode' + oIncent.CurrencyIsoCode);
             lPlans.add(oEnroll);
@@ -651,9 +659,11 @@ public without sharing class INC_Service_EnrollmentPlan {
                   //create comment record because no comments exist
                   for(ProcessInstanceStep processStep: oprocessInstance.Steps){
                   if(processStep.StepStatus == 'Approved' || processStep.StepStatus == 'Rejected'){
+                      String sType = 'Approved';
+                      String sFlag = 'No';
+                    
                       if(processStep.StepStatus == 'Rejected'){
-                        String sType = 'Rejection';
-                        String sFlag = 'Yes';
+                      }
                         System.Debug(logginglevel.error,'Creating comments');
                         listNewComments.add(new Enrollment_Comments__c(EnrollmentApplication__c = enrollmentplanID,
                                                                    ApprovalID__c = processStep.id,
@@ -661,7 +671,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                                                                    Type__c = sType,
                                                                    IsRejection__c = sFlag,
                                                                    Approver__c = processStep.ActorId));
-                      } 
+                       
                     }
                   }
                 }

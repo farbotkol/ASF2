@@ -42,7 +42,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <type>Default</type>
+        <content>INC_EnrollmentApp</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -3325,9 +3327,16 @@ IF( AND(TotalAllocationParticipants__c &gt; IncentivePlan__r.MaxAllocationPool__
         <fullName>BaselineGrossMargin__c</fullName>
         <description>For the purposes of Deliver To Win only, displays budgeted amount inclusive of mgmt adjustments.  Baseline GM = Budgeted GM + GM Adjustment.  Future changes to the project&apos;s budget may impact the Deliver to Win Baseline.</description>
         <externalId>false</externalId>
-        <formula>CASE(IncentivePlan__r.ContractSubType__c, 
- &quot;Gross Margin&quot;, IncentiveProject__r.ApprovedGrossMarginBudget__c,
- &quot;Net Margin&quot;, IncentiveProject__r.ApprovedNetMarginBudget__c,0)
+        <formula>CASE(IncentivePlan__r.ContractType__c,
+ &quot;Fixed Price&quot;,
+     CASE(IncentivePlan__r.ContractSubType__c, 
+     &quot;Gross Margin&quot;, IncentiveProject__r.ApprovedGrossMarginBudget__c,
+     &quot;Net Margin&quot;, IncentiveProject__r.ApprovedNetMarginBudget__c,0),
+ &quot;Time &amp; Material&quot;,
+     CASE(IncentivePlan__r.ContractSubType__c, 
+     &quot;Gross Margin&quot;,  ApprovedGrossMarginBudgetatSnapshot__c,
+     &quot;Net Margin&quot;,  ApprovedNetMarginBudgetatSnapshot__c,0)
+,0)
 
 + (GrossMarginAmountScopeChange__c + GrossMarginAmountAdjustment__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -3437,9 +3446,9 @@ IF( AND(TotalAllocationParticipants__c &gt; IncentivePlan__r.MaxAllocationPool__
         <externalId>false</externalId>
         <formula>IF(AND(TEXT(IncentivePlan__r.ContractType__c) = &quot;Time &amp; Material&quot;, ABS(MigratedBaselineNSR__c) &gt; 0), MigratedBaselineNSR__c,
 
-CASE(IncentivePlan__r.ContractType__c, &quot;Fixed Price&quot;, IncentiveProject__r.ApprovedNSRBudget__c, &quot;Time &amp; Material&quot;, ApprovedNSRBudgetatSnapshot__c ,0)
-
-  + NSRAdjustment__c
+CASE(IncentivePlan__r.ContractType__c,
+ &quot;Fixed Price&quot;, IncentiveProject__r.ApprovedNSRBudget__c + NSRAdjustment__c,
+ &quot;Time &amp; Material&quot;, ApprovedNSRBudgetatSnapshot__c + TotalNSRManagementAdjustment__c + TotalNSRScopeChange__c ,0)
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>For the purposes of Deliver To Win only, displays budgeted amount inclusive of mgmt adjustments.  Baseline NSR = Budgeted NSR + NSR Adjustment</inlineHelpText>
@@ -3842,6 +3851,18 @@ CASE(IncentivePlan__r.ContractType__c, &quot;Fixed Price&quot;, IncentiveProject
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DTWAdmin__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>DTW Admin</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Enrollment_Applications4</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>DTWCompleteSnapshot__c</fullName>
@@ -6071,7 +6092,9 @@ CASE(IncentivePlan__r.ContractSubType__c, &quot;Gross Margin&quot;,
 -
 CASE(IncentivePlan__r.ContractType__c, &quot;Fixed Price&quot;, 
      BaselineGrossMargin__c,
-     BaselineGrossMarginatSnapshot__c)
+     CASE(IncentivePlan__r.ContractSubType__c, &quot;Gross Margin&quot;, 
+     BaselineGrossMarginatSnapshot__c,
+     BaselineNetMarginatSnapshot__c))
 
 ,0)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>

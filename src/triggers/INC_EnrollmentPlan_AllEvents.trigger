@@ -37,11 +37,11 @@ trigger INC_EnrollmentPlan_AllEvents on EnrollmentPlan__c (
                     //Move Into Handler ~ML
                     list<EnrollmentParticipant__c> lEnrollmentParticipantToUpdate = new list<EnrollmentParticipant__c>();
                     
-                    for(EnrollmentParticipant__c oEnrollmentParticipant : [Select id
+                    for(EnrollmentParticipant__c oEnrollmentParticipant : [Select id, CalculatedIncentive__c, PaymentAdjustments__c
 				       						  From EnrollmentParticipant__c
 				       						  Where EnrollmentPlan__c =: Trigger.NewMap.keySet()]){
                                                   
-                        oEnrollmentParticipant.PaymentAmount__c = 0;
+                        oEnrollmentParticipant.PaymentAmount__c = ECO_Utils_String.NullCheck(oEnrollmentParticipant.CalculatedIncentive__c) + ECO_Utils_String.NullCheck(oEnrollmentParticipant.PaymentAdjustments__c);
                                                   
                     	lEnrollmentParticipantToUpdate.add(oEnrollmentParticipant);
                     }

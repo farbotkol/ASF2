@@ -66,6 +66,7 @@ public with sharing class INC_EnrollmentPlanProgressController {
                          ,ApprovalRecentlyProcessed__c
                          ,InterimPaymentRequested__c
                          ,IncentiveProject__r.recordTypeID
+                         ,ApplicationType__c
                 From EnrollmentPlan__c
                 Where Id =: ID];
 
@@ -132,6 +133,7 @@ public with sharing class INC_EnrollmentPlanProgressController {
    public pageReference onLoad(){
         System.debug(logginglevel.error,'In onload');
         if(oEnrollmentPlan.ApprovalRecentlyProcessed__c){
+           System.Debug(logginglevel.error,'onLoad, creating comments from approval');
            updateCommentsfromApprovals();
         }
 

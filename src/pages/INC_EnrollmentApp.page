@@ -339,8 +339,22 @@
 			<apex:commandButton value="Choose Incentive Plan" action="{!chooseplan}" styleClass="hidebutton"/>
 			<apex:commandButton value="Application Metrics" action="{!showAppMetrics}"  styleClass="hidebutton"/>
 			<apex:commandButton value="Assign Approvers" action="{!reassignApprovers}"  styleClass="hidebutton"/>
-			<apex:commandButton value="Create Change Request" action="{!createChangeRequest}" rerender="fullpage" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}" styleClass="hidebutton"/>
-			<apex:commandButton value="Create Payment Request" action="{!createPaymentRequest}" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}"  styleClass="hidebutton"/>
+			<apex:actionStatus id="saveStatus">
+		    <apex:facet name="stop">
+		    <apex:commandButton value="Create Change Request" action="{!createChangeRequest}" status="saveStatus" rerender="fullpage" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}" styleClass="hidebutton"/>
+			</apex:facet>
+		    <apex:facet name="start">
+		        <apex:commandButton value="Creating..." disabled="true" status="saveStatus"/>
+		    </apex:facet>
+			</apex:actionStatus>
+			<apex:actionStatus id="saveStatus2">
+		    <apex:facet name="stop">
+		    <apex:commandButton value="Create Payment Request" status="saveStatus2" action="{!createPaymentRequest}" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}"  styleClass="hidebutton"/>
+			</apex:facet>
+		    <apex:facet name="start">
+		        <apex:commandButton value="Creating..." disabled="true" status="saveStatus2"/>
+		    </apex:facet>
+			</apex:actionStatus>
 			<apex:commandButton value="Reject Application" action="{!finalRejectButton}"  onclick="if(!confirm('Are you sure you want to reject the application?')){return};" oncomplete="return rejectMessage();"  styleClass="hidebutton"/>
 			<apex:commandButton value="Close Application" action="{!closeApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton"/>
 			<apex:commandButton value="Close Application (No Award)" action="{!closeNoAwardApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton"/>
@@ -437,6 +451,11 @@
 		  <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__r.NetARBalance__c}" />
 		  <apex:outputField value="{!EnrollmentPlan__c.PercentCompleteCostITD__c}" rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}"/>
 		</apex:pageBlockSection>
+		<apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="Final Incentive Information" rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}" >
+		  <apex:outputField value="{!EnrollmentPlan__c.FinalIncentivePoolITD__c}"/>
+		  <apex:inputField Styleclass="highlightedfield" value="{!EnrollmentPlan__c.FinalIncentivePoolAdjusted__c}"/>
+		</apex:pageBlockSection>
+	
 	<apex:pageBlockSection title="{!if(NOT(EnrollmentPlan__c.ApplicationType__c='PAY'),'Project Budget, DTW Baseline and Forecast','Project Financial Results')}" collapsible="true" columns="1">
 	<a id="budgetsection" />
 	<apex:commandButton styleclass="budgetbutton" value="Save and recalculate" action="{!saveAndReturnToBudget}" rendered="{!bRenderInputFinFields}"/>
@@ -764,10 +783,6 @@
 		  <span></span>
 		  <apex:inputField Styleclass="highlightedfield" value="{!EnrollmentPlan__c.ITDDSO__c}" />
 		  <span></span>
-		</apex:pageBlockSection>
-		<apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="Final Incentive Information" rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}" >
-		  <apex:outputField value="{!EnrollmentPlan__c.FinalIncentivePoolITD__c}"/>
-		  <apex:inputField Styleclass="highlightedfield" value="{!EnrollmentPlan__c.FinalIncentivePoolAdjusted__c}"/>
 		</apex:pageBlockSection>
 		<apex:pageBlockSection Title="Snapshot Fields" columns="2" rendered="{!UserType=2}">
 		<apex:repeat value="{!$ObjectType.EnrollmentPlan__c.FieldSets.DTWAdminSnapshot}" var="f">

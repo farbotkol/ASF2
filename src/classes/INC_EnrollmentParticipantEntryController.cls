@@ -255,6 +255,9 @@ public with sharing class INC_EnrollmentParticipantEntryController {
 
 
         for(EnrollmentParticipant__c oEnrollmentParticipant: lSave){
+            if(oEnrollmentParticipant.CurrencyIsoCode == null){
+                oEnrollmentParticipant.CurrencyIsoCode = oEnrollmentParticipant.CurrencyIsoCode;
+            }
             if(oEnrollmentParticipant.ParticipantCategory__c == null){
                 ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have a defined role.'));
                 return false;

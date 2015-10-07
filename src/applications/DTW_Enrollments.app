@@ -12,4 +12,5 @@
     <tab>standard-Contact</tab>
     <tab>standard-Dashboard</tab>
     <tab>standard-report</tab>
+    <tab>ChangeManager__c</tab>
 </CustomApplication>
