@@ -31,14 +31,19 @@ public without sharing class CFM_LastSurveyDateUpdater {
                 accounts.put(a.Id, a);
             }
         }
+ 
+        List<Contact> contactUpdates = contacts.values();
+        List<Project__c> projectUpdates = projects.values();
+        List<Account> accountUpdates = accounts.values();
 
-        List<sObject> updateList = new List<sObject>();
-        updateList.addAll((List<sObject>)contacts.values());
-        updateList.addAll((List<sObject>)projects.values());
-        updateList.addAll((List<sObject>)accounts.values());
-
-        if (!updateList.isEmpty()) {
-            update updateList;
+        if (!contactUpdates.isEmpty()) {
+            update contactUpdates;
+        }
+        if (!projectUpdates.isEmpty()) {
+            update projectUpdates;
+        }
+        if (!accountUpdates.isEmpty()) {
+            update accountUpdates;
         }
     }
 }
