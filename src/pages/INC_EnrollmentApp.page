@@ -57,6 +57,9 @@
 	.boldline{
 		font-weight: bold;
 	}
+	div[id*='comments123_body'] .actionColumn {
+    	display: none;
+	}
 </style>
 
 
@@ -220,7 +223,7 @@
 		}else{
 			rejectionCommentsMessage();
 		}
-		document.querySelector('[id*="rejectReason"]').disabled = true;
+		//document.querySelector('[id*="rejectReason"]').disabled = true;
 	});
     
     
@@ -309,27 +312,13 @@
 <apex:outputPanel rendered="{!NOT(showWizard)}">
 	<apex:sectionHeader title="Enrollment Application" subtitle="{!EnrollmentPlan__c.Name}" id="sectionheader"/>
 	<c:INC_EnrollmentProgress />
-	<apex:outputPanel rendered="fromWizardVal != 'Yes'">
+	<apex:outputPanel >
 		<apex:pageMessages escape="false" />
 	</apex:outputPanel>
-<apex:outputPanel rendered="{!AND(isRejectedRecType,bCommentFound)}">
-<apex:pageBlock id="fullpanel">
-		  <apex:pageMessages escape="false"/>
-        <apex:pageBlockButtons location="top">
-		       <apex:commandButton value="Save" action="{!SaveComments}" oncomplete="return switchPages();"/>
-		    </apex:pageBlockButtons>
-			<apex:pageBlockSection columns="1">
-          <apex:outputText styleclass="message" value="{!sMessage}"/>
-    		    <apex:inputField value="{!oEnrollComment.Type__c}"/>
-	      		<apex:inputField id="rejectReason" value="{!oEnrollComment.IsRejection__c}" />
-			    <apex:inputField value="{!oEnrollComment.Reason_Codes__c}"/>
-			 <apex:pageBlockSectionItem >
-             	<apex:Outputlabel value="Comments" />
-             	<apex:inputTextarea id="comments" value="{!oEnrollComment.Comments__c}" rows="5" cols="100"/>
-          </apex:pageBlockSectionItem>
-			</apex:pageBlockSection>
-		</apex:pageBlock>
-</apex:outputPanel>
+	{!isRejectedRecType} {!EnrollmentPlan__c.ApprovalRecentlyProcessed__c}
+	<apex:outputPanel rendered="{!AND(isRejectedRecType,EnrollmentPlan__c.ApprovalRecentlyProcessed__c)}">
+	   <c:INC_EnrollmentComments />
+	</apex:outputPanel>
 <apex:outputpanel rendered="{!NOT(isRejectedRecType)}">
 	<apex:pageBlock title="Enrollment Application Detail" id="mainblock">
 		<apex:pageBlockButtons location="top">
@@ -836,7 +825,7 @@
 <apex:outputPanel rendered="{!EnrollmentPlan__c.InterimPaymentRequested__c = 'Yes'}">
 <apex:relatedList list="Interim_Payment_Schedules__r" rendered="{!$ObjectType.Interim_Payment_Schedule__c.accessible}"></apex:relatedList>
 </apex:outputPanel>
-<apex:relatedList list="Enrollment_Comments__r" rendered="{!$ObjectType.Enrollment_Comments__c.accessible}"></apex:relatedList>
+<apex:relatedList id="comments123" list="Enrollment_Comments__r" rendered="{!$ObjectType.Enrollment_Comments__c.accessible}"></apex:relatedList>
 <apex:relatedList list="ProcessSteps" rendered="{!bShowApprovalHistory}"></apex:relatedList>
 <apex:relatedList list="CombinedAttachments"  subject="{!$CurrentPage.parameters.id}" />
 <c:INC_ObjectFieldHistory show_more_number="5" imyObject="{!EnrollmentPlan__c}" />
