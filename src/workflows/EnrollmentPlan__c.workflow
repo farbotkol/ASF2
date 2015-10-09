@@ -621,6 +621,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Capture_Approved_DPE</fullName>
@@ -1659,6 +1660,11 @@ NOT(ISNULL( Approver1__c ))
             <operation>equals</operation>
             <value>False</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.ApplicationType__c</field>
+            <operation>equals</operation>
+            <value>ENR,CCR</value>
+        </criteriaItems>
         <description>When the Enrollment Application is first created or enrolled, capture the actual financial metrics (ITD) from the Incentive Project (1 of 2 workflows) -currently points to At Inception</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
@@ -1702,6 +1708,11 @@ NOT(ISNULL( Approver1__c ))
             <field>EnrollmentPlan__c.TM1Migrated__c</field>
             <operation>equals</operation>
             <value>False</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.ApplicationType__c</field>
+            <operation>equals</operation>
+            <value>ENR,CCR</value>
         </criteriaItems>
         <description>When the Enrollment Application is first created or enrolled, capture the actual financial metrics (ITD) from the Incentive Project (2 of 2 workflows)</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
@@ -1748,7 +1759,7 @@ NOT(ISNULL( Approver1__c ))
             <name>Capture_Approved_RevBudget</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>false</active>
+        <active>true</active>
         <criteriaItems>
             <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
             <operation>equals</operation>
@@ -1758,6 +1769,11 @@ NOT(ISNULL( Approver1__c ))
             <field>EnrollmentPlan__c.TM1Migrated__c</field>
             <operation>equals</operation>
             <value>False</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.ApplicationType__c</field>
+            <operation>equals</operation>
+            <value>ENR,CCR</value>
         </criteriaItems>
         <description>When the Enrollment Application is first Created, or Enrolled, capture the APPROVED financial metrics from the Incentive Project</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
@@ -1788,7 +1804,7 @@ NOT(ISNULL( Approver1__c ))
             <name>Capture_Approved_Subs</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>false</active>
+        <active>true</active>
         <criteriaItems>
             <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
             <operation>equals</operation>
@@ -1798,6 +1814,11 @@ NOT(ISNULL( Approver1__c ))
             <field>EnrollmentPlan__c.TM1Migrated__c</field>
             <operation>equals</operation>
             <value>False</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.ApplicationType__c</field>
+            <operation>equals</operation>
+            <value>ENR,CCR</value>
         </criteriaItems>
         <description>When the Enrollment Application is first Created, or Enrolled, capture the APPROVED financial metrics from the Incentive Project</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
@@ -1843,18 +1864,18 @@ NOT(ISNULL( Approver1__c ))
             <value>Pending PM Action,Enrolled</value>
         </criteriaItems>
         <criteriaItems>
-            <field>EnrollmentPlan__c.ConfirmBaseline__c</field>
+            <field>EnrollmentPlan__c.TM1Migrated__c</field>
             <operation>equals</operation>
-            <value>Yes</value>
+            <value>False</value>
         </criteriaItems>
         <criteriaItems>
             <field>EnrollmentPlan__c.PlanType__c</field>
             <operation>notEqual</operation>
         </criteriaItems>
         <criteriaItems>
-            <field>EnrollmentPlan__c.TM1Migrated__c</field>
+            <field>EnrollmentPlan__c.ApplicationType__c</field>
             <operation>equals</operation>
-            <value>False</value>
+            <value>ENR,CCR</value>
         </criteriaItems>
         <description>When the Enrollment Application is first Created, or Enrolled, capture the Baseline financial metrics from the Incentive Project</description>
         <triggerType>onAllChanges</triggerType>
@@ -1923,6 +1944,11 @@ NOT(ISNULL( Approver1__c ))
             <operation>equals</operation>
             <value>False</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.ApplicationType__c</field>
+            <operation>equals</operation>
+            <value>ENR,CCR</value>
+        </criteriaItems>
         <description>When the Enrollment Application is first Created, or Enrolled, capture the FORECAST financial metrics from the Incentive Project</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
@@ -1962,6 +1988,11 @@ NOT(ISNULL( Approver1__c ))
             <field>EnrollmentPlan__c.TM1Migrated__c</field>
             <operation>equals</operation>
             <value>False</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.ApplicationType__c</field>
+            <operation>equals</operation>
+            <value>ENR,CCR</value>
         </criteriaItems>
         <description>When the Enrollment Application is first Created, or Enrolled, capture the FORECAST financial metrics from the Incentive Project</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>

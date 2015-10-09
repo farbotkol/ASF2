@@ -42,7 +42,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <type>Default</type>
+        <content>INC_EnrollmentApp</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -2319,8 +2321,8 @@ CASE(EnrollmentStatus__c, &quot;Pending Payment&quot;, NULL,
 IF( TEXT(IncentiveProject__r.IsClosed__c) &lt;&gt; &quot;Yes&quot;, 
 IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Project Not Yet Closed&quot; &amp; BR(), NULL) &amp;
 
-IF( AND(TEXT(PassCSat__c)=&quot;Yes&quot;,TEXT(PassDSO__c)=&quot;Yes&quot;, TEXT(PassSafetyforLife__c)=&quot;Yes&quot;,  (FinalIncentivePoolAdjusted__c &lt; EstimatedIncPoolITD__c) ),
-IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Project Not Yet Closed&quot; &amp; BR(), NULL)&amp;
+IF( AND(TEXT(PassCSat__c)=&quot;Yes&quot;,TEXT(PassDSO__c)=&quot;Yes&quot;, TEXT(PassSafetyforLife__c)=&quot;Yes&quot;,  (ROUND(FinalIncentivePoolAdjusted__c,0) &lt; ROUND(EstimatedIncPoolITD__c,0)) ),
+IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot;  All Ops Metrics Met, Less than 100% of Pool Being Paid&quot; &amp; BR(), NULL)&amp;
 
 IF( AND(OR(TEXT(PassCSat__c)&lt;&gt;&quot;Yes&quot;,TEXT(PassDSO__c)&lt;&gt;&quot;Yes&quot;, TEXT(PassSafetyforLife__c)&lt;&gt;&quot;Yes&quot;),  (FinalIncentivePoolAdjusted__c &gt;= EstimatedIncPoolITD__c) ),
 IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Final Pool Not Reduced for Ops Metrics Results&quot; &amp; BR(), NULL) &amp;
@@ -2376,7 +2378,7 @@ IF(AND(TEXT(IncentivePlan__r.ContractType__c) = &quot;Time &amp; Material&quot;,
 
 CASE(EnrollmentStatus__c, &quot;Pending Payment&quot;, NULL, &quot;Closed&quot;, Null,
 
-IF( FinalIncentivePoolAdjusted__c &lt; 1, 
+IF( OR(TEXT(FinalIncentivePoolAdjusted__c) = &quot;&quot;, FinalIncentivePoolAdjusted__c &lt; 1), 
 IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Populate &apos;Final Pool Adjusted for Ops Metrics&apos;&quot; &amp; BR(), NULL) &amp;
 
 IF( FinalIncentivePoolAdjusted__c &lt; TotalPaymentAmount__c, 
@@ -2385,8 +2387,8 @@ IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 2
 IF(  EstimatedIncPoolITD__c &lt; 1, 
 IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Project Has Not Earned An Incentive Pool&quot; &amp; BR(), NULL)&amp;
 
-IF( FinalIncentivePoolAdjusted__c &gt; EstimatedIncPoolITD__c , 
-IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Final Pool Cannot Be &gt; Calculated Pool&quot; &amp; BR(), NULL) &amp;
+IF( ROUND(FinalIncentivePoolAdjusted__c,0) &gt; ROUND(EstimatedIncPoolITD__c,0) , 
+IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Final Adjusted Pool Cannot Be &gt; Calculated Pool&quot; &amp; BR(), NULL) &amp;
 
 IF( OR(TEXT(PassCSat__c) = &quot;&quot;,TEXT(PassDSO__c)=&quot;&quot;, TEXT(PassSafetyforLife__c)=&quot;&quot;, ISNULL(FinalClientSatisfaction__c), (FinalScoreonSafetyForLife__c &lt; 0), (FinalITDDSO__c &lt;1) ), 
 IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Populate All Ops Metric Results&quot; &amp; BR(), NULL) &amp;
@@ -3325,9 +3327,16 @@ IF( AND(TotalAllocationParticipants__c &gt; IncentivePlan__r.MaxAllocationPool__
         <fullName>BaselineGrossMargin__c</fullName>
         <description>For the purposes of Deliver To Win only, displays budgeted amount inclusive of mgmt adjustments.  Baseline GM = Budgeted GM + GM Adjustment.  Future changes to the project&apos;s budget may impact the Deliver to Win Baseline.</description>
         <externalId>false</externalId>
-        <formula>CASE(IncentivePlan__r.ContractSubType__c, 
- &quot;Gross Margin&quot;, IncentiveProject__r.ApprovedGrossMarginBudget__c,
- &quot;Net Margin&quot;, IncentiveProject__r.ApprovedNetMarginBudget__c,0)
+        <formula>CASE(IncentivePlan__r.ContractType__c,
+ &quot;Fixed Price&quot;,
+     CASE(IncentivePlan__r.ContractSubType__c, 
+     &quot;Gross Margin&quot;, IncentiveProject__r.ApprovedGrossMarginBudget__c,
+     &quot;Net Margin&quot;, IncentiveProject__r.ApprovedNetMarginBudget__c,0),
+ &quot;Time &amp; Material&quot;,
+     CASE(IncentivePlan__r.ContractSubType__c, 
+     &quot;Gross Margin&quot;,  ApprovedGrossMarginBudgetatSnapshot__c,
+     &quot;Net Margin&quot;,  ApprovedNetMarginBudgetatSnapshot__c,0)
+,0)
 
 + (GrossMarginAmountScopeChange__c + GrossMarginAmountAdjustment__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -3437,9 +3446,9 @@ IF( AND(TotalAllocationParticipants__c &gt; IncentivePlan__r.MaxAllocationPool__
         <externalId>false</externalId>
         <formula>IF(AND(TEXT(IncentivePlan__r.ContractType__c) = &quot;Time &amp; Material&quot;, ABS(MigratedBaselineNSR__c) &gt; 0), MigratedBaselineNSR__c,
 
-CASE(IncentivePlan__r.ContractType__c, &quot;Fixed Price&quot;, IncentiveProject__r.ApprovedNSRBudget__c, &quot;Time &amp; Material&quot;, ApprovedNSRBudgetatSnapshot__c ,0)
-
-  + NSRAdjustment__c
+CASE(IncentivePlan__r.ContractType__c,
+ &quot;Fixed Price&quot;, IncentiveProject__r.ApprovedNSRBudget__c + NSRAdjustment__c,
+ &quot;Time &amp; Material&quot;, ApprovedNSRBudgetatSnapshot__c + TotalNSRManagementAdjustment__c + TotalNSRScopeChange__c ,0)
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>For the purposes of Deliver To Win only, displays budgeted amount inclusive of mgmt adjustments.  Baseline NSR = Budgeted NSR + NSR Adjustment</inlineHelpText>
@@ -3842,6 +3851,18 @@ CASE(IncentivePlan__r.ContractType__c, &quot;Fixed Price&quot;, IncentiveProject
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DTWAdmin__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>DTW Admin</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Enrollment_Applications4</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>DTWCompleteSnapshot__c</fullName>
@@ -4322,7 +4343,7 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
         <fullName>EstimatedIncentivePoolEAC__c</fullName>
         <description>If Estimated Incentive pool  EAC&gt; Max Pool, Estimated = Max</description>
         <externalId>false</externalId>
-        <formula>EstimatedIncPoolEAC__c</formula>
+        <formula>MAX(EstimatedIncPoolEAC__c,0)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>EAC NSR x (EAC Gross Margin % - Baseline Gross Margin %) x Profit Share % x (1 - % Complete @ Enrollment Adjusted for Change Orders)</inlineHelpText>
         <label>Estimated Incentive Pool EAC</label>
@@ -5740,14 +5761,15 @@ The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An i
         <fullName>MaxIncentivePool__c</fullName>
         <description>Based on the current EAC NSR, this is the maximum possible payout for the project.  The maximum payout would be earned if the project achieved GM % NSR of baseline + 6%</description>
         <externalId>false</externalId>
-        <formula>CASE(IncentivePlan__r.ContractType__c ,
+        <formula>MAX(
+CASE(IncentivePlan__r.ContractType__c ,
 &quot;Fixed Price&quot;, 
  (  IncentivePlan__r.MaxPoolPercent__c  *  IncentiveProject__r.ForecastNSRBudget__c ) * (1 -  AdjustedComplete__c )
 ,
 &quot;Time &amp; Material&quot;,
   IF( (0.02 * IncentiveProject__r.ForecastNSRBudget__c) &gt; 200000, 200000, (0.02 * IncentiveProject__r.ForecastNSRBudget__c))
 ,0
-)</formula>
+),0)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>Max Incent Pool @ EAC is  the lesser of 2% of EAC NSR, or $200,000 USD</inlineHelpText>
         <label>Maximum Incentive Pool @ EAC</label>
@@ -6071,7 +6093,9 @@ CASE(IncentivePlan__r.ContractSubType__c, &quot;Gross Margin&quot;,
 -
 CASE(IncentivePlan__r.ContractType__c, &quot;Fixed Price&quot;, 
      BaselineGrossMargin__c,
-     BaselineGrossMarginatSnapshot__c)
+     CASE(IncentivePlan__r.ContractSubType__c, &quot;Gross Margin&quot;, 
+     BaselineGrossMarginatSnapshot__c,
+     BaselineNetMarginatSnapshot__c))
 
 ,0)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -6843,6 +6867,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <fullName>Applications</fullName>
         <columns>NAME</columns>
         <columns>ContractType__c</columns>
+        <columns>IncrementalGMvsBaseline__c</columns>
         <columns>WorkflowOwner__c</columns>
         <columns>CurrentApprovalOwner__c</columns>
         <columns>EnrollmentStatus__c</columns>
@@ -6852,7 +6877,6 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <columns>BudgetVariance__c</columns>
         <columns>Region__c</columns>
         <columns>ApplicationType__c</columns>
-        <columns>ProjectID__c</columns>
         <columns>PlanType__c</columns>
         <columns>SubmitStatus__c</columns>
         <columns>NumberofParticipants__c</columns>
@@ -6929,6 +6953,26 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <sharedTo>
             <group>DTW_Admins</group>
         </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Payment_Applications</fullName>
+        <columns>NAME</columns>
+        <columns>WorkflowOwner__c</columns>
+        <columns>EnrollmentStatus__c</columns>
+        <columns>PlanType__c</columns>
+        <columns>FinalClientSatisfaction__c</columns>
+        <columns>FinalIncentivePoolITD__c</columns>
+        <columns>FinalITDDSO__c</columns>
+        <columns>FinalIncentivePoolAdjusted__c</columns>
+        <columns>FinalScoreonSafetyForLife__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ApplicationType__c</field>
+            <operation>equals</operation>
+            <value>PAY</value>
+        </filters>
+        <label>Payment Applications</label>
+        <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>Pending_KS</fullName>

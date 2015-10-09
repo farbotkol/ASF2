@@ -57,6 +57,9 @@
 	.boldline{
 		font-weight: bold;
 	}
+	div[id*='comments123_body'] .actionColumn {
+    	display: none;
+	}
 </style>
 
 
@@ -220,7 +223,7 @@
 		}else{
 			rejectionCommentsMessage();
 		}
-		document.querySelector('[id*="rejectReason"]').disabled = true;
+		//document.querySelector('[id*="rejectReason"]').disabled = true;
 	});
     
     
@@ -309,27 +312,13 @@
 <apex:outputPanel rendered="{!NOT(showWizard)}">
 	<apex:sectionHeader title="Enrollment Application" subtitle="{!EnrollmentPlan__c.Name}" id="sectionheader"/>
 	<c:INC_EnrollmentProgress />
-	<apex:outputPanel rendered="fromWizardVal != 'Yes'">
+	<apex:outputPanel >
 		<apex:pageMessages escape="false" />
 	</apex:outputPanel>
-<apex:outputPanel rendered="{!AND(isRejectedRecType,bCommentFound)}">
-<apex:pageBlock id="fullpanel">
-		  <apex:pageMessages escape="false"/>
-        <apex:pageBlockButtons location="top">
-		       <apex:commandButton value="Save" action="{!SaveComments}" oncomplete="return switchPages();"/>
-		    </apex:pageBlockButtons>
-			<apex:pageBlockSection columns="1">
-          <apex:outputText styleclass="message" value="{!sMessage}"/>
-    		    <apex:inputField value="{!oEnrollComment.Type__c}"/>
-	      		<apex:inputField id="rejectReason" value="{!oEnrollComment.IsRejection__c}" />
-			    <apex:inputField value="{!oEnrollComment.Reason_Codes__c}"/>
-			 <apex:pageBlockSectionItem >
-             	<apex:Outputlabel value="Comments" />
-             	<apex:inputTextarea id="comments" value="{!oEnrollComment.Comments__c}" rows="5" cols="100"/>
-          </apex:pageBlockSectionItem>
-			</apex:pageBlockSection>
-		</apex:pageBlock>
-</apex:outputPanel>
+	{!isRejectedRecType} {!EnrollmentPlan__c.ApprovalRecentlyProcessed__c}
+	<apex:outputPanel rendered="{!AND(isRejectedRecType,EnrollmentPlan__c.ApprovalRecentlyProcessed__c)}">
+	   <c:INC_EnrollmentComments />
+	</apex:outputPanel>
 <apex:outputpanel rendered="{!NOT(isRejectedRecType)}">
 	<apex:pageBlock title="Enrollment Application Detail" id="mainblock">
 		<apex:pageBlockButtons location="top">
@@ -339,8 +328,22 @@
 			<apex:commandButton value="Choose Incentive Plan" action="{!chooseplan}" styleClass="hidebutton"/>
 			<apex:commandButton value="Application Metrics" action="{!showAppMetrics}"  styleClass="hidebutton"/>
 			<apex:commandButton value="Assign Approvers" action="{!reassignApprovers}"  styleClass="hidebutton"/>
-			<apex:commandButton value="Create Change Request" action="{!createChangeRequest}" rerender="fullpage" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}" styleClass="hidebutton"/>
-			<apex:commandButton value="Create Payment Request" action="{!createPaymentRequest}" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}"  styleClass="hidebutton"/>
+			<apex:actionStatus id="saveStatus">
+		    <apex:facet name="stop">
+		    <apex:commandButton value="Create Change Request" action="{!createChangeRequest}" status="saveStatus" rerender="fullpage" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}" styleClass="hidebutton"/>
+			</apex:facet>
+		    <apex:facet name="start">
+		        <apex:commandButton value="Creating..." disabled="true" status="saveStatus"/>
+		    </apex:facet>
+			</apex:actionStatus>
+			<apex:actionStatus id="saveStatus2">
+		    <apex:facet name="stop">
+		    <apex:commandButton value="Create Payment Request" status="saveStatus2" action="{!createPaymentRequest}" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}"  styleClass="hidebutton"/>
+			</apex:facet>
+		    <apex:facet name="start">
+		        <apex:commandButton value="Creating..." disabled="true" status="saveStatus2"/>
+		    </apex:facet>
+			</apex:actionStatus>
 			<apex:commandButton value="Reject Application" action="{!finalRejectButton}"  onclick="if(!confirm('Are you sure you want to reject the application?')){return};" oncomplete="return rejectMessage();"  styleClass="hidebutton"/>
 			<apex:commandButton value="Close Application" action="{!closeApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton"/>
 			<apex:commandButton value="Close Application (No Award)" action="{!closeNoAwardApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton"/>
@@ -437,6 +440,11 @@
 		  <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__r.NetARBalance__c}" />
 		  <apex:outputField value="{!EnrollmentPlan__c.PercentCompleteCostITD__c}" rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}"/>
 		</apex:pageBlockSection>
+		<apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="Final Incentive Information" rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}" >
+		  <apex:outputField value="{!EnrollmentPlan__c.FinalIncentivePoolITD__c}"/>
+		  <apex:inputField Styleclass="highlightedfield" value="{!EnrollmentPlan__c.FinalIncentivePoolAdjusted__c}"/>
+		</apex:pageBlockSection>
+	
 	<apex:pageBlockSection title="{!if(NOT(EnrollmentPlan__c.ApplicationType__c='PAY'),'Project Budget, DTW Baseline and Forecast','Project Financial Results')}" collapsible="true" columns="1">
 	<a id="budgetsection" />
 	<apex:commandButton styleclass="budgetbutton" value="Save and recalculate" action="{!saveAndReturnToBudget}" rendered="{!bRenderInputFinFields}"/>
@@ -765,10 +773,6 @@
 		  <apex:inputField Styleclass="highlightedfield" value="{!EnrollmentPlan__c.ITDDSO__c}" />
 		  <span></span>
 		</apex:pageBlockSection>
-		<apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="Final Incentive Information" rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}" >
-		  <apex:outputField value="{!EnrollmentPlan__c.FinalIncentivePoolITD__c}"/>
-		  <apex:inputField Styleclass="highlightedfield" value="{!EnrollmentPlan__c.FinalIncentivePoolAdjusted__c}"/>
-		</apex:pageBlockSection>
 		<apex:pageBlockSection Title="Snapshot Fields" columns="2" rendered="{!UserType=2}">
 		<apex:repeat value="{!$ObjectType.EnrollmentPlan__c.FieldSets.DTWAdminSnapshot}" var="f">
 			<apex:inputField value="{!EnrollmentPlan__c[f]}" />
@@ -821,7 +825,7 @@
 <apex:outputPanel rendered="{!EnrollmentPlan__c.InterimPaymentRequested__c = 'Yes'}">
 <apex:relatedList list="Interim_Payment_Schedules__r" rendered="{!$ObjectType.Interim_Payment_Schedule__c.accessible}"></apex:relatedList>
 </apex:outputPanel>
-<apex:relatedList list="Enrollment_Comments__r" rendered="{!$ObjectType.Enrollment_Comments__c.accessible}"></apex:relatedList>
+<apex:relatedList id="comments123" list="Enrollment_Comments__r" rendered="{!$ObjectType.Enrollment_Comments__c.accessible}"></apex:relatedList>
 <apex:relatedList list="ProcessSteps" rendered="{!bShowApprovalHistory}"></apex:relatedList>
 <apex:relatedList list="CombinedAttachments"  subject="{!$CurrentPage.parameters.id}" />
 <c:INC_ObjectFieldHistory show_more_number="5" imyObject="{!EnrollmentPlan__c}" />

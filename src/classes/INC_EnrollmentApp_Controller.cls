@@ -115,11 +115,17 @@ public with sharing class INC_EnrollmentApp_Controller {
             }else{
                 isRejectedRecType = false;
             }
-            if(oEnrollmentApp.IncrementalGMvsBaseline__c > 4 && isRejectedRecType == false){
+
+            bTandM = oEnrollmentApp.IncentivePlan__r.ContractType__c == 'Time & Material'?true:false;
+          
+            System.Debug(logginglevel.error,'IncrementalGMvsBaseline__c: ' + oEnrollmentApp.IncrementalGMvsBaseline__c);
+            if(oEnrollmentApp.IncrementalGMvsBaseline__c > 4 && isRejectedRecType == false &&
+              !bTandM && oEnrollmentApp.ApplicationType__c != 'PAY'){
+              System.debug(logginglevel.error,'setting Incremental message');
               ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Warning,'Incremental GM% vs Baseline is greater than 4%'));
             }
-            bTandM = oEnrollmentApp.IncentivePlan__r.ContractType__c == 'Time & Material'?true:false;
-            System.Debug(logginglevel.error,'isRejectedRecType ' + isRejectedRecType);
+
+            System.Debug(logginglevel.error,'isRejectedRecType 2' + isRejectedRecType);
           }
 
     }

@@ -143,15 +143,6 @@
         <targetObject>EnrollmentPlan__c</targetObject>
     </fieldUpdates>
     <fieldUpdates>
-        <fullName>PaymentAmountCalc</fullName>
-        <field>PaymentAmount__c</field>
-        <formula>Blankvalue(EstimatedPayout__c,0) + PaymentAdjustments__c</formula>
-        <name>Payment Amount Calc</name>
-        <notifyAssignee>false</notifyAssignee>
-        <operation>Formula</operation>
-        <protected>false</protected>
-    </fieldUpdates>
-    <fieldUpdates>
         <fullName>Set_Status_Flag</fullName>
         <field>StatusFlag__c</field>
         <formula>EmployeeStatusNo__c</formula>
@@ -259,11 +250,8 @@
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
-        <criteriaItems>
-            <field>EnrollmentParticipant__c.RecordTypeId</field>
-            <operation>notEqual</operation>
-        </criteriaItems>
-        <triggerType>onAllChanges</triggerType>
+        <formula>TRUE</formula>
+        <triggerType>onCreateOnly</triggerType>
     </rules>
     <rules>
         <fullName>Capture Enrollment Participant Metrics</fullName>
@@ -351,10 +339,6 @@
     </rules>
     <rules>
         <fullName>Payment Amount Calc</fullName>
-        <actions>
-            <name>PaymentAmountCalc</name>
-            <type>FieldUpdate</type>
-        </actions>
         <active>true</active>
         <formula>1+1 =2</formula>
         <triggerType>onAllChanges</triggerType>

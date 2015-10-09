@@ -84,12 +84,12 @@
 				<apex:actionRegion >
 				<apex:selectRadio layout="lineDirection" value="{!selectedSelectionMethod}" label="Selection Method" required="true">
 	    			<apex:selectOptions value="{!SelectionMethods}"/>
-	    			<apex:actionSupport event="onchange" rerender="blockpb3"/>
+	    			<apex:actionSupport event="onchange" rerender="blockpb3" action="{!manualSelection}"/>
 				</apex:selectRadio>
 				</apex:actionRegion>
 			</apex:outputPanel>			
 			<apex:outputPanel id="block3" rendered="{!selectedSelectionMethod=='Guided'}">
-				<apex:outputLabel value="Please Answer the Following Question" style="font-weight: bold;"/><br/>
+				<apex:outputLabel value="Please Answer the Following Questions" style="font-weight: bold;"/><br/>
 				Has the contract been fully executed by the client and AECOM?<br/>  <!-- If no, Application should not be started until contract is fully executed  -->
 				<apex:selectRadio layout="lineDirection" value="{!question1Answer}" label="Question 1">
 		    		<apex:selectOptions value="{!YesNoOptions}"/>

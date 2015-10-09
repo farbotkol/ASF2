@@ -194,11 +194,14 @@
     </fields>
     <fields>
         <fullName>EmployeeStatusAlert__c</fullName>
-        <description>A hazard icon will display in the &quot;Attn:&quot; column when the participant section is incomplete.  Each application must contain at least one enrolled participant, with all all information fields entered.  The total target % allocated to all participants cannot exceed 60% for the purposes of enrollment.  At the time of payment, 100% of the incentive pool can be allocated.</description>
+        <description>A hazard icon will display in the &quot;Attn:&quot; column when the participant section is incomplete.  Each application must contain at least one enrolled participant, with all all information fields entered.</description>
         <externalId>false</externalId>
-        <formula>IF(EmployeeName__r.pse__Salesforce_User__r.IsActive, Null,            IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;, &quot;Alert&quot;, 25, 25))</formula>
+        <formula>IF(OR(TEXT(EmployeeName__r.Status__c)=&quot;Employee - Active&quot;,
+      TEXT(EmployeeName__r.Status__c)=&quot;Active&quot;,
+      TEXT(EmployeeName__r.Status__c)=&quot;A&quot;), NULL,
+   IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;, &quot;Alert&quot;, 25, 25))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>A hazard icon will display in the &quot;Attn:&quot; column when the participant section is incomplete.  Each application must contain at least one enrolled participant, with all all information fields entered.  The total target % allocated to all participants canno</inlineHelpText>
+        <inlineHelpText>A hazard icon will display in the &quot;Attn:&quot; column when the participant section is incomplete.  Each application must contain at least one enrolled participant, with all all information fields entered.</inlineHelpText>
         <label>Attn.</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -856,9 +859,9 @@ CASE( EnrollmentPlan__r.IncentivePlan__r.ContractType__c ,
         <fullName>Allocation_Percent_Compare_to_Enrollment</fullName>
         <active>true</active>
         <description>The participant&apos;s allocation percent must be equal to or greater than the Incentive Plan</description>
-        <errorConditionFormula>TargetIncentivePoolAllocated__c   
+        <errorConditionFormula>AND(TargetIncentivePoolAllocated__c   
 &lt;
-EnrollmentPlan__r.IncentivePlan__r.MinAllocationPer__c</errorConditionFormula>
+EnrollmentPlan__r.IncentivePlan__r.MinAllocationPer__c, TEXT(EnrollmentPlan__r.ApplicationType__c) = &quot;ENR&quot;)</errorConditionFormula>
         <errorMessage>The Participant Allocation must be equal to or greater than the Incentive Plan</errorMessage>
     </validationRules>
     <validationRules>
