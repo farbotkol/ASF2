@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_84175905</developerName>
+        <masterLabel>Stage</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>STAGE_NAME</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>1 Lead</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1A Lead - Scout</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1B Lead - Engage</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1C Lead - Position</sourceValue>
+            </sourceValues>
+            <value>1 Leads</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>2 Capture</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2A Capture - LOI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2B Capture - EOI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2C Capture - SOQ</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2D Capture - RFI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2E Capture - RFP</sourceValue>
+            </sourceValues>
+            <value>2 Pursuits</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>3 Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3A Capture - Proposal Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3B Capture - Short List</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3C Capture - Interview</sourceValue>
+            </sourceValues>
+            <value>3 Submitted</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>4 Project on hold</sourceValue>
+            </sourceValues>
+            <value>4 On Hold</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <columns>
+        <field>CREATED</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Geography_Formula__c</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Project_Delivery_Method__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Services__c</field>
+    </columns>
+    <columns>
+        <field>BucketField_84175905</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Estimated_work_start_date__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.WinDate__c</field>
+    </columns>
+    <columns>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Subs_Other_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Net_Revenue_TO_Project__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Net_Forecast_Amount__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Forecast_Net_amount__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>CREATED_DATE</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>1 AND 2 AND (3 OR 4 OR 5 OR 8) AND 6 AND 7</booleanFilter>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>lessOrEqual</operator>
+            <value>6</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>contains</operator>
+            <value>Transportation,Water,Energy,Construction Services,Oil&amp;Gas,Environmemnt</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>OPPORTUNITY_NAME</column>
+            <operator>contains</operator>
+            <value>Program Management</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Project_Delivery_Method__c</column>
+            <operator>equals</operator>
+            <value>Program Management</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Services__c</column>
+            <operator>includes</operator>
+            <value>Program Management</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>notEqual</operator>
+            <value>Opportunity.Program_Americas,Opportunity.Program_APAC,Opportunity.Program_EMEA,01230000000b0il,01230000000c7i6</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Geography_Formula__c</column>
+            <operator>equals</operator>
+            <value>North America</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.AECOM_Primary_Dept_Lookup__c</column>
+            <operator>contains</operator>
+            <value>PMCM,PM-CM,PCC.PM,-PM</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>PM - Americas - All BLs</name>
+    <params>
+        <name>open</name>
+        <value>open</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>AMOUNT.CONVERT</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

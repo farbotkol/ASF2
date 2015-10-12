@@ -7,10 +7,10 @@
 ***************************************************************************/
 @isTest
 private class rsProfileReviewComponentControllerTest {
-	
+
 	private static testmethod void testProfileReviewComponentController() {
-		User u = [Select Id, ProfileId from User where Id =: UserInfo.getUserId()];
-		
+		User u = [Select Id, ProfileId from User where Id = : UserInfo.getUserId()];
+
 		Test.startTest();
 		rsTestUtil.createTestProfileParts(6, 4, 3);
 
@@ -18,23 +18,34 @@ private class rsProfileReviewComponentControllerTest {
 		cont.sortVal = 'LastName';
 		cont.sortDir = 'asc';
 		cont.ViewType = rsProfileReviewsController.REV_UN_AMERICAS;
-		cont.Profiles = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null);
+		List<rs_Profile_Part__c> parts = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null, 'asc');
+		List<rsPRTeamEmployee> projects = rsPRTeamEmployee.find.reviewUnassigned(null, null, null, null, null, null, null, null, 'asc');
 
-		cont.Projects = rsPRTeamEmployee.find.reviewUnassigned(null, null, null, null, null, null, null, null);
+		Set<Id> partUserIds = new Set<Id>();
+		Set<Id> projectIds = new Set<Id>();
+
+		for (rs_Profile_Part__c part : parts) {
+			partUserIds.add(part.User__c);
+		}
+		for (rsPRTeamEmployee emp : projects) {
+			projectIds.add(emp.getUser());
+		}
+
+		cont.ProfileIds = new List<Id>(partUserIds);
+		cont.ProjectIds = new List<Id>(projectIds);
 
 		Test.stopTest();
-		
-		System.assertEquals(cont.getUserList().size(), 6);
+
+		System.assertEquals(cont.getSortedUserMap().size(), 6);
 		System.assertEquals(cont.getUserProfilePartMap().get( (cont.getUserList().get(0)).getObj().Id ).size(), 4);
 		System.assertEquals(cont.getUserProjectMap().get( (cont.getUserList().get(0)).getObj().Id ).size(), 3);
 		System.assertEquals(cont.getUserList().get(0).getObj().LastName, 'lastName0');
 		cont.sortDir = 'desc';
-		System.assertEquals(cont.getUserList().get(0).getObj().LastName, 'lastName5');
+		System.assertEquals(cont.getUserList().get(0).getObj().LastName, 'lastName4');
 		cont.sortVal = 'Email';
 		cont.sortDir = 'asc';
 		System.assertEquals(cont.getUserList().get(1).getObj().Email, 'sfdctestcase1@aecom.com');
-		System.assertEquals(cont.getProfileRtMap().get(cont.Profiles.get(0).Id), rsProfilePart.RT_TRAINING);
-		
+
 		//Test display booleans for unassigned viewType
 		System.assertEquals(cont.getShowStatus(), true);
 		System.assertEquals(cont.getShowCurrentAssignee(), false);
@@ -75,15 +86,29 @@ private class rsProfileReviewComponentControllerTest {
 		rsProfile testUser = new rsProfile(rsTestUtil.createTestUsers(false).get(0));
 		rsTestUtil.createTestProfilePartForUserId(testUser.getId(), rsProfilePart.RT_TRAINING, 5);
 		rsTestUtil.createTestProjectPartForUserId(testUser.getId(), rsPRTeamEmployee.RT_AECOMPROJECT, 2);
-		
+
 		System.runAs((User)testCM.getObj()) {
 			Test.startTest();
 			rsProfileReviewComponentController cont = new rsProfileReviewComponentController();
 			cont.sortVal = 'LastName';
 			cont.sortDir = 'asc';
 			cont.ViewType = rsProfileReviewsController.REV_UN_AMERICAS;
-			cont.Profiles = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null);
-			cont.Projects = rsPRTeamEmployee.find.reviewUnassigned(null, null, null, null, null, null, null, null);
+
+			List<rs_Profile_Part__c> parts = rsProfilePart.find.reviewUnassigned(null, null, null, null, null, null, null, null, 'asc');
+			List<rsPRTeamEmployee> projects = rsPRTeamEmployee.find.reviewUnassigned(null, null, null, null, null, null, null, null, 'asc');
+
+			Set<Id> partUserIds = new Set<Id>();
+			Set<Id> projectIds = new Set<Id>();
+
+			for (rs_Profile_Part__c part : parts) {
+				partUserIds.add(part.User__c);
+			}
+			for (rsPRTeamEmployee emp : projects) {
+				projectIds.add(emp.getUser());
+			}
+
+			cont.ProfileIds = new List<Id>(partUserIds);
+			cont.ProjectIds = new List<Id>(projectIds);
 			cont.getProfileRtMap();
 			cont.getUserList();
 			cont.getUserProfilePartMap();
@@ -101,16 +126,16 @@ private class rsProfileReviewComponentControllerTest {
 			cont.updatePartsStatus();
 			rsProfilePart inReviewPart = new rsProfilePart((rs_Profile_Part__c)rsProfilePart.find.byId(testApprovePart.getId()).getObj() );
 			rsProfile inReviewUser = new rsProfile( (User)rsProfile.find.byId(testUser.getId()).getObj() );
-			
+
 			ApexPages.currentPage().getParameters().put('userId', testUser.getId());
 			ApexPages.currentPage().getParameters().put('partId', testApprovePart.getId());
-			cont.approvePart();			
+			cont.approvePart();
 			rsProfilePart approvedPart = new rsProfilePart((rs_Profile_Part__c)rsProfilePart.find.byId(testApprovePart.getId()).getObj() );
 			rsProfile inReviewUser2 = new rsProfile( (User)rsProfile.find.byId(testUser.getId()).getObj() );
 
 			ApexPages.currentPage().getParameters().put('userId', testUser.getId());
 			ApexPages.currentPage().getParameters().put('partId', testApproveProject.getId());
-			cont.approvePart();			
+			cont.approvePart();
 			rsPRTeamEmployee approvedProject = new rsPRTeamEmployee((PR_Team_Employee__c)rsPRTeamEmployee.find.byId(testApproveProject.getId()).getObj() );
 			rsProfile inReviewUser3 = new rsProfile( (User)rsProfile.find.byId(testUser.getId()).getObj() );
 
@@ -147,5 +172,5 @@ private class rsProfileReviewComponentControllerTest {
 			System.assertEquals(approvedUser.getStatus(), rsProfile.S_APPROVED);
 		}
 	}
-	
+
 }

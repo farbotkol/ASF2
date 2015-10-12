@@ -11,4 +11,6 @@
     <tab>standard-File</tab>
     <tab>Profile_Reviews</tab>
     <tab>Business_Line__c</tab>
+    <tab>Contract_Review__c</tab>
+    <tab>Qtr_Review__c</tab>
 </CustomApplication>

@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_8836692</developerName>
+        <masterLabel>stage status</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>STAGE_NAME</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>1 Lead</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1A Lead - Scout</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1B Lead - Engage</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1C Lead - Position</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2 Capture</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2A Capture - LOI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2B Capture - EOI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2C Capture - SOQ</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2D Capture - RFI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2E Capture - RFP</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3 Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3A Capture - Proposal Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3B Capture - Short List</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3C Capture - Interview</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>4 Project on hold</sourceValue>
+            </sourceValues>
+            <value>Active</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>5 SNB/Win/Award</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>6 Contracted/Booked/Won</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>5A Program in Negotiation</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>5B Program Signed and Active</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>6A Program Closed/Completed</sourceValue>
+            </sourceValues>
+            <value>Won</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <aggregate>Sum</aggregate>
+            <axisBinding>y</axisBinding>
+            <column>Opportunity.Combined_Outlook_Revenue__c.CONVERT</column>
+        </chartSummaries>
+        <chartType>VerticalColumnStacked</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>CLOSE_DATE</groupingColumn>
+        <legendPosition>Right</legendPosition>
+        <location>CHART_TOP</location>
+        <secondaryGroupingColumn>BucketField_8836692</secondaryGroupingColumn>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>Opportunity.WinDate__c</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Forecast_Net_amount__c.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Combined_Outlook_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>RECORDTYPE</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Probability_Stage__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Role__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Lead_Region_Formula__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Lead_District_Formula__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Primary_Dept_Lookup__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>(1 AND 2 AND 3 AND (4 OR 5) AND 6) AND 7</booleanFilter>
+        <criteriaItems>
+            <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>startsWith</operator>
+            <value>Water</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>notEqual</operator>
+            <value>7 Canceled by Client,8 No-Go,9 Lost</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Geography_Formula__c</column>
+            <operator>contains</operator>
+            <value>America</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>CLOSE_DATE</column>
+            <operator>greaterThan</operator>
+            <value>9/30/2012</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.WinDate__c</column>
+            <operator>greaterThan</operator>
+            <value>9/30/2012</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>CLOSE_DATE</column>
+            <operator>greaterOrEqual</operator>
+            <value>10/1/2012</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Lead_Region_Formula__c</column>
+            <operator>equals</operator>
+            <value>NA - MGMT</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>FiscalYear</dateGranularity>
+        <field>CLOSE_DATE</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_8836692</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Wins Dash DB Forecast</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Opportunity.WinDate__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CURNEXTFY</interval>
+    </timeFrameFilter>
+</Report>

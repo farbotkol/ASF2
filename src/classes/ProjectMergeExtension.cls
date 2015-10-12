@@ -46,7 +46,7 @@ public with sharing class ProjectMergeExtension {
                                         , SearchFee__c
                                         , Date_Started__c
                                         , Search_Completion_Date__c
-                                        , Project_Manager__r.Name
+                                        , Project_Manager_User__r.Name
                                         , Project_Manager_Status__c
                                         , RecordType.Name
                                         , Image__c 

@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Opportunity$Name</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity$Amount</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity$Ceiling_Amount_ReadOnly__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity$CloseDate</field>
+    </columns>
+    <columns>
+        <field>Opportunity$Business_Line_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Open Opportunities for selected NY Metro Accounts</description>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity$Account.Hierarchy_Group__c</column>
+            <operator>equals</operator>
+            <value>State of New York,New Jersey Transit,New Jersey department of Transportation,Metropolitan Transportation Authority,port authority of new york and new jersey,&quot;New york, city of&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity$Stage_Group__c</column>
+            <operator>startsWith</operator>
+            <value>1,2,3,4,5</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity$Account.Hierarchy_Group__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity$Account</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>NY Metro CAM Pipeline</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity_with_or_without_Team_Roles__c</reportType>
+    <roleHierarchyFilter>Worldwide</roleHierarchyFilter>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity$Book_date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

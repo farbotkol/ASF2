@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>AECOM Primary Department</description>
@@ -72,6 +73,26 @@
             </picklistValues>
             <picklistValues>
                 <fullName>Chicago Metro</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Corp Gulf Coast Region</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Corp Midwest Region</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Corp Northeast Region</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Corp Pacific Region</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Corp Southeastern Region</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -204,7 +225,7 @@
         <fullName>Business_Line_Lookup__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <label>Business Line</label>
+        <label>Business Line\SBU</label>
         <referenceTo>Business_Line__c</referenceTo>
         <relationshipLabel>AECOM  Departments</relationshipLabel>
         <relationshipName>AECOM_Departments</relationshipName>
@@ -221,6 +242,20 @@
         <label>Business Unit Manager</label>
         <referenceTo>User</referenceTo>
         <relationshipName>AECOM_Departments</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Region_Executive__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>CFM - designates the individual used in the signatory line for customer surveys and is passed to Qualtrics</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Name used in the signatory line for customer surveys</inlineHelpText>
+        <label>Region Executive</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>AECOM_Departments5</relationshipName>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -377,7 +412,7 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>EMEA</fullName>
+                <fullName>EMEA&amp;I</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -541,6 +576,32 @@ For URS departments, preface with &quot;URS led - use this Project: &quot;</inli
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Quality_Manager_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>Quality_Manager__r.Email</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Quality Manager Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Quality_Manager__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Tracks Quality Manager</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Regional Quality Manager</inlineHelpText>
+        <label>Quality Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>AECOM_Departments2</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Region__c</fullName>
         <description>Regions as of October 2014</description>
         <externalId>false</externalId>
@@ -573,6 +634,196 @@ For URS departments, preface with &quot;URS led - use this Project: &quot;</inli
             </picklistValues>
             <picklistValues>
                 <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>true</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Risk_Manager_Email__c</fullName>
+        <externalId>false</externalId>
+        <formula>Risk_Manager__r.Email</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Risk Manager Email</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Risk_Manager__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Tracks the Risk manager.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Regional Risk Manager</inlineHelpText>
+        <label>Risk Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>AECOM_Departments1</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>SBU_Account__c</fullName>
+        <description>Level 4 of CS Org</description>
+        <externalId>false</externalId>
+        <label>SBU Account</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Advatech</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Airports</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Facility Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Federal</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fossil AQCS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fossil New Generation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fossil Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fossil T&amp;D</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Highways &amp; Bridges</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Industrial Manufacturing</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mining</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nuclear Commercial D&amp;D</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nuclear New Generation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nuclear Plant Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Oil, Gas &amp; Chemicals</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Operations &amp; Maintenance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Production Services &amp; Fabrication</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rail &amp; Transit</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>SGT</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Water Resources</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>true</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>SBU_Sub_account__c</fullName>
+        <description>EIC org fourth level</description>
+        <externalId>false</externalId>
+        <label>SBU Sub-account</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Automotive</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Chemical</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Consumer Products</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Downstream</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Facility Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Factory Production Maintenance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Food &amp; Beverage</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>General Manufacturing</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Industrial Maintenance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Midstream</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Oil Field Hauling</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Production Fabrication</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Production Mechanical Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Upstream</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>true</sorted>
@@ -686,6 +937,29 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>APAC_Departments_Active</fullName>
+        <columns>NAME</columns>
+        <columns>Group__c</columns>
+        <columns>Geography_Lookup__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Group__c</field>
+            <operation>equals</operation>
+            <value>APAC</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>APAC Departments - Active</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Active_Departments</fullName>
         <columns>NAME</columns>
         <columns>Lead_District__c</columns>
@@ -699,6 +973,30 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
             <value>Active</value>
         </filters>
         <label>Active Departments - All Geos and BLs</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Africa_Departments</fullName>
+        <columns>NAME</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>End_Market__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Legacy_Company__c</columns>
+        <columns>Operating_Group__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Geography__c</field>
+            <operation>equals</operation>
+            <value>Africa</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>Africa Departments - Active</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -741,7 +1039,7 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
             <operation>equals</operation>
             <value>Active</value>
         </filters>
-        <label>7340</label>
+        <label>7547</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -1138,33 +1436,6 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>CE_CIS_Departments</fullName>
-        <columns>NAME</columns>
-        <columns>Business_Line_Lookup__c</columns>
-        <columns>Geography__c</columns>
-        <columns>Group__c</columns>
-        <columns>Lead_District__c</columns>
-        <columns>Lead_Region__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>Status__c</field>
-            <operation>equals</operation>
-            <value>Active</value>
-        </filters>
-        <filters>
-            <field>Lead_Region__c</field>
-            <operation>contains</operation>
-            <value>CE</value>
-        </filters>
-        <filters>
-            <field>Lead_Region__c</field>
-            <operation>contains</operation>
-            <value>CIS</value>
-        </filters>
-        <label>CE&amp; CIS Departments</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
         <fullName>CE_Departments</fullName>
         <columns>NAME</columns>
         <columns>Business_Line_Lookup__c</columns>
@@ -1260,6 +1531,81 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>CS_Group_all_active_departments1</fullName>
+        <columns>NAME</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Country__c</columns>
+        <columns>End_Market__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Office__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Operating_Group__c</field>
+            <operation>equals</operation>
+            <value>CS-EIC</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>CS-EIC all active departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_O_G_Departments</fullName>
+        <columns>NAME</columns>
+        <columns>Country__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Office__c</columns>
+        <columns>Group_Division__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Business_Line_Lookup__c</field>
+            <operation>equals</operation>
+            <value>Oil &amp; Gas</value>
+        </filters>
+        <filters>
+            <field>Group_Division__c</field>
+            <operation>equals</operation>
+            <value>Construction Services</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>CS O&amp;G Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Canada_Departments</fullName>
+        <columns>NAME</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Area__c</columns>
+        <columns>Country__c</columns>
+        <columns>Oracle_BD_Key_Client_No__c</columns>
+        <columns>Oracle_BD_Sector_No__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Country__c</field>
+            <operation>contains</operation>
+            <value>Canada</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>Canada Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Canada_East_Departments</fullName>
         <columns>NAME</columns>
         <columns>URS_Region__c</columns>
@@ -1278,6 +1624,111 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
             <value>Active</value>
         </filters>
         <label>Canada East Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>DCS_Americas_Active_Departments</fullName>
+        <columns>NAME</columns>
+        <columns>Group__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>End_Market__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Operating_Group__c</columns>
+        <columns>Legacy_Company__c</columns>
+        <columns>Country__c</columns>
+        <columns>Office__c</columns>
+        <columns>Region__c</columns>
+        <columns>Area__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Group_Division__c</field>
+            <operation>equals</operation>
+            <value>Design &amp; Consulting</value>
+        </filters>
+        <filters>
+            <field>Operating_Group__c</field>
+            <operation>equals</operation>
+            <value>DCS APAC</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>DCS APAC Active Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>DCS_Americas_Active_Departments1</fullName>
+        <columns>NAME</columns>
+        <columns>Group__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Region__c</columns>
+        <columns>Area__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>End_Market__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Operating_Group__c</columns>
+        <columns>Legacy_Company__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Country__c</columns>
+        <columns>Office__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Group_Division__c</field>
+            <operation>equals</operation>
+            <value>Design &amp; Consulting</value>
+        </filters>
+        <filters>
+            <field>Operating_Group__c</field>
+            <operation>equals</operation>
+            <value>DCS AME</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>DCS Americas Active Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>DCS_EMEA_I_Active_Departments</fullName>
+        <columns>NAME</columns>
+        <columns>Group__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>End_Market__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Operating_Group__c</columns>
+        <columns>Legacy_Company__c</columns>
+        <columns>Country__c</columns>
+        <columns>Office__c</columns>
+        <columns>Region__c</columns>
+        <columns>Area__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Group_Division__c</field>
+            <operation>equals</operation>
+            <value>Design &amp; Consulting</value>
+        </filters>
+        <filters>
+            <field>Operating_Group__c</field>
+            <operation>equals</operation>
+            <value>DCS EMEA+I</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>DCS EMEA&amp;I Active Departments</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -1301,6 +1752,22 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
             <value>Active</value>
         </filters>
         <label>DP&amp;E BL Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Dallas_Metro</fullName>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>NAME</columns>
+        <columns>Area__c</columns>
+        <columns>Region__c</columns>
+        <columns>Group_Division__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Area__c</field>
+            <operation>equals</operation>
+            <value>Southwest</value>
+        </filters>
+        <label>Southwest Area</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -1373,24 +1840,48 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>Environment_BL_Global</fullName>
+        <columns>Status__c</columns>
+        <columns>NAME</columns>
+        <columns>Area__c</columns>
+        <columns>Region__c</columns>
+        <columns>Geography__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Business_Line_Lookup__c</field>
+            <operation>equals</operation>
+            <value>Environment</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>Environment BL - Global</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Europe_depts</fullName>
         <columns>NAME</columns>
-        <columns>Status__c</columns>
         <columns>Business_Line_Lookup__c</columns>
-        <columns>Geography__c</columns>
-        <columns>Group__c</columns>
+        <columns>End_Market__c</columns>
+        <columns>Group_Division__c</columns>
         <columns>Lead_District__c</columns>
         <columns>Lead_Region__c</columns>
-        <columns>Group_Division__c</columns>
-        <columns>Country__c</columns>
         <columns>Legacy_Company__c</columns>
+        <columns>Operating_Group__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>Geography__c</field>
             <operation>equals</operation>
             <value>Europe</value>
         </filters>
-        <label>Europe depts</label>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>Europe Departments - Active</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -1421,6 +1912,30 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>India_Departments</fullName>
+        <columns>NAME</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>End_Market__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Legacy_Company__c</columns>
+        <columns>Operating_Group__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Geography_Lookup__c</field>
+            <operation>equals</operation>
+            <value>india</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>India Departments - Active</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Kazakhstan_Active_Departments</fullName>
         <columns>NAME</columns>
         <columns>Business_Line_Lookup__c</columns>
@@ -1443,6 +1958,21 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>MS_Departments</fullName>
+        <columns>NAME</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Group_Division__c</field>
+            <operation>equals</operation>
+            <value>Management Services</value>
+        </filters>
+        <label>MS Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>M_M_Departments</fullName>
         <columns>NAME</columns>
         <columns>Business_Line_Lookup__c</columns>
@@ -1462,13 +1992,14 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
     </listViews>
     <listViews>
         <fullName>Middle_East_Departments</fullName>
-        <columns>Lead_Region__c</columns>
-        <columns>Lead_District__c</columns>
         <columns>NAME</columns>
-        <columns>End_Market__c</columns>
         <columns>Business_Line_Lookup__c</columns>
-        <columns>Status__c</columns>
-        <columns>UPDATEDBY_USER.ALIAS</columns>
+        <columns>End_Market__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Legacy_Company__c</columns>
+        <columns>Operating_Group__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>Geography__c</field>
@@ -1480,11 +2011,28 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
             <operation>equals</operation>
             <value>Active</value>
         </filters>
-        <label>Middle East Departments</label>
+        <label>Middle East Departments -  Active</label>
         <language>en_US</language>
-        <sharedTo>
-            <role>Worldwide</role>
-        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Nancy</fullName>
+        <columns>NAME</columns>
+        <columns>Group__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Geography_Lookup__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Office__c</columns>
+        <columns>Operating_Group__c</columns>
+        <columns>Region__c</columns>
+        <columns>SBU_Account__c</columns>
+        <columns>SBU_Sub_account__c</columns>
+        <columns>Status__c</columns>
+        <columns>URS_Region__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>Nancy</label>
+        <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>New_Departments</fullName>
@@ -1504,6 +2052,31 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
             <value>11/25/2014 12:00 AM</value>
         </filters>
         <label>New Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>New_Depts_URS_Legacy1</fullName>
+        <columns>NAME</columns>
+        <columns>End_Market__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Group__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Legacy_Company__c</columns>
+        <columns>Region__c</columns>
+        <columns>Area__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>startsWith</operation>
+            <value>7</value>
+        </filters>
+        <label>New Depts -  URS Legacy</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -1687,6 +2260,132 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>PMCM_Departments1</fullName>
+        <columns>NAME</columns>
+        <columns>Geography__c</columns>
+        <columns>Region__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Business_Line_Lookup__c</field>
+            <operation>contains</operation>
+            <value>pmcm,pm/cm,pm-cm</value>
+        </filters>
+        <label>PMCM Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>PMCM_Midwest_Region_Departments</fullName>
+        <columns>NAME</columns>
+        <columns>Area__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Office__c</columns>
+        <columns>Region__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>PMCM</value>
+        </filters>
+        <filters>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>AME Midwest</value>
+        </filters>
+        <label>PMCM Midwest  Region Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>PMCM_Northeast_Region_Departments</fullName>
+        <columns>NAME</columns>
+        <columns>Area__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Office__c</columns>
+        <columns>Region__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>PMCM</value>
+        </filters>
+        <filters>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>AME Northeast</value>
+        </filters>
+        <label>PMCM Northeast Region Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>PMCM_Pacific_Region_Departments</fullName>
+        <columns>NAME</columns>
+        <columns>Area__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Office__c</columns>
+        <columns>Region__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>PMCM</value>
+        </filters>
+        <filters>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>AME Pacific</value>
+        </filters>
+        <label>PMCM Pacific Region Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>PMCM_Southeast_Region_Departments</fullName>
+        <columns>NAME</columns>
+        <columns>Area__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Office__c</columns>
+        <columns>Region__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>PMCM</value>
+        </filters>
+        <filters>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>AME Southeast</value>
+        </filters>
+        <label>PMCM Southeast  Region Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>PMCM_West_Gulf_Coast_Region_Departments</fullName>
+        <columns>NAME</columns>
+        <columns>Area__c</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Geography__c</columns>
+        <columns>Office__c</columns>
+        <columns>Region__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>PMCM</value>
+        </filters>
+        <filters>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>AME West/Gulf Coast</value>
+        </filters>
+        <label>West/Gulf Coast PMCM Departments</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Russia_Active_Departments</fullName>
         <columns>NAME</columns>
         <columns>Business_Line_Lookup__c</columns>
@@ -1736,6 +2435,36 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
             <value>Transportation</value>
         </filters>
         <label>TRA AME - All Regions</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>TRA_AME_All_Regions1</fullName>
+        <columns>NAME</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Region__c</columns>
+        <columns>Area__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Geography_Lookup__c</columns>
+        <columns>Group__c</columns>
+        <columns>End_Market__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Libya</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <filters>
+            <field>Business_Line_Lookup__c</field>
+            <operation>equals</operation>
+            <value>Transportation</value>
+        </filters>
+        <label>TRA AME - All Regions (dpt Libya)</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -1895,14 +2624,9 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
         <columns>Geography__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Business_Line_Lookup__c</field>
-            <operation>equals</operation>
-            <value>Transportation</value>
-        </filters>
-        <filters>
-            <field>Status__c</field>
-            <operation>equals</operation>
-            <value>Active</value>
+            <field>NAME</field>
+            <operation>greaterThan</operation>
+            <value>5709</value>
         </filters>
         <label>Transportation Active Departments</label>
         <language>en_US</language>
@@ -1958,7 +2682,76 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>UK_IRE_Departments_Active</fullName>
+        <columns>NAME</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>End_Market__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Legacy_Company__c</columns>
+        <columns>Operating_Group__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Lead_Region__c</field>
+            <operation>contains</operation>
+            <value>UK,IRE</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>UK/IRE Departments - Active</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>URS_Department_Numbers</fullName>
+        <columns>NAME</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Legacy_Company__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Area__c</columns>
+        <columns>Region__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Legacy_DepartmentID__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Legacy_Company__c</field>
+            <operation>equals</operation>
+            <value>URS</value>
+        </filters>
+        <label>URS Department Numbers</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>URS_Department_Numbers1</fullName>
+        <columns>NAME</columns>
+        <columns>Business_Line_Lookup__c</columns>
+        <columns>Legacy_Company__c</columns>
+        <columns>Group_Division__c</columns>
+        <columns>Area__c</columns>
+        <columns>Region__c</columns>
+        <columns>Lead_Region__c</columns>
+        <columns>Lead_District__c</columns>
+        <columns>Legacy_DepartmentID__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Legacy_Company__c</field>
+            <operation>equals</operation>
+            <value>URS</value>
+        </filters>
+        <filters>
+            <field>Region__c</field>
+            <operation>equals</operation>
+            <value>AME Midwest</value>
+        </filters>
+        <label>URS Department Numbers</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>URS_Department_Numbers2</fullName>
         <columns>NAME</columns>
         <columns>Business_Line_Lookup__c</columns>
         <columns>Legacy_Company__c</columns>
@@ -2209,12 +3002,11 @@ Inactive = no longer open and should be excluded in lookups for opportunities</i
     </nameField>
     <pluralLabel>AECOM  Departments</pluralLabel>
     <searchLayouts>
-        <customTabListAdditionalFields>Area__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Region__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Geography__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Group_Division__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Operating_Group__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Business_Line_Lookup__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>End_Market__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Geography__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Lead_Region__c</customTabListAdditionalFields>
         <lookupDialogsAdditionalFields>Business_Line_Lookup__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Area__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Region__c</lookupDialogsAdditionalFields>

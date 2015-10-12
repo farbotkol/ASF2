@@ -1,0 +1,179 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>AMOUNT:SUM / WON:SUM</calculatedFormula>
+        <datatype>percent</datatype>
+        <description>Wins/Total Gross</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Succes %</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_40468974</developerName>
+        <masterLabel>stage</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>STAGE_NAME</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>5 SNB/Win/Award</sourceValue>
+            </sourceValues>
+            <value>SNB</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>3 Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3A Capture - Proposal Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3B Capture - Short List</sourceValue>
+            </sourceValues>
+            <value>Proposals Submitted</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>3C Capture - Interview</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1 Lead</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1A Lead - Scout</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1B Lead - Engage</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1C Lead - Position</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2 Capture</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2E Capture - RFP</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2D Capture - RFI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2C Capture - SOQ</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2B Capture - EOI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2A Capture - LOI</sourceValue>
+            </sourceValues>
+            <value>Leads</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <aggregate>Sum</aggregate>
+            <axisBinding>y</axisBinding>
+            <column>Opportunity.Net_Revenue_TO_Project__c.CONVERT</column>
+        </chartSummaries>
+        <chartType>HorizontalBarStackedTo100</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Opportunity.Practice_Area_of_Primary_AECOM_Dept__c</groupingColumn>
+        <legendPosition>Right</legendPosition>
+        <location>CHART_BOTTOM</location>
+        <secondaryGroupingColumn>Opportunity.Lead_Region_Formula__c</secondaryGroupingColumn>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>Opportunity.Contract_duration_in_Months__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Net_Revenue_TO_Project__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Grouped by Work Start Period. Update Work Start Filter. Est. NSR for SNB (5), Submitted (3), Leads/Captures (2&amp;3)</description>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>equals</operator>
+            <value>Transportation</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Lead_Region_Formula__c</column>
+            <operator>startsWith</operator>
+            <value>US,CAN</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>equals</operator>
+            <value>1 Lead,1A Lead - Scout,1C Lead - Position,2 Capture,2A Capture - LOI,2B Capture - EOI,2C Capture - SOQ,2D Capture - RFI,2E Capture - RFP,3 Submitted,3A Capture - Proposal Submitted,3B Capture - Short List,3C Capture - Interview,5 SNB/Win/Award</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>FiscalPeriod</dateGranularity>
+        <field>Opportunity.Estimated_work_start_date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_40468974</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Lead_Region_Formula__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Practice_Area_of_Primary_AECOM_Dept__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>TRA SNB; Submitted; Leads by Start Date</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.Estimated_work_start_date__c</dateColumn>
+        <endDate>2013-09-27</endDate>
+        <interval>INTERVAL_CUSTOM</interval>
+        <startDate>2013-02-23</startDate>
+    </timeFrameFilter>
+</Report>

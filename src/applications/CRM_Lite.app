@@ -15,4 +15,5 @@
     <tab>standard-report</tab>
     <tab>standard-File</tab>
     <tab>Business_Line__c</tab>
+    <tab>Qtr_Review__c</tab>
 </CustomApplication>

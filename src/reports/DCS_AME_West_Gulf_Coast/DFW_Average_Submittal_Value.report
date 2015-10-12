@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>AMOUNT.CONVERT:AVG + Opportunity.Program_Estimated_Revenue__c.CONVERT:AVG</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Average Submittal Value</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>RECORDTYPE</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Subs_Other_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Estimated_work_start_date__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Contract_Est_Months__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager_User__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Marketing_Lead_User__c</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Program_Estimated_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Measures by Marketing Support only (does not measure using BGR method).</description>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity.Group__c</column>
+            <operator>equals</operator>
+            <value>Design &amp; Consulting</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Region__c</column>
+            <operator>equals</operator>
+            <value>AME West/Gulf Coast</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Area__c</column>
+            <operator>equals</operator>
+            <value>Dallas Metro</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Produced_by_marketing__c</column>
+            <operator>notEqual</operator>
+            <value>No</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Area__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>DFW Avg Submittal Value - Last Period</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.Stage_3_Date__c</dateColumn>
+        <interval>LAST_FISCALPERIOD</interval>
+    </timeFrameFilter>
+</Report>

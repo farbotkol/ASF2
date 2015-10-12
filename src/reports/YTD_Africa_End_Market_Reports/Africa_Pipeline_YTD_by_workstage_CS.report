@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>Opportunity.Task_Order_Remaining_Revenue__c:AVG + Opportunity.Net_Revenue_TO_Project__c:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <description>Net rev Project/Task Order plus Task order remaining</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Total net rev</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_15112387</developerName>
+        <masterLabel>Pipeline Stage</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>STAGE_NAME</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>1 Lead</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1A Lead - Scout</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1B Lead - Engage</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1C Lead - Position</sourceValue>
+            </sourceValues>
+            <value>Lead - all</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>2 Capture</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2A Capture - LOI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2B Capture - EOI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2C Capture - SOQ</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2D Capture - RFI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2E Capture - RFP</sourceValue>
+            </sourceValues>
+            <value>Capture - all</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>3 Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3A Capture - Proposal Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3B Capture - Short List</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3C Capture - Interview</sourceValue>
+            </sourceValues>
+            <value>Submitted</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>5A Program in Negotiation</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>5B Program Signed and Active</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>5 SNB/Win/Award</sourceValue>
+            </sourceValues>
+            <value>SNB</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <aggregate>Sum</aggregate>
+            <axisBinding>y</axisBinding>
+            <column>Opportunity.Task_Order_Remaining_Revenue__c.CONVERT</column>
+        </chartSummaries>
+        <chartType>Funnel</chartType>
+        <enableHoverLabels>true</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>BucketField_15112387</groupingColumn>
+        <legendPosition>Bottom</legendPosition>
+        <location>CHART_TOP</location>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>true</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>true</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Lead_Region_Formula__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.End_Client_Sector__c</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Net_Revenue_TO_Project__c.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Net_Revenue_Program__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>DESCRIPTION</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Primary_Dept_Lookup__c</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <aggregateTypes>Average</aggregateTypes>
+        <field>Opportunity.Task_Order_Remaining_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Practice_Area_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity.Geography_Formula__c</column>
+            <operator>contains</operator>
+            <value>Africa</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>notContain</operator>
+            <value>4,6,7,8,9</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>equals</operator>
+            <value>Construction Services</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_15112387</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Africa Pipeline YTD by workstage CS</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

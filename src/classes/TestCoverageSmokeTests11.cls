@@ -10,13 +10,14 @@
 private class TestCoverageSmokeTests11 {
 
 	
-    @istest private static void test_gng_OpportunityDao()
+    /*@istest private static void test_gng_OpportunityDao()
     {
 		Opportunity testObj = TestCoverageSmokeMocks.mockOpp(true);
     	gng_OpportunityDao instance = gng_OpportunityDao.getInstance();
     	instance.getOpportunity(testObj.Id);
     
-    } 
+    } */
+    
     @istest private static void test_AcctandOpptyTree()
     {
     	Account testObj = TestCoverageSmokeMocks.mockAcc(true);

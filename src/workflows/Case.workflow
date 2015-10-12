@@ -9,7 +9,51 @@
             <type>email</type>
         </recipients>
         <senderType>CurrentUser</senderType>
-        <template>Shared_Services_AP_Resolution_Emails/SS_AP_Case_Resolved</template>
+        <template>Shared_Services_AP_Resolution_Emails/SS_AP_Case_Resolved_EN</template>
+    </alerts>
+    <alerts>
+        <fullName>SS_AP_Case_Resolved_EN</fullName>
+        <description>SS-AP Case Resolved EN</description>
+        <protected>false</protected>
+        <recipients>
+            <field>SuppliedEmail</field>
+            <type>email</type>
+        </recipients>
+        <senderAddress>aphelpdesk.out@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Shared_Services_AP_Resolution_Emails/SS_AP_Case_Resolved_EN</template>
+    </alerts>
+    <alerts>
+        <fullName>SS_AP_Case_Resolved_FR</fullName>
+        <description>SS-AP Case Resolved FR</description>
+        <protected>false</protected>
+        <recipients>
+            <field>SuppliedEmail</field>
+            <type>email</type>
+        </recipients>
+        <senderAddress>canssc.aphelpdesk.out@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>Shared_Services_AP_Resolution_Emails/SS_AP_Case_Resolved_FR</template>
+    </alerts>
+    <alerts>
+        <fullName>SS_AP_Case_Resolved_New_Email_EN</fullName>
+        <description>SS-AP Case Closed New Email EN</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Shared_Services_AP_Response_Emails/SS_AP_Closed_Case_New_Email_Received</template>
+    </alerts>
+    <alerts>
+        <fullName>SS_AP_Case_Resolved_New_Email_FR</fullName>
+        <description>SS-AP Case Closed New Email FR</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Shared_Services_AP_Response_Emails/SS_AP_Closed_Case_New_Email_Received_FR</template>
     </alerts>
     <alerts>
         <fullName>SS_AP_Special_Handling_Agent_Notification</fullName>
@@ -33,6 +77,26 @@
         <senderType>CurrentUser</senderType>
         <template>Shared_Services_AP_Escalation_Emails/SS_AP_Special_Handling_Agent_Notification</template>
     </alerts>
+    <fieldUpdates>
+        <fullName>SS_AP_SET_Language_Type_EN</fullName>
+        <description>The language type will be updated to EN</description>
+        <field>Language_Type__c</field>
+        <literalValue>EN</literalValue>
+        <name>SS AP SET Language Type EN</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>SS_AP_SET_Language_Type_FR</fullName>
+        <description>The language type will be updated to FR</description>
+        <field>Language_Type__c</field>
+        <literalValue>FR</literalValue>
+        <name>SS AP SET Language Type FR</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
     <fieldUpdates>
         <fullName>SS_AP_Set_Backup_Request</fullName>
         <description>Set the is Backup Request flag</description>
@@ -134,7 +198,7 @@
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
-        <booleanFilter>1 AND 2 AND (3 OR 4 OR 5 OR 6 OR 7 OR 8 OR 9 OR 10 OR 11 OR 12 OR 13 OR 14 OR 15)</booleanFilter>
+        <booleanFilter>1 AND 2 AND (3 OR 4 OR 5 OR 6 OR 7 OR 8 OR 9 OR 10 OR 11 OR 12 OR 13 OR 14 OR 15 OR 16 OR 17 OR 18 OR 19 OR 20 OR 21 OR 22 OR 23)</booleanFilter>
         <criteriaItems>
             <field>Case.RecordTypeId</field>
             <operation>equals</operation>
@@ -210,17 +274,96 @@
             <operation>equals</operation>
             <value>Backup Request</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>document de support</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>document de support</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>sauvegardé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>sauvegardé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>copie de la facture</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>copie de la facture</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>copies des factures</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>copies des factures</value>
+        </criteriaItems>
         <description>Shared Services AP -  Set the Backup Request Flag</description>
         <triggerType>onCreateOnly</triggerType>
     </rules>
     <rules>
-        <fullName>SS-AP Case Closed</fullName>
+        <fullName>SS-AP Case Reopened EN</fullName>
         <actions>
-            <name>SS_AP_Case_Resolved</name>
+            <name>SS_AP_Case_Resolved_New_Email_EN</name>
             <type>Alert</type>
         </actions>
-        <active>false</active>
-        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6</booleanFilter>
+        <active>true</active>
+        <criteriaItems>
+            <field>Case.Status</field>
+            <operation>equals</operation>
+            <value>Reopened</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Language_Type__c</field>
+            <operation>equals</operation>
+            <value>EN</value>
+        </criteriaItems>
+        <description>Shared Services AP - Rule to send an email alert in English when a closed case becomes reopened</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>SS-AP Case Reopened FR</fullName>
+        <actions>
+            <name>SS_AP_Case_Resolved_New_Email_FR</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Case.Status</field>
+            <operation>equals</operation>
+            <value>Reopened</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Language_Type__c</field>
+            <operation>equals</operation>
+            <value>FR</value>
+        </criteriaItems>
+        <description>Shared Services AP - Rule to send an email alert in French when a closed case becomes reopened</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>SS-AP Case Resolved EN</fullName>
+        <actions>
+            <name>SS_AP_Case_Resolved_EN</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
         <criteriaItems>
             <field>Case.IsClosed</field>
             <operation>equals</operation>
@@ -232,26 +375,36 @@
             <value>Shared Services AP</value>
         </criteriaItems>
         <criteriaItems>
-            <field>Case.SS_Is_Backup_Request__c</field>
-            <operation>notEqual</operation>
+            <field>Case.Language_Type__c</field>
+            <operation>equals</operation>
+            <value>EN</value>
+        </criteriaItems>
+        <description>Shared Services AP - Rule to send an email alert in English when a case is closed.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>SS-AP Case Resolved FR</fullName>
+        <actions>
+            <name>SS_AP_Case_Resolved_FR</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Case.IsClosed</field>
+            <operation>equals</operation>
             <value>True</value>
         </criteriaItems>
         <criteriaItems>
-            <field>Case.SS_Is_Expense_Report__c</field>
-            <operation>notEqual</operation>
-            <value>True</value>
+            <field>Case.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Shared Services AP</value>
         </criteriaItems>
         <criteriaItems>
-            <field>Case.SS_Is_Invoice_Request__c</field>
-            <operation>notEqual</operation>
-            <value>True</value>
+            <field>Case.Language_Type__c</field>
+            <operation>equals</operation>
+            <value>FR</value>
         </criteriaItems>
-        <criteriaItems>
-            <field>Case.SS_Is_Special_Handling__c</field>
-            <operation>notEqual</operation>
-            <value>True</value>
-        </criteriaItems>
-        <description>Shared Services AP - Notify when a general issue is Closed</description>
+        <description>Shared Services AP - Rule to send an email alert in French when a case is closed.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
@@ -281,7 +434,7 @@
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
-        <booleanFilter>1 AND 2 AND (3 OR 4 OR 5 OR 6 OR 7 OR 8 OR 9 OR 10 OR 11 OR 12 OR 13 OR 14 OR 15)</booleanFilter>
+        <booleanFilter>1 AND 2 AND (3 OR 4 OR 5 OR 6 OR 7 OR 8 OR 9 OR 10 OR 11 OR 12 OR 13 OR 14 OR 15 OR 16 OR 17 OR 18 OR 19 OR 20 OR 21)</booleanFilter>
         <criteriaItems>
             <field>Case.RecordTypeId</field>
             <operation>equals</operation>
@@ -357,6 +510,36 @@
             <operation>equals</operation>
             <value>Expense Report</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>manuel</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>manuel</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>remboursement</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>remboursement</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>frais</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>frais</value>
+        </criteriaItems>
         <description>Shared Services AP - Set the Expense Report Flag</description>
         <triggerType>onCreateOnly</triggerType>
     </rules>
@@ -407,26 +590,6 @@
         <criteriaItems>
             <field>Case.Subject</field>
             <operation>contains</operation>
-            <value>xxxxxxEXTRA</value>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Case.Description</field>
-            <operation>contains</operation>
-            <value>xxxxxxEXTRA</value>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Case.Subject</field>
-            <operation>contains</operation>
-            <value>xxxxxxEXTRA</value>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Case.Description</field>
-            <operation>contains</operation>
-            <value>xxxxxxEXTRA</value>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Case.Subject</field>
-            <operation>contains</operation>
             <value>disconnect</value>
         </criteriaItems>
         <criteriaItems>
@@ -483,6 +646,26 @@
             <field>Case.Description</field>
             <operation>contains</operation>
             <value>rush</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>suspen</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>suspen</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>vendor maintenance</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>vendor maintenance</value>
         </criteriaItems>
         <criteriaItems>
             <field>Case.SS_Case_Category__c</field>
@@ -490,31 +673,6 @@
             <value>Invoice</value>
         </criteriaItems>
         <criteriaItems>
-            <field>Case.Description</field>
-            <operation>contains</operation>
-            <value>xxxxxxEXTRA</value>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Case.Subject</field>
-            <operation>contains</operation>
-            <value>suspen</value>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Case.Description</field>
-            <operation>contains</operation>
-            <value>suspen</value>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Case.Subject</field>
-            <operation>contains</operation>
-            <value>vendor maintenance</value>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Case.Description</field>
-            <operation>contains</operation>
-            <value>vendor maintenance</value>
-        </criteriaItems>
-        <criteriaItems>
             <field>Case.Subject</field>
             <operation>contains</operation>
             <value>wire</value>
@@ -523,8 +681,305 @@
             <field>Case.Description</field>
             <operation>contains</operation>
             <value>wire</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>la facture</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>la facture</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>dû</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>virement</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>interrompu</value>
         </criteriaItems>
         <description>Shared Services AP -  Set Invoice Request Flag</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>SS-AP Language Type EN</fullName>
+        <actions>
+            <name>SS_AP_SET_Language_Type_EN</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 AND 6 AND 7 AND 8 AND 9 AND 10 AND 11 AND 12 AND 13 AND 14 AND 15 AND 16 AND 17 AND 18 AND 19 AND 20 AND 21 AND 22 AND 23 AND 24 AND 25</booleanFilter>
+        <criteriaItems>
+            <field>Case.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Shared Services AP</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>notContain</operation>
+            <value>facture</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>notContain</operation>
+            <value>facture</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>notContain</operation>
+            <value>paiement</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>notContain</operation>
+            <value>paiement</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>notContain</operation>
+            <value>règlement</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>notContain</operation>
+            <value>règlement</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>notContain</operation>
+            <value>impayé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>notContain</operation>
+            <value>impayé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>notContain</operation>
+            <value>rappel</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>notContain</operation>
+            <value>rappel</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>notContain</operation>
+            <value>rapport</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>notContain</operation>
+            <value>rapport</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>notContain</operation>
+            <value>fournisseur</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>notContain</operation>
+            <value>fournisseur</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>notContain</operation>
+            <value>état de compte</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>notContain</operation>
+            <value>état de compte</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>notContain</operation>
+            <value>relevé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>notContain</operation>
+            <value>relevé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>notContain</operation>
+            <value>sous-traitant</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>notContain</operation>
+            <value>sous-traitant</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>notContain</operation>
+            <value>payé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>notContain</operation>
+            <value>payé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>notContain</operation>
+            <value>compte</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>notContain</operation>
+            <value>compte</value>
+        </criteriaItems>
+        <description>Shared Services AP - Rule for setting English as the default language type. This rule DOES NOT contain French keywords.</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>SS-AP Language Type FR</fullName>
+        <actions>
+            <name>SS_AP_SET_Language_Type_FR</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <booleanFilter>1 AND (2 OR 3 OR 4 OR 5 OR 6 OR 7 OR 8 OR 9 OR 10 OR 11 OR 12 OR 13 OR 14 OR 15 OR 16 OR 17 OR 18 OR 19 OR 20 OR 21 OR 22 OR 23 OR 24 OR 25)</booleanFilter>
+        <criteriaItems>
+            <field>Case.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Shared Services AP</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>facture</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>facture</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>paiement</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>paiement</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>règlement</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>règlement</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>impayé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>impayé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>rappel</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>rappel</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>rapport</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>rapport</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>fournisseur</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>fournisseur</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>état de compte</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>état de compte</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>relevé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>relevé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>sous-traitant</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>sous-traitant</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>payé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>payé</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>compte</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>compte</value>
+        </criteriaItems>
+        <description>Shared Services AP - Rule for setting French as the default language type.</description>
         <triggerType>onCreateOnly</triggerType>
     </rules>
     <rules>
@@ -584,7 +1039,7 @@
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
-        <booleanFilter>1 AND 2 AND (3 OR 4 OR 5 OR 6 OR 7 OR 8)</booleanFilter>
+        <booleanFilter>1 AND 2 AND (3 OR 4 OR 5 OR 6 OR 7 OR 8 OR 9 OR 10 OR 11 OR 12)</booleanFilter>
         <criteriaItems>
             <field>Case.RecordTypeId</field>
             <operation>equals</operation>
@@ -624,6 +1079,26 @@
             <field>Case.Description</field>
             <operation>contains</operation>
             <value>ACH Payment Conversion</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>un traitement particulier</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>un traitement particulier</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Subject</field>
+            <operation>contains</operation>
+            <value>demande de chèque</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Case.Description</field>
+            <operation>contains</operation>
+            <value>demande de chèque</value>
         </criteriaItems>
         <description>Shared Services AP - Rule for Special Handling cases</description>
         <triggerType>onCreateOnly</triggerType>

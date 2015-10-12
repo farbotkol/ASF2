@@ -7,25 +7,25 @@
 ***************************************************************************/
 @isTest
 private class rsAssignProfileReviewControllerTest {
-	
+
 	private static testmethod void testAssignReview() {
 		Test.StartTest();
-		User u = [Select Id, ProfileId from User where Id =: UserInfo.getUserId()];
+		User u = [Select Id, ProfileId from User where Id = : UserInfo.getUserId()];
 
-		User personBeingReviewed = new User(LastName = 'lastName', Alias = 'testalis', Email = 'SFDCTestCase@aecom.com', Username ='111111@test.com', 
-											CommunityNickname = 'testNick', ProfileId = u.ProfileId, EmailEncodingKey='UTF-8', 
-											LanguageLocaleKey='en_US', LocaleSidKey='en_US', TimeZoneSidKey='America/Los_Angeles');
+		User personBeingReviewed = new User(LastName = 'lastName', Alias = 'testalis', Email = 'SFDCTestCase@aecom.com', Username = '111111@test.com',
+		                                    CommunityNickname = 'testNick', ProfileId = u.ProfileId, EmailEncodingKey = 'UTF-8',
+		                                    LanguageLocaleKey = 'en_US', LocaleSidKey = 'en_US', TimeZoneSidKey = 'America/Los_Angeles');
 		insert personBeingReviewed;
 
 		PageReference pr = Page.rsAssignProfileReview;
-		pr.getParameters().put('type',rsProfileReviewsController.REV_UN_AMERICAS);
-		pr.getParameters().put('UserId',personBeingReviewed.Id);
+		pr.getParameters().put('type', rsProfileReviewsController.REV_UN_AMERICAS);
+		pr.getParameters().put('UserId', personBeingReviewed.Id);
 		Test.setCurrentPage(pr);
 
 		rsAssignProfileReviewController controller = new rsAssignProfileReviewController();
 		Test.stopTest();
-		System.assertEquals(controller.getReviewee().Id,personBeingReviewed.Id);
-		System.assertEquals(controller.getIsReassign(),false);
+		System.assertEquals(controller.getReviewee().Id, personBeingReviewed.Id);
+		System.assertEquals(controller.getIsReassign(), false);
 
 		controller.getReviewee().Profile_Reviewer__c = u.Id;
 		Profile_Info__c customSetting = Profile_Info__c.getInstance();
@@ -47,5 +47,5 @@ private class rsAssignProfileReviewControllerTest {
 		User assertAssignUser = [Select Id, Name, Profile_Reviewer__c from User where Id = :controller.getReviewee().Id];
 		System.assertEquals(assertAssignUser.Profile_Reviewer__c, u.Id);
 	}
-	
+
 }

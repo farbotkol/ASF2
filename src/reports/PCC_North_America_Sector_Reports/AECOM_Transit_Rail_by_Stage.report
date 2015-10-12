@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_95140164</developerName>
+        <masterLabel>Stage</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>STAGE_NAME</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>1 Lead</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1A Lead - Scout</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1B Lead - Engage</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1C Lead - Position</sourceValue>
+            </sourceValues>
+            <value>Stage 1</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>2 Capture</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2A Capture - LOI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2B Capture - EOI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2C Capture - SOQ</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2D Capture - RFI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2E Capture - RFP</sourceValue>
+            </sourceValues>
+            <value>Stage 2</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>3 Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3A Capture - Proposal Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3B Capture - Short List</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3C Capture - Interview</sourceValue>
+            </sourceValues>
+            <value>Stage 3</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>4 Project on hold</sourceValue>
+            </sourceValues>
+            <value>Stage 4</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>5 SNB/Win/Award</sourceValue>
+            </sourceValues>
+            <value>Stage 5</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>6 Contracted/Booked/Won</sourceValue>
+            </sourceValues>
+            <value>Stage 6</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity_Department__c.AECOM_Department__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity_Department__c.split__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>1 and 2 and 3</booleanFilter>
+        <criteriaItems>
+            <column>Opportunity.Stage_Group__c</column>
+            <operator>contains</operator>
+            <value>1,2,3,4,5,6</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Practice_Area_of_Primary_AECOM_Dept__c</column>
+            <operator>equals</operator>
+            <value>Transit / Rail</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Geography_Formula__c</column>
+            <operator>equals</operator>
+            <value>North America</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_95140164</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>AECOM Transit/Rail by Stage</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>OpportunityCustomEntity$Opportunity_Department__c@Opportunity_Department__c.Practice_Area__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>CLOSE_DATE</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CURNEXTFY</interval>
+    </timeFrameFilter>
+</Report>

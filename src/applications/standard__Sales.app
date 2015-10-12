@@ -23,10 +23,11 @@
     <tab>State_Province_Emirate__c</tab>
     <tab>Account_Plan_Contacts__c</tab>
     <tab>Practice_Area__c</tab>
-    <tab>BL_District_Forecast__c</tab>
+    <tab>Master_Service_Agreement__c</tab>
     <tab>PR_Team_Employee__c</tab>
     <tab>PR_Office_Resp__c</tab>
     <tab>Business_Line__c</tab>
     <tab>ANZDeptProject__c</tab>
     <tab>ANZTaskStructure__c</tab>
+    <tab>Qtr_Review__c</tab>
 </CustomApplication>

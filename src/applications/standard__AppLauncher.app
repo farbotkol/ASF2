@@ -4,4 +4,5 @@
     <tab>standard-AppLauncher</tab>
     <tab>Account_Plan_Contacts__c</tab>
     <tab>Business_Line__c</tab>
+    <tab>Qtr_Review__c</tab>
 </CustomApplication>

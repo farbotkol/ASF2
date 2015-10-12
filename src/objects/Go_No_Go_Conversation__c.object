@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Discussions and decisions related to the Go / No-Go process</description>
@@ -177,6 +178,18 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>AECOM_Role__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Opportunity__r.AECOM_Role__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>AECOM Role</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>AECOM_Work_from_Opp__c</fullName>
@@ -435,12 +448,12 @@
         <fullName>Accounting_Support_Team__c</fullName>
         <description>Formula fills in names of the appropriate B&amp;P setup team.</description>
         <externalId>false</externalId>
-        <formula>IF ( Opportunity_Lead_Region__c = &apos;Canada&apos;, &apos;Eliecer Brito, Rosie Palmisano, Elvira Ramos&apos;,
-IF ( Opportunity_Lead_Region__c = &apos;US - West&apos;, &apos;Molly Stokes, Rowena DeVega&apos;,
-IF ( Opportunity_Lead_Region__c = &apos;US - North&apos;, &apos;Jill Fernandez, Denise Fremeau, Debbie Loid, Penny Bergstrom&apos;,
-IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, Angela Smith, Carrie Borho&apos;,
-
-&apos;Denise Crocker, Marsha Lundgren, Kathy Horton&apos;))))</formula>
+        <formula>IF ( Opportunity_Lead_Region__c = &apos;AME Northeast&apos;, &apos;Eliecer Brito, Helen Liu, Maureen Musgrave, Jennifer Kramer&apos;, 
+IF ( Opportunity_Lead_Region__c = &apos;AME Pacific&apos;, &apos;Angela Kedzior, Molly Stokes, Rowena DeVega&apos;, 
+IF ( Opportunity_Lead_Region__c = &apos;AME West/Gulf Coast&apos;, &apos;Jackie Honore, Christie Houston, Wendy Routhier, Jessica Goldsberry, Kathy Hinkel, Karen Parsley, Patrice Sulley&apos;, 
+IF ( Opportunity_Lead_Region__c = &apos;AME Midwest&apos;, &apos;Debbie Loid, Penny Bergstrom&apos;, 
+IF ( Opportunity_Lead_Region__c = &apos;AME Southeast&apos;, &apos;Bertha Pulido, Margaret McBride, Angela Smith, Carrie Borho, Patrice Hodge&apos;, 
+&apos;Denise Crocker, Marsha Lundgren, Kathy Horton, Kianoosh Akhavein&apos;)))))</formula>
         <label>Accounting Support Team</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -652,6 +665,7 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <fullName>Bid_Director__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
+        <inlineHelpText>Not used for CS-led.</inlineHelpText>
         <label>Bid Director</label>
         <referenceTo>User</referenceTo>
         <relationshipName>Go_No_Go_Conversation5</relationshipName>
@@ -697,6 +711,19 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Bid_Proposal_Actual_to_date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.B_P_Actual_to_date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Bid &amp; Proposal Actual to-date</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Bid_Proposal_Budget__c</fullName>
         <externalId>false</externalId>
         <label>Bid &amp; Proposal Budget</label>
@@ -709,6 +736,30 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Bid_Proposal_Budget_from_opp__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.B_P_Budget__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Bid &amp; Proposal Budget from opp</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Book_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Book_date__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Book Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
         <fullName>Business_Line__c</fullName>
         <description>Opportunity&apos;s Business Line</description>
         <externalId>false</externalId>
@@ -716,6 +767,31 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <length>255</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Business_Unit__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Business_Line_of_Primary_AECOM_Dept__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Business Unit</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CM_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Opportunity__r.CM_Type__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Only for CS.</inlineHelpText>
+        <label>CM Type</label>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -1031,6 +1107,60 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Construction_Cost__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Construction_cost__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Construction Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Contingent_Liabilities_Notes__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project_Location__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contingent Liabilities Notes</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contingent_Liabilities__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;None&quot;), &quot;None; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Bank Guarantees&quot;), &quot;Bank Guarantees; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Bid Bonds&quot;), &quot;Bid Bonds; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Letter of Credit&quot;), &quot;Letter of Credit; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Letter of Guarantee&quot;), &quot;Letter of Guarantee; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Payment Bond&quot;), &quot;Payment Bond; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Performance Bond&quot;), &quot;Performance Bond; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Performance Guarantee&quot;), &quot;Performance Guarantee; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Professional Indemnity Insurance&quot;), &quot;Professional Indemnity Insurance; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Property Liability Insurance&quot;), &quot;Property Liability Insurance; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Public and Products Liability Insurance&quot;), &quot;Public and Products Liability Insurance; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Restricted Cash/Cash Collateral/Cash Dep&quot;), &quot;Restricted Cash/Cash Collateral/Cash Dep; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Surety Bond&quot;), &quot;Surety Bond; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Vehicle Insurance&quot;), &quot;Vehicle Insurance; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Warranty&quot;), &quot;Warranty; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Worker&apos;s Compensation Insurance&quot;), &quot;Worker&apos;s Compensation Insurance; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contingent_Liabilities__c,&quot;Other&quot;), &quot;Other; &quot;, &quot;&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Only for CS.</inlineHelpText>
+        <label>Contingent Liabilities</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Contract_Assessment_Notes__c</fullName>
         <externalId>false</externalId>
         <label>Contract Assessment Notes</label>
@@ -1102,6 +1232,60 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Contract_Est_Months__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Contract_Est_Months__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contract Est. Months</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Contract_Type__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Cost Plus&quot;), &quot;Cost Plus; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Cost Plus Award Fee&quot;), &quot;Cost Plus Award Fee; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Cost Plus Fixed Fee&quot;), &quot;Cost Plus Fixed Fee; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Cost Plus Incentive Fee&quot;), &quot;Cost Plus Incentive Fee; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Cost Plus not to exceed&quot;), &quot;Cost Plus not to exceed; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Cost Plus Percent Fee&quot;), &quot;Cost Plus Percent Fee; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Cost Reimbursable&quot;), &quot;Cost Reimbursable; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Firm Fixed Price&quot;), &quot;Firm Fixed Price; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Fixed Price&quot;), &quot;Fixed Price; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Guaranteed maximum price&quot;), &quot;Guaranteed maximum price; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Hybrid/Mixed Cost - Plus/Fixed&quot;), &quot;Hybrid/Mixed Cost - Plus/Fixed; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Incentive&quot;), &quot;Incentive; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Indefinite Delivery/Indefinite Quantity&quot;), &quot;Indefinite Delivery/Indefinite Quantity; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Labor Hour - Cost Reimbursable&quot;), &quot;Labor Hour - Cost Reimbursable; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Labor Hour - Fixed Rate&quot;), &quot;Labor Hour - Fixed Rate; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Level of Effort&quot;), &quot;Level of Effort; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Lump Sum&quot;), &quot;Lump Sum; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Lump Sum TurnKey&quot;), &quot;Lump Sum TurnKey; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;MATOC&quot;), &quot;MATOC; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Other&quot;), &quot;Other; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Percent of Construction&quot;), &quot;Percent of Construction; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;SATOC&quot;), &quot;SATOC; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;T&amp;M&quot;), &quot;T&amp;M; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;T&amp;M not to exceed&quot;), &quot;T&amp;M not to exceed; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Target Cost&quot;), &quot;Target Cost; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Target Price&quot;), &quot;Target Price; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Target Price/Fixed Price&quot;), &quot;Target Price/Fixed Price; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Unit Price&quot;), &quot;Unit Price; &quot;, &quot;&quot;) &amp;
+IF(INCLUDES(Opportunity__r.Contract_Type__c ,&quot;Unit Price - Fixed&quot;), &quot;Unit Price - Fixed; &quot;, &quot;&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contract Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Cost_Assessment_E1__c</fullName>
@@ -1190,6 +1374,39 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Date_RFQ_Expected__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Date_RFQ_expected__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Date RFQ Expected</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Date_lost_cancelled_no_go_hold__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Date_lost_cancelled_no_go__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Date lost/cancelled/no-go/hold</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Date_of_Presentation_or_Interview__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Date_of_Presentation_or_Interview__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Date of Presentation or Interview</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>Decision_Date__c</fullName>
@@ -1348,12 +1565,48 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>ERC_Approval_Required__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Opportunity__r.MPRC_Approval_required__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ERC Approval Required?</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>End_Client_Sector__c</fullName>
         <description>Inherited from Opportunity</description>
         <externalId>false</externalId>
         <formula>Opportunity__r.End_Client_Sector__c</formula>
         <inlineHelpText>Calculated field, based primarily on End Client</inlineHelpText>
         <label>End-Client Sector</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>End_Market__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.End_Market__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>End Market</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enterprise_Service__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Opportunity__r.Enterprise_Service__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Enterprise Service</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -1373,6 +1626,17 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Estimated_Award_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.CloseDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Estimated Award Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>Expenses_Bid_Cost__c</fullName>
@@ -1466,6 +1730,33 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Forecast_Amount_gross__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Forecast_Net_amount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Forecast Amount (gross)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Forecast_Margin__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Forecast_Margin__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Only for CS.</inlineHelpText>
+        <label>Forecast Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>GNG_Score__c</fullName>
         <externalId>false</externalId>
         <label>GNG Score</label>
@@ -1476,6 +1767,17 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>GRC_Approval_Required__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT( Opportunity__r.GRC_Approval_Required__c)</formula>
+        <label>GRC Approval Required?</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -1491,6 +1793,45 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Go_Probability__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Go_Probability__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Go Probability</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Gross_Margin_Percent__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.CS_Gross_Margin_Percent__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Gross Margin %</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Gross_Margin__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Gross_Margin__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Gross Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Has_a_B_P_number_already_been_opened__c</fullName>
         <externalId>false</externalId>
         <formula>IF ( ISBLANK (Opportunity__r.Bid_Proposal_Charge__c ), &quot;No&quot; ,
@@ -1498,6 +1839,18 @@ IF ( Opportunity_Lead_Region__c = &apos;US - South&apos;, &apos;Bertha Pulido, A
         <inlineHelpText>Indicates whether or not a B&amp;P # has already been assigned for this opportunity. If the answer here seems to be incorrect, open the opportunity and review or correct.
 Do not click &quot;Submit for Approval&quot; for opportunities that already have a B&amp;P number.</inlineHelpText>
         <label>Has a B&amp;P number already been opened?</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Hub_Approval_Required__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT( Opportunity__r.Hub_Approval_required__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Hub Approval Required?</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -2526,6 +2879,18 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Marketing_Proposal_Lead__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Marketing_Lead_User__r.frm_Name__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Marketing Proposal Lead</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Marketing_Proposal_Lead_email__c</fullName>
         <description>Used to send B&amp;P numbers to the proposal lead. Populated by a field update.</description>
         <externalId>false</externalId>
@@ -2536,6 +2901,18 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Email</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Must_Win__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Opportunity__r.Must_Win__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Must Win</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -2579,6 +2956,7 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
     <fields>
         <fullName>Net_Revenue_Program__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Not used for CS-led.</inlineHelpText>
         <label>Net Revenue (Program)</label>
         <precision>18</precision>
         <required>false</required>
@@ -2591,6 +2969,7 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
     <fields>
         <fullName>Net_Revenue_TO_Project__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Not used for CS-led.</inlineHelpText>
         <label>Net Revenue (TO/Project)</label>
         <precision>18</precision>
         <required>false</required>
@@ -2679,9 +3058,21 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
         <fullName>Opportunity_Lead_Region__c</fullName>
         <externalId>false</externalId>
         <formula>Opportunity__r.Lead_Region_Formula__c</formula>
-        <inlineHelpText>Inherited from Opportunity, determined by lead department</inlineHelpText>
+        <inlineHelpText>Inherited from Opportunity, determined by lead department. Not used for CS-led.</inlineHelpText>
         <label>Opportunity Lead Region</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Opportunity_Name_Searchable__c</fullName>
+        <externalId>true</externalId>
+        <label>Opportunity Name</label>
+        <length>120</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -2788,6 +3179,34 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>PIP_Box_Score__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.PIP_Box_Score__c</formula>
+        <inlineHelpText>Only for CS.</inlineHelpText>
+        <label>PIP Box Score</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PIP_Improved_Score__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.PIP_Improved_Score__c</formula>
+        <inlineHelpText>Only for CS.</inlineHelpText>
+        <label>PIP Improved Score</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>PM_Accreditation__c</fullName>
         <externalId>false</externalId>
         <label>PM Accreditation</label>
@@ -2879,6 +3298,19 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Primary_Department_Split__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.AECOM_Primary_Department_Percent__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Primary Department Split</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
         <fullName>Primary_Department_from_Opportunity__c</fullName>
         <externalId>false</externalId>
         <formula>Opportunity__r.AECOM_Primary_Dept_Lookup__r.Name</formula>
@@ -2903,6 +3335,19 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Probability__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Probability</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Probability</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
         <fullName>Program_Ceiling__c</fullName>
         <externalId>false</externalId>
         <formula>Opportunity__r.Ceiling_Amount_ReadOnly__c</formula>
@@ -2915,6 +3360,19 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Project_Delivery_Method__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Opportunity__r.Project_Delivery_Method__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Only for CS.</inlineHelpText>
+        <label>Project Delivery Method</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Project_Director__c</fullName>
@@ -3038,7 +3496,7 @@ IF (ISPICKVAL (Opportunity__r.MPRC_Approval_required__c, &quot;Yes&quot;), &quot
         <externalId>false</externalId>
         <formula>Opportunity__r.Amount</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>From opportunity. To revise, return to opportunity record.</inlineHelpText>
+        <inlineHelpText>From opportunity. To revise, return to opportunity record. Gross AECOM Contract Revenue from opportunity.</inlineHelpText>
         <label>Project/TO Contract Rev.</label>
         <precision>18</precision>
         <required>false</required>
@@ -4546,6 +5004,18 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Strategic_Pursuit__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(Opportunity__r.Strategic_Pursuit__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Strategic Pursuit</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Strategic_Reasons_to_Go__c</fullName>
         <description>Clearly and Succinctly State the Strategic Reasons to &apos;Go&apos; for this Opportunity</description>
         <externalId>false</externalId>
@@ -4569,6 +5039,62 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Sub_Practice_Area__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Sub_Practice_Area_of_Primary_AECOM_Dept__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Sub Practice Area</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Submittal_Date_BAFO_FPR__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Submittal_Date_BAFO__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Submittal Date (BAFO/FPR)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Submittal_Date_Expression_of_Interest__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Submittal_Date_Expression_of_Interest__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Submittal Date (Expression of Interest)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Submittal_Date_Presentation_Interview__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Submittal_Date_Presentation_Materials__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Submittal Date (Presentation/Interview)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Submittal_Date_SOQ__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Submittal_Date_SOQ__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Submittal Date (SOQ)</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>Submitter_Go_No_Go_Recommendation__c</fullName>
@@ -4788,6 +5314,20 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>Total_Prime_Contract_Value__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.Total_Prime_Contract_Value__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Only for CS.</inlineHelpText>
+        <label>Total Prime Contract Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Total_Total_Cost__c</fullName>
         <externalId>false</externalId>
         <formula>Expenses_Total_Cost__c  +  Staff_Time_FBLR_Total_Cost__c  +  Subs_Total_Cost__c</formula>
@@ -4825,6 +5365,17 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Win_Date__c</fullName>
+        <externalId>false</externalId>
+        <formula>Opportunity__r.WinDate__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Win Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>X2_and_Project_Manager__c</fullName>
@@ -4875,6 +5426,403 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>All_CRM_Lite_View</fullName>
+        <columns>NAME</columns>
+        <columns>Opportunity_Name_Searchable__c</columns>
+        <columns>Status__c</columns>
+        <columns>Account__c</columns>
+        <columns>AECOM_Gross_Fee__c</columns>
+        <columns>Market_Position_Q12__c</columns>
+        <columns>Market_Position_Q11__c</columns>
+        <columns>Net_Revenue_from_Opp__c</columns>
+        <columns>Project_Start_Date__c</columns>
+        <columns>AECOM_Work_from_Opp__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>End_Client_Sector__c</columns>
+        <columns>Est_Pursuit_Costs__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All - CRM Lite View</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_EIC_CCM_FY2016_Identified_Backlog</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>AECOM_Work_from_Opp__c</columns>
+        <columns>Project_TO_Contract_Rev__c</columns>
+        <columns>Status__c</columns>
+        <columns>Proposal_Submission_Date__c</columns>
+        <columns>Project_Start_Date__c</columns>
+        <columns>Project_Duration__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>startsWith</operation>
+            <value>CCM</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>contains</operation>
+            <value>1C,2,3,5</value>
+        </filters>
+        <filters>
+            <field>Project_Start_Date__c</field>
+            <operation>greaterThan</operation>
+            <value>9/30/2015</value>
+        </filters>
+        <filters>
+            <field>Project_Start_Date__c</field>
+            <operation>lessThan</operation>
+            <value>10/1/2016</value>
+        </filters>
+        <label>CS-EIC: CCM - FY2016 Identified Backlog</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_EIC_CCM_Pipeline_1C_2_3_5</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>AECOM_Work_from_Opp__c</columns>
+        <columns>Project_TO_Contract_Rev__c</columns>
+        <columns>Status__c</columns>
+        <columns>Proposal_Submission_Date__c</columns>
+        <columns>Project_Start_Date__c</columns>
+        <columns>Project_Duration__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>startsWith</operation>
+            <value>CCM</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>contains</operation>
+            <value>1C,2,3,5</value>
+        </filters>
+        <label>CS-EIC: CCM - Pipeline (1C 2 3 5)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_EIC_CCM_Pipeline_1C_2_3_51</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>AECOM_Work_from_Opp__c</columns>
+        <columns>Project_TO_Contract_Rev__c</columns>
+        <columns>Status__c</columns>
+        <columns>Proposal_Submission_Date__c</columns>
+        <columns>Project_Start_Date__c</columns>
+        <columns>Project_Duration__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>startsWith</operation>
+            <value>CCM</value>
+        </filters>
+        <label>CS-EIC: CCM - Pipeline All Time</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_EIC_IP_FY2016_Identified_Backlog</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>AECOM_Work_from_Opp__c</columns>
+        <columns>Project_TO_Contract_Rev__c</columns>
+        <columns>Status__c</columns>
+        <columns>Proposal_Submission_Date__c</columns>
+        <columns>Project_Start_Date__c</columns>
+        <columns>Project_Duration__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>startsWith</operation>
+            <value>IP</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>contains</operation>
+            <value>1C,2,3,5</value>
+        </filters>
+        <filters>
+            <field>Project_Start_Date__c</field>
+            <operation>greaterThan</operation>
+            <value>9/30/2015</value>
+        </filters>
+        <filters>
+            <field>Project_Start_Date__c</field>
+            <operation>lessThan</operation>
+            <value>10/1/2016</value>
+        </filters>
+        <label>CS-EIC: IP - FY2016 Identified Backlog</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_EIC_IP_Pipeline_All_Time</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>AECOM_Work_from_Opp__c</columns>
+        <columns>Project_TO_Contract_Rev__c</columns>
+        <columns>Status__c</columns>
+        <columns>Proposal_Submission_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>startsWith</operation>
+            <value>IP</value>
+        </filters>
+        <label>CS-EIC: IP - Pipeline All Time</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_EIC_OG_FY2016_Identified_Backlog</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>AECOM_Work_from_Opp__c</columns>
+        <columns>Project_TO_Contract_Rev__c</columns>
+        <columns>Status__c</columns>
+        <columns>Proposal_Submission_Date__c</columns>
+        <columns>Project_Start_Date__c</columns>
+        <columns>Project_Duration__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>startsWith</operation>
+            <value>OG</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>contains</operation>
+            <value>1C,2,3,5</value>
+        </filters>
+        <filters>
+            <field>Project_Start_Date__c</field>
+            <operation>greaterThan</operation>
+            <value>9/30/2015</value>
+        </filters>
+        <filters>
+            <field>Project_Start_Date__c</field>
+            <operation>lessThan</operation>
+            <value>10/1/2016</value>
+        </filters>
+        <label>CS-EIC: OG - FY2016 Identified Backlog</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_EIC_OG_FY_2016_Identified_Backlog</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>AECOM_Work_from_Opp__c</columns>
+        <columns>Project_TO_Contract_Rev__c</columns>
+        <columns>Status__c</columns>
+        <columns>Proposal_Submission_Date__c</columns>
+        <columns>Project_Start_Date__c</columns>
+        <columns>Project_Duration__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>startsWith</operation>
+            <value>POWER</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>contains</operation>
+            <value>1C,2,3,5</value>
+        </filters>
+        <filters>
+            <field>Project_Start_Date__c</field>
+            <operation>greaterThan</operation>
+            <value>9/30/2015</value>
+        </filters>
+        <filters>
+            <field>Project_Start_Date__c</field>
+            <operation>lessThan</operation>
+            <value>10/1/2016</value>
+        </filters>
+        <label>CS-EIC: POWER- FY2016 Identified Backlog</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_EIC_OG_Line_of_Sight</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>AECOM_Work_from_Opp__c</columns>
+        <columns>Project_TO_Contract_Rev__c</columns>
+        <columns>Status__c</columns>
+        <columns>Proposal_Submission_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>startsWith</operation>
+            <value>IP</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>contains</operation>
+            <value>1C,2,3,5</value>
+        </filters>
+        <label>CS-EIC: IP - Pipeline (1C 2 3 5)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_EIC_OG_Line_of_Sight1</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>Project_TO_Contract_Rev__c</columns>
+        <columns>Status__c</columns>
+        <columns>Proposal_Submission_Date__c</columns>
+        <columns>Project_Start_Date__c</columns>
+        <columns>Project_Duration__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>startsWith</operation>
+            <value>OG</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>contains</operation>
+            <value>6,7,8,9</value>
+        </filters>
+        <label>CS-EIC: OG - Won Lost No-Bid Cancelled</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_EIC_OG_Pipeline_1C_2_3_5</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>AECOM_Work_from_Opp__c</columns>
+        <columns>Project_TO_Contract_Rev__c</columns>
+        <columns>Status__c</columns>
+        <columns>Proposal_Submission_Date__c</columns>
+        <columns>Project_Start_Date__c</columns>
+        <columns>Project_Duration__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>startsWith</operation>
+            <value>OG</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>contains</operation>
+            <value>1C,2,3,5</value>
+        </filters>
+        <filters>
+            <field>Project_Start_Date__c</field>
+            <operation>greaterThan</operation>
+            <value>9/30/2015</value>
+        </filters>
+        <filters>
+            <field>Project_Start_Date__c</field>
+            <operation>lessThan</operation>
+            <value>10/1/2016</value>
+        </filters>
+        <label>CS-EIC: OG - Pipeline (1C 2 3 5)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_EIC_OG_Pipeline_All_TIme</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>AECOM_Work_from_Opp__c</columns>
+        <columns>Project_TO_Contract_Rev__c</columns>
+        <columns>Status__c</columns>
+        <columns>Proposal_Submission_Date__c</columns>
+        <columns>Project_Start_Date__c</columns>
+        <columns>Project_Duration__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>startsWith</operation>
+            <value>OG</value>
+        </filters>
+        <label>CS-EIC: OG - Pipeline All TIme</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_EIC_Power_Pipeline_1C_2_3_5</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>AECOM_Work_from_Opp__c</columns>
+        <columns>Project_TO_Contract_Rev__c</columns>
+        <columns>Status__c</columns>
+        <columns>Proposal_Submission_Date__c</columns>
+        <columns>Project_Start_Date__c</columns>
+        <columns>Project_Duration__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>startsWith</operation>
+            <value>POWER</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>contains</operation>
+            <value>1C,2,3,5</value>
+        </filters>
+        <label>CS-EIC: Power - Pipeline (1C 2 3 5)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CS_EIC_Power_Pipeline_All_Time</fullName>
+        <columns>NAME</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>AECOM_Work_from_Opp__c</columns>
+        <columns>Project_TO_Contract_Rev__c</columns>
+        <columns>Status__c</columns>
+        <columns>Proposal_Submission_Date__c</columns>
+        <columns>Estimated_Award_Date__c</columns>
+        <columns>Project_Start_Date__c</columns>
+        <columns>Project_Duration__c</columns>
+        <columns>Opportunity_Record__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>startsWith</operation>
+            <value>POWER</value>
+        </filters>
+        <label>CS-EIC: Power - Pipeline All Time</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Canadian_National_GNG_Status</fullName>
         <columns>NAME</columns>
         <columns>Opportunity_Name__c</columns>
@@ -4895,6 +5843,31 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
             <value>LAST_N_DAYS:7</value>
         </filters>
         <label>Canadian National-GNG Status</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>EMEA_I_GNG_All</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>Opportunity_Record__c</columns>
+        <columns>Status__c</columns>
+        <columns>Project_Director__c</columns>
+        <columns>Decision__c</columns>
+        <columns>Decision_Date__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Go_No_Go_Conversation__c.Europe_GNG</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>greaterOrEqual</operation>
+            <value>2/23/2015 12:00 AM</value>
+        </filters>
+        <label>EMEA&amp;I GNG - All</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -4930,16 +5903,18 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
             <operation>equals</operation>
             <value>Approved</value>
         </filters>
-        <label>Europe GNG - Go</label>
+        <label>EMEA&amp;I GNG - Go</label>
         <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>Europe_GNG_Pending</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND 4</booleanFilter>
         <columns>NAME</columns>
         <columns>Account__c</columns>
         <columns>Opportunity_Name__c</columns>
         <columns>Opportunity_Record__c</columns>
         <columns>Status__c</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
         <columns>Project_Director__c</columns>
         <columns>Decision__c</columns>
         <columns>CREATED_DATE</columns>
@@ -4959,7 +5934,12 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
             <operation>greaterOrEqual</operation>
             <value>2/23/2015 12:00 AM</value>
         </filters>
-        <label>Europe GNG - Pending</label>
+        <filters>
+            <field>Status__c</field>
+            <operation>notContain</operation>
+            <value>1,7,8,9</value>
+        </filters>
+        <label>EMEA&amp;I - Pending</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -4990,7 +5970,7 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
             <operation>greaterOrEqual</operation>
             <value>2/23/2015 12:00 AM</value>
         </filters>
-        <label>Europe GNG - No Go</label>
+        <label>EMEA&amp;I GNG - No Go</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -5015,7 +5995,7 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
             <operation>greaterOrEqual</operation>
             <value>2/23/2015 12:00 AM</value>
         </filters>
-        <label>Europe GNG - All</label>
+        <label>EMEA&amp;I GNG - All</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -5094,6 +6074,33 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>Go_NoGo_by_Capture_Manager</fullName>
+        <columns>NAME</columns>
+        <columns>Opportunity__c</columns>
+        <columns>Decision__c</columns>
+        <columns>Decision_Date__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>Other_Depts_from_OPP__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Bid_Manager__c</field>
+            <operation>contains</operation>
+            <value>Revell</value>
+        </filters>
+        <filters>
+            <field>Decision__c</field>
+            <operation>equals</operation>
+        </filters>
+        <filters>
+            <field>Decision_Date__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Go NoGo by Capture Manager</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>HansenChris_GNG_Approvals</fullName>
         <columns>NAME</columns>
         <columns>Account__c</columns>
@@ -5116,6 +6123,7 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
     </listViews>
     <listViews>
         <fullName>Middle_East_GNG_All</fullName>
+        <booleanFilter>1 AND 2 AND 3 AND 4 AND 5 and 6</booleanFilter>
         <columns>NAME</columns>
         <columns>Account__c</columns>
         <columns>Opportunity_Name__c</columns>
@@ -5132,22 +6140,37 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <filters>
             <field>Primary_Department_from_Opportunity__c</field>
             <operation>notContain</operation>
-            <value>China,Hong Kong,Thailand,Malaysia,Singapore,Taiwan,Philippines,Asia</value>
+            <value>China,Hong Kong,Thailand,Malaysia,Singapore,Taiwan,Philippines,Asia,HK,UK</value>
         </filters>
         <filters>
             <field>CREATED_DATE</field>
             <operation>greaterOrEqual</operation>
             <value>2/23/2015 12:00 AM</value>
         </filters>
-        <label>Middle East/Africa/India GNG</label>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>notContain</operation>
+            <value>London,Cleveland,Florida,CCM,Japan,IP FM,IP IM,IP OG,Melbourne,OG Mid</value>
+        </filters>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>notContain</operation>
+            <value>,OG Oilfield,OG Pipe,OG Prod,Advatech,Power Fossil,Power Nuclear,Power SGT</value>
+        </filters>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>notContain</operation>
+            <value>Archi,41.cs</value>
+        </filters>
+        <label>Middle East/Africa/India GNG VIEW ONLY</label>
         <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>Neese_GNGs</fullName>
         <columns>NAME</columns>
         <columns>Account__c</columns>
-        <columns>Opportunity__c</columns>
         <columns>Decision__c</columns>
+        <columns>Opportunity__c</columns>
         <columns>Approval_Status__c</columns>
         <columns>Net_Revenue_from_Opp__c</columns>
         <columns>Primary_Department_from_Opportunity__c</columns>
@@ -5164,7 +6187,7 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
     </listViews>
     <listViews>
         <fullName>Pacific_Group_GNG_Converations_ALL</fullName>
-        <booleanFilter>(1 AND  7 AND 2) OR (1 AND 7 AND 3) OR (1 AND 7 AND 4) OR (1 AND 7 AND 5) OR (1 AND 7 AND 6)</booleanFilter>
+        <booleanFilter>(1 AND  7 AND 2) OR (1 AND 7 AND 3) OR (1 AND 7 AND 4) OR (1 AND 7 AND 5) OR (1 AND 7 AND 6) OR (1 AND 7 AND 8)</booleanFilter>
         <columns>RFT_Issue_Date__c</columns>
         <columns>Decision_Date__c</columns>
         <columns>NAME</columns>
@@ -5193,7 +6216,7 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <filters>
             <field>Approver__c</field>
             <operation>equals</operation>
-            <value>Eric E. Zagol</value>
+            <value>Eric E Zagol</value>
         </filters>
         <filters>
             <field>Approver__c</field>
@@ -5208,12 +6231,17 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
         <filters>
             <field>Approver__c</field>
             <operation>equals</operation>
-            <value>Shawn Kelly</value>
+            <value>Shawn G Kelly</value>
         </filters>
         <filters>
             <field>Approval_Status__c</field>
             <operation>contains</operation>
             <value>Not Submitted,Submitted for Approval - Pending,Approved,Rejected,Not Submitt,No</value>
+        </filters>
+        <filters>
+            <field>Approver__c</field>
+            <operation>equals</operation>
+            <value>Linda Peters</value>
         </filters>
         <label>SF Bay Metro GNG Converations_ALL</label>
         <language>en_US</language>
@@ -5221,6 +6249,65 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
             <group>All_Users</group>
             <role>Americas</role>
         </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Phillips_66_GNG</fullName>
+        <columns>NAME</columns>
+        <columns>Lead_Managing_Office__c</columns>
+        <columns>AECOM_Gross_Fee__c</columns>
+        <columns>Approver__c</columns>
+        <columns>Business_Line__c</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Client_Assessment__c</columns>
+        <columns>Decision_Date__c</columns>
+        <columns>Go_No_Go_Recommendation__c</columns>
+        <columns>Net_Service_Revenue_NSR__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Client_Name__c</field>
+            <operation>contains</operation>
+            <value>Phillips 66</value>
+        </filters>
+        <label>Phillips 66 GNG</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Plymouth_Exeter_GNG</fullName>
+        <columns>Opportunity_Record__c</columns>
+        <columns>NAME</columns>
+        <columns>Bid_Manager__c</columns>
+        <columns>Account__c</columns>
+        <columns>Opportunity_Name__c</columns>
+        <columns>Status__c</columns>
+        <columns>Decision__c</columns>
+        <columns>Decision_Date__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Primary_Department_from_Opportunity__c</columns>
+        <columns>AECOM_Gross_Fee__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Go_No_Go_Conversation__c.Europe_GNG</value>
+        </filters>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>greaterOrEqual</operation>
+            <value>1/1/2014 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>Primary_Department_from_Opportunity__c</field>
+            <operation>contains</operation>
+            <value>3293</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>lessOrEqual</operation>
+            <value>7</value>
+        </filters>
+        <label>Plymouth GNG</label>
+        <language>en_US</language>
     </listViews>
     <listViews>
         <fullName>Recent_SW_Area_GNG_Decisions</fullName>
@@ -6963,8 +8050,8 @@ Shows that risk is High, Medium, or Low.</inlineHelpText>
     <recordTypes>
         <fullName>Europe_GNG</fullName>
         <active>true</active>
-        <description>Used in Europe</description>
-        <label>Europe GNG</label>
+        <description>Used in EMEA&amp;I</description>
+        <label>EMEA&amp;I GNG</label>
         <picklistValues>
             <picklist>AECOM_Work_primary__c</picklist>
             <values>

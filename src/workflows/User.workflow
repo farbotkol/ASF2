@@ -114,13 +114,12 @@
             <name>Clear_Notification</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>false</active>
+        <active>true</active>
         <criteriaItems>
             <field>User.Send_Proxy_Notification__c</field>
             <operation>equals</operation>
             <value>Change</value>
         </criteriaItems>
-        <description>Not sending email to the correct people so deactivated for now</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>

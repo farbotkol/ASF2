@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_79517237</developerName>
+        <masterLabel>Stage</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>STAGE_NAME</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>1 Lead</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1A Lead - Scout</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1B Lead - Engage</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1C Lead - Position</sourceValue>
+            </sourceValues>
+            <value>1 Lead</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>2 Capture</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2A Capture - LOI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2B Capture - EOI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2C Capture - SOQ</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2D Capture - RFI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2E Capture - RFP</sourceValue>
+            </sourceValues>
+            <value>2 Capture</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>3 Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3A Capture - Proposal Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3B Capture - Short List</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3C Capture - Interview</sourceValue>
+            </sourceValues>
+            <value>3 Submitted</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>4 Project on hold</sourceValue>
+            </sourceValues>
+            <value>4 On Hold</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>5A Program in Negotiation</sourceValue>
+            </sourceValues>
+            <value>5A Program In Negotiation</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>5B Program Signed and Active</sourceValue>
+            </sourceValues>
+            <value>5B Program Signed / Active</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Opportunity.Region__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Area__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.TO_Procurement_Method__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Task_Order_Count__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Lead_District_Formula__c</field>
+    </columns>
+    <columns>
+        <field>NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Practice_Area_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <columns>
+        <field>BucketField_79517237</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Ceiling_Amount_ReadOnly__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Program_Estimated_Revenue__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Task_Orders_Booked_Revenue__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Task_Order_Remaining_Revenue__c</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Estimated_work_start_date__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Work_end_date_del__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Project_Manager__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Report_comments__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Change filter for Region</description>
+    <filter>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>lessThan</operator>
+            <value>6</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Lead_Region_Formula__c</column>
+            <operator>contains</operator>
+            <value>US - North</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>equals</operator>
+            <value>Transportation</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Opportunity.Program_Americas</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <name>TRA Programs by Region</name>
+    <params>
+        <name>include</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>OpportunityPartner</reportType>
+    <scope>all</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Opportunity.Area__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.WinDate__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

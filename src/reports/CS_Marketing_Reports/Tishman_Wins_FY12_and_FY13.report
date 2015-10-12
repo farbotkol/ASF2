@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_92134143</developerName>
+        <masterLabel>CS Divisions</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Opportunity_Department__c.AECOM_Department__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>1901 - 41.CS.PM/CM - West</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1903 - 41.CS.PM/CM - Central</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1904 - 41.CS.PM/CM - Denver</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1908 - 41.CS.PM/CM - Mid-Atlantic</sourceValue>
+            </sourceValues>
+            <value>PM/CM</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>2001 - 41.CS.Tishman - National</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2002 - 41.CS.Tishman - NY</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2019 - 41.CS.Tishman - NJ/PA</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2021 - 41.CS.Tishman - Mid-Atlantic</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2024 - 41.CS.Tishman - Florida</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2026 - 41.CS.Tishman - New England</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2029 - 41.CS.Tishman - Midwest</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2034 - 41.CS.Tishman - Interiors</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2037 - 41.CS.Tishman - West</sourceValue>
+            </sourceValues>
+            <value>Tishman</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>BucketField_92134143</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity_Department__c.AECOM_Department__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.CM_Type__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity_Department__c.Revenue_Split_TO_Proj__c.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity_Department__c.TO_Project_Net_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.CS_Gross_Margin__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Win_Loss_Report_Date__c</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <currency>USD</currency>
+    <description>not including task orders, add services, work orders</description>
+    <filter>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>startsWith</operator>
+            <value>5,6</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity_Department__c.AECOM_Department__c</column>
+            <operator>startsWith</operator>
+            <value>20</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>OPPORTUNITY_NAME</column>
+            <operator>notContain</operator>
+            <value>Task,2013),2012),T.O.,Additional Fee,Added Scope,Cost of Delays,Amendment,WO84,WO83,2011),WO81,WO82,Mod,(2006),(2011),(TO 1)</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>FiscalYear</dateGranularity>
+        <field>Opportunity.WinDate__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity_Department__c.Practice_Area__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Tishman Wins FY12 and FY13</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>OpportunityCustomEntity$Opportunity_Department__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.WinDate__c</dateColumn>
+        <interval>INTERVAL_PREV2FY</interval>
+    </timeFrameFilter>
+</Report>

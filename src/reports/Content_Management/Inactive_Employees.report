@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>User$Name</field>
+    </columns>
+    <columns>
+        <field>User*User$Term_Date__c</field>
+    </columns>
+    <columns>
+        <field>User*User$Assignment_Status__c</field>
+    </columns>
+    <columns>
+        <field>User$CurrentStatus</field>
+    </columns>
+    <columns>
+        <field>User*User$IDReport__c</field>
+    </columns>
+    <columns>
+        <field>User*User$Employee_Category__c</field>
+    </columns>
+    <columns>
+        <field>User*User$Corporate_Title__c</field>
+    </columns>
+    <columns>
+        <field>User$Country</field>
+    </columns>
+    <columns>
+        <field>User.Profile_Parts__r$License_Registration_Name__c</field>
+    </columns>
+    <columns>
+        <field>User.Profile_Parts__r$State_Province__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>User$Country</column>
+            <operator>equals</operator>
+            <value>United States,US,Canada,CA</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>User*User$Assignment_Status__c</column>
+            <operator>notEqual</operator>
+            <value>active assignment</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Inactive Employees</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Users_with_without_Profile_Parts__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>User*User$Term_Date__c</dateColumn>
+        <interval>INTERVAL_PREVFY</interval>
+    </timeFrameFilter>
+</Report>

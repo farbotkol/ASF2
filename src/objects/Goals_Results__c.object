@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Related object for Account Plans</description>
@@ -54,6 +55,18 @@
     <enableReports>true</enableReports>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>Account_Team__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>AECOM team, e.g., EBL, EMEA, Upstream</inlineHelpText>
+        <label>Account Team</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <fields>
         <fullName>Bookings_Target__c</fullName>
         <externalId>false</externalId>
@@ -92,12 +105,23 @@
             <isOptional>false</isOptional>
         </lookupFilter>
         <referenceTo>SFDC_Acct_Plan__c</referenceTo>
-        <relationshipLabel>Financial Targets</relationshipLabel>
         <relationshipName>Account_Plan_Goals</relationshipName>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Client_specified_KPI__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter KPI if provided by client</inlineHelpText>
+        <label>Client-specified KPI</label>
+        <length>200</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Financial_Target_Link__c</fullName>
@@ -138,27 +162,31 @@
         <label>Geography</label>
         <picklist>
             <picklistValues>
-                <fullName>Americas (all regions)</fullName>
+                <fullName>AME all regions</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Canada Region</fullName>
+                <fullName>AME Midwest</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>US South</fullName>
+                <fullName>AME Northeast</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>US North</fullName>
+                <fullName>AME Pacific</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>US West</fullName>
+                <fullName>AME Southeast</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Latin America</fullName>
+                <fullName>AME West/Gulf Coast</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>APAC</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -166,14 +194,26 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>APAC</fullName>
+                <fullName>Latin America</fullName>
                 <default>false</default>
             </picklistValues>
-            <sorted>false</sorted>
+            <sorted>true</sorted>
         </picklist>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Goal_Wallet_Share__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter percentage</inlineHelpText>
+        <label>Goal Wallet Share</label>
+        <precision>3</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
     </fields>
     <fields>
         <fullName>Gross_Margin__c</fullName>
@@ -189,7 +229,7 @@
     <fields>
         <fullName>Gross_Revenue_Goal__c</fullName>
         <externalId>false</externalId>
-        <label>FY Gross Revenue Target</label>
+        <label>FY Gross Rev Target</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -304,6 +344,33 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Service__c</fullName>
+        <externalId>false</externalId>
+        <label>Service</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Environmental</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Facilities Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Design/Build / Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Engineering / Construction Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>YTD_Gross_Revenue__c</fullName>
         <externalId>false</externalId>
         <label>YTD Gross Revenue</label>
@@ -325,7 +392,7 @@
         <trackTrending>false</trackTrending>
         <type>Currency</type>
     </fields>
-    <label>Financial Targets</label>
+    <label>Financial Targets and KPIs</label>
     <listViews>
         <fullName>All</fullName>
         <columns>OBJECT_ID</columns>
@@ -350,7 +417,7 @@
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Financial Targets</pluralLabel>
+    <pluralLabel>Financial Targets and KPIs</pluralLabel>
     <recordTypeTrackHistory>false</recordTypeTrackHistory>
     <recordTypes>
         <fullName>Account_Plan_Goals</fullName>
@@ -360,15 +427,31 @@
         <picklistValues>
             <picklist>Geography__c</picklist>
             <values>
+                <fullName>AME Midwest</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AME Northeast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AME Pacific</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AME Southeast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AME West%2FGulf Coast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AME all regions</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>APAC</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Americas %28all regions%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Canada Region</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -379,16 +462,23 @@
                 <fullName>Latin America</fullName>
                 <default>false</default>
             </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Service__c</picklist>
             <values>
-                <fullName>US North</fullName>
+                <fullName>Design%2FBuild %2F Development</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>US South</fullName>
+                <fullName>Engineering %2F Construction Management</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>US West</fullName>
+                <fullName>Environmental</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Facilities Management</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -401,15 +491,31 @@
         <picklistValues>
             <picklist>Geography__c</picklist>
             <values>
+                <fullName>AME Midwest</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AME Northeast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AME Pacific</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AME Southeast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AME West%2FGulf Coast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>AME all regions</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>APAC</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Americas %28all regions%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Canada Region</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -420,16 +526,23 @@
                 <fullName>Latin America</fullName>
                 <default>false</default>
             </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Service__c</picklist>
             <values>
-                <fullName>US North</fullName>
+                <fullName>Design%2FBuild %2F Development</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>US South</fullName>
+                <fullName>Engineering %2F Construction Management</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>US West</fullName>
+                <fullName>Environmental</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Facilities Management</fullName>
                 <default>false</default>
             </values>
         </picklistValues>

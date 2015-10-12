@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Lead_Region_Formula__c</field>
+    </columns>
+    <columns>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Program_Estimated_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager__c</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>For URS integration planning</description>
+    <filter>
+        <booleanFilter>(1 OR 2) AND 3</booleanFilter>
+        <criteriaItems>
+            <column>AMOUNT</column>
+            <operator>greaterOrEqual</operator>
+            <value>USD 1000000</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Program_Estimated_Revenue__c</column>
+            <operator>greaterOrEqual</operator>
+            <value>USD 1000000</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Geography_Formula__c</column>
+            <operator>equals</operator>
+            <value>North America</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Geography_Formula__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>RECORDTYPE</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Open Opps &gt; $1M thru March 2015</name>
+    <params>
+        <name>open</name>
+        <value>open</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <endDate>2015-03-31</endDate>
+        <interval>INTERVAL_CUSTOM</interval>
+        <startDate>2014-09-12</startDate>
+    </timeFrameFilter>
+</Report>

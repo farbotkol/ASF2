@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager_User__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager_Office__c</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.End_Market__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Project_City__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.ProjectCountry__c</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.End_Client_Sector__c</field>
+    </columns>
+    <columns>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>(1 OR 6) AND 2 AND 5 AND (3 OR 4)</booleanFilter>
+        <criteriaItems>
+            <column>Opportunity.Area__c</column>
+            <operator>equals</operator>
+            <value>Latin America</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>startsWith</operator>
+            <value>1,2,3</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.End_Client_Sector__c</column>
+            <operator>equals</operator>
+            <value>Oil &amp; Gas,ChemPharma</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.End_Market__c</column>
+            <operator>equals</operator>
+            <value>Oil &amp; Gas &amp; Chemical</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Capture_Manager_Office__c</column>
+            <operator>notContain</operator>
+            <value>San Juan,VE - Caracas,Venezuela</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity_Department__c.Lead_District__c</column>
+            <operator>equals</operator>
+            <value>Latin America</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity_Department__c.AECOM_Department__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Monique Report</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>OpportunityCustomEntity$Opportunity_Department__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

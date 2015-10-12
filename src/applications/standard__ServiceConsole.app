@@ -2,8 +2,10 @@
 <CustomApplication xmlns="http://soap.sforce.com/2006/04/metadata">
     <defaultLandingTab>standard-home</defaultLandingTab>
     <detailPageRefreshMethod>none</detailPageRefreshMethod>
+    <enableCustomizeMyTabs>false</enableCustomizeMyTabs>
     <enableKeyboardShortcuts>true</enableKeyboardShortcuts>
     <enableMultiMonitorComponents>true</enableMultiMonitorComponents>
+    <enablePinTabs>true</enablePinTabs>
     <isServiceCloudConsole>true</isServiceCloudConsole>
     <keyboardShortcuts>
         <defaultShortcut>
@@ -111,6 +113,51 @@
             <active>false</active>
             <keyCommand>SHIFT+K</keyCommand>
         </defaultShortcut>
+        <defaultShortcut>
+            <action>FOCUS_MACRO</action>
+            <active>false</active>
+            <keyCommand>M</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>FOCUS_FOOTER_PANEL</action>
+            <active>false</active>
+            <keyCommand>F</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_LIST_VIEW</action>
+            <active>false</active>
+            <keyCommand>SHIFT+N</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_LEFT_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+LEFT ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_RIGHT_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+RIGHT ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_TOP_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+UP ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_BOTTOM_SIDEBAR</action>
+            <active>false</active>
+            <keyCommand>SHIFT+DOWN ARROW</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>TOGGLE_APP_LEVEL_COMPONENTS</action>
+            <active>false</active>
+            <keyCommand>Z</keyCommand>
+        </defaultShortcut>
+        <defaultShortcut>
+            <action>REOPEN_LAST_TAB</action>
+            <active>false</active>
+            <keyCommand>SHIFT+C</keyCommand>
+        </defaultShortcut>
     </keyboardShortcuts>
     <listPlacement>
         <location>full</location>
@@ -141,36 +188,13 @@
     <tab>State_Province_Emirate__c</tab>
     <tab>Account_Plan_Contacts__c</tab>
     <tab>Business_Line__c</tab>
+    <tab>Qtr_Review__c</tab>
     <workspaceMappings>
-        <mapping>
-            <tab>iContact_MessageBuilder</tab>
-        </mapping>
-        <mapping>
-            <fieldName>AccountId</fieldName>
-            <tab>standard-Opportunity</tab>
-        </mapping>
-        <mapping>
-            <tab>Awards_Commendations__c</tab>
-        </mapping>
-        <mapping>
-            <fieldName>AccountId</fieldName>
-            <tab>standard-Case</tab>
-        </mapping>
         <mapping>
             <tab>Account_Plan_Contacts__c</tab>
         </mapping>
         <mapping>
-            <tab>Technical_Document__c</tab>
-        </mapping>
-        <mapping>
-            <tab>Go_No_Go_Conversation__c</tab>
-        </mapping>
-        <mapping>
-            <fieldName>AccountId</fieldName>
-            <tab>standard-Contact</tab>
-        </mapping>
-        <mapping>
-            <tab>standard-Lead</tab>
+            <tab>Awards_Commendations__c</tab>
         </mapping>
         <mapping>
             <tab>Business_Line__c</tab>
@@ -179,16 +203,43 @@
             <tab>Change_Management__c</tab>
         </mapping>
         <mapping>
+            <tab>Go_No_Go_Conversation__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Proposal_Quals_Info__c</tab>
+        </mapping>
+        <mapping>
+            <tab>Qtr_Review__c</tab>
+        </mapping>
+        <mapping>
             <tab>State_Province_Emirate__c</tab>
         </mapping>
         <mapping>
-            <tab>standard-Knowledge</tab>
+            <tab>Technical_Document__c</tab>
+        </mapping>
+        <mapping>
+            <tab>iContact_MessageBuilder</tab>
         </mapping>
         <mapping>
             <tab>standard-Account</tab>
         </mapping>
         <mapping>
-            <tab>Proposal_Quals_Info__c</tab>
+            <fieldName>AccountId</fieldName>
+            <tab>standard-Case</tab>
+        </mapping>
+        <mapping>
+            <fieldName>AccountId</fieldName>
+            <tab>standard-Contact</tab>
+        </mapping>
+        <mapping>
+            <tab>standard-Knowledge</tab>
+        </mapping>
+        <mapping>
+            <tab>standard-Lead</tab>
+        </mapping>
+        <mapping>
+            <fieldName>AccountId</fieldName>
+            <tab>standard-Opportunity</tab>
         </mapping>
     </workspaceMappings>
 </CustomApplication>

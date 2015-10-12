@@ -11,6 +11,17 @@
         <template>Issue_Application/AssignedIssue_Closed_Notification</template>
     </alerts>
     <alerts>
+        <fullName>Notify_Nancy_Balaban_of_New_Issue</fullName>
+        <description>Notify Nancy Balaban of New Issue</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>nancy.balaban@aecom.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>Issue_Application/AssignedIssue_Closed_Notification</template>
+    </alerts>
+    <alerts>
         <fullName>Send_email_notification_to_issue_creator</fullName>
         <description>Send email notification to issue reported by on close</description>
         <protected>false</protected>
@@ -49,6 +60,36 @@
         </criteriaItems>
         <description>Send an email to issue reported by</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Issue Created</fullName>
+        <actions>
+            <name>Notify_Nancy_Balaban_of_New_Issue</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <booleanFilter>1 OR 2 OR 3 OR 4</booleanFilter>
+        <criteriaItems>
+            <field>Issue__c.User__c</field>
+            <operation>equals</operation>
+            <value>Nancy A Balaban</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Issue__c.User2__c</field>
+            <operation>equals</operation>
+            <value>Nancy A Balaban</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Issue__c.User3__c</field>
+            <operation>equals</operation>
+            <value>Nancy A Balaban</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Issue__c.User4__c</field>
+            <operation>equals</operation>
+            <value>Nancy A Balaban</value>
+        </criteriaItems>
+        <triggerType>onCreateOnly</triggerType>
     </rules>
     <rules>
         <fullName>Notify Assigned Of Issue</fullName>

@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>User$Name</field>
+    </columns>
+    <columns>
+        <field>User*User$Corporate_Title__c</field>
+    </columns>
+    <columns>
+        <field>User$Division</field>
+    </columns>
+    <columns>
+        <field>User*User$Business_Line__c</field>
+    </columns>
+    <columns>
+        <field>User*User$Geography__c</field>
+    </columns>
+    <columns>
+        <field>User$Department</field>
+    </columns>
+    <columns>
+        <field>User$Address</field>
+    </columns>
+    <columns>
+        <field>User$Email</field>
+    </columns>
+    <columns>
+        <field>User*User$Assignment_Status__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Summary of Active End Markets Staff sorted by Group.</description>
+    <filter>
+        <criteriaItems>
+            <column>User*User$Comment_on_User__c</column>
+            <operator>contains</operator>
+            <value>Buildings,Civil,ECAM,Government Relations,Industrial,Innovation,National Governments,Oil,Power</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>User*User$Assignment_Status__c</column>
+            <operator>notContain</operator>
+            <value>term</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>User*User$Comment_on_User__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Active End Markets Staff</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Users_with_without_Profile_Parts__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>User$Name</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>User*User$Adjusted_Service_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

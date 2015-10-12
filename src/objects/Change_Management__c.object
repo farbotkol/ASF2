@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Used to collect requirements, track progress and testing, and record history of changes made to Salesforce and Force applications.</description>
@@ -335,7 +336,9 @@
     <fields>
         <fullName>Issue__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
+        <description>Lookup to Issue object</description>
         <externalId>false</externalId>
+        <inlineHelpText>Select the Issue that prompted this change.</inlineHelpText>
         <label>Issue</label>
         <referenceTo>Issue__c</referenceTo>
         <relationshipLabel>Change Management</relationshipLabel>
@@ -397,6 +400,19 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Requested_ByUser__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Requested By</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Change_Management3</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Requested_by__c</fullName>
@@ -481,10 +497,6 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Global Data Platform</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Go-NoGo Conversation</fullName>
                 <default>false</default>
             </picklistValues>
@@ -493,11 +505,7 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>ME GNG</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Note &amp; Attachment</fullName>
+                <fullName>Notes &amp; Attachment</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -620,6 +628,31 @@
         <columns>CREATEDBY_USER</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>DCS_Americas_Tasks</fullName>
+        <booleanFilter>1 AND (2 OR 3)</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Assigned_to__c</columns>
+        <columns>Current_Status__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>greaterThan</operation>
+            <value>7/13/2015 12:00 AM</value>
+        </filters>
+        <filters>
+            <field>Assigned_to__c</field>
+            <operation>contains</operation>
+            <value>Coyne,O&apos;Brien</value>
+        </filters>
+        <filters>
+            <field>Requested_by__c</field>
+            <operation>contains</operation>
+            <value>Coyne,O&apos;Brien,Cowern,Williams,Caruso,Desrocher,Koukoulis,Decker,Gallagher</value>
+        </filters>
+        <label>DCS Americas Tasks</label>
         <language>en_US</language>
     </listViews>
     <listViews>

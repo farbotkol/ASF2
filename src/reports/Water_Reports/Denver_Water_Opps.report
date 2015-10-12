@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager__c</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Estimated_work_start_date__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Open Opportunities for Denver Office Water BL</description>
+    <filter>
+        <criteriaItems>
+            <column>FK_NAME</column>
+            <operator>contains</operator>
+            <value>West Region,Denver,North Dakota</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>notEqual</operator>
+            <value>6 Contracted/Booked/Won,7 Canceled by Client,8 No-Go,9 Lost</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Market_Segment__c</column>
+            <operator>contains</operator>
+            <value>Community Infrastructure,Community Infrastructure - DB,Community Infrastructure - PMCM,Hydropower &amp; Dams,Wastewater,Wastewater - DB,Wastewater - PMCM,Water,Water &amp; Natural Resources,Water - DB,Water - PMCM,Water Resources,Water Resources - DB,Water Resources - PMCM</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Primary_Business_Line__c</column>
+            <operator>contains</operator>
+            <value>Water,Construction Services,PM/CM</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Denver Water Opportunities</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>Opportunity@Opportunity.AECOM_Primary_Dept_Lookup__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Opportunity.Estimated_work_start_date__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <endDate>2011-07-29</endDate>
+        <interval>INTERVAL_CUSTOM</interval>
+        <startDate>2011-02-28</startDate>
+    </timeFrameFilter>
+</Report>

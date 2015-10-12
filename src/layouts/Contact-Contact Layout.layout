@@ -3,11 +3,11 @@
     <customButtons>TIMBASURVEYS__Send_Survey_Contact_Detail</customButtons>
     <customButtons>LinkedIn_Search</customButtons>
     <excludeButtons>Clone</excludeButtons>
-    <excludeButtons>DataDotComClean</excludeButtons>
     <excludeButtons>DisableCustomerPortal</excludeButtons>
     <excludeButtons>DisablePartnerPortal</excludeButtons>
     <excludeButtons>EnablePartnerPortalUser</excludeButtons>
     <excludeButtons>EnableSelfService</excludeButtons>
+    <excludeButtons>RequestUseSfdc</excludeButtons>
     <excludeButtons>Share</excludeButtons>
     <excludeButtons>Submit</excludeButtons>
     <excludeButtons>ViewPartnerPortalUser</excludeButtons>
@@ -98,7 +98,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>AECOM_Contact__c</field>
+                <field>AECOM_ContactUser__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -191,7 +191,19 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Do_Not_Survey__c</field>
+                <field>Survey_Language__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>CFM_Last_Survey_Date_Sent__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>CFM_Do_Not_Survey__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>CFM_DNS_Reason__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
@@ -218,7 +230,7 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>CAM Information</label>
+        <label>Client Heat Map Information</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -267,6 +279,10 @@
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>Contact__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>AECOM_Contact__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -414,6 +430,12 @@
         <relatedList>RelatedNoteList</relatedList>
     </relatedLists>
     <relatedLists>
+        <fields>VERSION.TITLE</fields>
+        <fields>VERSION.CREATED_DATE</fields>
+        <fields>VERSION.LAST_UPDATE</fields>
+        <relatedList>ContentDocumentRelatedList</relatedList>
+    </relatedLists>
+    <relatedLists>
         <fields>CAMPAIGN.NAME</fields>
         <fields>CAMPAIGN.START_DATE</fields>
         <fields>CAMPAIGN.CAMPAIGN_TYPE</fields>
@@ -461,6 +483,21 @@
     <relatedLists>
         <fields>NAME</fields>
         <relatedList>Client_Strategy_Development__c.Client_Contact__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <relatedList>Master_Service_Agreement__c.Client_Contract_Manager__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <excludeButtons>New</excludeButtons>
+        <fields>NAME</fields>
+        <fields>Account__c</fields>
+        <fields>Project__c</fields>
+        <fields>Likelihood_to_Recommend__c</fields>
+        <fields>Satisfaction_Health_Safety__c</fields>
+        <fields>Request_for_Contact__c</fields>
+        <fields>Oracle_Project_Manager__c</fields>
+        <relatedList>CFM_Survey_Response__c.Contact__c</relatedList>
     </relatedLists>
     <relatedObjects>AccountId</relatedObjects>
     <showEmailCheckbox>false</showEmailCheckbox>

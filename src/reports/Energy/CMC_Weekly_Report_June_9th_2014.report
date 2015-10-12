@@ -1,0 +1,181 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_63416729</developerName>
+        <masterLabel>Primary Stages</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>STAGE_NAME</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>1 Lead</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1A Lead - Scout</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1B Lead - Engage</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1C Lead - Position</sourceValue>
+            </sourceValues>
+            <value>Stage 1</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>2 Capture</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2A Capture - LOI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2B Capture - EOI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2C Capture - SOQ</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2D Capture - RFI</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>2E Capture - RFP</sourceValue>
+            </sourceValues>
+            <value>Stage 2</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>3 Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3A Capture - Proposal Submitted</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3B Capture - Short List</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>3C Capture - Interview</sourceValue>
+            </sourceValues>
+            <value>Stage 3</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>4 Project on hold</sourceValue>
+            </sourceValues>
+            <value>Stage 4</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>5 SNB/Win/Award</sourceValue>
+            </sourceValues>
+            <value>Stage 5</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>6 Contracted/Booked/Won</sourceValue>
+            </sourceValues>
+            <value>Stage 6</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>7 Canceled by Client</sourceValue>
+            </sourceValues>
+            <value>Stage 7</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>8 No-Go</sourceValue>
+            </sourceValues>
+            <value>Stage 8</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>9 Lost</sourceValue>
+            </sourceValues>
+            <value>Stage 9</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>FK_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Marketing_Proposal_Lead__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Submittal_Date_Expression_of_Interest__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Submittal_Date_Proposal__c</field>
+    </columns>
+    <columns>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <field>BucketField_63416729</field>
+    </columns>
+    <columns>
+        <field>Opportunity.ProjectCountry__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Graphic_Artist__c</field>
+    </columns>
+    <currency>CAD</currency>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity.Lead_Region_Formula__c</column>
+            <operator>contains</operator>
+            <value>Canada</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>contains</operator>
+            <value>Energy,Metals,Water,Environment,PDD,Building Engineering,Bâtiment,Transportation</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.AECOM_Primary_Dept_Lookup__c</column>
+            <operator>contains</operator>
+            <value>QC,ACI,MTL,AFR,LAM,OINT</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>equals</operator>
+            <value>2 Capture,2A Capture - LOI,2B Capture - EOI,2C Capture - SOQ,2D Capture - RFI,2E Capture - RFP</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <name>CMC - Weekly Report - June 9th 2014</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>OpportunityCustomEntity$Opportunity_Department__c@Opportunity_Department__c.AECOM_Department__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>OPPORTUNITY_NAME</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

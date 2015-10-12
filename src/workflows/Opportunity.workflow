@@ -1,19 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
     <alerts>
+        <fullName>ANZ_Award_Date_48_hours_Alert</fullName>
+        <description>ANZ Award Date 48 hours Alert</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>robbie.stewart@aecom.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <field>Capture_Manager_User__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>DefaultWorkflowUser</senderType>
+        <template>ANZ/Anz_Award_Date_48hr</template>
+    </alerts>
+    <alerts>
         <fullName>ANZ_C1_Email_Alert</fullName>
         <description>ANZ C1 Email Alert</description>
         <protected>false</protected>
         <recipients>
-            <recipient>alan.baker@aecom.com</recipient>
+            <recipient>alan.baker@aecom.com.disabled.20150928</recipient>
             <type>user</type>
         </recipients>
         <recipients>
             <recipient>andrew.carruthers@aecom.com</recipient>
-            <type>user</type>
-        </recipients>
-        <recipients>
-            <recipient>andrew.schofield@aecom.com</recipient>
             <type>user</type>
         </recipients>
         <recipients>
@@ -74,10 +85,6 @@
         </recipients>
         <recipients>
             <recipient>luke.farbotko@aecom.com</recipient>
-            <type>user</type>
-        </recipients>
-        <recipients>
-            <recipient>mark.fairweather@aecom.com</recipient>
             <type>user</type>
         </recipients>
         <recipients>
@@ -221,6 +228,70 @@
         <template>unfiled$public/Test_for_dates_passed_workflow_old</template>
     </alerts>
     <alerts>
+        <fullName>MS_Capture_Status_Red_or_Yellow</fullName>
+        <description>MS Capture Status Red or Yellow</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Capture_Manager_User__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>Primary_BD_Lead_User__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/MS_Capture_Status_Red_or_Yellow</template>
+    </alerts>
+    <alerts>
+        <fullName>MS_Foreign_Opportunity</fullName>
+        <description>MS Foreign Opportunity</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>joaquin.legorreta@aecom.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
+            <field>Capture_Manager_User__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>Primary_BD_Lead_User__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/MS_Foreign_Opportunity</template>
+    </alerts>
+    <alerts>
+        <fullName>MS_Last_Update_over_180d</fullName>
+        <description>MS Last Update over 180d</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Capture_Manager_User__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>Primary_BD_Lead_User__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/MS_Last_Update_over_180d</template>
+    </alerts>
+    <alerts>
+        <fullName>MS_Proposal_Due_Date_passed</fullName>
+        <description>MS Proposal Due Date passed</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Capture_Manager_User__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>Primary_BD_Lead_User__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/MS_Proposal_Due_Date_passed</template>
+    </alerts>
+    <alerts>
         <fullName>New_CS_opportunity</fullName>
         <description>New CS opportunity</description>
         <protected>false</protected>
@@ -253,6 +324,10 @@
             <type>user</type>
         </recipients>
         <recipients>
+            <recipient>suzanne.byrer-tidrow@aecom.com</recipient>
+            <type>user</type>
+        </recipients>
+        <recipients>
             <recipient>taramcadam.kassal@aecom.com</recipient>
             <type>user</type>
         </recipients>
@@ -262,6 +337,28 @@
         </recipients>
         <senderType>DefaultWorkflowUser</senderType>
         <template>unfiled$public/New_CS_opportunity</template>
+    </alerts>
+    <alerts>
+        <fullName>New_NA_Environment_Bookings_Alert</fullName>
+        <description>New NA Environment Bookings Alert</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>bridget.williams@aecom.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/New_NA_Oil_Gas_Bookings_Alert</template>
+    </alerts>
+    <alerts>
+        <fullName>New_NA_Oil_Gas_Bookings_Alert</fullName>
+        <description>New NA Oil &amp; Gas Bookings Alert</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>lynda.decker@urs.com</recipient>
+            <type>user</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>unfiled$public/New_NA_Oil_Gas_Bookings_Alert</template>
     </alerts>
     <alerts>
         <fullName>New_NA_Transportation_Bookings_Alert</fullName>
@@ -360,7 +457,7 @@
             <type>user</type>
         </recipients>
         <recipients>
-            <recipient>brooke.o&apos;brien@aecom.com</recipient>
+            <recipient>brooke.obrien@aecom.com</recipient>
             <type>user</type>
         </recipients>
         <senderType>DefaultWorkflowUser</senderType>
@@ -405,7 +502,7 @@
             <type>user</type>
         </recipients>
         <recipients>
-            <recipient>rebecca.betzina@aecom.com</recipient>
+            <recipient>rebecca.betzinadisabled.20150831@aecom.com</recipient>
             <type>user</type>
         </recipients>
         <recipients>
@@ -496,11 +593,7 @@
             <type>user</type>
         </recipients>
         <recipients>
-            <recipient>melinda.ginsberg@aecom.com</recipient>
-            <type>user</type>
-        </recipients>
-        <recipients>
-            <recipient>steve.fludder@aecom.com.disabled.20141125</recipient>
+            <recipient>monica.thompson@urs.com</recipient>
             <type>user</type>
         </recipients>
         <senderType>CurrentUser</senderType>
@@ -855,6 +948,36 @@ Book_date__c
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Update_MS_Priority_to_1</fullName>
+        <description>This field updates the MS Priority field on Opportunity to 1.</description>
+        <field>MS_Priority__c</field>
+        <formula>&quot;Priority 1&quot;</formula>
+        <name>Update MS Priority to 1</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_MS_Priority_to_2</fullName>
+        <description>This field updates the MS Priority field on Opportunity to 2.</description>
+        <field>MS_Priority__c</field>
+        <formula>&quot;Priority 2&quot;</formula>
+        <name>Update MS Priority to 2</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_MS_Priority_to_3</fullName>
+        <description>This field updates the MS Priority field on Opportunity to 3</description>
+        <field>MS_Priority__c</field>
+        <formula>&quot;Priority 3&quot;</formula>
+        <name>Update MS Priority to 3</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Update_Master_Contract_Number_Program</fullName>
         <description>update the master contract number field to display on Task Order</description>
         <field>Master_Contract_Number_Program__c</field>
@@ -1091,6 +1214,40 @@ On_Hold_Date__c
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
+        <fullName>Anz Award Date 48hr</fullName>
+        <active>true</active>
+        <criteriaItems>
+            <field>Opportunity.Geography_Formula__c</field>
+            <operation>equals</operation>
+            <value>ANZ</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.RecordTypeText__c</field>
+            <operation>contains</operation>
+            <value>Project - APAC,Task Order - APAC</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.StageName</field>
+            <operation>contains</operation>
+            <value>1,2,3,4</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.CloseDate</field>
+            <operation>greaterOrEqual</operation>
+            <value>TODAY</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>ANZ_Award_Date_48_hours_Alert</name>
+                <type>Alert</type>
+            </actions>
+            <offsetFromField>Opportunity.CloseDate</offsetFromField>
+            <timeLength>-2</timeLength>
+            <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+    </rules>
+    <rules>
         <fullName>CS Americas Risk Management Threshold</fullName>
         <actions>
             <name>CS_Americas_Risk_Management_Threshold</name>
@@ -1228,6 +1385,26 @@ On_Hold_Date__c
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
+        <fullName>Email MS Foreign Opportunity</fullName>
+        <actions>
+            <name>MS_Foreign_Opportunity</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Opportunity.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Program - MS,Project - MS,Task Order - MS</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.ProjectCountry__c</field>
+            <operation>notEqual</operation>
+            <value>United States</value>
+        </criteriaItems>
+        <description>Notify MS Export Control Manager in case of non US opportunities.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
         <fullName>Environment dates passed</fullName>
         <active>false</active>
         <booleanFilter>(1 OR 4) AND (2 OR (5 AND 6)) AND 3</booleanFilter>
@@ -1338,7 +1515,7 @@ On_Hold_Date__c
             <name>Gross_AECOM_Rev_ReadOnly</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <description>Gross AECOM Rev ReadOnly for Program</description>
         <formula>AND(
  ISBLANK(Amount),
@@ -1346,6 +1523,88 @@ On_Hold_Date__c
 ( $RecordType.Name=&apos;Program&apos;)
 )</formula>
         <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>MS Capture Status Red or Yellow</fullName>
+        <actions>
+            <name>MS_Capture_Status_Red_or_Yellow</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <booleanFilter>(1 AND 2) OR (3 AND 4) OR (5 AND 6)</booleanFilter>
+        <criteriaItems>
+            <field>Opportunity.StageName</field>
+            <operation>equals</operation>
+            <value>0-1-Qualification,1-2-Solution Development,2-3-Pre-proposal</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.RFI_Release_Date__c</field>
+            <operation>lessOrEqual</operation>
+            <value>TODAY</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.StageName</field>
+            <operation>equals</operation>
+            <value>0-1-Qualification,1-2-Solution Development</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.RFI_Release_Date__c</field>
+            <operation>equals</operation>
+            <value>NEXT 30 DAYS</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.StageName</field>
+            <operation>equals</operation>
+            <value>0-1-Qualification</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.RFI_Release_Date__c</field>
+            <operation>equals</operation>
+            <value>NEXT 90 DAYS</value>
+        </criteriaItems>
+        <description>Notify Opportunity BD Lead and Capture Manager if  opportunity RFP Release Date passed or in near future and early stage</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>MS Last Update over 180d</fullName>
+        <active>true</active>
+        <description>Notify Opportunity BD Lead and Capture Manager if an opportunity has not been updated since 180 days.</description>
+        <formula>AND( CONTAINS(RecordType.DeveloperName, &quot;MS&quot;), OR(BEGINS(TEXT( StageName ), &quot;0&quot;), BEGINS(TEXT( StageName ), &quot;1&quot;), BEGINS(TEXT( StageName ), &quot;2&quot;), BEGINS(TEXT( StageName ), &quot;3&quot;), BEGINS(TEXT( StageName ), &quot;4&quot;), BEGINS(TEXT( StageName ), &quot;5&quot;) ))</formula>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>MS_Last_Update_over_180d</name>
+                <type>Alert</type>
+            </actions>
+            <offsetFromField>Opportunity.LastModifiedDate</offsetFromField>
+            <timeLength>180</timeLength>
+            <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+    </rules>
+    <rules>
+        <fullName>MS Proposal Due Date passed</fullName>
+        <actions>
+            <name>MS_Proposal_Due_Date_passed</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>Opportunity.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Program - MS,Project - MS,Task Order - MS</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.StageName</field>
+            <operation>equals</operation>
+            <value>0-0-Planning,0-1-Qualification</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Submittal_Date_Proposal__c</field>
+            <operation>lessThan</operation>
+            <value>TODAY</value>
+        </criteriaItems>
+        <description>Notify Opportunity BD Lead and Capture Manager of MS opportunities with Proposal Due Dates that have passed</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>Nancy Test --Estimated Start or Award Dates Passed</fullName>
@@ -1402,9 +1661,9 @@ On_Hold_Date__c
         <active>true</active>
         <booleanFilter>1 OR 2 OR 3</booleanFilter>
         <criteriaItems>
-            <field>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</field>
+            <field>Opportunity.Lead_Group__c</field>
             <operation>equals</operation>
-            <value>Construction Services</value>
+            <value>CS-BC</value>
         </criteriaItems>
         <criteriaItems>
             <field>Opportunity.Department_2_Name__c</field>
@@ -1417,6 +1676,52 @@ On_Hold_Date__c
             <value>CONTAINS41.CS.,-CS,Construction Services,- CONS -,CS -</value>
         </criteriaItems>
         <description>Notifies several people that a new Construction Services BL opportunity has been created.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>New NA Environment Booking</fullName>
+        <active>true</active>
+        <criteriaItems>
+            <field>Opportunity.Geography_Formula__c</field>
+            <operation>equals</operation>
+            <value>North America</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</field>
+            <operation>equals</operation>
+            <value>Environment</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.StageName</field>
+            <operation>startsWith</operation>
+            <value>6</value>
+        </criteriaItems>
+        <description>Tests for Stage changed to 6, Geography=NA, Business Line = Environment</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>New NA Oil %26 Gas Booking</fullName>
+        <actions>
+            <name>New_NA_Oil_Gas_Bookings_Alert</name>
+            <type>Alert</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>Opportunity.Geography_Formula__c</field>
+            <operation>equals</operation>
+            <value>North America</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.End_Client_Sector__c</field>
+            <operation>equals</operation>
+            <value>Oil &amp; Gas</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.StageName</field>
+            <operation>startsWith</operation>
+            <value>6</value>
+        </criteriaItems>
+        <description>Tests for Stage changed to 6, Geography=NA, End-Client Sector = Oil &amp; Gas</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
@@ -2163,6 +2468,214 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
+        <fullName>Update MS Priority to 1</fullName>
+        <actions>
+            <name>Update_MS_Priority_to_1</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <booleanFilter>(1 AND 2 AND 3 AND 4) OR (1 AND 2 AND 5 AND 6) OR (2 AND 7 AND 8) OR (7 AND 2 AND 3 AND 9) OR (7 AND 2 AND 5 AND 10)</booleanFilter>
+        <criteriaItems>
+            <field>Opportunity.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Project - MS,Task Order - MS</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.MS_Priority_Override__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Contract_Type__c</field>
+            <operation>equals</operation>
+            <value>Fixed Price,Lump Sum,Lump Sum TurnKey,Target Price/Fixed Price</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Amount</field>
+            <operation>greaterOrEqual</operation>
+            <value>&quot;USD 50,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Contract_Type__c</field>
+            <operation>notEqual</operation>
+            <value>Fixed Price,Lump Sum,Lump Sum TurnKey,Target Price/Fixed Price</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Amount</field>
+            <operation>greaterOrEqual</operation>
+            <value>&quot;USD 250,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Program - MS</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.AECOM_Role__c</field>
+            <operation>equals</operation>
+            <value>Prime</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Program_Estimated_Revenue__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>&quot;USD 50,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Program_Estimated_Revenue__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>&quot;USD 250,000,000&quot;</value>
+        </criteriaItems>
+        <description>This workflow rule updates the MS Priority field on Opportunity to 1.</description>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Update MS Priority to 2</fullName>
+        <actions>
+            <name>Update_MS_Priority_to_2</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <booleanFilter>(1 AND 2 AND 3 AND 4 AND 5) OR (1 AND 2 AND 6 AND 7 AND 8) OR (2 AND 9 AND 10) OR (9 AND 2 AND 3 AND 11 AND 12 AND 15) OR (9 AND 2 AND 6 AND 13 AND 14 AND 15)</booleanFilter>
+        <criteriaItems>
+            <field>Opportunity.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Project - MS,Task Order - MS</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.MS_Priority_Override__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Contract_Type__c</field>
+            <operation>equals</operation>
+            <value>Fixed Price,Lump Sum,Lump Sum TurnKey,Target Price/Fixed Price</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Amount</field>
+            <operation>greaterOrEqual</operation>
+            <value>&quot;USD 10,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Amount</field>
+            <operation>lessThan</operation>
+            <value>&quot;USD 50,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Contract_Type__c</field>
+            <operation>notEqual</operation>
+            <value>Fixed Price,Lump Sum,Lump Sum TurnKey,Target Price/Fixed Price</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Amount</field>
+            <operation>lessThan</operation>
+            <value>&quot;USD 250,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Amount</field>
+            <operation>greaterOrEqual</operation>
+            <value>&quot;USD 40,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Program - MS</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.AECOM_Role__c</field>
+            <operation>equals</operation>
+            <value>Sub</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Program_Estimated_Revenue__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>&quot;USD 10,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Program_Estimated_Revenue__c</field>
+            <operation>lessThan</operation>
+            <value>&quot;USD 50,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Program_Estimated_Revenue__c</field>
+            <operation>lessThan</operation>
+            <value>&quot;USD 250,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Program_Estimated_Revenue__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>&quot;USD 40,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.AECOM_Role__c</field>
+            <operation>notEqual</operation>
+            <value>Prime</value>
+        </criteriaItems>
+        <description>This workflow rule updates the MS Priority field on Opportunity to 2.</description>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Update MS Priority to 3</fullName>
+        <actions>
+            <name>Update_MS_Priority_to_3</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <booleanFilter>(1 AND 2 AND 3 AND 4) OR (1 AND 2 AND 5 AND 6) OR (9 AND 2 AND 3 AND 7 AND 10) OR (9 AND 2 AND 5 AND 8 AND 10)</booleanFilter>
+        <criteriaItems>
+            <field>Opportunity.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Project - MS,Task Order - MS</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.MS_Priority_Override__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Contract_Type__c</field>
+            <operation>equals</operation>
+            <value>Fixed Price,Lump Sum,Lump Sum TurnKey,Target Price/Fixed Price</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Amount</field>
+            <operation>lessThan</operation>
+            <value>&quot;USD 10,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Contract_Type__c</field>
+            <operation>notEqual</operation>
+            <value>Fixed Price,Lump Sum,Lump Sum TurnKey,Target Price/Fixed Price</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Amount</field>
+            <operation>lessThan</operation>
+            <value>&quot;USD 40,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Program_Estimated_Revenue__c</field>
+            <operation>lessThan</operation>
+            <value>&quot;USD 10,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.Program_Estimated_Revenue__c</field>
+            <operation>lessThan</operation>
+            <value>&quot;USD 40,000,000&quot;</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Program - MS</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Opportunity.AECOM_Role__c</field>
+            <operation>notEqual</operation>
+            <value>Prime,Sub</value>
+        </criteriaItems>
+        <description>This workflow rule updates the MS Priority field on Opportunity to 3.</description>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
         <fullName>Update Master Contract Number %28Program%29 on TO</fullName>
         <actions>
             <name>Update_Master_Contract_Number_Program</name>
@@ -2202,7 +2715,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <name>Water_End_Market_Industrial</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <criteriaItems>
             <field>Opportunity.Geography_Formula__c</field>
             <operation>equals</operation>
@@ -2227,7 +2740,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <operation>notContain</operation>
             <value>Oil,Gas,Mining</value>
         </criteriaItems>
-        <description>Sets value based on a formula if user leaves it blank</description>
+        <description>Sets value based on a formula if user leaves it blank. NO LONGER USED AS OF AUGUST 2015.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
@@ -2236,7 +2749,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <name>Water_End_Market_Mining_and_Minerals</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <criteriaItems>
             <field>Opportunity.Geography_Formula__c</field>
             <operation>equals</operation>
@@ -2261,7 +2774,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <operation>contains</operation>
             <value>Mining</value>
         </criteriaItems>
-        <description>Sets value based on a formula if user leaves it blank</description>
+        <description>Sets value based on a formula if user leaves it blank. NO LONGER USED AS OF AUGUST 2015.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
@@ -2270,7 +2783,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <name>Water_End_Market_Municipal_Water</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <criteriaItems>
             <field>Opportunity.Geography_Formula__c</field>
             <operation>equals</operation>
@@ -2281,21 +2794,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <operation>equals</operation>
             <value>Water</value>
         </criteriaItems>
-        <criteriaItems>
-            <field>Opportunity.Water_End_Market__c</field>
-            <operation>equals</operation>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Opportunity.Client_Group__c</field>
-            <operation>startsWith</operation>
-            <value>Municipal</value>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Opportunity.Primary_Market_Segment_Practice_Area__c</field>
-            <operation>equals</operation>
-            <value>Wastewater</value>
-        </criteriaItems>
-        <description>Selects value based on a formula if user leaves it blank</description>
+        <description>Selects value based on a formula if user leaves it blank. NO LONGER USED AS OF AUGUST 2015.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
@@ -2304,7 +2803,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <name>NA_Water_End_Market_Municipal_Water</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <criteriaItems>
             <field>Opportunity.Geography_Formula__c</field>
             <operation>equals</operation>
@@ -2329,7 +2828,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <operation>equals</operation>
             <value>Water,PMCM Water BL</value>
         </criteriaItems>
-        <description>Selects value based on a formula if user leaves it blank</description>
+        <description>Selects value based on a formula if user leaves it blank. NO LONGER USED AS OF AUGUST 2015.</description>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
@@ -2338,7 +2837,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <name>Water_End_Market_Oil_Gas</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <booleanFilter>1 AND 2 AND 3 AND (4 or 5)</booleanFilter>
         <criteriaItems>
             <field>Opportunity.Geography_Formula__c</field>
@@ -2364,7 +2863,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <operation>contains</operation>
             <value>Gas</value>
         </criteriaItems>
-        <description>Sets value based on a formula if user leaves it blank</description>
+        <description>Sets value based on a formula if user leaves it blank. NO LONGER USED AS OF AUGUST 2015.</description>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
@@ -2373,7 +2872,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <name>Water_End_Market_State_Federal_AE</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <criteriaItems>
             <field>Opportunity.Geography_Formula__c</field>
             <operation>equals</operation>
@@ -2398,7 +2897,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <operation>notEqual</operation>
             <value>Water Resources</value>
         </criteriaItems>
-        <description>Sets value based on a formula if user leaves it blank</description>
+        <description>Sets value based on a formula if user leaves it blank. NO LONGER USED AS OF AUGUST 2015.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
@@ -2407,7 +2906,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <name>Water_End_Market_State_Fed_Water_Res</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <criteriaItems>
             <field>Opportunity.Geography_Formula__c</field>
             <operation>equals</operation>
@@ -2418,21 +2917,7 @@ ISPICKVAL(StageName , &quot;9 Lost&quot;)))</formula>
             <operation>equals</operation>
             <value>Water</value>
         </criteriaItems>
-        <criteriaItems>
-            <field>Opportunity.Water_End_Market__c</field>
-            <operation>equals</operation>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Opportunity.Client_Group__c</field>
-            <operation>startsWith</operation>
-            <value>State,National</value>
-        </criteriaItems>
-        <criteriaItems>
-            <field>Opportunity.Primary_Market_Segment_Practice_Area__c</field>
-            <operation>equals</operation>
-            <value>Water Resources</value>
-        </criteriaItems>
-        <description>Selects value based on a formula if user leaves it blank</description>
+        <description>Selects value based on a formula if user leaves it blank. NO LONGER USED AS OF AUGUST 2015.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <tasks>

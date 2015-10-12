@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
@@ -60,6 +61,19 @@
         <inlineHelpText>Account ID from Account for syncing report data</inlineHelpText>
         <label>Account ID</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Account_Team__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>AECOM team, e.g., EBL, EMEA, Upstream</inlineHelpText>
+        <label>Account Team</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -95,9 +109,8 @@
     <fields>
         <fullName>Americas_Acct_Mgr__c</fullName>
         <externalId>false</externalId>
-        <formula>AcctPlan__r.Americas_Account_Manager__r.First_Name__c  + &quot; &quot; + AcctPlan__r.Americas_Account_Manager__r.Last_Name__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Americas Acct Mgr</label>
+        <formula>AcctPlan__r.Americas_Account_Manager__r.FirstName + &quot; &quot; +  AcctPlan__r.Americas_Account_Manager__r.LastName</formula>
+        <label>Joint Account Manager/JCAM</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -170,9 +183,8 @@
     <fields>
         <fullName>Global_Account_Manager__c</fullName>
         <externalId>false</externalId>
-        <formula>AcctPlan__r.Global_Account_Manager__r.First_Name__c   + &quot; &quot; + AcctPlan__r.Global_Account_Manager__r.Last_Name__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Global Account Manager</label>
+        <formula>AcctPlan__r.Global_Account_Manager__r.FirstName + &quot; &quot; +  AcctPlan__r.Global_Account_Manager__r.LastName</formula>
+        <label>Account Manager/CAM</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -229,8 +241,7 @@
     <fields>
         <fullName>Regional_Account_Manager__c</fullName>
         <externalId>false</externalId>
-        <formula>AcctPlan__r.Regional_Account_Manager__r.First_Name__c + &quot; &quot; +   AcctPlan__r.Regional_Account_Manager__r.Last_Name__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <formula>AcctPlan__r.Regional_Account_Manager__r.FirstName + &quot; &quot; + AcctPlan__r.Regional_Account_Manager__r.LastName</formula>
         <label>Regional Account Manager</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -309,7 +320,7 @@
         <fullName>View_Bookings_Forecast__c</fullName>
         <description>Link to a report in the Embedded Reports folder</description>
         <externalId>false</externalId>
-        <formula>HYPERLINK(&quot;/00Oa0000007wncA?pv0=&quot;+Account_ID__c, &quot;Display opportunities with estimated book dates in the current fiscal year&quot;, &quot;_top&quot;)</formula>
+        <formula>HYPERLINK(&quot;/00Oa0000007wncA?pv0=&quot;+ AcctPlan__r.Account__r.Hierarchy_ID__c , &quot;Display opportunities with estimated book dates in the current fiscal year&quot;, &quot;_top&quot;)</formula>
         <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
         <label>View Bookings Forecast</label>
         <required>false</required>
@@ -321,7 +332,7 @@
     <fields>
         <fullName>View_Capture_Rate__c</fullName>
         <externalId>false</externalId>
-        <formula>HYPERLINK(&quot;/00Oa0000007v8Au?pv0=&quot;+Account_ID__c, &quot;Display capture rate graph and data for this account (current and previous fiscal year)&quot;, &quot;_top&quot;)</formula>
+        <formula>HYPERLINK(&quot;/00Oa0000007v8Au?pv0=&quot;+ AcctPlan__r.Account__r.Hierarchy_ID__c, &quot;Display capture rate graph and data for this account (current and previous fiscal year)&quot;, &quot;_top&quot;)</formula>
         <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
         <label>View Capture Rate</label>
         <required>false</required>
@@ -333,7 +344,7 @@
     <fields>
         <fullName>View_Hit_Rate__c</fullName>
         <externalId>false</externalId>
-        <formula>HYPERLINK(&quot;/00Oa0000007wozy?pv0=&quot;+Account_ID__c, &quot;Display hit rate graph and data for this account (current and previous fiscal year)&quot;, &quot;_top&quot;)</formula>
+        <formula>HYPERLINK(&quot;/00Oa0000007wozy?pv0=&quot;+AcctPlan__r.Account__r.Hierarchy_ID__c, &quot;Display hit rate graph and data for this account (current and previous fiscal year)&quot;, &quot;_top&quot;)</formula>
         <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
         <label>View Hit Rate</label>
         <required>false</required>
@@ -346,7 +357,7 @@
         <fullName>View_Key_Opportunities__c</fullName>
         <description>Passes parameter to get report</description>
         <externalId>false</externalId>
-        <formula>HYPERLINK(&quot;/00Oa0000007w57G?pv0=&quot;+Account_ID__c, &quot;Display current opportunities for this account with value &gt;$1 million or &apos;Must Win&apos; checked&quot;, &quot;_top&quot;)</formula>
+        <formula>HYPERLINK(&quot;/00Oa0000007w57G?pv0=&quot;+AcctPlan__r.Account__r.Hierarchy_ID__c, &quot;Display current opportunities for this account with value &gt;$1 million or &apos;Must Win&apos; checked&quot;, &quot;_top&quot;)</formula>
         <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
         <label>View Key Opportunities</label>
         <required>false</required>
@@ -358,7 +369,7 @@
     <fields>
         <fullName>View_Loss_Analysis__c</fullName>
         <externalId>false</externalId>
-        <formula>HYPERLINK(&quot;/00Oa0000007wnbH?pv0=&quot;+Account_ID__c, &quot;Display account opportunities lost during the current and previous fiscal year&quot;, &quot;_top&quot;)</formula>
+        <formula>HYPERLINK(&quot;/00Oa0000007wnbH?pv0=&quot;+AcctPlan__r.Account__r.Hierarchy_ID__c, &quot;Display account opportunities lost during the current and previous fiscal year&quot;, &quot;_top&quot;)</formula>
         <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
         <label>View Loss Analysis</label>
         <required>false</required>
@@ -371,7 +382,7 @@
         <fullName>View_Opportunity_Backlog__c</fullName>
         <description>Passes parameter to get report</description>
         <externalId>false</externalId>
-        <formula>HYPERLINK(&quot;/00Oa0000007wIYR?pv0=&quot;+Account_ID__c, &quot;Display a report of all current opportunities for this account&quot;, &quot;_top&quot;)</formula>
+        <formula>HYPERLINK(&quot;/00Oa0000007wIYR?pv0=&quot;+AcctPlan__r.Account__r.Hierarchy_ID__c, &quot;Display a report of all current opportunities for this account&quot;, &quot;_top&quot;)</formula>
         <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
         <label>View Opportunity Backlog</label>
         <required>false</required>
@@ -420,6 +431,16 @@
         <type>Summary</type>
     </fields>
     <label>Quarterly Reviews</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Account__c</columns>
+        <columns>Quarterly_Review_Link__c</columns>
+        <columns>Review_Period__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
     <nameField>
         <displayFormat>Qtr-{0000000}</displayFormat>
         <label>Qtr Review Name</label>

@@ -1,0 +1,73 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>RECORDTYPE</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>All active opportunities where Project Country countains a country in Africa</description>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity.ProjectCountry__c</column>
+            <operator>contains</operator>
+            <value>Algeria,Angola,Benin,Botswana,Burkina Faso,Burundi,Cameroon,Canary Islands,Cape Verde,Ceuta,Chad,Comoros,Ivory,d&apos;Ivoire,Congo,Djibouti,Egypt,Guinea,Eritrea,Ethiopia,Gabon,Gambia,Ghana,Guinea-Bissau,Kenya,Lesotho,Liberia,Libya,Madagascar,Madeira,Malawi,Mali,Mauritania,Mauritius,Mayotte,Melilla,Morocco,Mozambique,Namibia,Niger,Nigeria,Réunion,Rwanda,Sahrawi,Saint Helena,São Tomé and Príncipe,Senegal,Seychelles,Leone,Somalia,Sudan,Swaziland,Tanzania,Togo,Tunisia,Uganda,Zambia,Zimbabwe,Africa</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>equals</operator>
+            <value>1 Lead,1A Lead - Scout,1B Lead - Engage,1C Lead - Position,2 Capture,2A Capture - LOI,2B Capture - EOI,2C Capture - SOQ,2D Capture - RFI,2E Capture - RFP,3 Submitted,3A Capture - Proposal Submitted,3B Capture - Short List,3C Capture - Interview</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Primary_Business_Line__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>STAGE_NAME</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.ProjectCountry__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Africa Open Opportunities</name>
+    <params>
+        <name>open</name>
+        <value>open</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

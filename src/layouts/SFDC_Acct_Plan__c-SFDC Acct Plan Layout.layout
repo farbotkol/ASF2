@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
-    <excludeButtons>Clone</excludeButtons>
+    <excludeButtons>Share</excludeButtons>
     <excludeButtons>Submit</excludeButtons>
     <layoutSections>
         <customLabel>true</customLabel>
@@ -26,6 +26,9 @@
                 <field>Account__c</field>
             </layoutItems>
             <layoutItems>
+                <emptySpace>true</emptySpace>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Executive_Sponsor__c</field>
             </layoutItems>
@@ -39,18 +42,15 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Regional_Account_Manager__c</field>
-            </layoutItems>
-            <layoutItems>
-                <emptySpace>true</emptySpace>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
                 <field>Current_AECOM_Work__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>Potential_AECOM_Work__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ECAM_CGP_Categories__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -84,11 +84,115 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Prior_FY_Sales_NSR__c</field>
+                <field>Prior_FY_Revenue_Gross__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Current_FY_Est_Client_Accessible_Spend__c</field>
+                <field>Prior_FY_Revenue_NSR__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Accessible_Client_Spend__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>Current_Client_Wallet_Share__c</field>
+            </layoutItems>
+        </layoutColumns>
+        <style>TwoColumnsTopToBottom</style>
+    </layoutSections>
+    <layoutSections>
+        <customLabel>true</customLabel>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Key Factors in Account Planning</label>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Client_s_Object_or_Aim_for_FY__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Three_things_the_client_cares_about__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Recent_client_news__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Issues_that_could_prevent_account_growth__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>AECOM_Value_Proposition__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>AECOM_Account_Vision__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>AECOM_distinguishers__c</field>
+            </layoutItems>
+        </layoutColumns>
+        <style>OneColumn</style>
+    </layoutSections>
+    <layoutSections>
+        <customLabel>true</customLabel>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Performance Indicator Reports</label>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>View_Opportunity_Backlog__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>View_Hit_Rate__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>View_Capture_Rate__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>View_Loss_Analysis__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>View_Key_Opportunities__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>View_YTD_Bookings_for_Hierarchy__c</field>
+            </layoutItems>
+        </layoutColumns>
+        <layoutColumns>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>View_Heat_Map__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>View_Revenue_Growth_Roadmap__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>View_Strategic_Roadmap__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>View_Bookings_by_Project_Type__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>View_Bookings_by_Service_Group__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>View_Bookings_by_Geography__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -138,17 +242,9 @@
         </quickActionListItems>
     </quickActionList>
     <relatedLists>
-        <fields>Timing__c</fields>
-        <fields>Needs_Priorities_Growth_Plans_M_A__c</fields>
-        <fields>Drivers_business_regulatory__c</fields>
-        <fields>Budget__c</fields>
-        <fields>Client_Contact__c</fields>
-        <fields>NAME</fields>
-        <relatedList>Client_Strategy_Development__c.Account_Plan__c</relatedList>
-    </relatedLists>
-    <relatedLists>
         <customButtons>New_Competitor</customButtons>
         <excludeButtons>New</excludeButtons>
+        <fields>Account_Team__c</fields>
         <fields>Competitor_Firm__c</fields>
         <fields>Relationship__c</fields>
         <fields>Knowledge__c</fields>
@@ -158,32 +254,64 @@
         <fields>Share_of_wallet__c</fields>
         <fields>Total_Score__c</fields>
         <fields>How_to_Leverage_Mitigate__c</fields>
-        <fields>Competitor_Notes__c</fields>
         <relatedList>Competitor_Information__c.Account_Plan__c</relatedList>
-        <sortField>Competitor_Firm__c</sortField>
+        <sortField>Account_Team__c</sortField>
+        <sortOrder>Asc</sortOrder>
+    </relatedLists>
+    <relatedLists>
+        <fields>Account_Team__c</fields>
+        <fields>Service__c</fields>
+        <fields>Timing__c</fields>
+        <fields>Needs_Priorities_Growth_Plans_M_A__c</fields>
+        <fields>Drivers_business_regulatory__c</fields>
+        <fields>Budget__c</fields>
+        <fields>Client_Contact__c</fields>
+        <fields>Actions__c</fields>
+        <fields>NAME</fields>
+        <relatedList>Client_Strategy_Development__c.Account_Plan__c</relatedList>
+        <sortField>Account_Team__c</sortField>
         <sortOrder>Asc</sortOrder>
     </relatedLists>
     <relatedLists>
         <customButtons>New_Acct_Plan_Goal</customButtons>
         <excludeButtons>New</excludeButtons>
-        <fields>Financial_Target_Link__c</fields>
+        <fields>Account_Team__c</fields>
+        <fields>Service__c</fields>
+        <fields>Geography__c</fields>
         <fields>Bookings_Target__c</fields>
         <fields>Gross_Revenue_Goal__c</fields>
         <fields>Net_Revenue_Goal__c</fields>
-        <fields>GM_Target__c</fields>
+        <fields>Client_specified_KPI__c</fields>
+        <fields>Goal_Wallet_Share__c</fields>
         <relatedList>Goals_Results__c.Click_to_return__c</relatedList>
+        <sortField>Account_Team__c</sortField>
+        <sortOrder>Asc</sortOrder>
+    </relatedLists>
+    <relatedLists>
+        <fields>Account_Team__c</fields>
+        <fields>Quarterly_Review_Link__c</fields>
+        <fields>Review_Date__c</fields>
+        <fields>YTD_Bookings__c</fields>
+        <fields>YTD_Gross_Revenue__c</fields>
+        <fields>YTD_Net_Revenue__c</fields>
+        <relatedList>Qtr_Review__c.AcctPlan__c</relatedList>
+        <sortField>Account_Team__c</sortField>
+        <sortOrder>Asc</sortOrder>
     </relatedLists>
     <relatedLists>
         <fields>TASK.SUBJECT</fields>
+        <fields>Account_Team__c</fields>
         <fields>TASK.DUE_DATE</fields>
         <fields>TASK.STATUS</fields>
         <fields>TASK.PRIORITY</fields>
         <fields>CORE.USERS.FULL_NAME</fields>
         <fields>Internal_Comments__c</fields>
+        <fields>Strategic_Roadmap_ID__c</fields>
         <relatedList>RelatedActivityList</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>TASK.SUBJECT</fields>
+        <fields>Account_Team__c</fields>
         <fields>TASK.WHO_NAME</fields>
         <fields>ACTIVITY.TASK</fields>
         <fields>TASK.DUE_DATE</fields>
@@ -192,26 +320,7 @@
         <relatedList>RelatedHistoryList</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>Quarterly_Review_Link__c</fields>
-        <fields>Review_Date__c</fields>
-        <fields>YTD_Bookings__c</fields>
-        <fields>YTD_Gross_Revenue__c</fields>
-        <fields>YTD_Net_Revenue__c</fields>
-        <relatedList>Qtr_Review__c.AcctPlan__c</relatedList>
-    </relatedLists>
-    <relatedLists>
         <relatedList>RelatedNoteList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <customButtons>New_Action</customButtons>
-        <excludeButtons>New</excludeButtons>
-        <fields>Action__c</fields>
-        <fields>Assigned_to__c</fields>
-        <fields>Est_Comp_Date__c</fields>
-        <fields>Strategy_Status__c</fields>
-        <relatedList>SFDC_Strategy__c.SFDC_Acct_Plan__c</relatedList>
-        <sortField>Est_Comp_Date__c</sortField>
-        <sortOrder>Desc</sortOrder>
     </relatedLists>
     <relatedLists>
         <relatedList>RelatedEntityHistoryList</relatedList>

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Opportunity.Lead_Region_Formula__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Date_RFP_expected__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Priority_Notes__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Marketing_Proposal_Lead__c</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.NA_BL__c</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Probability_Stage__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Program_Estimated_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Forecast_Net_amount__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Stage_Group__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Fran Hegler report</description>
+    <filter>
+        <booleanFilter>(1 AND (2 or 3)) AND 4</booleanFilter>
+        <criteriaItems>
+            <column>Opportunity.Geography_Formula__c</column>
+            <operator>equals</operator>
+            <value>North America</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>AMOUNT</column>
+            <operator>greaterOrEqual</operator>
+            <value>USD 100000</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Ceiling_Amount_ReadOnly__c</column>
+            <operator>greaterOrEqual</operator>
+            <value>USD 100000</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>equals</operator>
+            <value>Transportation</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <name>TRA Priority Upcomimg Pursuits</name>
+    <params>
+        <name>open</name>
+        <value>open</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>AMOUNT.CONVERT</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.Date_RFP_expected__c</dateColumn>
+        <interval>INTERVAL_NEXT90</interval>
+    </timeFrameFilter>
+</Report>

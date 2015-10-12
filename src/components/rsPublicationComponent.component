@@ -11,10 +11,37 @@
     			$j('[id$=pubAttachLink]').removeAttr('onclick href').parent().addClass('disabled');
     		}
     		setPublicationRequiredFields();
+    		setUpPubParts();
+    		helpTextSetup();
     	});
     	function setPublicationRequiredFields() {
-    		///Required Fields for this component
+    		///Required Fields for this component.
 			requiredFields = ['[id$=pubTitle]','[id$=pub]'];
+    	}
+    	function setUpPubParts() {
+    		j$('a[id$=movePubPartUp]').each(function() {
+				if(j$(this).hasClass('0')) {
+					j$(this).removeAttr('onclick href').parent().addClass('disabled');
+					j$(this).click(function(e) {
+						e.preventDefault();
+					});
+				}
+			});
+			j$('a[id$=movePubPartDown]').each(function() {
+				var arr = j$(this).attr('class').split(" ");
+				if((arr.length == 1 && arr[0] == '0')) {
+					j$(this).removeAttr('onclick href').parent().addClass('disabled');
+					j$(this).click(function(e) {
+						e.preventDefault();
+					});
+				}
+				else if (arr[0] == arr[1] || (arr[0] == '0' && arr[1].length == 0)) {
+					j$(this).removeAttr('onclick href').parent().addClass('disabled');
+					j$(this).click(function(e) {
+						e.preventDefault();
+					});
+				}
+			});
     	}
     </script>
     <div class="panel panel-default">
@@ -34,7 +61,9 @@
 			    <table id="editPubTable" class="table">
 			    	<tbody>
 			    		<tr>
-			    			<td style="border-top:none;"><apex:outputLabel for="pubTitle" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].Label}"/></td>
+			    			<td style="border-top:none;">
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td style="border-top:none;">
 			    				<div class="rsRequired">
                             		<div class="rsRequiredBlock"/>
@@ -42,11 +71,15 @@
 					    			<span class="rsError"><br/>{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].Label} {!$Label.Is_Required}</span>
 					    		</div>
 			    			</td>
-			    			<td style="border-top:none;"><apex:outputLabel for="pubDate" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].Label}"/></td>
+			    			<td style="border-top:none;">
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td style="border-top:none;"><apex:inputField id="pubDate" value="{!CurrentPart.Obj['Publication_Date__c']}"/></td>
 			    		</tr>
 			    		<tr>
-			    			<td><apex:outputLabel for="pub" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].Label}"/></td>
+			    			<td>
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td>
 			    				<div class="rsRequired">
                             		<div class="rsRequiredBlock"/>
@@ -54,7 +87,9 @@
 				    				<span class="rsError"><br/>{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].Label} {!$Label.Is_Required}</span>
 				    			</div>
 			    			</td>
-			    			<td><apex:outputLabel for="pubAuthor" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].Label}"/></td>
+			    			<td>
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td><apex:inputText id="pubAuthor" value="{!CurrentPart.PublicationAuthor}" maxlength="255"/></td>
 			    		</tr>
 			    	</tbody>
@@ -88,15 +123,23 @@
 			    <table class="table">
 			    	<tbody>
 			    		<tr>
-			    			<td><apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].Label}"/></td>
+			    			<td>
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td><apex:outputText value="{!CurrentPart.PublicationTitle}"/></td>
-			    			<td><apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].Label}"/></td>
+			    			<td>
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td><apex:outputText value="{!CurrentPart.PublicationDate}"/></td>
 			    		</tr>
 			    		<tr>
-			    			<td><apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].Label}"/></td>
+			    			<td>
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td><apex:outputText value="{!CurrentPart.Publication}"/></td>
-			    			<td><apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].Label}"/></td>
+			    			<td>
+			    				<apex:outputLabel value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].Label}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].inlineHelpText}"/></apex:outputLabel>
+			    			</td>
 			    			<td><apex:outputText value="{!CurrentPart.PublicationAuthor}"/></td>
 			    		</tr>
 			    	</tbody>
@@ -113,28 +156,28 @@
 				    <tr>
 				        <th>Action</th>
 				        <th>
-				        	<apex:commandLink action="{!sortParts}" reRender="pubPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].Label}">
+				        	<apex:commandLink action="{!sortParts}" reRender="pubPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);setUpPubParts();" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Title__c'].Label}">
 				        		<apex:param name="sortField" value="Publication_Title__c"/>
 				        		<span class="toggleClassDown glyphicon glyphicon-chevron-down"></span>
 				        		<span class="toggleClassUp glyphicon glyphicon-chevron-up"></span>  
 				        	</apex:commandLink>
 				        </th>
 				        <th>
-				        	<apex:commandLink action="{!sortParts}" reRender="pubPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].Label}">
+				        	<apex:commandLink action="{!sortParts}" reRender="pubPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);setUpPubParts();" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication__c'].Label}">
 				        		<apex:param name="sortField" value="Publication__c"/>
 				        		<span class="toggleClassDown glyphicon glyphicon-chevron-down"></span>
 				        		<span class="toggleClassUp glyphicon glyphicon-chevron-up"></span>  
 				        	</apex:commandLink>
 				        </th>
 				        <th>
-				        	<apex:commandLink action="{!sortParts}" reRender="pubPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].Label}">
+				        	<apex:commandLink action="{!sortParts}" reRender="pubPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);setUpPubParts();" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Author__c'].Label}">
 				        		<apex:param name="sortField" value="Publication_Author__c"/>
 				        		<span class="toggleClassDown glyphicon glyphicon-chevron-down"></span>
 				        		<span class="toggleClassUp glyphicon glyphicon-chevron-up"></span>  
 				        	</apex:commandLink>
 				        </th>
 				        <th>
-				        	<apex:commandLink action="{!sortParts}" reRender="pubPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].Label}">
+				        	<apex:commandLink action="{!sortParts}" reRender="pubPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);setUpPubParts();" value="{!$ObjectType['rs_Profile_Part__c'].fields['Publication_Date__c'].Label}">
 				        		<apex:param name="sortField" value="Publication_Date__c"/>
 				        		<span class="toggleClassDown glyphicon glyphicon-chevron-down"></span>
 				        		<span class="toggleClassUp glyphicon glyphicon-chevron-up"></span>  
@@ -164,6 +207,17 @@
 	                                                <apex:param value="{!part.ProfilePart.Id}" name="partId"/>
 	                                            </apex:commandLink>
 										    </li>
+										     <li role="presentation" class="divider"></li>
+										    <li>
+												<apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!movePartUp}" value="{!$Label.Move_Part_Up}" styleClass="{!part.ProfilePart.PartSequence}" reRender="{!reRender}" oncomplete="resetProgress();" onclick="if(inProgress) return false; showSectionSpinner('pubHeader'); inProgress = true;" id="movePubPartUp">
+	                                                <apex:param value="{!part.ProfilePart.Id}" name="partId"/>
+	                                            </apex:commandLink>	
+	                                        </li>	
+	                                        <li>
+												<apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!movePartDown}" value="{!$Label.Move_Part_Down}" styleClass="{!Parts.size - 1} {!part.ProfilePart.PartSequence}" reRender="{!reRender}" oncomplete="resetProgress();" onclick="if(inProgress) return false; showSectionSpinner('pubHeader'); inProgress = true;" id="movePubPartDown">
+	                                                <apex:param value="{!part.ProfilePart.Id}" name="partId"/>
+	                                            </apex:commandLink>	
+	                                        </li>	
 										    <li role="presentation" class="divider"></li>
 										    <li role="presentation" class="{!IF(canEdit, '','disabled')}">
 										        <apex:commandLink tabindex="-1" html-data-role="menuitem" value="{!$Label.Add_Attachment}" onclick="if(inProgress) return false; showSectionSpinner('pubHeader'); inProgress = true; window.top.location.href='/apex/rsAttachment?partId={!part.ProfilePart.Id}&retUrl=/_ui/core/userprofile/UserProfilePage&ownerId={!profile.Id}&tab=Skills_and_Qualifications&tab.Skills_and_Qualifications.subtab=3';" oncomplete="resetProgress();" id="pubAttachLink">
@@ -178,7 +232,7 @@
 										    </li>
 										    <li role="presentation" class="divider"></li>
 										    <li role="presentation" class="{!IF(canEdit, '','disabled')}">
-										        <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!deletePart}" value="{!$Label.Delete}" reRender="{!reRender}" onclick="if(inProgress) return false; if(!confirmDeletePart()) return false; inProgress = true; showSectionSpinner('pubHeader');" oncomplete="resetProgress();">
+										        <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!deletePart}" value="{!$Label.Delete}" reRender="{!reRender}" onclick="if(inProgress) return false; if(!confirmDeletePart()) return false; inProgress = true; showSectionSpinner('pubHeader');" oncomplete="resetProgress();setUpPubParts();">
 	                                                <apex:param value="{!part.ProfilePart.Id}" name="partId"/>
 	                                            </apex:commandLink>
 										    </li>

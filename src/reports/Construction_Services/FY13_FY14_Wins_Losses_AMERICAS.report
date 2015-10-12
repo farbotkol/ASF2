@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_20216602</developerName>
+        <masterLabel>CS Regions/Groups</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Opportunity_Department__c.AECOM_Department__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>1901 - 41.CS.PM/CM - West</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1902 - 41.CS.San Francisco PM/CM</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1903 - 41.CS.PM/CM - Central</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1904 - 41.CS.Denver PM/CM</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1905 - 41.CS.PM/CM Boston</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>1908 - 41.CS.PM/CM Mid-Atlantic</sourceValue>
+            </sourceValues>
+            <value>NA PM/CM</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>6445 AD-CS (AMEL)</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>6462 DU-CS (AMEL)</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>6611 DO-CS (AMEL)</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>6411 AD-CS (AMELC)</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>6428 AA-CS (AMEL)</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>KSA-Construction Services (AECOM ARABIA)</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>6665 DO-CS (AMEL)</sourceValue>
+            </sourceValues>
+            <value>CS Middle East</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>9926 - CONS - UK - LONDON</sourceValue>
+            </sourceValues>
+            <value>Europe CS</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>RowCount</column>
+        </chartSummaries>
+        <chartType>VerticalColumnStacked</chartType>
+        <enableHoverLabels>true</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Opportunity.Win_Loss_Report_Date__c</groupingColumn>
+        <legendPosition>Right</legendPosition>
+        <location>CHART_TOP</location>
+        <secondaryGroupingColumn>Opportunity.Stage_Group__c</secondaryGroupingColumn>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <title>Win/Loss</title>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>Opportunity.Geography_Formula__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.CM_Type__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Project_Delivery_Method__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Construction_cost__c.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <aggregateTypes>Average</aggregateTypes>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity_Department__c.TO_Project_Net_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <columns>
+        <field>DESCRIPTION</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>contains</operator>
+            <value>5,6,8,9</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity_Department__c.Business_Line__c</column>
+            <operator>contains</operator>
+            <value>Construction Services</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>OPPORTUNITY_NAME</column>
+            <operator>notContain</operator>
+            <value>Task,task,Add.,add.,MPO,Additional S,Add,USPS WO,Mod</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>notEqual</operator>
+            <value>Opportunity.Program_Americas,Opportunity.Program_APAC,Opportunity.Program_EMEA</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Geography_Formula__c</column>
+            <operator>contains</operator>
+            <value>America</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>FiscalYear</dateGranularity>
+        <field>Opportunity.Win_Loss_Report_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Stage_Group__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity_Department__c.AECOM_Department__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>FY13 FY14 Wins/Losses - AMERICAS</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>OpportunityCustomEntity$Opportunity_Department__c@Opportunity_Department__c.Practice_Area__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.Win_Loss_Report_Date__c</dateColumn>
+        <endDate>2014-10-03</endDate>
+        <interval>INTERVAL_CUSTOM</interval>
+        <startDate>2012-09-29</startDate>
+    </timeFrameFilter>
+</Report>

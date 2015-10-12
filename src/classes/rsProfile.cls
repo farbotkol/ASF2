@@ -1,32 +1,32 @@
 /*************************************************************************
 *
 * PURPOSE: Decorator for user. Also maintains a list of rsProfileParts
-*          This object is what should be passed around to components  
+*          This object is what should be passed around to components
 *
 * CREATED: 2014 Ethos Solutions - www.ethos.com
 * AUTHOR: Jason M. Swenski
 ***************************************************************************/
 public with sharing class rsProfile extends rsModel {
-	
+
     public static Finder find = new Finder('User');
     private List<rsProfilePart> mProfileParts;
     private List<rsPRTeamEmployee> mProfileProjects;
     private final static Integer SEARCH_RESULT_SIZE = 1000;
     public User getUser() {
-    	return (User) mObj;
+        return (User) mObj;
     }
 
-	public rsProfile(User u) {
-		super(u);
-	}
+    public rsProfile(User u) {
+        super(u);
+    }
 
     public void refreshUser() {
-        mObj = (User)rsProfile.find.byId(this.getId()).getObj();
+        mObj = (User)rsProfile.find.byUserId(this.getId()).getObj();
     }
 
-	public List<rsProfilePart> getProfileParts() {
-        if(mProfileParts == null) {
-            if(UserInfo.getUserId() == this.getId() || UserInfo.getUserId() == this.getProfileProxy() || Profile_Info__c.getInstance().Is_Content_Manager__c ) {
+    public List<rsProfilePart> getProfileParts() {
+        if (mProfileParts == null) {
+            if (UserInfo.getUserId() == this.getId() || UserInfo.getUserId() == this.getProfileProxy() || Profile_Info__c.getInstance().Is_Content_Manager__c ) {
                 mProfileParts = rsProfilePart.find.byIdAsSelfOrProxyOrCM(mObj.Id);
             } else {
                 mProfileParts = getProfilePartsEmployeeView();
@@ -36,8 +36,8 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public List<rsPRTeamEmployee> getProfileProjects() {
-        if(mProfileProjects == null) {
-            if(UserInfo.getUserId() == this.getId() || UserInfo.getUserId() == this.getProfileProxy() || Profile_Info__c.getInstance().Is_Content_Manager__c ) {
+        if (mProfileProjects == null) {
+            if (UserInfo.getUserId() == this.getId() || UserInfo.getUserId() == this.getProfileProxy() || Profile_Info__c.getInstance().Is_Content_Manager__c ) {
                 mProfileProjects = rsPRTeamEmployee.find.byIdAsSelfOrProxyOrCM(mObj.Id);
             } else {
                 mProfileProjects = getProfileProjectsEmployeeView();
@@ -54,17 +54,19 @@ public with sharing class rsProfile extends rsModel {
         return rsPRTeamEmployee.find.byIdAsEmployee(mObj.Id);
     }
 
-	public List<rsProfilePart> getPartsByType(String type) {
-		List<rsProfilePart> parts = new List<rsProfilePart>();
-		for(rsProfilePart part : getProfileParts()) {        
-            if(part.isType(type))
-            parts.add(part);
-		}
-		return parts;
-	}
+    public List<rsProfilePart> getPartsByType(String type) {
+        List<rsProfilePart> parts = new List<rsProfilePart>();
+        for (rsProfilePart part : getProfileParts()) {
+            if (part.isType(type)) {
+                parts.add(part);
+            }
+        }
+        parts.sort();
+        return parts;
+    }
 
     public void setLock(Boolean lock) {
-        mObj.put('Is_Profile_Locked__c',lock);
+        mObj.put('Is_Profile_Locked__c', lock);
     }
     public Boolean getLock() {
         return (Boolean) mObj.get('Is_Profile_Locked__c');
@@ -104,32 +106,44 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setCitizenship(String citizenship) {
-        mObj.put('Citizenship__c',citizenship);
-    } 
+        mObj.put('Citizenship__c', citizenship);
+    }
 
     public String getTermDate() {
-        return mObj.get('Term_Date__c') != null ? Date.valueOf(mObj.get('Term_Date__c')).format() 
-                : '' ;
+        return mObj.get('Term_Date__c') != null ? Date.valueOf(mObj.get('Term_Date__c')).format()
+               : '' ;
     }
 
     public void setTermDate(String termDate) {
-        if(String.isNotBlank(termDate)) {
-            mObj.put('Term_Date__c',Date.parse(termDate));
+        if (String.isNotBlank(termDate)) {
+            mObj.put('Term_Date__c', Date.parse(termDate));
         } else {
-            mObj.put('Term_Date__c',null);
+            mObj.put('Term_Date__c', null);
         }
-    } 
+    }
+
+    public String getLastUserProfileUpdate() {
+        return mObj.get('Last_User_Profile_Update__c') != null ? DateTime.valueOf(mObj.get('Last_User_Profile_Update__c')).format()
+               : '' ;
+    }
+
+    public String getLastCMProfileUpdate() {
+        return mObj.get('Last_CM_Profile_Update__c') != null ? DateTime.valueOf(mObj.get('Last_CM_Profile_Update__c')).format()
+               : '' ;
+    }
+
+
 
     public String getDateOfBirth() {
-        return mObj.get('Date_Of_Birth__c') != null ? Date.valueOf(mObj.get('Date_Of_Birth__c')).format() 
-                : '' ;
+        return mObj.get('Date_Of_Birth__c') != null ? Date.valueOf(mObj.get('Date_Of_Birth__c')).format()
+               : '' ;
     }
 
     public void setDateOfBirth(String dob) {
-        if(String.isNotBlank(dob)) {
-            mObj.put('Date_Of_Birth__c',Date.parse(dob));
+        if (String.isNotBlank(dob)) {
+            mObj.put('Date_Of_Birth__c', Date.parse(dob));
         } else {
-            mObj.put('Date_Of_Birth__c',null);
+            mObj.put('Date_Of_Birth__c', null);
         }
     }
 
@@ -138,19 +152,19 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setTrackingId(String trackingId) {
-        mObj.put('TrackingId__c',trackingId);
+        mObj.put('TrackingId__c', trackingId);
     }
 
     public String getAdjustedServiceDate() {
         return mObj.get('Adjusted_Service_Date__c') != null ? Date.valueOf(mObj.get('Adjusted_Service_Date__c')).format()
-                : '';
+               : '';
     }
 
     public void setAdjustedServiceDate(String servDate) {
-        if(String.isNotBlank(servDate)) {
-            mObj.put('Adjusted_Service_Date__c',Date.parse(servDate));
+        if (String.isNotBlank(servDate)) {
+            mObj.put('Adjusted_Service_Date__c', Date.parse(servDate));
         } else {
-            mObj.put('Adjusted_Service_Date__c',null);
+            mObj.put('Adjusted_Service_Date__c', null);
         }
     }
 
@@ -159,7 +173,7 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setGender(String gender) {
-        mObj.put('Gender__c',gender);
+        mObj.put('Gender__c', gender);
     }
 
     public String getAssignmentStatus() {
@@ -167,7 +181,7 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setAssignmentStatus(String assignStatus) {
-        mObj.put('Assignment_Status__c',assignStatus);
+        mObj.put('Assignment_Status__c', assignStatus);
     }
 
     public String getEmployeeCategory() {
@@ -175,7 +189,7 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setEmployeeCategory(String empCat) {
-        mObj.put('Employee_Category__c',empCat);
+        mObj.put('Employee_Category__c', empCat);
     }
 
     public String getInternationalAssignmentStatus() {
@@ -183,16 +197,16 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setInternationalAssignmentStatus(String intlStatus) {
-        mObj.put('International_Assignment_Status__c',intlStatus);
+        mObj.put('International_Assignment_Status__c', intlStatus);
     }
 
     public String getOriginalHireDate() {
-        return mObj.get('Original_Hire_Date__c') != null ? Date.valueOf(mObj.get('Original_Hire_Date__c')).format() 
-                : '';
+        return mObj.get('Original_Hire_Date__c') != null ? Date.valueOf(mObj.get('Original_Hire_Date__c')).format()
+               : '';
     }
 
     public void setOriginalHireDate(String hireDate) {
-        mObj.put('Original_Hire_Date__c',hireDate);
+        mObj.put('Original_Hire_Date__c', hireDate);
     }
 
     public String getJobFamilyMeaning() {
@@ -200,19 +214,19 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setJobFamilyMeaning(String jobFamMeaning) {
-        mObj.put('Job_Family_Meaning__c',jobFamMeaning);
+        mObj.put('Job_Family_Meaning__c', jobFamMeaning);
     }
 
     public String getRehireDate() {
         return mObj.get('Rehire_Date__c') != null ? Date.valueOf(mObj.get('Rehire_Date__c')).format()
-                : '';
+               : '';
     }
 
     public void setRehireDate(String rehireDate) {
-        if(String.isNotBlank(rehireDate)) {
-            mObj.put('Rehire_Date__c',Date.parse(rehireDate));
+        if (String.isNotBlank(rehireDate)) {
+            mObj.put('Rehire_Date__c', Date.parse(rehireDate));
         } else {
-            mObj.put('Rehire_Date__c',null);
+            mObj.put('Rehire_Date__c', null);
         }
     }
 
@@ -221,7 +235,7 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setNationality(String nationality) {
-        mObj.put('Nationality__c',nationality);
+        mObj.put('Nationality__c', nationality);
     }
 
     public String getCiscoIPPhone() {
@@ -239,7 +253,7 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setInterestCountries(String countries) {
-        mObj.put('Interest_Countries__c',countries);
+        mObj.put('Interest_Countries__c', countries);
     }
 
     public String getInterestRegions() {
@@ -247,7 +261,7 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setInterestRegions(String regions) {
-        mObj.put('Interest_Regions__c',regions);
+        mObj.put('Interest_Regions__c', regions);
     }
 
     public String getInterestRelocatingCurrentCountry() {
@@ -255,7 +269,7 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setInterestRelocatingCurrentCountry(String countries) {
-        mObj.put('Interest_Relocating_Current_Country__c',countries);
+        mObj.put('Interest_Relocating_Current_Country__c', countries);
     }
 
     public String getInterestRelocatingDifferentCountry() {
@@ -263,7 +277,7 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setInterestRelocatingDifferentCountry(String countries) {
-        mObj.put('Interest_Relocating_Different_Country__c',countries);
+        mObj.put('Interest_Relocating_Different_Country__c', countries);
     }
 
     public String getLengthOfTimeAbroad() {
@@ -271,7 +285,7 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setLengthOfTimeAbroad(String timeSelect) {
-        mObj.put('Length_of_Time_Abroad__c',timeSelect);
+        mObj.put('Length_of_Time_Abroad__c', timeSelect);
     }
 
     public String getNoInterestCountries() {
@@ -279,7 +293,7 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setNoInterestCountries(String countries) {
-        mObj.put('No_Interest_Countries__c',countries);
+        mObj.put('No_Interest_Countries__c', countries);
     }
 
     public String getNoInterestRegions() {
@@ -287,7 +301,23 @@ public with sharing class rsProfile extends rsModel {
     }
 
     public void setNoInterestRegions(String countries) {
-        mObj.put('No_Interest_Regions__c',countries);
+        mObj.put('No_Interest_Regions__c', countries);
+    }
+
+    public String getTimeToRelocate() {
+        return (String)mObj.get('rs_Time_To_Relocate__c');
+    }
+
+    public void setTimeToRelocate(String TimeToRelocate) {
+        mObj.put('rs_Time_To_Relocate__c', TimeToRelocate);
+    }
+
+    public String getAccompaniedStatus() {
+        return (String)mObj.get('rs_Accompanied_Status__c');
+    }
+
+    public void setAccompaniedStatus(String AccompaniedStatus) {
+        mObj.put('rs_Accompanied_Status__c', AccompaniedStatus);
     }
 
     public Id getManagerId() {
@@ -309,34 +339,34 @@ public with sharing class rsProfile extends rsModel {
     //This method is called in deletions/approvals of profile parts and projects to see if there are any other records (other than the one being deleted/approved)
     //that should keep the user's profile locked
     public Boolean shouldProfileStayLocked(Id recordBeingDeletedOrApproved) {
-        List<rs_Profile_Part__c> profilePartList = [Select Id from rs_Profile_Part__c where (Status__c = :rsProfilePart.S_INREVIEW OR Status__c = :rsProfilePart.S_PENDING) AND Id != :recordBeingDeletedOrApproved AND User__c =: getUser().Id];
-        List<PR_Team_Employee__c> projectList = [Select Id from PR_Team_Employee__c where (Status__c = :rsPRTeamEmployee.S_INREVIEW OR Status__c = :rsPRTeamEmployee.S_PENDING) AND Id != :recordBeingDeletedOrApproved AND EmployeeUser__c =: getUser().Id];
+        List<rs_Profile_Part__c> profilePartList = [Select Id from rs_Profile_Part__c where (Status__c = :rsProfilePart.S_INREVIEW OR Status__c = :rsProfilePart.S_PENDING) AND Id != :recordBeingDeletedOrApproved AND User__c = : getUser().Id];
+        List<PR_Team_Employee__c> projectList = [Select Id from PR_Team_Employee__c where (Status__c = :rsPRTeamEmployee.S_INREVIEW OR Status__c = :rsPRTeamEmployee.S_PENDING) AND Id != :recordBeingDeletedOrApproved AND EmployeeUser__c = : getUser().Id];
         return (profilePartList.size() > 0 || projectList.size() > 0);
     }
-	public class Finder extends rsFinder {
+    public class Finder extends rsFinder {
 
         public Finder(String sObjectName) {
-        	super(sObjectName);
+            super(sObjectName);
         }
 
         public rsProfile byUserId(Id userId) {
-            addFields(new Set<String>{'Profile_Reviewer__r.Name', 'Profile_Proxy__r.Name'});
-        	return new rsProfile((User)byId(userId).getObj());
+            addFields(new Set<String> {'Profile_Reviewer__r.Name', 'Profile_Proxy__r.Name'});
+            return new rsProfile((User)byId(userId).getObj());
         }
 
-        public Map<Id,User> byUserIdSet(Set<Id> userIds) {
-            addFields(new Set<String>{'Profile_Reviewer__r.Name', 'Manager.Name'});
-            return new Map<Id,User>((List<User>)Database.query(getSelect() + 'where Id IN :userIds'));
+        public Map<Id, User> byUserIdSet(Set<Id> userIds) {
+            addFields(new Set<String> {'Profile_Reviewer__r.Name', 'Manager.Name'});
+            return new Map<Id, User>((List<User>)Database.query(getSelect() + 'where Id IN :userIds'));
         }
 
-        public Map<Id,User> byUserIdSetMinFields(Set<Id> userIds, Set<String> fields) {
-            return new Map<Id,User>((List<User>)Database.query('select ' + String.join(new List<String>(fields),',') + ' from User where Id IN :userIds'));
+        public Map<Id, User> byUserIdSetMinFields(Set<Id> userIds, Set<String> fields) {
+            return new Map<Id, User>((List<User>)Database.query('select ' + String.join(new List<String>(fields), ',') + ' from User where Id IN :userIds'));
         }
 
         //Finds list of user by either their ids, or a where clause
-        public List<User> getUsersByIdsOrWhere(Set<Id> userIds,String whereStr) {
+        public List<User> getUsersByIdsOrWhere(Set<Id> userIds, String whereStr) {
             List<User> users = new List<User>();
-            if(whereStr != '') {
+            if (whereStr != '') {
                 users = Database.query(getSelect() + ' where ' + whereStr + ' OR Id IN: userIds LIMIT ' + SEARCH_RESULT_SIZE);
             } else {
                 users = Database.query(getSelect() + ' where Id IN: userIds LIMIT ' + SEARCH_RESULT_SIZE);
@@ -345,9 +375,9 @@ public with sharing class rsProfile extends rsModel {
         }
 
         //Finds list of user by their ids and a where str
-        public List<User> getUsersByIdsAndWhere(Set<Id> userIds,String whereStr) {
+        public List<User> getUsersByIdsAndWhere(Set<Id> userIds, String whereStr) {
             List<User> users = new List<User>();
-            if(whereStr != '') {
+            if (whereStr != '') {
                 users = Database.query(getSelect() + ' where ' + whereStr + ' AND Id IN: userIds LIMIT ' + SEARCH_RESULT_SIZE);
             } else {
                 users = Database.query(getSelect() + ' where Id IN: userIds LIMIT ' + SEARCH_RESULT_SIZE);
@@ -356,8 +386,8 @@ public with sharing class rsProfile extends rsModel {
         }
 
         public List<User> getUsersByFind(String findStr, Boolean findInactive) {
-            String queryString = 'FIND '+ rsStringUtil.quote(findStr)+' IN ALL FIELDS RETURNING USER('+getFields();
-            if(!findInactive) {
+            String queryString = 'FIND ' + rsStringUtil.quote(findStr) + ' IN ALL FIELDS RETURNING USER(' + getFields();
+            if (!findInactive) {
                 queryString += ' where IsActive = true)';
             } else {
                 queryString += ')';
@@ -369,8 +399,8 @@ public with sharing class rsProfile extends rsModel {
         }
 
         public List<User> getUsersByFindAndWhere(String findStr, Boolean findInactive, String whereStr) {
-            String queryString = 'FIND '+ rsStringUtil.quote(findStr)+' IN ALL FIELDS RETURNING USER('+getFields();
-            if(!findInactive) {
+            String queryString = 'FIND ' + rsStringUtil.quote(findStr) + ' IN ALL FIELDS RETURNING USER(' + getFields();
+            if (!findInactive) {
                 queryString += ' where (' + whereStr + ') AND IsActive = true)';
             } else {
                 queryString += ' where ' + whereStr + ')';
@@ -384,14 +414,14 @@ public with sharing class rsProfile extends rsModel {
         public List<User> getProfileReviewLookupResults(String name) {
             List<Profile_Info__c> profInfos = [select Id, Name, Is_content_manager__c, SetupOwnerId from Profile_Info__c where Is_Content_Manager__c = true];
             Set<String> setupOwnerIds = new Set<String>();
-            for(Profile_Info__c info : profInfos) {
+            for (Profile_Info__c info : profInfos) {
                 setupOwnerIds.add(info.SetupOwnerId);
             }
             String whereStr = 'where';
-            if(!String.isBlank(name)) {
+            if (!String.isBlank(name)) {
                 whereStr += ' Name LIKE ' + rsStringUtil.likeQueryQuote(name) + ' AND ';
             }
-            whereStr += ' IsActive = true AND (Id in ' + rsStringUtil.listJoin(new List<String>(setupOwnerIds) ) + ' OR profileId in ' + rsStringUtil.listJoin(new List<String>(setupOwnerIds) ) + ')'; 
+            whereStr += ' IsActive = true AND (Id in ' + rsStringUtil.listJoin(new List<String>(setupOwnerIds) ) + ' OR profileId in ' + rsStringUtil.listJoin(new List<String>(setupOwnerIds) ) + ')';
             System.debug('###whereStr: ' + whereStr);
             return new List<User>( (List<User>)Database.query('Select Id, Name from User ' + whereStr + 'LIMIT 500'));
 
@@ -400,7 +430,7 @@ public with sharing class rsProfile extends rsModel {
         public String getAutoCompleteProjectGroups(Id userId) {
             List<AggregateResult> projGroupsQuery = [select project_group_editable__c from PR_Team_Employee__c where EmployeeUser__c = :userId GROUP BY project_group_editable__c];
             List<String> groups = new List<String>();
-            for(AggregateResult res : projGroupsQuery) {
+            for (AggregateResult res : projGroupsQuery) {
                 groups.add(String.valueOf(res.get('Project_Group_editable__c')));
             }
 
@@ -408,10 +438,10 @@ public with sharing class rsProfile extends rsModel {
             return retString;
         }
 
-        //This will return the list of users that report to the passed in userId 
+        //This will return the list of users that report to the passed in userId
         public List<User> directReportList(Id userId, Integer queryLimit, Integer offset) {
             String queryStr = 'Select Id, Name, SmallPhotoUrl, HR_Job_Title__c, Phone, City, State, PostalCode from User where isActive = true AND ManagerId = ' + rsStringUtil.quote(userId) + ' order by Name limit ' + String.valueOf(queryLimit);
-            if(offset != 0) {
+            if (offset != 0) {
                 queryStr += ' OFFSET ' + offset;
             }
             System.debug('###queryStr: ' + queryStr);
@@ -421,13 +451,13 @@ public with sharing class rsProfile extends rsModel {
         //This will return the list of users that report to the managerId (excluding the passed in userId)
         public List<User> peerList(Id userId, Id managerId, Integer queryLimit, Integer offset) {
             String queryStr = 'Select Id, Name, SmallPhotoUrl, HR_Job_Title__c, Phone, City, State, PostalCode from User where isActive = true AND ManagerId = ' + rsStringUtil.quote(managerId) + ' AND Id !=' + rsStringUtil.quote(userId) + ' order by Name limit ' + String.valueOf(queryLimit);
-            if(offset != 0) {
+            if (offset != 0) {
                 queryStr += ' OFFSET ' + offset;
             }
             System.debug('###queryStr: ' + queryStr);
             return (List<User>)Database.query(queryStr);
         }
-	}
+    }
 
     //Statuses for the Status__c field
     public static final String S_APPROVED = 'Approved';
@@ -437,11 +467,11 @@ public with sharing class rsProfile extends rsModel {
 
     //Set of Global Mobility fields
     public static final Set<String> USER_GLOBAL_MOBILITY_FIELDS = new Set<String> { 'Interest_Countries__c',
-                                                                                     'Interest_Regions__c',
-                                                                                     'Interest_Relocating_Current_Country__c',
-                                                                                     'Interest_Relocating_Different_Country__c',
-                                                                                     'Length_of_Time_Abroad__c',
-                                                                                     'No_Interest_Countries__c',
-                                                                                     'No_Interest_Regions__c'
-                                                                                    };
+            'Interest_Regions__c',
+            'Interest_Relocating_Current_Country__c',
+            'Interest_Relocating_Different_Country__c',
+            'Length_of_Time_Abroad__c',
+            'No_Interest_Countries__c',
+            'No_Interest_Regions__c'
+                                                                                  };
 }

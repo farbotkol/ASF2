@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_73912973</developerName>
+        <masterLabel>Market Sector</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>FK_$Account.Client_Subgroup__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Defense - Air Force</sourceValue>
+            </sourceValues>
+            <value>Air Force</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Defense - Army</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Defense - Other</sourceValue>
+            </sourceValues>
+            <value>Army</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Defense - Marines</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Defense - Navy</sourceValue>
+            </sourceValues>
+            <value>Navy/Marine</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Education Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Energy Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Environmental/Climate Agency/Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Healthcare &amp; Life Sciences</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Justice/Prisons/Security Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Other Agency</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>US Homeland Security</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>USPS</sourceValue>
+            </sourceValues>
+            <value>Other Federal</value>
+        </values>
+    </buckets>
+    <buckets>
+        <bucketType>number</bucketType>
+        <developerName>BucketField_2611011</developerName>
+        <masterLabel>Revenue Group</masterLabel>
+        <nullTreatment>z</nullTreatment>
+        <sourceColumnName>FK_OPP_AMOUNT</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <to>50,000</to>
+            </sourceValues>
+            <value>&lt;= $50K</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>50,000</from>
+                <to>100,000</to>
+            </sourceValues>
+            <value>$50K to $100K</value>
+        </values>
+        <values>
+            <sourceValues>
+                <from>100,000</from>
+            </sourceValues>
+            <value>&gt; $100K</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <aggregate>Sum</aggregate>
+            <axisBinding>y</axisBinding>
+            <column>FK_OPP_AMOUNT.CONVERT</column>
+        </chartSummaries>
+        <chartType>HorizontalBarStacked</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Go_No_Go_Conversation__c.Account__c</groupingColumn>
+        <legendPosition>Right</legendPosition>
+        <location>CHART_BOTTOM</location>
+        <secondaryGroupingColumn>Go_No_Go_Conversation__c.Opportunity_Name__c</secondaryGroupingColumn>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Tiny</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>FK_OPP_AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>FK_NAME</field>
+    </columns>
+    <columns>
+        <field>BucketField_73912973</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>FK_$Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>notContain</operator>
+            <value>Construction Services,Government Services</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FK_$Opportunity.Client_Group__c</column>
+            <operator>contains</operator>
+            <value>National Government</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FK_OPP_RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Opportunity.Task_Order_Americas,Opportunity.Project_Americas</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FK_OPP_AMOUNT</column>
+            <operator>greaterOrEqual</operator>
+            <value>USD 5000000</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Go_No_Go_Conversation__c.Approval_Status__c</column>
+            <operator>equals</operator>
+            <value>Approved</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>BucketField_73912973</column>
+            <operator>equals</operator>
+            <value>Air Force,Army,Navy/Marine,Other Federal</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FK_$Opportunity.Lead_Region_Formula__c</column>
+            <operator>startsWith</operator>
+            <value>US,Can</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Go_No_Go_Conversation__c.Decision__c</column>
+            <operator>equals</operator>
+            <value>Go</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Go_No_Go_Conversation__c.Decision__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Go_No_Go_Conversation__c.Account__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Go_No_Go_Conversation__c.Opportunity_Name__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Federal GNG &gt;$5M Detail</name>
+    <params>
+        <name>co</name>
+        <value>0</value>
+    </params>
+    <reportType>CustomEntity$Go_No_Go_Conversation__c@Go_No_Go_Conversation__c.Opportunity__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CUST_CREATED_DATE</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

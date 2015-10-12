@@ -2,6 +2,13 @@
 	<apex:attribute name="rsProfile" assignTo="{!profile}" description="" type="rsProfile" required="true"/>
 	<apex:attribute name="reRender" description="" type="String" required="false"/>
 
+	<script type="text/javascript">
+		var j$ = jQuery.noConflict();
+		j$(document).ready(function() {
+			helpTextSetup();
+		});
+	</script>
+
 	<div class="panel panel-default">
 		<div class="panel-heading">
 			<h5 class="panel-title has-spinner" id="globalHeader">{!$Label.Global_Mobility} <img height="15" width="15" class="spinner" src="{!$Resource.loading}" alt="loading" title="loading"/></h5>
@@ -74,6 +81,28 @@
 						<c:rsMultiSelectPickListComponent availableOptions="{!availableNoInterestcountries}" chosenOptions="{!NoInterestCountriesSel}" section="noInterestCountries"/>
 					</td>
 				</tr>
+				<tr>
+					<td>
+						<apex:outputLabel value="{!$Label.Global_Mobility_Time_To_Relocate}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['User'].fields['rs_Time_To_Relocate__c'].inlineHelpText}"/></apex:outputLabel>
+					</td>
+					<td>
+						<apex:selectList value="{!profile.TimeToRelocate}" size="1" multiselect="false">
+							<apex:selectOption itemValue="" itemLabel="--{!$Label.None}--"></apex:selectOption>
+							<apex:selectOptions value="{!timeToRelocate}"></apex:selectOptions>
+						</apex:selectList>
+					</td>
+					</tr>
+					<tr>
+						<td>
+							<apex:outputLabel value="{!$Label.Global_Mobility_Family_Relocation}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['User'].fields['rs_Accompanied_Status__c'].inlineHelpText}"/></apex:outputLabel>
+						</td>
+						<td>
+							<apex:selectList value="{!profile.AccompaniedStatus}" size="1" multiselect="false">
+							<apex:selectOption itemValue="" itemLabel="--{!$Label.None}--"></apex:selectOption>
+							<apex:selectOptions value="{!accompaniedStatus}"></apex:selectOptions>
+						</apex:selectList>
+						</td>
+					</tr>
 			</table>
 			<div class="col-md-4 text-center" style="padding-top:15px; padding-bottom:15px;">
                <apex:commandLink styleClass="btn btn-success btn-sm sfbtnOverrideGreen" style="color:#fff; text-decoration:none;" action="{!savePart}" value="{!$Label.Save}" reRender="{!reRender}" onclick="if(!inProgress) showSectionSpinner('globalHeader'); if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();">	     
@@ -143,6 +172,22 @@
 						</td>
 						<td>
 							<apex:outputText value="{!profile.NoInterestCountries}"></apex:outputText>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<apex:outputLabel value="{!$Label.Global_Mobility_Time_To_Relocate}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['User'].fields['rs_Time_To_Relocate__c'].inlineHelpText}"/></apex:outputLabel>
+						</td>
+						<td>
+							<apex:outputText value="{!profile.TimeToRelocate}"></apex:outputText>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<apex:outputLabel value="{!$Label.Global_Mobility_Family_Relocation}"><img src="/s.gif" class="helpOrb" title="{!$ObjectType['User'].fields['rs_Accompanied_Status__c'].inlineHelpText}"/></apex:outputLabel>
+						</td>
+						<td>
+							<apex:outputText value="{!profile.AccompaniedStatus}"></apex:outputText>
 						</td>
 					</tr>
 				</tbody>

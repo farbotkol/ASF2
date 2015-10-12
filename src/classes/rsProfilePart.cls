@@ -1,24 +1,39 @@
 /*************************************************************************
 *
 * PURPOSE: Decorator for profile part
-*          
+*
 *
 * CREATED: 2014 Ethos Solutions - www.ethos.com
 * AUTHOR: Jason M. Swenski
 ***************************************************************************/
-public class rsProfilePart extends rsModel{
+public class rsProfilePart extends rsModel {
 
     public static Finder find = new Finder('rs_Profile_Part__c');
     private static final Integer SEARCH_RESULT_SIZE = 1000;
-    private static final Map<String,Schema.RecordTypeInfo> mRtInfo;
+    private static final Integer LIST_SIZE_LIMIT = 10000;
+    private static final Map<String, Schema.RecordTypeInfo> mRtInfo;
     static {
         mRtInfo = rs_Profile_Part__c.SObjectType.getDescribe().getRecordTypeInfosByName();
     }
 
     public rsProfilePart(Id userId, String type) {
-        super(new rs_Profile_part__c(User__c = userId, 
-                RecordTypeId = mRtInfo.get(type).getRecordTypeId(), OwnerId = userId)
-        );
+        super(new rs_Profile_part__c(User__c = userId,
+                                     RecordTypeId = mRtInfo.get(type).getRecordTypeId(), OwnerId = userId)
+             );
+    }
+
+    public override Integer compareTo(Object compareTo) {
+        rsProfilePart compareItem = (rsProfilePart)compareTo;
+
+        if (compareItem.getPartSequence() != null && getPartSequence() != null) {
+            if (compareItem.getPartSequence() > getPartSequence()) {
+                return -1;
+            } else {
+                return 1;
+            }
+        } else {
+            return 1;
+        }
     }
 
     public rsProfilePart(rs_Profile_Part__c part) {
@@ -30,7 +45,14 @@ public class rsProfilePart extends rsModel{
     }
 
     public void setStatus(String status) {
-        mObj.put('Status__c',status);
+        mObj.put('Status__c', status);
+    }
+
+    public Decimal getPartSequence() {
+        return (Decimal)mObj.get('Part_Sequence__c');
+    }
+    public void setPartSequence(Decimal PartSequence) {
+        mObj.put('Part_Sequence__c', PartSequence);
     }
 
     //-- Publication Start --//
@@ -44,7 +66,7 @@ public class rsProfilePart extends rsModel{
 
     public String getPublicationDate() {
         return mObj.get('Publication_Date__c') != null ? Date.valueOf(mObj.get('Publication_Date__c')).format()
-                : (String)mObj.get('Publication_Date__c');
+               : (String)mObj.get('Publication_Date__c');
     }
 
     public String getPublicationAuthor() {
@@ -57,10 +79,10 @@ public class rsProfilePart extends rsModel{
 
     public void setPublication(String pub) {
         mObj.put('Publication__c', pub);
-    } 
+    }
 
     public void setPublicationDate(String pubDate) {
-        if(String.isNotBlank(pubDate)) {
+        if (String.isNotBlank(pubDate)) {
             mObj.put('Publication_Date__c', Date.parse(pubDate));
         } else {
             mObj.put('Publication_Date__c', null);
@@ -68,7 +90,7 @@ public class rsProfilePart extends rsModel{
     }
 
     public void setPublicationAuthor(String author) {
-        mObj.put('Publication_Author__c',author);
+        mObj.put('Publication_Author__c', author);
     }
     //-- Publication End --//
     public Boolean isType(String type) {
@@ -85,23 +107,23 @@ public class rsProfilePart extends rsModel{
     }
 
     public String getDateCertified() {
-        return mObj.get('Date_Certified__c') != null ? Date.valueOf(mObj.get('Date_Certified__c')).format() 
-                : (String) mObj.get('Date_Certified__c');
+        return mObj.get('Date_Certified__c') != null ? Date.valueOf(mObj.get('Date_Certified__c')).format()
+               : (String) mObj.get('Date_Certified__c');
     }
 
     public void setCertificationTitle(String certTitle) {
-        mObj.put('Certification_Title__c',certTitle);
+        mObj.put('Certification_Title__c', certTitle);
     }
 
     public void setCertificationDescription(String certDes) {
-        mObj.put('Certification_Description__c',certDes);
+        mObj.put('Certification_Description__c', certDes);
     }
 
     public void setDateCertified(String certDate) {
-        if(String.isNotBlank(certDate)) {
-            mObj.put('Date_Certified__c',Date.parse(certDate));
+        if (String.isNotBlank(certDate)) {
+            mObj.put('Date_Certified__c', Date.parse(certDate));
         } else {
-            mObj.put('Date_Certified__c',null);
+            mObj.put('Date_Certified__c', null);
         }
     }
     //-- Certification End --//
@@ -112,8 +134,8 @@ public class rsProfilePart extends rsModel{
     }
 
     public String getMemberSince() {
-        return mObj.get('Member_Since__c') != null ? Date.valueOf(mObj.get('Member_Since__c')).format() : 
-            (String) mObj.get('Member_Since__c');
+        return mObj.get('Member_Since__c') != null ? Date.valueOf(mObj.get('Member_Since__c')).format() :
+               (String) mObj.get('Member_Since__c');
     }
 
     public String getPosition() {
@@ -121,13 +143,13 @@ public class rsProfilePart extends rsModel{
     }
 
     public String getHeldFrom() {
-        return mObj.get('Position_Held_From__c') != null ? Date.valueOf(mObj.get('Position_Held_From__c')).format() : 
-            (String) mObj.get('Position_Held_From__c'); 
+        return mObj.get('Position_Held_From__c') != null ? Date.valueOf(mObj.get('Position_Held_From__c')).format() :
+               (String) mObj.get('Position_Held_From__c');
     }
 
     public String getHeldTo() {
-        return mObj.get('Position_Held_To__c') != null ? Date.valueOf(mObj.get('Position_Held_To__c')).format() : 
-            (String) mObj.get('Position_Held_To__c'); 
+        return mObj.get('Position_Held_To__c') != null ? Date.valueOf(mObj.get('Position_Held_To__c')).format() :
+               (String) mObj.get('Position_Held_To__c');
     }
 
     public void setAssociationName(String assocName) {
@@ -136,14 +158,14 @@ public class rsProfilePart extends rsModel{
 
     public void setMemberSince(String memSince) {
         if (String.isNotBlank(memSince)) {
-            mObj.put('Member_Since__c',Date.parse(memSince));
-        } else {    
-            mObj.put('Member_Since__c',null);
+            mObj.put('Member_Since__c', Date.parse(memSince));
+        } else {
+            mObj.put('Member_Since__c', null);
         }
     }
 
     public void setPosition(String pos) {
-        mObj.put('Position__c',pos);
+        mObj.put('Position__c', pos);
     }
     //-- Professional Affiliation End --//
 
@@ -161,7 +183,7 @@ public class rsProfilePart extends rsModel{
     }
 
     public void setLicenseRegistrationCountry(String lrCountry) {
-        mObj.put('License_Registration_Country__c',lrCountry);
+        mObj.put('License_Registration_Country__c', lrCountry);
     }
 
     public String getCountry() {
@@ -173,33 +195,33 @@ public class rsProfilePart extends rsModel{
     }
 
     public String getIssuedDate() {
-        return mObj.get('Issued_Date__c') != null ? Date.valueOf(mObj.get('Issued_Date__c')).format() 
-                : (String)mObj.get('Issued_Date__c');
+        return mObj.get('Issued_Date__c') != null ? Date.valueOf(mObj.get('Issued_Date__c')).format()
+               : (String)mObj.get('Issued_Date__c');
     }
 
     public String getExpirationDate() {
-        return mObj.get('Expiration_Date__c') != null ? Date.valueOf(mObj.get('Expiration_Date__c')).format() 
-                : (String)mObj.get('Expiration_Date__c');
+        return mObj.get('Expiration_Date__c') != null ? Date.valueOf(mObj.get('Expiration_Date__c')).format()
+               : (String)mObj.get('Expiration_Date__c');
     }
 
     public void setLicenseRegistrationName(String regName) {
-        mObj.put('License_Registration_Name__c',regName);
+        mObj.put('License_Registration_Name__c', regName);
     }
 
     public void setStateProvince(String spStr) {
-        mObj.put('State_Province__c',spStr);
+        mObj.put('State_Province__c', spStr);
     }
 
     public void setCountry(String cont) {
-        mObj.put('Country__c',cont);
+        mObj.put('Country__c', cont);
     }
 
     public void setRegistrationNumber(String regNum) {
-        mObj.put('Registration_Number__c',regNum);
+        mObj.put('Registration_Number__c', regNum);
     }
 
     public void setIssuedDate(String issDate) {
-        if(String.isNotBlank(issDate)) {
+        if (String.isNotBlank(issDate)) {
             mObj.put('Issued_Date__c', Date.parse(issDate));
         } else {
             mObj.put('Issued_Date__c', null);
@@ -207,10 +229,10 @@ public class rsProfilePart extends rsModel{
     }
 
     public void setExpirationDate(String expDate) {
-        if(String.isNotBlank(expDate)) {
+        if (String.isNotBlank(expDate)) {
             mObj.put('Expiration_Date__c', Date.parse(expDate));
         } else {
-            mObj.put('Expiration_Date__c', null);   
+            mObj.put('Expiration_Date__c', null);
         }
     }
     //-- License/Registration End --//
@@ -245,52 +267,52 @@ public class rsProfilePart extends rsModel{
     }
 
     public void setSkillLevel(String skillLvl) {
-        this.mObj.put('Skill_Level__c',skillLvl);
+        this.mObj.put('Skill_Level__c', skillLvl);
     }
     //-- Skill Index End --//
 
     //-- Education Start --//
-    public void setDegree(String degree){
+    public void setDegree(String degree) {
         this.mObj.put('Degree__c', degree);
     }
 
-    public String getDegree(){       
-       return (String)this.mObj.get('Degree__c');
+    public String getDegree() {
+        return (String)this.mObj.get('Degree__c');
     }
 
-    public void setDegreeSpecialty(String degreeSpecialty){
+    public void setDegreeSpecialty(String degreeSpecialty) {
         this.mObj.put('Degree_Specialty__c', degreeSpecialty);
     }
 
-    public String getDegreeSpecialty(){
+    public String getDegreeSpecialty() {
         return (String)this.mObj.get('Degree_Specialty__c');
     }
 
-    public void setInstitution(String institution){
+    public void setInstitution(String institution) {
         this.mObj.put('Institution__c', institution);
     }
 
-    public String getInstitution(){
+    public String getInstitution() {
         return (String)this.mObj.get('Institution__c');
     }
 
-    public void setInstitutionCountry(String institutionCountry){
+    public void setInstitutionCountry(String institutionCountry) {
         this.mObj.put('Institution_Country__c', institutionCountry);
     }
 
-    public String getInstitutionCountry(){
+    public String getInstitutionCountry() {
         return (String)this.mObj.get('Institution_Country__c');
     }
 
-    public void setYearObtained(Integer yearObtained){
-        if(yearObtained <= 0){
+    public void setYearObtained(Integer yearObtained) {
+        if (yearObtained <= 0) {
             this.mObj.put('Year_Obtained__c', null);
-        }else{
-            this.mObj.put('Year_Obtained__c', yearObtained);            
+        } else {
+            this.mObj.put('Year_Obtained__c', yearObtained);
         }
     }
 
-    public Integer getYearObtained(){        
+    public Integer getYearObtained() {
         return Integer.valueOf(this.mObj.get('Year_Obtained__c'));
     }
     //-- Education End --//
@@ -298,7 +320,7 @@ public class rsProfilePart extends rsModel{
     //-- Work History Start --//
     public void setCompanyName(String companyName) {
         this.mObj.put('Company_Name__c', companyName);
-    } 
+    }
 
     public String getCompanyName() {
         return (String)this.mObj.get('Company_Name__c');
@@ -306,31 +328,31 @@ public class rsProfilePart extends rsModel{
 
     public void setJobTitle(String JobTitle) {
         this.mObj.put('Job_Title__c', JobTitle);
-    } 
+    }
 
     public String getJobTitle() {
         return (String)this.mObj.get('Job_Title__c');
     }
 
     public void setStartDate(String startDate) {
-        if(String.isNotBlank(startDate)) {
+        if (String.isNotBlank(startDate)) {
             mObj.put('Start_Date__c', Date.parse(startDate));
         } else {
-            mObj.put('Start_Date__c', null);   
+            mObj.put('Start_Date__c', null);
         }
-    } 
+    }
 
     public String getStartDate() {
         return this.mObj.get('Start_Date__c') != null ? Date.valueOf(this.mObj.get('Start_Date__c')).format() : null;
     }
 
     public void setEndDate(String endDate) {
-        if(String.isNotBlank(endDate)) {
+        if (String.isNotBlank(endDate)) {
             mObj.put('End_Date__c', Date.parse(endDate));
         } else {
-            mObj.put('End_Date__c', null);   
+            mObj.put('End_Date__c', null);
         }
-    } 
+    }
 
     public String getEndDate() {
         return this.mObj.get('End_Date__c') != null ? Date.valueOf(this.mObj.get('End_Date__c')).format() : null;
@@ -338,7 +360,7 @@ public class rsProfilePart extends rsModel{
 
     public void setCity(String City) {
         this.mObj.put('City__c', City);
-    } 
+    }
 
     public String getCity() {
         return (String)this.mObj.get('City__c');
@@ -346,7 +368,7 @@ public class rsProfilePart extends rsModel{
 
     public void setState(String State) {
         this.mObj.put('State__c', State);
-    } 
+    }
 
     public String getState() {
         return (String)this.mObj.get('State__c');
@@ -354,7 +376,7 @@ public class rsProfilePart extends rsModel{
 
     public void setWorkHistoryCountry(String workHistoryCountry) {
         this.mObj.put('Work_History_Country__c', workHistoryCountry);
-    } 
+    }
 
     public String getWorkHistoryCountry() {
         return (String)this.mObj.get('Work_History_Country__c');
@@ -365,12 +387,12 @@ public class rsProfilePart extends rsModel{
     }
 
     public void setWorkHistoryState(String workHistoryState) {
-        this.mObj.put('Work_History_State__c',workHistoryState);
+        this.mObj.put('Work_History_State__c', workHistoryState);
     }
 
     public void setCurrent(Boolean isCurrent) {
         this.mObj.put('Current__c', isCurrent);
-    } 
+    }
     public Boolean getCurrent() {
         return (Boolean)this.mObj.get('Current__c');
     }
@@ -387,12 +409,12 @@ public class rsProfilePart extends rsModel{
     }
 
     public String getAwardDate() {
-        return this.mObj.get('Award_Date__c') != null ? Date.valueOf(mObj.get('Award_Date__c')).format() 
-                : (String)mObj.get('Award_Date__c');
+        return this.mObj.get('Award_Date__c') != null ? Date.valueOf(mObj.get('Award_Date__c')).format()
+               : (String)mObj.get('Award_Date__c');
     }
 
     public void setAwardTitle(String awardTitle) {
-        this.mObj.put('Award_Title__c',awardTitle);
+        this.mObj.put('Award_Title__c', awardTitle);
     }
 
     public void setAwardAgency(String awardAgen) {
@@ -400,137 +422,141 @@ public class rsProfilePart extends rsModel{
     }
 
     public void setAwardDate(String awardDate) {
-        if(awardDate != null && awardDate != '') {
-            this.mObj.put('Award_Date__c',Date.parse(awardDate));
+        if (awardDate != null && awardDate != '') {
+            this.mObj.put('Award_Date__c', Date.parse(awardDate));
         } else {
-            this.mObj.put('Award_Date__c',null);
+            this.mObj.put('Award_Date__c', null);
         }
     }
     //-- Award End --//
 
     //-- Training Start --//
-    public void setTrainingName(String trainingName){        
+    public void setTrainingName(String trainingName) {
         this.mObj.put('Training_Name__c', trainingName);
     }
 
-    public String getTrainingName(){
+    public String getTrainingName() {
         return (String)this.mObj.get('Training_Name__c');
     }
 
-    public void setTrainingDate(String trainingDate){        
-        if(String.isNotBlank(trainingDate)) {
+    public void setTrainingDate(String trainingDate) {
+        if (String.isNotBlank(trainingDate)) {
             this.mObj.put('Training_Date__c', Date.parse(trainingDate));
         } else {
             this.mObj.put('Training_Date__c', null);
         }
     }
 
-    public String getTrainingDate(){
+    public String getTrainingDate() {
         String dateString = null;
-        if(this.mObj.get('Training_Date__c') != null){
+        if (this.mObj.get('Training_Date__c') != null) {
             dateString = Date.valueOf(this.mObj.get('Training_Date__c')).format();
         }
 
         return dateString;
     }
 
-    public void setVendor(String vendor){
+    public void setVendor(String vendor) {
         this.mObj.put('Vendor__c', vendor);
     }
 
-    public String getVendor(){
+    public String getVendor() {
         return (String)this.mObj.get('Vendor__c');
     }
     //-- Training End --//
 
-    public void setOutputOnResume(Boolean outputOnResume){        
+    public void setOutputOnResume(Boolean outputOnResume) {
         this.mObj.put('Output_on_Resume__c', outputOnResume);
     }
 
-    public Boolean getOutputOnResume(){
+    public Boolean getOutputOnResume() {
         return (Boolean)this.mObj.get('Output_on_Resume__c');
     }
 
     //-- Language Start --//
-    public void setLanguage(String language){        
+    public void setLanguage(String language) {
         this.mObj.put('Skill_Language__c', language);
     }
 
-    public String getLanguage(){
+    public String getLanguage() {
         return (String)this.mObj.get('Skill_Language__c');
     }
 
-    public void setLanguageSkill(String languageSkill){
+    public void setLanguageSkill(String languageSkill) {
         this.mObj.put('Language_Skill__c', languageSkill);
     }
 
-    public String getLanguageSkill(){
+    public String getLanguageSkill() {
         return (String)this.mObj.get('Language_Skill__c');
     }
 
-    public void setLanguageLevel(String languageLevel){
+    public void setLanguageLevel(String languageLevel) {
         this.mObj.put('Language_Level__c', languageLevel);
     }
 
-    public String getLanguageLevel(){
+    public String getLanguageLevel() {
         return (String)this.mObj.get('Language_Level__c');
     }
     //-- Language End --//
 
     //-- Translate Start --//
-    public void setTranslateFrom(String translateFrom){
+    public void setTranslateFrom(String translateFrom) {
         this.mObj.put('Translate_From__c', translateFrom);
     }
 
-    public String getTranslateFrom(){
+    public String getTranslateFrom() {
         return (String)this.mObj.get('Translate_From__c');
     }
 
-    public void setTranslateTo(String translateTo){
+    public void setTranslateTo(String translateTo) {
         this.mObj.put('Translate_To__c', translateTo);
     }
 
-    public String getTranslateTo(){
+    public String getTranslateTo() {
         return (String)this.mObj.get('Translate_To__c');
     }
     //-- Translate End --//
 
     //--Start SF254 Discipline
-    public void setSF254Discipline(String sf254Discipline){
+    public void setSF254Discipline(String sf254Discipline) {
         this.mObj.put('SF254_Discipline__c', sf254Discipline);
     }
 
-    public String getSF254Discipline(){
+    public String getSF254Discipline() {
         return (String)this.mObj.get('SF254_Discipline__c');
     }
 
-    public void setIsSF254Primary(Boolean isSF254Primary){
+    public void setIsSF254Primary(Boolean isSF254Primary) {
         this.mObj.put('SF254_Is_Primary__c', isSF254Primary);
     }
 
-    public Boolean getIsSF254Primary(){
+    public Boolean getIsSF254Primary() {
         Boolean v = (Boolean)this.mObj.get('SF254_Is_Primary__c');
-        if(v == null) return false;
+        if (v == null) {
+            return false;
+        }
         return v;
     }
     //--End SF254 Discipline
 
     //--Start SF330 Discipline
-    public void setSF330Discipline(String sf330Discipline){
+    public void setSF330Discipline(String sf330Discipline) {
         this.mObj.put('SF330_Discipline__c', sf330Discipline);
     }
 
-    public String getSF330Discipline(){
+    public String getSF330Discipline() {
         return (String)this.mObj.get('SF330_Discipline__c');
     }
 
-    public void setIsSF330Primary(Boolean isSF330Primary){
+    public void setIsSF330Primary(Boolean isSF330Primary) {
         this.mObj.put('SF330_Is_Primary__c', isSF330Primary);
     }
 
-    public Boolean getIsSF330Primary(){
+    public Boolean getIsSF330Primary() {
         Boolean v = (Boolean)this.mObj.get('SF330_Is_Primary__c');
-        if(v == null) return false;
+        if (v == null) {
+            return false;
+        }
         return v;
     }
     //--End SF330 Discipline
@@ -583,42 +609,54 @@ public class rsProfilePart extends rsModel{
     public void setReferenceTitle(String title) {
         mObj.put('Reference_Title__c', title);
     }
+
+    public void setReferenceDateLastChecked(String startDate) {
+        if (String.isNotBlank(startDate)) {
+            mObj.put('Reference_Date_Last_Checked__c', Date.parse(startDate));
+        } else {
+            mObj.put('Reference_Date_Last_Checked__c', null);
+        }
+    }
+
+    public String getReferenceDateLastChecked() {
+        return this.mObj.get('Reference_Date_Last_Checked__c') != null ? Date.valueOf(this.mObj.get('Reference_Date_Last_Checked__c')).format() : null;
+    }
     //--End Reference Fields
 
     //--Attachment fields
 
-    public String getAttachmentId(){
+    public String getAttachmentId() {
         return (String)this.mObj.get('Attachment_Id__c');
     }
 
-    public void setAttachmentId(String id){
+    public void setAttachmentId(String id) {
         this.mObj.put('Attachment_Id__c', id);
     }
 
-    public String getAttachmentName(){
+    public String getAttachmentName() {
         return (String)this.mObj.get('Attachment_Name__c');
     }
 
-    public void setAttachmentName(String name){
+    public void setAttachmentName(String name) {
         this.mObj.put('Attachment_Name__c', name);
     }
 
-    public Id getNextPart(){
+    public Id getNextPart() {
         return (Id)this.mObj.get('Next_Part__c');
     }
 
-    public void setNextPart(Id partId){
+    public void setNextPart(Id partId) {
         this.mObj.put('Next_Part__c', partId);
     }
 
-    public Id getPreviousPart(){
+    public Id getPreviousPart() {
         return (Id)this.mObj.get('Previous_Part__c');
     }
 
-    public void setPreviousPart(Id partId){
+    public void setPreviousPart(Id partId) {
         this.mObj.put('Previous_Part__c', partId);
     }
-    
+
     public String getInitialLocale() {
         return (String) mObj.get('Initial_Locale__c');
     }
@@ -652,7 +690,7 @@ public class rsProfilePart extends rsModel{
     public Integer getYearsWithOtherFirms() {
         Integer retVal = 0;
         Decimal years = (Decimal) mObj.get('Years_with_Other_Firms__c');
-        if(years != null) {
+        if (years != null) {
             retVal = Integer.valueOf(years);
         }
         return retVal;
@@ -666,7 +704,7 @@ public class rsProfilePart extends rsModel{
     public void setBio(String bio) {
         mObj.put('Bio__c', bio);
     }
-    
+
     public class Finder extends rsFinder {
 
         public Finder(String sObjectName) {
@@ -675,7 +713,7 @@ public class rsProfilePart extends rsModel{
 
         public List<rsProfilePart> byIdAsSelfOrProxyOrCM(Id userId) {
             List<rsProfilePart> parts = new List<rsProfilePart>();
-            List<rs_Profile_Part__c> queryParts 
+            List<rs_Profile_Part__c> queryParts
                 = (List<rs_Profile_Part__c>)byWhereStr('User__c = ' + rsStringUtil.quote(userId) + ' AND Next_Part__c = null AND Status__c != ' + rsStringUtil.quote(rsProfilePart.S_ARCHIVED) + ' order by Start_Date__c desc');
             for (rs_Profile_Part__c tempPart : queryParts) {
                 parts.add(new rsProfilePart(tempPart));
@@ -701,16 +739,21 @@ public class rsProfilePart extends rsModel{
             return (List<rs_Profile_Part__c>)Database.query(getSelect() + 'where User__c IN: userIds LIMIT ' + SEARCH_RESULT_SIZE);
         }
 
-        public Map<Id,List<rs_Profile_Part__c>> byUsersAsMap(Set<Id> userIds) {
-            
-            Map<Id,List<rs_Profile_Part__c>> ret = new Map<Id,List<rs_Profile_Part__c>>();
-            for(Id uId : userIds) {
-                ret.put(uId,new List<rs_Profile_Part__c>());
+        public List<rs_Profile_Part__c> byUsersWhereAndOrder(Set<Id> userIds, String whereStr, String sortVal, String sortDir) {
+            String whereClause = String.isNotBlank(whereStr) ? '(' + whereStr + ') AND ' : '';
+            return (List<rs_Profile_Part__c>)Database.query(getSelect() + 'where ' + whereClause + 'User__c IN: userIds ORDER BY ' + sortVal + ' ' + sortDir);
+        }
+
+        public Map<Id, List<rs_Profile_Part__c>> byUsersAsMap(Set<Id> userIds) {
+
+            Map<Id, List<rs_Profile_Part__c>> ret = new Map<Id, List<rs_Profile_Part__c>>();
+            for (Id uId : userIds) {
+                ret.put(uId, new List<rs_Profile_Part__c>());
             }
 
-            for(rs_Profile_Part__c p : (List<rs_Profile_Part__c>)Database.query(getSelect() 
-                    + 'where User__c IN: userIds AND Status__c =' + rsStringUtil.quote(rsProfilePart.S_APPROVED) 
-                    + ' AND Output_on_Resume__c = true and Next_Part__r.Status__c != '+ rsStringUtil.quote(rsProfilePart.S_APPROVED) 
+            for (rs_Profile_Part__c p : (List<rs_Profile_Part__c>)Database.query(getSelect()
+                    + 'where User__c IN: userIds AND Status__c =' + rsStringUtil.quote(rsProfilePart.S_APPROVED)
+                    + ' AND Output_on_Resume__c = true and Next_Part__r.Status__c != ' + rsStringUtil.quote(rsProfilePart.S_APPROVED)
                     + ' order by Start_Date__c desc')) {
 
                 ret.get(p.User__c).add(p);
@@ -726,9 +769,9 @@ public class rsProfilePart extends rsModel{
         public List<rs_Profile_Part__c> byIdList(List<Id> projIds) {
             return byWhereStr('Id IN (\'' + String.join(projIds, '\',\'') + '\')');
         }
-        
+
         public List<rs_Profile_Part__c> byFindStr(String findStr) {
-            String queryString = 'FIND '+rsStringUtil.quote(findStr)+' IN ALL FIELDS RETURNING rs_Profile_Part__c('+getFields()+')';
+            String queryString = 'FIND ' + rsStringUtil.quote(findStr) + ' IN ALL FIELDS RETURNING rs_Profile_Part__c(' + getFields() + ')';
             List<List<SObject>> resultList = search.query(queryString);
             System.debug('#### queryString byFindStr rsProfilePart: ' + queryString);
             return (List<rs_Profile_Part__c>)resultList[0];
@@ -741,130 +784,140 @@ public class rsProfilePart extends rsModel{
 
         // ---- The following 4 methods (and 1 util method) are used on profile reviews ---- //
         //All 4 methods check BOTH the profile part status and the User status
-        public List<rs_Profile_Part__c> reviewUnassigned(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String superGeography)
-        {
+        public List<rs_Profile_Part__c> reviewUnassigned(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String superGeography, String sortDir) {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, User__r.Profile_Reviewer__c, User__r.Profile_Reviewer__r.Name, User__r.FirstName, User__r.Name, User__r.LastName, User__r.Manager.Name, User__r.Geography__c, User__r.Region__c, User__r.Country, User__r.Office__c, User__r.Business_Line__c, Previous_Part__c, Resume_Name__c, Resume_Title__c, Years_with_Other_Firms__c, Bio__c from rs_Profile_Part__c';
             String whereStr = ' where User__r.Profile_Reviewer__c = null AND Next_Part__c = null AND ( (Status__c =' + rsStringUtil.quote(rsProfilePart.S_INREVIEW) + ' OR Status__c = ' + rsStringUtil.quote(rsProfilePart.S_PENDING) + ') AND (User__r.Status__c =' + rsStringUtil.quote(rsProfile.S_INREVIEW) + ' OR User__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_PENDING) + ') )' ;
-            if( !String.isBlank(superGeography) ) {
-                whereStr += ' AND User__r.supergeography__c =' + rsStringUtil.quote(superGeography);
+            if ( !String.isBlank(superGeography) ) {
+                if (rs_Additional_Geography_Countries__c.getInstance(superGeography) != null) {
+                    whereStr += ' AND (User__r.supergeography__c LIKE ' + rsStringUtil.quote(superGeography + '%') + ' OR User__r.Country IN ' + createStringInSet(rs_Additional_Geography_Countries__c.getInstance(superGeography).Countries__c) + ') ';
+                } else {
+                    whereStr += ' AND (User__r.supergeography__c LIKE ' + rsStringUtil.quote(superGeography + '%') + ')';
+                }
             }
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' LIMIT 100';
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir;
             System.debug('###whereStr ' + whereStr);
-            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr ));
-            
+            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr));
+
         }
 
-        public List<rs_Profile_Part__c> reviewAssigned(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee)
-        {
+        public List<rs_Profile_Part__c> reviewAllPending(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir) {
+            String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, User__r.Profile_Reviewer__c, User__r.Profile_Reviewer__r.Name, User__r.FirstName, User__r.Name, User__r.LastName, User__r.Manager.Name, User__r.Geography__c, User__r.Region__c, User__r.Country, User__r.Office__c, User__r.Business_Line__c, Previous_Part__c, Resume_Name__c, Resume_Title__c, Years_with_Other_Firms__c, Bio__c from rs_Profile_Part__c';
+            String whereStr = ' where User__r.Profile_Reviewer__c = null AND Next_Part__c = null AND Status__c = ' + rsStringUtil.quote(rsProfilePart.S_PENDING);
+            whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir;
+            System.debug('###whereStr ' + whereStr);
+            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr));
+
+        }
+
+        public List<rs_Profile_Part__c> reviewAssigned(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir) {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, User__r.Profile_Reviewer__c, User__r.Profile_Reviewer__r.Name, User__r.FirstName, User__r.Name, User__r.LastName, User__r.Manager.Name, User__r.Geography__c, User__r.Region__c, User__r.Country, User__r.Office__c, User__r.Business_Line__c, Previous_Part__c, Resume_Name__c, Resume_Title__c, Years_with_Other_Firms__c, Bio__c from rs_Profile_Part__c';
             String whereStr = ' where User__r.Profile_Reviewer__c != null AND Next_Part__c = null AND ( (Status__c =' + rsStringUtil.quote(rsProfilePart.S_INREVIEW) + ' OR Status__c = ' + rsStringUtil.quote(rsProfilePart.S_PENDING) + ') AND (User__r.Status__c =' + rsStringUtil.quote(rsProfile.S_INREVIEW) + ' OR User__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_PENDING) + ') )' ;
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' LIMIT 100';
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir;
             System.debug('###whereStr ' + whereStr);
-            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr ));
+            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr));
         }
 
-        public List<rs_Profile_Part__c> reviewAssignedToMe(String id, DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee)
-        {
+        public List<rs_Profile_Part__c> reviewAssignedToMe(String id, DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir) {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, User__r.Profile_Reviewer__c, User__r.Profile_Reviewer__r.Name, User__r.FirstName, User__r.Name, User__r.LastName, User__r.Manager.Name, User__r.Geography__c, User__r.Region__c, User__r.Country, User__r.Office__c, User__r.Business_Line__c, Previous_Part__c, Resume_Name__c, Resume_Title__c, Years_with_Other_Firms__c, Bio__c from rs_Profile_Part__c';
             String whereStr = ' where User__r.Profile_Reviewer__c = :id AND Next_Part__c = null AND ( (Status__c =' + rsStringUtil.quote(rsProfilePart.S_INREVIEW) + ' OR Status__c = ' + rsStringUtil.quote(rsProfilePart.S_PENDING) + ') AND (User__r.Status__c =' + rsStringUtil.quote(rsProfile.S_INREVIEW) + ' OR User__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_PENDING) + ') )' ;
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' LIMIT 100';
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir;
             System.debug('###whereStr ' + whereStr);
-            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr ));
+            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr));
         }
 
-        public List<rs_Profile_Part__c> reviewCompleted(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee)
-        {
+        public List<rs_Profile_Part__c> reviewCompleted(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee, String sortDir) {
             String selectStr = 'SELECT Id, RecordTypeId, Date_Time_Sent_for_Review__c, Status__c, User__r.Profile_Reviewer__c, User__r.Profile_Reviewer__r.Name, User__r.FirstName, User__r.Name, User__r.LastName, User__r.Manager.Name, User__r.Geography__c, User__r.Region__c, User__r.Country, User__r.Office__c, User__r.Business_Line__c, Previous_Part__c, Resume_Name__c, Resume_Title__c, Years_with_Other_Firms__c, Bio__c from rs_Profile_Part__c';
             String whereStr = ' where Status__c = ' + rsStringUtil.quote(rsProfilePart.S_APPROVED) + 'AND Next_Part__c = null AND Date_Time_Sent_for_Review__c != null AND User__r.Status__c = ' + rsStringUtil.quote(rsProfile.S_APPROVED);
             whereStr += buildFilterStrForReview(searchDateTimeSentForReviewStart, searchDateTimeSentForReviewStop, searchLastName, searchFirstName, searchGeography, searchCountry, searchAssignee);
-            whereStr += ' LIMIT 100';
+            whereStr += ' ORDER BY Date_Time_Sent_for_Review__c ' + sortDir + ' LIMIT ' + LIST_SIZE_LIMIT;
             System.debug('###whereStr ' + whereStr);
-            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr ));
+            return (List<rs_Profile_Part__c>) ( Database.query(selectStr + whereStr));
         }
 
         private String buildFilterStrForReview(DateTime searchDateTimeSentForReviewStart, DateTime searchDateTimeSentForReviewStop, String searchLastName, String searchFirstName, String searchGeography, String searchCountry, String searchAssignee) {
             String filterStr = '';
             Boolean isAndAdded = false;
-            if(searchDateTimeSentForReviewStart != null && searchDateTimeSentForReviewStop != null ) {
-                if(!isAndAdded) {
+            if (searchDateTimeSentForReviewStart != null && searchDateTimeSentForReviewStop != null ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' (User__r.Date_Time_Sent_for_Review__c >= ' + searchDateTimeSentForReviewStart.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'') + ' AND User__r.Date_Time_Sent_for_Review__c <= ' + searchDateTimeSentForReviewStop.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'') + ')'; 
-            } else if(searchDateTimeSentForReviewStart != null ) {
-                if(!isAndAdded) {
+                filterStr += ' (User__r.Date_Time_Sent_for_Review__c >= ' + searchDateTimeSentForReviewStart.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'') + ' AND User__r.Date_Time_Sent_for_Review__c <= ' + searchDateTimeSentForReviewStop.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'') + ')';
+            } else if (searchDateTimeSentForReviewStart != null ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' User__r.Date_Time_Sent_for_Review__c >= ' + searchDateTimeSentForReviewStart.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\''); 
-            } else if(searchDateTimeSentForReviewStop != null ) {
-                if(!isAndAdded) {
+                filterStr += ' User__r.Date_Time_Sent_for_Review__c >= ' + searchDateTimeSentForReviewStart.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'');
+            } else if (searchDateTimeSentForReviewStop != null ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' User__r.Date_Time_Sent_for_Review__c <= ' + searchDateTimeSentForReviewStop.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\''); 
+                filterStr += ' User__r.Date_Time_Sent_for_Review__c <= ' + searchDateTimeSentForReviewStop.format('yyyy-MM-dd\'T\'hh:mm:ss\'Z\'');
             }
 
-            if(String.isNotBlank(searchLastName) ) {
-                if(!isAndAdded) {
+            if (String.isNotBlank(searchLastName) ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' User__r.LastName LIKE ' + rsStringUtil.likeQueryQuote(searchLastName); 
+                filterStr += ' User__r.LastName LIKE ' + rsStringUtil.likeQueryQuote(searchLastName);
             }
-            if(String.isNotBlank(searchFirstName) ) {
-                if(!isAndAdded) {
+            if (String.isNotBlank(searchFirstName) ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' User__r.FirstName LIKE ' + rsStringUtil.likeQueryQuote(searchFirstName); 
+                filterStr += ' User__r.FirstName LIKE ' + rsStringUtil.likeQueryQuote(searchFirstName);
             }
-            if(String.isNotBlank(searchGeography) ) {
-                if(!isAndAdded) {
+            if (String.isNotBlank(searchGeography) ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' User__r.Geography__c LIKE ' + rsStringUtil.likeQueryQuote(searchGeography); 
+                filterStr += ' User__r.Geography__c LIKE ' + rsStringUtil.likeQueryQuote(searchGeography);
             }
-            if(String.isNotBlank(searchCountry) ) {
-                if(!isAndAdded) {
+            if (String.isNotBlank(searchCountry) ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' User__r.Country LIKE ' + rsStringUtil.likeQueryQuote(searchCountry); 
+                filterStr += ' User__r.Country LIKE ' + rsStringUtil.likeQueryQuote(searchCountry);
             }
-            if(String.isNotBlank(searchAssignee) ) {
-                if(!isAndAdded) {
+            if (String.isNotBlank(searchAssignee) ) {
+                if (!isAndAdded) {
                     isAndAdded = true;
                     filterStr += ' AND (';
                 } else {
                     filterStr += ' AND';
                 }
-                filterStr += ' ( User__r.Profile_Reviewer__r.FirstName LIKE ' + rsStringUtil.likeQueryQuote(searchAssignee) + 'OR User__r.Profile_Reviewer__r.LastName LIKE ' + rsStringUtil.likeQueryQuote(searchAssignee) + ')'; 
+                filterStr += ' ( User__r.Profile_Reviewer__r.FirstName LIKE ' + rsStringUtil.likeQueryQuote(searchAssignee) + 'OR User__r.Profile_Reviewer__r.LastName LIKE ' + rsStringUtil.likeQueryQuote(searchAssignee) + ')';
             }
-            if(isAndAdded) {
+            if (isAndAdded) {
                 filterStr += ')';
             }
             return filterStr;
         }
-        // ---- End Profile Reviews ---- //        
+        // ---- End Profile Reviews ---- //
     }
 
     //Record types to catogorize different 'types'
@@ -891,6 +944,6 @@ public class rsProfilePart extends rsModel{
     public static final String S_PENDING = 'Pending';
     public static final String S_INREVIEW = 'In Review';
     public static final String S_ARCHIVED = 'Archived';
-     
-    
+
+
 }

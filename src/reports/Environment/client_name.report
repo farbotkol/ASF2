@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Forecast_Net_amount__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>RECORDTYPE</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>1 AND 2 AND (3 OR 4)</booleanFilter>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>notContain</operator>
+            <value>6,7,8,9</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Lead_Region_Formula__c</column>
+            <operator>contains</operator>
+            <value>US - Northeast</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>ACCOUNT_NAME</column>
+            <operator>contains</operator>
+            <value>Connecticut Department of Energy and Environmental Protection,United Technologies Corp HQ,Xstrata,Procter &amp; Gamble,Greenwich,consolidated Edison,New York City Economic Development,New York City Department of City Planning,New York State Department of Environmental Conservation,US Army Corps of Engineers,US Army Corps of Engineers Kansas City,Tyco International,US Environmental Protection Agency,7-Eleven,BNSF Railway,Conagra,cumberland farms,dean foods,Incitec Pivot,Massachusetts Bay Transportation Authority,Nisource,Textron,Unilever,UTICA national Insurance Group,PPG Industries,Duke Energy,Puerto Rico Electric Power Authority,Resolution Consultants,National Grid,BASF,International Paper,Lowes,black &amp; Decker,Deepwater wind,James Brown Foundation</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>ACCOUNT_NAME</column>
+            <operator>contains</operator>
+            <value>Saucony,Williams,winchester town,Philips electronics north America,texas instrument,cape environmental,dormitory authority,state of new York,iberdrola,lockheed martin,aecom Malaysia,air equipment lease pool Harvard,Burns &amp; McDonnell,Brooklyn Botanical Garden,energy east,international audit protocol consortium,public service enterprise group,spectra energy</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>client name</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>CLOSE_DATE</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>User$Id</field>
+    </columns>
+    <columns>
+        <field>User$Name</field>
+    </columns>
+    <columns>
+        <field>User*User$Last_User_Profile_Update__c</field>
+    </columns>
+    <columns>
+        <field>User$Profile</field>
+    </columns>
+    <columns>
+        <field>User.PR_Team_Employee__c$OwnerId$Id</field>
+    </columns>
+    <columns>
+        <field>User.PR_Team_Employee__c$OwnerId$Status__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>URS employees in Americas with updates to Projects</description>
+    <filter>
+        <criteriaItems>
+            <column>User*User$URS_Employee__c</column>
+            <operator>equals</operator>
+            <value>1</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>User*User$Last_User_Profile_Update__c</column>
+            <operator>notEqual</operator>
+            <value></value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>User$Profile</column>
+            <operator>notContain</operator>
+            <value>emea,apac,anz</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>User.PR_Team_Employee__c$OwnerId$Status__c</column>
+            <operator>notEqual</operator>
+            <value>Approved</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>User*User$Last_User_Profile_Update__c</column>
+            <operator>greaterThan</operator>
+            <value>7/15/2015 12:00 AM</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>URS Americas Emps with Project Updates</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Users_with_or_without_Projects_on_CV__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>User*User$Last_User_Profile_Update__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>User*User$Adjusted_Service_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

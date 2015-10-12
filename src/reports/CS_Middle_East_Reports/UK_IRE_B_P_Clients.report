@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>AECOM_Primary_Department__c$Name</field>
+    </columns>
+    <columns>
+        <field>AECOM_Primary_Department__c$Lead_Region__c</field>
+    </columns>
+    <columns>
+        <field>AECOM_Primary_Department__c$Business_Line_Lookup__c</field>
+    </columns>
+    <columns>
+        <field>AECOM_Primary_Department__c.Opportunities__r$Name</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AECOM_Primary_Department__c.Opportunities__r$Amount.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AECOM_Primary_Department__c.Opportunities__r$Net_Revenue_TO_Project__c.CONVERT</field>
+    </columns>
+    <currency>USD</currency>
+    <description>won projects only</description>
+    <filter>
+        <criteriaItems>
+            <column>AECOM_Primary_Department__c$Geography__c</column>
+            <operator>contains</operator>
+            <value>Europe</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>AECOM_Primary_Department__c$Business_Line_Lookup__c</column>
+            <operator>contains</operator>
+            <value>PDD,Architecture,DP&amp;E,PCC,Building Engineering,Water,Transportation</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>AECOM_Primary_Department__c$Lead_Region__c</column>
+            <operator>contains</operator>
+            <value>UK</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>AECOM_Primary_Department__c.Opportunities__r$StageName</column>
+            <operator>equals</operator>
+            <value>5 SNB/Win/Award,6 Contracted/Booked/Won</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <aggregateType>Sum</aggregateType>
+        <dateGranularity>Day</dateGranularity>
+        <field>AECOM_Primary_Department__c.Opportunities__r$Account</field>
+        <sortByName>AECOM_Primary_Department__c.Opportunities__r$Net_Revenue_TO_Project__c.CONVERT</sortByName>
+        <sortOrder>Desc</sortOrder>
+        <sortType>Aggregate</sortType>
+    </groupingsDown>
+    <name>UK/IRE B&amp;P Clients</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>AECOM_Departments_with_Opportunities__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <sortColumn>AECOM_Primary_Department__c.Opportunities__r$Net_Revenue_TO_Project__c.CONVERT</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>AECOM_Primary_Department__c$CreatedDate</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

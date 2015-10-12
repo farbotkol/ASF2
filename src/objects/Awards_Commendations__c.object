@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Tracks award submittals and awards won by AECOM
@@ -1475,6 +1476,10 @@ Records and storse letters of commendation received from clients related to AECO
                 <fullName>No Go (not entering)</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>Commendation Only</fullName>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackFeedHistory>true</trackFeedHistory>
@@ -1699,13 +1704,29 @@ Records and storse letters of commendation received from clients related to AECO
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Entry_Prepared_ByUser__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Name of primary Communications or Creative Marketing Services person</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Pick the name of the Primary Communications or Creative Marketing Services person.</inlineHelpText>
+        <label>Entry Prepared By</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Awards_Commendations3</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Entry_Prepared_By__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>name of primary Communications or Creative Marketing Services person</description>
         <externalId>false</externalId>
         <inlineHelpText>Enter name of primary Comms or CMS person</inlineHelpText>
-        <label>Entry Prepared By</label>
+        <label>Entry Prepared By (OLD)</label>
         <referenceTo>AECOM_Employee__c</referenceTo>
+        <relationshipLabel>Awards/Commendations (Entry Prepared By)</relationshipLabel>
         <relationshipName>Awards1</relationshipName>
         <required>false</required>
         <trackFeedHistory>true</trackFeedHistory>
@@ -2049,13 +2070,29 @@ Records and storse letters of commendation received from clients related to AECO
         <type>Url</type>
     </fields>
     <fields>
-        <fullName>Marketing_Coordinator__c</fullName>
+        <fullName>Marketing_CoordinatorUser__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>Marketing Coordinator working on award submittal</description>
         <externalId>false</externalId>
         <inlineHelpText>Marketing Coordinator working on award submittal</inlineHelpText>
         <label>Marketing Coordinator</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Awards_Commendations2</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Marketing_Coordinator__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Marketing Coordinator working on award submittal</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Marketing Coordinator working on award submittal</inlineHelpText>
+        <label>Marketing Coordinator (OLD)</label>
         <referenceTo>AECOM_Employee__c</referenceTo>
+        <relationshipLabel>Awards/Commendations (Marketing Coordinator)</relationshipLabel>
         <relationshipName>Awards3</relationshipName>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
@@ -2093,13 +2130,27 @@ Records and storse letters of commendation received from clients related to AECO
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Project_ManagerUser__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Awards_Commendations</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Project_Manager__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>AECOM PM or other person most closely associated with the award</description>
         <externalId>false</externalId>
         <inlineHelpText>AECOM PM or other person most closely associated with the award</inlineHelpText>
-        <label>Project Manager</label>
+        <label>Project Manager (OLD)</label>
         <referenceTo>AECOM_Employee__c</referenceTo>
+        <relationshipLabel>Awards/Commendations (Project Manager)</relationshipLabel>
         <relationshipName>Awards</relationshipName>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
@@ -2285,13 +2336,29 @@ Records and storse letters of commendation received from clients related to AECO
         <type>Picklist</type>
     </fields>
     <fields>
-        <fullName>Related_Employee__c</fullName>
+        <fullName>Related_EmployeeUser__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>AECOM person who was nominated for this award or is the subject of the letter or led the event.</description>
         <externalId>false</externalId>
         <inlineHelpText>Select AECOM person who was nominated for this award or is the subject of the letter or led the event.</inlineHelpText>
         <label>Related Employee</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Awards_Commendations1</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Related_Employee__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>AECOM person who was nominated for this award or is the subject of the letter or led the event.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Select AECOM person who was nominated for this award or is the subject of the letter or led the event.</inlineHelpText>
+        <label>Related Employee (OLD)</label>
         <referenceTo>AECOM_Employee__c</referenceTo>
+        <relationshipLabel>Awards/Commendations (Related Employee)</relationshipLabel>
         <relationshipName>Awards2</relationshipName>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
@@ -2368,6 +2435,49 @@ Records and storse letters of commendation received from clients related to AECO
             <value>ACEC</value>
         </filters>
         <label>ACEC</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Awards</fullName>
+        <columns>NAME</columns>
+        <columns>Related_Other__c</columns>
+        <columns>Category_Entered__c</columns>
+        <columns>Business_Line_s__c</columns>
+        <columns>Award_Status__c</columns>
+        <columns>AECOM_Office_City__c</columns>
+        <columns>AECOM_Office_Country__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Awards_Commendations__c.Awards</value>
+        </filters>
+        <label>All Awards</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Europe_Awards</fullName>
+        <columns>NAME</columns>
+        <columns>Related_Other__c</columns>
+        <columns>Category_Entered__c</columns>
+        <columns>Business_Line_s__c</columns>
+        <columns>Award_Status__c</columns>
+        <columns>Entry_Prepared_By__c</columns>
+        <columns>AECOM_Office_City__c</columns>
+        <columns>AECOM_Office_Country__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Awards_Commendations__c.Awards</value>
+        </filters>
+        <filters>
+            <field>Award_Geography__c</field>
+            <operation>equals</operation>
+            <value>Europe</value>
+        </filters>
+        <label>All Europe Awards</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -2458,6 +2568,19 @@ Records and storse letters of commendation received from clients related to AECO
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>Entry_prepared_by</fullName>
+        <columns>NAME</columns>
+        <columns>Entry_Prepared_By__c</columns>
+        <columns>Entry_Prepared_ByUser__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Entry_Prepared_By__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>Entry prepared by</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Environment_Project_Awards_won</fullName>
         <columns>NAME</columns>
         <columns>Client__c</columns>
@@ -2476,6 +2599,19 @@ Records and storse letters of commendation received from clients related to AECO
             <value>Won</value>
         </filters>
         <label>Environment Project Awards (won)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>MktCoordinator</fullName>
+        <columns>NAME</columns>
+        <columns>Marketing_Coordinator__c</columns>
+        <columns>Marketing_CoordinatorUser__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Marketing_Coordinator__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>MktCoordinator</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -2553,32 +2689,92 @@ Records and storse letters of commendation received from clients related to AECO
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>Won_Awards</fullName>
+        <fullName>Project_Manager</fullName>
         <columns>NAME</columns>
-        <columns>Award_Program_Name__c</columns>
-        <columns>Presenting_Sponsoring_Organizaton__c</columns>
-        <columns>Client__c</columns>
+        <columns>Project_ManagerUser__c</columns>
+        <columns>Project_Manager__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Project_Manager__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>Project Manager</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Projects_with_Commendation_Letters</fullName>
+        <columns>NAME</columns>
+        <columns>Related_Project__c</columns>
         <columns>Date_Award_Won__c</columns>
-        <columns>Need_to_Know__c</columns>
-        <columns>Award_Geography__c</columns>
+        <columns>Business_Line_s__c</columns>
+        <columns>AECOM_Region__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Awards_Commendations__c.Commendation_Letter</value>
+        </filters>
+        <label>Projects with Commendation Letters</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Related_Emploee</fullName>
+        <columns>NAME</columns>
+        <columns>Related_Employee__c</columns>
+        <columns>Related_EmployeeUser__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Related_Employee__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>Related Emploee</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Safety_Awards</fullName>
+        <columns>NAME</columns>
+        <columns>Related_Other__c</columns>
+        <columns>Category_Entered__c</columns>
+        <columns>Business_Line_s__c</columns>
+        <columns>Award_Status__c</columns>
+        <columns>AECOM_Office_City__c</columns>
+        <columns>AECOM_Office_Country__c</columns>
         <columns>CREATED_DATE</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Award_Status__c</field>
-            <operation>equals</operation>
-            <value>Won</value>
+            <field>Comments__c</field>
+            <operation>contains</operation>
+            <value>Safety</value>
+        </filters>
+        <label>Safety Awards</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Total_Annual_Awards</fullName>
+        <columns>NAME</columns>
+        <columns>Presenting_Sponsoring_Organizaton__c</columns>
+        <columns>Related_Project__c</columns>
+        <columns>Related_EmployeeUser__c</columns>
+        <columns>Business_Line_s__c</columns>
+        <columns>Date_Award_Won__c</columns>
+        <columns>AECOM_Region__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Date_Award_Won__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>10/1/2014</value>
+        </filters>
+        <filters>
+            <field>Date_Award_Won__c</field>
+            <operation>lessOrEqual</operation>
+            <value>9/30/2015</value>
         </filters>
         <filters>
             <field>Award_Geography__c</field>
             <operation>equals</operation>
-            <value>Europe</value>
+            <value>Americas</value>
         </filters>
-        <filters>
-            <field>Related_Project__c</field>
-            <operation>contains</operation>
-            <value>BBC</value>
-        </filters>
-        <label>Kyla</label>
+        <label>Total Annual Awards</label>
         <language>en_US</language>
     </listViews>
     <nameField>
@@ -3844,6 +4040,10 @@ Records and storse letters of commendation received from clients related to AECO
         </picklistValues>
         <picklistValues>
             <picklist>Award_Status__c</picklist>
+            <values>
+                <fullName>Commendation Only</fullName>
+                <default>false</default>
+            </values>
             <values>
                 <fullName>Commended %28e%2Eg%2E%2C third place%29</fullName>
                 <default>false</default>
@@ -5509,6 +5709,10 @@ Records and storse letters of commendation received from clients related to AECO
         <picklistValues>
             <picklist>Award_Status__c</picklist>
             <values>
+                <fullName>Commendation Only</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Commended %28e%2Eg%2E%2C third place%29</fullName>
                 <default>false</default>
             </values>
@@ -5942,7 +6146,7 @@ Records and storse letters of commendation received from clients related to AECO
         <errorConditionFormula>AND( 
  CONTAINS($RecordType.Name,&apos;Award&apos;), 
 
-ISBLANK(Related_Employee__c  ) ,
+ISBLANK(Related_EmployeeUser__c  ) ,
 ISBLANK( Related_Project__c ),
 ISBLANK( Related_Other__c )
 )</errorConditionFormula>
@@ -5966,8 +6170,8 @@ ISBLANK( Related_Other__c )
 &amp;CF00N30000007dzEa_lkid={!Awards_Commendations__c.Client__c} 
 &amp;00N30000007gSMT={!Project__c.Project_Geography__c} 
 &amp;00N30000007dzEj={!Project__c.Oracle_Project_Number__c} 
-&amp;CF00N30000007dzEi={!Project__c.Project_Manager__c} 
-&amp;CF00N30000007dzEi_lkid={!Awards_Commendations__c.Project_Manager__c} 
+&amp;CF00Na000000B7dtL={!Project__c.Project_Manager_User__c} 
+&amp;CF00Na000000B7dtL_lkid={!Awards_Commendations__c.Project_ManagerUser__c} 
 &amp;00N30000007dzET={!Project__c.Project_Responsible_Office__c} 
 &amp;RecordType=01230000000agyu</url>
     </webLinks>

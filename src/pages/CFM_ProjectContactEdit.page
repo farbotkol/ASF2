@@ -1,0 +1,176 @@
+<apex:page standardController="Project__c" extensions="CFM_ProjectContactEditController" showHeader="false" sidebar="false">
+
+<style>
+    .pageTitle {
+        padding: 10px;
+        display: block;
+        font-size: 15px;
+    }
+    .pmReviewPage .styledButton, .rejectionDialog .styledButton  {
+        padding: 5px 20px;
+        font-size: 12px;
+        color: white; 
+        background: #1E9EAF;
+        border-radius: 6px;
+        font-weight: normal;
+        margin-top: 10px;
+        margin-left: auto; /*Center the button*/
+        margin-right: auto;
+        display: block;
+    }
+
+    .styledButton:hover {
+      background: #3FCFBF;
+    }
+
+    .projectTable {
+        border: 1px #1E9EAF solid !important;
+        border-top-left-radius: 4px;
+        border-top-right-radius: 4px;
+    }
+    .projectTable th {
+        background: #1E9EAF !important;
+    }
+    .projectTable th div {
+        color: white;
+    }
+    .projectTable tr:first-child {
+        border-top-left-radius: 4px;
+    }
+    .projectTable tr:last-child {
+        border-top-right-radius: 4px;
+    }
+    .projectTable tr:nth-child(even) {
+        background-color: #F0F0F0;
+    }
+    .actionStepText {
+        padding-left: 5px;
+        padding-bottom: 10px;
+    }
+
+    /*Salesforce Overrides*/
+    .pbHeader {
+        background-color: #1E9EAF !important;
+    }
+    .mainTitle {
+        color: white !important;
+    }
+    .secondaryPalette {
+        border-color: #1E9EAF !important;
+    }
+
+    .hiddenPageBlock .bPageBlock {
+        visibility: hidden;
+    }
+    .hiddenPageBlock .pbBody {
+        visibility: visible;
+        margin: 0 !important;
+    }
+
+    .pageTitleIcon {
+        background-image: none !important;
+    }
+
+    .ui-dialog-titlebar {
+      color: white;
+      background: #1E9EAF;
+      background-image: none;
+    }
+
+    .tertiaryPalette {
+        background-color: #1E9EAF !important;
+    }
+
+    .pbHeader>table {
+        padding: 0 !important;
+    }
+
+    .bPageBlock {
+        margin: 10px 2% !important;
+    }
+
+    .bPageTitle {
+        margin: 0 2% !important;
+    }
+</style>
+
+    <apex:form >
+       <apex:outputPanel rendered="{!wasSaved}">
+            <script type="text/javascript">
+                // Force reload
+                window.opener.location.href = window.opener.location.href; 
+                window.close();
+            </script>
+        </apex:outputPanel>
+
+        <div class="bPageTitle">
+            <div class="ptBody">
+                <div class="content">
+                    <apex:image url="{!URLFOR($Resource.CFM_Images, 'Survey_Icon.png')}" styleClass="pageTitleIcon" />
+                    <h1 class="pageType">Update Project<span class="titleSeparatingColon">:</span></h1>
+                    <h2 class="pageDescription"> Contact Information</h2>
+                    <div class="blank">&nbsp;</div>
+                </div>
+            </div>
+        </div>
+
+        <apex:pageMessages />
+
+        <apex:pageBlock rendered="{!!wasSaved}">
+            <apex:pageBlockButtons location="both">
+                <apex:commandButton value="Edit" rendered="{!!isEditMode}" action="{!setEditMode}"/>
+                <apex:commandButton value="Cancel" rendered="{!isEditMode}" action="{!cancelEdit}" immediate="true" />
+                <apex:commandButton value="Save" rendered="{!isEditMode}" action="{!performSave}" />
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection title="Project Information" columns="1">
+                <apex:outputField value="{!project.obj.Oracle_Project_Number__c}" />
+                <apex:outputField value="{!project.obj.OracleName__c}" />
+                <apex:outputField value="{!project.obj.Modified_Project_Name__c}" rendered="{!!isEditMode}" />
+                <apex:inputField value="{!project.obj.Modified_Project_Name__c}" rendered="{!isEditMode}" />
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="Enter Contact Information" rendered="{!!hasExistingContact}" columns="1">
+                <apex:outputLabel value="No survey contact on project" rendered="{!!isEditMode}" />
+                <apex:inputField value="{!surveyContact.FirstName}" rendered="{!isEditMode}"  />
+                <apex:inputField value="{!surveyContact.LastName}" rendered="{!isEditMode}"  required="false" />
+                <apex:inputField value="{!surveyContact.Email}" rendered="{!isEditMode}" required="false" />
+                <apex:inputField value="{!surveyContact.Phone}" rendered="{!isEditMode}" />
+                <apex:inputField value="{!surveyContact.Survey_Language__c}" rendered="{!isEditMode}" />
+            </apex:pageBlockSection>
+
+            <apex:pageBlockSection title="Update Contact Information" rendered="{!hasExistingContact}" columns="1">
+
+                <apex:outputPanel rendered="{!isEditMode}">
+                    <apex:selectRadio layout="pageDirection" value="{!contactMode}">
+                        <apex:selectOptions value="{!contactOptions}"/>
+                        <apex:actionsupport event="onchange" action="{!switchContactMode}"/>
+                    </apex:selectRadio>
+                </apex:outputPanel>
+
+                <!-- Information is correct -->
+                <apex:outputField value="{!surveyContact.FirstName}" rendered="{!contactMode == '1'}"/>
+                <apex:outputField value="{!surveyContact.LastName}" rendered="{!contactMode == '1'}"/>
+                <apex:outputField value="{!surveyContact.Email}" rendered="{!contactMode == '1'}"/>
+                <apex:outputField value="{!surveyContact.Phone}" rendered="{!contactMode == '1'}"/>
+                <apex:outputField value="{!surveyContact.Survey_Language__c}" rendered="{!contactMode == '1'}"/>
+
+                <!-- Update name -->
+                <apex:outputField value="{!surveyContact.FirstName}" rendered="{!contactMode == '2'}"/>
+                <apex:outputField value="{!surveyContact.LastName}" rendered="{!contactMode == '2'}"/>
+                <apex:inputField value="{!surveyContact.Email}" rendered="{!contactMode == '2'}" required="false" />
+                <apex:inputField value="{!surveyContact.Phone}" rendered="{!contactMode == '2'}"/>
+                <apex:inputField value="{!surveyContact.Survey_Language__c}" rendered="{!contactMode == '2'}"/>
+
+                <!-- New Contact -->
+                <apex:inputField value="{!surveyContact.FirstName}" rendered="{!contactMode == '3'}"/>
+                <apex:inputField value="{!surveyContact.LastName}" rendered="{!contactMode == '3'}" required="false" />
+                <apex:inputField value="{!surveyContact.Email}" rendered="{!contactMode == '3'}" required="false" />
+                <apex:inputField value="{!surveyContact.Phone}" rendered="{!contactMode == '3'}"/>
+                <apex:inputField value="{!surveyContact.Survey_Language__c}" rendered="{!contactMode == '3'}"/>
+
+            </apex:pageBlockSection>
+
+        </apex:pageBlock>
+    </apex:form>
+</apex:page>

@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Primary_Dept_Lookup__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager_User__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Net_Value__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Probability_Stage__c</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Pipeline of facility and utility condition assessments and inventories</description>
+    <filter>
+        <booleanFilter>4 AND 5 AND 6 AND (1 OR 2 OR 3)</booleanFilter>
+        <criteriaItems>
+            <column>OPPORTUNITY_NAME</column>
+            <operator>contains</operator>
+            <value>asset management,facility condition assessments,facilities assessment,BUILDER,utilities assessment,condition assessment,asset inventory,FIAR,linear segmentation</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>DESCRIPTION</column>
+            <operator>contains</operator>
+            <value>asset management,facility condition assessments,faciliites assessment,BUILDER,utilities assessment,condition assessment,asset inventory,FIAR,linear segmentation</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Report_comments__c</column>
+            <operator>contains</operator>
+            <value>asset management,facility condition assessments,facilities assessment,BUILDER,utilities assessment,condition assessment,asset inventory,FIAR,linear segmentation</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Client_Group__c</column>
+            <operator>equals</operator>
+            <value>National Government</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.End_Client_Sector__c</column>
+            <operator>equals</operator>
+            <value>US Federal Government</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>startsWith</operator>
+            <value>1,2,3,4,5,6</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Stage_Group__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Federal Asset Management</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Opportunity.AECOM_Primary_Dept_Lookup__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CURNEXTFY</interval>
+    </timeFrameFilter>
+</Report>

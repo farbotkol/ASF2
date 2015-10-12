@@ -1,0 +1,168 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_42581292</developerName>
+        <masterLabel>Market Sector</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Account.Client_Subgroup__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Defense - Air Force</sourceValue>
+            </sourceValues>
+            <value>Air Force</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Defense - Army</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Defense - Other</sourceValue>
+            </sourceValues>
+            <value>Army</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Defense - Marines</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Defense - Navy</sourceValue>
+            </sourceValues>
+            <value>Navy/Marine</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Education Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Energy Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Environmental/Climate Agency/Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Justice/Prisons/Security Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Other Agency</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>USPS</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Healthcare &amp; Life Sciences</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>US Homeland Security</sourceValue>
+            </sourceValues>
+            <value>Other Federal</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>Account.Client_Name_Alias__c</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Client_Solicitation_ID_number__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager_User__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Primary_Dept_Lookup__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Region__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Lead_District_Formula__c</field>
+    </columns>
+    <columns>
+        <field>RECORDTYPE</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Role__c</field>
+    </columns>
+    <columns>
+        <field>PARTNER_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Ceiling_Amount_Total__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Program_Estimated_Revenue__c</field>
+    </columns>
+    <columns>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Probability_Stage__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Estimated_work_start_date__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Work_end_date_del__c</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Master_Contract_lookup__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Master_Contract_Number_Program__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>For Christopher Benosky to see opportunities in Stages 1-5 for the following USACE accounts: New York, New England, Baltimore, Philadelphia.</description>
+    <filter>
+        <criteriaItems>
+            <column>Account.Client_Name_Alias__c</column>
+            <operator>contains</operator>
+            <value>USACE Baltimore,USACE New York,USACE New England,USACE Philadelphia</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>startsWith</operator>
+            <value>1,2,3,4,5</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Opportunity.Program_Americas,Opportunity.Task_Order_Americas,Opportunity.Project_Americas</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <name>USACE (Accounts)</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Account.Client_Name_Alias__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.WinDate__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

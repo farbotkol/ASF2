@@ -10,4 +10,5 @@
     <tab>Project__c</tab>
     <tab>Talent_Sourcing__c</tab>
     <tab>Business_Line__c</tab>
+    <tab>Qtr_Review__c</tab>
 </CustomApplication>

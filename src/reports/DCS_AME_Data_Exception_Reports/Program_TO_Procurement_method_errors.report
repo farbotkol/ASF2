@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <chart>
+        <chartSummaries>
+            <column>Opportunity.Task_Orders_Open_Revenue__c</column>
+        </chartSummaries>
+        <chartType>None</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>false</expandOthers>
+        <groupingColumn>OPPORTUNITY_NAME</groupingColumn>
+        <showAxisLabels>false</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+    </chart>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Task_Order_Count__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Task_Orders_Open_Revenue__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Competitive_Bid_or_Sole_source__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Program_Estimated_Revenue__c.CONVERT</field>
+    </columns>
+    <crossFilters>
+        <criteriaItems>
+            <column>Competitive_Bid_or_Sole_source__c</column>
+            <operator>equals</operator>
+            <value>Competitive Bid,Unknown</value>
+        </criteriaItems>
+        <operation>with</operation>
+        <primaryTableColumn>OPPORTUNITY_ID</primaryTableColumn>
+        <relatedTable>Opportunity</relatedTable>
+        <relatedTableJoinColumn>Master_Contract_lookup__c</relatedTableJoinColumn>
+    </crossFilters>
+    <currency>USD</currency>
+    <description>Noncompetitive programs with task orders listed as competitive.</description>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity.TO_Procurement_Method__c</column>
+            <operator>equals</operator>
+            <value>Noncompetitive Task Orders</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Group__c</column>
+            <operator>equals</operator>
+            <value>Design &amp; Consulting</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Geography_Formula__c</column>
+            <operator>equals</operator>
+            <value>North America</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Program/TO Procurement method errors</name>
+    <params>
+        <name>open</name>
+        <value>open</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <rowLimit>50</rowLimit>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Opportunity.Task_Orders_Open_Revenue__c</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

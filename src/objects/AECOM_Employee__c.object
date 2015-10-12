@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>(HR Data) Design 2 - use custom object for employee data from HR.</description>
@@ -455,7 +456,12 @@ CASE(Office_Country__c , &quot;AE&quot;,
         <filters>
             <field>Office_Country__c</field>
             <operation>equals</operation>
-            <value>AU</value>
+            <value>nz</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
         </filters>
         <label>ANZ Employees</label>
         <language>en_US</language>
@@ -798,6 +804,30 @@ CASE(Office_Country__c , &quot;AE&quot;,
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>Deactivated_in_the_Last_Week2</fullName>
+        <columns>NAME</columns>
+        <columns>Business_Line__c</columns>
+        <columns>Office_Country__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>LAST_UPDATE</field>
+            <operation>equals</operation>
+            <value>LAST_MONTH</value>
+        </filters>
+        <filters>
+            <field>Office_Country__c</field>
+            <operation>equals</operation>
+            <value>US,CA</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Inactive</value>
+        </filters>
+        <label>Deactivated in the Last Month</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Employees_with_Location</fullName>
         <columns>NAME</columns>
         <columns>Status__c</columns>
@@ -872,14 +902,9 @@ CASE(Office_Country__c , &quot;AE&quot;,
         <columns>Supervisor__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Inactive_Date__c</field>
-            <operation>equals</operation>
-            <value>LAST_N_DAYS:360</value>
-        </filters>
-        <filters>
             <field>Business_Line__c</field>
             <operation>equals</operation>
-            <value>Transportation</value>
+            <value>Environment</value>
         </filters>
         <filters>
             <field>Office_Country__c</field>
@@ -915,7 +940,7 @@ CASE(Office_Country__c , &quot;AE&quot;,
         <filters>
             <field>LAST_UPDATE</field>
             <operation>equals</operation>
-            <value>LAST_N_DAYS:30</value>
+            <value>LAST_N_DAYS:60</value>
         </filters>
         <label>Inactivated last month</label>
         <language>en_US</language>
@@ -929,14 +954,19 @@ CASE(Office_Country__c , &quot;AE&quot;,
         <columns>Supervisor__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
-            <field>Inactive_Date__c</field>
-            <operation>equals</operation>
-            <value>LAST_N_DAYS:365</value>
-        </filters>
-        <filters>
             <field>Office_Country__c</field>
             <operation>contains</operation>
             <value>US</value>
+        </filters>
+        <filters>
+            <field>LAST_UPDATE</field>
+            <operation>equals</operation>
+            <value>LAST_YEAR</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Inactive</value>
         </filters>
         <label>Inactivated last year</label>
         <language>en_US</language>
@@ -974,17 +1004,14 @@ CASE(Office_Country__c , &quot;AE&quot;,
         <filters>
             <field>Hire_Date__c</field>
             <operation>equals</operation>
-            <value>LAST_N_DAYS:7</value>
+            <value>LAST_N_DAYS:17</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
         </filters>
         <label>New Active</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>Offices</fullName>
-        <columns>Office_City__c</columns>
-        <columns>Office_State__c</columns>
-        <filterScope>Everything</filterScope>
-        <label>Offices</label>
         <language>en_US</language>
     </listViews>
     <listViews>

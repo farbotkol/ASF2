@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_43937774</developerName>
+        <masterLabel>Wins/Bookings</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>STAGE_NAME</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>5 SNB/Win/Award</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>5A Program in Negotiation</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>5B Program Signed and Active</sourceValue>
+            </sourceValues>
+            <value>Wins</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>6 Contracted/Booked/Won</sourceValue>
+            </sourceValues>
+            <value>Booked</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Bid_Proposal_Charge__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Lead_Region_Formula__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Lead_District_Formula__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager_User__c</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.WinDate__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Book_date__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Practice_Area_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Role__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Opportunity.Net_Revenue_TO_Project__c.CONVERT</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Los Angeles area</description>
+    <filter>
+        <booleanFilter>(1 AND 2 AND 3 AND (4 OR 5))</booleanFilter>
+        <criteriaItems>
+            <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>equals</operator>
+            <value>Transportation</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Lead_Region_Formula__c</column>
+            <operator>contains</operator>
+            <value>US - West</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>startsWith</operator>
+            <value>6</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.AECOM_Primary_Dept_Lookup__c</column>
+            <operator>contains</operator>
+            <value>Los Angeles</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Project_City__c</column>
+            <operator>contains</operator>
+            <value>Los Angeles</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_43937774</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>FY15 Bookings</name>
+    <params>
+        <name>include</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>OpportunityPartner</reportType>
+    <scope>all</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Opportunity.Practice_Area_of_Primary_AECOM_Dept__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.WinDate__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

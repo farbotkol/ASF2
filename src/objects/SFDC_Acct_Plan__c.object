@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Overall goals, objectives, and challenges for penetrating an account.</description>
@@ -54,6 +55,54 @@
     <enableReports>true</enableReports>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AECOM_Account_Vision__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>What is our vision for growing this account / framework, particularly in this planning year?</inlineHelpText>
+        <label>AECOM Account Vision</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>AECOM_Value_Proposition__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>What is the AECOM value proposition (link our solution to the client drivers) for this planning year?</inlineHelpText>
+        <label>AECOM Value Proposition</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>AECOM_distinguishers__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>At a high level, what distinguishes AECOM from the competition? More specific information by competitor can be entered in the Competitor Information section.</inlineHelpText>
+        <label>AECOM Distinguishers</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>Accessible_Client_Spend__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Client’s current FY budget available for AECOM range of services. 
+Include: CapX, OpX, Remediation, and Development.
+Calculate using CAM Account Plan Workbook – Wallet Share Tab</inlineHelpText>
+        <label>Accessible Client Spend</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
     <fields>
         <fullName>Account_ID__c</fullName>
         <externalId>false</externalId>
@@ -108,10 +157,9 @@
         <fullName>Americas_Account_Manager__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <label>Americas Account Manager</label>
-        <referenceTo>AECOM_Employee__c</referenceTo>
-        <relationshipLabel>Account Plan</relationshipLabel>
-        <relationshipName>Account_Plan</relationshipName>
+        <label>Joint Client Account Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Account_Plan1</relationshipName>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -138,19 +186,15 @@
         <label>Business Line(s)</label>
         <picklist>
             <picklistValues>
-                <fullName>Architecture</fullName>
+                <fullName>Buildings &amp; Places</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Building Engineering</fullName>
+                <fullName>CS - Building Construction</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>DP&amp;E</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Energy</fullName>
+                <fullName>CS - EIC</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -158,11 +202,19 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Mining and Metals</fullName>
+                <fullName>National Governments</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>PCC</fullName>
+                <fullName>Oil &amp; Gas</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>PM/CM</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Power &amp; Industrial</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -173,13 +225,25 @@
                 <fullName>Water</fullName>
                 <default>false</default>
             </picklistValues>
-            <sorted>false</sorted>
+            <sorted>true</sorted>
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
-        <visibleLines>4</visibleLines>
+        <visibleLines>8</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Client_s_Object_or_Aim_for_FY__c</fullName>
+        <description>Text field describing what the client company is trying to achieve / deliver in this planning year, or what problem is the client trying to solve.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>What is the client company trying to achieve / deliver in this planning year, or what problem is the client trying to solve?</inlineHelpText>
+        <label>Client&apos;s Object or Aim</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
     </fields>
     <fields>
         <fullName>Current_AECOM_Work__c</fullName>
@@ -352,17 +416,30 @@
         <visibleLines>10</visibleLines>
     </fields>
     <fields>
-        <fullName>Current_FY_Est_Client_Accessible_Spend__c</fullName>
+        <fullName>Current_Client_Wallet_ShareX__c</fullName>
+        <description>Not used, delete</description>
         <externalId>false</externalId>
-        <inlineHelpText>Client’s current FY budget available for AECOM range of services</inlineHelpText>
-        <label>Current FY Est. Client Accessible Spend</label>
-        <precision>18</precision>
+        <label>Current % Client Wallet ShareX</label>
+        <precision>3</precision>
         <required>false</required>
         <scale>0</scale>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>Current_Client_Wallet_Share__c</fullName>
+        <externalId>false</externalId>
+        <formula>Prior_FY_Booking_actual__c /  Accessible_Client_Spend__c</formula>
+        <inlineHelpText>Previous FY All-AECOM Bookings divided by Total Accessible Client Spend</inlineHelpText>
+        <label>Current % Client Wallet Share</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
     </fields>
     <fields>
         <fullName>Current_Regions__c</fullName>
@@ -404,6 +481,38 @@
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
         <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>ECAM_CGP_Categories__c</fullName>
+        <externalId>false</externalId>
+        <label>ECAM/CGP Categories</label>
+        <picklist>
+            <picklistValues>
+                <fullName>ECAM</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CGP-Campaign Clients</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CGP-Other Target Clients</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CGP-Regional CAMS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other Clients</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>End_Client_Sector__c</fullName>
@@ -470,9 +579,8 @@ null))))</formula>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>Executive Sponsor</label>
-        <referenceTo>AECOM_Employee__c</referenceTo>
-        <relationshipLabel>Account Plan (Executive Sponsor)</relationshipLabel>
-        <relationshipName>ExecutiveSponsorLookup</relationshipName>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Account_Plan3</relationshipName>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -483,15 +591,38 @@ null))))</formula>
         <fullName>Global_Account_Manager__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <label>Global Account Manager</label>
-        <referenceTo>AECOM_Employee__c</referenceTo>
-        <relationshipLabel>Account Plan (Global Account Manager)</relationshipLabel>
-        <relationshipName>Account_Plan1</relationshipName>
+        <label>Account Manager/CAM</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Account_Plan2</relationshipName>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Hierarchy_ID__c</fullName>
+        <description>Used to pass through ID to linked reports</description>
+        <externalId>false</externalId>
+        <formula>Account__r.Hierarchy_ID__c</formula>
+        <inlineHelpText>Inherited from Account</inlineHelpText>
+        <label>Hierarchy ID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Issues_that_could_prevent_account_growth__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter any known issues or challenges that could prevent growth in this planning year.</inlineHelpText>
+        <label>Issues that could prevent account growth</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
     </fields>
     <fields>
         <fullName>Key_Business_Problems__c</fullName>
@@ -854,10 +985,22 @@ null))))</formula>
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Prior_FY_Sales_NSR__c</fullName>
+        <fullName>Prior_FY_Revenue_Gross__c</fullName>
+        <externalId>false</externalId>
+        <label>Prior FY Revenue (Gross)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Prior_FY_Revenue_NSR__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Enter prior year new work sold</inlineHelpText>
-        <label>Prior FY Sales (NSR)</label>
+        <label>Prior FY Revenue (NSR)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -880,13 +1023,24 @@ null))))</formula>
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>Recent_client_news__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter client news that could impact our ability to grow the account. Click the Google News link on the Account record for ideas.</inlineHelpText>
+        <label>Recent client news</label>
+        <length>1000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Html</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
         <fullName>Regional_Account_Manager__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>Regional Account Manager</label>
-        <referenceTo>AECOM_Employee__c</referenceTo>
-        <relationshipLabel>Account Plan (Regional Account Manager)</relationshipLabel>
-        <relationshipName>Account_Plan2</relationshipName>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Account_Plan</relationshipName>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -952,17 +1106,213 @@ null))))</formula>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
     </fields>
+    <fields>
+        <fullName>Three_things_the_client_cares_about__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter the top 3 things the client company cares about, that drive their business decision-making and their actions for this planning year.</inlineHelpText>
+        <label>Three things the client cares about</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>View_Bookings_by_Geography__c</fullName>
+        <description>Link to report in Embedded Reports folder.</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/00Oa0000008nLnv?pv0=&quot;+ Account__r.Hierarchy_ID__c , &quot;Display Swim Lane of bookings by owning geography for this account hierarchy (current fiscal year)&quot;, &quot;_top&quot;)</formula>
+        <inlineHelpText>Link to report in Embedded Reports folder.</inlineHelpText>
+        <label>View Bookings by Geography</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>View_Bookings_by_Project_Type__c</fullName>
+        <description>Link to report in Embedded Reports folder.</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/00Oa0000008nJgD?pv0=&quot;+ Account__r.Hierarchy_ID__c , &quot;Display Swim Lane of bookings by project type for this account hierarchy (current fiscal year)&quot;, &quot;_top&quot;)</formula>
+        <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
+        <label>View Bookings by Project Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>View_Bookings_by_Service_Group__c</fullName>
+        <description>Link to report in Embedded Reports folder.</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/00Oa0000008nJgN?pv0=&quot;+ Account__r.Hierarchy_ID__c , &quot;Display Swim Lane of bookings by AECOM Group for this account hierarchy (current fiscal year)&quot;, &quot;_top&quot;)</formula>
+        <inlineHelpText>Link to report in Embedded Reports folder.</inlineHelpText>
+        <label>View Bookings by Service Group</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>View_Capture_Rate__c</fullName>
+        <description>Link to report in Embedded Reports folder.</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/00Oa0000008nCvA?pv0=&quot;+ Account__r.Hierarchy_ID__c , &quot;Display capture rate graph and data for this account hierarchy (current and previous fiscal year)&quot;, &quot;_top&quot;)</formula>
+        <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
+        <label>View Capture Rate</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>View_Heat_Map__c</fullName>
+        <description>Link to a report in the Embedded Reports folder</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/00Oa0000008nCuv?pv0=&quot;+Account__r.Hierarchy_ID__c , &quot;Display matrix of AECOM Team relationships with Account contacts&quot;, &quot;_top&quot;)</formula>
+        <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
+        <label>View Heat Map</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>View_Hit_Rate__c</fullName>
+        <description>Link to report in Embedded Reports folder</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/00Oa0000008nCvF?pv0=&quot;+ Account__r.Hierarchy_ID__c , &quot;Display hit rate graph and data for this account hierarchy (current and previous fiscal year)&quot;, &quot;_top&quot;)</formula>
+        <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
+        <label>View Hit Rate</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>View_Key_Opportunities__c</fullName>
+        <description>Link to a report in the Embedded Reports folder</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/00Oa0000008nCv5?pv0=&quot;+ Account__r.Hierarchy_ID__c , &quot;Display current opportunities for this account hierarchy that have value &gt;$1 million or &apos;Must Win&apos; checked&quot;, &quot;_top&quot;)</formula>
+        <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
+        <label>View Key Opportunities</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>View_Loss_Analysis__c</fullName>
+        <description>Link to report in Embedded Reports folder</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/00Oa0000008nCvK?pv0=&quot;+ Account__r.Hierarchy_ID__c , &quot;Display account opportunities lost during the current and previous fiscal year&quot;, &quot;_top&quot;)</formula>
+        <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
+        <label>View Loss Analysis</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>View_Opportunity_Backlog__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/00Oa0000008nF6Z?pv0=&quot;+ Account__r.Hierarchy_ID__c, &quot;Display all open opportunities for this Account hierarchy&quot;, &quot;_top&quot;)</formula>
+        <inlineHelpText>Report shows all opportunities in Stages 1 through 5, award date any time</inlineHelpText>
+        <label>View Opportunity Backlog</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>View_Revenue_Growth_Roadmap__c</fullName>
+        <description>View Bookings Forecast</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/00Oa0000008nCuR?pv0=&quot;+ Account__r.Hierarchy_ID__c, &quot;Display graph and detail of past wins and future opportunities for this Account hierarchy&quot;, &quot;_top&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
+        <label>View Revenue Growth Roadmap</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>View_Strategic_Roadmap__c</fullName>
+        <description>Link to a report in the Embedded Reports folder</description>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/00Oa0000008nDNJ?pv0=&quot;+  Name  , &quot;Display graph of Strategic Roadmap&quot;, &quot;_top&quot;)</formula>
+        <inlineHelpText>Click to open, or right click and open in a new window to see graph and supporting data.</inlineHelpText>
+        <label>View Strategic Roadmap</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>View_YTD_Bookings_for_Hierarchy__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/00Oa0000007xxon?pv0=&quot;+ Hierarchy_ID__c , &quot;Display a report of YTD bookings for all accounts in this account&apos;s hierarchy&quot;, &quot;_top&quot;)</formula>
+        <inlineHelpText>Opens a Salesforce report and selects data for this account.</inlineHelpText>
+        <label>View YTD Bookings for Hierarchy</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <label>Account Plan</label>
+    <listViews>
+        <fullName>FY2016_Account_Plans_George_Sacco</fullName>
+        <booleanFilter>(1 AND 2) OR (1 AND 3)</booleanFilter>
+        <columns>Account_Name__c</columns>
+        <columns>NAME</columns>
+        <columns>Global_Account_Manager__c</columns>
+        <columns>Americas_Account_Manager__c</columns>
+        <columns>Current_AECOM_Work__c</columns>
+        <columns>Potential_AECOM_Work__c</columns>
+        <columns>Accessible_Client_Spend__c</columns>
+        <columns>Current_Client_Wallet_Share__c</columns>
+        <columns>Prior_FY_Booking_actual__c</columns>
+        <columns>Prior_FY_Revenue_Gross__c</columns>
+        <columns>Prior_FY_Revenue_NSR__c</columns>
+        <columns>View_Key_Opportunities__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Planning_Year__c</field>
+            <operation>equals</operation>
+            <value>FY2016</value>
+        </filters>
+        <filters>
+            <field>Global_Account_Manager__c</field>
+            <operation>equals</operation>
+            <value>George Sacco</value>
+        </filters>
+        <filters>
+            <field>Americas_Account_Manager__c</field>
+            <operation>equals</operation>
+            <value>George Sacco</value>
+        </filters>
+        <label>FY2016 Account Plans George Sacco</label>
+        <language>en_US</language>
+    </listViews>
     <listViews>
         <fullName>Plans_Approved</fullName>
         <columns>NAME</columns>
         <columns>Account__c</columns>
         <columns>Planning_Year__c</columns>
         <columns>LAST_UPDATE</columns>
-        <columns>Executive_Sponsor__c</columns>
-        <columns>Global_Account_Manager__c</columns>
-        <columns>Americas_Account_Manager__c</columns>
-        <columns>Regional_Account_Manager__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>RECORDTYPE</field>
@@ -981,10 +1331,6 @@ null))))</formula>
         <fullName>Plans_only</fullName>
         <columns>NAME</columns>
         <columns>Account__c</columns>
-        <columns>Executive_Sponsor__c</columns>
-        <columns>Americas_Account_Manager__c</columns>
-        <columns>Regional_Account_Manager__c</columns>
-        <columns>Global_Account_Manager__c</columns>
         <columns>Planning_Year__c</columns>
         <columns>Current_AECOM_Work__c</columns>
         <columns>Potential_AECOM_Work__c</columns>
@@ -1017,19 +1363,15 @@ null))))</formula>
         <picklistValues>
             <picklist>Business_Line_s__c</picklist>
             <values>
-                <fullName>Architecture</fullName>
+                <fullName>Buildings %26 Places</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Building Engineering</fullName>
+                <fullName>CS - Building Construction</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>DP%26E</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Energy</fullName>
+                <fullName>CS - EIC</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1037,11 +1379,19 @@ null))))</formula>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Mining and Metals</fullName>
+                <fullName>National Governments</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>PCC</fullName>
+                <fullName>Oil %26 Gas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PM%2FCM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Power %26 Industrial</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1240,6 +1590,29 @@ null))))</formula>
             </values>
             <values>
                 <fullName>US West</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ECAM_CGP_Categories__c</picklist>
+            <values>
+                <fullName>CGP-Campaign Clients</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CGP-Other Target Clients</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CGP-Regional CAMS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ECAM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other Clients</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -1453,31 +1826,7 @@ null))))</formula>
         <picklistValues>
             <picklist>Business_Line_s__c</picklist>
             <values>
-                <fullName>Architecture</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Building Engineering</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>DP%26E</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Energy</fullName>
-                <default>false</default>
-            </values>
-            <values>
                 <fullName>Environment</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Mining and Metals</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PCC</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -1676,6 +2025,29 @@ null))))</formula>
             </values>
             <values>
                 <fullName>US West</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ECAM_CGP_Categories__c</picklist>
+            <values>
+                <fullName>CGP-Campaign Clients</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CGP-Other Target Clients</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CGP-Regional CAMS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>ECAM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Other Clients</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -1897,6 +2269,7 @@ null))))</formula>
         <searchResultsAdditionalFields>OWNER.ALIAS</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
+    <startsWith>Vowel</startsWith>
     <webLinks>
         <fullName>Help</fullName>
         <availability>online</availability>

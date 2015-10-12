@@ -1,0 +1,138 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>AMOUNT.CONVERT:SUM + Opportunity.Program_Estimated_Revenue__c.CONVERT:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <description>Program Revenue + Gross Revenue</description>
+        <developerName>FORMULA1</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Win Value</masterLabel>
+        <scale>2</scale>
+    </aggregates>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.TO_Procurement_Method__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Program_Estimated_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Practice_Area_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Project_Delivery_Method__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Client_Group__c</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <field>Opportunity.WinDate__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Win_Loss_Report_Date__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>(1 and 2 and (3 or 4 or 5 or 6 or 7 or 8 ) and 9 and 10) AND 11</booleanFilter>
+        <criteriaItems>
+            <column>Opportunity.Geography_Formula__c</column>
+            <operator>equals</operator>
+            <value>North America</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Stage_Group__c</column>
+            <operator>contains</operator>
+            <value>5,6</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Project_Delivery_Method__c</column>
+            <operator>equals</operator>
+            <value>Owner&apos;s Representative,Program Management,Project Management,CM-Agent</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Services__c</column>
+            <operator>equals</operator>
+            <value>Program Management,Construction Management</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Transportation_Initiatives__c</column>
+            <operator>includes</operator>
+            <value>PM/CM (Project Mgmt/Constr Mgmt)</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.AECOM_Department_2__c</column>
+            <operator>contains</operator>
+            <value>PMCM,PM/CM</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.PDD_Services__c</column>
+            <operator>equals</operator>
+            <value>Construction Inspection / Supervision,Construction Management,Construction Services,Program &amp; Construction Mgmt.,Program Management</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.AECOM_Primary_Dept_Lookup__c</column>
+            <operator>contains</operator>
+            <value>PMCM,PM/CM,0243,1753,1758,1760,1901,1903,1908,1902,1904,1905,1056,1752,1757,0004,1751,1756</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Region__c</column>
+            <operator>equals</operator>
+            <value>AME Southeast,AME Midwest,AME Northeast,AME Pacific</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.AECOM_Primary_Dept_Lookup__c</column>
+            <operator>notContain</operator>
+            <value>Tishman,Hunt</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Region__c</column>
+            <operator>equals</operator>
+            <value>AME Pacific</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Area__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Pacific wins by Area Current FY dash</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>AMOUNT.CONVERT</sortColumn>
+    <sortOrder>Desc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.WinDate__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

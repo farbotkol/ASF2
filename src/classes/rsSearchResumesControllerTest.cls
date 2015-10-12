@@ -575,10 +575,10 @@ private class rsSearchResumesControllerTest {
 	}
 
 	@isTest static void testBasicSearch() {
-		rsTestUtil.createTestProfileParts(100, 0);
+		rsTestUtil.createTestProfileParts(1000, 0);
 		rsSearchResumesController cont = new rsSearchResumesController();
 		List<String> fixedResults = new List<String>();
-		for(User u : [Select Id from User where LastName LIKE: 'lastName%' LIMIT 100]) {
+		for(User u : [Select Id from User where LastName LIKE: 'lastName%' LIMIT 1000]) {
 			fixedResults.add(u.Id);
 		}
 		cont.setupBasic();
@@ -588,7 +588,7 @@ private class rsSearchResumesControllerTest {
 		cont.basicSearch();
 		Test.stopTest();
 
-		System.assertEquals(100, cont.getTotalSearchResults());
+		System.assertEquals(1000, cont.getTotalSearchResults());
 
 	}
 

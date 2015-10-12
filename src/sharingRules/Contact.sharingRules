@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>Contacts_Global</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Allows all users access to all contacts except the AECOM internal employee contacts</description>
+        <label>Contacts - Global</label>
+        <sharedTo>
+            <group>All_Users</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Account Contacts</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Contacts_Internal</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Only for AECOM employee records - associated with the AECOM Internal Account</description>
+        <label>Contacts - Internal</label>
+        <sharedTo>
+            <group>Admin_users</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>RecordTypeId</field>
+            <operation>equals</operation>
+            <value>AECOM Employee</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingCriteriaRules>
+        <fullName>Shared_Services_Contact</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Sharing rule to allow Shared Services users to see all contact records with the AECOM Employee record type</description>
+        <label>Shared Services Contact</label>
+        <sharedTo>
+            <group>SS_Accounts_Payable</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Vendor,AECOM Employee</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+</SharingRules>

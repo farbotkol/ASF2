@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Services__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Primary_Dept_Lookup__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager_User__c</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Net_Value__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Probability_Stage__c</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>4 AND (1 OR 2 OR 3 OR 5)</booleanFilter>
+        <criteriaItems>
+            <column>OPPORTUNITY_NAME</column>
+            <operator>contains</operator>
+            <value>facility assessment,facilities assessment,FCA,BUILDER,asset management,facility inventory,asset inventory,FIAR</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>DESCRIPTION</column>
+            <operator>contains</operator>
+            <value>facility assessment,facilities assessment,FCA,BUILDER,asset management,facility inventory,asset inventory,FIAR</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Report_comments__c</column>
+            <operator>contains</operator>
+            <value>facility assessment,facilities assessment,FCA,BUILDER,asset management,facility inventory,asset inventory,FIAR</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>OPPORTUNITY.CURRENCY_ISO_CODE</column>
+            <operator>startsWith</operator>
+            <value>USD,CAD</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Services__c</column>
+            <operator>includes</operator>
+            <value>Facilities Assessment</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>US Asset Management</name>
+    <params>
+        <name>open</name>
+        <value>open</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Opportunity.Opportunity_ID__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CURNEXTFY</interval>
+    </timeFrameFilter>
+</Report>

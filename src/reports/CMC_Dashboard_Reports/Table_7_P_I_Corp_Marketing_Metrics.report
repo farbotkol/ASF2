@@ -1,0 +1,233 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>AMOUNT.CONVERT:SUM+Opportunity.Program_Estimated_Revenue__c.CONVERT:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Gross AECOM Value</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_19448331</developerName>
+        <masterLabel>FY15 Business Line</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Architecture</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Building Engineering</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>DP&amp;E</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>PCC</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>PDD</sourceValue>
+            </sourceValues>
+            <value>Buildings &amp; Places</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Energy</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Geotechnical</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Mining and Metals</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Power &amp; Industrial</sourceValue>
+            </sourceValues>
+            <value>Power &amp; Industrial</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Government Services</sourceValue>
+            </sourceValues>
+            <value>Government</value>
+        </values>
+    </buckets>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_11426426</developerName>
+        <masterLabel>Submitted/Won/Lost</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Opportunity.Stage_Group__c</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>5 SNB</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>6 Contracted</sourceValue>
+            </sourceValues>
+            <value>5/6 Won</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>9 Lost</sourceValue>
+            </sourceValues>
+            <value>9 Lost</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>3 Submitted</sourceValue>
+            </sourceValues>
+            <value>3 Submitted</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>FORMULA1</column>
+        </chartSummaries>
+        <chartSummaries>
+            <axisBinding>y2</axisBinding>
+            <column>RowCount</column>
+        </chartSummaries>
+        <chartType>VerticalColumnStackedLine</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>BucketField_11426426</groupingColumn>
+        <legendPosition>Right</legendPosition>
+        <location>CHART_TOP</location>
+        <secondaryGroupingColumn>BucketField_19448331</secondaryGroupingColumn>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <field>Opportunity.WinDate__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Date_lost_cancelled_no_go__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager_User__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Program_Estimated_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Marketing_Lead_User__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Region__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Area__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Current FY. Produced by Marketing = yes</description>
+    <filter>
+        <booleanFilter>((((1 AND (2 OR 3)) AND 4) AND 5) AND 6) AND 7</booleanFilter>
+        <criteriaItems>
+            <column>Opportunity.Stage_Group__c</column>
+            <operator>startsWith</operator>
+            <value>3,5,6,9</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Win_Loss_Report_Date__c</column>
+            <operator>greaterOrEqual</operator>
+            <value>10/1/2014</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Stage_3_Date__c</column>
+            <operator>greaterOrEqual</operator>
+            <value>10/1/2014</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Geography_Formula__c</column>
+            <operator>equals</operator>
+            <value>North America</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Group__c</column>
+            <operator>equals</operator>
+            <value>Design &amp; Consulting</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Produced_by_marketing__c</column>
+            <operator>equals</operator>
+            <value>Yes</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>contains</operator>
+            <value>Power,Energy,Mining</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_11426426</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>FiscalYear</dateGranularity>
+        <field>Opportunity.Win_Loss_Report_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_19448331</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Table 7 (P&amp;I) Corp Marketing Metrics</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.Win_Loss_Report_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Go_No_Go_Conversation__c.Program_Ceiling__c</field>
+    </columns>
+    <columns>
+        <aggregateTypes>Sum</aggregateTypes>
+        <field>Go_No_Go_Conversation__c.Project_TO_Contract_Rev__c</field>
+    </columns>
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>CUST_CREATED_NAME</field>
+    </columns>
+    <columns>
+        <field>Go_No_Go_Conversation__c.Account__c</field>
+    </columns>
+    <columns>
+        <field>FK_NAME</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Shows GNG FastPass Decisions created during current and previous fiscal period</description>
+    <filter>
+        <criteriaItems>
+            <column>Go_No_Go_Conversation__c.Decision__c</column>
+            <operator>equals</operator>
+            <value>GNG FastPass</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>FK_$Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>equals</operator>
+            <value>Environment</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>FK_$Account.Region__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Env GNG FastPass</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$Go_No_Go_Conversation__c@Go_No_Go_Conversation__c.Opportunity__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CUST_CREATED_DATE</dateColumn>
+        <interval>LASTTHIS_FISCALPERIOD</interval>
+    </timeFrameFilter>
+</Report>

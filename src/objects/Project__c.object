@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>The AECOM Project repository for project descriptions for use in proposals</description>
@@ -55,6 +56,18 @@
     <enableReports>true</enableReports>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AECOM_Firm__c</fullName>
+        <description>Placeholder for AECOM Firm names.</description>
+        <externalId>false</externalId>
+        <formula>&quot;AECOM&quot;</formula>
+        <label>AECOM Firm</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <fields>
         <fullName>AECOM_Region__c</fullName>
         <externalId>false</externalId>
@@ -116,12 +129,25 @@ Joint venture: AECOM partnered with other firm(s).</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>Brief_Description__c</fullName>
-        <description>Brief description of the project (750 characters), beginning with an active verb, summarizing all aspects of the project, to be output in a table format.</description>
+        <fullName>Beds__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Brief description of the project (750 characters), beginning with an active verb, summarizing all aspects of the project, to be output in a table format.</inlineHelpText>
+        <label>Beds</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Brief_Description__c</fullName>
+        <description>Brief description of the project, beginning with an active verb, summarizing all aspects of the project, to be output in a table format.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Brief description of the project, beginning with an active verb, summarizing all aspects of the project, to be output in a table format.</inlineHelpText>
         <label>Brief Description</label>
-        <length>750</length>
+        <length>32768</length>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -190,6 +216,163 @@ Joint venture: AECOM partnered with other firm(s).</inlineHelpText>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
         <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>CFM_Account_Days_Since_Last_Survey__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISNULL(  Owner__r.CFM_Last_Survey_Date__c  ), 9999, TODAY() - Owner__r.CFM_Last_Survey_Date__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Account Days Since Last Survey</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CFM_Account_Do_Not_Survey__c</fullName>
+        <description>Account Do Not Survey</description>
+        <externalId>false</externalId>
+        <formula>Owner__r.CFM_Do_Not_Survey__c</formula>
+        <label>Account Do Not Survey</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Contact_Days_Since_Last_Survey__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISNULL( CFM_Contact_Last_Survey_Date_Sent__c ), 9999,  TODAY() - CFM_Contact_Last_Survey_Date_Sent__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contact Days Since Last Survey</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CFM_Contact_Last_Survey_Date_Sent__c</fullName>
+        <externalId>false</externalId>
+        <formula>CFM_Survey_Contact__r.CFM_Last_Survey_Date_Sent__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Contact Last Survey Date Sent</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>CFM_DNS_Reason__c</fullName>
+        <description>Tracks the reasoning for the Project manager to deem the project as Do Not Survey.</description>
+        <externalId>false</externalId>
+        <label>DNS Reason</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Pending Claim</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Days_Since_Last_Survey__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( ISNULL( CFM_Last_Survey_Date__c) , 9999, TODAY() -  CFM_Last_Survey_Date__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Days Since Last Survey</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CFM_Do_Not_Survey__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Marks the Project as Do Not Survey</description>
+        <externalId>false</externalId>
+        <label>Do Not Survey</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Last_Survey_Complete__c</fullName>
+        <description>Shows the date of the most recent survey that was submitted and mapped by a Survey Candidate.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Displays the Date of the most recent survey submitted by a survey candidate.</inlineHelpText>
+        <label>Last Survey Complete</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Last_Survey_Date__c</fullName>
+        <description>This is the date which the most recent Survey for this Project was distributed.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The most recent date which a survey was sent through Qualtrics to the Survey Contact.</inlineHelpText>
+        <label>Last Survey Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Survey_Contact_Do_Not_Survey__c</fullName>
+        <description>Project&apos;s Survey Contact is Do Not Survey</description>
+        <externalId>false</externalId>
+        <formula>CFM_Survey_Contact__r.CFM_Do_Not_Survey__c</formula>
+        <label>Survey Contact Do Not Survey</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Survey_Contact__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Identifies the Contact to send the Survey of a project to.</description>
+        <externalId>false</externalId>
+        <label>Survey Contact</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Project Profiles</relationshipLabel>
+        <relationshipName>Project_Profiles</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>CFM_Survey_Project_Name__c</fullName>
+        <description>This field is used in CFM when generating a CSV file to send to Qualtrics. If the modified project name is present, it returns that value, otherwise it returns the standard project name</description>
+        <externalId>false</externalId>
+        <formula>IF(ISBLANK(Modified_Project_Name__c), Name, Modified_Project_Name__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Survey Project Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Categories__c</fullName>
@@ -984,6 +1167,19 @@ Contains all codes associated with the work AECOM is doing on this project.</inl
         <visibleLines>5</visibleLines>
     </fields>
     <fields>
+        <fullName>Cost_Comments__c</fullName>
+        <description>Any additional detail on cost.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Any additional detail on cost.</inlineHelpText>
+        <label>Cost Comments</label>
+        <length>2000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>Cost_and_Schedule_Comments__c</fullName>
         <externalId>false</externalId>
         <label>Cost and Schedule Comments</label>
@@ -1031,6 +1227,19 @@ Contains all codes associated with the work AECOM is doing on this project.</inl
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Date_Comments__c</fullName>
+        <description>Any additional detail on date.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Any additional detail on date.</inlineHelpText>
+        <label>Date Comments</label>
+        <length>2000</length>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>Date_Construction_Start__c</fullName>
@@ -1117,6 +1326,55 @@ Contains all codes associated with the work AECOM is doing on this project.</inl
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>Department__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Department</label>
+        <referenceTo>AECOM_Primary_Department__c</referenceTo>
+        <relationshipLabel>Project Profiles</relationshipLabel>
+        <relationshipName>Project_Profiles</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Distance_Unit__c</fullName>
+        <description>Select the Units that go with the Project Size.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Select the Units that go with the Project Size.</inlineHelpText>
+        <label>Distance Unit</label>
+        <picklist>
+            <picklistValues>
+                <fullName>KM</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Miles</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Distance__c</fullName>
+        <externalId>false</externalId>
+        <label>Distance</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>EPA_Region__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>US EPA region in which the project resides, not necessarily where AECOM staff worked on the project.</inlineHelpText>
@@ -1135,6 +1393,19 @@ Contains all codes associated with the work AECOM is doing on this project.</inl
         <formula>&quot;Click &quot; &amp; HYPERLINK(&quot;/apex/ProjectTextEdit?id=&quot; +   Id , &quot;Here&quot;,&quot;_top&quot;)  &amp; &quot; to Edit the Project Description&quot;</formula>
         <label>Edit Project Description</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>End_Market__c</fullName>
+        <description>Tracks End Market from Insight</description>
+        <externalId>false</externalId>
+        <label>End Market</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -1180,6 +1451,19 @@ Contains all codes associated with the work AECOM is doing on this project.</inl
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Floors__c</fullName>
+        <externalId>false</externalId>
+        <label>Floors</label>
+        <precision>12</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Former_Project_No__c</fullName>
@@ -1329,7 +1613,7 @@ format: Firstname+ &apos; &apos; +  lastname + &apos;,  &apos; + Title + StreetA
         <externalId>false</externalId>
         <inlineHelpText>The source for the data converted (BDIS - Vision)</inlineHelpText>
         <label>Legacy Conversion Source</label>
-        <length>15</length>
+        <length>30</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -1525,6 +1809,20 @@ Project_City__c + &quot;, &quot; + Project_StateProvinceEmirate__c  + &quot;, &q
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Modified_Project_Name__c</fullName>
+        <description>Allows the PM to enter a more appropriate or user friendly Project Name to be used on the Survey.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Allows the PM to enter a more appropriate or user friendly Project Name to be used on the Survey.</inlineHelpText>
+        <label>Modified Project Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Modified_fee_value__c</fullName>
         <description>Change in booking (increase or decrease), including contract modifications.</description>
         <externalId>false</externalId>
@@ -1642,6 +1940,107 @@ Project_City__c + &quot;, &quot; + Project_StateProvinceEmirate__c  + &quot;, &q
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>OracleAecomRole__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle AECOM Role</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Prime</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Joint Venture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Subconsultant</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Joint Venture Majority Partner</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>OracleBusinessLine__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Business Line</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Water</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Architecture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Building Engineering</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Construction Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DP&amp;E</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Energy</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environment</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Government Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mining and Metals</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>PCC</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Planning, Design and Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Transportation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>6</visibleLines>
+    </fields>
+    <fields>
+        <fullName>OracleClientName__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Client Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>OracleClientNumber__c</fullName>
         <description>From Oracle Feed</description>
         <externalId>false</externalId>
@@ -1650,6 +2049,165 @@ Project_City__c + &quot;, &quot; + Project_StateProvinceEmirate__c  + &quot;, &q
         <length>255</length>
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OracleContractType__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Contract Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Cost Plus Award Fee</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost Plus Fixed Fee</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost Plus Fixed Fee and Lump Sum</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost Plus Fixed Fee Labor Rate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost Plus Materials</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Cost Reimbursable</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Firm Fixed Price</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fixed Price</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Guaranteed Maximum</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Indefinite Quantity Contract</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lump Sum</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lump Sum, Time &amp; Materials</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lump Sum/Fixed Fee</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lump Sum/Time Charge Materials</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lump Sum and Cost Plus Fixed Fee</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Percentage of Construction</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Per Diem</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Task Order/On-Call</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time &amp; Materials</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time &amp; Materials Not to Exceed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time and Materials</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time-Charge</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time Charge w/Max</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Time Charge with Upset Limits</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Unit Price</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
+    </fields>
+    <fields>
+        <fullName>OracleDateStarted__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Date Started</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>OracleDepartmentBusinessLine__c</fullName>
+        <externalId>false</externalId>
+        <formula>Department__r.Business_Line_Lookup__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Oracle Department Business Line</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OracleDepartmentDistrict__c</fullName>
+        <externalId>false</externalId>
+        <formula>Department__r.Lead_District__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Oracle Department District</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OracleDepartmentLeadRegion__c</fullName>
+        <externalId>false</externalId>
+        <formula>Department__r.Lead_Region__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Oracle Department Lead Region</label>
+        <required>false</required>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -1682,6 +2240,52 @@ Project_City__c + &quot;, &quot; + Project_StateProvinceEmirate__c  + &quot;, &q
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OracleEstimatedCompletionDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Date Estimated Completion</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>OracleFinalFeeValue__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Final Fee Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OracleInitialFeeValue__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Initial Fee Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OracleModifiedFeeValue__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Modified Fee Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>OracleName__c</fullName>
@@ -1740,6 +2344,32 @@ Project_City__c + &quot;, &quot; + Project_StateProvinceEmirate__c  + &quot;, &q
         <type>Percent</type>
     </fields>
     <fields>
+        <fullName>OracleProjectCity__c</fullName>
+        <description>Tracks the Oracle Project City field from the Oracle feed.</description>
+        <externalId>false</externalId>
+        <label>Oracle Project City</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OracleProjectCountryState__c</fullName>
+        <description>Tracks the Oracle Project Country / State  field from the Oracle Feed.</description>
+        <externalId>false</externalId>
+        <label>Oracle Project Country / State</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>OracleStatus__c</fullName>
         <description>From Oracle Feed</description>
         <externalId>false</externalId>
@@ -1767,6 +2397,44 @@ Project_City__c + &quot;, &quot; + Project_StateProvinceEmirate__c  + &quot;, &q
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Oracle_Booked_Amount_edit__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Booked Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Oracle_CRM_Opp__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle CRM Opp</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Client__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Oracle Client</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Project Profiles (Oracle Client)</relationshipLabel>
+        <relationshipName>Project_Profiles</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Oracle_Completion_Date__c</fullName>
         <externalId>false</externalId>
         <formula>Opportunity__r.Oracle_Completion_Date__c</formula>
@@ -1776,6 +2444,128 @@ Project_City__c + &quot;, &quot; + Project_StateProvinceEmirate__c  + &quot;, &q
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Oracle_Completion_Date_edit__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Completion Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Oracle_Currency__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Currency</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Geography__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Geography</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Group_Customer_Name__c</fullName>
+        <description>Group Customer Name from Oracle Feed</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Group Customer Name from Oracle Feed</inlineHelpText>
+        <label>Oracle Group Customer Name</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Group_Customer_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Group Customer Number</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_ITD_Cost__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle ITD Cost</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Location__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Location</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Location_status__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Location status</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Project_Director_2__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Oracle Project Director 2</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Profiles_PD2</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Oracle_Project_Director__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Oracle Project Director</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Profiles_PD</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Oracle_Project_Manager__c</fullName>
@@ -1788,6 +2578,19 @@ Project_City__c + &quot;, &quot; + Project_StateProvinceEmirate__c  + &quot;, &q
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Project_Manager_lookup__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Oracle Project Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Profiles_PM</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Oracle_Project_Num__c</fullName>
@@ -1821,6 +2624,44 @@ Project_City__c + &quot;, &quot; + Project_StateProvinceEmirate__c  + &quot;, &q
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Oracle Project Number from Opportunity</label>
         <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Region__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Region</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Revenue_Tier__c</fullName>
+        <description>Tracks Oracle Revenue Tier from the Feed.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Tracks Oracle Revenue Tier from the Feed.</inlineHelpText>
+        <label>Oracle Revenue Tier</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Oracle_Super_Geography__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Super Geography</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -1945,6 +2786,21 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Program_ManagerUser__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Employee responsible for managing the work.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Employee responsible for managing the work.</inlineHelpText>
+        <label>Program Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Profiles1</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Program_Manager_Status__c</fullName>
@@ -2170,6 +3026,21 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Project_Manager_User__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Employee responsible for managing the overall program or project.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Employee responsible for managing the overall program or project.</inlineHelpText>
+        <label>Project Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Profiles</relationshipName>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>true</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Project_Manager__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>Employee responsible for managing the overall program or project.</description>
@@ -2261,6 +3132,36 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project_Size_SF__c</fullName>
+        <description>Project size square footage.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Project size square footage.</inlineHelpText>
+        <label>Project Size (SF)</label>
+        <precision>14</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project_Size_SM__c</fullName>
+        <description>Project size square meters.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Project size square meters.</inlineHelpText>
+        <label>Project Size (SM)</label>
+        <precision>14</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -2467,11 +3368,23 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Architecture</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Architecture / Engineering</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Building Engineering</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Code Consulting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Commissioning</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -2495,6 +3408,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Criteria AE Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Dashboard Reporting</fullName>
                 <default>false</default>
             </picklistValues>
@@ -2515,11 +3432,19 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Design Review</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Economics &amp; Planning</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>EMIS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Engineering Services</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -2532,6 +3457,14 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </picklistValues>
             <picklistValues>
                 <fullName>Environmental Audits</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environmental Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Expert Witness</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -2595,6 +3528,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Land Surveying</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Life Safety</fullName>
                 <default>false</default>
             </picklistValues>
@@ -2644,6 +3581,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </picklistValues>
             <picklistValues>
                 <fullName>Project Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Property Condition Assessment</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -2772,6 +3713,69 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Survey_Contact_Language__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(CFM_Survey_Contact__r.Survey_Language__c)</formula>
+        <label>Survey Contact Language</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Survey_Contact_Phone__c</fullName>
+        <externalId>false</externalId>
+        <formula>CFM_Survey_Contact__r.Phone</formula>
+        <label>Survey Contact Phone</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Sustainability__c</fullName>
+        <externalId>false</externalId>
+        <label>Sustainability</label>
+        <picklist>
+            <picklistValues>
+                <fullName>BREEAM</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Energy Star</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Green Globes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>USGBC LEED Certified</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>USGBC LEED Silver</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>USGBC LEED Gold</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>USGBC LEED Platinum</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
     </fields>
     <fields>
         <fullName>System_Generated__c</fullName>
@@ -3123,6 +4127,7 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <columns>Project_City__c</columns>
         <columns>Project_StateProvinceEmirate__c</columns>
         <columns>Project_Country__c</columns>
+        <columns>Project_Description__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>Market_Sector__c</field>
@@ -3294,7 +4299,7 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
     </listViews>
     <listViews>
         <fullName>CM_Cleanup_Missing_330_or_254</fullName>
-        <booleanFilter>5 and (1 or 2  or 3 or 4) and 6 and 7</booleanFilter>
+        <booleanFilter>5 and (1 or 2  or 3 or 4) and 6 and 7 and 8 AND 9</booleanFilter>
         <columns>NAME</columns>
         <columns>Code_254__c</columns>
         <columns>Code_254_Text__c</columns>
@@ -3329,7 +4334,17 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <filters>
             <field>Project_Supergeography__c</field>
             <operation>notEqual</operation>
-            <value>EMEA</value>
+            <value>EMEA,Asia</value>
+        </filters>
+        <filters>
+            <field>Project_StateProvinceEmirate__c</field>
+            <operation>notEqual</operation>
+            <value>Quebec</value>
+        </filters>
+        <filters>
+            <field>Project_Geography__c</field>
+            <operation>notEqual</operation>
+            <value>Asia</value>
         </filters>
         <label>CM Cleanup_Missing 330 or 254</label>
         <language>en_US</language>
@@ -3589,6 +4604,53 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>ISO_14001_Projects_since_Sept_20052</fullName>
+        <booleanFilter>(1 AND 6 AND 7) AND (2 OR 3 OR 4 OR 5)</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Owner__c</columns>
+        <columns>Fee__c</columns>
+        <columns>Project_City__c</columns>
+        <columns>Search_Completion_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Business_Line__c</field>
+            <operation>equals</operation>
+            <value>Environment</value>
+        </filters>
+        <filters>
+            <field>OracleDescription__c</field>
+            <operation>contains</operation>
+            <value>14001</value>
+        </filters>
+        <filters>
+            <field>OracleName__c</field>
+            <operation>contains</operation>
+            <value>14001</value>
+        </filters>
+        <filters>
+            <field>Project_Name__c</field>
+            <operation>contains</operation>
+            <value>14001</value>
+        </filters>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>14001</value>
+        </filters>
+        <filters>
+            <field>Search_Completion_Date__c</field>
+            <operation>greaterOrEqual</operation>
+            <value>9/1/2005</value>
+        </filters>
+        <filters>
+            <field>Project_Country__c</field>
+            <operation>notEqual</operation>
+            <value>China</value>
+        </filters>
+        <label>ISO 14001 Projects since Sept 2005</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Key_B_P_Projects</fullName>
         <booleanFilter>1 AND (2 OR 3 OR 4 OR 5)</booleanFilter>
         <columns>NAME</columns>
@@ -3802,6 +4864,41 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             <value>Transportation</value>
         </filters>
         <label>Key Transportation Projects</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Key_Transportation_Projects4</fullName>
+        <booleanFilter>1 AND (2 OR 3 OR 4)</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Owner_Client_Output__c</columns>
+        <columns>Confidential_Owner__c</columns>
+        <columns>Note_to_User__c</columns>
+        <columns>Completion_Date__c</columns>
+        <columns>Fee__c</columns>
+        <columns>Project_Supergeography__c</columns>
+        <columns>AECOM_Region__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Business_Line__c</field>
+            <operation>equals</operation>
+            <value>Transportation</value>
+        </filters>
+        <filters>
+            <field>Project_Responsible_Office__c</field>
+            <operation>contains</operation>
+            <value>Phoenix</value>
+        </filters>
+        <filters>
+            <field>Project_Responsible_Office__c</field>
+            <operation>contains</operation>
+            <value>Tucson</value>
+        </filters>
+        <filters>
+            <field>Project_Responsible_Office__c</field>
+            <operation>contains</operation>
+            <value>Albuquerque</value>
+        </filters>
+        <label>SW Area Trans Projects</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -4242,6 +5339,81 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         </sharedTo>
     </listViews>
     <listViews>
+        <fullName>Nancy_PMnoUser</fullName>
+        <columns>NAME</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Manager_Status__c</columns>
+        <columns>Project_Manager_User__c</columns>
+        <columns>Project_Name__c</columns>
+        <columns>OBJECT_ID</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Project_Manager__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <filters>
+            <field>Project_Manager_User__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Nancy PM no User</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Admin_users</group>
+            <group>Content_Managers</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Nancy_PMnoUserActive</fullName>
+        <columns>NAME</columns>
+        <columns>Project_Manager__c</columns>
+        <columns>Project_Manager_Status__c</columns>
+        <columns>Project_Manager_User__c</columns>
+        <columns>Project_Name__c</columns>
+        <columns>OBJECT_ID</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Project_Manager__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <filters>
+            <field>Project_Manager_User__c</field>
+            <operation>equals</operation>
+        </filters>
+        <filters>
+            <field>Project_Manager_Status__c</field>
+            <operation>equals</operation>
+            <value>Active</value>
+        </filters>
+        <label>Nancy PM no UserActive</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Admin_users</group>
+            <group>Content_Managers</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Nancy_Program_Manager</fullName>
+        <columns>NAME</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>Program_Manager__c</columns>
+        <columns>Program_ManagerUser__c</columns>
+        <columns>Program_Manager_Status__c</columns>
+        <columns>Program_Master_Contract_Name__c</columns>
+        <columns>Program_Mgr__c</columns>
+        <columns>Program_Owner__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Program_Manager__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>Nancy Program Manager</label>
+        <language>en_US</language>
+        <sharedTo>
+            <group>Admin_users</group>
+            <group>Content_Managers</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
         <fullName>Oil_Gas_Projects</fullName>
         <columns>NAME</columns>
         <columns>Owner_Client_Output__c</columns>
@@ -4259,6 +5431,20 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             <value>oil</value>
         </filters>
         <label>Oil &amp; Gas Projects</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Projects_Carmi_created</fullName>
+        <columns>NAME</columns>
+        <columns>Owner__c</columns>
+        <columns>Owner_Client_Output__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATEDBY_USER</field>
+            <operation>contains</operation>
+            <value>brandis</value>
+        </filters>
+        <label>Projects Carmi created</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -4499,6 +5685,24 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         </sharedTo>
     </listViews>
     <listViews>
+        <fullName>URS_Projects</fullName>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <columns>NAME</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATEDBY_USER</field>
+            <operation>contains</operation>
+            <value>brandis</value>
+        </filters>
+        <filters>
+            <field>Legacy_Conversion_Source__c</field>
+            <operation>contains</operation>
+            <value>URS</value>
+        </filters>
+        <label>URS Projects</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>V_128XXX_Projects_for_checking</fullName>
         <columns>LegacyIdentifier__c</columns>
         <columns>NAME</columns>
@@ -4514,6 +5718,42 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
         <language>en_US</language>
         <sharedTo>
             <group>Content_Managers</group>
+        </sharedTo>
+    </listViews>
+    <listViews>
+        <fullName>Waste_Water_Treatment_Plant3</fullName>
+        <columns>NAME</columns>
+        <columns>AECOM_Region__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>AECOM_Region__c</field>
+            <operation>equals</operation>
+            <value>US North</value>
+        </filters>
+        <filters>
+            <field>Business_Line__c</field>
+            <operation>equals</operation>
+            <value>Water</value>
+        </filters>
+        <filters>
+            <field>Categories__c</field>
+            <operation>equals</operation>
+            <value>Wastewater</value>
+        </filters>
+        <filters>
+            <field>Date_Estimated_Completion__c</field>
+            <operation>greaterThan</operation>
+            <value>1/15/2005</value>
+        </filters>
+        <filters>
+            <field>Code_330__c</field>
+            <operation>equals</operation>
+            <value>S04</value>
+        </filters>
+        <label>Waste Water Treatment Plant NE MB</label>
+        <language>en_US</language>
+        <sharedTo>
+            <allInternalUsers></allInternalUsers>
         </sharedTo>
     </listViews>
     <listViews>
@@ -4697,11 +5937,26 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
+                <fullName>Planning%2C Design and Development</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Transportation</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Water</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>CFM_DNS_Reason__c</picklist>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pending Claim</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -5234,6 +6489,190 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>Distance_Unit__c</picklist>
+            <values>
+                <fullName>KM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Miles</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OracleAecomRole__c</picklist>
+            <values>
+                <fullName>Joint Venture</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Joint Venture Majority Partner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prime</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Subconsultant</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OracleBusinessLine__c</picklist>
+            <values>
+                <fullName>Architecture</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Building Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Construction Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DP%26E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Energy</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Environment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Government Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mining and Metals</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PCC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Planning%2C Design and Development</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Transportation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Water</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OracleContractType__c</picklist>
+            <values>
+                <fullName>Cost Plus Award Fee</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Plus Fixed Fee</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Plus Fixed Fee Labor Rate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Plus Fixed Fee and Lump Sum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Plus Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Reimbursable</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Firm Fixed Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Guaranteed Maximum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Indefinite Quantity Contract</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum and Cost Plus Fixed Fee</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum%2C Time %26 Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum%2FFixed Fee</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum%2FTime Charge Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Per Diem</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Percentage of Construction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Task Order%2FOn-Call</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time %26 Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time %26 Materials Not to Exceed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time Charge w%2FMax</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time Charge with Upset Limits</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time and Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time-Charge</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unit Price</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Recommended_for_Future_Work__c</picklist>
             <values>
                 <fullName>Conditional</fullName>
@@ -5263,11 +6702,23 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
+                <fullName>Architecture</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Architecture %2F Engineering</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Building Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Code Consulting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commissioning</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -5291,6 +6742,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
+                <fullName>Criteria AE Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Dashboard Reporting</fullName>
                 <default>false</default>
             </values>
@@ -5300,6 +6755,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Design</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Design Review</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -5319,6 +6778,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
+                <fullName>Engineering Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Environmental %2B Ecological Planning</fullName>
                 <default>false</default>
             </values>
@@ -5328,6 +6791,14 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Environmental Audits</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Environmental Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expert Witness</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -5387,6 +6858,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
+                <fullName>Land Surveying</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Landscape Architecture</fullName>
                 <default>false</default>
             </values>
@@ -5440,6 +6915,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Project Management</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Property Condition Assessment</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -5508,6 +6987,37 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Web GIS</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Sustainability__c</picklist>
+            <values>
+                <fullName>BREEAM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Energy Star</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Green Globes</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USGBC LEED Certified</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USGBC LEED Gold</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USGBC LEED Platinum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USGBC LEED Silver</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -5645,6 +7155,17 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>CFM_DNS_Reason__c</picklist>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pending Claim</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Categories__c</picklist>
             <values>
                 <fullName>Agriculture</fullName>
@@ -6173,6 +7694,190 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>Distance_Unit__c</picklist>
+            <values>
+                <fullName>KM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Miles</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OracleAecomRole__c</picklist>
+            <values>
+                <fullName>Joint Venture</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Joint Venture Majority Partner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prime</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Subconsultant</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OracleBusinessLine__c</picklist>
+            <values>
+                <fullName>Architecture</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Building Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Construction Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DP%26E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Energy</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Environment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Government Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mining and Metals</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PCC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Planning%2C Design and Development</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Transportation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Water</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OracleContractType__c</picklist>
+            <values>
+                <fullName>Cost Plus Award Fee</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Plus Fixed Fee</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Plus Fixed Fee Labor Rate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Plus Fixed Fee and Lump Sum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Plus Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Reimbursable</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Firm Fixed Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Guaranteed Maximum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Indefinite Quantity Contract</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum and Cost Plus Fixed Fee</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum%2C Time %26 Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum%2FFixed Fee</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum%2FTime Charge Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Per Diem</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Percentage of Construction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Task Order%2FOn-Call</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time %26 Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time %26 Materials Not to Exceed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time Charge w%2FMax</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time Charge with Upset Limits</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time and Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time-Charge</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unit Price</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Recommended_for_Future_Work__c</picklist>
             <values>
                 <fullName>Conditional</fullName>
@@ -6202,11 +7907,23 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
+                <fullName>Architecture</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Architecture %2F Engineering</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Building Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Code Consulting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commissioning</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -6230,6 +7947,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
+                <fullName>Criteria AE Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Dashboard Reporting</fullName>
                 <default>false</default>
             </values>
@@ -6239,6 +7960,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Design</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Design Review</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -6258,6 +7983,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
+                <fullName>Engineering Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Environmental %2B Ecological Planning</fullName>
                 <default>false</default>
             </values>
@@ -6267,6 +7996,14 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Environmental Audits</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Environmental Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expert Witness</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -6326,6 +8063,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
+                <fullName>Land Surveying</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Landscape Architecture</fullName>
                 <default>false</default>
             </values>
@@ -6379,6 +8120,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Project Management</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Property Condition Assessment</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -6447,6 +8192,37 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Web GIS</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Sustainability__c</picklist>
+            <values>
+                <fullName>BREEAM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Energy Star</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Green Globes</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USGBC LEED Certified</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USGBC LEED Gold</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USGBC LEED Platinum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USGBC LEED Silver</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -6584,6 +8360,17 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>CFM_DNS_Reason__c</picklist>
+            <values>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pending Claim</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Categories__c</picklist>
             <values>
                 <fullName>Agriculture</fullName>
@@ -7112,6 +8899,190 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>Distance_Unit__c</picklist>
+            <values>
+                <fullName>KM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Miles</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OracleAecomRole__c</picklist>
+            <values>
+                <fullName>Joint Venture</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Joint Venture Majority Partner</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prime</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Subconsultant</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OracleBusinessLine__c</picklist>
+            <values>
+                <fullName>Architecture</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Building Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Construction Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DP%26E</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Energy</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Environment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Government Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Mining and Metals</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PCC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Planning%2C Design and Development</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Transportation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Water</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OracleContractType__c</picklist>
+            <values>
+                <fullName>Cost Plus Award Fee</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Plus Fixed Fee</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Plus Fixed Fee Labor Rate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Plus Fixed Fee and Lump Sum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Plus Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cost Reimbursable</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Firm Fixed Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Fixed Price</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Guaranteed Maximum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Indefinite Quantity Contract</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum and Cost Plus Fixed Fee</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum%2C Time %26 Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum%2FFixed Fee</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lump Sum%2FTime Charge Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Per Diem</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Percentage of Construction</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Task Order%2FOn-Call</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time %26 Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time %26 Materials Not to Exceed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time Charge w%2FMax</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time Charge with Upset Limits</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time and Materials</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Time-Charge</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Unit Price</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>Recommended_for_Future_Work__c</picklist>
             <values>
                 <fullName>Conditional</fullName>
@@ -7141,11 +9112,23 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
+                <fullName>Architecture</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Architecture %2F Engineering</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Building Engineering</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Code Consulting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Commissioning</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -7169,6 +9152,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
+                <fullName>Criteria AE Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Dashboard Reporting</fullName>
                 <default>false</default>
             </values>
@@ -7178,6 +9165,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Design</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Design Review</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -7197,6 +9188,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
+                <fullName>Engineering Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Environmental %2B Ecological Planning</fullName>
                 <default>false</default>
             </values>
@@ -7206,6 +9201,14 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Environmental Audits</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Environmental Services</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Expert Witness</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -7265,6 +9268,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
                 <default>false</default>
             </values>
             <values>
+                <fullName>Land Surveying</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Landscape Architecture</fullName>
                 <default>false</default>
             </values>
@@ -7318,6 +9325,10 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Project Management</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Property Condition Assessment</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -7386,6 +9397,37 @@ if(len(Owner__r.Name)&gt; 0, Owner__r.Account_Name_for_Labels__c ,  Legacy_Owner
             </values>
             <values>
                 <fullName>Web GIS</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Sustainability__c</picklist>
+            <values>
+                <fullName>BREEAM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Energy Star</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Green Globes</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USGBC LEED Certified</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USGBC LEED Gold</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USGBC LEED Platinum</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>USGBC LEED Silver</fullName>
                 <default>false</default>
             </values>
         </picklistValues>

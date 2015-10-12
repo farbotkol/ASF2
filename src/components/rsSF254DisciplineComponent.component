@@ -8,11 +8,41 @@
     	inputFields = ['[id$=sf254_disc]'];
 		j$(document).ready(function() {
 			setSF254RequiredFields();
+			setUpSf254Parts();
 		});
 
 		function setSF254RequiredFields() {
     		//Required fields for this component
     		requiredFields = ['[id$=sf254_disc]'];
+    	}
+    	function setSf254ificationRequiredFields() {
+    		//Required fields for this component
+    		requiredFields = ['[id$=certTitle]'];
+    	}
+    	function setUpSf254Parts() {
+    		j$('a[id$=moveSf254PartUp]').each(function() {
+				if(j$(this).hasClass('0')) {
+					j$(this).removeAttr('onclick href').parent().addClass('disabled');
+					j$(this).click(function(e) {
+						e.preventDefault();
+					});
+				}
+			});
+			j$('a[id$=moveSf254PartDown]').each(function() {
+				var arr = j$(this).attr('class').split(" ");
+				if((arr.length == 1 && arr[0] == '0')) {
+					j$(this).removeAttr('onclick href').parent().addClass('disabled');
+					j$(this).click(function(e) {
+						e.preventDefault();
+					});
+				}
+				else if (arr[0] == arr[1] || (arr[0] == '0' && arr[1].length == 0)) {
+					j$(this).removeAttr('onclick href').parent().addClass('disabled');
+					j$(this).click(function(e) {
+						e.preventDefault();
+					});
+				}
+			});
     	}
 	</script>
     <div class="panel panel-default">
@@ -106,14 +136,14 @@
 				    <tr>
 			        	<th>{!$Label.Action}</th>				        
 			        	<th>
-				        	<apex:commandLink action="{!sortParts}" reRender="{!reRender}" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);" value="{!$Label.SF254_Disc}">
+				        	<apex:commandLink action="{!sortParts}" reRender="{!reRender}" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);setUpSf254Parts();" value="{!$Label.SF254_Disc}">
 				        		<apex:param name="sortField" value="SF254_Discipline__c"/>
 				        		<span class="toggleClassDown glyphicon glyphicon-chevron-down"></span>
 				        		<span class="toggleClassUp glyphicon glyphicon-chevron-up"></span>  
 			        		</apex:commandLink>
 			        	</th>
 			        	<th>
-					        <apex:commandLink action="{!sortParts}" reRender="{!reRender}" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);" value="{!$ObjectType['rs_Profile_Part__c'].fields['SF254_Is_Primary__c'].Label}">
+					        <apex:commandLink action="{!sortParts}" reRender="{!reRender}" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);setUpSf254Parts();" value="{!$ObjectType['rs_Profile_Part__c'].fields['SF254_Is_Primary__c'].Label}">
 				        		<apex:param name="sortField" value="SF254_Is_Primary__c"/>
 				        		<span class="toggleClassDown glyphicon glyphicon-chevron-down"></span>
 				        		<span class="toggleClassUp glyphicon glyphicon-chevron-up"></span>  
@@ -144,8 +174,19 @@
 	                                            </apex:commandLink>
 										    </li>
 										    <li role="presentation" class="divider"></li>
+										    <li>
+												<apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!movePartUp}" value="{!$Label.Move_Part_Up}" styleClass="{!part.ProfilePart.PartSequence}" reRender="{!reRender}" oncomplete="resetProgress();" onclick="if(inProgress) return false; showSectionSpinner('sf254Header'); inProgress = true;" id="moveSf254PartUp">
+	                                                <apex:param value="{!part.ProfilePart.Id}" name="partId"/>
+	                                            </apex:commandLink>	
+	                                        </li>	
+	                                        <li>
+												<apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!movePartDown}" value="{!$Label.Move_Part_Down}" styleClass="{!Parts.size - 1} {!part.ProfilePart.PartSequence}" reRender="{!reRender}" oncomplete="resetProgress();" onclick="if(inProgress) return false; showSectionSpinner('sf254Header'); inProgress = true;" id="moveSf254PartDown">
+	                                                <apex:param value="{!part.ProfilePart.Id}" name="partId"/>
+	                                            </apex:commandLink>	
+	                                        </li>	
+										    <li role="presentation" class="divider"></li>
 										    <li role="presentation">
-										        <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!deletePart}" value="{!$Label.Delete}" reRender="{!reRender}" onclick="if(inProgress) return false; if(!confirmDeletePart()) return false; inProgress = true; showSectionSpinner('sf254Header');" oncomplete="resetProgress();">
+										        <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!deletePart}" value="{!$Label.Delete}" reRender="{!reRender}" onclick="if(inProgress) return false; if(!confirmDeletePart()) return false; inProgress = true; showSectionSpinner('sf254Header');" oncomplete="resetProgress();setUpSf254Parts();">
 	                                                <apex:param value="{!part.ProfilePart.Id}" name="partId"/>
 	                                            </apex:commandLink>
 										    </li>

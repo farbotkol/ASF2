@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_82261782</developerName>
+        <masterLabel>Regions</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Opportunity.Lead_Region_Formula__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>US - Central</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>US - Mid-Atlantic</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>US - National</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>US - North</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>US - Northeast</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>US - South</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>US - Southeast</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>US - West</sourceValue>
+            </sourceValues>
+            <value>United States</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>CAN - Eastern Canada</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Canada</sourceValue>
+            </sourceValues>
+            <value>Canada</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>RECORDTYPE</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Program_Estimated_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Net_Revenue_Program__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Net_Revenue_TO_Project__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Probability_Stage__c</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Role__c</field>
+    </columns>
+    <columns>
+        <field>BucketField_82261782</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Area__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Primary_Dept_Lookup__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager_User__c</field>
+    </columns>
+    <currency>CAD</currency>
+    <description>All Federal opportunities in Canada by Stages 1, 2, 3, 4, 5 by Fiscal Year for Judy Gallagher</description>
+    <filter>
+        <criteriaItems>
+            <column>Opportunity.Area__c</column>
+            <operator>contains</operator>
+            <value>Canada,Toronto</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>startsWith</operator>
+            <value>1,2,3,4,5</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Client_Group__c</column>
+            <operator>equals</operator>
+            <value>National Government</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Opportunity.Program_Americas,Opportunity.Project_Americas,Opportunity.Task_Order_Americas</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Stage_Group__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Canada (Federal) Pipeline</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

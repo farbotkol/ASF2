@@ -76,7 +76,7 @@
             <name>Projects_with_Apple_as_client_to_be_made_confidential</name>
             <type>Alert</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <criteriaItems>
             <field>Project__c.Legacy_Owner__c</field>
             <operation>contains</operation>

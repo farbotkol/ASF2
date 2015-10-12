@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Ceiling_Amount_ReadOnly__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Marketing_Proposal_Support__c</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Graphic_Artist__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Number of proposals each marketing proposal specialist worked on for the current fiscal year.</description>
+    <filter>
+        <booleanFilter>1 AND 4 AND (2 OR 3)</booleanFilter>
+        <criteriaItems>
+            <column>Opportunity.Client_Group__c</column>
+            <operator>contains</operator>
+            <value>National Government</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Marketing_Lead_User__c</column>
+            <operator>contains</operator>
+            <value>Argandona,Granger,Slobodien,Minor,Graybeal,fuller,Ruvalcava,Stephenson,Meek,Bernard,Crawford,Eldridge,Keesee,Kukta,Manuel,Monahan,Olsen,Quintero,Selby,Steyn,Voss,Wessels,Chris Wilson,Dee Hutchison</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Bid_ManagerUser__c</column>
+            <operator>equals</operator>
+            <value>Dee Hutchison</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>startsWith</operator>
+            <value>1,2,3,4</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Month</dateGranularity>
+        <field>Opportunity.Current_Production_Date__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Marketing_Lead_User__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>NatGov-Proposals (record count)</name>
+    <params>
+        <name>open</name>
+        <value>open</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity@Opportunity.Marketing_Proposal_Lead__c</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.Current_Production_Date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

@@ -44,9 +44,11 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
-    <description>Used with Account Plans to track client&apos;s near- and long-term needs, drivers, etc.</description>
+    <description>Used with Account Plans to track client&apos;s near- and long-term needs, drivers, etc.
+Originally called Client Strategy Development</description>
     <enableActivities>false</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
@@ -60,7 +62,6 @@
         <inlineHelpText>Link back to Account Plan record</inlineHelpText>
         <label>Account Plan</label>
         <referenceTo>SFDC_Acct_Plan__c</referenceTo>
-        <relationshipLabel>Client Strategy Development</relationshipLabel>
         <relationshipName>Client_Strategy_Development</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>true</reparentableMasterDetail>
@@ -70,10 +71,32 @@
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <fields>
+        <fullName>Account_Team__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>AECOM team, e.g., EBL, EMEA, Upstream</inlineHelpText>
+        <label>Account Team</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Actions__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Enter high-level actions to achieve (specific tasks should be entered on the Account Plan Activities list)</inlineHelpText>
+        <label>Actions</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
         <fullName>Budget__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Client&apos;s budget for this element</inlineHelpText>
-        <label>Budget</label>
+        <label>Client Budget</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -88,7 +111,6 @@
         <inlineHelpText>Select from Contact records in Salesforce. If missing, leave this record open, open the Contacts tab in a new window, and create the contact record. Then return to this record and search again.</inlineHelpText>
         <label>Client Contact</label>
         <referenceTo>Contact</referenceTo>
-        <relationshipLabel>Client Strategy Development</relationshipLabel>
         <relationshipName>Client_Strategies</relationshipName>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -114,17 +136,48 @@
         <type>TextArea</type>
     </fields>
     <fields>
+        <fullName>Service__c</fullName>
+        <externalId>false</externalId>
+        <label>Service</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Design/Build/Development</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Engineering/Construction Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environmental Compliance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environmental Remediation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Facilities Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>true</sorted>
+        </picklist>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Timing__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Select one</inlineHelpText>
         <label>Timing</label>
         <picklist>
             <picklistValues>
-                <fullName>Primary/Current FY</fullName>
+                <fullName>Current FY</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Secondary</fullName>
+                <fullName>Next FY</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -137,14 +190,14 @@
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
-    <label>Client Strategy Development</label>
+    <label>Strategic Roadmap Element</label>
     <nameField>
         <displayFormat>CS-{00000}</displayFormat>
-        <label>Client Strategy</label>
+        <label>Strategic Roadmap Elements</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Client Strategy Development</pluralLabel>
+    <pluralLabel>Strategic Roadmap Elements</pluralLabel>
     <searchLayouts/>
     <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

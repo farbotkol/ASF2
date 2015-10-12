@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>Opportunity.Program_Estimated_Revenue__c.CONVERT:SUM+AMOUNT.CONVERT:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Gross Wins Total</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <aggregates>
+        <calculatedFormula>Opportunity.Net_Revenue_TO_Project__c.CONVERT:SUM+Opportunity.Net_Revenue_Program__c.CONVERT:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA2</developerName>
+        <isActive>false</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>NSR Wins Total</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_11574724</developerName>
+        <masterLabel>Business Line/Unit</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Architecture</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Building Engineering</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>DP&amp;E</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>PCC</sourceValue>
+            </sourceValues>
+            <value>Buildings &amp; Places</value>
+        </values>
+    </buckets>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_31541451</developerName>
+        <masterLabel>End Market (New Structure)</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <otherBucketLabel>Other</otherBucketLabel>
+        <sourceColumnName>Opportunity.End_Client_Sector__c</sourceColumnName>
+        <useOther>true</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Freight Rail</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Industrial &amp; Manufacturing</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Mining &amp; Metals</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Power</sourceValue>
+            </sourceValues>
+            <value>Power &amp; Industrial</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Oil &amp; Gas</sourceValue>
+            </sourceValues>
+            <value>Oil &amp; Gas</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>US Federal Government</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Other National Government</sourceValue>
+            </sourceValues>
+            <value>National Government</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>RECORDTYPE</field>
+    </columns>
+    <columns>
+        <field>Opportunity.TO_Procurement_Method__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Competitive_Bid_or_Sole_source__c</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <columns>
+        <field>CLOSE_DATE</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Estimated_work_start_date__c</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Contract_duration_in_Months__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Primary_Dept_Lookup__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Ceiling_Amount_Total__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Program_Estimated_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Task_Order_Remaining_Revenue__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Task_Orders_Open_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Probability_Stage__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Forecast_Net_amount__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Net_Revenue_Program__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Net_Revenue_TO_Project__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.WinDate__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Brooke O&apos;Brien Report</description>
+    <filter>
+        <booleanFilter>(((1 AND 5 AND (4 OR (2 AND 3) OR (6 AND 7)))) AND 8) AND 9</booleanFilter>
+        <criteriaItems>
+            <column>Opportunity.Geography_Formula__c</column>
+            <operator>equals</operator>
+            <value>North America</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Opportunity.Program_Americas</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.TO_Procurement_Method__c</column>
+            <operator>equals</operator>
+            <value>Noncompetitive Task Orders</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Opportunity.Project_Americas</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Stage_Group__c</column>
+            <operator>contains</operator>
+            <value>5,6</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Opportunity.Task_Order_Americas</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Competitive_Bid_or_Sole_source__c</column>
+            <operator>notEqual</operator>
+            <value>Sole Source</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>notContain</operator>
+            <value>Construction,Industrial,Mining</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Group__c</column>
+            <operator>notEqual</operator>
+            <value></value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Matrix</format>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Group__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsAcross>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.NA_BL__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsAcross>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_31541451</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Wins</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>false</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.WinDate__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

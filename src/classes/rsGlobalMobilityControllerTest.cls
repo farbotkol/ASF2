@@ -30,12 +30,14 @@ private class rsGlobalMobilityControllerTest {
 		cont.profile.setLengthOfTimeAbroad('Open Ended');
 		cont.setNoInterestRegionsSel(notInterestedRegions);
 		cont.setNoInterestCountriesSel(notInterestedCountries);
+		cont.profile.setTimeToRelocate('Immediate');
+		cont.profile.setAccompaniedStatus('Unaccompanied');
 		cont.savePart();
 		Test.stopTest();
 
 		User u2 = [Select Id, Interest_Countries__c,Interest_Regions__c,Interest_Relocating_Current_Country__c,
 					Interest_Relocating_Different_Country__c,Length_of_Time_Abroad__c,No_Interest_Countries__c,
-					No_Interest_Regions__c
+					No_Interest_Regions__c, rs_Time_To_Relocate__c, rs_Accompanied_Status__c
 				  from User 
 				  where Id =: u.Id];
 		System.assertEquals(true,checkAvailInterest);
@@ -49,6 +51,8 @@ private class rsGlobalMobilityControllerTest {
 		System.assertEquals(cont.profile.getLengthOfTimeAbroad(),u2.Length_of_Time_Abroad__c);
 		System.assertEquals(cont.profile.getNoInterestCountries(),u2.No_Interest_Countries__c);
 		System.assertEquals(cont.profile.getNoInterestRegions(),u2.No_Interest_Regions__c);
+		System.assertEquals(cont.profile.getTimeToRelocate(), u2.rs_Time_To_Relocate__c);
+		System.assertEquals(cont.profile.getAccompaniedStatus(), u2.rs_Accompanied_Status__c);
 	}
 
 	@isTest static void testSetupCaseBoth() {

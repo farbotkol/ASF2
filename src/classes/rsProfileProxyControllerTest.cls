@@ -7,16 +7,16 @@
 ***************************************************************************/
 @isTest
 private class rsProfileProxyControllerTest {
-	
+
 	private static testmethod void testCancel() {
 		Test.startTest();
-		User u = [Select Id, ProfileId, Profile_Proxy__c from User where Id =: UserInfo.getUserId()];
+		User u = [Select Id, ProfileId, Profile_Proxy__c from User where Id = : UserInfo.getUserId()];
 		u.Profile_Proxy__c = null;
 		update u;
 
-		User uProxy = new User(LastName = 'lastName', Alias = 'testalis', Email = 'SFDCTestCase@aecom.com', Username ='111111@test.com', 
-											CommunityNickname = 'testNick', ProfileId = u.ProfileId, EmailEncodingKey='UTF-8', 
-											LanguageLocaleKey='en_US', LocaleSidKey='en_US', TimeZoneSidKey='America/Los_Angeles');
+		User uProxy = new User(LastName = 'lastName', Alias = 'testalis', Email = 'SFDCTestCase@aecom.com', Username = '111111@test.com',
+		                       CommunityNickname = 'testNick', ProfileId = u.ProfileId, EmailEncodingKey = 'UTF-8',
+		                       LanguageLocaleKey = 'en_US', LocaleSidKey = 'en_US', TimeZoneSidKey = 'America/Los_Angeles');
 		insert uProxy;
 
 		rsProfile profile = new rsProfile(u);
@@ -28,23 +28,23 @@ private class rsProfileProxyControllerTest {
 		cont.cancelPart();
 		Test.stopTest();
 
-		User uRequery = [Select Id, Name, Profile_Proxy__c from User where id =: u.id];
+		User uRequery = [Select Id, Name, Profile_Proxy__c from User where id = : u.id];
 		System.assert(uRequery.Profile_Proxy__c == null);
 		System.assert(!cont.getHasProxy() );
 		System.assert(cont.getIsListMode() );
 		System.assert(cont.getIsOwner() );
-	}	
+	}
 
-	@isTest (seeAllData=true) //We need to have seeAllData in order to test getProxyPhotoUrl()
+	@isTest (seeAllData = true) //We need to have seeAllData in order to test getProxyPhotoUrl()
 	private static void testEditSave() {
 		Test.startTest();
-		User u = [Select Id, ProfileId, Profile_Proxy__c from User where Id =: UserInfo.getUserId()];
+		User u = [Select Id, ProfileId, Profile_Proxy__c from User where Id = : UserInfo.getUserId()];
 		u.Profile_Proxy__c = null;
 		update u;
 
-		User uProxy = new User(LastName = 'lastName', Alias = 'testalis', Email = 'SFDCTestCase@aecom.com', Username ='111111@test.com', 
-											CommunityNickname = 'testNick', ProfileId = u.ProfileId, EmailEncodingKey='UTF-8', 
-											LanguageLocaleKey='en_US', LocaleSidKey='en_US', TimeZoneSidKey='America/Los_Angeles');
+		User uProxy = new User(LastName = 'lastName', Alias = 'testalis', Email = 'SFDCTestCase@aecom.com', Username = '111111@test.com',
+		                       CommunityNickname = 'testNick', ProfileId = u.ProfileId, EmailEncodingKey = 'UTF-8',
+		                       LanguageLocaleKey = 'en_US', LocaleSidKey = 'en_US', TimeZoneSidKey = 'America/Los_Angeles');
 		insert uProxy;
 
 		rsProfile profile = new rsProfile(u);
@@ -56,7 +56,7 @@ private class rsProfileProxyControllerTest {
 		cont.savePart();
 		Test.stopTest();
 
-		User uRequery = [Select Id, Name, Profile_Proxy__c, Date_Proxy_Added__c from User where id =: u.id];
+		User uRequery = [Select Id, Name, Profile_Proxy__c, Date_Proxy_Added__c from User where id = : u.id];
 		System.assert(uRequery.Profile_Proxy__c == uProxy.Id);
 		System.assert(uRequery.Date_Proxy_Added__c == Date.today() );
 		System.assert(cont.getHasProxy() );
@@ -67,13 +67,13 @@ private class rsProfileProxyControllerTest {
 
 	private static testmethod void testRemove() {
 		Test.startTest();
-		User u = [Select Id, ProfileId, Profile_Proxy__c from User where Id =: UserInfo.getUserId()];
+		User u = [Select Id, ProfileId, Profile_Proxy__c from User where Id = : UserInfo.getUserId()];
 		u.Profile_Proxy__c = null;
 		update u;
 
-		User uProxy = new User(LastName = 'lastName', Alias = 'testalis', Email = 'SFDCTestCase@aecom.com', Username ='111111@test.com', 
-											CommunityNickname = 'testNick', ProfileId = u.ProfileId, EmailEncodingKey='UTF-8', 
-											LanguageLocaleKey='en_US', LocaleSidKey='en_US', TimeZoneSidKey='America/Los_Angeles');
+		User uProxy = new User(LastName = 'lastName', Alias = 'testalis', Email = 'SFDCTestCase@aecom.com', Username = '111111@test.com',
+		                       CommunityNickname = 'testNick', ProfileId = u.ProfileId, EmailEncodingKey = 'UTF-8',
+		                       LanguageLocaleKey = 'en_US', LocaleSidKey = 'en_US', TimeZoneSidKey = 'America/Los_Angeles');
 		insert uProxy;
 
 		rsProfile profile = new rsProfile(u);
@@ -87,7 +87,7 @@ private class rsProfileProxyControllerTest {
 		cont.removeProxy();
 		Test.stopTest();
 
-		User uRequery = [Select Id, Name, Profile_Proxy__c, Date_Proxy_Added__c from User where id =: u.id];
+		User uRequery = [Select Id, Name, Profile_Proxy__c, Date_Proxy_Added__c from User where id = : u.id];
 		System.assert(uRequery.Profile_Proxy__c == null);
 		System.assert(uRequery.Date_Proxy_Added__c == null);
 		System.assert(!cont.getHasProxy() );
@@ -101,9 +101,9 @@ private class rsProfileProxyControllerTest {
 		u.Profile_Proxy__c = null;
 		update u;
 
-		User uProxy = new User(LastName = 'lastName', Alias = 'testalis', Email = 'SFDCTestCase@aecom.com', Username ='111111@test.com', 
-											CommunityNickname = 'testNick', ProfileId = u.ProfileId, EmailEncodingKey='UTF-8', 
-											LanguageLocaleKey='en_US', LocaleSidKey='en_US', TimeZoneSidKey='America/Los_Angeles');
+		User uProxy = new User(LastName = 'lastName', Alias = 'testalis', Email = 'SFDCTestCase@aecom.com', Username = '111111@test.com',
+		                       CommunityNickname = 'testNick', ProfileId = u.ProfileId, EmailEncodingKey = 'UTF-8',
+		                       LanguageLocaleKey = 'en_US', LocaleSidKey = 'en_US', TimeZoneSidKey = 'America/Los_Angeles');
 		insert uProxy;
 
 		rsProfile profile = new rsProfile(u);
@@ -115,7 +115,7 @@ private class rsProfileProxyControllerTest {
 		cont.savePart();
 		Test.stopTest();
 
-		User uRequery = [Select Id, Name, Profile_Proxy__c, Date_Proxy_Added__c from User where id =: u.id];
+		User uRequery = [Select Id, Name, Profile_Proxy__c, Date_Proxy_Added__c from User where id = : u.id];
 		System.assert(uRequery.Profile_Proxy__c == null);
 		System.assert(uRequery.Date_Proxy_Added__c == null);
 		System.assert(!cont.getHasProxy() );
@@ -129,7 +129,7 @@ private class rsProfileProxyControllerTest {
 	private static testmethod void testSelfAssignmentDML() {
 		Test.startTest();
 		Boolean testFailed = false;
-		User u = [Select Id, ProfileId, Profile_Proxy__c from User where Id =: UserInfo.getUserId()];
+		User u = [Select Id, ProfileId, Profile_Proxy__c from User where Id = : UserInfo.getUserId()];
 		u.Profile_Proxy__c = null;
 		u.Alias = '';
 		rsProfile profile = new rsProfile(u);
@@ -140,8 +140,9 @@ private class rsProfileProxyControllerTest {
 		try {
 			cont.savePart();
 		} catch (DmlException ex) {
-			if(!ex.getMessage().contains('circular'))
-			testFailed = true;
+			if (!ex.getMessage().contains('circular')) {
+				testFailed = true;
+			}
 		}
 		Test.stopTest();
 
@@ -149,7 +150,7 @@ private class rsProfileProxyControllerTest {
 	}
 
 	private static testmethod void testReadOnlyUserAssign() {
-		User u = [Select Id, ProfileId, Profile_Proxy__c from User where Id =: UserInfo.getUserId()];
+		User u = [Select Id, ProfileId, Profile_Proxy__c from User where Id = : UserInfo.getUserId()];
 		List<User> readOnlyUser = rsTestUtil.createReadOnlyTestUsers(true);
 		u.Profile_Proxy__c = readOnlyUser.get(0).Id;
 		rsProfile profile = new rsProfile(u);
@@ -162,14 +163,14 @@ private class rsProfileProxyControllerTest {
 		Test.stopTest();
 
 		Boolean readOnlyError = false;
-		for(Apexpages.Message msg :  ApexPages.getMessages()){
-		    if (msg.getDetail().contains(Label.Read_Only_Proxy_Error)){
-		    	readOnlyError = true;		    	
-		    } 
+		for (Apexpages.Message msg :  ApexPages.getMessages()) {
+			if (msg.getDetail().contains(Label.Read_Only_Proxy_Error)) {
+				readOnlyError = true;
+			}
 		}
 
 		System.assertEquals(true, readOnlyError);
 
 	}
-	
+
 }

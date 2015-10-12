@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>User$Name</field>
+    </columns>
+    <columns>
+        <field>User*User$Office__c</field>
+    </columns>
+    <columns>
+        <field>User*User$HR_Job_Title__c</field>
+    </columns>
+    <columns>
+        <field>User.Profile_Parts__r$SF330_Discipline__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>North American users with discipline and location</description>
+    <filter>
+        <criteriaItems>
+            <column>User*User$Assignment_Status__c</column>
+            <operator>equals</operator>
+            <value>active assignment</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>User$Country</column>
+            <operator>equals</operator>
+            <value>United States,Canada,US,USA,CA,CAN</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>User.Profile_Parts__r$RecordType</column>
+            <operator>equals</operator>
+            <value>rs_Profile_Part__c.SF330</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>User.Profile_Parts__r$SF330_Is_Primary__c</column>
+            <operator>equals</operator>
+            <value>1</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Tabular</format>
+    <name>Users with SF330 Discipline and Location</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Users_with_without_Profile_Parts__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>User*User$Adjusted_Service_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

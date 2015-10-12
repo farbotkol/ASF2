@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_86874870</developerName>
+        <masterLabel>Market Sector</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Account.Client_Subgroup__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Defense - Air Force</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Defense - Army</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Defense - Marines</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Defense - Navy</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Defense - Other</sourceValue>
+            </sourceValues>
+            <value>DOD</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Education Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Environmental/Climate Agency/Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Justice/Prisons/Security Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Other Agency</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>US Homeland Security</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>USPS</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Energy Agency / Services</sourceValue>
+            </sourceValues>
+            <value>Civilian</value>
+        </values>
+    </buckets>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.NA_BL__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Lead_District_Formula__c</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Role__c</field>
+    </columns>
+    <columns>
+        <field>RECORDTYPE</field>
+    </columns>
+    <columns>
+        <field>AMOUNT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.AECOM_Net_Value__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Book_date__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Probability_Stage__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Estimated_work_start_date__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Work_end_date_del__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager_User__c</field>
+    </columns>
+    <columns>
+        <field>STAGE_NAME</field>
+    </columns>
+    <currency>USD</currency>
+    <description>All DOD/Civilian (Federal) active opportunities in US North Region in Stage 6-Contracted/Booked for the current fiscal year.</description>
+    <filter>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>equals</operator>
+            <value>6 Contracted/Booked/Won</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Account.Client_Group__c</column>
+            <operator>equals</operator>
+            <value>National Government</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Opportunity.Task_Order_Americas,Opportunity.Project_Americas</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Region__c</column>
+            <operator>equals</operator>
+            <value>AME Northeast</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.End_Client_Sector__c</column>
+            <operator>equals</operator>
+            <value>US Federal Government</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Master_Contract_lookup__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>AME Northeast Booked (Federal)</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.Book_date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

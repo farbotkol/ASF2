@@ -1,0 +1,225 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>Opportunity.Net_Revenue_TO_Project__c.CONVERT:SUM + Opportunity.Program_Estimated_Revenue__c.CONVERT:SUM</calculatedFormula>
+        <datatype>currency</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Combined Net Win Value</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>picklist</bucketType>
+        <developerName>BucketField_10201344</developerName>
+        <masterLabel>Market Sector</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Account.Client_Subgroup__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Defense - Air Force</sourceValue>
+            </sourceValues>
+            <value>Air Force</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Defense - Army</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Defense - Other</sourceValue>
+            </sourceValues>
+            <value>Army</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Defense - Marines</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Defense - Navy</sourceValue>
+            </sourceValues>
+            <value>Navy/Marine</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Education Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Energy Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Environmental/Climate Agency/Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Healthcare &amp; Life Sciences</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Justice/Prisons/Security Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Other Agency</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>US Homeland Security</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>USPS</sourceValue>
+            </sourceValues>
+            <value>Other Federal</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>RowCount</column>
+        </chartSummaries>
+        <chartType>Donut</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>Opportunity.Stage_Group__c</groupingColumn>
+        <legendPosition>Right</legendPosition>
+        <location>CHART_TOP</location>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>true</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>true</showValues>
+        <size>Medium</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <title>Hit Rate YTD</title>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>Opportunity.Lead_Region_Formula__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Lead_District_Formula__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <columns>
+        <field>ACCOUNT_NAME</field>
+    </columns>
+    <columns>
+        <field>OPPORTUNITY_NAME</field>
+    </columns>
+    <columns>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Net_Revenue_TO_Project__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Client_Group__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.End_Client_Sector__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <booleanFilter>(1 AND 2 AND 7 AND 9 AND 10 AND 11 AND 12) OR (1 AND 3 AND 4 AND 7 AND 9 AND 10 AND 11 AND 12) OR (1 AND 5 AND 6 AND 8 AND 9 AND 10 AND 11 AND 12)</booleanFilter>
+        <criteriaItems>
+            <column>Opportunity.Client_Group__c</column>
+            <operator>equals</operator>
+            <value>National Government</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Opportunity.Project_Americas</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Opportunity.Task_Order_Americas</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Competitive_Bid_or_Sole_source__c</column>
+            <operator>notEqual</operator>
+            <value>Sole Source</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Opportunity.Program_Americas</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.TO_Procurement_Method__c</column>
+            <operator>equals</operator>
+            <value>SATOC,MATOC - Noncompetitive TO</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>startsWith</operator>
+            <value>5,6,9</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>startsWith</operator>
+            <value>5,9</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>BucketField_10201344</column>
+            <operator>equals</operator>
+            <value>Air Force,Army,Navy/Marine,Other Federal</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>notEqual</operator>
+            <value>Construction Services,Government Services</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Group__c</column>
+            <operator>equals</operator>
+            <value>Design &amp; Consulting</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.End_Client_Sector__c</column>
+            <operator>equals</operator>
+            <value>US Federal Government</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Opportunity.Stage_Group__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>BucketField_10201344</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Federal Hit Rate YTD</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity@Opportunity.AECOM_Primary_Dept_Lookup__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Opportunity.Net_Revenue_TO_Project__c.CONVERT</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Opportunity.Win_Loss_Report_Date__c</dateColumn>
+        <interval>INTERVAL_CURFY</interval>
+    </timeFrameFilter>
+</Report>

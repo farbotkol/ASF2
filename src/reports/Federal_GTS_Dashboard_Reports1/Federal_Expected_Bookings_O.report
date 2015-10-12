@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <aggregates>
+        <calculatedFormula>AMOUNT.CONVERT:SUM + Opportunity.Program_Estimated_Revenue__c.CONVERT:SUM</calculatedFormula>
+        <datatype>number</datatype>
+        <developerName>FORMULA1</developerName>
+        <isActive>true</isActive>
+        <isCrossBlock>false</isCrossBlock>
+        <masterLabel>Value</masterLabel>
+        <scale>0</scale>
+    </aggregates>
+    <buckets>
+        <bucketType>text</bucketType>
+        <developerName>BucketField_39707141</developerName>
+        <masterLabel>Market Sector</masterLabel>
+        <nullTreatment>n</nullTreatment>
+        <sourceColumnName>Opportunity.Client_Subgroup__c</sourceColumnName>
+        <useOther>false</useOther>
+        <values>
+            <sourceValues>
+                <sourceValue>Defense - Air Force</sourceValue>
+            </sourceValues>
+            <value>Air Force</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Defense - Army</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Defense - Other</sourceValue>
+            </sourceValues>
+            <value>Army</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Defense - Marines</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Defense - Navy</sourceValue>
+            </sourceValues>
+            <value>Navy/Marine</value>
+        </values>
+        <values>
+            <sourceValues>
+                <sourceValue>Education Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Energy Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Environmental/Climate Agency/Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Healthcare &amp; Life Sciences</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Justice/Prisons/Security Agency / Services</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>Other Agency</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>US Homeland Security</sourceValue>
+            </sourceValues>
+            <sourceValues>
+                <sourceValue>USPS</sourceValue>
+            </sourceValues>
+            <value>Other Federal</value>
+        </values>
+    </buckets>
+    <chart>
+        <backgroundColor1>#FFFFFF</backgroundColor1>
+        <backgroundColor2>#FFFFFF</backgroundColor2>
+        <backgroundFadeDir>Diagonal</backgroundFadeDir>
+        <chartSummaries>
+            <axisBinding>y</axisBinding>
+            <column>FORMULA1</column>
+        </chartSummaries>
+        <chartSummaries>
+            <axisBinding>y2</axisBinding>
+            <column>FORMULA1</column>
+        </chartSummaries>
+        <chartType>VerticalColumnGroupedLine</chartType>
+        <enableHoverLabels>false</enableHoverLabels>
+        <expandOthers>true</expandOthers>
+        <groupingColumn>ACCOUNT_NAME</groupingColumn>
+        <legendPosition>Right</legendPosition>
+        <location>CHART_BOTTOM</location>
+        <secondaryGroupingColumn>OPPORTUNITY_NAME</secondaryGroupingColumn>
+        <showAxisLabels>true</showAxisLabels>
+        <showPercentage>false</showPercentage>
+        <showTotal>false</showTotal>
+        <showValues>false</showValues>
+        <size>Tiny</size>
+        <summaryAxisRange>Auto</summaryAxisRange>
+        <textColor>#000000</textColor>
+        <textSize>12</textSize>
+        <titleColor>#000000</titleColor>
+        <titleSize>18</titleSize>
+    </chart>
+    <columns>
+        <field>Opportunity.Opportunity_ID__c</field>
+    </columns>
+    <columns>
+        <field>RECORDTYPE</field>
+    </columns>
+    <columns>
+        <field>Opportunity.TO_Procurement_Method__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Capture_Manager_User__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.WinDate__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Lead_Region_Formula__c</field>
+    </columns>
+    <columns>
+        <field>AMOUNT.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Net_Revenue_TO_Project__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Program_Estimated_Revenue__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Net_Revenue_Program__c.CONVERT</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Client_Subgroup__c</field>
+    </columns>
+    <columns>
+        <field>BucketField_39707141</field>
+    </columns>
+    <columns>
+        <field>Opportunity.Practice_Area_of_Primary_AECOM_Dept__c</field>
+    </columns>
+    <columns>
+        <field>Opportunity.End_Client_Sector__c</field>
+    </columns>
+    <currency>USD</currency>
+    <filter>
+        <criteriaItems>
+            <column>STAGE_NAME</column>
+            <operator>contains</operator>
+            <value>1,2,3,5</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Opportunity.Task_Order_Americas,Opportunity.Project_Americas</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Business_Line_of_Primary_AECOM_Dept__c</column>
+            <operator>notEqual</operator>
+            <value>Construction Services,Government Services</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.Client_Group__c</column>
+            <operator>equals</operator>
+            <value>National Government</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Opportunity.End_Client_Sector__c</column>
+            <operator>equals</operator>
+            <value>US Federal Government</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>BucketField_39707141</column>
+            <operator>equals</operator>
+            <value>Air Force,Army,Navy/Marine,Other Federal</value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>ACCOUNT_NAME</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>OPPORTUNITY_NAME</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>CLOSE_DATE</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Federal Expected Bookings - O</name>
+    <params>
+        <name>open</name>
+        <value>all</value>
+    </params>
+    <params>
+        <name>probability</name>
+        <value>&gt;0</value>
+    </params>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>Opportunity</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <timeFrameFilter>
+        <dateColumn>CLOSE_DATE</dateColumn>
+        <interval>INTERVAL_CURNEXT1</interval>
+    </timeFrameFilter>
+</Report>

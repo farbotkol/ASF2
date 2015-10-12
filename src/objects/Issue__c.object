@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>The object for tracking issues/defects.</description>
@@ -184,6 +185,16 @@
         <visibleLines>10</visibleLines>
     </fields>
     <fields>
+        <fullName>Desired_Due_Date__c</fullName>
+        <externalId>false</externalId>
+        <label>Desired Due Date</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
         <fullName>Developer_Note__c</fullName>
         <description>Developer notes regarding the issue, dependencies, etc</description>
         <externalId>false</externalId>
@@ -207,6 +218,26 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>External_Resources_Required_Notes__c</fullName>
+        <externalId>false</externalId>
+        <label>External Resources Required Notes</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>External_Resources_Required__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>External Resources Required?</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Issue_Comments__c</fullName>
@@ -281,18 +312,30 @@ Non Critical: Can wait post Go Live</inlineHelpText>
         <label>Priority</label>
         <picklist>
             <picklistValues>
-                <fullName>Required</fullName>
+                <fullName>Blocker</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Critical</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Major</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Minor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Trivial</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Workaround</fullName>
                 <default>false</default>
             </picklistValues>
-            <picklistValues>
-                <fullName>Non Critcal</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
+            <sorted>true</sorted>
         </picklist>
         <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -312,6 +355,99 @@ Non Critical: Can wait post Go Live</inlineHelpText>
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Project_Name__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Group issues by entering a common name in this field</inlineHelpText>
+        <label>Project Name</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Account Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Account Planning 2015</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CRM Migration (ALL)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CRM Migration (AME)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CRM Migration (ANZ)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CRM Migration (CS)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>CRM Migration (MS)</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DE Gap Analysis 2015</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Ecosystem</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Emergency Fixes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Monthly Fixes</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Net Promoter Score</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Project Profiles</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Resume Overall Program</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Salesforce COE</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Salesforce CRM Pipeline Governance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Salesforce Error Messages</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Shared Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>System Administration</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Technology Catalog</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>true</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Projects__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -324,6 +460,64 @@ Non Critical: Can wait post Go Live</inlineHelpText>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Release_Date__c</fullName>
+        <description>This field indicates the release date of the issue.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Select the release date of the issue.</inlineHelpText>
+        <label>Release Date</label>
+        <picklist>
+            <picklistValues>
+                <fullName>October 2015</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>JAN QTR 2016</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>February 2016</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>March 2016</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>APR QTR 2016</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>May 2016</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>June 2016</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>JUL QTR 2016</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>August 2016</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>September 2016</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>OCT QTR 2016</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>Reported_By__c</fullName>
@@ -382,7 +576,7 @@ Non Critical: Can wait post Go Live</inlineHelpText>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Post Go-Live (Phase II)</fullName>
+                <fullName>Add to Roadmap</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -410,7 +604,15 @@ Non Critical: Can wait post Go Live</inlineHelpText>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Account Plans</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Activity</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>AECOM Departments</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -418,7 +620,15 @@ Non Critical: Can wait post Go Live</inlineHelpText>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Campaigns</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Contact</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Ecosystem</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -426,7 +636,11 @@ Non Critical: Can wait post Go Live</inlineHelpText>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Note &amp; Attachment</fullName>
+                <fullName>Go-NoGo or Why Go</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Notes &amp; Attachment</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -442,7 +656,19 @@ Non Critical: Can wait post Go Live</inlineHelpText>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>People Profiles</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Project</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Project Profiles</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Taxonomy</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>true</sorted>
@@ -450,7 +676,8 @@ Non Critical: Can wait post Go Live</inlineHelpText>
         <trackFeedHistory>false</trackFeedHistory>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Picklist</type>
+        <type>MultiselectPicklist</type>
+        <visibleLines>4</visibleLines>
     </fields>
     <fields>
         <fullName>Salesforce_URL__c</fullName>
@@ -498,7 +725,15 @@ Non Critical: Can wait post Go Live</inlineHelpText>
         <label>Status</label>
         <picklist>
             <picklistValues>
-                <fullName>Submitted</fullName>
+                <fullName>Closed</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>In Progress</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>On Hold</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -506,22 +741,10 @@ Non Critical: Can wait post Go Live</inlineHelpText>
                 <default>true</default>
             </picklistValues>
             <picklistValues>
-                <fullName>In Progress</fullName>
+                <fullName>Roadmap</fullName>
                 <default>false</default>
             </picklistValues>
-            <picklistValues>
-                <fullName>Testing</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Closed</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Held for Phase II</fullName>
-                <default>false</default>
-            </picklistValues>
-            <sorted>false</sorted>
+            <sorted>true</sorted>
         </picklist>
         <trackFeedHistory>true</trackFeedHistory>
         <trackHistory>false</trackHistory>
@@ -533,6 +756,10 @@ Non Critical: Can wait post Go Live</inlineHelpText>
         <externalId>false</externalId>
         <label>Type</label>
         <picklist>
+            <picklistValues>
+                <fullName>Break Fix</fullName>
+                <default>false</default>
+            </picklistValues>
             <picklistValues>
                 <fullName>Change Request</fullName>
                 <default>false</default>
@@ -550,15 +777,19 @@ Non Critical: Can wait post Go Live</inlineHelpText>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Functional Issue</fullName>
+                <fullName>Project Issue</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Task</fullName>
+                <fullName>Project Risk</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Task List</fullName>
+                <fullName>Project Task</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Requirements</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>true</sorted>
@@ -643,9 +874,300 @@ Non Critical: Can wait post Go Live</inlineHelpText>
     </fields>
     <label>Issue</label>
     <listViews>
-        <fullName>All</fullName>
+        <fullName>ANZ_requests</fullName>
+        <columns>NAME</columns>
+        <columns>Reported_By__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Status__c</columns>
+        <columns>User__c</columns>
+        <columns>Release_Date__c</columns>
         <filterScope>Everything</filterScope>
-        <label>All</label>
+        <filters>
+            <field>Reported_By__c</field>
+            <operation>contains</operation>
+            <value>robbie,kerry</value>
+        </filters>
+        <label>ANZ requests</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Account_Management</fullName>
+        <columns>NAME</columns>
+        <columns>User__c</columns>
+        <columns>Desired_Due_Date__c</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Project_Name__c</field>
+            <operation>startsWith</operation>
+            <value>Account Management</value>
+        </filters>
+        <label>Account Management</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Account_Planning_Refresh</fullName>
+        <columns>NAME</columns>
+        <columns>User__c</columns>
+        <columns>Desired_Due_Date__c</columns>
+        <columns>Description__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Project_Name__c</field>
+            <operation>startsWith</operation>
+            <value>Account Planning</value>
+        </filters>
+        <label>Account Planning Refresh</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All_Open</fullName>
+        <columns>Issue_Number__c</columns>
+        <columns>NAME</columns>
+        <columns>Project_Name__c</columns>
+        <columns>Status__c</columns>
+        <columns>Salesforce_Object__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>User__c</columns>
+        <columns>Reported_By__c</columns>
+        <columns>Priority__c</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>notEqual</operation>
+            <value>Closed</value>
+        </filters>
+        <label>All Open Issues</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Assigned_to_Daniel_Le</fullName>
+        <columns>NAME</columns>
+        <columns>Project_Name__c</columns>
+        <columns>Reported_By__c</columns>
+        <columns>User__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Status__c</columns>
+        <columns>Type__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>User__c</field>
+            <operation>equals</operation>
+            <value>Daniel T Le</value>
+        </filters>
+        <label>Assigned to Daniel Le</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CRM_Migration</fullName>
+        <columns>Issue_Number__c</columns>
+        <columns>Project_Name__c</columns>
+        <columns>NAME</columns>
+        <columns>Salesforce_Object__c</columns>
+        <columns>Reported_By__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Status__c</columns>
+        <columns>Type__c</columns>
+        <columns>Priority__c</columns>
+        <columns>User__c</columns>
+        <columns>User2__c</columns>
+        <columns>User3__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Project_Name__c</field>
+            <operation>startsWith</operation>
+            <value>CRM Migration</value>
+        </filters>
+        <label>CRM Migration</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CRM_Migration_ANZ</fullName>
+        <columns>Issue_Number__c</columns>
+        <columns>Project_Name__c</columns>
+        <columns>NAME</columns>
+        <columns>Salesforce_Object__c</columns>
+        <columns>Reported_By__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Status__c</columns>
+        <columns>Type__c</columns>
+        <columns>Priority__c</columns>
+        <columns>User__c</columns>
+        <columns>User2__c</columns>
+        <columns>User3__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Project_Name__c</field>
+            <operation>startsWith</operation>
+            <value>CRM Migration (ANZ)</value>
+        </filters>
+        <label>CRM Migration (ANZ)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CRM_Migration_CS</fullName>
+        <columns>Issue_Number__c</columns>
+        <columns>Project_Name__c</columns>
+        <columns>NAME</columns>
+        <columns>Salesforce_Object__c</columns>
+        <columns>Reported_By__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Status__c</columns>
+        <columns>Type__c</columns>
+        <columns>Priority__c</columns>
+        <columns>User__c</columns>
+        <columns>User2__c</columns>
+        <columns>User3__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Project_Name__c</field>
+            <operation>startsWith</operation>
+            <value>CRM Migration (CS)</value>
+        </filters>
+        <label>CRM Migration (CS)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CRM_Migration_MS</fullName>
+        <columns>Issue_Number__c</columns>
+        <columns>Project_Name__c</columns>
+        <columns>NAME</columns>
+        <columns>Salesforce_Object__c</columns>
+        <columns>Reported_By__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Status__c</columns>
+        <columns>Type__c</columns>
+        <columns>Priority__c</columns>
+        <columns>User__c</columns>
+        <columns>User2__c</columns>
+        <columns>User3__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Project_Name__c</field>
+            <operation>startsWith</operation>
+            <value>CRM Migration (MS)</value>
+        </filters>
+        <label>CRM Migration (MS)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Closed_Issues</fullName>
+        <columns>Project_Name__c</columns>
+        <columns>NAME</columns>
+        <columns>User__c</columns>
+        <columns>Issue__c</columns>
+        <columns>Salesforce_Object__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Type__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Closed</value>
+        </filters>
+        <label>Closed Issues</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>DE_Gap_Analysis_2015</fullName>
+        <columns>NAME</columns>
+        <columns>User__c</columns>
+        <columns>Desired_Due_Date__c</columns>
+        <columns>Description__c</columns>
+        <columns>Release_Date__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Project_Name__c</field>
+            <operation>equals</operation>
+            <value>DE Gap Analysis 2015</value>
+        </filters>
+        <label>DE Gap Analysis 2015</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Laura_Force</fullName>
+        <booleanFilter>1 OR 2</booleanFilter>
+        <columns>NAME</columns>
+        <columns>Issue_Number__c</columns>
+        <columns>Status__c</columns>
+        <columns>User__c</columns>
+        <columns>User2__c</columns>
+        <columns>CREATED_DATE</columns>
+        <columns>Reported_By__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>CREATEDBY_USER</field>
+            <operation>equals</operation>
+            <value>Laura Force</value>
+        </filters>
+        <filters>
+            <field>Reported_By__c</field>
+            <operation>contains</operation>
+            <value>Force,Foot,Waldron,Moloi,Kabulska</value>
+        </filters>
+        <label>Reported by EMEA&amp;I</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>NPS</fullName>
+        <columns>Issue_Number__c</columns>
+        <columns>Project_Name__c</columns>
+        <columns>Desired_Due_Date__c</columns>
+        <columns>NAME</columns>
+        <columns>User__c</columns>
+        <columns>Severity__c</columns>
+        <columns>Status__c</columns>
+        <columns>Type__c</columns>
+        <columns>Reported_By__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Project_Name__c</field>
+            <operation>equals</operation>
+            <value>Net Promoter Score</value>
+        </filters>
+        <label>NPS</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Open_Break_Fixes</fullName>
+        <columns>NAME</columns>
+        <columns>Salesforce_Object__c</columns>
+        <columns>Issue_Comments__c</columns>
+        <columns>CREATEDBY_USER</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Type__c</field>
+            <operation>equals</operation>
+            <value>Break Fix</value>
+        </filters>
+        <filters>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Submitted,Open,In Progress,Testing,Roadmap</value>
+        </filters>
+        <label>Open Break Fixes</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Salesforce_COE</fullName>
+        <columns>Project_Name__c</columns>
+        <columns>NAME</columns>
+        <columns>User__c</columns>
+        <columns>Desired_Due_Date__c</columns>
+        <columns>Status__c</columns>
+        <columns>Description__c</columns>
+        <columns>Issue_Comments__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Project_Name__c</field>
+            <operation>equals</operation>
+            <value>Salesforce COE</value>
+        </filters>
+        <label>Salesforce COE</label>
+        <language>en_US</language>
     </listViews>
     <nameField>
         <label>Title</label>
@@ -664,6 +1186,18 @@ Non Critical: Can wait post Go Live</inlineHelpText>
         <customTabListAdditionalFields>Business_Area__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>LAST_UPDATE</customTabListAdditionalFields>
         <searchFilterFields>NAME</searchFilterFields>
+        <searchFilterFields>Desired_Due_Date__c</searchFilterFields>
+        <searchFilterFields>Expected_Completion__c</searchFilterFields>
+        <searchFilterFields>Issue__c</searchFilterFields>
+        <searchFilterFields>Issue_Number__c</searchFilterFields>
+        <searchFilterFields>Salesforce_Object__c</searchFilterFields>
+        <searchFilterFields>Status__c</searchFilterFields>
+        <searchResultsAdditionalFields>Desired_Due_Date__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Expected_Completion__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Issue__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Issue_Number__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATEDBY_USER</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>Read</sharingModel>
 </CustomObject>

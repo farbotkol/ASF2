@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Junction object for use in analyzing competitors for account plans</description>
@@ -59,7 +60,6 @@
         <externalId>false</externalId>
         <label>Account Plan</label>
         <referenceTo>SFDC_Acct_Plan__c</referenceTo>
-        <relationshipLabel>Competitor Information</relationshipLabel>
         <relationshipName>Competitor_Information</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
@@ -69,14 +69,26 @@
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <fields>
+        <fullName>Account_Team__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>AECOM team, e.g., EBL, EMEA, Upstream</inlineHelpText>
+        <label>Account Team</label>
+        <length>50</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Competitor_Firm__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <description>Lookup into Accounts</description>
         <externalId>false</externalId>
         <inlineHelpText>Select from Accounts. If not found: (1) Right click on the Accounts tab and open in a new window. (2) Enter the Account Name, Client Group/Subgroup, and Country – then click Save. (3) Return to this page and search for the Account you just entered.</inlineHelpText>
-        <label>Competitor Firm</label>
+        <label>Firm</label>
         <referenceTo>Account</referenceTo>
-        <relationshipLabel>Competitor Information</relationshipLabel>
+        <relationshipLabel>Competitive Information</relationshipLabel>
         <relationshipName>Competitor_Information</relationshipName>
         <required>true</required>
         <trackHistory>false</trackHistory>
@@ -218,14 +230,14 @@ e.g.,  alignment client needs, knowledge of client, relationship, share of walle
         <type>Number</type>
         <unique>false</unique>
     </fields>
-    <label>Competitor Information</label>
+    <label>Competitive Landscape</label>
     <nameField>
         <displayFormat>CI-{000000}</displayFormat>
-        <label>Competitor Information ID</label>
+        <label>Competitive Landscape ID</label>
         <trackHistory>false</trackHistory>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Competitor Information</pluralLabel>
+    <pluralLabel>Competitive Landscape</pluralLabel>
     <searchLayouts/>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>

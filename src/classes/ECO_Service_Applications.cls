@@ -2,9 +2,20 @@ public without sharing class ECO_Service_Applications {
 	
 	private static System.LoggingLevel debugLevel = LoggingLevel.INFO;
 	
+	private static Map<Id, Configuration__c> applicationToConfigMap = new Map<Id, Configuration__c>();
+	
+	private static Boolean requiresUpsert = false;
+	
+	public static void upsertApplicationsForUser() {
+		if (requiresUpsert) {
+			system.debug('Upserting!!!');
+			upsert applicationToConfigMap.values();
+		}
+	}
+	
 	public static Map<Id, Configuration__c> getUpdateApplicationsForUser (User theUser, String searchTerm) {
 		
-		Map<Id, Configuration__c> applicationToConfigMap = new Map<Id, Configuration__c>();
+		// Map<Id, Configuration__c> applicationToConfigMap = new Map<Id, Configuration__c>();
 		
 		String queryString = 'SELECT Id';
 		queryString			+= ' , Name';
@@ -26,6 +37,7 @@ public without sharing class ECO_Service_Applications {
 		queryString			+= ' , Application__r.ApplicationURL__c';
 		queryString			+= ' , Application__r.ImageName__c';
 		queryString			+= ' , Application__r.NetworkRequirement__c';
+		queryString			+= ' , Application__r.MobileEnabled__c';
 		queryString			+= ' , RecordType.Name';
 		queryString			+= ' , ConfigurationTemplate__c';
 
@@ -63,7 +75,7 @@ public without sharing class ECO_Service_Applications {
 		
 		system.debug(debugLevel, 'Built this query:  '+queryString);
 		
-		Boolean requiresUpsert = false;
+		// Boolean requiresUpsert = false;
 		
 		// This has to happen in two loops because ordering by a blank user just doesn't work.. the nulls show up first.
 		
@@ -106,10 +118,12 @@ public without sharing class ECO_Service_Applications {
 			requiresUpsert = true;
 		}
 		
+		/*
 		if (requiresUpsert) {
 			system.debug('Upserting!!!');
 			upsert applicationToConfigMap.values();
 		}
+		*/
 		
 		for (Configuration__c c : applicationToConfigMap.values()) {
 			system.debug('Evalling Config Item.User__c:  '+c.User__c);
@@ -123,7 +137,7 @@ public without sharing class ECO_Service_Applications {
 
 	public static Map<Id, Configuration__c> getAvailableApplicationsForUser (User theUser, string name, map<String, String> searchMap) {
 		
-		Map<Id, Configuration__c> applicationToConfigMap = new Map<Id, Configuration__c>();
+		// Map<Id, Configuration__c> applicationToConfigMap = new Map<Id, Configuration__c>();
 		
 		String queryString = 'SELECT Id';
 		queryString			+= ' , Name';
@@ -145,14 +159,14 @@ public without sharing class ECO_Service_Applications {
 		queryString			+= ' , Application__r.ApplicationURL__c';
 		queryString			+= ' , Application__r.ImageName__c';
 		queryString			+= ' , Application__r.NetworkRequirement__c';
+		queryString			+= ' , Application__r.MobileEnabled__c';
 		queryString			+= ' , RecordType.Name';
 		queryString			+= ' , ConfigurationTemplate__c';
 
 		queryString			+= ' FROM Configuration__c';
 
 		// this block is for template records
-		queryString			+= ' WHERE (User__c = null';
-		queryString			+= ' AND IsActive__c = true';
+		queryString			+= ' WHERE (IsActive__c = true';
 		queryString			+= ' AND IsRemovable__c = true';
 		queryString			+= ' AND RecordType.Name = \'Application Template\')';
 		

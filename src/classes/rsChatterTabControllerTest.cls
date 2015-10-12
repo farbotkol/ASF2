@@ -7,20 +7,20 @@
 ***************************************************************************/
 @isTest
 private class rsChatterTabControllerTest {
-	
+
 	private static testmethod void testCMLockMessage() {
 		Profile adminProfile = [Select Id, Name from Profile where Name = 'System Administrator'];
 		User testUser = new User();
 		testUser.LastName = 'lastName' ;
 		testUser.Alias = 'test';
 		testUser.Email = 'SFDCTestCase@aecom.com';
-		testUser.Username ='111111@test.com';
+		testUser.Username = '111111@test.com';
 		testUser.CommunityNickname = 'testNick';
 		testUser.ProfileId = adminProfile.Id;
-		testUser.EmailEncodingKey='UTF-8';
-		testUser.LanguageLocaleKey='en_US';
-		testUser.LocaleSidKey='en_US';
-		testUser.TimeZoneSidKey='America/Los_Angeles';
+		testUser.EmailEncodingKey = 'UTF-8';
+		testUser.LanguageLocaleKey = 'en_US';
+		testUser.LocaleSidKey = 'en_US';
+		testUser.TimeZoneSidKey = 'America/Los_Angeles';
 		testUser.Status__c = rsProfile.S_PENDING;
 		insert testUser;
 
@@ -30,9 +30,9 @@ private class rsChatterTabControllerTest {
 		rsProfile profile = new rsProfile(testUser);
 		rsChatterTabController cont = new rsChatterTabController();
 		Test.stopTest();
-		
+
 		System.assert(!cont.getShowMessages());
-		
+
 		testUser.Is_Profile_Locked__c = true;
 		update testUser;
 
@@ -49,15 +49,15 @@ private class rsChatterTabControllerTest {
 
 	private static testmethod void testReadOnlyProfile() {
 		User readOnly = rsTestUtil.createReadOnlyTestUsers(true).get(0);
-		
+
 		Test.startTest();
 		ApexPages.currentPage().getParameters().put('sfdc.userId', readOnly.Id);
 		rsChatterTabController cont = new rsChatterTabController();
-  		Boolean isReadOnly = cont.getIsReadOnly();
+		Boolean isReadOnly = cont.getIsReadOnly();
 
 		Test.stopTest();
 
 		System.assertEquals(true, isReadOnly);
 	}
-	
+
 }

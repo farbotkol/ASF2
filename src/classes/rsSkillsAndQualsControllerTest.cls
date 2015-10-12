@@ -1,6 +1,6 @@
 /*************************************************************************
 *
-* PURPOSE: Test controller for the personal tab in chatter 
+* PURPOSE: Test controller for the personal tab in chatter
 *
 * CREATED: 2014 Ethos Solutions - www.ethos.com
 * AUTHOR: Alex Molina
@@ -17,13 +17,13 @@ private class rsSkillsAndQualsControllerTest {
 		testUser.LastName = 'lastName' ;
 		testUser.Alias = 'test';
 		testUser.Email = 'SFDCTestCase@aecom.com';
-		testUser.Username ='111111@test.com';
+		testUser.Username = '111111@test.com';
 		testUser.CommunityNickname = 'testNick';
 		testUser.ProfileId = adminProfile.Id;
-		testUser.EmailEncodingKey='UTF-8';
-		testUser.LanguageLocaleKey='en_US';
-		testUser.LocaleSidKey='en_US';
-		testUser.TimeZoneSidKey='America/Los_Angeles';
+		testUser.EmailEncodingKey = 'UTF-8';
+		testUser.LanguageLocaleKey = 'en_US';
+		testUser.LocaleSidKey = 'en_US';
+		testUser.TimeZoneSidKey = 'America/Los_Angeles';
 		testUser.Status__c = rsProfile.S_PENDING;
 		insert testUser;
 
@@ -33,7 +33,7 @@ private class rsSkillsAndQualsControllerTest {
 		rsProfile profile = new rsProfile(testUser);
 		rsSkillsAndQualsController cont = new rsSkillsAndQualsController();
 		Test.stopTest();
-		
+
 		System.assert(cont.getUserIdList().size() == 1);
 		System.assert(cont.getUserIdList().get(0) == testUser.Id);
 	}

@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Report xmlns="http://soap.sforce.com/2006/04/metadata">
+    <columns>
+        <field>CUST_NAME</field>
+    </columns>
+    <columns>
+        <field>Go_No_Go_Conversation__c.Opportunity_Name__c</field>
+    </columns>
+    <columns>
+        <field>Go_No_Go_Conversation__c.Opportunity_Record__c</field>
+    </columns>
+    <columns>
+        <field>Go_No_Go_Conversation__c.Status__c</field>
+    </columns>
+    <columns>
+        <field>Go_No_Go_Conversation__c.Primary_Department_from_Opportunity__c</field>
+    </columns>
+    <currency>USD</currency>
+    <description>Europe opps - stages 2-5</description>
+    <filter>
+        <criteriaItems>
+            <column>CUST_RECORDTYPE</column>
+            <operator>equals</operator>
+            <value>Go_No_Go_Conversation__c.Europe_GNG</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Go_No_Go_Conversation__c.Status__c</column>
+            <operator>contains</operator>
+            <value>2,3,4,5</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Go_No_Go_Conversation__c.Approval_Status__c</column>
+            <operator>equals</operator>
+            <value>Not Submitted,Submitted for Approval - Pending</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Go_No_Go_Conversation__c.Project_Director__c</column>
+            <operator>notEqual</operator>
+            <value>Laura Force</value>
+        </criteriaItems>
+        <criteriaItems>
+            <column>Go_No_Go_Conversation__c.Project_Director__c</column>
+            <operator>notEqual</operator>
+            <value></value>
+        </criteriaItems>
+        <language>en_US</language>
+    </filter>
+    <format>Summary</format>
+    <groupingsDown>
+        <dateGranularity>Day</dateGranularity>
+        <field>Go_No_Go_Conversation__c.Project_Director__c</field>
+        <sortOrder>Asc</sortOrder>
+    </groupingsDown>
+    <name>Pending Go/No Go records</name>
+    <params>
+        <name>co</name>
+        <value>1</value>
+    </params>
+    <reportType>CustomEntity$Go_No_Go_Conversation__c</reportType>
+    <scope>organization</scope>
+    <showDetails>true</showDetails>
+    <sortColumn>Go_No_Go_Conversation__c.Status__c</sortColumn>
+    <sortOrder>Asc</sortOrder>
+    <timeFrameFilter>
+        <dateColumn>Go_No_Go_Conversation__c.RFT_Issue_Date__c</dateColumn>
+        <interval>INTERVAL_CUSTOM</interval>
+    </timeFrameFilter>
+</Report>

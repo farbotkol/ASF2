@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<SharingRules xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sharingCriteriaRules>
+        <fullName>Customer_Feedback_Case_Escalation_Owners</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>Grant Read/Write to Escalation Owners for Survey Cases where they are not the owner and case is in any status.  (Open, FUO - In Progress, EO - In Progress, PM - In Progress, ES/Client Care - In Progress, Closed)</description>
+        <label>Customer Feedback Case Escalation Owners</label>
+        <sharedTo>
+            <group>Customer_Feedback_Case_Escalation_Owners</group>
+        </sharedTo>
+        <criteriaItems>
+            <field>Status__c</field>
+            <operation>equals</operation>
+            <value>Open,FUO - In Progress,EO - In Progress,PM - In Progress,ES/Client Care - In Progress,Closed</value>
+        </criteriaItems>
+    </sharingCriteriaRules>
+    <sharingOwnerRules>
+        <fullName>CFM_Survey_Admin_share_READ_WRITE_Access_with_CFM_Survey_Admin</fullName>
+        <accessLevel>Edit</accessLevel>
+        <description>CFM - when a case is assigned to a member of the Public Group Customer Feedback Survey Administrators share READ/WRITE access with other members of that same Public Group</description>
+        <label>CFM Survey Admin share READ/WRITE Access with CFM Survey Admin</label>
+        <sharedTo>
+            <group>Customer_Feedback_Survey_Administrators</group>
+        </sharedTo>
+        <sharedFrom>
+            <group>Customer_Feedback_Survey_Administrators</group>
+        </sharedFrom>
+    </sharingOwnerRules>
+</SharingRules>

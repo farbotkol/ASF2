@@ -11,7 +11,34 @@
     		}
     		helpTextSetup();
     		setLanguageRequiredFields();
+    		setUpLanguageParts();
     	});
+
+		function setUpLanguageParts() {
+			j$('a[id$=moveLanguagePartUp]').each(function() {
+				if(j$(this).hasClass('0')) {
+					j$(this).removeAttr('onclick href').parent().addClass('disabled');
+					j$(this).click(function(e) {
+						e.preventDefault();
+					});
+				}
+			});
+			j$('a[id$=moveLanguagePartDown]').each(function() {
+				var arr = j$(this).attr('class').split(" ");
+				if((arr.length == 1 && arr[0] == '0')) {
+					j$(this).removeAttr('onclick href').parent().addClass('disabled');
+					j$(this).click(function(e) {
+						e.preventDefault();
+					});
+				}
+				else if (arr[0] == arr[1] || (arr[0] == '0' && arr[1].length == 0)) {
+					j$(this).removeAttr('onclick href').parent().addClass('disabled');
+					j$(this).click(function(e) {
+						e.preventDefault();
+					});
+				}
+			});
+		}
 
     	function setLanguageRequiredFields() {
     		//Required fields for this component
@@ -138,21 +165,21 @@
 				    <tr>
 				        <th>{!$Label.Action}</th>
 				        <th>
-				        	<apex:commandLink action="{!sortParts}" reRender="langPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);" value="{!$Label.Language}">
+				        	<apex:commandLink action="{!sortParts}" reRender="langPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);setUpLanguageParts();" value="{!$Label.Language}">
 				        		<apex:param name="sortField" value="Skill_Language__c"/>
 				        		<span class="toggleClassDown glyphicon glyphicon-chevron-down"></span>
 				        		<span class="toggleClassUp glyphicon glyphicon-chevron-up"></span> 
 				        	</apex:commandLink>
 				        </th>
 				        <th>
-				        	<apex:commandLink action="{!sortParts}" reRender="langPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);" value="{!$ObjectType['rs_Profile_Part__c'].fields['Language_Skill__c'].Label}">
+				        	<apex:commandLink action="{!sortParts}" reRender="langPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);setUpLanguageParts();" value="{!$ObjectType['rs_Profile_Part__c'].fields['Language_Skill__c'].Label}">
 				        		<apex:param name="sortField" value="Language_Skill__c"/>
 				        		<span class="toggleClassDown glyphicon glyphicon-chevron-down"></span>
 				        		<span class="toggleClassUp glyphicon glyphicon-chevron-up"></span> 
 				        	</apex:commandLink>
 				        </th>
 				        <th>
-				        	<apex:commandLink action="{!sortParts}" reRender="langPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);" value="{!$ObjectType['rs_Profile_Part__c'].fields['Language_Level__c'].Label}">
+				        	<apex:commandLink action="{!sortParts}" reRender="langPanel" onclick="if (inProgress) return false; inProgress = true;" oncomplete="resetProgress();sortOrderArrow(this.id);setUpLanguageParts();" value="{!$ObjectType['rs_Profile_Part__c'].fields['Language_Level__c'].Label}">
 				        		<apex:param name="sortField" value="Language_Level__c"/>
 				        		<span class="toggleClassDown glyphicon glyphicon-chevron-down"></span>
 				        		<span class="toggleClassUp glyphicon glyphicon-chevron-up"></span> 
@@ -183,6 +210,17 @@
 	                                            </apex:commandLink>
 										    </li>
 										    <li role="presentation" class="divider"></li>
+										    <li>
+										    	<apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!movePartUp}" value="{!$Label.Move_Part_Up}" styleClass="{!part.ProfilePart.PartSequence}" reRender="{!reRender}" oncomplete="resetProgress();" onclick="if(inProgress) return false; showSectionSpinner('langHeader'); inProgress = true;" id="moveLanguagePartUp">
+										    		<apex:param value="{!part.ProfilePart.Id}" name="partId" />
+										    	</apex:commandLink>
+										    </li>
+										    <li>
+										    	<apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!movePartDown}" value="{!$Label.Move_Part_Down}" styleClass="{!Parts.size - 1} {!part.ProfilePart.PartSequence}" reRender="{!reRender}" oncomplete="resetProgress();" onclick="if(inProgress) return false; showSectionSpinner('langHeader'); inProgress = true;" id="moveLanguagePartDown">
+										    		<apex:param value="{!part.ProfilePart.Id}" name="partId" />
+										    	</apex:commandLink>
+										    </li>
+										    <li role="presentation" class="divider"></li>
 										    <li role="presentation">
 										        <apex:commandLink tabindex="-1" html-data-role="menuitem" value="{!$Label.Add_Attachment}" onclick="if(inProgress) return false; showSectionSpinner('langHeader'); inProgress = true; window.top.location.href='/apex/rsAttachment?partId={!part.ProfilePart.Id}&retUrl=/_ui/core/userprofile/UserProfilePage&ownerId={!profile.Id}&tab=Skills_and_Qualifications&tab.Skills_and_Qualifications.subtab=1';" oncomplete="resetProgress();" id="langAttachLink">
 	                                                <apex:param value="{!part.ProfilePart.Id}" name="partId"/>
@@ -196,7 +234,7 @@
 										    </li>
 										    <li role="presentation" class="divider"></li>
 										    <li role="presentation">
-										        <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!deletePart}" value="{!$Label.Delete}" onclick="if(inProgress) return false; if(!confirmDeletePart()) return false; inProgress = true; showSectionSpinner('langHeader');" oncomplete="resetProgress();" reRender="{!reRender}">
+										        <apex:commandLink tabindex="-1" html-data-role="menuitem" action="{!deletePart}" value="{!$Label.Delete}" onclick="if(inProgress) return false; if(!confirmDeletePart()) return false; inProgress = true; showSectionSpinner('langHeader');" oncomplete="resetProgress(); setUpLanguageParts();" reRender="{!reRender}">
 	                                                <apex:param value="{!part.ProfilePart.Id}" name="partId"/>
 	                                            </apex:commandLink>
 										    </li>
