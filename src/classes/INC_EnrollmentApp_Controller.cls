@@ -93,7 +93,7 @@ public with sharing class INC_EnrollmentApp_Controller {
             if(oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c == ''){
               bShowApprovalHistory = true;
             }else{
-              if(oEnrollmentApp.ApplicationType__c=='Opt-Out'){
+              if(oEnrollmentApp.ApplicationType__c=='OPT'){
                 bShowApprovalHistory = true;
               }else{
                  if(sUserLevel == 'DTW Admin' || sUserLevel == 'Corporate'){
@@ -108,7 +108,7 @@ public with sharing class INC_EnrollmentApp_Controller {
             ID rejectedRecTypeID = Schema.SObjectType.EnrollmentPlan__c.getRecordTypeInfosByName().get('Rejected Application').getRecordTypeId();
             
            
-            if(rejectedRecTypeID == oEnrollmentApp.RecordTypeID){
+            if(rejectedRecTypeID == oEnrollmentApp.RecordTypeID && oEnrollmentApp.ApprovalRecentlyProcessed__c){
                 isRejectedRecType = true;
                 bCommentFound = getLatestRejectionComment();
 
@@ -122,7 +122,7 @@ public with sharing class INC_EnrollmentApp_Controller {
             if(oEnrollmentApp.IncrementalGMvsBaseline__c > 4 && isRejectedRecType == false &&
               !bTandM && oEnrollmentApp.ApplicationType__c != 'PAY'){
               System.debug(logginglevel.error,'setting Incremental message');
-              ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Warning,'Incremental GM% vs Baseline is greater than 4%'));
+              ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Warning,'Incremental Margin % vs Baseline is greater than 4%'));
             }
 
             System.Debug(logginglevel.error,'isRejectedRecType 2' + isRejectedRecType);
@@ -260,7 +260,7 @@ public with sharing class INC_EnrollmentApp_Controller {
                                ,WizardStatus__c
                                ,IncentivePlan__c From EnrollmentPlan__c where id=:oEnrollmentApp.ID][0];
       if(oEnrollmentApp.IncentivePlan__c == null){
-        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'You must choose an Incentive Plan to continue.'));
+        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'You must choose an Incentive Plan to continue. Please click save to continue.'));
       }else{
         activeTab='step3';
       
@@ -400,11 +400,44 @@ public with sharing class INC_EnrollmentApp_Controller {
 
         return null;
     } 
+/*
+    public pageReference rejectAll(){
+ 
+      ID workItem = getWorkItemId(oEnrollmentApp.ID);
+      While(workItem != null){
+        Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
+          req.setComments('System generated final rejection.');
+          req.setAction('Reject');
+          //req.setNextApproverIds(new Id[] {UserInfo.getUserId()});
+          req.setWorkitemId(workItem);
+              // Submit the request for approval
+          Approval.ProcessResult result =  Approval.process(req);
+          workItem = getWorkItemId(oEnrollmentApp.id);
+      }
+
+      oEnrollmentApp = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentApp.ID})[0];
+      oEnrollmentApp.ApprovalRecentlyProcessed__c = false;
+      update oEnrollmentApp;
+
+      return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.id);
+
+    }
+*/
+    private Id getWorkItemId(Id targetObjectId)
+    {
+      Id retVal = null;
+      for(ProcessInstanceWorkitem workItem  : [Select p.Id from ProcessInstanceWorkitem p
+          where p.ProcessInstance.TargetObjectId =: targetObjectId])
+      {
+          retVal =  workItem.Id;
+      }
+      return retVal;
+    }
 
     public pageReference finalRejectButton(){
       ID workItem = getWorkItemId(oEnrollmentApp.ID);
        Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
-       //req.setComments('Please enter a comment.');
+       req.setComments('Rejected from application page.');
        req.setAction('Reject');
        req.setWorkitemId(workItem);
        Approval.ProcessResult result =  Approval.process(req);
@@ -416,56 +449,7 @@ public with sharing class INC_EnrollmentApp_Controller {
        return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.ID);
     }
 
-    public pageReference rejectAll(){
-      /*ID workItem = getWorkItemId(oEnrollmentApp.ID);
-      while(workItem != null){
-          //req.setNextApproverIds(new Id[] {UserInfo.getUserId()});
-          req.setWorkitemId(workItem);
-              // Submit the request for approval
-          workItem = getWorkItemId(oEnrollmentApp.id);
-       
-      }
-      return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.id);*/
-
-      ID workItem = getWorkItemId(oEnrollmentApp.ID);
-     /* 
-        No longer reject, step will be rejected during normal process
-        If(workItem != null){
-        Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
-          req.setComments('Final Rejection.');
-          req.setAction('Reject');
-          //req.setNextApproverIds(new Id[] {UserInfo.getUserId()});
-          req.setWorkitemId(workItem);
-              // Submit the request for approval
-          Approval.ProcessResult result =  Approval.process(req);
-          workItem = getWorkItemId(oEnrollmentApp.id);
-       
-      }*/
-
-      If(workItem != null){
-            List<ProcessInstanceWorkitem> workitems = new List<ProcessInstanceWorkitem>([select Id from ProcessInstanceWorkitem where ProcessInstance.TargetObjectId =:oEnrollmentApp.id]);
-
-            list<Approval.ProcessWorkitemRequest> itemsToUpdate = new list<Approval.ProcessWorkitemRequest>();
-
-            for(ProcessInstanceWorkitem w: workitems){
-                Approval.ProcessWorkitemRequest PWR = new Approval.ProcessWorkitemRequest();
-                PWR.setComments('Recalled due to final Rejection');
-                PWR.setAction('Removed');
-                PWR.setWorkItemId(w.Id);
-                itemsToUpdate.add(PWR);
-            }                
-
-            if(itemsToUpdate.size() > 0){
-                list<Approval.ProcessResult> results =  Approval.process(itemsToUpdate);
-            }
-      }
-
-
-      return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.id);
-
-
-    }
-
+    
     public pageReference closeApplication(){
       EnrollmentPlan__c oEnrollmentAppToUpdate = new EnrollmentPlan__c();
 
@@ -488,16 +472,7 @@ public with sharing class INC_EnrollmentApp_Controller {
       return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.id);
     }
 
-    private Id getWorkItemId(Id targetObjectId)
-    {
-      Id retVal = null;
-      for(ProcessInstanceWorkitem workItem  : [Select p.Id from ProcessInstanceWorkitem p
-          where p.ProcessInstance.TargetObjectId =: targetObjectId])
-      {
-          retVal =  workItem.Id;
-      }
-      return retVal;
-    }
+    
 
     public pageReference saveAndReturnToBudget(){
         EnrollmentPlan__c ep = (EnrollmentPlan__c)stdController.getRecord();
@@ -595,6 +570,7 @@ public with sharing class INC_EnrollmentApp_Controller {
         return bReturn;
     }
 
+/*
     public pageReference saveComments(){
       System.Debug(logginglevel.error,'Saving');
         if(oEnrollComment.Reason_Codes__c == null){
@@ -635,12 +611,14 @@ public with sharing class INC_EnrollmentApp_Controller {
                   Database.rollBack(sp);
               }  
      
-              if(oEnrollComment.Reason_Codes__c == 'Project in Litigation' ||
-                 oEnrollComment.Reason_Codes__c == 'Project is Intercompany - Client is AECOM' ||
-                 oEnrollComment.Reason_Codes__c == 'Project on Hold' ||
-                 oEnrollComment.Reason_Codes__c == 'Project Nearing Completion' ||
-                 oEnrollComment.Reason_Codes__c == 'Poor Project Performance'){
-                  
+               String sReason = oEnrollComment.Reason_Codes__c;
+
+              if(sReason == 'Project in Litigation' ||
+                 sReason.contains('Project is Intercompany') ||
+                 sReason == 'Project on Hold' ||
+                 sReason == 'Project Nearing Completion' ||
+                 sReason == 'Poor Project Performance'){
+                  System.Debug(logginglevel.error,'rejecting all');
                   rejectAll();
               }
             }
@@ -655,25 +633,5 @@ public with sharing class INC_EnrollmentApp_Controller {
         //pageReference pr = new PageReference('/apex/INC_EnrollmentApp?id='+oEnrollmentApp.id);
         //pr.setredirect(true);
         return null;
-    }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+    } */
 }

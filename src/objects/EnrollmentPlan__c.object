@@ -2295,6 +2295,7 @@ CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null
         <fullName>ApplicationExceptionsFP__c</fullName>
         <externalId>false</externalId>
         <formula>CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null, &quot;Closed&quot;, Null,
+CASE(ApplicationType__c,&quot;OPT&quot;,NULL, 
 
 IF(AND(TEXT(IncentivePlan__r.ContractType__c) = &quot;Fixed Price&quot;, TEXT( ApplicationType__c ) &lt;&gt; &quot;Pay&quot;),
      IF(AND(TotalAllocationParticipants__c &gt; IncentivePlan__r.MaxAllocationPool__c,  ScheduledFinishDate__c &lt; TODAY()+ 120), 
@@ -2303,7 +2304,7 @@ NULL) &amp;
      IF(OR(ABS(NSRAdjustment__c) &gt; 0,  ABS(DPEAdjustment__c) &gt; 0), 
         IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Management Adjustments Have Been Added&quot; &amp; BR(), NULL),Null
 )
-)</formula>
+))</formula>
         <label>Application Exceptions (FP)</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -2315,6 +2316,7 @@ NULL) &amp;
         <fullName>ApplicationExceptionsPAY__c</fullName>
         <externalId>false</externalId>
         <formula>CASE(ApplicationType__c, &quot;Pay&quot;, 
+CASE(ApplicationType__c,&quot;OPT&quot;,NULL, 
 
 CASE(EnrollmentStatus__c, &quot;Pending Payment&quot;, NULL,
 
@@ -2331,7 +2333,7 @@ IF( ParticipantNoPayAmount__c &gt; 0,
 IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Active Employee with $0 Award&quot; &amp; BR(), NULL)
 
 
-)
+))
 ,NULL)</formula>
         <label>Application Exceptions (PAY)</label>
         <required>false</required>
@@ -2344,6 +2346,7 @@ IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;,
         <fullName>ApplicationExceptionsTM__c</fullName>
         <externalId>false</externalId>
         <formula>CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null, &quot;Closed&quot;, Null, 
+CASE(ApplicationType__c,&quot;OPT&quot;,NULL, 
 
 IF(AND(TEXT(IncentivePlan__r.ContractType__c) = &quot;Time &amp; Material&quot;, TEXT( ApplicationType__c ) &lt;&gt; &quot;Pay&quot;),
 
@@ -2363,7 +2366,7 @@ IF(AND(TEXT(IncentivePlan__r.ContractType__c) = &quot;Time &amp; Material&quot;,
       IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Baseline Margin $ below Budget&quot; &amp; BR(), NULL) 
 
 ,NULL) 
-)</formula>
+))</formula>
         <label>Application Exceptions (TM)</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -2440,7 +2443,7 @@ PAY: Payment Request Application, the final stage in an active app lifecycle</in
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Opt-Out</fullName>
+                <fullName>OPT</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -2454,6 +2457,8 @@ PAY: Payment Request Application, the final stage in an active app lifecycle</in
         <description>/resource/1429552689000/ExclamationMark</description>
         <externalId>false</externalId>
         <formula>CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null, &quot;Closed&quot;, Null,
+
+  CASE(ApplicationType__c,&quot;OPT&quot;,NULL,
 
 IF(  AND( TEXT(ApplicationType__c) = &quot;CCR&quot;, ParentApplication__r.IncentivePlan__c  &lt;&gt; IncentivePlan__c), 
       IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; CCR Incentive Plan does not match ENR Application Plan&quot; &amp; BR(), NULL)&amp;
@@ -2470,7 +2475,7 @@ IF( TEXT( InterimPaymentRequested__c ) = &quot;Yes&quot; ,
 IF( AND(TotalAllocationParticipants__c &gt; IncentivePlan__r.MaxAllocationPool__c,  ScheduledFinishDate__c &gt; TODAY() + 120), 
      IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Participant Allocations Of &quot;&amp; TEXT(TotalAllocationParticipants__c*100) &amp; &quot;% Exceed Plan Guidelines Of &quot; &amp;  TEXT(IncentivePlan__r.MaxAllocationPool__c*100) &amp; &quot;%&quot; &amp; BR(), NULL)
 
-)</formula>
+))</formula>
         <inlineHelpText>HAZARD signs indicate application can continue in workflow but awareness of the listed items is required.</inlineHelpText>
         <label>Application Exceptions (All)</label>
         <required>false</required>
@@ -6705,9 +6710,10 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
      &quot;Pending Approver 2 Action&quot;, Approver2__r.FirstName &amp; &quot; &quot; &amp; Approver2__r.LastName,   
      &quot;Pending Approver 3 Action&quot;, Approver3__r.FirstName &amp; &quot; &quot; &amp; Approver3__r.LastName,  
      &quot;Pending Corp Review&quot;, &quot;Corporate&quot;,
-     &quot;Pending DTW Admin&quot;, IPDTWAdmin__c,
+     &quot;Pending DTW Admin&quot;, DTWAdmin__r.FirstName &amp; &quot; &quot; &amp; DTWAdmin__r.LastName,
      &quot;Rejected for Correction&quot;,CurrentApprovalOwner__r.FirstName &amp; &quot; &quot; &amp; CurrentApprovalOwner__r.LastName,
-     NULL
+     &quot;Rejected&quot;,DTWAdmin__r.FirstName &amp; &quot; &quot; &amp; DTWAdmin__r.LastName,
+      Null
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>Displays the name of the person whose action is required to advance this form</inlineHelpText>
@@ -7022,7 +7028,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
                 <default>true</default>
             </values>
             <values>
-                <fullName>Opt-Out</fullName>
+                <fullName>OPT</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -7419,7 +7425,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
                 <default>true</default>
             </values>
             <values>
-                <fullName>Opt-Out</fullName>
+                <fullName>OPT</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -7824,7 +7830,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
                 <default>true</default>
             </values>
             <values>
-                <fullName>Opt-Out</fullName>
+                <fullName>OPT</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -8209,7 +8215,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <picklistValues>
             <picklist>ApplicationType__c</picklist>
             <values>
-                <fullName>Opt-Out</fullName>
+                <fullName>OPT</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -8602,7 +8608,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
                 <default>true</default>
             </values>
             <values>
-                <fullName>Opt-Out</fullName>
+                <fullName>OPT</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -8995,7 +9001,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <picklistValues>
             <picklist>ApplicationType__c</picklist>
             <values>
-                <fullName>Opt-Out</fullName>
+                <fullName>OPT</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -9392,7 +9398,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
                 <default>true</default>
             </values>
             <values>
-                <fullName>Opt-Out</fullName>
+                <fullName>OPT</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
