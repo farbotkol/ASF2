@@ -47,9 +47,9 @@ public with sharing class INC_EnrollmentLetterController {
 			}
 
 
-			fixedAB = (EP.EnrollmentPlan__r.BaselineGMofNSR__C + 0.03)*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
-			fixedAF = (EP.EnrollmentPlan__r.BaselineGMofNSR__C + 0.05)*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
-			fixedAO = (EP.EnrollmentPlan__r.BaselineGMofNSR__C + 0.06)*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
+			fixedAB = (EP.EnrollmentPlan__r.BaselineGMofNSR__C/100 + 0.03)*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
+			fixedAF = (EP.EnrollmentPlan__r.BaselineGMofNSR__C/100 + 0.05)*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
+			fixedAO = (EP.EnrollmentPlan__r.BaselineGMofNSR__C/100 + 0.06)*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
 
 			fixedAC = fixedAB - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
 			fixedAG = fixedAF - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
@@ -96,6 +96,7 @@ public with sharing class INC_EnrollmentLetterController {
 								, EmployeeName__r.name
 								, EmployeeName__r.firstname
 								, EnrollmentPlan__r.IncentiveProject__r.name
+								, EnrollmentPlan__r.IncentiveProject__r.ProjectID__c
 								, EnrollmentPlan__r.IncentivePlan__r.contracttype__c
 								, EnrollmentPlan__r.IncentiveProject__r.contracttype__c
 								, EnrollmentPlan__r.IncentivePlan__r.name

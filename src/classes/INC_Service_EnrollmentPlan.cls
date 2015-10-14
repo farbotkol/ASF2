@@ -644,13 +644,17 @@ public without sharing class INC_Service_EnrollmentPlan {
                             sType = 'Rejection';
                             sFlag = 'Yes';
                           }
+
+                          String sMessage = processStep.Comments!=null?processStep.Comments:'Please enter a comment.';
                           System.Debug(logginglevel.error,'ProcessStep ' + ProcessStep);
-                          listNewComments.add(new Enrollment_Comments__c(EnrollmentApplication__c = enrollmentplanID,
+                          if(ProcessStep.StepStatus == 'Rejected' || (ProcessStep.StepStatus == 'Approved' && sMessage != 'Please enter a comment.')){
+                            listNewComments.add(new Enrollment_Comments__c(EnrollmentApplication__c = enrollmentplanID,
                                                                    ApprovalID__c = processStep.id,
-                                                                   Comments__c = processStep.Comments!=null?processStep.Comments:'Please enter a comment.',
+                                                                   Comments__c = sMessage,
                                                                    Type__c = sType,
                                                                    IsRejection__c = sFlag,
                                                                    Approver__c = processStep.ActorId));
+                          }
                          
                     }
                   }//end process step loop
@@ -663,14 +667,20 @@ public without sharing class INC_Service_EnrollmentPlan {
                       String sFlag = 'No';
                     
                       if(processStep.StepStatus == 'Rejected'){
+                        sType = 'Rejection';
+                        sFlag='Yes';
                       }
+                      String sMessage = processStep.Comments !=null?processStep.Comments:'Please enter a comment.';
                         System.Debug(logginglevel.error,'Creating comments');
-                        listNewComments.add(new Enrollment_Comments__c(EnrollmentApplication__c = enrollmentplanID,
+                        if((sType=='Approved' && sMessage != 'Please enter a comment.') || 
+                           sType=='Rejection'){
+                          listNewComments.add(new Enrollment_Comments__c(EnrollmentApplication__c = enrollmentplanID,
                                                                    ApprovalID__c = processStep.id,
-                                                                   Comments__c = processStep.Comments !=null?processStep.Comments:'Please enter a comment.',
+                                                                   Comments__c = sMessage,
                                                                    Type__c = sType,
                                                                    IsRejection__c = sFlag,
                                                                    Approver__c = processStep.ActorId));
+                        }
                        
                     }
                   }

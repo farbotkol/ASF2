@@ -74,7 +74,7 @@
     	var val = list[0].value;
     	var reason = document.getElementsByTagName("select")[1];
     	var val2 = reason.value;
-    	if(val != '' && val != 'Please enter a comment.' && val2 != ''){
+    	if(val != '' && val != 'Please enter a comment.' && val2 != '' && val != 'Rejected from application page.'){
 	    	alert('Comments saved!'); 
 	    	window.location = '/apex/INC_EnrollmentApp?id={!EnrollmentPlan__c.ID}';
 	    }else{
@@ -263,8 +263,8 @@
 		<apex:tabPanel switchType="client" value="{!activeTab}" id="theTabPanel">
 	        <apex:tab label="Step 1 - Review Project Master Data" name="step1" id="tabOne">
 	       		<div class="buttonwrapper">
-	        	<apex:commandButton styleclass="nextbtn" action="{!proposeOptOut}" value="Opt-Out"  onclick="return confirm('Are you sure you want to Opt-out?');"/>
-	        	<apex:commandButton styleclass="nextbtn" action="{!steptwo}" value="Next" reRender="tabs"/>
+	        	<apex:commandButton styleclass="nextbtn" action="{!proposeOptOut}" value="Not Suitable for Enrollment"  onclick="return confirm('Are you sure you want to Opt-out?');"/>
+	        	<apex:commandButton styleclass="nextbtn" action="{!steptwo}" value="Propose Enrollment" reRender="tabs"/>
 	        	</div>
 	        	   <apex:pageBlockSection collapsible="false" showHeader="True" columns="2" Title="Project Master Data">
 					  <apex:outputField value="{!EnrollmentPlan__c.ProjectID__c}"/>

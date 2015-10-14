@@ -141,21 +141,22 @@ public without sharing class INC_EnrollmentCommentController {
       return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.id);*/
 
       ID workItem = getWorkItemId(oEnrollmentApp.ID);
-     /* 
-        No longer reject, step will be rejected during normal process
-        If(workItem != null){
+      While(workItem != null){
         Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
-          req.setComments('Final Rejection.');
+          req.setComments('System generated final rejection.');
           req.setAction('Reject');
           //req.setNextApproverIds(new Id[] {UserInfo.getUserId()});
           req.setWorkitemId(workItem);
               // Submit the request for approval
           Approval.ProcessResult result =  Approval.process(req);
           workItem = getWorkItemId(oEnrollmentApp.id);
-       
-      }*/
+      }
 
-      If(workItem != null){
+      oEnrollmentApp = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentApp.ID})[0];
+      oEnrollmentApp.ApprovalRecentlyProcessed__c = false;
+      update oEnrollmentApp;
+
+      /*If(workItem != null){
             List<ProcessInstanceWorkitem> workitems = new List<ProcessInstanceWorkitem>([select Id from ProcessInstanceWorkitem where ProcessInstance.TargetObjectId =:oEnrollmentApp.id]);
 
             list<Approval.ProcessWorkitemRequest> itemsToUpdate = new list<Approval.ProcessWorkitemRequest>();
@@ -173,7 +174,7 @@ public without sharing class INC_EnrollmentCommentController {
                 System.debug(logginglevel.error,'results: ' + results);
             }
       }
-
+      */
 
       return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.id);
 
