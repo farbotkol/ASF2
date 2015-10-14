@@ -287,6 +287,19 @@ public with sharing class INC_EnrollmentPlanTriggers {
             
             try{
                 Insert participantAcknowledgementsToCreate;
+
+ 				set<string> sPAid = new set<string>();
+
+ 				for(ParticipantAcknowledgement__c p: participantAcknowledgementsToCreate){
+ 					if(p.id != null){
+ 						sPAid.add(p.id);
+ 					}
+            	}
+
+            	if(sPAid.size() >0){
+            		INC_EnrollmentLetterAttach.attachEnrollmentLetter(sPAid);
+            	}
+
             }catch(Exception e){
                 system.debug('Handling Exception:  ' + e.getMessage() + ' ' + e.getStackTraceString());
                 system.debug(logginglevel.error, 'participant acknowledgement creation error: ' + e);
