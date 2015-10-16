@@ -131,7 +131,7 @@ public with sharing class INC_EnrollmentPlanProgressController {
     }
   //stuff for comment load section
    public pageReference onLoad(){
-        System.debug(logginglevel.error,'In onload');
+        System.debug(logginglevel.error,'In onload ' + oEnrollmentPlan.ApprovalRecentlyProcessed__c);
         if(oEnrollmentPlan.ApprovalRecentlyProcessed__c){
            System.Debug(logginglevel.error,'onLoad, creating comments from approval');
            updateCommentsfromApprovals();

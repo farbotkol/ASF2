@@ -65,7 +65,22 @@
         $jq('#enrollpdfdisplay').addClass('hidden');
         $jq('#enrollpdfdisplay').removeClass('show');
       }); 
-    
+    debugger;
+    var currentTime = new Date();
+    var year = currentTime.getFullYear()
+    var startYear=(year - 10); //replace 1982 with whatever year you want to start with;
+    var endYear=(year + 10); //replace 2034 with whatever year you want to end with;
+        //-----EDIT BELLOW HERE AT YOUR OWN RISK-----
+    var optionsString='';
+        //Make sure that the endYear comes after the startYear
+        if(startYear<endYear){
+            //Loops through each date and renders the string for an option tag and addes it to the Optrionsstring variable
+            for(i=startYear;i<endYear+1;i++){
+                optionsString += "<option value=\""+i+"\">"+i+"</option>";
+            }
+            //Replace the innerHTML of the calendar picker year select tag with the Optionsstring we constructed.
+            $('#calYearPicker').html(optionsString);
+        }
   });
 </script>
 <!--<apex:form > -->
@@ -79,13 +94,12 @@
         <apex:outputField value="{!oEnrollmentPlan.NSRBudget__c}"/>
         <apex:outputField value="{!oEnrollmentPlan.ScheduledFinishDate__c}" />
         <apex:outputField value="{!oEnrollmentPlan.MinParticipantPayout__c}" rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}" />
-        <apex:outputtext value="" rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}" />
-        <apex:outputtext value="" />
-        <apex:outputField value="{!oEnrollmentPlan.UnallocatedPercent__c}" />
+       
+        <apex:outputField value="{!oEnrollmentPlan.UnallocatedPercent__c}" rendered="{!NOT(oEnrollmentPlan.ApplicationType__c = 'PAY')}"/>
         <apex:outputField value="{!oEnrollmentPlan.EstimatedPoolBaseline__c}" rendered="{!AND(bFixed, oEnrollmentPlan.ApplicationType__c != 'PAY')}" />
         <apex:outputField value="{!oEnrollmentPlan.EstimatedPoolBaseline10__c}" rendered="{!AND(bTM, oEnrollmentPlan.ApplicationType__c != 'PAY')}" />
         <apex:outputtext value="" rendered="{!OR(oEnrollmentPlan.ApplicationType__c == 'PAY', AND(NOT(bTM), NOT(bFixed)))}" />
-        <apex:outputField value="{!oEnrollmentPlan.UnallocatedAmount__c}" />
+        <apex:outputField value="{!oEnrollmentPlan.UnallocatedAmount__c}" rendered="{!NOT(oEnrollmentPlan.ApplicationType__c = 'PAY')}" />
         <apex:outputField value="{!oEnrollmentPlan.FinalIncentivePoolAdjusted__c}" rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}"/>
         <apex:outputtext value="" rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}" />
          <apex:outputField value="{!oEnrollmentPlan.ApplicationIssuesPay__c}" rendered="{!oEnrollmentPlan.ApplicationType__c='PAY'}" />
@@ -154,7 +168,7 @@ Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.h
         <apex:outputpanel id="message">
          <apex:pagemessages escape="false"></apex:pagemessages>
         </apex:outputpanel>
-        <apex:pageMessage severity="INFO" rendered="{!bPaid}" summary="Only Discretionary Participants can be added at this time." />
+        <apex:pageMessage severity="INFO" rendered="{!bPaid}" summary="Only Discretionary Participants can be added at this time.  Discretionary Participants are active employees whose contribution to project success merits an award, although they were not identified as DTW Participants at or during project enrollment.  Total discretionary awards should not exceed 20% of the final incentive pool." />
 
 
         <apex:variable var="rowNum" value="{!0}"/>

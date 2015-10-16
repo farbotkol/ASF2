@@ -37,10 +37,12 @@ global class INC_EnrollmentLetterAttach {
 
 		    string myDate = datetime.now().format('yyyyMMdd');
 
-		    attach.Name = p.ProjectNumber__c + '-' + p.ParticipantID__r.EmployeeName__r.name + '-DTWLetter-' + myDate;
+		    attach.Name = p.ProjectNumber__c + '-' + p.ParticipantID__r.EmployeeName__r.name + '-DTWLetter-' + myDate + '.pdf';
 		    attach.IsPrivate = false;
 		    // attach the pdf to the account
 		    attach.ParentId = p.id;
+		    //attach.ContentType = 'pdf';
+
 
 		    lstAttch.add(attach);
 		}	

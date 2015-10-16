@@ -16,16 +16,14 @@
         <field>Name</field>
         <field>IncentiveProject__c</field>
         <field>EnrollmentStatus__c</field>
-        <field>BaselineDPE__c</field>
-        <field>BaselineGMofNSR__c</field>
-        <field>BaselineGrossMargin__c</field>
-        <field>BaselineNSR__c</field>
-        <field>DPEAdjustment__c</field>
-        <field>NSRAdjustment__c</field>
-        <field>AppIicationIssues__c</field>
+        <field>PassCSat__c</field>
+        <field>PassDSO__c</field>
+        <field>PassSafetyforLife__c</field>
+        <field>FinalIncentivePoolITD__c</field>
+        <field>FinalIncentivePoolAdjusted__c</field>
+        <field>ApplicationIssuesPay__c</field>
         <field>Application_Exceptions__c</field>
-        <field>ApplicationExceptionsFP__c</field>
-        <field>ApplicationExceptionsTM__c</field>
+        <field>ApplicationExceptionsPAY__c</field>
     </approvalPageFields>
     <approvalStep>
         <allowDelegate>true</allowDelegate>
@@ -40,10 +38,6 @@
             </action>
             <action>
                 <name>Set_EA_Status_to_Pending_AP2_Action</name>
-                <type>FieldUpdate</type>
-            </action>
-            <action>
-                <name>Set_WorkflowStep_to_Step2</name>
                 <type>FieldUpdate</type>
             </action>
         </approvalActions>
@@ -77,10 +71,6 @@
                 <name>Rejection_Date</name>
                 <type>FieldUpdate</type>
             </action>
-            <action>
-                <name>Set_WorkflowStep_to_Not_in_Workflow</name>
-                <type>FieldUpdate</type>
-            </action>
         </rejectionActions>
     </approvalStep>
     <approvalStep>
@@ -102,10 +92,6 @@
                 <name>Set_EA_Status_to_Pending_AP3_Action</name>
                 <type>FieldUpdate</type>
             </action>
-            <action>
-                <name>Set_WorkflowStep_to_Step4</name>
-                <type>FieldUpdate</type>
-            </action>
         </approvalActions>
         <assignedApprover>
             <approver>
@@ -116,17 +102,13 @@
         </assignedApprover>
         <description>Exception A2 Review</description>
         <entryCriteria>
-            <booleanFilter>(1 OR 2 OR 3)</booleanFilter>
+            <booleanFilter>(1 OR 2)</booleanFilter>
             <criteriaItems>
                 <field>EnrollmentPlan__c.Application_Exceptions__c</field>
                 <operation>notEqual</operation>
             </criteriaItems>
             <criteriaItems>
-                <field>EnrollmentPlan__c.ApplicationExceptionsFP__c</field>
-                <operation>notEqual</operation>
-            </criteriaItems>
-            <criteriaItems>
-                <field>EnrollmentPlan__c.ApplicationExceptionsTM__c</field>
+                <field>EnrollmentPlan__c.ApplicationExceptionsPAY__c</field>
                 <operation>notEqual</operation>
             </criteriaItems>
         </entryCriteria>
@@ -161,10 +143,6 @@
                 <name>Set_EA_Status_Rejected_for_Correction</name>
                 <type>FieldUpdate</type>
             </action>
-            <action>
-                <name>Set_WorkflowStep_to_Stet1</name>
-                <type>FieldUpdate</type>
-            </action>
         </rejectionActions>
     </approvalStep>
     <approvalStep>
@@ -186,10 +164,6 @@
                 <name>Set_EA_Status_to_Pending_DTW_Admin</name>
                 <type>FieldUpdate</type>
             </action>
-            <action>
-                <name>Set_WorkflowStep_to_Step4</name>
-                <type>FieldUpdate</type>
-            </action>
         </approvalActions>
         <assignedApprover>
             <approver>
@@ -205,11 +179,7 @@
                 <operation>equals</operation>
             </criteriaItems>
             <criteriaItems>
-                <field>EnrollmentPlan__c.ApplicationExceptionsFP__c</field>
-                <operation>equals</operation>
-            </criteriaItems>
-            <criteriaItems>
-                <field>EnrollmentPlan__c.ApplicationExceptionsTM__c</field>
+                <field>EnrollmentPlan__c.ApplicationExceptionsPAY__c</field>
                 <operation>equals</operation>
             </criteriaItems>
         </entryCriteria>
@@ -244,10 +214,6 @@
                 <name>Set_EA_Status_Rejected_for_Correction</name>
                 <type>FieldUpdate</type>
             </action>
-            <action>
-                <name>Set_WorkflowStep_to_Stet1</name>
-                <type>FieldUpdate</type>
-            </action>
         </rejectionActions>
     </approvalStep>
     <approvalStep>
@@ -265,10 +231,6 @@
                 <name>Set_EA_Status_to_Pending_DTW_Admin</name>
                 <type>FieldUpdate</type>
             </action>
-            <action>
-                <name>Set_WorkflowStep_to_Step5</name>
-                <type>FieldUpdate</type>
-            </action>
         </approvalActions>
         <assignedApprover>
             <approver>
@@ -278,17 +240,13 @@
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
         </assignedApprover>
         <entryCriteria>
-            <booleanFilter>1 OR 2 OR 3</booleanFilter>
+            <booleanFilter>1 OR 2</booleanFilter>
             <criteriaItems>
                 <field>EnrollmentPlan__c.Application_Exceptions__c</field>
                 <operation>notEqual</operation>
             </criteriaItems>
             <criteriaItems>
-                <field>EnrollmentPlan__c.ApplicationExceptionsFP__c</field>
-                <operation>notEqual</operation>
-            </criteriaItems>
-            <criteriaItems>
-                <field>EnrollmentPlan__c.ApplicationExceptionsTM__c</field>
+                <field>EnrollmentPlan__c.ApplicationExceptionsPAY__c</field>
                 <operation>notEqual</operation>
             </criteriaItems>
         </entryCriteria>
@@ -323,10 +281,6 @@
                 <name>Set_EA_Status_Rejected_for_Correction</name>
                 <type>FieldUpdate</type>
             </action>
-            <action>
-                <name>Set_WorkflowStep_to_Step3</name>
-                <type>FieldUpdate</type>
-            </action>
         </rejectionActions>
     </approvalStep>
     <approvalStep>
@@ -338,10 +292,6 @@
             </action>
             <action>
                 <name>Capture_Form_Status_Change_Date</name>
-                <type>FieldUpdate</type>
-            </action>
-            <action>
-                <name>Set_WorkflowStep_to_Step6</name>
                 <type>FieldUpdate</type>
             </action>
         </approvalActions>
@@ -394,10 +344,6 @@
                 <name>Rejection_Date</name>
                 <type>FieldUpdate</type>
             </action>
-            <action>
-                <name>Set_WorkflowStep_to_Step4</name>
-                <type>FieldUpdate</type>
-            </action>
         </rejectionActions>
     </approvalStep>
     <approvalStep>
@@ -412,15 +358,11 @@
                 <type>FieldUpdate</type>
             </action>
             <action>
-                <name>Change_to_Enrolled_Application_R_T</name>
-                <type>FieldUpdate</type>
-            </action>
-            <action>
                 <name>Send_Notification_to_EA_PM_when_EA_Status_is_Enrolled</name>
                 <type>Alert</type>
             </action>
             <action>
-                <name>Set_EA_Status_to_Enrolled</name>
+                <name>Set_to_Pending_Payment</name>
                 <type>FieldUpdate</type>
             </action>
         </approvalActions>
@@ -457,19 +399,15 @@
                 <name>Set_EA_Status_Rejected_for_Correction</name>
                 <type>FieldUpdate</type>
             </action>
-            <action>
-                <name>Set_WorkflowStep_to_Step5</name>
-                <type>FieldUpdate</type>
-            </action>
         </rejectionActions>
     </approvalStep>
     <description>Approval process for Enrollment Applications and Change Request</description>
     <emailTemplate>DTW_Project_Incentives/ApprovalRequestEnrollmentParticipants</emailTemplate>
     <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
     <entryCriteria>
-        <formula>AND(TEXT(EnrollmentStatus__c) = &quot;Pending PM Action&quot;, 
-OR(TEXT( ApplicationType__c ) = &quot;CCR&quot;, TEXT( ApplicationType__c ) = &quot;ENR&quot;),
-OR(AND(OR(ISNULL(AppIicationIssues__c), AppIicationIssues__c =&quot;&quot;),OR(ISNULL( ApplicationIssues2__c ),ApplicationIssues2__c=&quot;&quot;))))</formula>
+        <formula>AND(TEXT(EnrollmentStatus__c) = &quot;Pending Approver 1 Action&quot;, 
+TEXT( ApplicationType__c ) = &quot;PAY&quot;
+)</formula>
     </entryCriteria>
     <finalApprovalActions>
         <action>
@@ -484,15 +422,15 @@ OR(AND(OR(ISNULL(AppIicationIssues__c), AppIicationIssues__c =&quot;&quot;),OR(I
             <name>Set_Enrollment_Date</name>
             <type>FieldUpdate</type>
         </action>
-        <action>
-            <name>Set_WorkflowStep_to_Not_in_Workflow</name>
-            <type>FieldUpdate</type>
-        </action>
     </finalApprovalActions>
     <finalApprovalRecordLock>true</finalApprovalRecordLock>
     <finalRejectionActions>
         <action>
             <name>Capture_Form_Status_Change_Date</name>
+            <type>FieldUpdate</type>
+        </action>
+        <action>
+            <name>Change_to_Rejected_R_T</name>
             <type>FieldUpdate</type>
         </action>
         <action>
@@ -507,10 +445,6 @@ OR(AND(OR(ISNULL(AppIicationIssues__c), AppIicationIssues__c =&quot;&quot;),OR(I
             <name>Set_EA_Status_to_Rejected</name>
             <type>FieldUpdate</type>
         </action>
-        <action>
-            <name>Set_WorkflowStep_to_Not_in_Workflow</name>
-            <type>FieldUpdate</type>
-        </action>
     </finalRejectionActions>
     <finalRejectionRecordLock>false</finalRejectionRecordLock>
     <initialSubmissionActions>
@@ -519,23 +453,11 @@ OR(AND(OR(ISNULL(AppIicationIssues__c), AppIicationIssues__c =&quot;&quot;),OR(I
             <type>FieldUpdate</type>
         </action>
         <action>
-            <name>Change_to_Workflow_R_T</name>
-            <type>FieldUpdate</type>
-        </action>
-        <action>
             <name>Is_In_Workflow_Yes</name>
             <type>FieldUpdate</type>
         </action>
-        <action>
-            <name>Set_EA_Status_to_Pending_AP1_Action</name>
-            <type>FieldUpdate</type>
-        </action>
-        <action>
-            <name>Set_WorkflowStep_to_Stet1</name>
-            <type>FieldUpdate</type>
-        </action>
     </initialSubmissionActions>
-    <label>DTW Incentives App Approval Process</label>
+    <label>DTW Payment Request Approval Process</label>
     <recallActions>
         <action>
             <name>Capture_Form_Status_Change_Date</name>

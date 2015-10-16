@@ -63,6 +63,11 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         buildIncVals();
     }
 
+    public pageReference openCalculator(){
+      PageReference ref = new PageReference('/apex/INC_IncentiveCalculator?');
+      return ref;
+    }
+    
     public Integer getPanelToRender()
     {
         Integer iReturn = 1;

@@ -42,9 +42,7 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <content>INC_EnrollmentApp</content>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Visualforce</type>
+        <type>Default</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -2234,23 +2232,8 @@ IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;,
         <description>IF( OR(AND(TEXT(MAFlag__c) = &quot;Yes&quot;,TEXT(IsMAComments__c) &lt;&gt; &quot;Yes&quot;), AND(TEXT(IsMAChanged__c) = &quot;Yes&quot;, TEXT(IsMAChangedComments__c) &lt;&gt; &quot;Yes&quot;)) , 
       IMAGE(&quot;/resource/1435520899000/StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Management Adjustment Comments Missing&quot; &amp; BR(), NULL) &amp;</description>
         <externalId>false</externalId>
-        <formula>CASE(ApplicationType__c, &quot;Pay&quot;, NULL,
+        <formula>CASE(ApplicationType__c, &quot;Pay&quot;, NULL,&quot;OPT&quot;, NULL,
 CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null,
-
-   IF((TODAY()- ScheduledFinishDate__c &gt;= IncentivePlan__r.ScheduledEndDateNotLessThanDays__c * -1),
-     IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Scheduled Finish Date Out Of Plan Guidelines&quot; &amp; BR(), NULL) &amp;
-
-  IF( (IncentivePlan__c) = &quot;&quot;,
-      IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Incentive Plan Missing&quot; &amp; BR(), NULL) &amp;
-
-   IF((TODAY() - EACAsofDate__c &lt;= IncentivePlan__r.MaxEACDays__c*-1), 
-      IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; EAC As Of Date Out Of Guidelines&quot; &amp; BR(), NULL) &amp;
-
-   IF( OR( ( IncentiveProject__r.ProjectManager__c )=&quot;&quot;, (IncentiveProject__r.ProjectManager__r.IsActive =FALSE)),
-      IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; PM Is Invalid&quot; &amp; BR(), NULL) &amp;
-
-   IF( OR( Approver1__c=&quot;&quot;, Approver2__c=&quot;&quot;, Approver3__c=&quot;&quot;),
-      IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Ensure Approvers are Valid&quot; &amp; BR(), NULL) &amp;
 
    IF( AND(TEXT( InterimPaymentRequested__c ) = &quot;Yes&quot;, CNTofIPSchedules__c &lt; 2,  BEGINS(TEXT(EnrollmentStatus__c), &quot;Pending Approver&quot;)),
    IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Interim Schedule(s) Missing&quot; &amp; BR(), NULL)&amp; 
@@ -2269,6 +2252,7 @@ CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null
 
    IF( AND( BEGINS(TEXT(EnrollmentStatus__c), &quot;Pending Approver&quot;), OR(DSOTarget__c = 0, TEXT(DSOTarget__c) = &quot;&quot;)),
       IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; DSO Target Missing Value&quot; &amp; BR(), NULL) 
+   
 ))</formula>
         <inlineHelpText>STOP signs indicate application cannot continue in workflow until resolved.</inlineHelpText>
         <label>Application Issues</label>
@@ -2295,7 +2279,7 @@ CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null
         <fullName>ApplicationExceptionsFP__c</fullName>
         <externalId>false</externalId>
         <formula>CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null, &quot;Closed&quot;, Null,
-CASE(ApplicationType__c,&quot;OPT&quot;,NULL, 
+CASE(ApplicationType__c,&quot;OPT&quot;,NULL, &quot;Pay&quot;, NULL,
 
 IF(AND(TEXT(IncentivePlan__r.ContractType__c) = &quot;Fixed Price&quot;, TEXT( ApplicationType__c ) &lt;&gt; &quot;Pay&quot;),
      IF(AND(TotalAllocationParticipants__c &gt; IncentivePlan__r.MaxAllocationPool__c,  ScheduledFinishDate__c &lt; TODAY()+ 120), 
@@ -2329,6 +2313,9 @@ IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;,
 IF( AND(OR(TEXT(PassCSat__c)&lt;&gt;&quot;Yes&quot;,TEXT(PassDSO__c)&lt;&gt;&quot;Yes&quot;, TEXT(PassSafetyforLife__c)&lt;&gt;&quot;Yes&quot;),  (FinalIncentivePoolAdjusted__c &gt;= EstimatedIncPoolITD__c) ),
 IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Final Pool Not Reduced for Ops Metrics Results&quot; &amp; BR(), NULL) &amp;
 
+IF( AND(OR(TEXT(PassCSat__c)=&quot;Yes&quot;,TEXT(PassDSO__c)=&quot;Yes&quot;, TEXT(PassSafetyforLife__c)=&quot;Yes&quot;),  (TotalPaymentAmount__c &lt; FinalIncentivePoolAdjusted__c) ),
+IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; All Ops Metrics Satisfied, Total Pool Not Allocated&quot; &amp; BR(), NULL) &amp;
+
 IF( ParticipantNoPayAmount__c &gt; 0, 
 IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Active Employee with $0 Award&quot; &amp; BR(), NULL)
 
@@ -2346,7 +2333,7 @@ IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;,
         <fullName>ApplicationExceptionsTM__c</fullName>
         <externalId>false</externalId>
         <formula>CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null, &quot;Closed&quot;, Null, 
-CASE(ApplicationType__c,&quot;OPT&quot;,NULL, 
+CASE(ApplicationType__c,&quot;OPT&quot;,NULL, &quot;Pay&quot;, NULL,
 
 IF(AND(TEXT(IncentivePlan__r.ContractType__c) = &quot;Time &amp; Material&quot;, TEXT( ApplicationType__c ) &lt;&gt; &quot;Pay&quot;),
 
@@ -2375,6 +2362,35 @@ IF(AND(TEXT(IncentivePlan__r.ContractType__c) = &quot;Time &amp; Material&quot;,
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>ApplicationIssues2__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(ApplicationType__c, &quot;Pay&quot;, NULL,&quot;OPT&quot;, NULL,
+CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null,
+
+   IF((TODAY()- ScheduledFinishDate__c &gt;= IncentivePlan__r.ScheduledEndDateNotLessThanDays__c * -1),
+     IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Scheduled Finish Date Out Of Plan Guidelines&quot; &amp; BR(), NULL) &amp;
+
+  IF( (IncentivePlan__c) = &quot;&quot;,
+      IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Incentive Plan Missing&quot; &amp; BR(), NULL) &amp;
+
+   IF((TODAY() - EACAsofDate__c &lt;= IncentivePlan__r.MaxEACDays__c*-1), 
+      IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; EAC As Of Date Out Of Guidelines&quot; &amp; BR(), NULL) &amp;
+
+   IF( OR( ( IncentiveProject__r.ProjectManager__c )=&quot;&quot;, (IncentiveProject__r.ProjectManager__r.IsActive =FALSE)),
+      IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; PM Is Invalid&quot; &amp; BR(), NULL) &amp;
+
+   IF( OR( Approver1__c=&quot;&quot;, Approver2__c=&quot;&quot;, Approver3__c=&quot;&quot;),
+      IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Ensure Approvers are Valid&quot; &amp; BR(), NULL) 
+))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Application Issues 2</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>ApplicationIssuesPay__c</fullName>
         <externalId>false</externalId>
         <formula>CASE(ApplicationType__c, &quot;Pay&quot;, 
@@ -2384,8 +2400,8 @@ CASE(EnrollmentStatus__c, &quot;Pending Payment&quot;, NULL, &quot;Closed&quot;,
 IF( OR(TEXT(FinalIncentivePoolAdjusted__c) = &quot;&quot;, FinalIncentivePoolAdjusted__c &lt; 1), 
 IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Populate &apos;Final Pool Adjusted for Ops Metrics&apos;&quot; &amp; BR(), NULL) &amp;
 
-IF( FinalIncentivePoolAdjusted__c &lt; TotalPaymentAmount__c, 
-IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Allocated Participant Pmts Cannot Be &gt; Final Pool&quot; &amp; BR(), NULL) &amp;
+IF( FinalIncentivePoolAdjusted__c &lt;&gt; TotalPaymentAmount__c, 
+IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Total Payment to Participants Not Equal to Final Pool&quot; &amp; BR(), NULL) &amp;
 
 IF(  EstimatedIncPoolITD__c &lt; 1, 
 IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Project Has Not Earned An Incentive Pool&quot; &amp; BR(), NULL)&amp;
@@ -2458,24 +2474,22 @@ PAY: Payment Request Application, the final stage in an active app lifecycle</in
         <externalId>false</externalId>
         <formula>CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null, &quot;Closed&quot;, Null,
 
-  CASE(ApplicationType__c,&quot;OPT&quot;,NULL,
-
+CASE(ApplicationType__c,&quot;OPT&quot;,NULL,&quot;Pay&quot;, NULL,
 IF(  AND( TEXT(ApplicationType__c) = &quot;CCR&quot;, ParentApplication__r.IncentivePlan__c  &lt;&gt; IncentivePlan__c), 
       IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; CCR Incentive Plan does not match ENR Application Plan&quot; &amp; BR(), NULL)&amp;
 
 IF(ApprovedNSRBudget__c &lt; IncentivePlan__r.MinNSRBudget__c,
       IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Project size of &quot; &amp; TEXT(ApprovedNSRBudget__c) &amp; &quot; is below the Plan Guidelines of &quot; &amp; TEXT(IncentivePlan__r.MinNSRBudget__c) &amp; BR(), NULL) &amp;
 
-IF(PercentCompleteCostITD__c &gt; IncentivePlan__r.MaxComplete__c, 
+IF( AND(TotalAllocationParticipants__c &gt; IncentivePlan__r.MaxAllocationPool__c,  ScheduledFinishDate__c &gt; TODAY() + 120), 
+     IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Participant Allocations Of &quot;&amp; TEXT(TotalAllocationParticipants__c*100) &amp; &quot;% Exceed Plan Guidelines Of &quot; &amp;  TEXT(IncentivePlan__r.MaxAllocationPool__c*100) &amp; &quot;%&quot; &amp; BR(), NULL)&amp;
+
+
+IF( AND( TEXT(ApplicationType__c) = &quot;ENR&quot;, PercentCompleteCostITD__c &gt; IncentivePlan__r.MaxComplete__c), 
       IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Percent Complete of &quot; &amp; TEXT(PercentCompleteCostITD__c*100) &amp; &quot;% is greater than Plan Guidelines of &quot; &amp; TEXT(IncentivePlan__r.MaxComplete__c*100)&amp;&quot;%&quot; &amp; BR(), NULL) &amp;
 
 IF( TEXT( InterimPaymentRequested__c ) = &quot;Yes&quot; , 
-      IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Interim Payment Requested&quot; &amp; BR(), NULL)&amp;
-
-IF( AND(TotalAllocationParticipants__c &gt; IncentivePlan__r.MaxAllocationPool__c,  ScheduledFinishDate__c &gt; TODAY() + 120), 
-     IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Participant Allocations Of &quot;&amp; TEXT(TotalAllocationParticipants__c*100) &amp; &quot;% Exceed Plan Guidelines Of &quot; &amp;  TEXT(IncentivePlan__r.MaxAllocationPool__c*100) &amp; &quot;%&quot; &amp; BR(), NULL)
-
-))</formula>
+      IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Interim Payment Requested&quot; &amp; BR(), NULL)))</formula>
         <inlineHelpText>HAZARD signs indicate application can continue in workflow but awareness of the listed items is required.</inlineHelpText>
         <label>Application Exceptions (All)</label>
         <required>false</required>
@@ -3519,7 +3533,7 @@ CASE(IncentivePlan__r.ContractType__c,
     <fields>
         <fullName>BaselineSubsODC__c</fullName>
         <externalId>false</externalId>
-        <formula>CASE(IncentivePlan__r.ContractType__c, &quot;Fixed Price&quot;, IncentiveProject__r.ApprovedODCBudget__c, &quot;Time &amp; Material&quot;, ApprovedODCBudgetatSnapshot__c ,0) 
+        <formula>CASE(IncentivePlan__r.ContractType__c, &quot;Fixed Price&quot;, IncentiveProject__r.ApprovedODCBudget__c + IncentiveProject__r.ApprovedSubsBudget__c, &quot;Time &amp; Material&quot;, ApprovedODCBudgetatSnapshot__c + ApprovedSubsBudgetatSnapshot__c ,0) 
 
 + SubsODCsScopeChange__c + SubsODCsAdjustment__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>

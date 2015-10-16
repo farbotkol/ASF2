@@ -1185,7 +1185,7 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
     <fieldUpdates>
         <fullName>Set_ApplicationType_to_Opt_Out</fullName>
         <field>ApplicationType__c</field>
-        <literalValue>Opt-Out</literalValue>
+        <literalValue>OPT</literalValue>
         <name>Set ApplicationType to Opt-Out</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
@@ -1489,11 +1489,17 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
             <type>Alert</type>
         </actions>
         <active>true</active>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
+            <operation>equals</operation>
+            <value>Pending PM Action</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.ApplicationType__c</field>
+            <operation>equals</operation>
+            <value>ENR,CCR</value>
+        </criteriaItems>
         <description>3Notify PM of project to review, NOT on Payment Type Record ID</description>
-        <formula>AND (
-     NOT(RecordTypeId=&apos;012e00000009Aqf&apos;),
-     ISPICKVAL( EnrollmentStatus__c , &apos;Pending PM Action&apos;)
-     )</formula>
         <triggerType>onCreateOnly</triggerType>
     </rules>
     <rules>

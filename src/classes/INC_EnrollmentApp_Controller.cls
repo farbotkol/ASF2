@@ -18,6 +18,7 @@ public with sharing class INC_EnrollmentApp_Controller {
     public boolean bSubmitWorked{get;set;}
     public boolean bRenderInputFinFields{get;set;}
     public String sExceptions{get;set;}
+    public String sIssues{get;set;}
     public String sSubmitMessage{get;set;}
     public boolean bShowWizardSubmit{get;set;}
     public String sUserLevel{get;set;}
@@ -42,6 +43,7 @@ public with sharing class INC_EnrollmentApp_Controller {
                                                   ,'IncentiveProject__r.ContractTypeShortName__c'
                                                   ,'WizardStatus__c'
                                                   ,'AppIicationIssues__c'
+                                                  ,'ApplicationIssues2__c'
                                                   ,'InterimPaymentRequested__c'
                                                   , 'ApplicationExceptionsPay__c'
                                                   ,'IncentiveProject__r.DTWAdmin__c'});
@@ -50,7 +52,8 @@ public with sharing class INC_EnrollmentApp_Controller {
         this.oEnrollmentApp = (EnrollmentPlan__c)stdController.getRecord();
         
         setExceptions();
-
+        setIssues();
+        
         System.debug(logginglevel.error,UserInfo.getUserId() + ' ' + oEnrollmentApp.IPProjectManager__c);
         if((oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c == '')&&
                 oEnrollmentApp.EnrollmentStatus__c == 'Pending PM Action'){
@@ -108,7 +111,8 @@ public with sharing class INC_EnrollmentApp_Controller {
             ID rejectedRecTypeID = Schema.SObjectType.EnrollmentPlan__c.getRecordTypeInfosByName().get('Rejected Application').getRecordTypeId();
             
            
-            if(rejectedRecTypeID == oEnrollmentApp.RecordTypeID && oEnrollmentApp.ApprovalRecentlyProcessed__c){
+            if(rejectedRecTypeID == oEnrollmentApp.RecordTypeID && oEnrollmentApp.ApprovalRecentlyProcessed__c &&
+               oEnrollmentApp.ApplicationType__c != 'PAY'){
                 isRejectedRecType = true;
                 bCommentFound = getLatestRejectionComment();
 
@@ -159,7 +163,19 @@ public with sharing class INC_EnrollmentApp_Controller {
       }
       return iReturn;
     }
-
+    private void setIssues(){
+       if(oEnrollmentApp.AppIicationIssues__c != null){
+          sIssues = oEnrollmentApp.AppIicationIssues__c;
+        } 
+        if(oEnrollmentApp.ApplicationIssues2__c != null){ 
+          if(sIssues != null){
+            sIssues += oEnrollmentApp.ApplicationIssues2__c;
+          }else{
+            sIssues = oEnrollmentApp.ApplicationIssues2__c;
+          }
+          
+        }
+    }
     private void setExceptions(){
         if(oEnrollmentApp.Application_Exceptions__c != null){
           sExceptions = oEnrollmentApp.Application_Exceptions__c;
@@ -313,10 +329,7 @@ public with sharing class INC_EnrollmentApp_Controller {
 
     }
 
-    public pageReference openCalculator(){
-      PageReference ref = new PageReference('/apex/INC_IncentiveCalculator?');
-      return ref;
-    }
+    
    
     public pageReference save(){
         System.debug(logginglevel.error,'Save in custom controller');

@@ -347,7 +347,6 @@
 			<apex:commandButton value="Close Application" action="{!closeApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton"/>
 			<apex:commandButton value="Close Application (No Award)" action="{!closeNoAwardApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton"/>
 
-			<apex:commandButton value="Incentive Calculator" action="{!openCalculator}"  styleClass="hidebutton"/>
 		   </div>
 		</apex:pageBlockButtons>
 		<apex:pageBlockSection collapsible="false" showHeader="false" columns="2">
@@ -360,7 +359,8 @@
 		  <apex:outputLabel />
 		  <apex:outputField value="{!EnrollmentPlan__c.AgeDays__c}"/>
 
-		  <apex:outputField value="{!EnrollmentPlan__c.AppIicationIssues__c}" rendered="{!EnrollmentPlan__c.ApplicationType__c != 'PAY'}"/>
+		  <apex:outputText label="Application Issues" escape="false" value="{!sIssues}" rendered="{!EnrollmentPlan__c.ApplicationType__c != 'PAY'}"/>
+		 
 		  <apex:outputField value="{!EnrollmentPlan__c.ApplicationIssuesPay__c}" rendered="{!EnrollmentPlan__c.ApplicationType__c == 'PAY'}"/>
 
 		  <apex:outputText label="Application Exceptions" escape="false" value="{!sExceptions}" />
@@ -419,17 +419,24 @@
 		<apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="DTW Incentive Plan - Financial Metrics" rendered="{!EnrollmentPlan__c.ApplicationType__c ='PAY'}">
 		  <apex:outputField value="{!EnrollmentPlan__c.MaxIncentivePool__c}"/>
 
-		  <apex:outputField value="{!EnrollmentPlan__c.ThresholdGMatEAC__c}" rendered="{!NOT(bTandM)}" />
-		  <apex:outputField styleclass="highlightedfield" value="{!EnrollmentPlan__c.EstimatedGMGrowthPercentage__c}" rendered="{!NOT(bTandM)}" />
+		  <!--<apex:outputField value="{!EnrollmentPlan__c.ThresholdGMatEAC__c}" rendered="{!NOT(bTandM)}" /> -->
+		  <apex:outputField value="{!EnrollmentPlan__c.PlaceHolder1__c}" rendered="{!NOT(bTandM)}" />
+		  
+		  <!--<apex:outputField  value="{!EnrollmentPlan__c.EstimatedGMGrowthPercentage__c}" rendered="{!NOT(bTandM)}" /> -->
+		  <apex:outputField value="{!EnrollmentPlan__c.EstimatedIncentivePoolEAC__c}" rendered="{!NOT(bTandM)}" />
+		  
 		   <apex:outputField styleclass="highlightedfield" value="{!EnrollmentPlan__c.PlaceHolder1__c}" rendered="{!bTandM}" />
 		  
-		  <apex:outputField value="{!EnrollmentPlan__c.EstimatedIncentivePoolEAC__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.EstimatedIncentivePoolEAC__c}" rendered="{!bTandM}"/>
+
+		  <apex:outputField value="{!EnrollmentPlan__c.IncentivePlan__r.ProfitSharingPercent__c}" rendered="{!NOT(bTandM)}"/>
+
 
 		  <apex:outputField value="{!EnrollmentPlan__c.ThresholdGM__c}" rendered="{!NOT(bTandM)}"/>
-		  <apex:outputField value="{!EnrollmentPlan__c.EstimatedGMAmountGrowthPercent__c}" rendered="{!NOT(bTandM)}"/>
+		  <!--<apex:outputField value="{!EnrollmentPlan__c.EstimatedGMAmountGrowthPercent__c}" rendered="{!NOT(bTandM)}"/>-->
 		  <apex:outputField value="{!EnrollmentPlan__c.PlaceHolder2__c}" rendered="{!bTandM}" />
 
-
+		  <apex:outputlabel rendered="{!NOT(bTandM)}" />
 		  <apex:outputField value="{!EnrollmentPlan__c.EEACGMPerformance__c}" rendered="{!NOT(bTandM)}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.IncentivePlan__r.ProfitSharingPercent__c}" rendered="{!bTandM}" />
 		  
@@ -779,6 +786,11 @@
 		</apex:pageBlockSection>
 		<apex:pageBlockSection Title="Snapshot Fields" columns="2" rendered="{!UserType=3}">
 		<apex:repeat value="{!$ObjectType.EnrollmentPlan__c.FieldSets.DTWAdminSnapshot}" var="f">
+        	<apex:outputField value="{!EnrollmentPlan__c[f]}" />
+	    </apex:repeat>
+		</apex:pageBlockSection>
+		<apex:pageBlockSection Title="Admin Fields" columns="2" rendered="{!AND(OR(UserType=2,UserType=3),EnrollmentPlan__c.ApplicationType__c='CCR')}">
+		<apex:repeat value="{!$ObjectType.EnrollmentPlan__c.FieldSets.DTWAdminCloseout}" var="f">
         	<apex:outputField value="{!EnrollmentPlan__c[f]}" />
 	    </apex:repeat>
 		</apex:pageBlockSection>
