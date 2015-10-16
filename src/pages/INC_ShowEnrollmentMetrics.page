@@ -239,10 +239,13 @@
 	<apex:form >
 	<apex:pageBlock >
 		<apex:pageBlockButtons location="both">
+			<apex:commandButton value="Incentive Calculator" action="{!openCalculator}"  styleClass="hidebutton" rendered="{!oEnrollmentPlan.IncentivePlan__r.ContractType__c='Fixed Price'}"/>
+
 			<apex:commandButton Value="Acknowledge Warning" action="{!UpdateFlag}" rendered="{!oEnrollmentPlan.MetricWarningActive__c = 'Yes'}"/>
 			<apex:CommandButton value="Close" action="{!close}"/>
 		</apex:pageBlockButtons>
-<apex:pageBlockSection collapsible="true" title="Enrollment Plan Details">
+<apex:pageBlockSection collapsible="true" title="Enrollment Plan Details" id="section1">
+	<script>twistSection(document.getElementById("{!$Component.section1}").childNodes[0].childNodes[0]); </script>
 		<apex:outputField value="{!oEnrollmentPlan.Name}"/>
 		<apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.Name}" />
     	<apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.ProjectID__c}" />
@@ -256,7 +259,8 @@
 		<apex:outputField value="{!oEnrollmentPlan.CurrencyIsoCode}" />
 		<apex:outputText />
 </apex:pageBlockSection>
-	<apex:pageBlockSection title="Incentive Plan Details" collapsible="true" columns="1" showHeader="true">	
+	<apex:pageBlockSection title="Incentive Plan Details"  id="section2" collapsible="true" columns="1" showHeader="true">	
+	<script>twistSection(document.getElementById("{!$Component.section2}").childNodes[0].childNodes[0]); </script>
 		 	<apex:outputField value="{!oEnrollmentPlan.IncentivePlan__r.Name}"/>
 			<apex:outputField value="{!oEnrollmentPlan.IncentivePlan__r.ContractType__c}"/>
 			<apex:outputField value="{!oEnrollmentPlan.IncentivePlan__r.ContractSubType__c}"/>

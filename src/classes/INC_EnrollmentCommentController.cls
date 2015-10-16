@@ -38,7 +38,7 @@ public without sharing class INC_EnrollmentCommentController {
                                                  and (Reason_Codes__c = null)
                                                  Order by CreatedDate];
         //find the latest one, hopefully the query should only return one.  But I have to account for bad data
-        System.Debug(logginglevel.error,'lcomments: ' + lComments);
+        System.Debug(logginglevel.error,'lcomments: 2 ' + lComments);
         if(lComments != Null && lComments.size() > 0){
                 bReturn = true;
                 oEnrollComment = lComments[0];
