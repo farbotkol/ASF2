@@ -25,7 +25,10 @@ public without sharing class INC_EnrollmentCommentController {
 
     private boolean getLatestRejectionComment(){
         boolean bReturn = false;
-        list<Enrollment_Comments__c> lComments = [Select ID
+        
+        list<Enrollment_Comments__c> lComments;
+        if(oEnrollmentApp.ApplicationType__c !='OPT'){
+                                        lComments = [Select ID
                                                           , Comments__c
                                                           , Type__c
                                                           , Reason_Codes__c
@@ -37,13 +40,31 @@ public without sharing class INC_EnrollmentCommentController {
                                                  and (Type__c = 'Rejection' or Type__c ='Rejection for Corrections')
                                                  and (Reason_Codes__c = null)
                                                  Order by CreatedDate];
+        }else{
+                                        lComments = [Select ID
+                                                          , Comments__c
+                                                          , Type__c
+                                                          , Reason_Codes__c
+                                                          , Approver__c
+                                                          , Approver__r.Name
+                                                          , IsRejection__c
+                                                 From Enrollment_Comments__c
+                                                 Where EnrollmentApplication__c =: oEnrollmentApp.ID
+                                                 and (Type__c = 'Rejection')
+                                                 and (Reason_Codes__c = null)
+                                                 Order by CreatedDate];
+        }
         //find the latest one, hopefully the query should only return one.  But I have to account for bad data
         System.Debug(logginglevel.error,'lcomments: 2 ' + lComments);
         if(lComments != Null && lComments.size() > 0){
                 bReturn = true;
                 oEnrollComment = lComments[0];
-                sMessage = lComments[0].Approver__r.Name + ' rejected the application.  A rejection code must be selected before any changes to the';
-                sMessage += ' application are possible.';
+                if(oEnrollmentApp.ApplicationType__c != 'OPT'){
+                  sMessage = lComments[0].Approver__r.Name + ' rejected the application.  A rejection code must be selected before any changes to the';
+                  sMessage += ' application are possible.';
+                }else{
+                  sMessage = lComments[0].Approver__r.Name + ' approved opting out of the application.  A rejection code must be selected.';
+                }
         }else{
           oEnrollComment = new Enrollment_Comments__c(EnrollmentApplication__c = oEnrollmentApp.ID);
         }
@@ -101,8 +122,10 @@ public without sharing class INC_EnrollmentCommentController {
                  sReason == 'Project on Hold' ||
                  sReason == 'Project Nearing Completion' ||
                  sReason == 'Poor Project Performance'){
+                if(oEnrollmentApp.ApplicationType__c != 'OPT'){
                   System.Debug(logginglevel.error,'rejecting all');
                   rejectAll();
+                }
               }
             }
           }else{

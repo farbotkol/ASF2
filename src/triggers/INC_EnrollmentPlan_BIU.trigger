@@ -26,6 +26,7 @@ trigger INC_EnrollmentPlan_BIU on EnrollmentPlan__c (before insert, before updat
                                                                             , IncentiveProject__r.ActualNSRITD__c
                                                                             , IncentiveProject__r.ActualGrossMarginITD__c
                                                                             , NSRBudget__c
+                                                                            , BaselineNSR__c
                                                                             FROM EnrollmentPlan__c
                                                                             WHERE Id in : lEnrollmentPlansToFetch]);
     
@@ -73,6 +74,14 @@ trigger INC_EnrollmentPlan_BIU on EnrollmentPlan__c (before insert, before updat
         EnrollmentPlan__c oEnrollmentPlanContext = trigger.newMap.get(oEnrollmentPlan.Id);
             
         oEnrollmentPlanContext.EstimatedIncPoolEAC__c = dEstimatedIncPoolEAC;
+
+        //calculate BaselineMarginCalculated__c
+        Decimal BaselineGrossMargin = ECO_Utils_String.NullCheck(oEnrollmentPlan.BaselineGrossMargin__c);
+        Decimal BaselineNSR = ECO_Utils_String.NullCheck(oEnrollmentPlan.BaselineNSR__c);
+        if(BaselineNSR > 0){
+            oEnrollmentPlanContext.BaselineMarginCalculated__c = (BaselineGrossMargin / BaselineNSR) * 100;
+        }
+
     }
     
     for(EnrollmentPlan__c oEnrollmentPlan : lEnrollmentPlans){

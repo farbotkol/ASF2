@@ -1,6 +1,6 @@
 public with sharing class INC_EnrollmentApp_Controller {
 
-	  public EnrollmentPlan__c oEnrollmentApp{get;set;}
+	public EnrollmentPlan__c oEnrollmentApp{get;set;}
     public String enrollcharId {get;set;}
     private final ApexPages.StandardController stdController;
     public Enrollment_Comments__c oEnrollComment{get;set;}
@@ -22,6 +22,8 @@ public with sharing class INC_EnrollmentApp_Controller {
     public String sSubmitMessage{get;set;}
     public boolean bShowWizardSubmit{get;set;}
     public String sUserLevel{get;set;}
+    public boolean bShowCCR {get;set;}
+    public boolean bShowAA {get;set;}
 
     public INC_EnrollmentApp_Controller(ApexPages.StandardController stdController) {
         activeTab = 'step1';
@@ -46,7 +48,8 @@ public with sharing class INC_EnrollmentApp_Controller {
                                                   ,'ApplicationIssues2__c'
                                                   ,'InterimPaymentRequested__c'
                                                   , 'ApplicationExceptionsPay__c'
-                                                  ,'IncentiveProject__r.DTWAdmin__c'});
+                                                  ,'IncentiveProject__r.DTWAdmin__c'
+                                                  ,'ActualSubsAndODCITD__c'});
         }
 
         this.oEnrollmentApp = (EnrollmentPlan__c)stdController.getRecord();
@@ -54,6 +57,13 @@ public with sharing class INC_EnrollmentApp_Controller {
         setExceptions();
         setIssues();
         
+        list<EnrollmentPlan__c> lCCr = [Select ID from EnrollmentPlan__c where ApplicationType__c = 'CCR' and ParentApplication__c =:oEnrollmentApp.ID];
+        System.Debug(logginglevel.error,'LCCR: ' + lCCR);
+        bShowCCR = true;
+        if(lCCR != null && lCCR.size() > 0){
+            bShowCCR = false;
+        }
+        System.Debug(logginglevel.error,'bShowCCr: ' + bShowCCR);
         System.debug(logginglevel.error,UserInfo.getUserId() + ' ' + oEnrollmentApp.IPProjectManager__c);
         if((oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c == '')&&
                 oEnrollmentApp.EnrollmentStatus__c == 'Pending PM Action'){
@@ -83,7 +93,8 @@ public with sharing class INC_EnrollmentApp_Controller {
                 System.debug(logginglevel.error,'disableStep2 ' + disableStep2);
               }else{
                 activeTab = 'step3';
-                if(oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c ==''){
+                if((oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c =='') &&
+                  (oEnrollmentApp.ApplicationIssues2__c == null || oEnrollmentApp.ApplicationIssues2__c == '')){
                   bShowWizardSubmit = true;
                 }
               }
@@ -93,7 +104,9 @@ public with sharing class INC_EnrollmentApp_Controller {
            
             bRenderInputFinFields = RenderInputFinFields();
 
-            if(oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c == ''){
+            if((oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c == '' &&
+               (oEnrollmentApp.ApplicationIssues2__c == null || oEnrollmentApp.ApplicationIssues2__c == ''))&&
+               (oEnrollmentApp.ApplicationIssuesPay__c == null || oEnrollmentApp.ApplicationIssuesPay__c =='')){
               bShowApprovalHistory = true;
             }else{
               if(oEnrollmentApp.ApplicationType__c=='OPT'){
@@ -132,6 +145,17 @@ public with sharing class INC_EnrollmentApp_Controller {
             System.Debug(logginglevel.error,'isRejectedRecType 2' + isRejectedRecType);
           }
 
+          bShowAA = false;
+          Set<id> setDTW = new Set<id>();
+          map<id,Group> mapgroupIds = new map<id,Group>([Select ID from Group where Name = 'DTW Admins' or Name = 'CORP DTW Admin']);
+
+          for (GroupMember m : [Select Id, UserOrGroupId From GroupMember Where GroupId = :mapGroupIds.keySet()])
+          {
+                setDTW.add(m.UserOrGroupId);
+          }
+          if(setDTW.contains(UserInfo.getUserId())){
+            bShowAA = true; //in the groups so all full edit
+          }
     }
 
 
@@ -139,9 +163,10 @@ public with sharing class INC_EnrollmentApp_Controller {
     public void checkStatus(){
       System.Debug(logginglevel.error,'Check Status');
       bShowWizardSubmit = false;
-      EnrollmentPlan__c plan = [Select id, AppIicationIssues__c from EnrollmentPlan__c where id=:oEnrollmentApp.id][0];
+      EnrollmentPlan__c plan = [Select id, AppIicationIssues__c, ApplicationIssues2__c from EnrollmentPlan__c where id=:oEnrollmentApp.id][0];
       System.debug(logginglevel.error,'plan: ' + plan.AppIicationIssues__c);
-      if(plan.AppIicationIssues__c == null || plan.AppIicationIssues__c == ''){
+      if((plan.AppIicationIssues__c == null || plan.AppIicationIssues__c == '')&&
+          (plan.ApplicationIssues2__c == null || plan.ApplicationIssues2__c == '')){
           bShowWizardSubmit = true;
           System.debug(logginglevel.error,'set submit to true:' + bShowWizardSubmit);
         }
@@ -258,7 +283,9 @@ public with sharing class INC_EnrollmentApp_Controller {
     public pageReference steptwo(){
       System.Debug(logginglevel.error,'stepTwo');
       activeTab='step2';
-      stdController.reset();
+      if(!Test.isRunningTest()){
+        stdController.reset();
+      }
       oEnrollmentApp = (EnrollmentPlan__c)stdController.getRecord();
       oEnrollmentApp.WizardStatus__c = 'Step 2';
       disableStep2 = true;
@@ -557,7 +584,9 @@ public with sharing class INC_EnrollmentApp_Controller {
 //code for rejection comments section
     private boolean getLatestRejectionComment(){
         boolean bReturn = false;
-        list<Enrollment_Comments__c> lComments = [Select ID
+        list<Enrollment_Comments__c> lComments;
+        if(oEnrollmentApp.ApplicationType__c != 'OPT'){
+                                        lComments = [Select ID
                                                           , Comments__c
                                                           , Type__c
                                                           , Reason_Codes__c
@@ -569,6 +598,20 @@ public with sharing class INC_EnrollmentApp_Controller {
                                                  and (Type__c = 'Rejection' or Type__c ='Rejection for Corrections')
                                                  and (Reason_Codes__c = null)
                                                  Order by CreatedDate];
+        }else{
+                                        lComments = [Select ID
+                                                          , Comments__c
+                                                          , Type__c
+                                                          , Reason_Codes__c
+                                                          , Approver__c
+                                                          , Approver__r.Name
+                                                          , IsRejection__c
+                                                 From Enrollment_Comments__c
+                                                 Where EnrollmentApplication__c =: oEnrollmentApp.ID
+                                                 and (Type__c = 'Rejection')
+                                                 and (Reason_Codes__c = null)
+                                                 Order by CreatedDate];
+        }
         //find the latest one, hopefully the query should only return one.  But I have to account for bad data
         System.Debug(logginglevel.error,'lcomments: ' + lComments);
         if(lComments != Null && lComments.size() > 0){
@@ -583,68 +626,4 @@ public with sharing class INC_EnrollmentApp_Controller {
         return bReturn;
     }
 
-/*
-    public pageReference saveComments(){
-      System.Debug(logginglevel.error,'Saving');
-        if(oEnrollComment.Reason_Codes__c == null){
-            System.debug(logginglevel.error,'oEnrollComment.Reason_Codes__c ');
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'You must choose a reason code before saving.'));
-        }else{
-          if(oEnrollComment.Comments__c != null && oEnrollComment.Comments__c != 'Please enter a comment.'
-             && oEnrollComment.Comments__c != ''){
-            ID workFlowID = ECO_Utils_sObject.getRecordTypeId(EnrollmentPlan__c.sObjectType,'Workflow');
-            ID paymentID = ECO_Utils_sObject.getRecordTypeId(EnrollmentPlan__c.sObjectType,'Payment Request');
-            System.Debug(logginglevel.error,'Workflowid ' + workFlowID);
-            System.Debug(logginglevel.error,'paymentID ' + workFlowID);
-            oEnrollmentApp.ApprovalRecentlyProcessed__c = false;
-            
-            if(workFlowID != null && paymentID != null){
-
-              if(oEnrollmentApp.ApplicationType__c == 'PAY'){
-                  oEnrollmentApp.RecordTypeID=paymentID;
-              } else {
-                  oEnrollmentApp.RecordTypeID=workFlowID;
-              }
-
-              System.savePoint sp = Database.setSavePoint();
-              try{
-                  system.debug(logginglevel.error,'Updating records');
-                  update oEnrollmentApp;
-              }catch(Exception e){
-                  system.debug('Handling Exception:  '+e.getMessage() + ' ' + e.getStackTraceString());
-                  system.debug(logginglevel.error, 'enrollmentPlan update error: ' + e);
-                  Database.rollBack(sp);
-              }
-              try{
-                  system.debug(logginglevel.error,'Updating Comments');
-                  upsert oEnrollComment;
-              }catch(Exception e){
-                  system.debug('Handling Exception:  '+e.getMessage() + ' ' + e.getStackTraceString());
-                  system.debug(logginglevel.error, 'comment creation error: ' + e);
-                  Database.rollBack(sp);
-              }  
-     
-               String sReason = oEnrollComment.Reason_Codes__c;
-
-              if(sReason == 'Project in Litigation' ||
-                 sReason.contains('Project is Intercompany') ||
-                 sReason == 'Project on Hold' ||
-                 sReason == 'Project Nearing Completion' ||
-                 sReason == 'Poor Project Performance'){
-                  System.Debug(logginglevel.error,'rejecting all');
-                  rejectAll();
-              }
-            }
-          }else{
-                System.Debug(logginglevel.error,'Not saving comments');
-                  ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'You must enter a valid comment.'));
-            
-          }
-              
-        }
-
-        //pageReference pr = new PageReference('/apex/INC_EnrollmentApp?id='+oEnrollmentApp.id);
-        //pr.setredirect(true);
-        return null;
-    } */
 }

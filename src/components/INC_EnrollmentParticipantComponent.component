@@ -48,43 +48,34 @@
     height:100%;
     margin-top: 25px;
   }
-</style>
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-<script type="text/javascript">
-  $jq = jQuery.noConflict();
-  $jq(document).ready(function(){
-    $jq("#viewpdf").click(function(){
-   //    $j('#pdfdisplay').attr('src','{!URLFOR($Resource.DTWParticipantGuide)}');
-        $jq('#enrollpdfdisplay').addClass('show');
-        $jq('#enrollpdfdisplay').removeClass('hidden');
-     
-    });
-     $jq('#closeform').click(function(){
-     // $j('#pdfdisplay').attr('src','');
-        $jq('#enrollpdfdisplay').addClass('hidden');
-        $jq('#enrollpdfdisplay').removeClass('show');
-      }); 
-    debugger;
-    var currentTime = new Date();
-    var year = currentTime.getFullYear()
-    var startYear=(year - 10); //replace 1982 with whatever year you want to start with;
-    var endYear=(year + 10); //replace 2034 with whatever year you want to end with;
-        //-----EDIT BELLOW HERE AT YOUR OWN RISK-----
-    var optionsString='';
-        //Make sure that the endYear comes after the startYear
-        if(startYear<endYear){
-            //Loops through each date and renders the string for an option tag and addes it to the Optrionsstring variable
-            for(i=startYear;i<endYear+1;i++){
-                optionsString += "<option value=\""+i+"\">"+i+"</option>";
+</style>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+        <script type="text/javascript">
+        $jq(document).ready(function(){
+        var currentTime = new Date();
+        var year = currentTime.getFullYear()
+        var startYear=(year - 10); //replace 1982 with whatever year you want to start with;
+        var endYear=(year + 10); //replace 2034 with whatever year you want to end with;
+            //-----EDIT BELLOW HERE AT YOUR OWN RISK-----
+        var optionsString='';
+            //Make sure that the endYear comes after the startYear
+            if(startYear<endYear){
+                //Loops through each date and renders the string for an option tag and addes it to the Optrionsstring variable
+                for(i=startYear;i<endYear+1;i++){
+                    optionsString += "<option value=\""+i+"\">"+i+"</option>";
+                }
+                //Replace the innerHTML of the calendar picker year select tag with the Optionsstring we constructed.
+                $('#calYearPicker').html(optionsString);
             }
-            //Replace the innerHTML of the calendar picker year select tag with the Optionsstring we constructed.
-            $('#calYearPicker').html(optionsString);
-        }
-  });
-</script>
+          });
+          </script>
 <!--<apex:form > -->
-    <apex:SectionHeader title="Enrollment Information" />
+    <apex:SectionHeader title="Enrollment Information"  rendered="{!NOT(fromWizard='Yes')}" />
+    <apex:outputPanel rendered="{!fromWizard='Yes'}">
+      <div class="pbSubheader tertiaryPalette"><h3>Enrollment Information</h3></div>
+    </apex:outputPanel>
+
     <apex:pageblock id="thepage">
       <apex:pageBlockSection id="wizardheaderinfo">
         <apex:outputField value="{!oEnrollmentPlan.Name}"/>
@@ -128,14 +119,15 @@
     </div>
     
     <apex:outputPanel rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}">
-      <p class="projmessage">At the time a project is enrolled in DTW, up to 60% of the incentive pool can be allocated to participants as “Target %”.  If additional employees are later identified as key project leaders, they may be added to the plan and the total allocation can exceed 60%.  The total allocation can never exceed 100%.  (Note: if the project is within several months of completion, the full pool may be allocated with exception approval.)<br/><br/>
+      <p class="projmessage">At the time a project is enrolled in DTW, up to 60% of the incentive  pool can be allocated to participants as “Target %”.  If additional employees are later identified for participation, they may be added to the plan, and the total allocation can exceed 60%.  However, the total allocation to participants may never exceed 100%.  If an incentive pool is earned at project close, any unallocated portion of the pool may be distributed to the participants, or amongst “discretionary participants” identified on the payment form.
+      <br/><br/>
 
       <apex:outputPanel rendered="{!bFixed}">
-      * For the purposes of allocating potential award earnings to employees, we use the estimated incentive pool at that would be calculated if the project achieved 3% better than the baseline margin.  This is a hypothetical value and it will be communicated to employees in their Enrollment Letter, as an example of how a pool is calculated.  The “Estimated Payout” for a participant is the  Estimated Pool @ Baseline + 3% x the participant’s allocation percent.  In order for potential awards to be meaningful and motivational, no participant may be allocated less than the predetermined “Min Participant Payout $” for this incentive plan, as shown in the table at the top of this page.
+      * For the purposes of allocating potential award earnings to employees, we use the incentive pool that would be calculated if the project achieved 3% better than the baseline margin (as shown above). This is a hypothetical value that will be communicated to employees in their Enrollment Letter, as an example of how the pool is calculated. The “Estimated Payout” for a participant is the Sample Pool if Baseline +3% x the participant’s Target %. In order for potential awards to be meaningful and motivational, no participant may be allocated less than the predetermined “Min Participant Payout $” for this incentive plan, as shown in the table at the top of this page.
       </apex:outputPanel>
 
       <apex:outputPanel rendered="{!bTM}">
-      * For the purposes of allocating potential award earnings to employees, we use the estimated incentive pool at that would be calculated if the project achieved 10% growth on above the baseline margin dollars. This is a hypothetical value and it will be communicated to employees in their Enrollment Letter, as an example of how a pool is calculated. The “Estimated Payout” for a participant is the Estimated Pool @ Baseline x 10% x profit sharing % x the participant’s allocation percent. In order for potential awards to be meaningful and motivational, no participant may be allocated less than the predetermined “Min Participant Payout $” for this incentive plan, as shown in the table at the top of this page.
+      * For the purposes of allocating potential award earnings to employees, we use the incentive pool that would be calculated if the project achieved 10% growth on the baseline margin dollars (as shown above).  This is a hypothetical value that will be communicated to employees in their Enrollment Letter, as an example of how the pool is calculated.  The “Estimated Payout” for a participant is the Estimated Pool @ Baseline + 10% x the participant’s Target %.  In order for potential awards to be meaningful and motivational, no participant may be allocated less than the predetermined “Min Participant Payout $” for this incentive plan, as shown in the table at the top of this page.
       </apex:outputPanel>
 
       </p>
@@ -151,8 +143,14 @@ Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.h
     <a href="#" id="viewpdf">View Participant Guidelines</a>
     
     <apex:outputPanel id="epList">
-    <apex:sectionHeader title="Add Enrollment Participants"/>
+    <apex:sectionHeader title="Add Enrollment Participants"  rendered="{!NOT(fromWizard='Yes')}"/>
+    <apex:outputPanel rendered="{!fromWizard='Yes'}">
+      <div class="pbSubheader tertiaryPalette"><h3>Add Enrollment Participants</h3></div>
+    </apex:outputPanel>
+
     <apex:pageBlock Title="Participants" id="Participants">
+   
+
         <apex:pageBlockButtons location="both">
             <apex:commandButton value="Add Row" action="{!addBlankRow}" reRender="partTable,Participants" rendered="{!AND(OR(editParticipants, bPaid), NOT(AND(oEnrollmentPlan.ApplicationType__c == 'PAY', bTMorFixed)))}">
             </apex:commandButton>
@@ -199,7 +197,7 @@ Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.h
                <apex:inputField value="{!Participant.participant.TargetIncentivePoolAllocated__c}" rendered="{!Participant.bCCREnabledField}"/>
                <apex:OutputField value="{!Participant.participant.TargetIncentivePoolAllocated__c}" rendered="{!NOT(Participant.bCCREnabledField)}"/>
            </apex:Column>
-           <apex:Column headervalue="Estimated Payout*" rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}">
+           <apex:Column headervalue="Sample Payout*" rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}">
               <apex:OutputField value="{!Participant.participant.EstimatedPayout__c}"/>
            </apex:Column>
            <apex:Column headervalue="Calculated Incentive" rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}">
@@ -230,7 +228,7 @@ Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.h
               <apex:inputField value="{!Participant.participant.StartDateonProject__c}" rendered="{!Participant.bStartDateEnabled}"/>
               <apex:outputField value="{!Participant.participant.StartDateonProject__c}" rendered="{!NOT(Participant.bStartDateEnabled)}"/>
            </apex:Column>
-           <apex:Column headervalue="End Date on Project" rendered="false">
+           <apex:Column headervalue="End Date on Project" rendered="{!oEnrollmentPlan.ApplicationType__c != 'ENR'}">
               <apex:inputField value="{!Participant.participant.EndDateonProject__c}" rendered="{!Participant.bEndDateEnabled}"/>
               <apex:outputField value="{!Participant.participant.EndDateonProject__c}" rendered="{!NOT(Participant.bEndDateEnabled)}"/>
            </apex:Column>

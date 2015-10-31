@@ -173,6 +173,7 @@ public with sharing class INC_EnrollmentPlanTriggers {
 		set<id> rejectedPlans = new set<id>();
 		for(EnrollmentPlan__c enr: mapNew.Values()){
 			if(enr.ApplicationType__c == 'CCR'){
+				System.Debug('statuses: '+enr.NAME + ' ' + enr.EnrollmentStatus__c + ' ' + mapOld.get(enr.ID).EnrollmentStatus__c);
 				if(enr.EnrollmentStatus__c == 'Enrolled' && mapOld.get(enr.ID).EnrollmentStatus__c != 'Enrolled'){
 					if(mapNew.containsKey(enr.ParentApplication__c)){
 						mapNew.get(enr.ParentApplication__c).EnrollmentStatus__c = 'Archived';
@@ -189,6 +190,8 @@ public with sharing class INC_EnrollmentPlanTriggers {
 				}
 			}
 		}
+
+		System.Debug('enrollmentAppsToUpdate ' + enrollmentAppsToUpdate);
 
 		if(enrollmentAppsToUpdate != null && enrollmentAppsToUpdate.size()> 0){
 			list<EnrollmentPlan__c> listEnrollments = new list<EnrollmentPlan__c>();
@@ -307,4 +310,117 @@ public with sharing class INC_EnrollmentPlanTriggers {
             }
         }
     }	
+
+    public void setSnapShotValues(Map<Id, EnrollmentPlan__c> mapNew, Map<Id, EnrollmentPlan__c> mapOld){
+    	set<id> setReQueryPlans = new set<id>();
+    	System.Debug(logginglevel.error,'mapNew: ' + mapNew);
+    	System.Debug(logginglevel.error,'mapOld: ' + mapold);
+    	for(EnrollmentPlan__c EP: mapNew.Values()){
+    		if((EP.EnrollmentStatus__c == 'Enrolled' && mapOld.get(EP.ID).EnrollmentStatus__c != 'Enrolled')){
+    			if(EP.ApplicationType__c=='ENR' || (EP.ApplicationType__c == 'CCR' && EP.IncentivePlanContractType__c == 'Fixed Price')){
+    				setReQueryPlans.add(EP.ID);
+    			}
+    		}
+    	}
+
+    	//requery plans to get cross object values for snapshots
+    	if(setReQueryPlans != null && setReQueryPlans.size() > 0){
+    		for(EnrollmentPlan__c EP: [Select ID
+    										, GrossMarginAmountScopeChange__c
+    										, GrossMarginAmountAdjustment__c
+    										, GrossMarginAdjustment__c
+    										, NSRAdjustment__c
+    										, DTWComplete__c
+    										, ApprovedSubsODC__c
+    										, BaselineGrossMargin__c
+    										, BaselineGrossRevenue__c
+    										, BaselineGMofNSR__c
+    										, BaselineGrossRevenueSnapshot__c
+    										, BaselineMarginofNSRatSnapshot__c
+    										, BaselineNSRatSnapshot__c
+    										, BaselineDPEatSnapshot__c
+    										, ITDCostCompleteatSnapshot__c
+    										, DTWCompleteSnapshot__c
+    										, BaselineNSR__c
+    										, BaselineDPE__c
+    										, IncentiveProject__r.ApprovedNetMarginBudget__c 
+    										, IncentiveProject__r.ApprovedGrossMarginBudget__c
+    										, IncentiveProject__r.ApprovedNSRBudget__c
+    										, IncentivePlan__r.ContractSubType__c
+    										, IncentiveProject__r.ApprovedGrossRevenueBudget__c
+    										, IncentiveProject__r.ApprovedODCBudget__c
+    										, IncentiveProject__r.ApprovedSubsBudget__c
+    										, IncentiveProject__r.ApprovedContingencyBudget__c
+    										, IncentiveProject__r.ApprovedDPEBudget__c
+    										, IncentiveProject__r.ApprovedGrossMarginofNSR__c
+    										, IncentiveProject__r.ApprovedNMofNSR__c
+    										, IncentiveProject__r.ActualPercentProjectCompleteITD__c
+    										From EnrollmentPlan__c where id =: setReQueryPlans]){
+
+				mapNew.get(EP.ID).ApprovedRevenueBudgetatSnapshot__c = EP.IncentiveProject__r.ApprovedGrossRevenueBudget__c;
+    			mapNew.get(EP.ID).ApprovedSubsBudgetatSnapshot__c = EP.ApprovedSubsODC__c;
+    			mapNew.get(EP.ID).ApprovedContingencyBudgetatsnapshot__c = EP.IncentiveProject__r.ApprovedContingencyBudget__c;
+				mapNew.get(EP.ID).ApprovedNSRBudgetatSnapshot__c = EP.IncentiveProject__r.ApprovedNSRBudget__c;
+    			mapNew.get(EP.ID).ApprovedDPEBudgetatSnapshot__c = EP.IncentiveProject__r.ApprovedDPEBudget__c;
+    			mapNew.get(EP.ID).ApprovedGrossMarginBudgetatSnapshot__c = EP.IncentiveProject__r.ApprovedGrossMarginBudget__c;
+    			mapNew.get(EP.ID).ApprovedGrossMarginofNSRatSnapshot__c = EP.IncentiveProject__r.ApprovedGrossMarginofNSR__c;
+    			mapNew.get(EP.ID).ApprovedNetMarginBudgetatSnapshot__c = EP.IncentiveProject__r.ApprovedNetMarginBudget__c;
+    			mapNew.get(EP.ID).ApprovedNetMarginofNSRatSnapShot__c = EP.IncentiveProject__r.ApprovedNMofNSR__c;
+    			mapNew.get(EP.ID).DTWCompleteSnapshot__c = EP.DTWComplete__c;
+    			
+    			if(EP.IncentivePlan__r.ContractSubType__c == 'Gross Margin'){
+    				mapNew.get(EP.ID).BaselineGrossMarginatSnapshot__c = EP.BaselineGrossMargin__c;
+    			}else{
+					mapNew.get(EP.ID).BaselineNetMarginatSnapshot__c = EP.BaselineGrossMargin__c;
+				}
+
+				mapNew.get(EP.ID).BaselineGrossRevenueSnapshot__c = EP.BaselineGrossRevenue__c;
+				mapNew.get(EP.ID).BaselineMarginofNSRatSnapshot__c = EP.BaselineGMofNSR__c;
+    			mapNew.get(EP.ID).BaselineNSRatSnapshot__c = EP.BaselineNSR__c;
+    			mapNew.get(EP.ID).BaselineDPEatSnapshot__c = EP.BaselineDPE__c;
+    			mapNew.get(EP.ID).ITDCostCompleteatSnapshot__c = EP.IncentiveProject__r.ActualPercentProjectCompleteITD__c;
+    		}
+    	}
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }

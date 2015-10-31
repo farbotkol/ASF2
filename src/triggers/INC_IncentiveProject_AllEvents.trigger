@@ -30,7 +30,10 @@ trigger INC_IncentiveProject_AllEvents on IncentiveProject__c (before insert,bef
             set<Id> lIncentiveProjectIds = new set<Id>();
             
             for(IncentiveProject__c oIncentiveProject : trigger.new){
-                lIncentiveProjectIds.add(oIncentiveProject.Id);
+                if((oIncentiveProject.EnrollmentPlan__c != trigger.oldMap.get(oIncentiveProject.Id).EnrollmentPlan__c)||
+                   (oIncentiveProject.ChangeRequest__c != trigger.oldMap.get(oIncentiveProject.id).ChangeRequest__c)){
+                         lIncentiveProjectIds.add(oIncentiveProject.Id);
+                }
             }
             
             list<EnrollmentPlan__c> lEnrollmentPlans = new list<EnrollmentPlan__c>([SELECT 
@@ -42,7 +45,12 @@ trigger INC_IncentiveProject_AllEvents on IncentiveProject__c (before insert,bef
             
             system.debug(lEnrollmentPlans);
             
-            update lEnrollmentPlans;
+            try{
+                update lEnrollmentPlans;
+                }Catch(Exception e){
+                    //most likely a self reference error when setting parent id on ip.  No need to update project anyway
+                    System.Debug('logging error: ' + e.getMessage());
+                }
         }
     }
 }

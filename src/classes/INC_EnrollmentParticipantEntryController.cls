@@ -16,7 +16,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
     public Boolean bEnableCCR{get;set;}
 
     public integer rowNumber {get;set;}
-
+    private Enrollment_Comments__c Enrollmentcomment;
     public INC_EnrollmentParticipantEntryController(){
 
         bFixed = false;
@@ -191,6 +191,10 @@ public with sharing class INC_EnrollmentParticipantEntryController {
         System.debug('save and recalc');
         save();
 
+        if(partComments != null && partComments.length() > 0){
+                createEnrollmentComments();
+        }
+
         return null;
     }
 
@@ -229,17 +233,22 @@ public with sharing class INC_EnrollmentParticipantEntryController {
         return true;
     }
 
-    private void createEnrollmentComments(){
-       Enrollment_Comments__c comment = new Enrollment_Comments__c(EnrollmentApplication__c = oEnrollmentPlan.ID);
-       comment.comments__c = partComments;
-       comment.Type__c = 'Participant';
-        System.savePoint sp = Database.setSavePoint();
-        try{
-            insert comment;
-        }catch(Exception e){
-            system.debug('Handling Exception:  '+e.getMessage());
-            Database.rollBack(sp);
-            ApexPages.addMessages(e);
+    public void createEnrollmentComments(){
+       if(Enrollmentcomment == null){
+            Enrollmentcomment = new Enrollment_Comments__c(EnrollmentApplication__c = oEnrollmentPlan.ID);
+        }
+        if(Enrollmentcomment.Comments__c != partComments){
+            Enrollmentcomment.comments__c = partComments;
+            Enrollmentcomment.Type__c = 'Participant';
+            System.savePoint sp = Database.setSavePoint();
+            try{
+
+                upsert Enrollmentcomment;
+            }catch(Exception e){
+                system.debug('Handling Exception:  '+e.getMessage());
+                Database.rollBack(sp);
+                ApexPages.addMessages(e);
+            }
         }
     }
 
@@ -259,7 +268,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
                 oEnrollmentParticipant.CurrencyIsoCode = oEnrollmentParticipant.CurrencyIsoCode;
             }
             if(oEnrollmentParticipant.ParticipantCategory__c == null){
-                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have a defined role.'));
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have a Participant Category assigned.'));
                 return false;
             }
             if((oEnrollmentParticipant.TargetIncentivePoolAllocated__c == null || oEnrollmentParticipant.TargetIncentivePoolAllocated__c <= 0) && (oEnrollmentParticipant.ParticipantType__c != 'Discretionary' && oEnrollmentPlan.ApplicationType__c == 'ENR')){
@@ -405,11 +414,12 @@ public with sharing class INC_EnrollmentParticipantEntryController {
                     bEnableEmpName = false;
                     bCCREnabledField = false;
                     bPaymentEnabledField = true;
+                    bEndDateEnabled = true;
                 }else{
                     bCCREnabledField = false;
                     bStartDateEnabled = true;
                     bPaymentDateEnabled = true;
-                    bEndDateEnabled = true;
+                    bEndDateEnabled = false;
                 }
             }else if(oEnrollmentPlan.ApplicationType__c =='CCR'){
 

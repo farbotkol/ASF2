@@ -13,7 +13,10 @@ public without sharing class INC_ShowEnrollmentMetricsController {
     public string sFirstMessageClass {get;set;}
     public string sSecondMessageClass {get;set;}
     public string sThirdMessageClass {get;set;}
-    
+    public string sEstimatedEACHelp {get;set;}
+    public string sMaximumEACHelp {get;set;}
+    public string sFootNote{get;set;}
+
     public list<Schema.FieldSetMember> listApprovedFlds{get;set;}
     public String firstColumnHeader {get;set;}
     
@@ -35,13 +38,19 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             fromEnrollPart = false;
         }else{
             fromEnrollPart = true;
-        }
+        } 
         system.Debug(logginglevel.error,'fromEnrollPart: ' + fromEnrollPart);
         getEnrollmentPlan(); 
+
+
         firstColumnHeader = 'At Form Creation';
         if(oEnrollmentPlan.EnrollmentStatus__c == 'Enrolled'){
             bEnrollmentPlanEnrolled = true;
             firstColumnHeader = 'At Enrollment';
+        }else{
+            if(oEnrollmentPlan.ApplicationType__c == 'PAY' || oEnrollmentPlan.ApplicationType__c=='CCR'){
+                firstColumnHeader = 'At Enrollment';
+            }
         }
         if(oEnrollmentPlan.IncentivePlan__r.ContractSubType__c == 'Gross Margin'){
             bNMPlan = false;
@@ -61,6 +70,42 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         buildAtualsList();
         buildBaselineList();
         buildIncVals();
+        setHelpTextFields();
+    }
+
+    private void setHelpTextFields(){
+        sEstimatedEACHelp = 'The Estimated Incentive Pool @ EAC is based on the latest EAC Margin and Margin % of NSR.';
+        sEstimatedEACHelp += ' This is a point in time measure that changes with any subsequent EAC updates made by the ';
+        sEstimatedEACHelp += 'PM.  For Fixed Price plan enrollments, Final Margin % must be greater than Threshold Margin % ';
+        sEstimatedEACHelp += 'for any incentive pool to be earned.  Final incentive pool calculations will also reflect achievement of operational metrics.';
+   
+        sMaximumEACHelp = 'The Maximum Incentive Pool @ EAC represents the maximum pool assuming all operational ';
+        sMaximumEACHelp += 'metrics achieved and there is no increase or decrease to Forecast NSR.  For Fixed Price ';
+        sMaximumEACHelp += 'plan enrollments, the maximum incentive pool is 3% of Final NSR.';
+
+        sFootNote = 'An Estimated Incentive Pool is generated if EAC Margin % > Threshold Margin %, and is calculated ';
+        sFootNote += 'as (Forecast Margin % - Baseline Margin %) x EAC NSR x 50% x (1 - % Complete @ Enrollment).  ';
+        sFootNote += 'Baseline Margin $ = Baseline Margin % x Forecast NSR; Threshold Margin $ = Threshold Margin % x ';
+        sFootNote += 'Forecast NSR.  Note:  Change orders, modifications and other adjustments to the approved budget may ';
+        sFootNote += 'result in a change to the Baseline and Threshold Margin';
+        
+        if(oEnrollmentPlan.IncentivePlan__r.ContractType__c=='Time & Material'){
+            sEstimatedEACHelp = 'The Estimated Incentive Pool @ EAC is based on the latest EAC Margin and Margin % ';
+            sEstimatedEACHelp +='of NSR.  This is a point in time measure that changes with any subsequent EAC updates ';
+            sEstimatedEACHelp +='made by the PM.   For T&M plan enrollments, Final Margin must be greater than Baseline Margin, ';
+            sEstimatedEACHelp +='and Final Margin % must be equal to or better than Baseline Margin % for any incentive pool to be ';
+            sEstimatedEACHelp +='earned.  Final incentive pool calculations will also reflect achievement of operational metrics.';
+
+            sMaximumEACHelp = 'The Maximum Incentive Pool @ EAC represents the maximum pool assuming all operational ';
+            sMaximumEACHelp +='metrics achieved and there is no increase or decrease to Forecast NSR.  For T&M plan ';
+            sMaximumEACHelp +='enrollments, the maximum incentive pool is 2% of Final NSR, or $200,000 USD, whichever is less.';
+
+            sFootNote = 'An Estimated Incentive Pool is generated if EAC Margin > Baseline Margin, and is calculated ';
+            sFootNote += 'as (Forecast Margin – Baseline Margin) x 5%.  Note: for projects enrolled in the T&M Net ';
+            sFootNote += 'Margin plan, the Estimated Incentive Pool is calculated as (Forecast Margin – Baseline Margin) ';
+            sFootNote += 'x 20%.';
+        }
+
     }
 
     public pageReference openCalculator(){
@@ -113,7 +158,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         strSOQL += ',IncentivePlan__r.ContractType__c';
         strSOQL += ',IncentivePlan__r.HelpText__c,IncentiveProject__r.CustomerName__c';
         strSOQL += ',IncentiveProject__r.ForecastGrossMarginofNSR__c,IncentiveProject__r.ForecastNMofNSR__c';
-        strSOQL += ',ThresholdGM__c,ThresholdNM__c';
+        strSOQL += ',ThresholdGM__c,ThresholdNM__c,ClientSatisfactionDisplay__c';
         strSOQL += ',AlertBaselineGMNSR__c,AlertBudgetedGMofNSR__c,AlertDirectPersonnelExpense__c';
         strSOQL += ',AlertGMBudget__c,AlertNSRBudget__c,AlertProjectComplete__c';
         strSOQL += ',AlertBaselineNMNSR__c,AlertBudgetedNMofNSR__c,AlertNMBudget__c';
@@ -122,7 +167,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         strSOQL += ',IncentiveProject__r.ForecastGrossMarginBudget__c, IncentiveProject__r.ForecastNetMarginBudget__c';
         strSOQL += ',IncentivePlan__r.ProfitSharingPercent__c, IncentiveProject__r.ProjectId__c';
         strSOQL += ',DSOTarget__c, FinalITDDSO__c ,ClientSatisfactionCurrent__c, ScoreOnSafetyforLifeMetrics__c, ClientSatisfactionNPS__c, ScoreOnSafetyforLifeMetricsCurrent__c';
-        strSOQL += ',DTWCompleteVariance__c, DTWComplete__c ,DTWCompleteSnapshot__c, BaselineNMofNSR__c';
+        strSOQL += ',ApplicationType__c, DTWCompleteVariance__c, DTWComplete__c ,DTWCompleteSnapshot__c, BaselineNMofNSR__c';
         strSOQL += ',IncentivePlan__r.PlanCriteria__c, Name From EnrollmentPlan__c where Id =: sID';
         
         list<EnrollmentPlan__c> lstEnrollSearchResults = (list<EnrollmentPlan__c>)Database.query(strSOQL);
@@ -365,7 +410,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         listBaseline.add(mtw);
         if(!bNMPlan){
             mtw = new metricTableRowWrapper();
-            mtw.label = 'Baseline Gross Margin';
+            mtw.label = 'Baseline Margin';
             mtw.column1Val = (oEnrollmentPlan.BaselineGrossMarginatSnapshot__c != null ? oEnrollmentPlan.BaselineGrossMarginatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.BaselineGrossMargin__c != null ? oEnrollmentPlan.BaselineGrossMargin__c.format():'');
             mtw.Variance = (oEnrollmentPlan.BaselineGrossMarginVariance__c != null ? oEnrollmentPlan.BaselineGrossMarginVariance__c.format(): '');
@@ -374,7 +419,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(bNMPlan){
             mtw = new metricTableRowWrapper();
-            mtw.label = 'Baseline Net Margin';
+            mtw.label = 'Baseline Margin';
             mtw.column1Val = (oEnrollmentPlan.BaselineNetMarginatSnapshot__c != null ? oEnrollmentPlan.BaselineNetMarginatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.BaselineNetMargin__c != null ? oEnrollmentPlan.BaselineNetMargin__c.format():'');
             mtw.Variance = (oEnrollmentPlan.BaselineNetMarginVariance__c != null ? oEnrollmentPlan.BaselineNetMarginVariance__c.format(): '');
@@ -383,17 +428,18 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(!bNMPlan){
             mtw = new metricTableRowWrapper();
-            mtw.label = 'Baseline GM% NSR';
+            mtw.label = 'Baseline Margin% NSR';
             mtw.column1Val = (oEnrollmentPlan.BaselineGMofNSRatSnapshot__c != null ? oEnrollmentPlan.BaselineGMofNSRatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.BaselineGMofNSR__c != null ? oEnrollmentPlan.BaselineGMofNSR__c.format():'');
             mtw.Variance = (oEnrollmentPlan.BaselineGMofNSRVariance__c != null ? oEnrollmentPlan.ForecastNSRBudgetVariance__c.format(): '');
             mtw.labelClass = 'aslabel';
+            mtw.tdclass='precent';
             mtw.imageCol2 = oEnrollmentPlan.AlertBaselineGMNSR__c;
             listBaseline.add(mtw);
         }
         if(bNMPlan){
             mtw = new metricTableRowWrapper();
-            mtw.label = 'Baseline NM% NSR';
+            mtw.label = 'Baseline Margin% NSR';
             mtw.column1Val = (oEnrollmentPlan.BaselineNMofNSRatSnapshot__c != null ? oEnrollmentPlan.BaselineNMofNSRatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.BaselineNMofNSR__c != null ? oEnrollmentPlan.BaselineNMofNSR__c.format():'');
             mtw.Variance = (oEnrollmentPlan.BaselineNMofNSRVariance__c != null ? oEnrollmentPlan.BaselineNMofNSRVariance__c.format(): '');

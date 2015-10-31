@@ -26,8 +26,11 @@
     </alerts>
     <alerts>
         <fullName>Notify_AP1_that_an_application_rejected_back_for_further_action</fullName>
-        <description>13Notify AP1 that an application rejected back for further action</description>
+        <description>xxxx13Notify PM &amp; AP1 that an application rejected back for further action</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
         <recipients>
             <field>Approver1__c</field>
             <type>userLookup</type>
@@ -38,7 +41,7 @@
     </alerts>
     <alerts>
         <fullName>Notify_AP2_that_an_application_rejected_back_for_further_action</fullName>
-        <description>13Notify AP2 that an application rejected back for further action</description>
+        <description>xxxxx13Notify AP2 that an application rejected back for further action</description>
         <protected>false</protected>
         <recipients>
             <field>Approver2__c</field>
@@ -58,7 +61,7 @@
         </recipients>
         <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
-        <template>DTW_Project_Incentives/ApprovalRequestEnrollmentParticipants</template>
+        <template>DTW_Project_Incentives/ENR_CCR_Approval_Notification</template>
     </alerts>
     <alerts>
         <fullName>Notify_Approver_1_of_change_in_proposed_baseline</fullName>
@@ -94,7 +97,7 @@
         </recipients>
         <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
-        <template>DTW_Project_Incentives/ApprovalRequestEnrollmentParticipants</template>
+        <template>DTW_Project_Incentives/ENR_CCR_Approval_Notification</template>
     </alerts>
     <alerts>
         <fullName>Notify_Approver_3_of_request_for_payment_requiring_his_her_approval</fullName>
@@ -110,7 +113,7 @@
     </alerts>
     <alerts>
         <fullName>Notify_PM_AP1_AP2_that_an_Application_has_been_rejected_FINAL</fullName>
-        <description>14Notify PM, AP1, AP2 that an Application has been rejected (FINAL)</description>
+        <description>xxxxx14Notify PM, AP1, AP2 that an Application has been rejected (FINAL)</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -182,7 +185,7 @@
     </alerts>
     <alerts>
         <fullName>Notify_PM_that_an_application_rejected_back_for_further_action</fullName>
-        <description>13Notify PM that an application rejected back for further action</description>
+        <description>xxxxx13Notify PM that an application rejected back for further action</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -203,6 +206,24 @@
         <template>DTW_Project_Incentives/Notify_of_Interim_Payment_Requested</template>
     </alerts>
     <alerts>
+        <fullName>Participant_Change</fullName>
+        <description>Participant Change</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <recipients>
+            <field>Approver1__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>Approver2__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>DTW_Project_Incentives/Participant_Change</template>
+    </alerts>
+    <alerts>
         <fullName>Prepayment_Alert_to_Approver_1_and_PM</fullName>
         <description>Prepayment Alert to Approver 1 and PM</description>
         <protected>false</protected>
@@ -216,6 +237,14 @@
         <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
         <template>DTW_Project_Incentives/Prepayment_Alert_to_PM_and_AP1</template>
+    </alerts>
+    <alerts>
+        <fullName>RLK_Test</fullName>
+        <ccEmails>rlkwow@aol.com</ccEmails>
+        <description>RLK Test</description>
+        <protected>false</protected>
+        <senderType>CurrentUser</senderType>
+        <template>DTW_Project_Incentives/RLK_Test</template>
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_Approver_1_when_assigned_to_EA</fullName>
@@ -318,7 +347,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_EA_PM_when_EA_Status_is_Rejected_by_DTW_Admin</fullName>
-        <description>Send Notification to EA PM when EA Status is Rejected (by DTW Admin)</description>
+        <description>xxxxSend Notification to EA PM when EA Status is Rejected (by DTW Admin)</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -379,6 +408,15 @@
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Baseline_Contingency</fullName>
+        <field>ContingencyatSnapshot__c</field>
+        <formula>BaselineContingency__c</formula>
+        <name>Baseline Contingency</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Baseline_DPE_Snapshot</fullName>
         <field>BaselineDPEatSnapshot__c</field>
         <formula>BaselineDPE__c</formula>
@@ -402,9 +440,18 @@
         <description>IncentiveProject__r.ApprovedGrossMarginBudget__c
 + (BLANKVALUE(GrossMarginAmountScopeChange__c,0) + BLANKVALUE(GrossMarginAmountAdjustment__c,0))</description>
         <field>BaselineGrossMarginatSnapshot__c</field>
-        <formula>IncentiveProject__r.ApprovedGrossMarginBudget__c
-+ (GrossMarginAmountScopeChange__c + GrossMarginAmountAdjustment__c)</formula>
+        <formula>IncentiveProject__r.ApprovedGrossMarginBudget__c</formula>
         <name>Baseline Gross Margin at Snapshot</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Baseline_Gross_Revenue</fullName>
+        <description>Will update BaseLineGrossRevenueatBaseline</description>
+        <field>BaselineGrossRevenueSnapshot__c</field>
+        <formula>BaselineGrossRevenue__c</formula>
+        <name>Baseline Gross Revenue</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
@@ -749,8 +796,9 @@
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Capture_Approved_Subs</fullName>
+        <description>This is actually subs and odc combined in the snap shot per Chris 10/29</description>
         <field>ApprovedSubsBudgetatSnapshot__c</field>
-        <formula>IncentiveProject__r.ApprovedSubsBudget__c</formula>
+        <formula>IncentiveProject__r.ApprovedSubsBudget__c + IncentiveProject__r.ApprovedODCBudget__c</formula>
         <name>Capture Approved Subs</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
@@ -1006,6 +1054,15 @@ TEXT(ApplicationType__c)&amp;Application_Version__c&amp;(MID(Name,4,80))</descri
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Contingency_Baseline</fullName>
+        <field>ContingencyatSnapshot__c</field>
+        <formula>BaselineContingency__c</formula>
+        <name>Contingency Baseline</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>DTW_Complete_Snapshot</fullName>
         <field>DTWCompleteSnapshot__c</field>
         <formula>ActualTotalCostBudgetatSnapshot__c / (ForecastCostBudgetatSnapshot__c +(IncentiveProject__r.ApprovedCostBudget__c - ApprovedCostBudgetatSnapshot__c))</formula>
@@ -1028,7 +1085,7 @@ TEXT(ApplicationType__c)&amp;Application_Version__c&amp;(MID(Name,4,80))</descri
     <fieldUpdates>
         <fullName>DTW_T_M_DPE_Adjustments</fullName>
         <field>DPEAdjustment__c</field>
-        <formula>DPEBudgetScopeChange__c + DPEBudgetAdjustment__c</formula>
+        <formula>DPEBudgetAdjustment__c</formula>
         <name>DTW T&amp;M DPE Adjustments</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
@@ -1037,7 +1094,7 @@ TEXT(ApplicationType__c)&amp;Application_Version__c&amp;(MID(Name,4,80))</descri
     <fieldUpdates>
         <fullName>DTW_T_M_NSR_Adjustments</fullName>
         <field>NSRAdjustment__c</field>
-        <formula>TotalNSRManagementAdjustment__c + TotalNSRScopeChange__c</formula>
+        <formula>TotalNSRManagementAdjustment__c</formula>
         <name>DTW T&amp;M NSR Adjustments</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
@@ -1219,6 +1276,15 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Set_EA_Status_to_Opt_Out</fullName>
+        <field>EnrollmentStatus__c</field>
+        <literalValue>Opt-Out</literalValue>
+        <name>Set EA Status to Opt-Out</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Set_EA_Status_to_Pending_AP1_Action</fullName>
         <field>EnrollmentStatus__c</field>
         <literalValue>Pending Approver 1 Action</literalValue>
@@ -1255,10 +1321,28 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Set_EA_Status_to_Pending_PM_Action</fullName>
+        <field>EnrollmentStatus__c</field>
+        <literalValue>Pending PM Action</literalValue>
+        <name>Set EA Status to Pending PM Action</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Set_EA_Status_to_Rejected</fullName>
         <field>EnrollmentStatus__c</field>
         <literalValue>Rejected</literalValue>
         <name>Set EA Status to &quot;Rejected&quot;</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_EPChanged_to_No</fullName>
+        <field>EPChanged__c</field>
+        <literalValue>No</literalValue>
+        <name>Set EPChanged to No</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
@@ -1347,6 +1431,15 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Set_WorkflowStep_to_Pending_PM_Action</fullName>
+        <field>WorkflowStep__c</field>
+        <literalValue>Pending PM Action</literalValue>
+        <name>Set WorkflowStep to Pending PM Action</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Set_WorkflowStep_to_Step2</fullName>
         <field>WorkflowStep__c</field>
         <literalValue>Step2</literalValue>
@@ -1410,6 +1503,15 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>SubsBaseline</fullName>
+        <field>GrossRevenueSubsatSnaptShot__c</field>
+        <formula>BaselineSubsODC__c</formula>
+        <name>SubsBaseline</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>ThresholdField1</fullName>
         <field>EAThresholdField1__c</field>
         <formula>CASE( IncentivePlan__r.ThresholdBaseline__c,
@@ -1457,10 +1559,11 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         </actions>
         <active>true</active>
         <description>16Notify Approver 1 of budget change significantly impacting baseline (Fixed Price plan only)</description>
-        <formula>AND(
-   ISPICKVAL(IncentivePlan__r.ContractType__c, &quot;Fixed Price&quot;),
-   ISCHANGED( BaselineGrossMargin__c ),
-   GM_Change__c &gt; IncentivePlan__r.VarianceAlert__c
+        <formula>AND(PlanType__c = &quot;Fixed Price&quot;,
+PRIORVALUE(IncentivePlan__c) &lt;&gt;&quot;&quot;,
+ISPICKVAL( EnrollmentStatus__c ,&quot;Enrolled&quot;), 
+   ISCHANGED( BaselineGMofNSR__c),
+   GM_Change__c &gt; IncentivePlanVarianceAlert__c
     )</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
@@ -1497,7 +1600,7 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <criteriaItems>
             <field>EnrollmentPlan__c.ApplicationType__c</field>
             <operation>equals</operation>
-            <value>ENR,CCR</value>
+            <value>ENR</value>
         </criteriaItems>
         <description>3Notify PM of project to review, NOT on Payment Type Record ID</description>
         <triggerType>onCreateOnly</triggerType>
@@ -1564,14 +1667,15 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
             <name>Notify_Approver_1_of_change_in_proposed_baseline</name>
             <type>Alert</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <description>Notify Approver 1 of change in proposed baseline (Baseline GM % or DSO Target) since submitted for approval</description>
-        <formula>AND
-(
+        <formula>OR(
+   LastModifiedBy.Id = Approver2__r.Id,
+   LastModifiedBy.Id = Approver3__r.Id ,
+AND(
    ISPICKVAL( IsInWorkflow__c , &apos;Yes&apos;),
    BaselineGrossMarginCaptured__c &lt;&gt;  BaselineGrossMargin__c,
-   ISPICKVAL(ConfirmBaseline__c , &apos;Yes&apos;)
-)</formula>
+   ISPICKVAL(ConfirmBaseline__c , &apos;Yes&apos;)))</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
@@ -1580,13 +1684,12 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
             <name>Notify_Approver_1_of_change_in_proposed_baseline</name>
             <type>Alert</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <description>Notify Approver 1 of change in proposed baseline (Baseline GM % or DSO Target) since submitted for approval</description>
-        <formula>AND
-   (
-    ISCHANGED(DSOTarget__c),
-    PRIORVALUE(DSOTarget__c )&lt;&gt;0
-    )</formula>
+        <formula>AND(OR( LastModifiedBy.Id =  Approver2__r.Id ,
+ LastModifiedBy.Id  =  Approver3__r.Id) ,
+AND(ISCHANGED(DSOTarget__c),
+    PRIORVALUE(DSOTarget__c )&lt;&gt;0))</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
@@ -1669,7 +1772,7 @@ NOT(ISNULL( Approver1__c ))
         <criteriaItems>
             <field>EnrollmentPlan__c.ApplicationType__c</field>
             <operation>equals</operation>
-            <value>ENR,CCR</value>
+            <value>ENR</value>
         </criteriaItems>
         <description>When the Enrollment Application is first created or enrolled, capture the actual financial metrics (ITD) from the Incentive Project (1 of 2 workflows) -currently points to At Inception</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
@@ -1718,7 +1821,7 @@ NOT(ISNULL( Approver1__c ))
         <criteriaItems>
             <field>EnrollmentPlan__c.ApplicationType__c</field>
             <operation>equals</operation>
-            <value>ENR,CCR</value>
+            <value>ENR</value>
         </criteriaItems>
         <description>When the Enrollment Application is first created or enrolled, capture the actual financial metrics (ITD) from the Incentive Project (2 of 2 workflows)</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
@@ -1779,7 +1882,7 @@ NOT(ISNULL( Approver1__c ))
         <criteriaItems>
             <field>EnrollmentPlan__c.ApplicationType__c</field>
             <operation>equals</operation>
-            <value>ENR,CCR</value>
+            <value>ENR</value>
         </criteriaItems>
         <description>When the Enrollment Application is first Created, or Enrolled, capture the APPROVED financial metrics from the Incentive Project</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
@@ -1824,7 +1927,7 @@ NOT(ISNULL( Approver1__c ))
         <criteriaItems>
             <field>EnrollmentPlan__c.ApplicationType__c</field>
             <operation>equals</operation>
-            <value>ENR,CCR</value>
+            <value>ENR</value>
         </criteriaItems>
         <description>When the Enrollment Application is first Created, or Enrolled, capture the APPROVED financial metrics from the Incentive Project</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
@@ -1841,6 +1944,10 @@ NOT(ISNULL( Approver1__c ))
         </actions>
         <actions>
             <name>Baseline_Gross_Margin_at_Snapshot</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Baseline_Gross_Revenue</name>
             <type>FieldUpdate</type>
         </actions>
         <actions>
@@ -1863,11 +1970,15 @@ NOT(ISNULL( Approver1__c ))
             <name>DTW_Complete_Snapshot</name>
             <type>FieldUpdate</type>
         </actions>
+        <actions>
+            <name>SubsBaseline</name>
+            <type>FieldUpdate</type>
+        </actions>
         <active>true</active>
         <criteriaItems>
             <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
             <operation>equals</operation>
-            <value>Pending PM Action,Enrolled</value>
+            <value>Pending PM Action</value>
         </criteriaItems>
         <criteriaItems>
             <field>EnrollmentPlan__c.TM1Migrated__c</field>
@@ -1881,10 +1992,39 @@ NOT(ISNULL( Approver1__c ))
         <criteriaItems>
             <field>EnrollmentPlan__c.ApplicationType__c</field>
             <operation>equals</operation>
-            <value>ENR,CCR</value>
+            <value>ENR</value>
         </criteriaItems>
-        <description>When the Enrollment Application is first Created, or Enrolled, capture the Baseline financial metrics from the Incentive Project</description>
-        <triggerType>onAllChanges</triggerType>
+        <description>When the Enrollment Application is first Created, capture the Baseline financial metrics from the Incentive Project.  Enrolled snapshot is done in trigger.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Capture BASELINE Snapshots %282%29</fullName>
+        <actions>
+            <name>Contingency_Baseline</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
+            <operation>equals</operation>
+            <value>Pending PM Action</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.TM1Migrated__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.PlanType__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.ApplicationType__c</field>
+            <operation>equals</operation>
+            <value>ENR</value>
+        </criteriaItems>
+        <description>When the Enrollment Application is first Created capture the Baseline financial metrics from the Incentive Project, enrolled is done in trigger.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>Capture BaselineGrossMargin%5F%5Fc</fullName>
@@ -2319,6 +2459,25 @@ AND(
             <operation>equals</operation>
             <value>Yes</value>
         </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Notify of Participant Change 3</fullName>
+        <actions>
+            <name>Participant_Change</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>Set_EPChanged_to_No</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>false</active>
+        <description>If approver 3 changes participant(s) notify PM, approver 1 &amp; 2 and set EPChanged to no.
+
+EPChanged field = yes
+Last Modified = Approver3</description>
+        <formula>AND(ISPICKVAL(EPChanged__c, &quot;Yes&quot;),
+ LastModifiedID__c =  Approver3__r.Id)</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>

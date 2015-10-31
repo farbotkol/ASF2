@@ -16,14 +16,10 @@ trigger INC_EnrollmentPlan_AllEvents on EnrollmentPlan__c (
 	    		if(Trigger.isUpdate && INC_EnrollmentPlanTriggers.beforeRunOnce()){
 	    			System.debug(logginglevel.error,'creating createApprovalComments');
 	    			handler.createEnrollmentCommentsFromExceptionandMA(trigger.new);
-	    			handler.finishenrollmentOfChangeRequest(trigger.newMap,trigger.oldMap);
-                    
-                    
-                    //Check Approval process
-                    //Harold to add.
-                    //
+	    		    
                     System.debug(logginglevel.error,'CurrentForm owner');
                     handler.setIDOnStatusChange(trigger.newMap, trigger.OldMap);
+                    handler.setSnapShotValues(trigger.NewMap,Trigger.OldMap);
                     
 	    		}
 
@@ -45,8 +41,16 @@ trigger INC_EnrollmentPlan_AllEvents on EnrollmentPlan__c (
                                                   
                     	lEnrollmentParticipantToUpdate.add(oEnrollmentParticipant);
                     }
-                    
-                    update lEnrollmentParticipantToUpdate;
+                    System.debug(logginglevel.error,'Updateing enr');
+                    Try{
+                    	update lEnrollmentParticipantToUpdate;
+                    }
+                    catch(Exception e){
+                    	System.debug('Catching error ' +  e.getMessage());
+                    }
+                    System.Debug('finishenrollmentOfChangeRequest');
+                    handler.finishenrollmentOfChangeRequest(trigger.newMap,trigger.oldMap);
+                
 	 			}
 	 		}
 		}

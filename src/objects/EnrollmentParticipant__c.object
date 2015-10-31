@@ -45,6 +45,7 @@
         <type>Default</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
+    <customHelpPage>INC_HelpRedirect</customHelpPage>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
@@ -53,6 +54,16 @@
     <enableReports>true</enableReports>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fieldSets>
+        <fullName>Track_Change</fullName>
+        <description>Used to track changes in Participants</description>
+        <displayedFields>
+            <field>TargetIncentivePoolAllocated__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>Track Change</label>
+    </fieldSets>
     <fields>
         <fullName>Approver1EMail__c</fullName>
         <externalId>false</externalId>
@@ -282,7 +293,7 @@ CASE( EnrollmentPlan__r.IncentivePlan__r.ContractType__c ,
 )</description>
         <externalId>false</externalId>
         <formula>TargetIncentivePoolAllocated__c * CASE(EnrollmentPlan__r.IncentivePlan__r.ContractType__c, &quot;Fixed Price&quot;, EnrollmentPlan__r.EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EnrollmentPlan__r.EstimatedPoolBaseline10__c,1)</formula>
-        <label>Estimated Payout</label>
+        <label>Sample Payout</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -447,7 +458,7 @@ CASE( EnrollmentPlan__r.IncentivePlan__r.ContractType__c ,
         <label>Payment Adjustments</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>0</scale>
+        <scale>2</scale>
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
@@ -606,7 +617,7 @@ CASE( EnrollmentPlan__r.IncentivePlan__r.ContractType__c ,
         <externalId>false</externalId>
         <inlineHelpText>Target % Incentive Pool Allocated</inlineHelpText>
         <label>Target %</label>
-        <precision>2</precision>
+        <precision>3</precision>
         <required>false</required>
         <scale>0</scale>
         <trackHistory>true</trackHistory>
