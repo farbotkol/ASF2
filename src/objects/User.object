@@ -29,6 +29,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>LinkToSetupUserDetailAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>ManagePermSetsAction</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -330,6 +334,41 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>DEManager__c</fullName>
+        <description>Delivery Excellence Manager, populated from HR Insight.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Delivery Excellence Manager, populated from HR Insight.</inlineHelpText>
+        <label>DE Manager</label>
+        <relationshipName>DEMgr</relationshipName>
+        <restrictedAdminField>false</restrictedAdminField>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Hierarchy</type>
+    </fields>
+    <fields>
+        <fullName>DTWApplicationLevel__c</fullName>
+        <description>Denotes the highest level this user plays in the DTW Application process</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Denotes the highest level this user plays in the DTW Application process</inlineHelpText>
+        <label>DTW Application Level</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Corporate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DTW Admin</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DTW Approver</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Date_Proxy_Added__c</fullName>
         <description>Date when the current Profile Proxy was added to this user</description>
         <externalId>false</externalId>
@@ -517,23 +556,7 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Construction Services</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Corporate</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
                 <fullName>Europe</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>India</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Management Services</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -996,6 +1019,14 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>NormalTransDateTime__c</fullName>
+        <externalId>false</externalId>
+        <label>Normal Trans Date Time</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
         <fullName>OfficeAddress1__c</fullName>
         <externalId>false</externalId>
         <label>Office Address 1</label>
@@ -1097,6 +1128,17 @@
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>PLManager__c</fullName>
+        <description>Regional P&amp;L Manager populated from HR Insight.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Regional P&amp;L Manager populated from HR Insight.</inlineHelpText>
+        <label>P&amp;L Manager</label>
+        <relationshipName>PLMember</relationshipName>
+        <restrictedAdminField>false</restrictedAdminField>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Hierarchy</type>
+    </fields>
+    <fields>
         <fullName>PL_Manager__c</fullName>
         <externalId>false</externalId>
         <label>PL Manager</label>
@@ -1191,6 +1233,22 @@
         <restrictedAdminField>false</restrictedAdminField>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Hierarchy</type>
+    </fields>
+    <fields>
+        <fullName>ProjectAccountantAuthority__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Project Accountant Authority</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ProjectManagerAuthority__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Project Manager Authority</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>Project_Approver__c</fullName>
@@ -1361,6 +1419,16 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>ShaKey__c</fullName>
+        <externalId>false</externalId>
+        <label>ShaKey</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Shared_Services_Is_Executive__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Is the current User a senior executive?  This will affect the prioritization of incoming requests for help.</description>
@@ -1381,17 +1449,6 @@
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
-
-        <fullName>ssh_AECOM_Email__c</fullName>
-        <externalId>true</externalId>
-        <label>Shared Services AECOM Email</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Email</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-
         <fullName>Status__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Status of the overall profile</inlineHelpText>
@@ -1581,26 +1638,14 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>Business_Group__c</fullName>
+        <fullName>isDoaAdmin__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This box should be checked for all DoA Admins managing the DoA Approval queue. This box will enable users to access the admin view of DoA</description>
         <externalId>false</externalId>
-        <label>Business Group</label>
-        <length>55</length>
-        <required>false</required>
+        <inlineHelpText>This box should be checked for all DoA Admins managing the DoA Approval queue. This box will enable users to access the admin view of DoA</inlineHelpText>
+        <label>isDoa Admin</label>
         <trackFeedHistory>false</trackFeedHistory>
-        <type>Text</type>
-        <unique>false</unique>
-        <inlineHelpText>Employee's Business Group</inlineHelpText>
-    </fields>
-    <fields>
-        <fullName>Operating_Group__c</fullName>
-        <externalId>false</externalId>
-        <label>Operating Group</label>
-        <length>55</length>
-        <required>false</required>
-        <trackFeedHistory>false</trackFeedHistory>
-        <type>Text</type>
-        <unique>false</unique>
-        <inlineHelpText>Employee's Business Group</inlineHelpText>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>smartSearchMyRecentSearch__c</fullName>
@@ -2700,7 +2745,7 @@
     <sharingModel>Read</sharingModel>
     <validationRules>
         <fullName>Blank_for_URS</fullName>
-        <active>false</active>
+        <active>true</active>
         <description>Make sure URS employees are not filling in this field</description>
         <errorConditionFormula>AND(URS_Employee__c =TRUE,
 ISBLANK(EmployeeNumber) =FALSE)</errorConditionFormula>
