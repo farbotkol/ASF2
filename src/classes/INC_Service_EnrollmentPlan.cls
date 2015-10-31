@@ -96,64 +96,87 @@ public without sharing class INC_Service_EnrollmentPlan {
                                                         , CurrencyIsoCode
                                                         , RoutingMemberRule__c
                                                         , DTWAdmin__c
+                                                        , ProjectID__c
                                                         ,(Select ID, Name from Enrollment_Plans__r)
                                                From IncentiveProject__c 
                                                Where ID =: setIncentiveID ]);
     }
 
     public static list<EnrollmentPlan__c> getEnrollmentPlan(set<id> EnrollmentPlans){
-        return [Select ID
-                         , Name
-                         , ProjectStartDate__c
-                         , ScheduledFinishDate__c
-                         , MaxIncentivePool__c
-                         , EstimatedIncentivePool__c
-                         , NSRBudget__c
-                         , minparticipantpayout__c
-                         , Approver1__c
-                         , Approver2__c
-                         , Approver3__c
-                         , CustomerName__c
-                         , ProjectGeography__c
-                         , FPPOverallEligibility_c__c
-                         , TMPlanOverallEligibility__c
-                         , DPEAdjustment__c
-                         , GrossMarginAdjustmentOld__c
-                         , NSRAdjustment__c
-                         , EnrollmentStatus__c
-                         , IPProjectManager__c
-                         , ContractType__c
-                         , IPFreqofPayment__c   
-                         , IPNumberofPayments__c
-                         , IPYearsRemaining__c
-                         , IPComment__c
-                         , IncentivePlan__c
-                         , IncentivePlan__r.ContractType__c
-                         , IncentiveProject__r.GeographyDescription__c
-                         , EstimatedPoolBaseline__c
-                         , EstimatedPoolBaseline10__c
-                         , IncentiveProject__r.RegionDescription__c
-                         , IncentiveProject__r.CustomerName__c
-                         , IncentiveProject__r.CurrencyIsoCode
-                         , MetricWarningActive__c
-                         , IncentiveProject__r.ContractTypeShortName__c   
-                         , IncentiveProject__r.ContractType__c                         
-                         , IncentiveProject__r.Name
-                         , IncentiveProject__r.SuperGeography__c
-                         , ApprovedRevenueBudget__c
-                         , ApprovalRecentlyProcessed__c
-                         , UnallocatedAmount__c
-                         , UnallocatedPercent__c
-                         , EstimatedIncentivePoolEAC__c
-                         , AppIicationIssues__c
-                         , FinalIncentivePoolAdjusted__c
-                         , TotalPaymentAmount__c
-                         , BaselineNMofNSR__c
-                         , ApplicationIssuesPay__c
-                		 , ApplicationType__c
-                From EnrollmentPlan__c
-                where id =: EnrollmentPlans];
+        map<id,EnrollmentPlan__c> mapPlans = INC_Service_EnrollmentPlan.getEnrollmentPlanMap(EnrollmentPlans);
+        return mapPlans.Values();
     }
+
+    public static map<id,EnrollmentPlan__c> getEnrollmentPlanMap(set<id> EnrollmentPlans){
+      map<id,EnrollmentPlan__c> mapReturn = new map<id,EnrollmentPlan__c>([Select ID
+                          , Name
+                          , RecordTypeId
+                          , IncrementalGMvsBaseline__c
+                          , ProjectStartDate__c
+                          , ScheduledFinishDate__c
+                          , MaxIncentivePool__c
+                          , EstimatedIncentivePool__c
+                          , NSRBudget__c
+                          , Minparticipantpayout__c
+                          , Approver1__c
+                          , Approver2__c
+                          , Approver3__c
+                          , CustomerName__c
+                          , ProjectGeography__c
+                          , FPPOverallEligibility_c__c
+                          , TMPlanOverallEligibility__c
+                          , DPEAdjustment__c
+                          , GrossMarginAdjustmentOld__c
+                          , NSRAdjustment__c
+                          , EnrollmentStatus__c
+                          , IPProjectManager__c
+                          , ContractType__c
+                          , IPFreqofPayment__c   
+                          , IPNumberofPayments__c
+                          , IPYearsRemaining__c
+                          , IPComment__c
+                          , IncentivePlan__c
+                          , IncentivePlan__r.ContractType__c
+                          , IncentiveProject__r.GeographyDescription__c
+                          , EstimatedPoolBaseline__c
+                          , EstimatedPoolBaseline10__c
+                          , IncentiveProject__r.RegionDescription__c
+                          , IncentiveProject__r.CustomerName__c
+                          , IncentiveProject__r.CurrencyIsoCode
+                          , MetricWarningActive__c
+                          , IncentiveProject__r.ContractTypeShortName__c   
+                          , IncentiveProject__r.ContractType__c                         
+                          , IncentiveProject__r.Name
+                          , IncentiveProject__r.SuperGeography__c
+                          , ApprovedRevenueBudget__c
+                          , ApprovalRecentlyProcessed__c
+                          , UnallocatedAmount__c
+                          , UnallocatedPercent__c
+                          , EstimatedIncentivePoolEAC__c
+                          , AppIicationIssues__c
+                          , FinalIncentivePoolAdjusted__c
+                          , TotalPaymentAmount__c
+                          , BaselineNMofNSR__c
+                          , ApplicationIssuesPay__c
+                          , CurrencyIsoCode
+                          , ApplicationExceptionsFP__c
+                          , ApplicationExceptionsTM__c
+                          , Application_Exceptions__c
+                          , StatusNumber__c
+                          , IncentiveProject__r.ProjectManager__c
+                          , WizardStatus__c
+                          , ApplicationIssues2__c
+                          , InterimPaymentRequested__c
+                          , ApplicationExceptionsPay__c
+                          , IncentiveProject__r.DTWAdmin__c
+                          , ForecastSubsandODCBudget__c
+                     , ApplicationType__c
+                From EnrollmentPlan__c
+                where id =: EnrollmentPlans]);
+
+      return mapReturn;
+    }
+
 
     public static string cloneEnrollment(ID EnrollmentPlan,requestType RT){
       
@@ -217,7 +240,7 @@ public without sharing class INC_Service_EnrollmentPlan {
       
 
       String sName = RT == requestType.CHANGE?'CCR-':'PAY-';
-      sName += sNumber + ': ' + mapProjects.get(INC_PROJ.ID).Name;
+      sName += sNumber + ': ' + mapProjects.get(INC_PROJ.ID).ProjectID__c + ':' + mapProjects.get(INC_PROJ.ID).Name;
       System.Debug(logginglevel.error,'plan name: ' + sName);
       oEnroll.Name = sName;
       oEnroll.IncentiveProject__c = currentPlan.IncentiveProject__c;
@@ -225,14 +248,25 @@ public without sharing class INC_Service_EnrollmentPlan {
       oEnroll.ParentApplication__c = currentPlan.ID;
       oEnroll.ApplicationType__c = RT == requestType.CHANGE?'CCR':'PAY';
       oEnroll.CurrencyIsoCode = currentPlan.IncentiveProject__r.CurrencyIsoCode;
-       oEnroll.DTWAdmin__c = mapProjects.get(currentPlan.IncentiveProject__c).DTWAdmin__c;
-     
+      oEnroll.DTWAdmin__c = mapProjects.get(currentPlan.IncentiveProject__c).DTWAdmin__c;
+      if(RT == requestType.Change){
+        oEnroll.WizardStatus__c = 'Step 3';
+      }
+
       for(FieldSetMember fsm: listFields){
         if(currentPlan.get(fsm.getFieldPath()) != null){
           oEnroll.put(fsm.getFieldPath(), currentPlan.get(fsm.getFieldPath()));
         }
       }
 
+      /*if(RT == requestType.CHANGE && oEnroll.IncentivePlan__r.ContractType__c == 'Time & Material'){
+        oEnroll.GrossRevenueAdjustment__c = null;
+        oEnroll.GrossRevenueScopeChange__c = null;
+        oEnroll.SubsODCsScopeChange__c = null;
+        oEnroll.SubsODCsAdjustment__c = null;
+        oEnroll.ContingencyScopeChange__c = null;
+        oEnroll.ContingencyAdjustment__c = null;
+      }*/
 
       System.savePoint sp = Database.setSavePoint();
       try{
@@ -424,11 +458,11 @@ public without sharing class INC_Service_EnrollmentPlan {
             EnrollmentPlan__c oEnroll = new EnrollmentPlan__c();
             System.Debug(logginglevel.error,'bRevive ' + bRevive);
             if(!bRevive){
-              oEnroll.Name = 'ENR: ' + mapProjects.get(oIncent.ID).Name;
+              oEnroll.Name = 'ENR: ' + mapProjects.get(oIncent.ID).ProjectID__c + ':' + mapProjects.get(oIncent.ID).Name;
             }else{
               Integer iCnt = oIncent.Enrollment_Plans__r.size();
               if(iCnt == null || iCnt == 0){
-                oEnroll.Name = 'ENR: ' + mapProjects.get(oIncent.ID).Name;
+                oEnroll.Name = 'ENR: ' + mapProjects.get(oIncent.ID).ProjectID__c + ':' + mapProjects.get(oIncent.ID).Name;
               }else{
                   String sNumber;
                   if(iCnt < 10){
@@ -436,7 +470,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                   }else{
                     sNumber = String.ValueOf(iCnt);
                   }
-                oEnroll.Name = 'ENR-' + sNumber + ':' + mapProjects.get(oIncent.ID).Name;
+                oEnroll.Name = 'ENR-' + sNumber + ':' + mapProjects.get(oIncent.ID).ProjectID__c + ':' + mapProjects.get(oIncent.ID).Name;
               }
             }
             oEnroll.IncentiveProject__c = oIncent.ID;
@@ -608,7 +642,9 @@ public without sharing class INC_Service_EnrollmentPlan {
         System.Debug(logginglevel.error,'Createing enrollment comments');
         list<Enrollment_Comments__c> listNewComments = new list<Enrollment_Comments__c>();
         list<Enrollment_Comments__c> listComments = new list<Enrollment_Comments__c>();
-        
+        map<id,EnrollmentPlan__c> mapPlans = INC_Service_EnrollmentPlan.getEnrollmentPlanMap(enrollmentplans);
+
+
         if(enrollmentPlans != null && enrollmentPlans.size() > 0){
           //first get all existing comments 
           map<id,list<Enrollment_Comments__c>> mapComments = getCommentsbyEnrollmentPlan(enrollmentPlans);
@@ -643,6 +679,11 @@ public without sharing class INC_Service_EnrollmentPlan {
                           if(processStep.StepStatus == 'Rejected'){
                             sType = 'Rejection';
                             sFlag = 'Yes';
+                          }else{
+                            if(mapPlans.get(enrollmentPlanID).ApplicationType__c == 'OPT'){
+                              sType = 'Rejection';
+                              sFlag = 'Yes';
+                            }
                           }
 
                           String sMessage = processStep.Comments!=null?processStep.Comments:'Please enter a comment.';
@@ -669,7 +710,12 @@ public without sharing class INC_Service_EnrollmentPlan {
                       if(processStep.StepStatus == 'Rejected'){
                         sType = 'Rejection';
                         sFlag='Yes';
-                      }
+                      }else{
+                            if(mapPlans.get(enrollmentPlanID).ApplicationType__c == 'OPT'){
+                              sType = 'Rejection';
+                              sFlag = 'Yes';
+                            }
+                        }
                       String sMessage = processStep.Comments !=null?processStep.Comments:'Please enter a comment.';
                         System.Debug(logginglevel.error,'Creating comments');
                         if((sType=='Approved' && sMessage != 'Please enter a comment.') || 

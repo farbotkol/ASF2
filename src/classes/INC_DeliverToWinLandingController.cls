@@ -135,7 +135,7 @@ public with sharing class INC_DeliverToWinLandingController {
 
     	//strSOQL += 'ID, EnrollmentPlan__c FROM IncentiveProject__c WHERE EnrollmentPlan__c !=null and OwnerId=:struserid and X60DaysClosed__c != \'Yes\' ORDER BY EnrollmentPlan__r.FormEnrollmentDate__c  DESC limit 500';
 
-        strSOQL += 'ID, EnrollmentPlan__c FROM IncentiveProject__c WHERE EnrollmentPlan__c !=null and X60DaysClosed__c != \'Yes\' and EnrollmentPlan__c IN:sIncP  ORDER BY EnrollmentPlan__r.FormEnrollmentDate__c  DESC limit 500';
+        strSOQL += 'ID, EnrollmentPlan__c,ChangeRequest__c FROM IncentiveProject__c WHERE EnrollmentPlan__c !=null and X60DaysClosed__c != \'Yes\' and EnrollmentPlan__c IN:sIncP  ORDER BY EnrollmentPlan__r.FormEnrollmentDate__c  DESC limit 500';
 
     	lstIP = (list<IncentiveProject__c>)Database.query(strSOQL);   	
     }
@@ -192,7 +192,7 @@ public with sharing class INC_DeliverToWinLandingController {
     		lstEPPending.put(PI.targetObjectId, PI);
     	}
 
-    	lstEnrollmentPlan = [select id, name, EnrollmentStatus__c, ProjectID__c, ApplicationType__c, FormStatusAge__c, IncentiveProject__r.GRBacklog__c from EnrollmentPlan__c where id IN:lstEPPending.keyset() order by FormStatusAge__c desc limit 1000];
+    	lstEnrollmentPlan = [select id, name, EnrollmentStatus__c, ProjectID__c, ApplicationType__c, FormStatusAge__c, IncentiveProject__r.GRBacklog__c, WorkflowOwner__c from EnrollmentPlan__c where id IN:lstEPPending.keyset() order by FormStatusAge__c desc limit 1000];
 
     	for(EnrollmentPlan__c ep:lstEnrollmentPlan){
     		lstApprovalItem.add(new ApprovalItem(ep, lstEPPending.get(ep.id)));

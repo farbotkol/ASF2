@@ -155,7 +155,7 @@
         <description>11Notify Approver 1 of project closure and payment form to complete</description>
         <formula>AND(
     NOT(ISBLANK(EnrollmentApprover1__c )),
-    NOT(ISBLANK(EnrollmentPlan__c )),
+    ISPICKVAL( EnrollmentPlan__r.EnrollmentStatus__c, &quot;Enrolled&quot;), 
     OR 
       (
        ProjectStatus__c=&quot;CLOSED - Closed&quot;,

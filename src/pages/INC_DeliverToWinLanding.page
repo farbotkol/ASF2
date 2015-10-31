@@ -22,6 +22,10 @@
 									<apex:outputText value="{!item.projectNum}" />
 								</apex:column>
 								<apex:column >
+									<apex:facet name="header">Form Owner</apex:facet>
+									<apex:outputText value="{!item.oEP.WorkflowOwner__c}" />
+								</apex:column>
+								<apex:column >
 									<apex:facet name="header">Gross Revenue Backlog</apex:facet>
 									<apex:outputField value="{!item.oEP.IncentiveProject__r.GRBacklog__c}"/>
 								</apex:column>
@@ -91,7 +95,10 @@
 										<apex:facet name="header">{!field.label}</apex:facet>
 										<apex:outputField value="{!proj[field]}" rendered="{!field != 'Name'}" />
 										<!--<apex:outputLink value="/{!proj.id}" rendered="{!field == 'Name'}">{!proj[field]}</apex:outputLink>-->
-										<apex:outputLink value="/apex/INC_ShowEnrollmentMetrics?id={!proj.EnrollmentPlan__c}&loc=3" rendered="{!field == 'Name'}">{!proj[field]}</apex:outputLink>
+										<apex:outputPanel rendered="{!field == 'Name'}">
+											<apex:outputLink value="/apex/INC_ShowEnrollmentMetrics?id={!proj.EnrollmentPlan__c}&loc=3"  rendered="{!proj.ChangeRequest__c = null}">{!proj[field]}</apex:outputLink>
+											<apex:outputLink value="/apex/INC_ShowEnrollmentMetrics?id={!proj.ChangeRequest__c}&loc=3"  rendered="{!NOT(proj.ChangeRequest__c = null)}">{!proj[field]}</apex:outputLink>
+										</apex:outputPanel>
 									</apex:column>
 								</apex:repeat>
 
@@ -148,6 +155,10 @@
 								<apex:column >
 									<apex:facet name="header">Project Number</apex:facet>
 									<apex:outputText value="{!item.projectNum}" />
+								</apex:column>
+								<apex:column >
+									<apex:facet name="header">Form Owner</apex:facet>
+									<apex:outputText value="{!item.oEP.WorkflowOwner__c}" />
 								</apex:column>
 								<apex:column >
 									<apex:facet name="header">Gross Revenue Backlog</apex:facet>
@@ -224,7 +235,10 @@
 							<apex:column >
 								<apex:facet name="header">{!field.label}</apex:facet>
 								<apex:outputField value="{!proj[field]}" rendered="{!field != 'Name'}" />
-								<apex:outputLink value="/apex/INC_ShowEnrollmentMetrics?id={!proj.EnrollmentPlan__c}&loc=3" rendered="{!field == 'Name'}">{!proj[field]}</apex:outputLink>
+								<apex:outputPanel rendered="{!field == 'Name'}">
+									<apex:outputLink value="/apex/INC_ShowEnrollmentMetrics?id={!proj.EnrollmentPlan__c}&loc=3"  rendered="{!proj.ChangeRequest__c = null}">{!proj[field]}</apex:outputLink>
+									<apex:outputLink value="/apex/INC_ShowEnrollmentMetrics?id={!proj.ChangeRequest__c}&loc=3"  rendered="{!NOT(proj.ChangeRequest__c = null)}">{!proj[field]}</apex:outputLink>
+								</apex:outputPanel>
 							</apex:column>
 						</apex:repeat>
 

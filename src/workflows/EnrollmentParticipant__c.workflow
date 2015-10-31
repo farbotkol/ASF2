@@ -221,6 +221,11 @@
             <operation>equals</operation>
             <value>True</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
+            <operation>equals</operation>
+            <value>Enrolled</value>
+        </criteriaItems>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>

@@ -70,10 +70,6 @@
                 <type>FieldUpdate</type>
             </action>
             <action>
-                <name>Notify_PM_that_an_application_rejected_back_for_further_action</name>
-                <type>Alert</type>
-            </action>
-            <action>
                 <name>Rejection_Date</name>
                 <type>FieldUpdate</type>
             </action>
@@ -150,12 +146,12 @@
                 <type>FieldUpdate</type>
             </action>
             <action>
-                <name>Notify_AP1_that_an_application_rejected_back_for_further_action</name>
-                <type>Alert</type>
-            </action>
-            <action>
                 <name>Rejection_Date</name>
                 <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>RLK_Test</name>
+                <type>Alert</type>
             </action>
             <action>
                 <name>Set_EA_Status_Rejected_for_Correction</name>
@@ -233,10 +229,6 @@
                 <type>FieldUpdate</type>
             </action>
             <action>
-                <name>Notify_AP1_that_an_application_rejected_back_for_further_action</name>
-                <type>Alert</type>
-            </action>
-            <action>
                 <name>Rejection_Date</name>
                 <type>FieldUpdate</type>
             </action>
@@ -312,10 +304,6 @@
                 <type>FieldUpdate</type>
             </action>
             <action>
-                <name>Notify_AP2_that_an_application_rejected_back_for_further_action</name>
-                <type>Alert</type>
-            </action>
-            <action>
                 <name>Rejection_Date</name>
                 <type>FieldUpdate</type>
             </action>
@@ -359,7 +347,7 @@
                 <type>user</type>
             </approver>
             <approver>
-                <name>mindy.amster@aecom.com.dev</name>
+                <name>mindy.amster@aecom.com</name>
                 <type>user</type>
             </approver>
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
@@ -416,10 +404,6 @@
                 <type>FieldUpdate</type>
             </action>
             <action>
-                <name>Send_Notification_to_EA_PM_when_EA_Status_is_Enrolled</name>
-                <type>Alert</type>
-            </action>
-            <action>
                 <name>Set_EA_Status_to_Enrolled</name>
                 <type>FieldUpdate</type>
             </action>
@@ -464,10 +448,10 @@
         </rejectionActions>
     </approvalStep>
     <description>Approval process for Enrollment Applications and Change Request</description>
-    <emailTemplate>DTW_Project_Incentives/ApprovalRequestEnrollmentParticipants</emailTemplate>
+    <emailTemplate>DTW_Project_Incentives/ENR_CCR_Approval_Notification</emailTemplate>
     <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
     <entryCriteria>
-        <formula>AND(TEXT(EnrollmentStatus__c) = &quot;Pending PM Action&quot;, 
+        <formula>AND(TEXT(EnrollmentStatus__c) = &quot;Pending PM Action&quot;,
 OR(TEXT( ApplicationType__c ) = &quot;CCR&quot;, TEXT( ApplicationType__c ) = &quot;ENR&quot;),
 OR(AND(OR(ISNULL(AppIicationIssues__c), AppIicationIssues__c =&quot;&quot;),OR(ISNULL( ApplicationIssues2__c ),ApplicationIssues2__c=&quot;&quot;))))</formula>
     </entryCriteria>
@@ -498,10 +482,6 @@ OR(AND(OR(ISNULL(AppIicationIssues__c), AppIicationIssues__c =&quot;&quot;),OR(I
         <action>
             <name>Is_In_Workflow_No</name>
             <type>FieldUpdate</type>
-        </action>
-        <action>
-            <name>Notify_PM_AP1_AP2_that_an_Application_has_been_rejected_FINAL</name>
-            <type>Alert</type>
         </action>
         <action>
             <name>Set_EA_Status_to_Rejected</name>

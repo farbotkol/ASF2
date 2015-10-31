@@ -1,6 +1,11 @@
-<apex:page showHeader="true" sidebar="true" standardcontroller="EnrollmentPlan__c" extensions="INC_EnrollmentApp_Controller" action="{!updateCommentsfromApprovals}">
+<apex:page showHeader="true" sidebar="true" standardcontroller="EnrollmentPlan__c" extensions="INC_EnrollmentApp_Controller" tabStyle="EnrollmentPlan__c" standardStyleSheets="true" action="{!updateCommentsfromApprovals}">
 <apex:form id="fullpage">
 <style>
+
+  .projmessage{
+    border: 1px solid red;
+    background-color: #FFFFCC;
+  }
 	.centersection pbSubheader{
 		text-align: center;
 	}
@@ -229,7 +234,8 @@
     
 
 </script>
-<apex:actionFunction name="checkappstatus" action="{!checkStatus}" rerender="step3buttons" />
+<apex:sectionHeader title="Enrollment Application" subtitle="{!EnrollmentPlan__c.Name}" id="sectionheader" help="http://my.aecomnet.com/portal/site/Intranet/menuitem.4bb5ad8d27dddb3d13bd6e20c43611ca/?vgnextoid=4699bc2ceae8e410VgnVCM100000089e1bacRCRD&vgnextchannel=c7e1b267a0f9c410VgnVCM100000089e1bacRCRD&vgnextfmt=default"/>
+<apex:actionFunction name="checkappstatus" action="{!checkStatus}" rerender="step3buttons, step3buttonsccr" />
 <apex:actionFunction name="submitfromwizardjava" action="{!submitfromwizard}" />
 </apex:outputPanel>	
 <apex:outputPanel id="tabs" rendered="{!showWizard}">
@@ -243,8 +249,9 @@
 
 	  </apex:outputPanel>
 	        		<div class="instructions">
+	        		<apex:outputPanel rendered="{!EnrollmentPlan__c.ApplicationType__c ='ENR'}">
 	        			<p>
-	        				As the project manager you are best suited to initiate the Deliver to Win application.  This wizard will assist you in preparing the  application for approval 
+	        				As the project manager you are best suited to initiate the Deliver to Win application.  This wizard will assist you in preparing the the application for approval.  Visit the Approver Resources on the DTW webpage for more information.
 	        				<ul class="instructionlist" >
 							<li>Step 1- Review Master Data, ensuring the correct contract type is identified, and that the geo and department info look correct.
 							</li>
@@ -255,15 +262,22 @@
 							Step 3- Propose key project personnel for participation and propose target incentive pool allocations.  
 							</li>
 							<li>
-							Step 4- Submit Application  
+							Step 4- Click "Propose Enrollment" to submit application or click "Not Suitable for Enrollment" if you do not wish to enroll this project in the Deliver to Win incentive plan
 							</li>
 							</ul>
 	        			</p>
+	        		</apex:outputPanel>
+	        		<apex:outputPanel rendered="{!EnrollmentPlan__c.ApplicationType__c ='CCR'}">
+	        			<p>
+	        				As the project manager you are best suited to propose any necessary Deliver to Win Participant changes on this project.  Please add new Participants below.  Where necessary, Participant targets may be changed.  If a Participant has rolled off the project, please populate their End Date on the project, and note that they may still be eligible for award.  Use the comment box to provide rationale for any proposed changes..
+	        				
+	        			</p>
+	        		</apex:outputPanel>
 	        		</div>
 		<apex:tabPanel switchType="client" value="{!activeTab}" id="theTabPanel">
-	        <apex:tab label="Step 1 - Review Project Master Data" name="step1" id="tabOne">
+	        <apex:tab label="Step 1 - Review Project Master Data" name="step1" id="tabOne" rendered="{!EnrollmentPlan__c.ApplicationType__c='ENR'}">
 	       		<div class="buttonwrapper">
-	        	<apex:commandButton styleclass="nextbtn" action="{!proposeOptOut}" value="Not Suitable for Enrollment"  onclick="return confirm('Are you sure you want to Opt-out?');"/>
+	        	<apex:commandButton styleclass="nextbtn" action="{!proposeOptOut}" value="Not Suitable for Enrollment"  onclick="return confirm('Are you sure you want to Opt-out?');" title="If you do not wish to enroll this project in the Deliver to Win incentive plan, you may recommend excluding the project from DTW.  Your recommendation will be forwarded to a Plan Approver for review."/>
 	        	<apex:commandButton styleclass="nextbtn" action="{!steptwo}" value="Propose Enrollment" reRender="tabs"/>
 	        	</div>
 	        	   <apex:pageBlockSection collapsible="false" showHeader="True" columns="2" Title="Project Master Data">
@@ -279,9 +293,11 @@
 					  <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__r.ProjectAccountant__c}"/>
 					  <apex:outputField value="{!EnrollmentPlan__c.BusinessLine__c}"/>
 					  <apex:outputField value="{!EnrollmentPlan__c.OrgCarryingOutProject__c}"/>
+					  <apex:outputText value="" />
+					  <apex:outputField label="Next Approver" value="{!EnrollmentPlan__c.Approver1__c}"/>
 				</apex:pageBlockSection>
 	        </apex:tab>
-	        <apex:tab label="Step 2 - Choose Incentive Plan" name="step2" id="tabTwo">
+	        <apex:tab label="Step 2 - Choose Incentive Plan" name="step2" id="tabTwo" rendered="{!EnrollmentPlan__c.ApplicationType__c='ENR'}">
 	        <div class="buttonwrapper">
 	        	<apex:commandButton styleclass="nextbtn" action="{!stepone}" value="Back" reRender="tabs" />
 	        	<apex:commandButton styleclass="nextbtn" action="{!stepthree}" value="Next" reRender="tabs" />
@@ -290,19 +306,33 @@
 	        	<c:INC_ChoseIncentivePlanComponent fromWizardVal="Yes"/>
 	        	</apex:outputPanel>
 	        </apex:tab>
-	        <apex:tab label="Step 3 - Participant Allocations" name="step3" id="stepTwo">
+	        <apex:tab label="Step 3 - Participant Allocations" name="step3" id="stepTwo" rendered="{!EnrollmentPlan__c.ApplicationType__c='ENR'}">
 	         <div>
 	        	<apex:outputText escape="false" styleclass="submitMessage" value="{!sSubmitMessage}" />
 	        </div>
 	         <div class="buttonwrapper">
 	         <apex:outputpanel id="step3buttons">
-	        	<apex:commandButton styleclass="nextbtn" action="{!steptwo}" value="Back" reRender="tabs"/>
+	        	<apex:commandButton styleclass="nextbtn" action="{!steptwo}" value="Back" reRender="tabs" />
 	        	<apex:commandButton styleclass="nextbtn" action="{!finishwizard}" value="Finish and Review App" reRender="tabs" oncomplete="return finishWizardMsg();"/>
 	        	<apex:commandButton styleclass="nextbtn" value="Submit for Approval" action="{!submitfromwizard}"  oncomplete="return submitMessage();" reRender="tabs, script" rendered="{!bShowWizardSubmit}"/> 
 	         </apex:outputPanel>
 	        </div>
 	        <apex:outputPanel rendered="{!activeTab = 'step3'}" >
-	        	<c:INC_EnrollmentParticipantComponent fromWizardVal="Yes"/>
+	      		<c:INC_EnrollmentParticipantComponent fromWizardVal="Yes"/>
+	        </apex:outputPanel>
+	        </apex:tab>
+	        <apex:tab label="Participant Allocations" name="step3" id="stepTwoccr" rendered="{!EnrollmentPlan__c.ApplicationType__c='CCR'}">
+	         <div>
+	        	<apex:outputText escape="false" styleclass="submitMessage" value="{!sSubmitMessage}" />
+	        </div>
+	         <div class="buttonwrapper">
+	         <apex:outputpanel id="step3buttonsccr">
+	        	<apex:commandButton styleclass="nextbtn" action="{!finishwizard}" value="Finish and Review App" reRender="tabs" oncomplete="return finishWizardMsg();"/>
+	        	<apex:commandButton styleclass="nextbtn" value="Submit for Approval" action="{!submitfromwizard}"  oncomplete="return submitMessage();" reRender="tabs, script" rendered="{!bShowWizardSubmit}"/> 
+	         </apex:outputPanel>
+	        </div>
+	        <apex:outputPanel rendered="{!activeTab = 'step3'}" >
+	      		<c:INC_EnrollmentParticipantComponent fromWizardVal="Yes"/>
 	        </apex:outputPanel>
 	        </apex:tab>
 		</apex:tabPanel>
@@ -310,7 +340,7 @@
 	</apex:outputPanel>
 </apex:outputPanel>
 <apex:outputPanel rendered="{!NOT(showWizard)}">
-	<apex:sectionHeader title="Enrollment Application" subtitle="{!EnrollmentPlan__c.Name}" id="sectionheader"/>
+	
 	<c:INC_EnrollmentProgress />
 	<apex:outputPanel >
 		<apex:pageMessages escape="false" />
@@ -326,10 +356,10 @@
 		  	<apex:commandButton value="Submit for Approval" action="{!submit}" rendered="{!bShowSubmit}" oncomplete="return submitMessage();"  styleClass="hidebutton"/> 
 			<apex:commandButton value="Choose Incentive Plan" action="{!chooseplan}" styleClass="hidebutton"/>
 			<apex:commandButton value="Application Metrics" action="{!showAppMetrics}"  styleClass="hidebutton"/>
-			<apex:commandButton value="Assign Approvers" action="{!reassignApprovers}"  styleClass="hidebutton"/>
+			<apex:commandButton value="Assign Approvers" action="{!reassignApprovers}"  styleClass="hidebutton" rendered="{!bShowAA}"/>
 			<apex:actionStatus id="saveStatus">
 		    <apex:facet name="stop">
-		    <apex:commandButton value="Create Change Request" action="{!createChangeRequest}" status="saveStatus" rerender="fullpage" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}" styleClass="hidebutton"/>
+		    <apex:commandButton value="Create Change Request" action="{!createChangeRequest}" status="saveStatus" rerender="fullpage" rendered="{!AND(EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled',bShowCCR)}" styleClass="hidebutton"/>
 			</apex:facet>
 		    <apex:facet name="start">
 		        <apex:commandButton value="Creating..." disabled="true" status="saveStatus"/>
@@ -343,9 +373,9 @@
 		        <apex:commandButton value="Creating..." disabled="true" status="saveStatus2"/>
 		    </apex:facet>
 			</apex:actionStatus>
-			<apex:commandButton value="Reject Application" action="{!finalRejectButton}"  onclick="if(!confirm('Are you sure you want to reject the application?')){return};" oncomplete="return rejectMessage();"  styleClass="hidebutton"/>
-			<apex:commandButton value="Close Application" action="{!closeApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton"/>
-			<apex:commandButton value="Close Application (No Award)" action="{!closeNoAwardApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton"/>
+			<apex:commandButton value="Reject Application" action="{!finalRejectButton}"  onclick="if(!confirm('Are you sure you want to reject the application?')){return};" oncomplete="return rejectMessage();"  styleClass="hidebutton" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c != 'Enrolled'}"/>
+			<apex:commandButton value="Close Application" action="{!closeApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton" rendered="{!AND(bShowAA,EnrollmentPlan__c.ApplicationType__c = 'PAY')}"/>
+			<apex:commandButton value="Close Application (No Award)" action="{!closeNoAwardApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton" rendered="{!bShowAA}"/>
 
 		   </div>
 		</apex:pageBlockButtons>
@@ -362,8 +392,12 @@
 		  <apex:outputText label="Application Issues" escape="false" value="{!sIssues}" rendered="{!EnrollmentPlan__c.ApplicationType__c != 'PAY'}"/>
 		 
 		  <apex:outputField value="{!EnrollmentPlan__c.ApplicationIssuesPay__c}" rendered="{!EnrollmentPlan__c.ApplicationType__c == 'PAY'}"/>
-
-		  <apex:outputText label="Application Exceptions" escape="false" value="{!sExceptions}" />
+		  <apex:pageBlockSectionItem helpText="{!$ObjectType.EnrollmentPlan__c.fields.Application_Exceptions__c.InlineHelpText}">
+		 	<apex:outputLabel value="Application Exceptions" for="ApplicationExceptions"/>
+		  	<apex:outputText id="ApplicationExceptions" escape="false" value="{!sExceptions}" />
+		  </apex:pageBlockSectionItem>
+		  <apex:outputField value="{!EnrollmentPlan__c.PlanType__c}"/>
+		  <apex:outputtext value=""/>
 		  <apex:outputLabel />
 		  <apex:inputField value="{!EnrollmentPlan__c.ExceptionComments__c}" rendered="{!NOT(EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled')}"/> 
 		  <apex:outputLabel rendered="{!(EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled')}"/>
@@ -371,6 +405,34 @@
 		  <apex:inputField value="{!EnrollmentPlan__c.InterimPaymentRequested__c}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.CurrencyISOCode}" />
 		</apex:pageBlockSection>
+
+		<apex:outputPanel rendered="{!EnrollmentPlan__c.ApplicationType__c == 'PAY'}">
+		<apex:pageBlockSection collapsible="false" showHeader="false" columns="1">
+			
+	        		<div class="projmessage">
+
+				Completion of the payment form can begin 30 days prior to project close.  Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.html">How to Pay a DTW Award</a> module posted on the <a href="http://my.aecomnet.com/Intranet/About/Delivery+Excellence/Design+and+Consulting+Services?appInstanceName=intranet&vgnextrefresh=1">DTW webpage</a> which will provide information about payment of DTW awards. 
+
+				<ol>
+					<li>Fill in the final safety score based on the <a href="http://my.aecomnet.com/deployedfiles/Intranet/About/Global Project Excellence/Documents/2015 Safety for Life Scorecard.pptx">Safety for Life Scorecard</a>  completed by the PM, and fill in Client Satisfaction rating from most recent NPS or other client survey. Indicate whether each of the three operational metrics were achieved by selecting “Yes” or “No”.  If any operational metrics were not achieved, review the <a href="http://my.aecomnet.com/deployedfiles/Intranet/About/Global Project Excellence/Documents/Evaluating Operational Metrics June 2015.pdf">Evaluating Operational Metrics</a> chart to determine amount of the reduction to the incentive pool.  </li>
+					<li>Fill in the “Final Pool Adjusted for Ops Metrics”.  If all operational metrics achieved, this equals the Final Incentive Pool @ITD shown to the left.</li>
+					<li>Go to the next section “Enrollment Participants” and click on “Add/Edit Enrollment Participants”.</li>
+				</ol>
+
+
+		     	 Reference the “Final Pool Adjusted for Ops Metrics” above to allocate award amounts to participants and/or add employees who are recommended for discretionary awards.  Final awards should reflect individual performance and contribution to project success as well as time dedicated to 	the project and previous awards paid for work on the project.  Provide a brief explanation for any adjustment made to a participant’s calculated award, and rationale for discretionary award recommendation.
+			 	<br/><br/>
+				Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.html">How to Pay a DTW Award</a> module posted on the <a href="http://my.aecomnet.com/Intranet/About/Delivery+Excellence/Design+and+Consulting+Services?appInstanceName=intranet&vgnextrefresh=1">DTW webpage</a> for more information about next steps. 
+		      
+
+
+		      </div>
+		    
+
+
+		</apex:pageBlockSection>
+		</apex:outputPanel>
+
 		<apex:outputpanel styleclass="centersection">
 		<apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="Project Master Data">
 		  <apex:outputField value="{!EnrollmentPlan__c.ProjectID__c}"/>
@@ -415,6 +477,7 @@
 		  <apex:outputField value="{!EnrollmentPlan__c.IncrementalGMvsBaseline__c}" rendered="{!NOT(bTandM)}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.AdjustedComplete__c}" rendered="{!NOT(bTandM)}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__r.NetARBalance__c}" />
+
 		</apex:pageBlockSection>
 		<apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="DTW Incentive Plan - Financial Metrics" rendered="{!EnrollmentPlan__c.ApplicationType__c ='PAY'}">
 		  <apex:outputField value="{!EnrollmentPlan__c.MaxIncentivePool__c}"/>
@@ -460,11 +523,14 @@
 				<tr>
 					<th></th>
 					<th>Approved Budget</th>
-					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
 					<apex:outputPanel rendered="{!bTandM}">
-					<th>Expected Scope Changes</th>
+							<th>Snapshot</th>
 					</apex:outputPanel>
-					<th>Mgmt Adjustments</th>
+					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
+						<apex:outputPanel rendered="{!bTandM}">
+							<th>Expected Scope Changes</th>
+						</apex:outputPanel>
+						<th>Mgmt Adjustments</th>
 					</apex:outputPanel>
 					<th>DTW Baseline</th>
 					<th>Current Forecast</th>
@@ -478,8 +544,12 @@
 					<td> 
 						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedGrossRevenueBudget__c}"/>
 					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+					    <apex:outputField value="{!EnrollmentPlan__c.ApprovedRevenueBudgetatSnapshot__c}" />
+					</td>
+					</apex:outputPanel>
 					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
-				
 					<td>
 					    <apex:inputField id="scopegrossrev" label="" styleClass=" mgmtadjust highlightedfield" value="{!EnrollmentPlan__c.GrossRevenueScopeChange__c}" rendered="{!bRenderInputFinFields}"/>
 					    <apex:outputField value="{!EnrollmentPlan__c.GrossRevenueScopeChange__c}" rendered="{!NOT(bRenderInputFinFields)}" />
@@ -495,12 +565,22 @@
 					<td>
 						<apex:outputField label="" value="{!EnrollmentPlan__c.ForecastRevenueBudget__c}"/>
 					</td>
+					<apex:outputPanel rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}">
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ActualGrossRevenueITD__c}"/>
+					</td>
+					</apex:outputPanel>
 				</tr>
 				<tr>
 					<td class="label">Sub Consultant and ODC</td>
 					<td>
 						<apex:outputField label="" value="{!EnrollmentPlan__c.ApprovedSubsODC__c}"/>
 					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+					    <apex:outputField value="{!EnrollmentPlan__c.ApprovedSubsBudgetatSnapshot__c}" />
+					</td>
+					</apex:outputPanel>
 					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
 					<td>
 					    <apex:inputField id="scopeodcrev" label="" styleClass=" mgmtadjust highlightedfield" value="{!EnrollmentPlan__c.SubsODCsScopeChange__c}" rendered="{!bRenderInputFinFields}"/>
@@ -515,8 +595,13 @@
 						<apex:outputField label="" value="{!EnrollmentPlan__c.BaselineSubsODC__c}"/>
 					</td>
 					<td>
-						<apex:outputField label="" value="{!EnrollmentPlan__c.ForecastSubsBudget__c}"/>
-					</td>	
+						<apex:outputField label="" value="{!EnrollmentPlan__c.ForecastSubsandODCBudget__c}"/>
+					</td>
+					<apex:outputPanel rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}">
+					<td>
+						<apex:outputField label="" value="{!EnrollmentPlan__c.ActualSubsAndODCITD__c}"/>
+					</td>
+					</apex:outputPanel>
 				</tr>
 				</apex:outputPanel>
 				<tr>
@@ -524,13 +609,16 @@
 					<td>
 						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedContingencyBudget__c}"/>
 					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+					    <apex:outputField value="{!EnrollmentPlan__c.ApprovedContingencyBudgetatsnapshot__c	}" />
+					</td>
+					</apex:outputPanel>
 					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
-						<apex:outputPanel rendered="{!bTandM}">
-							<td>
-								<apex:inputField styleclass="mgmtadjust highlightedfield" label="" value="{!EnrollmentPlan__c.ContingencyScopeChange__c}" rendered="{!bRenderInputFinFields}"/>
-								<apex:outputField label="" value="{!EnrollmentPlan__c.ContingencyScopeChange__c}" rendered="{!NOT(bRenderInputFinFields)}"/>
-							</td>
-						</apex:outputPanel>
+						<td>
+							<apex:inputField styleclass="mgmtadjust highlightedfield" label="" value="{!EnrollmentPlan__c.ContingencyScopeChange__c}" rendered="{!AND(bRenderInputFinFields,bTandM)}"/>
+							<apex:outputField label="" value="{!EnrollmentPlan__c.ContingencyScopeChange__c}" rendered="{!OR(NOT(bRenderInputFinFields),NOT(bTandM))}"/>
+						</td>
 						<apex:outputPanel rendered="{!bTandM}">
 							<td>
 							   <apex:inputField styleclass="mgmtadjust highlightedfield" rendered="{!bRenderInputFinFields}"  value="{!EnrollmentPlan__c.ContingencyAdjustment__c}"/>
@@ -539,7 +627,7 @@
 						</apex:outputPanel>
 					</apex:outputPanel>
 					<td>
-					   <apex:outputField rendered="{!bTandM}" value="{!EnrollmentPlan__c.BaselineContingency__c}"/>
+					   <apex:outputField value="{!EnrollmentPlan__c.BaselineContingency__c}"/>
 					</td>
 					<td>
 						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ForecastContingencyBudget__c}"/>
@@ -549,13 +637,18 @@
 					<td>
 						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ActualContingencyBudgetITD__c}"/>
 					</td>
-					</apex:outputPanel>
+					</apex:outputPanel> 
 				</tr>
 				<tr id="nsrline">
 					<td  class="label">NSR</td>
 					<td>
 						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedNSRBudget__c}"/>
 					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+					    <apex:outputField value="{!EnrollmentPlan__c.ApprovedNSRBudgetatSnapshot__c}" />
+					</td>
+					</apex:outputPanel>
 					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
 					<apex:outputPanel rendered="{!bTandM}">
 						<td>
@@ -586,6 +679,11 @@
 					<td>
 						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedDPEBudget__c}"/>
 					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+					    <apex:outputField value="{!EnrollmentPlan__c.ApprovedDPEBudgetatSnapshot__c}" />
+					</td>
+					</apex:outputPanel>
 					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
 					<apex:outputPanel rendered="{!bTandM}">
 					<td>
@@ -616,6 +714,11 @@
 					<td>
 						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedGrossMarginBudget__c}"/>
 					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+					    <apex:outputField value="{!EnrollmentPlan__c.ApprovedGrossMarginBudgetatSnapshot__c}" />
+					</td>
+					</apex:outputPanel>
 					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
 					<apex:outputPanel rendered="{!bTandM}">
 					<td>
@@ -646,6 +749,11 @@
 					<td>
 						<apex:outputField id="gmnsr" label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedGrossMarginofNSR__c}"/>
 					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+					    <apex:outputField value="{!EnrollmentPlan__c.ApprovedGrossMarginofNSRatSnapshot__c}" />
+					</td>
+					</apex:outputPanel>
 					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
 					<apex:outputPanel rendered="{!bTandM}">
 					<td>
@@ -681,6 +789,11 @@
 					<td>
 						<apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedNetMarginBudget__c}"/>
 					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+					    <apex:outputField value="{!EnrollmentPlan__c.ApprovedNetMarginBudgetatSnapshot__c}" />
+					</td>
+					</apex:outputPanel>
 					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
 					<apex:outputPanel rendered="{!bTandM}">
 					<td>
@@ -708,6 +821,11 @@
 					<td>
 						<apex:outputField id="nmnsr" label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedNMofNSR__c}"/>
 					</td>
+					<apex:outputPanel rendered="{!bTandM}">
+					<td>
+					    <apex:outputField value="{!EnrollmentPlan__c.ApprovedNetMarginofNSRatSnapShot__c}" />
+					</td>
+					</apex:outputPanel>
 					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
 					<apex:outputPanel rendered="{!bTandM}">
 					<td>
@@ -716,8 +834,9 @@
 					</td>
 					</apex:outputPanel>
 					<td>
-					   <apex:inputField id="nmscopepercent" styleclass="mgmtadjust highlightedfield"  value="{!EnrollmentPlan__c.GMofNSRAdjustment__c}" rendered="{!AND(NOT(bTandM),bRenderInputFinFields)}" />
-					   <apex:outputField value="{!EnrollmentPlan__c.GMofNSRAdjustment__c}" rendered="{!OR(bTandM,NOT(bRenderInputFinFields))}" />
+						<apex:inputField styleclass="mgmtadjust highlightedfield" rendered="{!AND(bTandM,bRenderInputFinFields)}" value="{!EnrollmentPlan__c.GMofNSRAdjustment__c}" />
+					   	<apex:outputField rendered="{!AND(bTandM,NOT(bRenderInputFinFields))}" value="{!EnrollmentPlan__c.GMofNSRAdjustment__c}" />
+					   
 					</td>
 					</apex:outputPanel>
 					<td>
@@ -824,7 +943,6 @@
 		  <apex:outputField value="{!EnrollmentPlan__c.IncentivePlan__c}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.TMPlanOverallEligibility__c}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.NumberofParticipants__c}"/>
-		  <apex:outputField value="{!EnrollmentPlan__c.PlanType__c}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.TotalAllocationParticipants__c}"/>
 		  <apex:inputField id="rejectReason2" value="{!EnrollmentPlan__c.ApplicationType__c}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.ParentApplication__c}"/>

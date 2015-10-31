@@ -36,6 +36,14 @@
                 <type>FieldUpdate</type>
             </action>
             <action>
+                <name>Change_to_Rejected_R_T</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
+                <name>Set_EA_Status_to_Rejected</name>
+                <type>FieldUpdate</type>
+            </action>
+            <action>
                 <name>Set_WorkflowStep_to_Step6</name>
                 <type>FieldUpdate</type>
             </action>
@@ -51,15 +59,11 @@
         <name>Approver_1_Review</name>
         <rejectionActions>
             <action>
-                <name>ApprovalRecentlyProcessed</name>
-                <type>FieldUpdate</type>
-            </action>
-            <action>
                 <name>Capture_Form_Status_Change_Date</name>
                 <type>FieldUpdate</type>
             </action>
             <action>
-                <name>Change_to_Rejected_R_T</name>
+                <name>Change_to_Workflow_R_T</name>
                 <type>FieldUpdate</type>
             </action>
             <action>
@@ -67,7 +71,7 @@
                 <type>FieldUpdate</type>
             </action>
             <action>
-                <name>Set_WorkflowStep_to_Not_in_Workflow</name>
+                <name>Set_EA_Status_to_Pending_PM_Action</name>
                 <type>FieldUpdate</type>
             </action>
         </rejectionActions>
@@ -76,19 +80,11 @@
         <allowDelegate>false</allowDelegate>
         <approvalActions>
             <action>
-                <name>ApprovalRecentlyProcessed</name>
-                <type>FieldUpdate</type>
-            </action>
-            <action>
                 <name>Capture_Form_Status_Change_Date</name>
                 <type>FieldUpdate</type>
             </action>
             <action>
-                <name>Change_to_Enrolled_Application_R_T</name>
-                <type>FieldUpdate</type>
-            </action>
-            <action>
-                <name>Set_EA_Status_to_Enrolled</name>
+                <name>Set_EA_Status_to_Opt_Out</name>
                 <type>FieldUpdate</type>
             </action>
         </approvalActions>
@@ -104,35 +100,9 @@
         <rejectBehavior>
             <type>BackToPrevious</type>
         </rejectBehavior>
-        <rejectionActions>
-            <action>
-                <name>ApprovalRecentlyProcessed</name>
-                <type>FieldUpdate</type>
-            </action>
-            <action>
-                <name>Capture_Form_Status_Change_Date</name>
-                <type>FieldUpdate</type>
-            </action>
-            <action>
-                <name>Change_to_Rejected_R_T</name>
-                <type>FieldUpdate</type>
-            </action>
-            <action>
-                <name>Rejection_Date</name>
-                <type>FieldUpdate</type>
-            </action>
-            <action>
-                <name>Set_EA_Status_Rejected_for_Correction</name>
-                <type>FieldUpdate</type>
-            </action>
-            <action>
-                <name>Set_WorkflowStep_to_Stet1</name>
-                <type>FieldUpdate</type>
-            </action>
-        </rejectionActions>
     </approvalStep>
     <description>Approval process for request an Enrollment Applications not be submitted into workflow</description>
-    <emailTemplate>DTW_Project_Incentives/ApprovalRequestEnrollmentParticipants</emailTemplate>
+    <emailTemplate>DTW_Project_Incentives/Opt_Out_notification</emailTemplate>
     <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
     <entryCriteria>
         <formula>AND(TEXT(EnrollmentStatus__c) = &quot;Opt-Out&quot;, 
@@ -140,18 +110,6 @@ OR(TEXT( ApplicationType__c ) = &quot;CCR&quot;, TEXT( ApplicationType__c ) = &q
 )</formula>
     </entryCriteria>
     <finalApprovalActions>
-        <action>
-            <name>Capture_Form_Status_Change_Date</name>
-            <type>FieldUpdate</type>
-        </action>
-        <action>
-            <name>Is_In_Workflow_No</name>
-            <type>FieldUpdate</type>
-        </action>
-        <action>
-            <name>Set_Enrollment_Date</name>
-            <type>FieldUpdate</type>
-        </action>
         <action>
             <name>Set_WorkflowStep_to_Not_in_Workflow</name>
             <type>FieldUpdate</type>
@@ -164,23 +122,7 @@ OR(TEXT( ApplicationType__c ) = &quot;CCR&quot;, TEXT( ApplicationType__c ) = &q
             <type>FieldUpdate</type>
         </action>
         <action>
-            <name>Is_In_Workflow_No</name>
-            <type>FieldUpdate</type>
-        </action>
-        <action>
             <name>Set_ApplicationType_to_ENR</name>
-            <type>FieldUpdate</type>
-        </action>
-        <action>
-            <name>Set_EA_Status_to_Rejected</name>
-            <type>FieldUpdate</type>
-        </action>
-        <action>
-            <name>Set_PM_WizardStatus_to_Step1</name>
-            <type>FieldUpdate</type>
-        </action>
-        <action>
-            <name>Set_WorkflowStep_to_Not_in_Workflow</name>
             <type>FieldUpdate</type>
         </action>
     </finalRejectionActions>

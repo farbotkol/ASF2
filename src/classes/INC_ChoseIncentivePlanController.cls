@@ -232,14 +232,15 @@ public class INC_ChoseIncentivePlanController {
 	
 	public void buildAvailablePlans(list<IncentivePlanTemplate__c> listLoad){
 		System.debug(logginglevel.error,'listLoad: ' + listLoad);
-		for(IncentivePlanTemplate__c icp: listLoad){
-			planWrapper pw = new planWrapper(icp);
-			if(icp.ID == enrollmentPlan.IncentivePlan__c){
-				pw.selected = true;
-			}
+		if(listLoad != null && listLoad.size() > 0){
+			for(IncentivePlanTemplate__c icp: listLoad){
+				planWrapper pw = new planWrapper(icp);
+				if(icp.ID == enrollmentPlan.IncentivePlan__c){
+					pw.selected = true;
+				}
 
-			availablePlans.add(pw);
-			
+				availablePlans.add(pw);
+			}
 		}
 	}
 
@@ -272,6 +273,7 @@ public class INC_ChoseIncentivePlanController {
 		
 		public planWrapper( IncentivePlanTemplate__c oplan){
 			plan = oplan;
+			selected = false;
 		}
 	}
 

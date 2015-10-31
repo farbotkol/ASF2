@@ -167,7 +167,7 @@
 	  	}
 	</style>
 	<apex:outputPanel id="fullprogress" rendered="true">
-	<apex:outputPanel id="progress" rendered="{!And(bShowProgress,oEnrollmentPlan.ExceptionFlag__c='No')}">
+	<apex:outputPanel id="progress" rendered="{!And(bShowProgress,(AND(oEnrollmentPlan.ExceptionFlag__c='No',oEnrollmentPlan.InterimPaymentRequested__c!='Yes')))}">
 		<div class="breadcrumb" title="{!ProgressToolTip}">
 			<ul class="breadcrumb">
 				<outputpanel rendered="{!NOT(oEnrollmentPlan.ApplicationType__c == 'PAY')}">

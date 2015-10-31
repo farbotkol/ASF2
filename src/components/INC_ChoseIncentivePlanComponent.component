@@ -48,7 +48,10 @@
 	</apex:actionFunction>
 
 	<apex:pageMessages />
-	<apex:sectionHeader title="Incentive Plan Questionnairre" subtitle="Enrollment Application" />
+	<apex:sectionHeader title="Incentive Plan Questionnairre" subtitle="Enrollment Application" rendered="{!NOT(fromWizard='Yes')}" help="http://my.aecomnet.com/portal/site/Intranet/menuitem.4bb5ad8d27dddb3d13bd6e20c43611ca/?vgnextoid=4699bc2ceae8e410VgnVCM100000089e1bacRCRD&vgnextchannel=c7e1b267a0f9c410VgnVCM100000089e1bacRCRD&vgnextfmt=default"/>
+	<apex:outputPanel rendered="{!fromWizard='Yes'}">
+		<div class="pbSubheader tertiaryPalette"><h3>Incentive Plan Questionnairre</h3></div>
+	</apex:outputPanel>
 	<apex:inputHidden value="{!EnrollmentPlan.ProjectGeography__c}"/>
 	<apex:inputHidden value="{!EnrollmentPlan.FPPOverallEligibility_c__c}"/>	
 	<apex:inputHidden value="{!EnrollmentPlan.TMPlanOverallEligibility__c}"/>
