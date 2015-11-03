@@ -1,1 +1,0 @@
-public class XNNC_Test_Picture {public XNNC_Test_Picture(ApexPages.StandardController controller){}}
