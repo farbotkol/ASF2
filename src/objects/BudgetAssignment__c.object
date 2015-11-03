@@ -72,7 +72,7 @@
         <picklist>
             <picklistValues>
                 <fullName>Estimate</fullName>
-                <default>false</default>
+                <default>true</default>
             </picklistValues>
             <picklistValues>
                 <fullName>Forecast</fullName>
@@ -127,7 +127,7 @@
     <fields>
         <fullName>CalculatedRevenue__c</fullName>
         <externalId>false</externalId>
-        <formula>IF(ISBLANK(OverrideTotalRevenue__c), 
+        <formula>IF(OverrideTotalRevenue__c = 0, 
 
 IF (ISPICKVAL( MarginType__c , &apos;Percent&apos;),
  MarginAmountCostTimesUplift__c 
@@ -138,6 +138,7 @@ IF (ISPICKVAL( MarginType__c , &apos;Percent&apos;),
 , 
 OverrideTotalRevenue__c
 )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Calculated Revenue</label>
         <precision>18</precision>
         <required>false</required>
@@ -210,6 +211,82 @@ OverrideTotalRevenue__c
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>EACActualCost__c</fullName>
+        <externalId>false</externalId>
+        <label>EACActualCost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EACActualQuantity__c</fullName>
+        <externalId>false</externalId>
+        <label>EAC Actual Quantity</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EACApprovedQuantity__c</fullName>
+        <externalId>false</externalId>
+        <label>EAC Approved Quantity</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EACApprovedTotalCost__c</fullName>
+        <externalId>false</externalId>
+        <label>EACApprovedTotalCost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EACForecastQuantity__c</fullName>
+        <externalId>false</externalId>
+        <label>EAC Forecast Quantity</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EACForecastRevenue__c</fullName>
+        <externalId>false</externalId>
+        <label>EACForecastRevenue</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>EACForecastTotalCost__c</fullName>
+        <externalId>false</externalId>
+        <label>EACForecastTotalCost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>EndDate__c</fullName>
@@ -470,6 +547,16 @@ OverrideTotalCost__c
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>ResourceTypeText__c</fullName>
+        <externalId>false</externalId>
+        <label>Resource Type (Text)</label>
+        <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>ResourceType__c</fullName>
         <externalId>false</externalId>
         <formula>TEXT(BudgetResource__r.ResourceType__c)</formula>
@@ -525,6 +612,18 @@ OverrideTotalCost__c
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>TotalComputedCost__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL(BudgetResource__r.ResourceType__c, &apos;ODC/FEE&apos;), IF(ISPICKVAL(BudgetResource__r.CostCalcType__c, &apos;Each&apos;), Quantity__c * BudgetResource__r.OverrideRawCost__c,  OverrideTotalCost__c), 0.0)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Total Computed Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>TotalFringe__c</fullName>
         <externalId>false</externalId>
         <formula>IF(  OverrideTotalFringe__c = 0, IF(OverrideFringeMultiplier__c = 0, DefaultFringeMultiplier__c *  AppliedRawCost__c, OverrideFringeMultiplier__c * AppliedRawCost__c) * Quantity__c, OverrideTotalFringe__c )</formula>
@@ -567,7 +666,16 @@ OverrideTotalCost__c
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Budget Assignments</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>AppliedRawCost__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>BudgetResource__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>BudgetTask__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>BudgetVersion__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CalculatedRevenue__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CurrentVersion__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>DefaultBillRate__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ProjectTask__c</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
         <fullName>Is_Task_Assignable</fullName>

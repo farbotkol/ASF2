@@ -17,7 +17,15 @@ public with sharing class ECO_SubsVendorsController
 	public map<id, VendorSite__c> mapVendorSites {get;set;}
 	public map<id, VendorSite__c> mapSitesBilling {get;set;}
     public map<id, VendorSite__c> mapSitesEnd {get;set;}
+    public list<ProjectAgreement__c> lstAgreements {get;set;}
     public list<VendorSite__c> lstVendorSites {get;set;}
+    public integer removeSiteVendoRowNum {get;set;}
+    public boolean bMore {get;set;}
+    public string sLimit;
+
+    private static string siteLessLIMIT = '50';
+    private static string siteMoreLIMIT = '200';
+
 
     public string projectFieldID {get;set;}
     public string vendorFieldID {get;set;}
@@ -36,6 +44,8 @@ public with sharing class ECO_SubsVendorsController
         mapSitesEnd = new map<id, VendorSite__c>();
         oSite = new Site__c();
         oSite.account__r = new Account();
+        bMore = false;
+        sLimit = siteLessLIMIT;
 
 		if(oProject != null)
 		{
@@ -49,7 +59,23 @@ public with sharing class ECO_SubsVendorsController
 			//lstSites = new list<SiteWrapper>();
         	//mapSites = new map<id, SiteWrapper>();
 			UpdateVendorSites();
+
+            string projID = oProject.Id;
+            string strSOQL = 'SELECT ';
+            string strWhereClause = ' WHERE '; 
+                
+            for (Schema.FieldSetMember fsmField: SObjectType.ProjectAgreement__c.FieldSets.SubVendorView.getFields()) {
+                strSOQL += fsmField.getFieldPath() + ', ';
+            }
+            
+            strSOQL += 'ID FROM ProjectAgreement__c WHERE Project__c =: projID';
+
+            lstAgreements = (list<ProjectAgreement__c>)Database.query(strSOQL);
+
+
 		}
+
+        
 
         /*map<string, string> mNameToID = ECO_Utils_Tooling.getFieldIDMap('POHeader');
 
@@ -59,6 +85,27 @@ public with sharing class ECO_SubsVendorsController
         projectFieldID = 'CF' + projectFieldID.substring(0,15);
         vendorFieldID = 'CF' + vendorFieldID.substring(0,15);*/
 	}
+
+    public PageReference toggle(){
+        if(bMore){
+            bMore = false;
+            sLimit = siteLessLIMIT;
+        } else {
+            bMore = true;
+            sLimit = siteMoreLIMIT;
+        }
+
+        SearchSites();
+        return null;
+    }
+
+    public PageReference removeSiteVendoRowNum(){
+
+        VendorSite__c vs = lstVendorSites[removeSiteVendoRowNum-1];
+        lstVendorSites.remove(removeSiteVendoRowNum-1);
+        delete vs;
+        return null;
+    }
 
     public PageReference AddPO(){
         POHeader__c po = new POHeader__c();
@@ -81,8 +128,11 @@ public with sharing class ECO_SubsVendorsController
 
     public PageReference CreateUpdateVendor()
     {
-        PageReference oPR = new PageReference('/setup/ui/recordtypeselect.jsp?ent=01Ie00000005dVe&retURL=%2Fa6e%2Fo&save_new_url=%2Fa6e%2Fe%3FretURL%3D%252Fa6e%252Fo');
-        return oPR;
+        //PageReference oPR = new PageReference('/setup/ui/recordtypeselect.jsp?ent=01Ie00000005dVe&retURL=%2Fa6e%2Fo&save_new_url=%2Fa6e%2Fe%3FretURL%3D%252Fa6e%252Fo');
+        
+        //return oPR;
+
+        return null;
     }    
 /*
 	public PageReference SaveAll()
@@ -255,7 +305,7 @@ public with sharing class ECO_SubsVendorsController
         }       
         strSOQL = strSOQL.substring(0,strSOQL.length() - 5);
         
-        strSOQL += ' LIMIT 50';
+        strSOQL += ' LIMIT ' + sLimit;
 
         System.debug('SubsVendors search query: ' + strSOQL);
 

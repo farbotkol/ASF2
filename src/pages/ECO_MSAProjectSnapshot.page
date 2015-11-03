@@ -1,17 +1,16 @@
 <apex:page controller="ECO_MSAProjectSnapshotController" action="{!init}" tabstyle="pse__Proj__c">
 <apex:form >
-	<style>
+<style>
 		.infoTable {
 			background: #f5f5f5;
 			border-collapse: separate;
 			font-size: 12px;
 			line-height: 24px;
-			text-align: left;
+			text-align: center;
 			margin:5px 14px 0 14px;
-			width: 25%;
 		}	
 		.infoTable table{
-			width:25%;
+			width:100%;
 		}
 		.infoTable th {
 			background-color: #a6afa2 !important;
@@ -20,6 +19,7 @@
 			padding: 3px 9px;
 			position: relative;
 			border:none !important;
+			align: center;
 			text-align: center;
 		}
 		.infoTable th:first-child{
@@ -45,8 +45,32 @@
 			position: relative;
 			transition: all 300ms;
 			min-width: 90px;
-			text-align: right;
 		}
+
+		.recordTypeTable{
+			border-collapse:collapse;			
+		}
+
+		.recordTypeTable table{
+			width:100%;
+		}
+		
+		.recordTypeTable th, .recordTypeTable td {
+		  padding: 4px 2px 4px 5px;
+		  border: 1px solid #dbdbdb;;
+		  border-collapse: collapse;
+		}
+		
+		.recordTypeTable tr {
+		  border: 1px solid #dbdbdb;;
+		  border-collapse: collapse;
+		}
+		
+		.recordTypeTable td {
+			background-color: white;
+			min-width: 90px;			
+		}
+				
 	</style>
 <apex:sectionHeader title="Project Snapshot"/>
 <apex:pageBlock >
@@ -75,7 +99,7 @@
 
 <apex:pageBlockSection title="Financial Information(all numbers in functional/operational currency)" collapsible="false" columns="1">
 <apex:outputPanel >
-	<div class="infoTable">
+	<div class="recordTypeTable">
 	<table>
 		<tr>
 			<th>Metric</th>
@@ -207,7 +231,7 @@
 
 <apex:pageBlockSection title="Cash Performance" collapsible="false" columns="1">
 <apex:outputPanel >
-<div class="infoTable">
+<div class="recordTypeTable">
 	<table>
 	<tr>
 		<th colspan="2">Unbilled A/R</th>
@@ -267,7 +291,7 @@
 
 <apex:pageBlockSection title="Future Spend(Backlog)" collapsible="false" columns="1">
 <apex:outputPanel >
-<div class="infoTable">
+<div class="recordTypeTable">
 	<table>
 	<tr>
 		<th></th>

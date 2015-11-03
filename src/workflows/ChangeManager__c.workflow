@@ -3,6 +3,7 @@
     <alerts>
         <fullName>EcoCMClosureApprovedRej</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoCMClosureApprovedRej</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -11,6 +12,7 @@
     <alerts>
         <fullName>EcoCMClosureRecalled</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoCMClosureRecalled</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -19,6 +21,7 @@
     <alerts>
         <fullName>EcoCMOnHoldApprovalApprovedRej</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoCMOnHoldApprovalApprovedRej</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -27,6 +30,7 @@
     <alerts>
         <fullName>EcoCMOnHoldRecalled</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoCMOnHoldRecalled</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -35,6 +39,7 @@
     <alerts>
         <fullName>EcoCMPMHandoverApprovedRej</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoCMPMHandoverApprovedRej</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -43,6 +48,7 @@
     <alerts>
         <fullName>EcoCMPMRecalled</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoCMPMRecalled</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -51,6 +57,7 @@
     <alerts>
         <fullName>EcoCustomerContractBudgetsApprovedRej</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoCustomerContractBudgetsApprovedRej</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -59,6 +66,7 @@
     <alerts>
         <fullName>EcoCustomerContractBudgetsRecall</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoCustomerContractBudgetsRecalled</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -69,6 +77,24 @@
         <field>ApprovalStatus__c</field>
         <literalValue>Approved</literalValue>
         <name>ECOCMApprovedStatusApproved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>ECOCMSynchApproved</fullName>
+        <field>ApprovalStatus__c</field>
+        <literalValue>Approved</literalValue>
+        <name>ECOCMSynchApproved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>ECOOracleSyncStatus</fullName>
+        <field>OracleApprovalSyncStatus__c</field>
+        <literalValue>Submitted</literalValue>
+        <name>EcoUpdate Oracle Sync Status Submitted</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
@@ -92,10 +118,28 @@
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>EcoSetOracleSyncStatusToApproved</fullName>
+        <field>OracleApprovalSyncStatus__c</field>
+        <literalValue>Approved</literalValue>
+        <name>EcoSetOracleSyncStatusToApproved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>EcoSetOracleSyncStatusToRejected</fullName>
+        <field>OracleApprovalSyncStatus__c</field>
+        <literalValue>Rejected</literalValue>
+        <name>EcoSetOracleSyncStatusToRejected</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Update_Approval_Status_to_Submitted</fullName>
         <field>ApprovalStatus__c</field>
         <literalValue>Submitted</literalValue>
-        <name>Update Approval Status to Submitted</name>
+        <name>EcoUpdate Approval Status to Submitted</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>

@@ -87,9 +87,65 @@ public class ECO_Service_Agreement {
                 IntercoProject__c, SpecialConditions__c, MSAReference__r.OrderingPeriodStart__c, MSAReference__r.OrderingPeriodEnd__c,
                 Project__c, ChangeManagerApprovedForSynch__c, ChangeManagerIsChanged__c, ActionCode__c, Description__c,
                 RevenueLimitFlag__c, InvoiceLimitFlag__c, project__r.GoProbability__c, project__r.GetProbability__c,
-                TotalTaskOrdersValue__c, ISMSA__c
+                TotalTaskOrdersValue__c, ISMSA__c, InterimApprovalType__c, InterimApprovalDate__c,
+                InterimApprovalExpiryDate__c, InterimApprovalComments__c, TotalApprovedRevenueLimit__c,
+                InterimApprovalRevenueFeeLimit__c, InterimApprovalCostLimit__c, AgreementVariance__c, UnallocatedFunding__c,
+                JointVenturePartner__c, VendorSite__c, VendorSite__r.AccountName__c, AgreementExecutedBy2__c
                 from Agreement__c where Id = :agreementId]; 
-                
+    }
+    
+    public static List<Agreement__c> getAgreementsForProject(String projectId)
+    {
+        return [select Id, Name, Project__r.Name, MSAReference__c, ProjectTeamMember__c,ParentAgreement__c, OracleAgreementID__c, 
+                Project__r.OracleProjectnumber__c, PaymentTerms__c,
+                AgreementStatus__c, Project__r.EcoSystemReferenceNumber__c, AgreementExecutedBy__c,  Account__c, ExecutionDate__c, 
+                InvoicingClient__c,FeeType__c,ContractTitle__c, project__r.TotalApprovedCost__c, project__r.CostComplete__c, 
+                //TermID__c, 
+                ClientContractReferenceNo__c, FundingCurrencyCode__c, ScopePackage__c, Amount__c, ScopeOfServices__c,
+                AgreementAmountEstimated__c, AgreementType__c, TotalFundingAmount__c, CreatedDate, AgreementFundingVariance__c,
+                StartDate__c, VarianceReason__c, ExpirationDate__c, ProfIndemnityLiabilityAmt__c, PublicGeneralLiabilityAmt__c,
+                USFederalGovernmentProject__c, RecordTypeId, VendorName__c, BacktoBackwithPrime__c, Total_Invoiced__c, TotalPaid__c,
+                ContractAttachment__c, ProgramPlanAttachment__c, GuidanceAttachment__c, BusinessDevelopmentAttachment__c,
+                MeetingMinutesAttachment__c, AgreementNumber__c, OrderingPeriod__c, ContractingAgency__c,
+                TotalContractValue__c, ScopePackage__r.Scope_Details__c, RecordType.Name, OrderingPeriodStart__c, OrderingPeriodEnd__c, 
+                IntercompanySubconsultant__c,
+                CommericialTerms__c,CommericialTermsOther__c, CommericialTermsDescription__c, TeamLeaderName__c, TeamLeaderTitle__c,
+                IntercoProject__c, SpecialConditions__c, MSAReference__r.OrderingPeriodStart__c, MSAReference__r.OrderingPeriodEnd__c,
+                Project__c, ChangeManagerApprovedForSynch__c, ChangeManagerIsChanged__c, ActionCode__c, Description__c,
+                RevenueLimitFlag__c, InvoiceLimitFlag__c, project__r.GoProbability__c, project__r.GetProbability__c,
+                TotalTaskOrdersValue__c, ISMSA__c, InterimApprovalType__c, InterimApprovalDate__c,
+                InterimApprovalExpiryDate__c, InterimApprovalComments__c, TotalApprovedRevenueLimit__c,
+                InterimApprovalRevenueFeeLimit__c, InterimApprovalCostLimit__c, AgreementVariance__c, UnallocatedFunding__c,
+                JointVenturePartner__c, VendorSite__c, VendorSite__r.AccountName__c
+                from Agreement__c where Id in (select Agreement__c from ProjectAgreement__c where Project__c = :projectId)]; 
+    }
+    
+    public static List<Agreement__c> getPrimeAgreementsForProject(String projectId)
+    {
+        return [select Id, Name, Project__r.Name, MSAReference__c, ProjectTeamMember__c,ParentAgreement__c, OracleAgreementID__c, 
+                Project__r.OracleProjectnumber__c, PaymentTerms__c,
+                AgreementStatus__c, Project__r.EcoSystemReferenceNumber__c, AgreementExecutedBy__c,  Account__c, ExecutionDate__c, 
+                InvoicingClient__c,FeeType__c,ContractTitle__c, project__r.TotalApprovedCost__c, project__r.CostComplete__c, 
+                //TermID__c, 
+                ClientContractReferenceNo__c, FundingCurrencyCode__c, ScopePackage__c, Amount__c, ScopeOfServices__c,
+                AgreementAmountEstimated__c, AgreementType__c, TotalFundingAmount__c, CreatedDate, AgreementFundingVariance__c,
+                StartDate__c, VarianceReason__c, ExpirationDate__c, ProfIndemnityLiabilityAmt__c, PublicGeneralLiabilityAmt__c,
+                USFederalGovernmentProject__c, RecordTypeId, VendorName__c, BacktoBackwithPrime__c, Total_Invoiced__c, TotalPaid__c,
+                ContractAttachment__c, ProgramPlanAttachment__c, GuidanceAttachment__c, BusinessDevelopmentAttachment__c,
+                MeetingMinutesAttachment__c, AgreementNumber__c, OrderingPeriod__c, ContractingAgency__c,
+                TotalContractValue__c, ScopePackage__r.Scope_Details__c, RecordType.Name, OrderingPeriodStart__c, OrderingPeriodEnd__c, 
+                IntercompanySubconsultant__c,
+                CommericialTerms__c,CommericialTermsOther__c, CommericialTermsDescription__c, TeamLeaderName__c, TeamLeaderTitle__c,
+                IntercoProject__c, SpecialConditions__c, MSAReference__r.OrderingPeriodStart__c, MSAReference__r.OrderingPeriodEnd__c,
+                Project__c, ChangeManagerApprovedForSynch__c, ChangeManagerIsChanged__c, ActionCode__c, Description__c,
+                RevenueLimitFlag__c, InvoiceLimitFlag__c, project__r.GoProbability__c, project__r.GetProbability__c,
+                TotalTaskOrdersValue__c, ISMSA__c, InterimApprovalType__c, InterimApprovalDate__c,
+                InterimApprovalExpiryDate__c, InterimApprovalComments__c, TotalApprovedRevenueLimit__c,
+                InterimApprovalRevenueFeeLimit__c, InterimApprovalCostLimit__c, AgreementVariance__c, UnallocatedFunding__c,
+                JointVenturePartner__c, VendorSite__c, VendorSite__r.AccountName__c
+                from Agreement__c 
+                where Id in (select Agreement__c from ProjectAgreement__c where Project__c = :projectId)
+                and RecordType.Name in ('Prime', 'Prime Task Order', 'Prime (MSA)')];
     }
 
 }

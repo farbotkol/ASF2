@@ -107,6 +107,17 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>AppliedEstimatedCost__c</fullName>
+        <externalId>false</externalId>
+        <formula>BLANKVALUE( OverrideEstimatedCost__c , EstimatedCost__c )</formula>
+        <label>Applied Estimated Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>AppliedRevenue__c</fullName>
         <externalId>false</externalId>
         <formula>BLANKVALUE(OverrideRevenue__c, Revenue__c)</formula>
@@ -162,6 +173,28 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>EstimatedCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Estimated Cost</label>
+        <summarizedField>EarnedValueSnapshot__c.ThisWeekAmountEst__c</summarizedField>
+        <summaryForeignKey>EarnedValueSnapshot__c.WeeklyRollupEntry__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>FiscalMonth__c</fullName>
+        <description>The name of the fiscal month, following the naming convention: FY2015-01, FY2015-02, ..., FY2015-12, etc.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>The name of the fiscal month, following the naming convention: FY2015-01, FY2015-02, ..., FY2015-12, etc.</inlineHelpText>
+        <label>Fiscal Month</label>
+        <length>9</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>OverrideAcctBurdenedCost__c</fullName>
         <externalId>false</externalId>
         <label>Override Acct Burdened Cost</label>
@@ -192,6 +225,16 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>OverrideEstimatedCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Estimated Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>OverrideRevenue__c</fullName>
         <externalId>false</externalId>
         <label>Override Cash In</label>
@@ -208,6 +251,29 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Period_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>Period__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Period Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Period__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Time Period</label>
+        <referenceTo>pse__Time_Period__c</referenceTo>
+        <relationshipLabel>Weekly Rollup Entries</relationshipLabel>
+        <relationshipName>Weekly_Rollup_Entries</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>ProjectFunctionalBurdenedCost__c</fullName>
@@ -272,6 +338,15 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Weekly Rollup Entries</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>AcctRawCost__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>AppliedAcctBurdenedCost__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>AppliedAcctRawCost__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>AppliedApprovedCost__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>AppliedRevenue__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>AppliedEstimatedCost__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATEDBY_USER</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

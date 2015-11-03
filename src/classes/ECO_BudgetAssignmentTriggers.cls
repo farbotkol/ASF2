@@ -1,6 +1,36 @@
 public without sharing class ECO_BudgetAssignmentTriggers {
 	public static Boolean run = true;
 	
+	public static void setRateDefaults(List<BudgetAssignment__c> baNew) {
+		if (!run) {
+			return;
+		}
+
+		Set<Id> budgetResourceIds = new Set<Id>();
+		for (BudgetAssignment__c ba : baNew) {
+			budgetResourceIds.add(ba.BudgetResource__c);
+		}
+		
+		Map<Id, BudgetResource__c> mapBudgetResourceById = new Map<Id, BudgetResource__c> (
+															[SELECT Id, 
+																OverrideRatesOnLines__c, 
+																OverrideRawCost__c, 
+        														OverrideFringeMultiplier__c,
+        														OverrideOverheadMultiplier__c,
+        														MarginType__c,
+        														OverrideBillRate__c,
+        														OverrideUplift__c  
+															FROM BudgetResource__c 
+															WHERE Id IN :budgetResourceIds]);
+		
+
+		for (BudgetAssignment__c ba : baNew) {
+			BudgetResource__c br = mapBudgetResourceById.get(ba.BudgetResource__c);
+
+			ECO_BudgetResourceTriggers.setRatesEqual(br, ba);
+		}
+	}
+
 	public static void setDefaults (List<BudgetAssignment__c> baNew) {
 		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('BA_setDefaults')) {
 			return;

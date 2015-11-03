@@ -277,8 +277,6 @@ public with sharing class ECO_DeliverableADDTQReviewersController {
                       From TechnicalQualityTeam__c where Deliverable__c =: setID];
     }
     
-    
-
     public list<ProjectTeamMember__c> getProjectTeamByProjectID(set<String>setID){
         return [Select id
                          , Contact__c
@@ -319,6 +317,7 @@ public with sharing class ECO_DeliverableADDTQReviewersController {
 
             for(TQT_Wrapper oTQT: mapDisplayTQTExisting.Values()){
                 if(oTQT.bNewRecord && oTQT.oTechnicalQualityTeam.TechnicalQualityTeamMember__c == null){
+                    System.debug('oTQT.oPTM.Contact__c:   '+oTQT.oPTM.Contact__c);
                     lAddMembers.add(new ProjectTeamMember__c(Contact__c = oTQT.oPTM.Contact__c,
                                                              Project__c = oDeliverable.Project__c,
                                                              ProjectRole__c = ECO_Service_Deliverable.getProjectTeamRoleFromTQTRole(oTQT.oTechnicalQualityTeam),

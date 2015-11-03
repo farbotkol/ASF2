@@ -30,21 +30,21 @@ public with sharing class ECO_ChangeManagerTest {
 		Funding__c funding = new Funding__c(Project__c = project.Id, Agreement__c = agreement2.Id);
 		insert funding;			
 				
-		ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id);
-		system.AssertEquals(1, ECO_ChangeManager_Service.getChangedAgreements(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id), false).size());	
-		system.AssertEquals(agreement2.Id, ECO_ChangeManager_Service.getChangedAgreements(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id), false)[0].Id);	
-		system.AssertEquals(true, ECO_ChangeManager_Service.isChangedAgreements(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)));//, ECO_ChangeManager_Service.getChangedContractManagement(project, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project))[0].Id);	
+		ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id);
+		system.AssertEquals(1, ECO_Service_ChangeManager.getChangedAgreements(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id), false).size());	
+		system.AssertEquals(agreement2.Id, ECO_Service_ChangeManager.getChangedAgreements(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id), false)[0].Id);	
+		system.AssertEquals(true, ECO_Service_ChangeManager.isChangedAgreements(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)));//, ECO_Service_ChangeManager.getChangedContractManagement(project, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project))[0].Id);	
 
 		Project_Site__c site = [select Id, Name, Account_Name__c, ChangeManagerApprovedForSynch__c, ChangeManagerIsChanged__c from Project_Site__c limit 1];
 		system.AssertEquals(true, site.ChangeManagerIsChanged__c);
-		system.AssertEquals(true, ECO_ChangeManager_Service.isChangedCustomers(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)));
-		system.AssertEquals(1, ECO_ChangeManager_Service.getChangedCustomers(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id), false).size());
+		system.AssertEquals(true, ECO_Service_ChangeManager.isChangedCustomers(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)));
+		system.AssertEquals(1, ECO_Service_ChangeManager.getChangedCustomers(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id), false).size());
 
-		system.AssertEquals(true, ECO_ChangeManager_Service.isChangedKeyMembers(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)));
-		system.AssertEquals(3, ECO_ChangeManager_Service.getChangedKeyMembers(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id), false).size());
+		system.AssertEquals(true, ECO_Service_ChangeManager.isChangedKeyMembers(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)));
+		system.AssertEquals(3, ECO_Service_ChangeManager.getChangedKeyMembers(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id), false).size());
 
-		system.AssertEquals(true, ECO_ChangeManager_Service.isChangedTasks(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)));
-		system.AssertEquals(3, ECO_ChangeManager_Service.getChangedTasks(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id), false).size());
+		system.AssertEquals(true, ECO_Service_ChangeManager.isChangedTasks(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)));
+		system.AssertEquals(3, ECO_Service_ChangeManager.getChangedTasks(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id), false).size());
 
 		ChangeManager__c changeManager2 = new ChangeManager__c(Project__c = project.Id, RecordTypeId = changeManagerRecordTypeId);
 		insert changeManager2;
@@ -73,17 +73,17 @@ public with sharing class ECO_ChangeManagerTest {
 		Deliverable__c deliverable = new Deliverable__c(Project__c = project.Id);
 		insert deliverable;
 
-		system.assertEquals(false, ECO_ChangeManager_Service.isChangedClassifications(project.Id));	
-		system.assertEquals(false, ECO_ChangeManager_Service.isChangedSafetyHealthEnv(project.Id));	
-		system.assertEquals(false, ECO_ChangeManager_Service.isChangedResilence(project.Id));	
-		system.assertEquals(false, ECO_ChangeManager_Service.isChangedProjectClosure(project.Id));	
-		system.assertEquals(false, ECO_ChangeManager_Service.isChangedProjectOnHold(project.Id));
-		system.assertEquals(false, ECO_ChangeManager_Service.isChangedDocumentManagement(project.Id));
-		system.assertEquals(false, ECO_ChangeManager_Service.isChangedStakeholders(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)));
-		system.assertEquals(true, ECO_ChangeManager_Service.isChangedDeliverables(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)));
-		system.assertEquals(false, ECO_ChangeManager_Service.isChangedResources(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)));
-		system.assertEquals(true, ECO_ChangeManager_Service.isChangedScope(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)));
-		system.assertEquals(false, ECO_ChangeManager_Service.isChangedFunding(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)));
+		system.assertEquals(false, ECO_Service_ChangeManager.isChangedClassifications(project.Id));	
+		system.assertEquals(false, ECO_Service_ChangeManager.isChangedSafetyHealthEnv(project.Id));	
+		system.assertEquals(false, ECO_Service_ChangeManager.isChangedResilence(project.Id));	
+		system.assertEquals(false, ECO_Service_ChangeManager.isChangedProjectClosure(project.Id));	
+		system.assertEquals(false, ECO_Service_ChangeManager.isChangedProjectOnHold(project.Id));
+		system.assertEquals(false, ECO_Service_ChangeManager.isChangedDocumentManagement(project.Id));
+		system.assertEquals(false, ECO_Service_ChangeManager.isChangedStakeholders(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)));
+		system.assertEquals(true, ECO_Service_ChangeManager.isChangedDeliverables(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)));
+		system.assertEquals(false, ECO_Service_ChangeManager.isChangedResources(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)));
+		system.assertEquals(true, ECO_Service_ChangeManager.isChangedScope(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)));
+		system.assertEquals(false, ECO_Service_ChangeManager.isChangedFunding(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)));
 									
 		Test.stopTest();				
 	}
@@ -104,18 +104,18 @@ public with sharing class ECO_ChangeManagerTest {
 		insert changeManager;
 			
 		Test.startTest();
-		system.AssertEquals(true, ECO_ChangeManager_Service.isChangedAgreements(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)));	
+		system.AssertEquals(true, ECO_Service_ChangeManager.isChangedAgreements(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)));	
 		changeManager.IntExtContractManagement__c = true;
 		update changeManager;					
-		system.AssertEquals(true, ECO_ChangeManager_Service.isChangedAgreements(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)));	
+		system.AssertEquals(true, ECO_Service_ChangeManager.isChangedAgreements(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)));	
 		changeManager.ApprovalStatus__c = 'Submitted';
 		update changeManager;					
-		system.AssertEquals(false, ECO_ChangeManager_Service.isChangedAgreements(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)));	
+		system.AssertEquals(false, ECO_Service_ChangeManager.isChangedAgreements(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)));	
 		changeManager.ApprovalStatus__c = 'Approved';
 		update changeManager;		
 		Test.stopTest();			
-		system.AssertEquals(false, ECO_ChangeManager_Service.isChangedAgreements(project.Id, ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)));	
-		system.AssertEquals('', ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id)[0]);
+		system.AssertEquals(false, ECO_Service_ChangeManager.isChangedAgreements(project.Id, ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)));	
+		system.AssertEquals('', ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id)[0]);
 		agreement = [select Id, ChangeManagerApprovedForSynch__c, ChangeManagerIsChanged__c from Agreement__c where id = :agreement.Id];
 		system.AssertEquals(true, agreement.ChangeManagerApprovedForSynch__c);
 		system.assertequals(false, agreement.ChangeManagerIsChanged__c);																

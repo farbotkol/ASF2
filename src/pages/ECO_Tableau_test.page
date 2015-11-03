@@ -1,0 +1,35 @@
+<apex:page docType="html-5.0" >
+
+<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jsforce/1.5.0/jsforce.js"></script>
+
+{!$API.Session_Id}
+
+<button onclick="get_report()">Test Report</button>
+
+<script>
+
+var conn = new jsforce.Connection({ accessToken: '{!$API.Session_Id}' });
+
+function get_report() {
+    
+// get report reference
+var reportId = '00Oe0000000dpHT';
+//var reportId = '00Oe0000000doDL';
+
+var report = conn.analytics.report(reportId);
+
+// execute report synchronously
+report.execute(function(err, result) {
+  if (err) { return console.error(err); }
+
+  //console.log(result.reportMetadata);
+  console.log(result);
+  //console.log(result.factMap["0!T"]);
+  //console.log(result.factMap["0!T"].aggregates);
+});
+
+}
+  
+</script>
+
+</apex:page>

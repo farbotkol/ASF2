@@ -11,6 +11,8 @@ public with sharing class ECO_ProjectTaskTriggers {
 		List<pse__Proj__c> toUpdate = new List<pse__Proj__c>();
 
 		List<WeeklyRollupEntry__c> toUpsert = new List<WeeklyRollupEntry__c>();
+		
+		List<pse__Time_Period__c> timePeriods = [select id, TimePeriodCode__c, pse__Start_Date__c, pse__End_Date__c from pse__Time_Period__c where pse__Type__c = 'Month'];
 
 		for (pse__Proj__c project : projects) {
 			Date newStartDate = null;
@@ -66,6 +68,14 @@ public with sharing class ECO_ProjectTaskTriggers {
 						Project__c = project.id,
 						CompositeKey__c = ECO_Service_Snapshots.DateToSnapshotKey(currentDate, project.id),
 						PeriodStartDate__c = ECO_Service_Snapshots.getFirstDateOfWeek(currentDate));
+					
+					// time period
+					for (pse__Time_Period__c tp : timePeriods){
+						if (tp.pse__Start_Date__c >= rollup.PeriodStartDate__c && tp.pse__End_Date__c <= rollup.PeriodStartDate__c){	
+							rollup.FiscalMonth__c = tp.TimePeriodCode__c;
+						}
+					}
+						
 
 					toUpsert.add(rollup);
 
@@ -406,6 +416,7 @@ public with sharing class ECO_ProjectTaskTriggers {
 												, pse__End_Date__c
 												, TotalApprovedCost__c
 												, EarnedValueCurve__c
+                                        		, TotalEstimateCost__c
 												, (SELECT Id 
 														, ThisWeekNumber__c
 													FROM EarnedValueSnapshots__r)

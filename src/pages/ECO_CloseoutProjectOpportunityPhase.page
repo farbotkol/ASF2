@@ -130,7 +130,7 @@
 
 	<apex:form >
 
-		<apex:sectionHeader title="Closeout: Opportunity Phase" subtitle="{!pse__Proj__c.Name}" />
+		<apex:sectionHeader title="Change Status" subtitle="{!pse__Proj__c.ProjectSectionHeaderName__c}" />
 
 
 		<apex:pageMessages id="messages" />		
@@ -138,11 +138,11 @@
 
 			<apex:pageBlockButtons location="top">
 				<apex:commandButton value="Save" action="{!closesave}" />
-				<apex:commandButton value="Back to Project" action="{!back}" immediate="true" />
+				<apex:commandButton value="Return to Project" action="{!back}" immediate="true" />
 			</apex:pageBlockButtons>
 
 
-			<apex:pageBlockSection title="Closeout" collapsible="false" />
+			<apex:pageBlockSection title="Change Status" collapsible="false" />
 
 			<div style="padding:0 100px;margin-top:7px">
 			<apex:outputPanel id="projectFields">
@@ -169,7 +169,7 @@
 
 					<apex:outputLabel value="Notes" />
 					<apex:outputText value="" />
-					<apex:inputField value="{!oProject.ProjOpptyCloseoutNotes__c}" required="true" />
+					<apex:inputField style="width: 400px;"  value="{!oProject.ProjOpptyCloseoutNotes__c}" />
 					<apex:outputText value="" />
 
 					<apex:outputLabel value="Also Close Related Opportunity Record" />
@@ -184,9 +184,9 @@
 
 		            <apex:outputLabel value="Client Debrief" />
 		            <apex:outputText value="" />
-		            <apex:outputPanel layout="block" styleClass="requiredInput">
+		            <apex:outputPanel layout="block">
 		                    <div class="requiredBlock"></div>
-							<apex:selectRadio value="{!oProject.ClientDebrief__c}" layout="lineDirection" required="true" >
+							<apex:selectRadio value="{!oProject.ClientDebrief__c}" layout="lineDirection" >
 			                    <apex:selectOptions value="{!types}"></apex:selectoptions>
 			 				</apex:selectRadio>
 		            </apex:outputPanel>
@@ -194,14 +194,14 @@
 
 		            <apex:outputLabel value="Notes" />
 		            <apex:outputText value="" />
-		            <apex:inputField value="{!oProject.ClientDebriefNotes__c}" required="true" />
+		            <apex:inputField style="width: 400px;" value="{!oProject.ClientDebriefNotes__c}"/>
 		            <apex:outputText value="" />
 
 		            <apex:outputLabel value="Internal Debrief" />
 		            <apex:outputText value="" />
-		            <apex:outputPanel layout="block" styleClass="requiredInput">
+		            <apex:outputPanel layout="block">
 		                    <div class="requiredBlock"></div>
-							<apex:selectRadio value="{!oProject.InternalDebrief__c}" layout="lineDirection" required="true">
+							<apex:selectRadio value="{!oProject.InternalDebrief__c}" layout="lineDirection" >
 			                    <apex:selectOptions value="{!types}"></apex:selectoptions>
 			 				</apex:selectRadio>
 		            </apex:outputPanel>
@@ -209,7 +209,7 @@
 
 		            <apex:outputLabel value="Notes" />
 		            <apex:outputText value="" />		            
-		            <apex:inputField value="{!oProject.InternalDebriefNotes__c}" required="true" />
+		            <apex:inputField style="width: 400px;" value="{!oProject.InternalDebriefNotes__c}"  />
 		            <apex:outputText value="" />
 
 				</apex:panelGrid>			

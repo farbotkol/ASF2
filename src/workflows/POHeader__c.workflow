@@ -2,6 +2,8 @@
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
     <alerts>
         <fullName>EcoPOApproval</fullName>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
         <description>EcoPOApproval</description>
         <protected>false</protected>
         <recipients>
@@ -17,6 +19,8 @@
     </alerts>
     <alerts>
         <fullName>EcoPOApprovalRecalled</fullName>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
         <description>EcoPOApprovalRecalled</description>
         <protected>false</protected>
         <recipients>

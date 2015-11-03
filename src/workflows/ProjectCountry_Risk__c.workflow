@@ -3,6 +3,7 @@
     <alerts>
         <fullName>Project_Country_Risk_Notification</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoProject Country Risk Notification</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -32,7 +33,7 @@
             <name>Project_Country_Risk_Notification</name>
             <type>Alert</type>
         </actions>
-        <active>false</active>
+        <active>true</active>
         <criteriaItems>
             <field>ProjectCountry_Risk__c.Safety_Rating__c</field>
             <operation>greaterThan</operation>

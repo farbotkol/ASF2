@@ -1,4 +1,4 @@
-<apex:page standardController="pse__Proj__c" extensions="ECO_EarnedValueReport2Controller" action="{!init}">
+<apex:page standardController="pse__Proj__c" extensions="ECO_EarnedValueReport2Controller" action="{!init}" sidebar="false">
 
     <script type="text/javascript" src="https://www.google.com/jsapi"></script>
     <script type="text/javascript">
@@ -236,10 +236,17 @@
             display:block;
             color:#;
             max-width:95%;
+        }
+
+        .mouseOverInfo{
+            text-align: left;
+        }
+        .message{
+            background-color: #A2D3F1;
         }            
     </style>
 
-    <apex:sectionHeader title="Earned Value Report" subtitle="{!project.Name}" >
+    <apex:sectionHeader title="Earned Value Report" subtitle="{!project.ProjectSectionHeaderName__c}" >
             <apex:actionStatus id="statusBar">
                 <apex:facet name="start">
                     <p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Processing...</p>
@@ -261,47 +268,48 @@
             <apex:commandButton action="{!returnToProject}" value="Return to Project" />
         </apex:pageBlockButtons>
 
-        <div class="customHelpText">
-            <div class="customHelpBody">
-                    Earned Value is a tool to help determine if a project is progressing as planned. Utilize this tool to compare your project plan against actual work completed and budget spent to date. 
-                    <br /><br />
-                    To complete and Earned Value Report: <br />
-                    1.  Select the week ending date for the period you wish to complete the report <br />
-                    2.  Enter the Percent Complete assessment for each task - note this is the phsycial %age of the work that has been completed. <br />
-                    3.  Enter any Cost Accruals which should be made relative to the percent complete claimed (e.g. any Subs or ODCs not yet accounted for in the project costs to date). <br />
-                    4.  Enter any coments for future reference to substantiate the percent complete. <br />
-                    5.  When complete hit "Committ Earned Value" above to submit and lock the EV Assessment for that week. <br />
+       	<apex:pageMessage id="headerSummaryMessage" severity="info"  escape="false"  summary='
+                   Earned value is a tool used to help determine if a project is progressing as planned.  Utilize this tool to compare your project plan against actual work completed and budget spent to date.   To complete and Earned Value report:
+                   <br /><br />
+                    1.  Select the "Week Of" date for the period you wish to complete the report.<br />
+                    2.  Enter the "Percent Complete" assessment for each task.  Note that this is the physical percent (%) of work completed to date.<br />
+                    3.  Enter any "Cost Accruals" relative to the percent complete claimed (e.g., any Subs or ODCs not yet accounted for in the project costs to date).<br />
+                    4.  Enter any "Comments" for future reference to substantiate the percent complete.<br />
+                    5.  When complete, click on "Commit Changes" to submit and lock the Earned Value assessment for that week.<br />
                     <br />
-                    Click on Save at any time to save the work done to date, note however the updates will not reflect on the EV Graphics until Committed. <br />          
-            </div>
-        </div>
+                    Click on "Save" at any time to save the work done to date.  Note however the updates will not reflect on the Earned Value graphs until the assessment has been committed.' />
+        
         <br />
 
-        <apex:pageBlockSection columns="1" title="Report Information">
+            <apex:pageBlockSection columns="1" title="Report Information">
                 
-            <apex:pageBlockSectionItem >
-                <apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.Project__c.Label}" for="evhProject"/>
-                <apex:outputField value="{!project.Name}" id="evhProject" />
-            </apex:pageBlockSectionItem> 
-            
-            <apex:pageBlockSectionItem >
-                <apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.ReportName__c.Label}" for="evhReport"/>
-                <apex:outputField value="{!evhRecord.ReportName__c}" id="evhReport" />
-            </apex:pageBlockSectionItem> 
-            
-            <apex:pageBlockSectionItem >
-                <apex:outputLabel value="Week of" for="evhSnapshot"/>
-                <apex:outputPanel >
-                    <apex:commandButton id="btnPrevSnapShot" action="{!moveBackwardByAWeek}" value=" << " disabled="{!!hasPrevWeek}" />
-                    <apex:selectList size="1" id="evhSnapshot" onchange="handleSnapshotDateChange(this.options[this.selectedIndex].value);" value="{!selectedSnapshotDate}" >
-                        <apex:selectOptions value="{!startOfWeekDatesBetweenProjectStartAndEndDates}"/>
-                    </apex:selectList>
-                    <apex:commandButton id="btnNextSnapShot" action="{!moveForwardByAWeek}" value=" >> " disabled="{!!hasNextWeek}" />
-                </apex:outputPanel>
-            </apex:pageBlockSectionItem> 
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.Project__c.Label}" for="evhProject"/>
+                    <apex:outputField value="{!project.Name}" id="evhProject" />
+                </apex:pageBlockSectionItem> 
                 
-        </apex:pageBlockSection>
-        
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.ReportName__c.Label}" for="evhReport"/>
+                    <apex:outputField value="{!evhRecord.ReportName__c}" id="evhReport" />
+                </apex:pageBlockSectionItem> 
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Week of" for="evhSnapshot"/>
+                    <apex:outputPanel >
+                        <apex:commandButton id="btnPrevSnapShot" action="{!moveBackwardByAWeek}" value=" << " disabled="{!!hasPrevWeek}" />
+                        <apex:selectList size="1" id="evhSnapshot" onchange="handleSnapshotDateChange(this.options[this.selectedIndex].value);" value="{!selectedSnapshotDate}" >
+                            <apex:selectOptions value="{!startOfWeekDatesBetweenProjectStartAndEndDates}"/>
+                        </apex:selectList>
+                        <apex:commandButton id="btnNextSnapShot" action="{!moveForwardByAWeek}" value=" >> " disabled="{!!hasNextWeek}" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem> 
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.EVRulesGuidelines__c.Label}" for="evhRules"/>
+                    <apex:inputField value="{!Project.EVRulesGuidelines__c}" id="evhRules" />
+                </apex:pageBlockSectionItem> 
+            </apex:pageBlockSection>
+
         <apex:pageBlockSection columns="1" id="pbtSnapshotTasks" title="Task Progress">
 
             <apex:pageBlockTable value="{!availableTasks}" var="taskwrapper"  rendered="{!if(numAvailableTasks > 0, 'true', 'false')}">

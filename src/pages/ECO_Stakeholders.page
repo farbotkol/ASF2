@@ -1,4 +1,8 @@
 <apex:page standardController="pse__Proj__c" extensions="ECO_StakeholdersController" showHeader="true" sidebar="false">
+<apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+<apex:includeScript value="{!URLFOR($Resource.jQuery_Simple_Combobox, '/js/jquery.scombobox.min.js')}"/>
+<apex:stylesheet value="{!URLFOR($Resource.jQuery_Simple_Combobox, '/css/jquery.scombobox.min.css')}"/>
+
 
 	<style>
 		.panelWrapper .mainTitle {
@@ -96,55 +100,187 @@
 		    background-color: #A2D3F1;
 
 		}
+
+		.linkPanel{
+			text-decoration:underline;
+			cursor: pointer;
+			display:block;
+		}
+
+		.delegateQueryTable{
+			display:block;
+			max-height: 200px;
+			overflow-y: scroll; 
+			overflow-x: scroll;
+			width:620px;
+			min-width: 620px;
+		}
+
+		.saveError{
+			visibility: hidden;
+		}
+
+		.message{
+			background-color: #A2D3F1;
+		}
+
 	</style>
+
+	<script type="text/javascript">
+	$x(document).ready(function(){
+		initComboBox();
+	})
+
+	function esc(myid) {
+   		return myid.replace(/(:|\.)/g,'\\\\$1');
+ 	}
+
+	//sets the project role select list on the modal when the link under key roles is clicked
+	function setRole(role, existingId, startDate){
+		$x('[id$=modalProjectRoles]').text(role);
+
+		if(existingId != ''){
+			$x('[id$=existingRecordId]').val(existingId);
+			findLatestDates();
+		}
+	}
+
+	function addDeputyProjectManager(){
+		$x('[id$=modalProjectRoles]').text('Deputy Project Manager');
+		findLatestDates();
+	}
+
+	//finds the latest date for the selected key role and adds a day, sets the value in the modal date field
+	function findLatestDates(){
+		var currentRole = $x('[id$=modalProjectRoles]').text().trim();
+		var startDate;
+
+		$x('[id$=ActiveKeysTable] tr').each(function (i, row){
+			if(currentRole === $x(row).find('[id*="roleColumn"]').text().trim()){
+				if($x(row).find('[id*="roleColumn"]').text().trim() != '' && $x(row).find('[id*="roleColumn"]').text().trim() != null && $x(row).find('[id*="endDateColumn"]').text().trim() === '' && $x(row).find('[id*="startDateColumn"]').text().trim() != ''){
+					var startDate = new Date($x(row).find('[id*="startDateColumn"]').text().trim());
+					console.log('here');
+					startDate.setDate(startDate.getDate() + 1);
+					$x('[id$=queryStartDate]').val(startDate.getMonth() + 1 + '/' + startDate.getDate() + '/' + startDate.getFullYear());
+				}
+			}
+		});
+	}
+
+	//searches for contacts/delegates and displays them in the modal table
+	function searchKeyMembers(){
+		searchForKeyMembers($x('[id$=queryContactName]').val(), findQueryType(), $x('[id$=modalProjectRoles]').text(), $x('[id$=queryStartDate]').val(), $x('[id$=queryEndDate]').val());
+	}
+
+	//checks to see if an error occurs when saving a new key role team memmber
+	function checkForError(){
+		if($x('[id$=saveError]').text() === 'false'){
+			location.reload();
+		}
+	}
+
+	//closes and resets all modal fields/errors
+	function cancelModal(){
+		var queryTypeSelectElement = $x('input[id*="queryType"]');
+		$x('[id$=queryContactName]').val('');
+		$x('[id$=queryStartDate]').val('');
+		$x('[id$=modalProjectRoles]').text('');
+		closeModal('modalDialogAddProjectMember');
+		for(i = 0; i < queryTypeSelectElement.length; i++){ 
+			if(queryTypeSelectElement[i].value === 'Delegate'){
+				queryTypeSelectElement[i].checked = 'checked';
+			}
+		}
+		resetModalValues();
+		return false;
+	}
+
+	//returns the value of the query type radio buttons from the modal
+	function findQueryType(){
+		var queryTypeSelectElement = $x('input[id*="queryType"]');
+		for(i = 0; i < queryTypeSelectElement.length; i++){ 
+    		if(queryTypeSelectElement[i].checked) {
+    			return queryTypeSelectElement[i].value;
+    		}
+    	}
+	}
+
+	//runs when the contact/delegate has been selected for the key member in the modal
+	function saveSelectedDelegate(delegateId){
+		selectReplaceKeyMember(delegateId, $x('[id$=modalProjectRoles]').text(), $x('[id$=queryStartDate]').val(), $x('[id$=existingRecordId]').val(), findQueryType());
+	}
+
+	function initComboBox(counter){
+		var element
+		if(counter != undefined){
+			element = '[id*=' + esc(counter +':contactSelectList') + ']';
+			
+		}
+		else{
+			element = '.contactSelector'
+		}
+		$x(element).scombobox({
+	    	showDropDown: true
+		});
+	}
+	</script>
 	
 	<apex:form id="topForm">
 
 		<apex:outputField value="{!pse__Proj__c.EstimatedStartDate__c}" rendered="false" />
 
-		<div style="position:relative; border-bottom:5px; border-top:5px; padding-bottom:5px">
+		<!--<div style="position:relative; border-bottom:5px; border-top:5px; padding-bottom:5px">
 			<apex:sectionHeader title="Project Team & Stakeholders" subtitle="{!pse__Proj__c.Name}" />
-		</div>
+		</div>-->
+
+		<c:ECO_PageTitle project="{!pse__Proj__c}" title="Project Team & Stakeholders" subtitle="{!pse__Proj__c.Name}"/>
 	
 		<apex:pageMessages id="pgMessages" />
-
+		<apex:pageMessage id="headerSummaryMessage" severity="info"  escape="false"  summary="
+					Complete this section to capture all AECOM team members, stakeholders and associated communication activities.  Non-AECOM team members, such as sub-consultants, should be identified in the Sub/Vendors section.   Stakeholders include clients but can also include an individual, group or organization who has interests that may be positively or negatively affected by the performance or completion of the project. 
+					<br /><br />
+					Once the project team and stakeholders are defined, outline the communication activities necessary to keep all interested parties informed throughout the life of the project.  These may include best practice activities (e.g., client progress reports, project team meetings) or activities required by the contract and/or scope of services (e.g., community meetings, client briefings).  This also includes scheduled project surveys with the client should the Project Manager desire feedback beyond the random selection process.
+					" />
 		<apex:outputPanel id="topPanel" rendered="{!NOT(ISNULL(pse__Proj__c.Id))}">
 			<div class="projectSummary">
-				<apex:pageBlock title="Project Key Members">
+				<apex:pageBlock title="AECOM Team (Oracle Key Members)">
 					<apex:pageBlockButtons location="top">
 						<apex:commandButton action="{!SaveAll}" value="Save" rerender="pgMessages,ActiveKeysTable,InactiveKeysTable,ProjectTeamTable,VendorSubTable,StakeholderTable,CommTable" onClick="this.disabled = true;"/><!-- onComplete="location.reload()" -->
 						<apex:commandButton action="{!ReturnToProject}" value="Return to Project" />
 					</apex:pageBlockButtons>
+					
 					<apex:pageBlockSection columns="1" collapsible="false">
 						<apex:tabPanel switchType="client" selectedTab="active">
 							<apex:tab id="activeKeyMembers" label="Key Members" name="active">
 								<apex:pageMessage severity="info" rendered="{!showVacantKeyMemberNote}" summary="One or more of this project's active Key Member roles is vacant." />
-						        <apex:pageBlockTable value="{!lActiveMembersKey}" var="item" width="100%" id="ActiveKeysTable">
+						        <apex:pageBlockTable value="{!lActiveMembersKey}" var="item" width="100%" id="ActiveKeysTable" styleClass="activeKeyMembersTable">
 						        	<apex:facet name="footer">
-										<apex:commandLink action="{!addRecord}" value="Add New Key Member" rerender="ActiveKeysTable" status="keyStatus">
-											<apex:param name="object" value="KeyMember" assignTo="{!recordObjectType}"/>
-										</apex:commandLink>
+										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', addDeputyProjectManager());return false;">Add New Deputy Project Manager</apex:outputLink>
 									</apex:facet>
-						        	<apex:column >
+									<apex:column rendered="{!OR(isPNL, isFinance)}">
+										<apex:facet name="header">Action</apex:facet>
+										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '', '{!item.previousDate}'));return false;" rendered="{!AND(AND(ISNULL(item.oPTM.Contact__c), AND(AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate')), item.canEdit)}">Select</apex:outputLink>
+										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '{!item.oPTM.Id}', '{!item.oPTM.StartDate__c}'));return false;" rendered="{!AND(ISNULL(item.oPTM.EndDate__c), AND(NOT(ISNULL(item.oPTM.Contact__c)), AND(AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate')), item.canEdit)}">Replace</apex:outputLink>
+										<apex:outputPanel layout="none" rendered="{!AND(NOT(ISNULL(item.oPTM.Contact__c)), AND(AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate'))}">
+											&nbsp;
+											<apex:outputLink rendered="{!item.canEdit}" value="/{!item.oPTM.Id}/e?retURL={!returnURL}">Edit</apex:outputLink>
+										</apex:outputPanel>
+									</apex:column>
+						        	<apex:column id="roleColumn" >
 										<apex:facet name="header">Role</apex:facet>
 										<apex:outputLabel value="{!item.RoleName}" rendered="{!if(item.RoleName != null, true, false)}"/>
-										<apex:selectList size="1" multiselect="false" value="{!item.RoleID}" rendered="{!if(item.RoleName == null, true, false)}">
-											<apex:selectOptions value="{!item.lKeyRoleTypes}" />
-										</apex:selectList>
 									</apex:column>
 						        	<apex:column >
 										<apex:facet name="header">Name</apex:facet>
-										<apex:inputField value="{!item.oPTM.Contact__c}"> 
-											<apex:actionSupport event="onchange" action="{!defaultDates}" reRender="topPanel, pgMessages" />
-										</apex:inputField> 
+										<apex:outputField value="{!item.oPTM.Contact__r.Name}" /> 
 									</apex:column>
-									<apex:column >
+									<apex:column id="startDateColumn">
 										<apex:facet name="header">Start Date</apex:facet>
-										<apex:inputField value="{!item.oPTM.StartDate__c}" />
+										<apex:outputField value="{!item.oPTM.StartDate__c}" />
 									</apex:column>
-									<apex:column >
+									<apex:column id="endDateColumn">
 										<apex:facet name="header">End Date</apex:facet>
-										<apex:inputField value="{!item.oPTM.EndDate__c}" />
+										<apex:outputField value="{!item.oPTM.EndDate__c}" />
 									</apex:column>
 									<apex:column >
 										<apex:facet name="header">Phone</apex:facet>
@@ -153,6 +289,10 @@
 									<apex:column >
 										<apex:facet name="header">Email</apex:facet>
 										<apex:outputField value="{!item.oPTM.Email__c}" />
+									</apex:column>
+									<apex:column >
+										<apex:facet name="header">Status</apex:facet>
+										<apex:outputField value="{!item.oPTM.Status__c}" />
 									</apex:column>
 						        </apex:pageBlockTable>
 						        <apex:actionStatus id="keyStatus">
@@ -169,15 +309,15 @@
 									</apex:column>
 						        	<apex:column >
 										<apex:facet name="header">Name</apex:facet>
-										<apex:inputField value="{!item.oPTM.Contact__c}" />
+										<apex:outputField value="{!item.oPTM.Contact__c}" />
 									</apex:column>
 									<apex:column >
 										<apex:facet name="header">Start Date</apex:facet>
-										<apex:inputField value="{!item.oPTM.StartDate__c}" />
+										<apex:outputField value="{!item.oPTM.StartDate__c}" />
 									</apex:column>
 									<apex:column >
 										<apex:facet name="header">End Date</apex:facet>
-										<apex:inputField value="{!item.oPTM.EndDate__c}" />
+										<apex:outputField value="{!item.oPTM.EndDate__c}" />
 									</apex:column>
 									<apex:column >
 										<apex:facet name="header">Phone</apex:facet>
@@ -193,7 +333,7 @@
 					</apex:pageBlockSection>
 				</apex:pageBlock>
 				
-				<apex:pageBlock title="Project Team (AECOM)">
+				<apex:pageBlock title="AECOM Team (Delivery/Others)">
 					<apex:pageBlockSection columns="1" collapsible="false">
 						<apex:outputPanel id="ProjectTeamTable">
 						<apex:tabPanel switchType="client" selectedTab="ActiveTeamMember">
@@ -234,6 +374,10 @@
 										<apex:facet name="header">Email</apex:facet>
 										<apex:outputField value="{!item.oPTM.Email__c}" />
 									</apex:column>
+									<!--<apex:column>
+										<apex:facet name="header">Access Level</apex:facet>
+										<apex:inputField value="{!item.oPTM.AccessLevel__c}" />
+									</apex:column>-->
 								</apex:pageBlockTable>
 								<apex:actionStatus id="teamStatus">
 									<apex:facet name="start">
@@ -345,19 +489,20 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 		            	<apex:pageMessage severity="info" rendered="{!if(lAccounts.size = 0, true, false)}" summary="No Clients/Project Sites have been defined." />
 	            	</apex:pageBlockSection>
 
-					<apex:pageBlockSection title="Others"  columns="1" collapsible="false">
+					<apex:pageBlockSection title="Others"  columns="1" collapsible="false" id="pbsOthers">
 						<apex:inputField value="{!pse__Proj__c.MediaInvolvement__c}" />
+						<apex:variable var="otherCounter" value="{!0}"/>
 						<apex:pageBlockTable value="{!lStakeholders}" var="item" width="100%" columnsWidth="60px" id="StakeholderTable">
 							<apex:facet name="footer">
-								<apex:commandLink action="{!addRecord}" value="Add New Stakeholder" rerender="StakeholderTable" status="stakeholderStatus">
+								<apex:commandLink action="{!addRecord}" value="Add New Stakeholder" rerender="pbsOthers" status="stakeholderStatus">
 									<apex:param name="object" value="Stakeholder__c" assignTo="{!recordObjectType}"/>
 								</apex:commandLink>
 							</apex:facet>
 							<apex:column >
 								<apex:facet name="header">Actions</apex:facet>
-								<apex:commandLink action="{!removeRecord}" value="Remove" rerender="StakeholderTable" status="stakeholderStatus">
+								<apex:commandLink action="{!removeRecord}" value="Remove" rerender="pbsOthers" status="stakeholderStatus">
 									<apex:param name="object" value="Stakeholder__c" assignTo="{!recordObjectType}" />
-									<apex:param name="objID" value="{!item.Id}" assignTo="{!recordObjectId}" />
+									<apex:param name="otherToRemove" value="{!otherCounter}"/>
 								</apex:commandLink>
 							</apex:column>
 							<apex:column >
@@ -383,6 +528,7 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 							<apex:column >
 								<apex:facet name="header">AECOM Contact</apex:facet>
 								<apex:inputField value="{!item.AECOMContact__c}" />
+								<apex:variable var="otherCounter" value="{!otherCounter + 1}"/>
 							</apex:column>
 						</apex:pageBlockTable>
 						<apex:actionStatus id="stakeholderStatus">
@@ -395,19 +541,25 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 </apex:outputPanel>	
 							
 				<apex:pageBlock title="Communication Activities">
-					<apex:pageBlockSection columns="1" collapsible="false">
+                    <apex:pageBlockButtons location="top">
+                        <apex:outputLink style="text-decoration:none;padding:4px;" styleClass="btn" value="mailto:?subject=AECOM Project Update {!TODAY()} - {!pse__Proj__c.Name} ({!pse__Proj__c.ProjectNumber__c})&body=Dear%20%3CENTER CLIENT NAME%3E%20%2C%0A%0APlease%20find%20below%20our%20weekly%20update%20on%20TestingProgBarv1%20(PR-026253)%0A%0AKey%20items%20we%20worked%20on%20this%20week%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0AOngoing%20key%20items%20that%20we%20are%20working%20on%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0AOutstanding%20Items%2FIssues%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0ASafety%20Update%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0ARegards%2C">
+                            Send Client Progress Report
+                        </apex:outputLink>
+                    </apex:pageBlockButtons>
+                    <apex:pageBlockSection columns="1" collapsible="false" id="pbsCommunication">
 						<apex:pageMessage severity="info" rendered="{!showCommPlanNote}" summary="Reminder: Check with the appropriate Client Account or Program Manager to determine if a client or program-specific communication plan exists prior to defining the communication strategy for the project. Alternatively, go directly to the SalesForce client account to determine if an Account Plan is available." />
+						<apex:variable var="planCounter" value="{!0}"/>
 						<apex:pageBlockTable value="{!lCommPlans}" var="item" width="100%" columnsWidth="60px" id="CommTable">
 							<apex:facet name="footer">
-								<apex:commandLink action="{!addRecord}" value="Add New Communication Plan" rerender="CommTable" status="commStatus">
+								<apex:commandLink action="{!addRecord}" value="Add New Communication Activity" rerender="pbsCommunication" status="commStatus">
 									<apex:param name="object" value="CommunicationPlan__c" assignTo="{!recordObjectType}"/>
 								</apex:commandLink>
 							</apex:facet>
 							<apex:column >
 								<apex:facet name="header">Actions</apex:facet>
-								<apex:commandLink action="{!removeRecord}" value="Remove" rerender="CommTable" status="commStatus">
+								<apex:commandLink action="{!removeRecord}" value="Remove" rerender="pbsCommunication" status="commStatus">
 									<apex:param name="object" value="CommunicationPlan__c" assignTo="{!recordObjectType}" />
-									<apex:param name="objID" value="{!item.Id}" assignTo="{!recordObjectId}" />
+									<apex:param name="planToRemove" value="{!planCounter}"/>
 								</apex:commandLink>
 							</apex:column>
 							<apex:column title="test">
@@ -444,6 +596,7 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 							<apex:column >
 								<apex:facet name="header">Generate Task</apex:facet>
 								<apex:inputField value="{!item.GenerateTask__c}" />
+								<apex:variable var="planCounter" value="{!planCounter + 1}"/>
 							</apex:column>
 						</apex:pageBlockTable>
 						<apex:actionStatus id="commStatus">
@@ -454,41 +607,65 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 					</apex:pageBlockSection>
 				</apex:pageBlock>
 				
-				<apex:pageBlock title="Project Surveys">
+				<apex:outputPanel id="survey" >
+				<apex:pageBlock title="Project Survey Requests">
 					<apex:pageBlockButtons location="bottom">
 						<apex:commandButton action="{!ReturnToProject}" value="Return to Project" />
 						<apex:commandButton action="{!SaveAll}" value="Save" rerender="pgMessages,ActiveKeysTable,InactiveKeysTable,ProjectTeamTable,VendorSubTable,StakeholderTable,CommTable" onClick="this.disabled = true;"/><!-- onComplete="location.reload()" -->
 					</apex:pageBlockButtons>
 				
-					<apex:pageBlockSection columns="1" collapsible="false">
+					<apex:pageBlockSection columns="1" collapsible="false" id="pbSurveySchedule">
 
-						<apex:pageMessage severity="info" escape="false" summary="Project surveys measure the client’s overall satisfaction with AECOMs performance on a specific project. AECOM conducts monthly surveys on a 2% random sample of projects over 20% complete (of budget).   <br /><br />
-
-Complete this section if the Project Manager wants to request a survey of the project, schedule a survey around a specific project event (e.g., completion of key milestone or deliverable) or schedule survey intervals for long term projects (e.g., annual survey).  The request will be provided to the Client Care Management team to action the project survey on the dates requested.   <br /><br />
-
-Projects with no dates identified below will be automatically subjected to the random selection process. " />
-
-						<apex:pageBlockTable value="{!lSurveySchedules}" var="item" width="100%" columnsWidth="60px" id="SurveyScheduleTable">
+						<apex:pageMessage severity="info" escape="false" summary="Project surveys measure the client’s overall satisfaction with AECOMs performance on a specific project. AECOM conducts monthly surveys on a 2% random sample of projects over 20% complete (of budget).  Complete this section if the Project Manager wants to request a survey of the project, schedule a survey around a specific project event (e.g., completion of key milestone or deliverable) or schedule survey intervals for long term projects (e.g., annual survey). If the desired client contact is not visible in the search field, request an update to the client record through the Global Business Services app.
+						<br /><br />
+						Projects with no dates identified below will be automatically subjected to the random selection process. 
+						" />
+						<apex:pageBlockTable value="{!lstSSW}" var="item" width="100%" columnsWidth="60px" id="SurveyScheduleTable">
 							<apex:facet name="footer">
-								<apex:commandLink action="{!addRecord}" value="Add New Survey" rerender="SurveyScheduleTable" status="surveyStatus">
+								<apex:commandLink action="{!addRecord}" value="Add New Survey" rerender="SurveyScheduleTable" status="surveyStatus" oncomplete="initComboBox();">
 									<apex:param name="object" value="SurveySchedule__c" assignTo="{!recordObjectType}"/>
 								</apex:commandLink>
 							</apex:facet>
 							<apex:column >
 								<apex:facet name="header">Actions</apex:facet>
-								<apex:commandLink action="{!removeRecord}" value="Remove" rerender="SurveyScheduleTable" status="surveyStatus">
+								<apex:commandLink action="{!removeRecord}" value="Remove" rerender="SurveyScheduleTable" status="surveyStatus" oncomplete="initComboBox();">
 									<apex:param name="object" value="SurveySchedule__c" assignTo="{!recordObjectType}" />
-									<apex:param name="objID" value="{!item.Id}" assignTo="{!recordObjectId}" />
+									<apex:param name="surveyToRemove" value="{!item.Counter}"/>
 								</apex:commandLink>
 							</apex:column>
 							<apex:column >
 								<apex:facet name="header">Scheduled Date</apex:facet>
-								<apex:inputField value="{!item.ScheduledDate__c}" />
+								<apex:inputField value="{!item.ss.ScheduledDate__c}" />
 							</apex:column>
 							<apex:column >
 								<apex:facet name="header">Comments</apex:facet>
-								<apex:inputField value="{!item.Comments__c}" style="width: 825px; height: 12px"/>
+								<apex:inputField value="{!item.ss.Comments__c}" style="width: 525px; height: 32px"/>
 							</apex:column>
+                            <apex:column headerValue="Client">
+		                        <apex:selectList value="{!item.ss.Client__c}" multiselect="false" size="1" >
+	                                <apex:selectOptions value="{!clients}"></apex:selectoptions>
+	                                <apex:actionSupport event="onchange" action="{!setOptions}" reRender="contactSelect" status="surveyStatus" oncomplete="initComboBox({!item.Counter});">
+	                                	<apex:param name="surveyToRefresh" value="{!item.Counter}"/>
+	                                </apex:actionSupport>
+	                            </apex:selectList>	
+	                        </apex:column>		
+                            <apex:column headerValue="Contact" style="min-width:150px">
+
+                            	<!--<apex:inputField value="{!item.ss.Contact__c}" />
+                            	<span style="visibility: hidden;">
+                            	<apex:inputField value="{!item.ss.Site_Account__c}" />
+                            	</span>-->
+                            	<apex:outputPanel layout="inline" id="contactSelect">
+	                           		<apex:selectList value="{!item.ss.Contact__c}" styleClass="contactSelector" multiselect="false" size="1" rendered="{!item.cOptions.size > 0}" id="contactSelectList">
+		                                <apex:selectOptions value="{!item.cOptions}"></apex:selectoptions>     
+		                            </apex:selectList>	
+	                          	</apex:outputPanel>
+								<!--<c:Typeahead object="Contact" destinationForSelectedId="contactid" filterClause="accountid = {!item.accountId}" />   
+								<apex:inputHidden id="contactid" value="{!item.ss.Contact__c}" />-->
+
+	                        </apex:column>	
+
+
 						</apex:pageBlockTable>
 						<apex:actionStatus id="surveyStatus">
 							<apex:facet name="start">
@@ -497,12 +674,93 @@ Projects with no dates identified below will be automatically subjected to the r
 						</apex:actionStatus>
 					</apex:pageBlockSection>
 				</apex:pageBlock>				
-				
+				</apex:outputPanel>
 			</div>
 			
 		</apex:outputPanel>
 
 		<c:ECO_RiskFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="Project Team" />
         <c:ECO_AssumptionFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="Project Team" />
+
+        <!-- modal window --> 
+        <c:ECO_ModalDialog width="680" padding="20px 10px 20px 10px" name="modalDialogAddProjectMember">
+			 <apex:pageBlock title="Select/Replace Key Member" id="pbModal">
+			 	<apex:pageBlockButtons location="bottom">
+			 		<apex:outputPanel layout="inline" styleClass="btn" onclick="searchKeyMembers()">Search</apex:outputPanel>
+		 			<apex:outputPanel layout="inline" styleClass="btn" onclick="cancelModal()">Cancel</apex:outputPanel>
+			 	</apex:pageBlockButtons>
+			 	<apex:pageMessages id="modalMessages" />
+			 	<!-- search form section -->
+			 	<apex:pageBlockSection showHeader="false">
+			 		<apex:inputText label="Delegate's Name" id="queryContactName" />
+			 		<apex:outputField id="modalProjectRoles" value="{!insertReplaceProjectTeamMember.ProjectRole__c}" />
+					<apex:pageBlockSectionItem >
+						<!--<c:ECO_HelpIcon helpText="The date of when the role replacement will take effect. This will create the end date of the role being replaced to a day previous to this date."/> -->
+						<apex:outputLabel value="Effective Date" />
+						<apex:outputPanel layout="block" styleClass="requiredInput">
+						<apex:outputPanel layout="block" styleClass="requiredBlock"/>
+			 				<apex:inputField value="{!insertReplaceProjectTeamMember.StartDate__c}" id="queryStartDate" />
+			 			</apex:outputPanel>
+			 		</apex:pageBlockSectionItem>
+			 		<apex:selectRadio label="Lookup Type" value="{!userSelectQueryType}" id="queryType">
+			 			<apex:selectOption itemValue="Delegate" itemLabel="Delegate" />
+			 			<apex:selectOption itemValue="Unfiltered" itemLabel="Unfiltered" />
+			 		</apex:selectRadio>
+			 	</apex:pageBlockSection>
+			 	<!-- end search form section -->
+			 	<apex:pageBlockSection showHeader="false" id="pbsQueryTable" columns="1">
+			 	<!-- query results table section -->
+			 	<apex:pageBlockTable rendered="{!AND(queryDelegates != NULL, queryDelegates.SIZE > 0)}" value="{!queryDelegates}" var="delegate" styleClass="delegateQueryTable">
+			 		<apex:column >
+			 			<apex:facet name="header">Action</apex:facet>
+			 			<apex:outputPanel styleClass="linkPanel" layout="inline" onclick="saveSelectedDelegate('{!delegate.Id}')">Select</apex:outputPanel>
+			 		</apex:column>
+			 		<apex:column value="{!delegate.Name}" />
+			 		<apex:column value="{!delegate.Title}" />
+			 		<apex:column value="{!delegate.Email}" />
+			 		<apex:column value="{!delegate.Phone}" />
+					<apex:column >
+						<apex:facet name="header">Reports To</apex:facet>
+						<apex:outputField value="{!delegate.ReportsTo.Name}" />
+					</apex:column>
+			 	</apex:pageBlockTable>
+			 	<apex:outputPanel rendered="{!AND(queryDelegates != NULL, queryDelegates.SIZE < 1)}">
+			 		<p>There are 0 results for the above criteria</p>
+			 	</apex:outputPanel>
+			 	<!-- end query results table section -->
+			 	</apex:pageBlockSection>
+			 	<apex:inputHidden id="existingRecordId" />
+			 	<apex:outputLabel styleClass="saveError" value="{!saveError}" id="saveError" />
+			 </apex:pageBlock>
+			 <apex:actionStatus id="queryStatus">
+				<apex:facet name="start">
+					<p style="padding-bottom:20px;text-align:center;" class="searchText"><img style="position:relative;top:24px;" src="/img/loading32.gif" /> Searching...</p>
+				</apex:facet>
+			</apex:actionStatus>
+			 <apex:actionStatus id="saveStatus">
+				<apex:facet name="start">
+					<p style="padding-bottom:20px;text-align:center;" class="searchText"><img style="position:relative;top:24px;" src="/img/loading32.gif" /> Saving...</p>
+				</apex:facet>
+			</apex:actionStatus>
+		</c:ECO_ModalDialog>
+		<!-- end modal window -->
+
+		<apex:actionFunction action="{!searchForKeyMembers}" name="searchForKeyMembers" rerender="pbsQueryTable" status="queryStatus" immediate="true" >
+			<apex:param name="contactName" value=""/>
+			<apex:param name="queryType" value=""/>
+			<apex:param name="selectedRole" value=""/>
+			<apex:param name="startDate" value=""/>
+		</apex:actionFunction>
+
+		<apex:actionFunction action="{!selectReplaceKeyMember}" name="selectReplaceKeyMember" rerender="saveError, modalMessages" status="saveStatus" oncomplete="checkForError()" immediate="true">
+			<apex:param name="selectedContactId" value=""/>
+			<apex:param name="selectedRole" value=""/>
+			<apex:param name="startDate" value=""/>
+			<apex:param name="existingId" value="" />
+			<apex:param name="queryType" value=""/>
+		</apex:actionFunction>
+
+		<apex:actionFunction name="resetModalValues" action="{!resetModalValues}" reRender="pbModal" immediate="true" />
+		<apex:actionFunction name="refreshPage" action="{!resetModalValues}" reRender="pbModal, topForm" />
 	</apex:form>
 </apex:page>

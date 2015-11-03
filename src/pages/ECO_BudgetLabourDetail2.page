@@ -1,0 +1,529 @@
+<apex:page standardController="BudgetHeader__c" extensions="ECO_BudgetLabourDetailController,ECO_AddResourceController" sidebar="false" showHeader="false">
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2_Themes, 'themes/smoothness/jquery-ui.css')}"/>
+
+
+    <script type="text/javascript">
+        $z = jQuery.noConflict();
+
+        function loading(val) {
+            if (val) {
+              document.getElementById('spinner1').style.display = 'block';
+            }
+            else {
+              document.getElementById('spinner1').style.display = 'none';
+            }
+          }
+
+        function clearAll() {
+            $z('.searchField').val('');
+        }  
+
+        function toggleAll(inx) {
+            $z('.check1').prop('checked', $z(inx).is(":checked"));
+        }
+
+        jQuery.fn.filterByText = function(textbox, selectSingleMatch) {
+          return this.each(function() {
+            var select = this;
+            var options = [];
+            $z(select).find('option').each(function() {
+              options.push({value: $z(this).val(), text: $z(this).text()});
+            });
+            $z(select).data('options', options);
+            $z(textbox).bind('change keyup', function() {
+              var options = $z(select).empty().scrollTop(0).data('options');
+              var search = $z.trim($z(this).val());
+              var regex = new RegExp(search,'gi');
+
+              $z.each(options, function(i) {
+                var option = options[i];
+                if(option.text.match(regex) !== null) {
+                  $z(select).append(
+                     $z('<option>').text(option.text).val(option.value)
+                  );
+                }
+              });
+              if (selectSingleMatch === true && 
+                  $z(select).children().length === 1) {
+                $z(select).children().get(0).selected = true;
+              }
+            });
+          });
+        };
+
+        $z(document).ready(function () {
+            $z('.tabsForResource').tabs();
+
+            jobNameJSON = {!jobNameJSON};
+
+            sel = $z('.jobNames');
+
+            for (var i = 0; i < jobNameJSON.length; i++) {
+                sel.append('<option value="' + jobNameJSON[i] + '">' + jobNameJSON[i] + '</option>');
+            }
+
+            $z('.jobNames').filterByText($z('.filterJobName'), true);
+
+            sel1 = $z('.jobNames option:selected');
+
+            $z('.filterJobName').keyup();
+
+            $z.each(sel1, function(i, e) {
+                $z('.jobNames option[value="' + $z(e).val() + '"]').prop('selected', true);
+            }); 
+
+        });
+    </script>
+
+    <style>
+        .tabs { 
+            padding: 0px; 
+            background: none; 
+            border-width: 0px;
+        }
+
+        .ui-tabs-nav { 
+            padding-left: 0px; 
+            background: transparent; 
+            border-width: 0px 0px 1px 0px; 
+            -moz-border-radius: 0px; 
+            -webkit-border-radius: 0px; 
+            border-radius: 0px; 
+        } 
+
+        .ui-tabs-panel { 
+            background: #ffffff;
+            border-width: 0px 1px 1px 1px;
+        }
+
+        .laborDetail td, .laborDetail th {
+        	border-top: 1px solid black;
+        	border-left: 1px solid black;
+        	border-right: 1px solid black;
+        }
+        .laborDetail td.lastCell {
+        	border-bottom: 1px solid black;
+        }
+        
+        .taskDetailHeader td{
+        	border-left: 1px solid black;
+        	border-top: 1px solid black;
+        	border-bottom: 1px solid black;
+        	padding:3px;
+        	height: 20px;
+        }
+        
+        .taskDetail td{
+        	border-left: 1px solid black;
+        	border-top: 1px solid black;
+        	padding:3px;
+        	height: 20px;
+        }
+        
+        .taskDetail td.lastCell{
+        	border-right: 1px solid black;
+        }
+        
+        table.rowHeader th, table.rowHeader td {
+        	border-top: 1px solid transparent;
+        	border-left: 1px solid transparent;
+        	border-right: 1px solid transparent;
+       }
+        table.rowHeader td.lastCell {
+        	border-bottom: 1px solid transparent;
+        }
+        table.laborDetail {
+        	width: 100%;
+        }
+        table.rowHeader td, table.laborDetail td, table.rowHeader th, table.laborDetail th {
+        	padding:3px;
+        	height: 20px;
+        }
+        .tableInputs {
+        	padding: 0;
+        	height: 20px;
+        }
+        
+        .blueHeading {
+        	background-color:#00B0F0;
+        	color:#fff;
+        	font-weight: bold;
+        }
+        
+        .lightBlueHeading {
+        	background-color: #C5D9F1;
+        }
+        
+        .bold {
+        	font-weight: bold;
+        }
+        
+        .grayHeading {
+        	background-color: #BFBFBF;
+        	font-weight: bold;
+        }
+
+        .tableClass {
+            background-color: black;
+        }
+
+        td.textCell {
+            background-color: white;
+        }
+
+        th.headerCell {
+            background-color: #f0f0f0;
+            text-align: center;
+            font-family: Arial, Helvetica;
+            font-size: 10pt;
+            font-weight: bold;
+        }
+
+    </style>
+	<apex:sectionHeader title="Labour Details"/>  
+    <apex:form >
+   
+    <apex:actionFunction name="populateOrganizationStrings" action="{!populateOrganizationStrings}" rerender="sl1,sl2" status="loading"/>
+    <apex:actionFunction name="populateProjectTeam" action="{!populateProjectTeam}" rerender="theTable" status="loading" />
+
+    <apex:actionStatus id="loading" onstart="loading(true)" onstop="loading(false)" />
+
+	<c:ECO_ModalDialog width="600" padding="20px 20px 20px 20px" name="modalDialog0">
+        <span style="font-size:14pt;font-weight:bold;">Add Resource to Budget</span>
+
+        <div style="display:none; float: right;" id="spinner1">
+            <img height="15" width="15" class="spinner" src="{!$Resource.loading}" alt="loading" title="loading"/>
+        </div>
+
+        <div style="clear:both;"></div>
+
+        <div id="tabs" class="tabsForResource tabs" style="height:400px; margin-top:20px">
+            <ul class="ui-tabs-nav">
+                <li><a class="tabs-1" href="#tabs-1">Project Team</a></li>
+                <li><a class="tabs-2" href="#tabs-2">Find Resource</a></li>
+                <li><a class="tabs-3" href="#tabs-3">Create Generic</a></li>
+            </ul>
+            
+            <div id="tabs-1" class="ui-tabs-panel">
+                <div style="height:325px;">
+                    <table class="tableClass" cellspacing="1" cellpadding="5" border="0" width="550" style="table-layout:fixed;">
+                        <tr>
+                            <th class="headerCell" style="width: 25px;"><apex:inputCheckbox onclick="toggleAll(this);" /></th>
+                            <th class="headerCell">Name</th>
+                            <th class="headerCell">Role</th>
+                            <th class="headerCell" style="width: 75px;">Start Date</th>
+                            <th class="headerCell" style="width: 75px;">End Date</th>
+                        </tr>
+                    </table>
+
+                    <div style="height:280px; overflow:scroll;">
+                        <table class="tableClass" cellspacing="1" cellpadding="5" border="0" width="550" style="table-layout:fixed;">
+                            <apex:repeat value="{!members}" var="member">
+                                <tr>
+                                    <td class="textCell" style="width: 25px; text-align: center;"><apex:inputCheckbox value="{!member.selected}" styleClass="check1" /></td>
+                                    <td class="textCell">
+                                        <apex:outputLink value="/{!member.member.id}" target="_blank">
+                                            <apex:outputText value="{!member.member.name}" />
+                                        </apex:outputLink>
+                                    </td>
+                                    <td class="textCell"><apex:outputText value="{!member.member.ProjectRole__r.name}" /></td>
+                                    
+                                    <td class="textCell" style="width: 75px;">
+                                        <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                            <apex:param value="{!member.member.StartDate__c}" />
+                                        </apex:outputText>
+                                    </td>
+                                    
+                                    <td class="textCell" style="width: 75px;">
+                                        <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                            <apex:param value="{!member.member.EndDate__c}" />
+                                        </apex:outputText>
+                                    </td>
+                                </tr>
+                            </apex:repeat>                    
+                        </table>
+                    </div>
+                </div>
+
+                <div style="float: right;">
+                    <apex:commandButton value="Add Resource(s)" action="{!addExistingResource}" style="font-size:11px !important; font-family: Arial;" />
+                    
+                    <apex:commandButton value="Cancel" onclick="closeModal('modalDialog0');return false;" style="font-size:11px !important; font-family: Arial;" />
+                </div>
+
+                <div style="clear: both;"></div>
+            </div>
+
+            <div id="tabs-2" class="ui-tabs-panel">
+                <div style="height:325px;">
+                    <table border="0" cellspacing="2" cellpadding="3">
+                        <tr>
+                            <td style="text-align:right;">Name:</td>
+                            <td><apex:inputText value="{!searchName}" styleClass="searchField" /></td>
+
+                            <td style="text-align:right; padding-left:75px;">Role:</td>
+                            <td><apex:inputText value="{!searchRole}" styleClass="searchField" /></td>
+                        </tr>
+
+                        <tr>
+                            <td style="text-align:right;">Phone:</td>
+                            <td><apex:inputText value="{!searchPhone}" styleClass="searchField" /></td>
+
+                            <td style="text-align:right; padding-left:75px;">Email:</td>
+                            <td><apex:inputText value="{!searchEmail}" styleClass="searchField" /></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding-top:10px;">
+                                <apex:commandButton onclick="populateProjectTeam(); return false;" value="Filter" style="font-size:11px !important; font-family: Arial;"/>
+                                <apex:commandButton onclick="clearAll(); populateProjectTeam(); return false;" value="Clear / All" style="font-size:11px !important; font-family: Arial;"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br/>
+
+                    <apex:outputPanel id="theTable">
+                    <div style="height:180px; overflow:scroll;">
+                        <table class="tableClass" cellspacing="1" cellpadding="5" border="0" width="550">
+                            <tr>
+                                <th class="headerCell">&nbsp;</th>
+                                <th class="headerCell">Name</th>
+                                <th class="headerCell">Role</th>
+                                <th class="headerCell">Start Date</th>
+                                <th class="headerCell">End Date</th>
+                            </tr>
+
+                            <apex:repeat value="{!members}" var="member">
+                                <tr>
+                                    <td class="textCell"><apex:inputCheckbox value="{!member.selected}" /></td>
+                                    <td class="textCell"><apex:outputField value="{!member.member.name}" /></td>
+                                    <td class="textCell"><apex:outputText value="{!member.member.ProjectRole__r.name}" /></td>
+                                    
+                                    <td class="textCell">
+                                        <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                            <apex:param value="{!member.member.StartDate__c}" />
+                                        </apex:outputText>
+                                    </td>
+                                    
+                                    <td class="textCell">
+                                        <apex:outputText value="{0,date,MM'/'dd'/'yyyy}">
+                                            <apex:param value="{!member.member.EndDate__c}" />
+                                        </apex:outputText>
+                                    </td>
+                                </tr>
+                            </apex:repeat>                    
+                        </table>
+                    </div>
+                    </apex:outputPanel>
+                </div>
+
+                <div style="float: right;">
+                    <apex:commandButton value="Add Resource(s)" action="{!addExistingResource}" style="font-size:11px !important; font-family: Arial;" />
+                    
+                    <apex:commandButton value="Cancel" onclick="closeModal('modalDialog0');return false;" style="font-size:11px !important; font-family: Arial;" />
+                </div>
+
+                <div style="clear: both;"></div>
+            </div>
+
+            <div id="tabs-3" class="ui-tabs-panel">
+                <div style="height:325px;">
+                    <apex:inputText html-placeholder="filter job name" size="50" style="width:550px;" styleClass="filterJobName"></apex:inputText>
+
+                    <br /><br />
+
+                    <apex:inputText value="{!jobNameSelections}" style="display:none;" styleClass="jobNameSelection" />
+
+                    <select multiselect="false" size="10" style="width:550px;" class="jobNames" onchange="$z('.jobNameSelection').val($z(this).val());populateOrganizationStrings();">
+                    </select>
+
+                    <br /><br />
+
+                    <apex:selectList id="sl1" value="{!businessLineSelection}" style="width:550px;" multiselect="false" size="1" onchange="populateOrganizationStrings();">
+                        <apex:selectOptions value="{!businessLineChoices}" />
+                    </apex:selectList>
+
+                    <br /><br />
+
+                    <apex:selectList id="sl2" value="{!regionSelection}" style="width:550px;" multiselect="false" size="1" onchange="populateOrganizationStrings();">
+                        <apex:selectOptions value="{!regionChoices}" />
+                    </apex:selectList>
+                </div>
+
+                <div style="float: right;">
+                    <apex:commandButton value="Add Resource" action="{!addGenericResource}" style="font-size:11px !important; font-family: Arial;" />
+                    
+                    <apex:commandButton value="Cancel" onclick="closeModal('modalDialog0');return false;" style="font-size:11px !important; font-family: Arial;" />
+                </div>
+
+
+                <div style="clear: both;"></div>
+            </div>
+        </div>
+	</c:ECO_ModalDialog>	
+
+    <table style="width:100%" cellpadding="0" cellspacing="0">
+        <tr>
+        	<td></td>
+            <td>
+            	<table class="rowHeader" cellpadding="0" cellspacing="0">
+                    <thead>
+                        <tr><th>
+                        	<apex:commandButton value="Save" action="{!save}"/>
+                        	<apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/>
+                        </th></tr>
+                        <tr><th>&nbsp;</th></tr>
+                        <tr><th>&nbsp;</th></tr>
+                        <tr><th>&nbsp;</th></tr>
+                	</thead>
+                    <tbody>
+                        <tr><td>Total Cost Rate  (FBLR)</td></tr>
+                        <tr><td>Raw</td></tr>
+                        <tr><td>Fringe</td></tr>
+                        <tr><td>O/H</td></tr>
+                    
+                    	<tr><td style="height: 20px;">&nbsp;</td></tr> <!-- Validate if we can replace with css padding -->
+                    
+                        <tr><td>Revenue Rate</td></tr>
+                        <tr><td>Margin Type</td></tr>
+                        <tr><td class="lastCell">Bill Rate or % Markup</td></tr>
+                    </tbody>
+            	</table>
+    		</td>
+        <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour">
+            <td>
+                <table class="laborDetail" cellpadding="0" cellspacing="0">
+                    <thead>
+                        <tr><th class="blueHeading">{!budgetLabour.resourceType}</th></tr>
+                        <tr><th class="blueHeading">
+                        	<apex:commandLink title="Clone" action="{!cloneResource}">
+                                <apex:param name="budgetLabourId" value="{!budgetLabour.oBudgetResource.Id}"/>
+                                <apex:image value="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'clone.png')}" width="12" style="margin-right: 8px;" />
+                            </apex:commandLink>
+                            <apex:commandLink title="Delete" action="{!removeEntireColumn}" >
+                                <apex:param name="budgetLabourId" value="{!budgetLabour.oBudgetResource.Id}"/>
+                                <apex:image value="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" width="12" />
+                            </apex:commandLink>
+                        </th></tr>
+                        <tr><td class="lightBlueHeading">{!budgetLabour.columnHeader}</td></tr>
+                        <tr><td>{!budgetLabour.jobName}</td></tr>
+                    </thead>
+                    <tbody class="cost">
+                        <tr><td class="lightBlueHeading bold">{!budgetLabour.costRate}</td></tr>
+                        <tr><td class="tableInputs"><apex:inputText value="{!budgetLabour.raw}"/></td></tr>
+                        <tr><td class="tableInputs"><apex:inputText value="{!budgetLabour.fringe}"/></td></tr>
+                        <tr><td class="tableInputs"><apex:inputText value="{!budgetLabour.overhead}"/></td></tr>
+                    </tbody>
+                    <tr><td style="height: 20px;">&nbsp;</td></tr> <!-- Validate if we can replace with css padding -->
+                    <tbody class="revenue">
+                        <tr><td class="lightBlueHeading bold"><apex:outputText value="{!budgetLabour.revenueRate}"/></td></tr>
+                        <tr>
+                            <td>
+                                <apex:selectList value="{!budgetLabour.marginType}" size="1">
+                                    <apex:selectOption itemValue="Amount" itemLabel="Amount" />
+                                    <apex:selectOption itemValue="Percent" itemLabel="Percent" />
+                                </apex:selectList>
+                        	</td>
+                        </tr>
+                        <tr><td class="lastCell"><apex:inputText value="{!budgetLabour.billRateOrMarkup}"/></td></tr>
+                    </tbody>
+                </table>
+            </td>
+        </apex:repeat>
+        </tr>
+        <tr><td style="height: 20px;">&nbsp;</td></tr>
+        <tr class="taskDetailHeader">
+        	<td class="grayHeading">Task Number</td>
+            <td class="grayHeading">Task Name</td>
+        <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour">
+        	<td class="lightBlueHeading bold">Hours</td>
+        </apex:repeat>
+            <td class="blueHeading">Hours</td>
+            <td class="blueHeading">Cost</td>
+            <td class="blueHeading">Revenue</td>
+        </tr>
+        <tr><td style="height: 5px;">&nbsp;</td></tr>
+        <tr class="taskDetail">
+        	<td class="bold">Project Total</td>
+            <td></td>
+        <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour"> <!--list<DTO_BudgetLaborDetail>-->
+			<td class="lightBlueHeading">{!budgetLabour.totalHours}</td>
+        </apex:repeat>
+            <td class="blueHeading">{!budgetLabourWrapper.getTotalLaborHours}</td>
+            <td class="blueHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabourWrapper.getTotalCost}" />
+                </apex:outputText>
+            </td>
+            <td class="blueHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabourWrapper.getTotalRevenue}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <apex:repeat value="{!budgetLabourWrapper.dtoBudgetTasks}" var="budgetTask"> <!--list<DTO_BudgetTask>-->
+        	<tr class="taskDetail">
+                <td>
+                	<div style="margin-left: {!budgetTask.indentLevel * 13}px;">
+                        {!budgetTask.taskNumber} (level {!budgetTask.indentLevel})
+                    </div>
+                </td>
+                <td>
+                	<div style="margin-left: {!budgetTask.indentLevel * 13}px;">
+                    	{!budgetTask.taskName}
+                    </div>
+                </td>
+            <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour"> <!--list<DTO_BudgetLaborDetail>-->
+                <td>
+                    <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c}" rendered="{!budgetTask.children.size == 0}" />
+                    <apex:outputText value="{!budgetLabourWrapper.mapTotalByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}" rendered="{!budgetTask.children.size > 0}"/>
+                </td>
+            </apex:repeat>
+                <td class="blueHeading">{!budgetTask.totalLaborHours}</td>
+                <td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalCost}" />
+                    </apex:outputText>
+                </td>
+                <td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalRevenue}" />
+                    </apex:outputText>
+                </td>
+        	</tr>
+        </apex:repeat>
+        <tr class="taskDetail">
+        	<td></td>
+            <td>Total Cost by Person</td>
+        <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour"> <!--list<DTO_BudgetLaborDetail>-->
+            <td class="lightBlueHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabour.totalCostByPerson}" />
+                </apex:outputText>
+            </td>
+        </apex:repeat>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        <tr class="taskDetailHeader">
+        	<td></td>
+            <td>Total Revenue by Person</td>
+        <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour"> <!--list<DTO_BudgetLaborDetail>-->
+            <td class="lightBlueHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabour.totalRevenueByPerson}" />
+                </apex:outputText>
+            </td>
+        </apex:repeat>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+    </table>
+    </apex:form>
+</apex:page>

@@ -8,70 +8,91 @@ public without sharing class ECO_IntegrationMessageQueueTriggers {
 	private static final String ORACLE_SYNC_STATUS_PENDING = 'P';
 	private static final String ORACLE_SYNC_STATUS_TRANSFER = 'T';
 	
-	public static void updateProjectNumber (List<IntegrationMessageQueue__c> messages) {
+	public static void updateProjectNumber (List<IntegrationMessageQueue__c> messages) 
+	{
 		List<pse__Proj__c> projectsToUpdate = new List<pse__Proj__c>();
 
 		Set<Id> succesfulProjectSyncsIds = new Set<Id>();
 		Set<Id> failedProjectSyncsIds = new Set<Id>();
+		Map<Id, pse__Proj__c> projectMapForAgreementCheck = new Map<Id, pse__Proj__c>();
 		Map<Id, DateTime> successfulProjectSyncIdLastModDate = new Map<Id, DateTime>();
 
-		for (IntegrationMessageQueue__c imq : messages) {
-			if ('Project Number'.equalsIgnoreCase(imq.JobName__c) 
-				&& 'Success'.equalsIgnoreCase(imq.Status__c)) {
+		try
+		{
+			for (IntegrationMessageQueue__c imq : messages) {
+
+				if('IMQ Failure'.equalsIgnoreCase(imq.JobName__c))
+					continue;
+
+				if ('Project Number'.equalsIgnoreCase(imq.JobName__c) 
+						&& 'Success'.equalsIgnoreCase(imq.Status__c)) 
+				{
 					system.debug('success project number found');
 					//upon successful creation of project in oracle initiated from a project number request in salesforce,
 					//both oracle project number and project id will be returned seperated by a "|" (ProjectNumber|ProjectID)
 					pse__Proj__c projectToUpdate = new pse__Proj__c();
 					projectToUpdate.Id = (Id)imq.RecordId__c;
 					String successMsg = imq.SuccessMessage__c;
-					if(!String.isEmpty(successMsg)){						
+					if(!String.isEmpty(successMsg))
+					{						
 						List<String> oracleValues = successMsg.split('\\|');
 						system.debug('successMsg = ' + successMsg);
 						system.debug('oracleValues size = ' + oracleValues.size());
 						projectToUpdate.OracleProjectnumber__c = oracleValues.get(0);
-						if(oracleValues.size() > 1){
+						if(oracleValues.size() > 1)
+						{
 							projectToUpdate.OracleProjectId__c = oracleValues.get(1);
 						}
 						system.debug('OracleProjectnumber__c = ' + projectToUpdate.OracleProjectnumber__c);
 						system.debug('OracleProjectId__c = ' + projectToUpdate.OracleProjectId__c);
 						projectsToUpdate.add(projectToUpdate);
+						projectMapForAgreementCheck.put(projectToUpdate.Id, projectToUpdate);
 					}	
-			} else if ('Project Sync'.equalsIgnoreCase(imq.JobName__c) ){
+				} 
+				else if ('Project Sync'.equalsIgnoreCase(imq.JobName__c) )
+				{
 
-				system.debug('DEBUG****: START2');
-				if('Success'.equalsIgnoreCase(imq.Status__c)) {
-					system.debug('DEBUG****: START3');
-					pse__Proj__c projectSuccess = new pse__Proj__c();
-					projectSuccess.Id = (Id)imq.RecordId__c;
-					projectSuccess.OracleSyncStatus__c = ORACLE_SYNC_STATUS_SUCCESS;
-					projectSuccess.OracleSyncErrorMessage__c = null;
-					projectsToUpdate.add(projectSuccess);
-					succesfulProjectSyncsIds.add(projectSuccess.Id);
-					successfulProjectSyncIdLastModDate.put(projectSuccess.Id, imq.LastModifiedDate);
-				} else if ('Error'.equalsIgnoreCase(imq.Status__c) || 'Attempted'.equalsIgnoreCase(imq.Status__c)){
-					system.debug('DEBUG****: START4');
-					pse__Proj__c projectError = new pse__Proj__c();
-					projectError.Id = (Id)imq.RecordId__c;
-					projectError.OracleSyncStatus__c = ORACLE_SYNC_STATUS_ERROR;
-					projectError.OracleSyncErrorMessage__c = imq.ErrorMessage__c;
-					projectsToUpdate.add(projectError);
-					failedProjectSyncsIds.add(projectError.Id);
-				} else if ('Initiated'.equalsIgnoreCase(imq.Status__c)) {
-					system.debug('DEBUG****: START5');
-					pse__Proj__c projectInitiated = new pse__Proj__c();
-					projectInitiated.Id = (Id)imq.RecordId__c;
-					projectInitiated.OracleSyncStatus__c = ORACLE_SYNC_STATUS_PENDING;
-					projectInitiated.OracleSyncErrorMessage__c = null;
-					projectsToUpdate.add(projectInitiated);
-				} else if ('Sent'.equalsIgnoreCase(imq.Status__c)) {
-					system.debug('DEBUG****: START6');
-					pse__Proj__c projectSent = new pse__Proj__c();
-					projectSent.Id = (Id)imq.RecordId__c;
-					projectSent.OracleSyncStatus__c = ORACLE_SYNC_STATUS_TRANSFER;
-					projectSent.OracleSyncErrorMessage__c = imq.ErrorMessage__c;
-					projectsToUpdate.add(projectSent);
+					system.debug('DEBUG****: START2');
+					if('Success'.equalsIgnoreCase(imq.Status__c)) 
+					{
+						system.debug('DEBUG****: START3');
+						pse__Proj__c projectSuccess = new pse__Proj__c();
+						projectSuccess.Id = (Id)imq.RecordId__c;
+						projectSuccess.OracleSyncStatus__c = ORACLE_SYNC_STATUS_SUCCESS;
+						projectSuccess.OracleSyncErrorMessage__c = null;
+						projectsToUpdate.add(projectSuccess);
+						succesfulProjectSyncsIds.add(projectSuccess.Id);
+						successfulProjectSyncIdLastModDate.put(projectSuccess.Id, imq.LastModifiedDate);
+					} 
+					else if ('Error'.equalsIgnoreCase(imq.Status__c) || 'Attempted'.equalsIgnoreCase(imq.Status__c))
+					{
+						system.debug('DEBUG****: START4');
+						pse__Proj__c projectError = new pse__Proj__c();
+						projectError.Id = (Id)imq.RecordId__c;
+						projectError.OracleSyncStatus__c = ORACLE_SYNC_STATUS_ERROR;
+						projectError.OracleSyncErrorMessage__c = imq.ErrorMessage__c;
+						projectsToUpdate.add(projectError);
+						failedProjectSyncsIds.add(projectError.Id);
+					} 
+					else if ('Initiated'.equalsIgnoreCase(imq.Status__c)) 
+					{
+						system.debug('DEBUG****: START5');
+						pse__Proj__c projectInitiated = new pse__Proj__c();
+						projectInitiated.Id = (Id)imq.RecordId__c;
+						projectInitiated.OracleSyncStatus__c = ORACLE_SYNC_STATUS_PENDING;
+						projectInitiated.OracleSyncErrorMessage__c = null;
+						projectsToUpdate.add(projectInitiated);
+					} 
+					else if ('Sent'.equalsIgnoreCase(imq.Status__c)) 
+					{
+						system.debug('DEBUG****: START6');
+						pse__Proj__c projectSent = new pse__Proj__c();
+						projectSent.Id = (Id)imq.RecordId__c;
+						projectSent.OracleSyncStatus__c = ORACLE_SYNC_STATUS_TRANSFER;
+						projectSent.OracleSyncErrorMessage__c = imq.ErrorMessage__c;
+						projectsToUpdate.add(projectSent);
+					}
 				}
-			}
 
 			/*
 			todo - per specs once a project gets created in oracle subsequent webservice commits will have limited sections of payload
@@ -82,47 +103,95 @@ public without sharing class ECO_IntegrationMessageQueueTriggers {
 			NOTE: if an error occurs on the error side the record will be updated with Status__c - "Error" and the ErrorMessage__c should
 			should contain the error msg. A workflow will then send an email to the user who initiated the request
 			*/
-		}
+			}
 
-		//Advance status on first successful sync
+			//Advance status on first successful sync
 
-		system.debug('DEBUG****: HERE');
-		if(!succesfulProjectSyncsIds.isEmpty()){
-			map<id, pse__Proj__c> mSuccessfulProjects = new map<id, pse__Proj__c>([SELECT Id, RecordTypeId, pse__Stage__c FROM pse__Proj__c WHERE id in :succesfulProjectSyncsIds]);
-			system.debug('DEBUG****: HERE2');
-			id sPlanning = ECO_Utils_Meta.getRecordTypeId(pse__Proj__c.sObjectType, 'Customer Project (Planning)');
-			id sApproved = ECO_Utils_Meta.getRecordTypeId(pse__Proj__c.sObjectType, 'Customer Project (Approved)');
+				system.debug('DEBUG****: HERE');
+				if(!succesfulProjectSyncsIds.isEmpty()){
+					map<id, pse__Proj__c> mSuccessfulProjects = new map<id, pse__Proj__c>([SELECT Id, RecordTypeId, pse__Stage__c FROM pse__Proj__c WHERE id in :succesfulProjectSyncsIds]);
+					system.debug('DEBUG****: HERE2');
+					id sPlanning = ECO_Utils_Meta.getRecordTypeId(pse__Proj__c.sObjectType, 'Customer Project (Planning)');
+				id sApproved = ECO_Utils_Meta.getRecordTypeId(pse__Proj__c.sObjectType, 'Customer Project (Approved)');
 
-			for(pse__Proj__c oProject : projectsToUpdate){
-				system.debug('DEBUG****: HERE3');
-				pse__Proj__c oProjectToCheck = mSuccessfulProjects.get(oProject.Id);
+				for(pse__Proj__c oProject : projectsToUpdate){
+					system.debug('DEBUG****: HERE3');
+					pse__Proj__c oProjectToCheck = mSuccessfulProjects.get(oProject.Id);
 
-				if(ECO_Utils_String.NullChecK(oProjectToCheck.RecordTypeId) == sPlanning){
-					oProject.RecordTypeId = sApproved;
-					oProject.pse__Stage__c = 'Execution';
+					if(ECO_Utils_String.NullChecK(oProjectToCheck.RecordTypeId) == sPlanning){
+						oProject.RecordTypeId = sApproved;
+						oProject.pse__Stage__c = 'Execution';
+						//list<ChangeManager__c> changeManager = [select Id, ApprovalStatus__c, IsExecutionApprovalChange__c, from ChangeManager__c where Project__c = :oProject.Id and IsExecutionApprovalChange__c = true and ApprovalStatus__c = 'Sync Approved' limit 1];
+						//ECO_ChangeManagerTriggerHandler.handleChangeManagerExecutionApproval(changeManager[0]);
+	    				ECO_Utils_Meta.SelectAll soUtil = new ECO_Utils_Meta.SelectAll();
+						soUtil.GetFields('ChangeManager__c');
+
+						String queryString = soUtil.SOQL;
+						queryString = querystring.replace('FROM ChangeManager__c', ',project__r.Name, project__r.OracleProjectNumber__c, RecordType.Id, Project__r.ChangeManagerClientsRequirements__c, Project__r.ChangeManagerAECOMRequirements__c,  RecordType.Name FROM ChangeManager__c');
+						queryString += ' WHERE Project__c = \''+ oProject.Id +'\'';
+						//queryString += ' and IsExecutionApprovalChange__c = true';
+						queryString += ' and OracleApprovalSyncStatus__c = \'Approved\' limit 1';
+						list<ChangeManager__c> changeManagers = Database.query(queryString);
+						if(!changeManagers.isEmpty())
+						{
+							ChangeManager__c changeManager = changeManagers[0];
+							changeManager.OracleApprovalSyncStatus__c = 'Success';
+							update changeManager;
+						}
+					}
 				}
 			}
-		}
 
-		if(!projectsToUpdate.isEmpty()){
-			update projectsToUpdate;
+			if(!projectsToUpdate.isEmpty()){
+				update projectsToUpdate;
+			}
+			
+			if(!projectMapForAgreementCheck.values().isEmpty())
+				populateMissingOracleAgreementNumbers(projectMapForAgreementCheck);
+
+			//update oracle sync status on related items for successful syncs, current status should be 'T'
+			if(!succesfulProjectSyncsIds.isEmpty()){
+				updateProjectTasksSyncStatus(succesfulProjectSyncsIds, ORACLE_SYNC_STATUS_TRANSFER, ORACLE_SYNC_STATUS_SUCCESS, successfulProjectSyncIdLastModDate);
+				updateKeyMemberSyncStatus(succesfulProjectSyncsIds, ORACLE_SYNC_STATUS_TRANSFER, ORACLE_SYNC_STATUS_SUCCESS, successfulProjectSyncIdLastModDate);
+				updateProjectSitesSyncStatus(succesfulProjectSyncsIds, ORACLE_SYNC_STATUS_TRANSFER, ORACLE_SYNC_STATUS_SUCCESS, successfulProjectSyncIdLastModDate);
+			}
+			
+			//update oracle sync status on related items for failed syncs, current status should be 'T'
+			if(!failedProjectSyncsIds.isEmpty()){
+				updateProjectTasksSyncStatus(failedProjectSyncsIds, ORACLE_SYNC_STATUS_TRANSFER, ORACLE_SYNC_STATUS_ERROR, successfulProjectSyncIdLastModDate);
+				updateKeyMemberSyncStatus(failedProjectSyncsIds, ORACLE_SYNC_STATUS_TRANSFER, ORACLE_SYNC_STATUS_ERROR, successfulProjectSyncIdLastModDate);
+				updateProjectSitesSyncStatus(failedProjectSyncsIds, ORACLE_SYNC_STATUS_TRANSFER, ORACLE_SYNC_STATUS_ERROR, successfulProjectSyncIdLastModDate);
+				updateProjectExecutionChangeManagerStatus(failedProjectSyncsIds);
+			}
 		}
-		
-		//update oracle sync status on related items for successful syncs, current status should be 'T'
-		if(!succesfulProjectSyncsIds.isEmpty()){
-			updateProjectTasksSyncStatus(succesfulProjectSyncsIds, ORACLE_SYNC_STATUS_TRANSFER, ORACLE_SYNC_STATUS_SUCCESS, successfulProjectSyncIdLastModDate);
-			updateKeyMemberSyncStatus(succesfulProjectSyncsIds, ORACLE_SYNC_STATUS_TRANSFER, ORACLE_SYNC_STATUS_SUCCESS, successfulProjectSyncIdLastModDate);
-			updateProjectSitesSyncStatus(succesfulProjectSyncsIds, ORACLE_SYNC_STATUS_TRANSFER, ORACLE_SYNC_STATUS_SUCCESS, successfulProjectSyncIdLastModDate);
-		}
-		
-		//update oracle sync status on related items for failed syncs, current status should be 'T'
-		if(!failedProjectSyncsIds.isEmpty()){
-			updateProjectTasksSyncStatus(failedProjectSyncsIds, ORACLE_SYNC_STATUS_TRANSFER, ORACLE_SYNC_STATUS_ERROR, successfulProjectSyncIdLastModDate);
-			updateKeyMemberSyncStatus(failedProjectSyncsIds, ORACLE_SYNC_STATUS_TRANSFER, ORACLE_SYNC_STATUS_ERROR, successfulProjectSyncIdLastModDate);
-			updateProjectSitesSyncStatus(failedProjectSyncsIds, ORACLE_SYNC_STATUS_TRANSFER, ORACLE_SYNC_STATUS_ERROR, successfulProjectSyncIdLastModDate);
+		catch(Exception e)
+		{
+			IntegrationMessageQueue__c imq = new IntegrationMessageQueue__c();
+			imq.JobName__c = 'IMQ Failure';
+			imq.ErrorMessage__c = e.getMessage();
+			imq.Status__c = 'Error';
+			insert imq;
 		}
 	}
 	
+	private static void populateMissingOracleAgreementNumbers(Map<Id, pse__Proj__c> projectMapForAgreementCheck)
+	{
+		list<Agreement__c> agreementsToUpdate = [select Id, AgreementNumber__c from Agreement__c where Project__c in :projectMapForAgreementCheck.keyset()];
+	}
+
+	private static void updateProjectExecutionChangeManagerStatus(set<Id> failedProjectIds)
+	{
+		list<ChangeManager__c> changeManagers = new list<ChangeManager__c>();
+		for(ChangeManager__c changeManager:[select Id, OracleApprovalSyncStatus__c from ChangeManager__c where Project__c in :failedProjectIds and (OracleApprovalSyncStatus__c = 'Approved' or OracleApprovalSyncStatus__c = 'Failed')])
+		{
+			changeManager.OracleApprovalSyncStatus__c = 'Failed';
+			changeManagers.add(changeManager);
+		}
+
+		if(!changeManagers.isEmpty())
+			update changeManagers;
+	}
+
 	public static void updatePMOwnerFromKeymembers (List<IntegrationMessageQueue__c> messages) {
 		Set<Id> allProjectIds = new Set<Id>();
 		for (IntegrationMessageQueue__c imq : messages) {

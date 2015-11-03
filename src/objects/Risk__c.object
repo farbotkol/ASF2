@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
     <actionOverrides>
         <actionName>Accept</actionName>
         <type>Default</type>
@@ -18,9 +18,7 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>Edit</actionName>
-        <content>ECO_RiskRegister</content>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Visualforce</type>
+        <type>Default</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>Follow</actionName>
@@ -48,7 +46,7 @@
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
-    <enableActivities>false</enableActivities>
+    <enableActivities>true</enableActivities>
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
@@ -134,6 +132,11 @@
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
+            <field>PostmitigationContingencyTotal__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
             <field>CurrentStatus__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
@@ -198,6 +201,28 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>AssociatedTask__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>Is the risk related to a specific project task?  If yes, select from the drop down list.</inlineHelpText>
+        <label>Associated Task</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>pse__Project_Task__c.pse__Project__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.Project__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>pse__Project_Task__c</referenceTo>
+        <relationshipLabel>Risks</relationshipLabel>
+        <relationshipName>RisksAssociatedTask</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>AssumptionDescription__c</fullName>
         <externalId>false</externalId>
         <label>Assumption Description</label>
@@ -233,6 +258,16 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Cause__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Describe the &quot;root cause&quot; of the risk (i.e., why is this event occurring?). Typical sources include, but are not limited to, people, equipment, tools, materials, measurements, environment or methods, such as policies, procedures, regulations or laws.</inlineHelpText>
+        <label>Cause</label>
+        <length>10000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>ChangeManagerIsChanged__c</fullName>
         <defaultValue>true</defaultValue>
         <externalId>false</externalId>
@@ -250,12 +285,12 @@
     </fields>
     <fields>
         <fullName>ContingencyDollars__c</fullName>
-        <description>Automatic calculation of (labor + ODC cost) * %</description>
+        <description>Automatic calculation of (pre-mitigation labor + pre-mitigation ODC cost)</description>
         <externalId>false</externalId>
-        <formula>(LaborCost__c +  ODCCost__c) * ContingencyPercent__c</formula>
+        <formula>IF(LaborCost__c +  ODCCost__c &gt; 0 ,LaborCost__c +  ODCCost__c ,null)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Automatic calculation of (labor + ODC cost) * %</inlineHelpText>
-        <label>Contingency Cost ($)</label>
+        <inlineHelpText>Calculated pre-mitigation contingency costs [Total Costs = Labor + Subs/ODCs]</inlineHelpText>
+        <label>Pre-mitigation Contingency</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -275,6 +310,7 @@
     <fields>
         <fullName>CurrentStatus__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Select the current status of the risk from the drop down list.</inlineHelpText>
         <label>Current Status</label>
         <picklist>
             <picklistValues>
@@ -307,6 +343,25 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>DoATrigger__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <inlineHelpText>Automatically ticked if the risk is a DoA trigger transferred from the Risk &amp; Market Assessment.</inlineHelpText>
+        <label>DoA Trigger</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Effect__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Describe the effect (or impact) the risk will have on the project.</inlineHelpText>
+        <label>Effect</label>
+        <length>10000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>EventPhase__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>What phase of the project does the risk primarily apply to? Select from the drop down list.</inlineHelpText>
@@ -336,7 +391,8 @@
     <fields>
         <fullName>LaborCost__c</fullName>
         <externalId>false</externalId>
-        <label>Labor Cost</label>
+        <inlineHelpText>Provide the estimated contingency labor costs (include Raw + Fringe + OH) before implementing the proposed mitigation plan.</inlineHelpText>
+        <label>Pre-mitigation Cost (Labor)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -346,25 +402,62 @@
     <fields>
         <fullName>LikelihoodofOccurrence__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>What is the likelihood of this risk occurring? Select from the drop down list.</inlineHelpText>
-        <label>Likelihood of Occurrence</label>
+        <inlineHelpText>What is the likelihood of this risk occurring? Select from the drop down list. 
+
+&quot;Possible&quot; is if the risk could happen or has happened on other projects. &quot;Likely&quot; is if the risk could easily happen or has occurred on previous projects more than once.</inlineHelpText>
+        <label>Pre-mitigation likelihood</label>
         <picklist>
             <picklistValues>
-                <fullName>Probable - Could easily happen and has occurred on previous projects more than once</fullName>
+                <fullName>Unlikely</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Likely - Could easily happen and has occurred on previous projects more than once</fullName>
+                <fullName>Possible</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Possible - Could happen and has occurred on other projects</fullName>
+                <fullName>Likely</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>MitigationCostLabor__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Provide the estimated contingency labor costs (include Raw + Fringe + OH) to implement the proposed mitigation plan.</inlineHelpText>
+        <label>Mitigation Cost (Labor)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>MitigationCostSubsODCs__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Provide the estimated contingency costs for subcontractors, subconsultants, vendors and other direct costs (ODCs) to implement the proposed mitigation plan.</inlineHelpText>
+        <label>Mitigation Cost (Subs/ODCs)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>MitigationCostTotal__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(MitigationCostLabor__c +  MitigationCostSubsODCs__c &gt; 0,MitigationCostLabor__c +  MitigationCostSubsODCs__c,null)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Total estimated costs to mitigate the risk [Total Cost = AECOM Labor + Subs/ODCs]</inlineHelpText>
+        <label>Mitigation Cost Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>MitigationEffectiveness__c</fullName>
@@ -418,9 +511,20 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>Mitigationbasisofestimate__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Provide a brief explanation of how the mitigation costs were derived, including assumptions, estimated quantities, durations, resources, cost sourcing, etc.</inlineHelpText>
+        <label>Mitigation basis of estimate</label>
+        <length>10000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>ODCCost__c</fullName>
         <externalId>false</externalId>
-        <label>ODC Cost</label>
+        <inlineHelpText>Provide the estimated contingency costs for subcontractors, subconsultants, vendors and other direct costs (ODCs) before implementing the proposed mitigation plan.</inlineHelpText>
+        <label>Pre-mitigation Cost (Subs/ODCs)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -430,6 +534,7 @@
     <fields>
         <fullName>OpportunityFromRisk__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Describe here any potential opportunities or benefits that may arise as a result of this risk (e.g., variation, follow-on work).</inlineHelpText>
         <label>Opportunity From Risk</label>
         <length>32768</length>
         <trackTrending>false</trackTrending>
@@ -440,7 +545,7 @@
         <fullName>PlanElement__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Which element of the project plan of the project does this affect? Select from the drop down list.</inlineHelpText>
-        <label>Project Element</label>
+        <label>Plan Element</label>
         <picklist>
             <picklistValues>
                 <fullName>Budget</fullName>
@@ -508,6 +613,134 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>PostRiskMatrix__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/apex/ECO_RiskMatrix&quot;,&quot;Risk Matrix&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Matrix used to determine Risk Rating based on likelihood and consequence values.</inlineHelpText>
+        <label>Risk Rating Matrix</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>PostmitigationContingencyLabor__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Provide the estimated contingency labor costs (include Raw + Fringe + OH) after implementing the proposed mitigation plan.</inlineHelpText>
+        <label>Post-mitigation Contingency (Labor)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PostmitigationContingencySubsODCs__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Provide the estimated contingency costs for subcontractors, subconsultants, vendors and other direct costs (ODCs) after implementing the proposed mitigation plan.</inlineHelpText>
+        <label>Post-mitigation Contingency (Subs/ODCs)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PostmitigationContingencyTotal__c</fullName>
+        <externalId>false</externalId>
+        <formula>PostmitigationContingencyLabor__c +   PostmitigationContingencySubsODCs__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Calculated post-mitigation contingency costs [Total  = Labor + Subs/ODCs]</inlineHelpText>
+        <label>Post-mitigation Contingency Total</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Postmitigationbasisofestimate__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Provide a brief explanation of how the contingency costs were derived, including assumptions, estimated quantities, durations, resources, cost sourcing, etc.</inlineHelpText>
+        <label>Post-mitigation basis of estimate</label>
+        <length>10000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Postmitigationconsequence__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>What is the impact of this risk occurring? Select from the drop down list.</inlineHelpText>
+        <label>Post-mitigation consequence</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Minor</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Moderate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Major</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Postmitigationlikelihood__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>What is the likelihood of this risk occurring? Select from the drop down list.
+
+&quot;Possible&quot; is if the risk could happen or has happened on other projects. &quot;Likely&quot; is if the risk could easily happen or has occurred on previous projects more than once.</inlineHelpText>
+        <label>Post-mitigation likelihood</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Unlikely</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Possible</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Likely</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Postmitigationrating__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Using the likelihood and consequence selections, refer to the Risk Matrix to determine the risk rating (High, Medium, Low).</inlineHelpText>
+        <label>Post-mitigation rating</label>
+        <picklist>
+            <picklistValues>
+                <fullName>High</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Medium</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>PotentialCosts__c</fullName>
         <externalId>false</externalId>
         <label>Potential Costs</label>
@@ -516,6 +749,51 @@
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PreRiskMatrix__c</fullName>
+        <externalId>false</externalId>
+        <formula>HYPERLINK(&quot;/apex/ECO_RiskMatrix&quot;,&quot;Risk Matrix&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Matrix used to determine Risk Rating based on likelihood and consequence values.</inlineHelpText>
+        <label>Risk Rating Matrix</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Premitigationbasisofestimate__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Provide a brief explanation of how the contingency costs were derived, including assumptions, estimated quantities, durations, resources, cost sourcing, etc.</inlineHelpText>
+        <label>Pre-mitigation basis of estimate</label>
+        <length>10000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Premitigationrating__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Using the likelihood and consequence selections, refer to the Risk Matrix to determine the risk rating (High, Medium, Low).</inlineHelpText>
+        <label>Pre-mitigation rating</label>
+        <picklist>
+            <picklistValues>
+                <fullName>High</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Medium</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Low</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>Project__c</fullName>
@@ -560,18 +838,18 @@
         <fullName>RiskConsequence__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>What is the impact of this risk occurring? Select from the drop down list.</inlineHelpText>
-        <label>Consequence of Occurrence</label>
+        <label>Pre-mitigation consequence</label>
         <picklist>
             <picklistValues>
-                <fullName>Catastrophic - Could impact project profitability by over $500k</fullName>
+                <fullName>Minor</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Major - Could impact project profitability by $100k-500k</fullName>
+                <fullName>Moderate</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Moderate - Could impact project profitability by less than $100k</fullName>
+                <fullName>Major</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -600,6 +878,15 @@
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
+        <fullName>RiskNumberAutoNum__c</fullName>
+        <displayFormat>Risk-{0}</displayFormat>
+        <externalId>false</externalId>
+        <inlineHelpText>System-generated number for reference purposes only.</inlineHelpText>
+        <label>Risk Number</label>
+        <trackTrending>false</trackTrending>
+        <type>AutoNumber</type>
+    </fields>
+    <fields>
         <fullName>RiskNumber__c</fullName>
         <externalId>false</externalId>
         <label>Risk Number</label>
@@ -614,6 +901,7 @@
         <fullName>RiskOwner__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
+        <inlineHelpText>Identify a resource that will have primary responsibility for owning and managing this risk.</inlineHelpText>
         <label>Risk Owner</label>
         <referenceTo>User</referenceTo>
         <relationshipName>Risks</relationshipName>
@@ -665,21 +953,6 @@ IF(AND(ISPICKVAL(LikelihoodofOccurrence__c,&quot;Probable&quot;),ISPICKVAL(RiskC
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>RiskStatus__c</fullName>
-        <externalId>false</externalId>
-        <formula>IF(OR(ISPICKVAL(LikelihoodofOccurrence__c, &quot;&quot;),ISPICKVAL(RiskConsequence__c, &quot;&quot;)),IMAGE(&apos;/resource/GrayDash&apos;,&apos;&apos;,30,30),
-IF(AND(ISPICKVAL(LikelihoodofOccurrence__c, &quot;Possible - Could happen and has occurred on other projects&quot;),ISPICKVAL(RiskConsequence__c, &quot;Moderate - Could impact project profitability by less than $100k&quot;)), IMAGE(&apos;/resource/greenStar&apos;,&apos;&apos;,30,30),
-IF(AND(ISPICKVAL(LikelihoodofOccurrence__c, &quot;Probable - Could easily happen and has occurred on previous projects more than once&quot;),ISPICKVAL(RiskConsequence__c, &quot;Major - Could impact project profitability by $100k-500k&quot;)),IMAGE(&apos;/resource/redTriangle&apos;,&apos;&apos;,30,30),
-IF(ISPICKVAL(RiskConsequence__c, &quot;Catastrophic - Could impact project profitability by over $500k&quot;),IMAGE(&apos;/resource/redTriangle&apos;,&apos;&apos;,30,30), IMAGE(&apos;/resource/yellowCircle&apos;,&apos;&apos;,30,30)
-))))</formula>
-        <inlineHelpText>Select from the drop down list.</inlineHelpText>
-        <label>Risk Status</label>
-        <required>false</required>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>Source__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>What is the origin of the risk? Select from the drop down list.</inlineHelpText>
@@ -706,6 +979,17 @@ IF(ISPICKVAL(RiskConsequence__c, &quot;Catastrophic - Could impact project profi
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
+    <fields>
+        <fullName>xxRiskMatrix__c</fullName>
+        <externalId>false</externalId>
+        <formula>IMAGE(&quot;/resource/EcoRiskGridImage&quot;, &quot;&quot;,250,450)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>xxRisk Matrix</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <label>Risk</label>
     <listViews>
         <fullName>All</fullName>
@@ -713,7 +997,6 @@ IF(ISPICKVAL(RiskConsequence__c, &quot;Catastrophic - Could impact project profi
         <columns>RiskDescription__c</columns>
         <columns>LikelihoodofOccurrence__c</columns>
         <columns>RiskConsequence__c</columns>
-        <columns>RiskStatus__c</columns>
         <columns>RiskScore__c</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>
@@ -726,7 +1009,7 @@ IF(ISPICKVAL(RiskConsequence__c, &quot;Catastrophic - Could impact project profi
     <pluralLabel>Risks</pluralLabel>
     <searchLayouts>
         <customTabListAdditionalFields>CurrentStatus__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>RiskStatus__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields xsi:nil="true"/>
         <customTabListAdditionalFields>Assignedto__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>RiskOwner__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>PotentialCosts__c</customTabListAdditionalFields>
@@ -735,7 +1018,7 @@ IF(ISPICKVAL(RiskConsequence__c, &quot;Catastrophic - Could impact project profi
         <customTabListAdditionalFields>RiskDescription__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Source__c</customTabListAdditionalFields>
         <lookupDialogsAdditionalFields>CurrentStatus__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>RiskStatus__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields xsi:nil="true"/>
         <lookupDialogsAdditionalFields>Assignedto__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>RiskOwner__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>PotentialCosts__c</lookupDialogsAdditionalFields>
@@ -744,7 +1027,7 @@ IF(ISPICKVAL(RiskConsequence__c, &quot;Catastrophic - Could impact project profi
         <lookupDialogsAdditionalFields>RiskDescription__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Source__c</lookupDialogsAdditionalFields>
         <searchResultsAdditionalFields>CurrentStatus__c</searchResultsAdditionalFields>
-        <searchResultsAdditionalFields>RiskStatus__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields xsi:nil="true"/>
         <searchResultsAdditionalFields>Assignedto__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>RiskOwner__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>PotentialCosts__c</searchResultsAdditionalFields>
@@ -754,6 +1037,17 @@ IF(ISPICKVAL(RiskConsequence__c, &quot;Catastrophic - Could impact project profi
         <searchResultsAdditionalFields>Source__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
+    <webLinks>
+        <fullName>BackToRiskRegister</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Back to Risk Register</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>/apex/ECO_RiskRegisterList?id={!pse__Proj__c.Id}</url>
+    </webLinks>
     <webLinks>
         <fullName>Delete_Risks</fullName>
         <availability>online</availability>
@@ -775,6 +1069,17 @@ IF(ISPICKVAL(RiskConsequence__c, &quot;Catastrophic - Could impact project profi
         <openType>replace</openType>
         <protected>false</protected>
         <requireRowSelection>true</requireRowSelection>
-        <url>/apex/ECO_RiskRegister?projectId={!pse__Proj__c.Id}</url>
+        <url>/apex/ECO_RiskRegisterList?id={!pse__Proj__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>ReturntoProject</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Return to Project</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>/{!Risk__c.ProjectId__c}</url>
     </webLinks>
 </CustomObject>

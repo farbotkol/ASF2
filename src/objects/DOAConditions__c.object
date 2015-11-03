@@ -18,7 +18,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>Edit</actionName>
-        <type>Default</type>
+        <content>ECO_DOAConditionsOfApproval</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>Follow</actionName>
@@ -30,7 +32,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>New</actionName>
-        <type>Default</type>
+        <content>ECO_DOAConditionsOfApproval</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>SaveEdit</actionName>
@@ -84,7 +88,6 @@
         <externalId>false</externalId>
         <label>Agreement</label>
         <referenceTo>Agreement__c</referenceTo>
-        <relationshipLabel>DOA Conditions</relationshipLabel>
         <relationshipName>DOAConditions</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -125,12 +128,22 @@
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>CreatedBy__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Approver</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>DOAConditionsofApproval</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>DOAApprovalRequest__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>DOA Approval Request</label>
         <referenceTo>DOAApprovalRequest__c</referenceTo>
-        <relationshipLabel>DOA Conditions (DOA Approval Request)</relationshipLabel>
         <relationshipName>DOAConditions</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -140,7 +153,7 @@
         <fullName>DOARegister__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <label>DOA Register</label>
+        <label>DOA Trigger</label>
         <lookupFilter>
             <active>true</active>
             <filterItems>
@@ -151,7 +164,7 @@
             <isOptional>false</isOptional>
         </lookupFilter>
         <referenceTo>DOARegister__c</referenceTo>
-        <relationshipLabel>DOA Conditions</relationshipLabel>
+        <relationshipLabel>DOA Conditions of Approval</relationshipLabel>
         <relationshipName>DOAConditions</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -180,11 +193,22 @@
     <fields>
         <fullName>Mitigation_Plan__c</fullName>
         <externalId>false</externalId>
-        <label>Mitigation Plan</label>
+        <label>Status</label>
         <length>32768</length>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
-        <visibleLines>3</visibleLines>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>ProjID__c</fullName>
+        <externalId>false</externalId>
+        <formula>DOARegister__r.Project__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ProjectId</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Project__c</fullName>
@@ -192,7 +216,6 @@
         <externalId>false</externalId>
         <label>Project</label>
         <referenceTo>pse__Proj__c</referenceTo>
-        <relationshipLabel>DOA Conditions</relationshipLabel>
         <relationshipName>DOAConditions</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -207,12 +230,55 @@
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
     </fields>
-    <label>DOA Condition</label>
+    <label>DOA Conditions of Approval</label>
     <nameField>
-        <label>Condition</label>
+        <label>Condition of Approval</label>
         <type>Text</type>
     </nameField>
-    <pluralLabel>DOA Conditions</pluralLabel>
-    <searchLayouts/>
+    <pluralLabel>DOA Conditions of Approval</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>DOAApprovalRequest__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Agreement__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Completed__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ComplianceDate__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ComplianceStatus__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATEDBY_USER</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
+    <webLinks>
+        <fullName>New_DOA_Conditions_of_Approval</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>New DOA Conditions of Approval</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>/apex/ECO_DOAConditionsOfApproval_DOA?doaId={!DOAApprovalRequest__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Return_to_DOA_Approval_Request</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Return to DOA Approval Request</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>/{!DOAConditions__c.DOAApprovalRequestId__c}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>ReturntoProject</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Return to Project</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>/{!DOAConditions__c.ProjID__c}</url>
+    </webLinks>
 </CustomObject>

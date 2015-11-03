@@ -101,6 +101,38 @@
     </fields>
     <label>Project Role</label>
     <listViews>
+        <fullName>ActiveTeamMemberRoles</fullName>
+        <columns>NAME</columns>
+        <columns>Type__c</columns>
+        <columns>Active__c</columns>
+        <columns>SortOrder__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>Type__c</field>
+            <operation>equals</operation>
+            <value>Team Member</value>
+        </filters>
+        <filters>
+            <field>Active__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>Active Team Member Roles</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>NAME</columns>
+        <columns>Type__c</columns>
+        <columns>Active__c</columns>
+        <columns>SortOrder__c</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>ALL</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>KeyMembers</fullName>
         <columns>NAME</columns>
         <columns>Type__c</columns>
@@ -112,22 +144,33 @@
             <operation>equals</operation>
             <value>Key Member</value>
         </filters>
-        <label>Key Member</label>
+        <filters>
+            <field>Active__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>Active Key Member Roles</label>
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>TeamMembers</fullName>
+        <fullName>TeamMembersToday</fullName>
         <columns>NAME</columns>
         <columns>Type__c</columns>
         <columns>Active__c</columns>
         <columns>SortOrder__c</columns>
+        <columns>OBJECT_ID</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>Type__c</field>
             <operation>equals</operation>
             <value>Team Member</value>
         </filters>
-        <label>Team Members</label>
+        <filters>
+            <field>CREATED_DATE</field>
+            <operation>equals</operation>
+            <value>TODAY</value>
+        </filters>
+        <label>Team Members Today</label>
         <language>en_US</language>
     </listViews>
     <nameField>
@@ -135,6 +178,25 @@
         <type>Text</type>
     </nameField>
     <pluralLabel>Project Roles</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <customTabListAdditionalFields>Active__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Definition__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>SortOrder__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>Type__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATEDBY_USER</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Active__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Definition__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>SortOrder__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATEDBY_USER</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Active__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Definition__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>SortOrder__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Type__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATEDBY_USER</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

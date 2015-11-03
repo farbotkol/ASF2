@@ -62,7 +62,10 @@ public with sharing class ECO_ClassificationEditorController {
                 if (oProject.get(oFSM.getFieldPath()) == NULL || oProject.get(oFSM.getFieldPath()) == '') {
                     oProject.put(oFSM.getFieldPath(), sOrganizationStringValue);
                 }
+            } else if (oProject.get(oFSM.getFieldPath()) != NULL && oProject.get(oFSM.getFieldPath()) != '') {
+            	lClassifications.add(fsmWrapper);
             }
+            
         } // end of for
     }
 }

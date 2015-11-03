@@ -1,4 +1,4 @@
-<apex:page standardController="pse__Proj__c" extensions="ECO_ResilienceController" showHeader="true" sidebar="true" docType="html-5.0" id="pgId">
+<apex:page standardController="pse__Proj__c" extensions="ECO_ResilienceController" showHeader="true" sidebar="true" docType="html-5.0" id="pgId" action="{!init}">
     <style>
     .ui-widget{
         font-family:inherit !important;
@@ -8,7 +8,6 @@
     <apex:stylesheet value="//code.jquery.com/ui/1.11.4/themes/smoothness/jquery-ui.css"/>
     <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
     <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
-
 
      <script type="text/javascript">
 
@@ -48,11 +47,39 @@
                 j$( this ).removeClass( "ui-corner-top" ).addClass( "ui-corner-all" );
                 }
             });
-
-
-
         });
      </script>
+    
+    <script>
+    function setFocusOnLoad() {}    
+    
+    function fileChosen(attachButton,documentField,overrideField)
+    {
+        if(documentField.value != '')
+        {
+            document.getElementById(attachButton).style.visibility = 'visible';         
+            document.getElementById(overrideField).value = '';
+            document.getElementById(overrideField).style.visibility = 'visible';
+                        
+        }
+        else
+        {
+            document.getElementById(attachButton).style.visibility= 'hidden';
+            document.getElementById(overrideField).style.visibility= 'hidden';          
+        }       
+    }   
+    
+    function createAttachment(id, name)
+    {
+        attachInduction(id,name);
+    }
+    
+    function createProjectTeamMember(id)
+    {
+        createTeamMember(id);
+    }
+        
+    </script>    
 
     <apex:sectionHeader title="Project Location(s) and Resilence" subtitle="{!pse__Proj__c.Name}" />
 
@@ -76,7 +103,7 @@
             display:block;
             width:auto;
             margin:0;
-            background-color:#E3F0F8;
+            background-color:#A2D3F1;
             border-radius:4px;
             margin-bottom:15px;
         }
@@ -95,11 +122,10 @@
         <div class="customHelpBody">
             <B>Project Locations</B>:  List all project cities and countries where AECOM staff will be required to travel to/from or work in to complete the required scope of services.  This includes any travel to locations as part of the planning, bid or execution phases of the project and includes both client sites as well as physical project sites. The risk rating of the project location(s) will inform the level and complexity of resilience planning (below).<br/><br/>
 
-            <B>Resilience Planning</B>:  Resilience planning details how we protect our project team members and provides a road map of what to do should an emergency or crisis occur, including staff actions and vital information to assist our security team with response actions.  Projects located in high risk countries may require additional planning for security and well-being, including Journey Management Plan, Communications Plan, Medical Response Plan, Disruptive Event Management Plan, Risk Assessment Guide, Disruptive Event Response Checklist and Evacuation Plan.<br/><br/>
+            <B>Resilience Planning</B>:  Resilience planning establishes and maintains a framework for the protection of our people and assets as part of our global operations and provides a road map of what to do should an emergency or crisis occur, including staff actions and vital information to assist our security team with response actions. Projects located in high risk countries may require additional planning for security and well-being, including Journey Management Plan, Communications Plan, Medical Response Plan, Disruptive Event Management Plan, Risk Assessment Guide, Disruptive Event Response Checklist and Evacuation Plan.<br/><br/>
 
             Contact the Global Resilience Group (GRG) with any questions (ProjectResilience@aecom.com).
-            <br/><br/>
-             Goal is to Establish and maintain a framework for the protection of our people and assets. Establish resiliency in our global operations.           
+            <br/>
         </div>
     </div>  
 
@@ -114,15 +140,16 @@
 
             <apex:pageBlockButtons location="top">
                 <apex:commandButton value="Return to Project" action="{!cancel}" />
+                <apex:commandButton value="Save" action="{!SaveSelectedLocations}" />
             </apex:pageBlockButtons>
-
-            <apex:panelGrid columns="3" id="panelGridId">
+           
+            <apex:panelGrid columns="4" id="panelGridId">
                 <div class="ui-widget">
                   <label for="city">Location (City): </label>
                   <input id="city" />
                 </div>
-                <apex:commandButton action="{!SelectPrimaryCity}" value="Add Primary" id="CityRiskAddPrimary" rerender="ProjectCityPanel, messages, ResiliencePanel"  status="CityUpdateStatus" />
-                <apex:commandButton action="{!SelectSecondaryCity}" value="Add Secondary" id="CityRiskAddSecondary" rerender="ProjectCityPanel, messages, ResiliencePanel"  status="CityUpdateStatus" />
+               
+                <apex:commandButton action="{!AddCity}" value="Add City" id="CityRiskAdd" rerender="ProjectCityPanel, messages, ResiliencePanel"  status="CityUpdateStatus" />
             </apex:panelGrid>
             <apex:inputHidden id="CityID" value="{!idCityID}" />
             <BR /><BR />
@@ -140,9 +167,6 @@
                             <apex:pageBlockTable value="{!lstProjectCities}" var="ProjectCity" rendered="{!if(lstProjectCities.size > 0, true, false)}">
                                 <apex:column >
                                     <apex:facet name="header">Action</apex:facet>
-                                    <apex:commandLink action="{!SelectPrimaryCity}" value="Make Primary" rerender="messages, ProjectCityPanel" status="CityUpdateStatus">
-                                        <apex:param assignTo="{!idCityID}" name="CityID" value="{!ProjectCity.CityName__c}, ,{!ProjectCity.ProjectCountryRisk__r.CountryName__c}" />
-                                    </apex:commandLink>&nbsp;&nbsp;
                                     <apex:commandLink action="{!RemoveEntryCity}" value="Remove" rerender="messages, ProjectCityPanel, ResiliencePanel" status="CityUpdateStatus">
                                         <apex:param assignTo="{!idCityID}" name="CityID" value="{!ProjectCity.CityName__c}, ,{!ProjectCity.ProjectCountryRisk__r.CountryName__c}" />
                                     </apex:commandLink>
@@ -155,7 +179,15 @@
                                 <apex:column headerValue="Detention & Discrimination" value="{!ProjectCity.ProjectCountryRisk__r.DetentionDiscrimination__c}" />
                                 <apex:column headerValue="Kidnap & Ransom" value="{!ProjectCity.ProjectCountryRisk__r.KidnapRansom__c}" />
                                 <apex:column headerValue="Property" value="{!ProjectCity.ProjectCountryRisk__r.Property__c}" />
-                                <apex:column value="{!ProjectCity.Type__c}" />
+                                <apex:column headerValue="Physical Project">
+                                	<apex:inputField value="{!ProjectCity.PhysicalProject__c}" />
+                                </apex:column> 
+                                <apex:column headerValue="AECOM Work">
+                                	<apex:inputField value="{!ProjectCity.AECOMWork__c}" />
+                                </apex:column> 
+                                <apex:column headerValue="Other">
+                                	<apex:inputField value="{!ProjectCity.Other__c}" />
+                                </apex:column>                                 
                             </apex:pageBlockTable>
 
                             <BR /><BR /><BR />
@@ -182,6 +214,7 @@
                 <apex:commandButton value="Travel Security Information Document" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Travel%20Security%20Information%20Document/AECOM%20Travel%20Security%20Information%20Document.pdf');" />
                 <apex:commandButton value="Physical Resilience Standard" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" />
                 <apex:commandButton value="Country Security Standard" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/SitePages/Home.aspx?RootFolder=%2Fsites%2Fgrgp%2FShared%20Documents%2FTravel%20Security%20Landing%20Page%2FCountry%20Security%20Standards&FolderCTID=0x012000D13C84D93D4AD74ABE09B56950AEA117&View={66F60314-229D-46B1-952A-BEF57127A7ED}');" />  
+                <apex:commandButton value="AECOM Office OSPs" onclick="alert('Under Dev');" />  
             </apex:pageBlockButtons>
 
             <apex:pageBlockSection title="Travel Security"  columns="1" collapsible="false" />
@@ -189,11 +222,15 @@
             <apex:pageMessage severity="INFO" rendered="{!if(lstProjectCities.size > 0, false, true)}" summary="Project Location must be selected to support resilience planning."></apex:pageMessage> 
             <apex:outputPanel rendered="{!if(lstProjectCities.size > 0, true, false)}">
                 <apex:outputPanel rendered="{!AND(( projectRisk >= 0 ), ( projectRisk <= 1.9) )}">
+                    <BR />
                         Based on the country risk rating for this project, no further action is required when project team members book project travel.
                 </apex:outputPanel>
 
                 <apex:outputPanel rendered="{!AND(( projectRisk >= 2 ), ( projectRisk <= 2.9) )}">
-                    Based on the country risk rating, project team members are required to complete and submit Section 1.0 of the Travel Security Information Document prior to booking project travel.  Further information and guidance is available on the Global Resilience Group website.
+                    <br/>
+                    Based on the country risk rating, project team members are required to complete and submit Section 1.0 of the Travel Security Information Document (TSID) prior to booking project travel.  
+                    <br/><br/>
+					Further information and guidance is available on the Global Resilience Group website.
                     <BR /><BR />
                     <!--<apex:commandButton value="GRG Website" onclick="window.open('http://my.aecomnet.com/Intranet/AECOM+Corporate/Global+Resilience+Group');"/>
                     <apex:commandButton value="Physical Resilience Standard" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" />
@@ -201,17 +238,31 @@
                 </apex:outputPanel>
 
                 <apex:outputPanel rendered="{!projectRisk >= 3}">
-                    Based on the country risk rating, project team members are required to complete and submit Section 1.0, 2.0 and 3.0 (as applicable) of the Travel Security Information Document and receive concurrence from the Global Resilience Group prior to booking travel. Further information and guidance is available on the Global Resilience Group website.
+                    <BR />
+                    Based on the country risk rating, project team members are required to complete and submit Section 1.0, 2.0 and 3.0 (as applicable) of the Travel Security Information Document (TSID) and receive concurrence from the Global Resilience Group prior to booking travel. 
+                    <BR /><BR />
+                    Further information and guidance is available on the Global Resilience Group website.
                     <!--<apex:commandButton value="GRG Website" onclick="window.open('http://my.aecomnet.com/Intranet/AECOM+Corporate/Global+Resilience+Group');"/>
                     <apex:commandButton value="Physical Resilience Standard" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" />
                     -->
                 </apex:outputPanel>
 
                 <apex:pageBlockSection title="Electronic Assets Security"  columns="1" collapsible="false" />
+                    
+	            <apex:outputPanel rendered="{!AND(( projectRisk >= 0 ), ( projectRisk <= 1.9) )}">                    
+                    <BR />
+                    Project team member use of any AECOM-owned computer, network, other devices and/or electronics must follow the requirements outlined in the Operational Security Plan (OSP) for their respective region.  This includes preparation of any client or project-specific electronic security processes or deliverables as part of the Project Plan.
+					<BR /><BR />
+					If a regional OSP is not available, prepare a project-specific OSP (Section 1.8) for review by the IT Information Security team and the Global Resiliene Group.  Further information and guidance is available on the Global Resilience Group website.
+                    <BR />
+                </apex:outputPanel>
 
-                    <table><tr>
+                <!-- <apex:outputPanel rendered="{!AND(( projectRisk >= 2 ), ( projectRisk <= 3.0) )}"> -->
+                <br/>
+					<apex:outputPanel rendered="{! ( projectRisk >= 2 ) }">
+                	<table><tr>
                     <td class="questionCol">
-                        <apex:outputText value="Will any AECOM employee be carrying or transporting AECOM-owned computer, network, other devices and/or electronics?"/>
+                        <apex:outputText value="Will any AECOM employee be carrying or transporting AECOM-owned computer, network, other devices and/or electronics to the project site? "/>
                         </td>
                         <td>
                             <apex:selectRadio value="{!oProject.ResilienceElectronicAssets__c}" layout="lineDirection" >
@@ -219,42 +270,52 @@
                                 <apex:actionSupport event="onchange" action="{!selectOption}" rerender="ResiliencePanel, messages"/>
                             </apex:selectRadio>
                         </td>
-                    </tr></table>       
-
-                <apex:outputPanel rendered="{!oProject.ResilienceElectronicAssets__c == 'No'}">
-                    <BR /><BR />
-                    No further action is required.
+                    </tr></table>  
+                    
+                  <apex:outputPanel rendered="{!oProject.ResilienceElectronicAssets__c == 'No'}">
+                    <BR />
+                    Project team member use of any AECOM-owned computer, network, other devices and/or electronics must follow the requirements outlined in the Operational Security Plan (OSP) for their respective region.  This includes preparation of any client or project-specific electronic security processes or deliverables as part of the Project Plan.
                 </apex:outputPanel>         
 
                 <apex:outputPanel rendered="{!oProject.ResilienceElectronicAssets__c == 'Yes'}">
-                    <BR /><BR />
-                    Completion of Section 1.8 of the Operational Security Plan is required for review by the IT Information Security team and the Global Resilience Group.  Further information and guidance is available on the Global Resilience Group website.
+                    <BR />
+                    Complete Section 1.8 of the Operational Security Plan (OSP) for review by the IT Information Security team and the Global Resilience Group.   Reference the requirements outlined in the regional OSP(s) for all AECOM offices conducting project-related work, if available.  This includes preparation of any client or project-specific electronic security processes or deliverables as part of the Project Plan.
+					<BR /><BR />
+					Further information and guidance is available on the Global Resilience Group website.
                     <BR /><BR />
                     <!--<apex:commandButton value="GRG Website" onclick="window.open('http://my.aecomnet.com/Intranet/AECOM+Corporate/Global+Resilience+Group');"/>
                     <apex:commandButton value="Physical Resilience Standard"  onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" />
                     -->
-                </apex:outputPanel>
+                </apex:outputPanel>   
 
+                </apex:outputPanel>
+                    
                 <apex:pageBlockSection title="Project Location Security"  columns="1" collapsible="false" />
                 <apex:outputPanel rendered="{!AND(( projectRisk >= 0 ), ( projectRisk <= 1.9) )}">
-                    Based on the country risk rating for this project, the project team is required to complete and submit Section 1.0 of the Operational Security Plan.  Security requirements for the project can be reviewed in the Physical Resilience Standard.  Further information and guidance is available on the Global Resilience Group website.
-                    <BR /><BR />
+                    <BR />
+                    Based on the country risk rating for this project, preparation of a project-specific Operational Security Plan (OSP) is only required if a regional OSP does not exist for all AECOM offices conducting project-related work.  If a regional OSP(s) is not available, complete Section 1.0 of the OSP and upload as part of the Project Plan.  
+					<BR/><BR/>
+					Reference the regional OSP(s) when preparing any client or project-specific security plans or deliverables as part of the scope of work (e.g., client or contract requirements) .  
+					<BR/><BR/>
+					Further information and guidance is available on the Global Resilience Group website.
+                    <BR/><BR/>
                     <!--<apex:commandButton value="GRG Website" onclick="window.open('http://my.aecomnet.com/Intranet/AECOM+Corporate/Global+Resilience+Group');"/>
                     <apex:commandButton value="Physical Resilience Standard"  onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" />         
                     --> 
                 </apex:outputPanel>
 
                 <apex:outputPanel rendered="{!AND(( projectRisk >= 2 ), ( projectRisk <= 2.9) )}">
-                    Based on the country risk rating for this project, the project team is required to complete the following documentation for review and approval by the Global Resilience Group:
-                    <BR /><BR />
+                    <BR />
+                    Based on the country risk rating for this project, complete the following documentation for review and approval by the Global Resilience Group:
+                    <BR />
                     <ul>
-                        <li>Project Pre-Bid Security Risk Assessment (opportunity phase)</li>
-                        <li>Operational Security Plan (contracted phase; Sections 1.0 and 2.0 only)</li>
+                        <li>Project Pre-Bid Security Risk Assessment (Opportunity phase)</li>
+                        <li>Operational Security Plan (Contracted phase; Sections 1.0 and 2.0 only)</li>
                     </ul>
+                    <BR />
+                    Reference the existing AECOM regional Operational Security Plan(s) for guidance when developing the project-specific OSP.  Estimate and include costs to complete the OSP and implement identified security measures, security training, staff and/or materials in AECOM’s proposal and Project Plan.
                     <BR /><BR />
-                    Costs to complete the Operational Security Plan and implement identified security measures, security training, staff and/or materials should be estimated and included in AECOM’s proposal and Project Plan. 
-                    <BR /><BR />
-                    Further information and guidance is available on the Global Resilience Group website.  Security requirements can be viewed in the Physical Resilience and Country Security Standards.   
+                    Further information and guidance is available on the Global Resilience Group website.  Security requirements can be viewed in the Physical Resilience and Country Security Standards. 
                     <BR /><BR />
                     <!--<apex:commandButton value="GRG Website" onclick="window.open('http://my.aecomnet.com/Intranet/AECOM+Corporate/Global+Resilience+Group');"/>
                     <apex:commandButton value="Country Security Standard" action="{!stub}" />       
@@ -263,28 +324,76 @@
                 </apex:outputPanel>
 
                 <apex:outputPanel rendered="{!projectRisk >= 3}">
-                    Based on the country risk rating for this project, the project team is required to complete the following documentation for review and approval by the Global Resilience Group:
-                    <BR /><BR />
+                    <BR />
+                    Based on the country risk rating for this project, complete the following documentation for review and approval by the Global Resilience Group:
+                    <BR />
                     <ul>
-                        <li>Project Pre-Bid Security Risk Assessment (opportunity phase)</li>
-                        <li>Operational Security Plan (contracted phase)</li>
+                        <li>Project Pre-Bid Security Risk Assessment (Opportunity phase)</li>
+                        <li>Operational Security Plan (Contracted phase)</li>
                     </ul>
-                    <BR /><BR />
-                    Costs to complete the Operational Security Plan and implement identified security measures, security training, staff and/or materials should be estimated and included in AECOM’s proposal and Project Plan. 
+                    <BR />
+                    Reference the existing AECOM regional Operational Security Plan(s) for guidance when developing the project-specific OSP.  Estimate and include costs to complete the OSP and implement identified security measures, security training, staff and/or materials in AECOM’s proposal and Project Plan.
                     <BR /><BR />
                     Further information and guidance is available on the Global Resilience Group website.  Security requirements can be viewed in the Physical Resilience and Country Security Standards. 
                     <BR /><BR />
+                    
                     <!--<apex:commandButton value="GRG Website" onclick="window.open('http://my.aecomnet.com/Intranet/AECOM+Corporate/Global+Resilience+Group');"/>
                     <apex:commandButton value="Country Security Standard" action="{!stub}" />       
                     <apex:commandButton value="Physical Resilience Standard"  onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" /> 
                     -->                 
                 </apex:outputPanel> 
             </apex:outputPanel>
+            
         </apex:pageBlock>
         </apex:outputPanel>
 
+        <apex:pageBlock title="OSP Approvals">         
+            <apex:pageBlockSection title="OSP Approvals" columns="2" collapsible="false">
+                    <apex:inputField id="approver" value="{!pse__Proj__c.OSPApprover__c}" />
+                    <apex:inputField id="title" value="{!pse__Proj__c.OSPTitle__c}" />
+                    <apex:inputField id="approved" value="{!pse__Proj__c.OSPApproved__c}" />   
+                	<apex:inputField id="comment" value="{!pse__Proj__c.OSPComments__c}" />
+                    <apex:inputField id="approvedBy" value="{!pse__Proj__c.OSPApprovedBy__c}" /> 
+                	<script>document.getElementById('{!$Component.approvedBy}').disabled = true;</script>
+
+                <apex:inputField id="approvedDate" value="{!pse__Proj__c.OSPDateTimeApproved__c}" />                   
+                	<script>document.getElementById('{!$Component.approvedDate}').disabled = true;</script>                        
+            </apex:pageBlockSection>
+               
+
+            
+            <apex:pageBlockButtons location="bottom">
+                <apex:commandButton value="Return to Project" action="{!cancel}" />
+                <apex:commandButton value="Save" action="{!SaveSelectedLocations}" />
+            </apex:pageBlockButtons>
+            
+        </apex:pageBlock>
+    
         <c:ECO_RiskFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="Resilience" />
         <c:ECO_AssumptionFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="Resilience" />
      </apex:form>
-
+    
+       <apex:form id="frmId1">  
+        <apex:pageBlock title="Attachments">         
+                <apex:pageBlockSection title="Attachments" columns="1" collapsible="false">
+			<div class="ouputPanelSep">
+                <div class="fileList">
+                    <apex:pageBlockTable value="{!OSP_AttachmentFiles}" var="attachedOSPFile" style="width: 825px;" rendered="{!pse__Proj__c.OSP_Attachment__c != null}">
+                        <apex:column headerValue="File Name">
+                            <apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachedOSPFile.Id)}" target="_blank">
+                                <apex:outputText value="{!attachedOSPFile.Name}" />
+                            </apex:outputLink>
+                        </apex:column>
+                        <apex:column value="{!attachedOSPFile.ContentType}" /> 
+                        <apex:column value="{!attachedOSPFile.LastModifiedDate}" />    
+                        <apex:column value="{!attachedOSPFile.LastModifiedById}" />
+                    </apex:pageBlockTable></div><br/>
+                    <apex:inputFile id="safetyHealthInspectionAttachment" value="{!newOSP_Attachment.Body}" contentType="{!newOSP_Attachment.ContentType}" fileName="{!newOSP_Attachment.Name}" onchange="fileChosen('{!$Component.cmdSafetyHealthInspectionAttachment}', this, '{!$Component.overrideSafetyHealthInspectionName}'); return false;" />
+                    <apex:inputText id="overrideSafetyHealthInspectionName" value="{!overrideSafetyHealthInspectionName}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
+                    <apex:commandButton id="cmdSafetyHealthInspectionAttachment" value="Attach" action="{!saveOSP_AttachmentAndProject}" styleclass="attachNewFile"/><br/>
+                <br/>
+           	</div>            
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+     </apex:form>
 </apex:page>

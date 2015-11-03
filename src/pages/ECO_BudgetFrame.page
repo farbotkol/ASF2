@@ -1,0 +1,109 @@
+<apex:page controller="ECO_BudgetFrameController">
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+<!--    <apex:includeScript value="{!URLFOR($Resource.ECO_Bootstrap_3_3_2, 'js/bootstrap.min.js')}"/> -->
+    
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2_Themes, 'themes/smoothness/jquery-ui.css')}"/>
+<!--    <apex:stylesheet value="{!URLFOR($Resource.ECO_Bootstrap_3_3_2, 'css/bootstrap.min.css')}" /> -->
+
+    <style>
+    	.budgetFrameWrapper{
+        	margin:0 40px;
+        }
+
+        #HUD{
+            position: fixed;
+            padding:8px;
+            padding-left:5px;
+            background:#d0d0d0;
+            top:20px;
+            right:20px;
+        }
+
+        .hudButton {
+            margin-left: 4px !important;
+            padding: 4px 14px !important;
+        }
+
+        .dropdown ul li, .dropdown ol li{
+            margin-left:0px;
+        }
+    </style>
+    
+    <script>
+    	function hudNavigate(){
+        	var selectBox = document.getElementById("navigationDropdown");
+    		var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+            
+            switch(selectedValue) {
+                case 'showBudgetList':
+                    showBudgetList();
+                    break;
+                case 'showBudgetSummary':
+                    showBudgetSummary();
+                    break;
+                case 'showTaskTab':
+                    showTaskTab();
+                    break;
+                case 'showLaborTab':
+                    showLaborTab();
+                    break;
+                case 'showSubTab':
+                    showSubTab();
+                    break;
+                case 'showODCTab':
+                    showODCTab();
+                    break;
+                case 'showContTab':
+                    showContTab();
+                    break;
+            }
+        }
+    </script>
+    
+    <apex:sectionHeader title="Budget Manager" />
+    
+    <div id="HUD">
+        <apex:form >
+            <select onchange="hudNavigate();" id="navigationDropdown">
+                <option>View...</option>
+                <option value="showBudgetList">Budget List</option>
+                <option value="showTaskTab">Task Manager</option>
+                <apex:outputPanel layout="none" rendered="{!bAllowHeaderNavigation}">
+                    <option value="showBudgetSummary">Budget Summary</option>                    
+                    <option value="showLaborTab">Labor/Person</option>
+                    <option value="showSubTab">Subcontractor</option>
+                    <option value="showODCTab">ODC/Expenses</option>
+                    <option value="showContTab">Contingency</option>
+                </apex:outputPanel>
+            </select>
+
+            <apex:commandButton action="{!createChangeOrder}" value="New Change Order" styleClass="btn btn-default hudButton" />
+            <apex:commandButton action="{!createEAC}" value="New EAC" styleClass="btn btn-default hudButton" />         
+            <apex:commandButton action="{!gotoSetup}" value="Setup" styleClass="btn btn-default hudButton" />
+            <apex:commandButton action="{!returnToProject}" value="Return to Project" styleClass="btn btn-default hudButton" />
+        </apex:form>
+    </div>
+
+
+    <div class="budgetFrameWrapper">
+    	<apex:insert name="budgetScreen"/>
+    </div>
+    
+    <apex:form >
+        <apex:actionFunction action="{!showBudgetList}" name="showBudgetList" />
+        <apex:actionFunction action="{!showBudgetSummary}" name="showBudgetSummary" />
+        <apex:actionFunction action="{!showTaskTab}" name="showTaskTab" />
+        <apex:actionFunction action="{!showLaborTab}" name="showLaborTab" />
+        <apex:actionFunction action="{!showSubTab}" name="showSubTab" />
+        <apex:actionFunction action="{!showODCTab}" name="showODCTab" />
+        <apex:actionFunction action="{!showContTab}" name="showContTab" />
+
+        <c:ECO_RiskFlyout PlanElement="Budget" ProjectID="{!sProjectId}" />
+        <c:ECO_AssumptionFlyout PlanElement="Budget" ProjectID="{!sProjectId}" />
+        <c:ECO_CashFlowFlyout ProjectID="{!sProjectId}" />
+        <!--<c:ECO_EarnedValueEstimatedFlyout ProjectID="{!sProjectId}" />-->
+        <c:ECO_EarnedValueFlyout ProjectId="{!sProjectId}" />
+        
+    </apex:form>
+</apex:page>

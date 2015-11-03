@@ -5,9 +5,9 @@ public with sharing class ECO_ProjectSummaryController {
 	@TestVisible
 	public boolean isProjectNumber {get; private set;}
 	@TestVisible
-	private Id projectId;
+	public Id projectId {get; set;}
 	@TestVisible
-    private Id messageQueueId;
+    public Id messageQueueId {get; set;}
     @TestVisible
     private String messageQueueJobName;
 
@@ -18,13 +18,13 @@ public with sharing class ECO_ProjectSummaryController {
     private DateTime lastSync;
 
     @TestVisible
-    private String projectMsg;
+    public String projectMsg;
     @TestVisible
-	private String taskMsg;
+	public String taskMsg;
 	@TestVisible
-	private String keyMemberMsg;
+	public String keyMemberMsg;
 	@TestVisible
-	private String customersMsg;	
+	public String customersMsg;	
 	@TestVisible
 	private String customerContributionMsg;	
 
@@ -81,19 +81,40 @@ public with sharing class ECO_ProjectSummaryController {
     public Boolean hasTaskSyncHistory {get; private set;}
 	public Boolean hasTaskRequestFailures {get; private set;}
 
+	public Boolean needOracleLogin {get; set;}
+    public String OracleUserName {get; set;}
+    public String OraclePassword {get; set;}
+    public String authenticationResult {get; set;}	
+
     public pse__Proj__c project {get;set;}
 
     private Id primaryOrgPLManagerId;
 
+    public ECO_ProjectSummaryController(Id projectId)
+    {
+    	this.isProjectNumber = false;	
+    	this.projectId = projectId;
+
+    	init();
+    }
+
 	public ECO_ProjectSummaryController() {
-		GetUserIPAddress();
+		//GetUserIPAddress();
 
 		isProjectNumber = false;
+		needOracleLogin = false;
 		projectId = checkForProjectId();
 
-		retUrl = '/apex/' + ApexPages.currentPage().getUrl().split('/apex/')[1];
+		if(ApexPages.currentPage() != null)
+			retUrl = '/apex/' + ApexPages.currentPage().getUrl().split('/apex/')[1];
 		
 		checkForProjectNumberFlag();
+
+		init();
+	}
+
+	private void init()
+	{
 		messageQueueId = null;
 		messageQueueJobName = '';
 		sJSON = '';
@@ -192,7 +213,7 @@ public with sharing class ECO_ProjectSummaryController {
 			messageQueueJobName = ECO_Service_ProjectSync.JOBNAME_PROJECT_NUMBER;
 
 			if(projectId != null){
-				requestDTO =  ECO_Service_ProjectSync.createProjectMessageWrapper(projectId, true);
+				requestDTO =  ECO_Service_ProjectSync.createProjectMessageWrapper(projectId, true, false);
 				projectHeader = requestDTO.PROJECT_HEADER;
 
 				if(!String.isEmpty(projectHeader.PROJECT_ID)){
@@ -229,7 +250,7 @@ public with sharing class ECO_ProjectSummaryController {
 				allowRequestSubmit = true;
 	
 
-				requestDTO =  ECO_Service_ProjectSync.createProjectMessageWrapper(projectId, false);
+				requestDTO =  ECO_Service_ProjectSync.createProjectMessageWrapper(projectId, false, true);
 				
 				projectMsg = validateProject(project, false);
 				taskMsg = validateProjectTasks(requestDTO);
@@ -250,12 +271,48 @@ public with sharing class ECO_ProjectSummaryController {
 			getTaskSyncHistory();
 		}
 
-	    generateSyncHistory();
+	    generateSyncHistory();	
 
+     	needOracleLogin = !ECO_Service_Authentication.authenticateOracleToken(UserInfo.getUserId());
+     	if(needOracleLogin)
+        {
+        	if(isProjectNumber)
+        	{
+        		ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING, 'Your Oracle Token has expired and you are required to login to Oracle before Requesting a Project Number.  Please click the Login button and enter your Oracle credentials.');
+            	ApexPages.addMessage(oPageMessage);
+            }
+            else
+            {
+        		ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING, 'Your Oracle Token has expired and you are required to login to Oracle before Syncronizing the Project.  Please click the Login button and enter your Oracle credentials.');
+            	ApexPages.addMessage(oPageMessage);            	
+            }
+        }
 
-		
 	}
 
+    public PageReference authenticateCredentials()
+    {
+        String username = ApexPages.currentPage().getParameters().get('username');
+        String password = ApexPages.currentPage().getParameters().get('password');
+        //authenticationResult = 'SUCCESS';
+        //CHUNGDL/DEV12ORACLE
+        authenticationResult = ECO_Service_Authentication.TestProxy('https://ecodev.aecom.com/OA_HTML/jsp/fnd/PicDisconnSF.jsp', 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + password);
+
+        return null;
+    }
+
+    public PageReference closeAuthenticationWindow()
+    {
+    	string returnPage = '';
+    	if(isProjectNumber)
+    		returnPage = '/apex/ECO_ProjectSummary?projectId='+ projectId + '&isProjectNumber=1';
+    	else
+    		returnPage = '/apex/ECO_ProjectSummary?projectId='+ projectId + '&isProjectNumber=0';	
+
+        PageReference projectSummarypage = new PageReference(returnPage);        
+        projectSummarypage.setRedirect(true);
+        return projectSummarypage;          
+    }    
 
 	@TestVisible
 	private String validateProjectTasks(ECO_Service_ProjectSync.ProjectMessageWrapper wrapper){
@@ -344,6 +401,10 @@ public with sharing class ECO_ProjectSummaryController {
 			}
 
 
+    	}
+    	else
+    	{
+    		results += '<li>' + ' Tasks failed validation.  There needs to be at least one taks to sync to Oracle.' + '</li>';
     	}
 
     	system.debug('validateProjectTasks=' + results);
@@ -667,18 +728,27 @@ public with sharing class ECO_ProjectSummaryController {
 
 	private Id checkForProjectId(){
 		Id result = null;
-        if(ApexPages.currentPage().getParameters().containsKey('projectId')){
-            result = Id.valueOf(ApexPages.currentPage().getParameters().get('projectId'));          
+		if(ApexPages.currentPage() != null)
+		{
+        	if(ApexPages.currentPage().getParameters().containsKey('projectId')){
+            	result = Id.valueOf(ApexPages.currentPage().getParameters().get('projectId'));          
+        	}
+        	return result;
         }
-        return result;
+        return null;
     }
 
     private void checkForProjectNumberFlag(){
- 		if(ApexPages.currentPage().getParameters().containsKey('isProjectNumber')){
- 			if(ApexPages.currentPage().getParameters().get('isProjectNumber') == '1'){
- 				isProjectNumber = true;
- 			}        
-        }
+    	if(ApexPages.currentPage() != null)
+    	{
+	 		if(ApexPages.currentPage().getParameters().containsKey('isProjectNumber')){
+	 			if(ApexPages.currentPage().getParameters().get('isProjectNumber') == '1'){
+	 				isProjectNumber = true;
+	 			}        
+	        }
+	    }
+	    else
+	    	isProjectNumber = false;
     }
 
     public String testResp {get;set;}
@@ -790,7 +860,8 @@ public with sharing class ECO_ProjectSummaryController {
 	    	showPollingMsg = false;
 	    	syncProgressMsg = 'Creating Message Queue record...';
 	    	stepMsgs.add(syncProgressMsg);
-			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(1, syncProgressMsg, false)));
+	    	if(ApexPages.currentPage() != null)
+				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(1, syncProgressMsg, false)));
 	    }
 
 	    public void syncRequest_Step1_complete(){
@@ -798,19 +869,22 @@ public with sharing class ECO_ProjectSummaryController {
 				messageQueueId = ECO_Service_ProjectSync.createMessageQueueForRequest(projectId, messageQueueJobName);
 		    	syncProgressMsg =  'Creating Message Queue record - Complete!';
 		    	stepMsgs.add(syncProgressMsg);
-		    	ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(2, syncProgressMsg, false)));
+		    	if(ApexPages.currentPage() != null)
+		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(2, syncProgressMsg, false)));
 	    	}catch(Exception e){
 	    		syncErrorOccurred = true;    		
 	    		syncProgressMsg =  'Error occurred while creating Message Queue record!' + e.getMessage();
 	    		stepMsgs.add(syncProgressMsg);
-		    	ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(2, syncProgressMsg, true)));
+	    		if(ApexPages.currentPage() != null)
+		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(2, syncProgressMsg, true)));
 	    	}    	
 	    }
 
 	    public void syncRequest_Step2_start(){
 	    	syncProgressMsg = 'Flagging tasks as sync status = P (Pending)...';
 	    	stepMsgs.add(syncProgressMsg);
-			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(3, syncProgressMsg, false)));
+	    	if(ApexPages.currentPage() != null)
+				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(3, syncProgressMsg, false)));
 	    }
 
 	    public void syncRequest_Step2_complete(){
@@ -818,19 +892,22 @@ public with sharing class ECO_ProjectSummaryController {
 				ECO_Service_ProjectSync.flagProjectTasksWithSyncStatus('P', projectId, lastSync);
 	    		syncProgressMsg = 'Flagging tasks as sync status = P (Pending) - Complete!';
 	    		stepMsgs.add(syncProgressMsg);
-	    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(4, syncProgressMsg, false)));
+	    		if(ApexPages.currentPage() != null)
+	    			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(4, syncProgressMsg, false)));
 	    	}catch(Exception e){
 	    		syncErrorOccurred = true;
 	    		syncProgressMsg = 'Error occurred while updating task records!' + e.getMessage();
 	    		stepMsgs.add(syncProgressMsg);
-		    	ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(4, syncProgressMsg, true)));
+	    		if(ApexPages.currentPage() != null)
+		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(4, syncProgressMsg, true)));
 	    	}    
 	    }
 
 	    public void syncRequest_Step3_start(){
 	    	syncProgressMsg =  'Flagging key members as sync status = P (Pending)...';
 	    	stepMsgs.add(syncProgressMsg);
-			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(5, syncProgressMsg, false)));
+			if(ApexPages.currentPage() != null)
+				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(5, syncProgressMsg, false)));
 	    }
 
 	    public void syncRequest_Step3_complete(){
@@ -838,19 +915,22 @@ public with sharing class ECO_ProjectSummaryController {
 				ECO_Service_ProjectSync.flagKeymembersWithSyncStatus('P', projectId, lastSync);
 	    		syncProgressMsg = 'Flagging key members as sync status = P (Pending) - Complete!';
 	    		stepMsgs.add(syncProgressMsg);
-	    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(6, syncProgressMsg, false)));
+	    		if(ApexPages.currentPage() != null)
+	    			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(6, syncProgressMsg, false)));
 	    	}catch(Exception e){
 	    		syncErrorOccurred = true;
 	    		syncProgressMsg =  'Error occurred while updating key member records!' + e.getMessage();
 	    		stepMsgs.add(syncProgressMsg);
-		    	ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(6, syncProgressMsg, true)));
+	    		if(ApexPages.currentPage() != null)
+		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(6, syncProgressMsg, true)));
 	    	}    
 	    }
 
 	    public void syncRequest_Step4_start(){
 	    	syncProgressMsg = 'Flagging customers as sync status = P (Pending)...';
 	    	stepMsgs.add(syncProgressMsg);
-			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(7, syncProgressMsg, false)));
+	    	if(ApexPages.currentPage() != null)
+				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(7, syncProgressMsg, false)));
 	    }
 
 	    public void syncRequest_Step4_complete(){
@@ -858,19 +938,22 @@ public with sharing class ECO_ProjectSummaryController {
 				ECO_Service_ProjectSync.flagProjectSitesWithSyncStatus('P', projectId, lastSync);
 	    		syncProgressMsg = 'Flagging customers as sync status = P (Pending) - Complete!';
 	    		stepMsgs.add(syncProgressMsg);
-	    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(8, syncProgressMsg, false)));
+	    		if(ApexPages.currentPage() != null)
+	    			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(8, syncProgressMsg, false)));
 	    	}catch(Exception e){
 	    		syncErrorOccurred = true;
 	    		syncProgressMsg = 'Error occurred while updating customer records!' + e.getMessage();
 	    		stepMsgs.add(syncProgressMsg);
-		    	ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(8, syncProgressMsg, true)));
+	    		if(ApexPages.currentPage() != null)
+		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(8, syncProgressMsg, true)));
 	    	}    
 	    }
 
 	    public void syncRequest_Step5_start(){
 	    	syncProgressMsg = 'Sending project information to oracle...';
-	    	stepMsgs.add(syncProgressMsg);	    	
-			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(9, syncProgressMsg, false)));
+	    	stepMsgs.add(syncProgressMsg);	
+	    	if(ApexPages.currentPage() != null)    	
+				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(9, syncProgressMsg, false)));
 			
 	    }
 
@@ -882,8 +965,11 @@ public with sharing class ECO_ProjectSummaryController {
 	    	}
 	      
 	       	syncProgressMsg = syncAttemptResult;
+	       	if(stepMsgs == null)
+	       		stepMsgs = new list<String>();
 	       	stepMsgs.add(syncProgressMsg);	 
-	       	ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(10, syncProgressMsg, false)));
+	       	if(ApexPages.currentPage() != null)
+	       		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, generateProgressBar(10, syncProgressMsg, false)));
 	       
 	    }
 
@@ -891,11 +977,13 @@ public with sharing class ECO_ProjectSummaryController {
 	    	if(!syncErrorOccurred){
 	    		syncProgressMsg = 'Flagging tasks as sync status = T (Successful Transfer)...';
 	    		stepMsgs.add(syncProgressMsg);
-				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(11, syncProgressMsg, false)));
+	    		if(ApexPages.currentPage() != null)
+					ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(11, syncProgressMsg, false)));
 	    	}else{
 	    		syncProgressMsg = 'Flagging tasks as sync status = E (Error)...';
 	    		stepMsgs.add(syncProgressMsg);
-				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(11, syncProgressMsg, true)));
+	    		if(ApexPages.currentPage() != null)
+					ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(11, syncProgressMsg, true)));
 	    	}    	
 	    }
 
@@ -905,19 +993,22 @@ public with sharing class ECO_ProjectSummaryController {
 					ECO_Service_ProjectSync.flagProjectTasksWithSyncStatus('T', projectId, lastSync);
 		    		syncProgressMsg = 'Flagging tasks as sync status = T (Successful Transfer) - Complete!';
 		    		stepMsgs.add(syncProgressMsg);
-		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(12, syncProgressMsg, false)));
+		    		if(ApexPages.currentPage() != null)
+		    			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(12, syncProgressMsg, false)));
 	       		}else{
 	       			ECO_Service_ProjectSync.flagProjectTasksWithSyncStatus('E', projectId, lastSync);
 		    		syncProgressMsg = 'Flagging tasks as sync status = E (Error) - Complete!';
 		    		stepMsgs.add(syncProgressMsg);
-		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(12, syncProgressMsg, true)));
+		    		if(ApexPages.currentPage() != null)
+		    			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(12, syncProgressMsg, true)));
 	       		}
 				
 	    	}catch(Exception e){
 	    		syncErrorOccurred = true;
 	    		syncProgressMsg =  'Error occurred while updating task records!' + e.getMessage();
 	    		stepMsgs.add(syncProgressMsg);
-		    	ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(12, syncProgressMsg, true)));
+	    		if(ApexPages.currentPage() != null)
+		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(12, syncProgressMsg, true)));
 	    	}    
 	    }
 
@@ -925,11 +1016,13 @@ public with sharing class ECO_ProjectSummaryController {
 	    	if(!syncErrorOccurred){
 	    		syncProgressMsg = 'Flagging key members as sync status = T (Successful Transfer)...';
 	    		stepMsgs.add(syncProgressMsg);
-				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(13, syncProgressMsg, false)));
+	    		if(ApexPages.currentPage() != null)
+					ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(13, syncProgressMsg, false)));
 			}else{
 				syncProgressMsg = 'Flagging key members as sync status = E (Error)...';
 				stepMsgs.add(syncProgressMsg);
-				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(13, syncProgressMsg, true)));
+				if(ApexPages.currentPage() != null)
+					ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(13, syncProgressMsg, true)));
 			}
 	    }
 
@@ -939,19 +1032,22 @@ public with sharing class ECO_ProjectSummaryController {
 					ECO_Service_ProjectSync.flagKeymembersWithSyncStatus('T', projectId, lastSync);
 		    		syncProgressMsg = 'Flagging key members as sync status = T (Successful Transfer) - Complete!';
 		    		stepMsgs.add(syncProgressMsg);
-		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(14, syncProgressMsg, false)));
+		    		if(ApexPages.currentPage() != null)
+		    			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(14, syncProgressMsg, false)));
 	       		}else{
 	       			ECO_Service_ProjectSync.flagKeymembersWithSyncStatus('E', projectId, lastSync);
 		    		syncProgressMsg = 'Flagging key members as sync status = E (Error) - Complete!';
 		    		stepMsgs.add(syncProgressMsg);
-		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(14, syncProgressMsg, true)));
+		    		if(ApexPages.currentPage() != null)
+		    			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(14, syncProgressMsg, true)));
 	       		}
 				
 	    	}catch(Exception e){
 	    		syncErrorOccurred = true;
 	    		syncProgressMsg = 'Error occurred while updating key member records!' + e.getMessage();
 	    		stepMsgs.add(syncProgressMsg);
-		    	ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(14, syncProgressMsg, true)));
+	    		if(ApexPages.currentPage() != null)
+		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(14, syncProgressMsg, true)));
 	    	}    
 	    }
 
@@ -959,11 +1055,13 @@ public with sharing class ECO_ProjectSummaryController {
 	    	if(!syncErrorOccurred){
 	    		syncProgressMsg = 'Flagging customers as sync status = T (Successful Transfer)...';
 	    		stepMsgs.add(syncProgressMsg);
-				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(15, syncProgressMsg, false)));
+	    		if(ApexPages.currentPage() != null)
+					ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(15, syncProgressMsg, false)));
 			}else{
 				syncProgressMsg = 'Flagging customers as sync status = E (Error)...';
 				stepMsgs.add(syncProgressMsg);
-				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(15, syncProgressMsg, true)));
+				if(ApexPages.currentPage() != null)
+					ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(15, syncProgressMsg, true)));
 			}
 	    }
 	    
@@ -973,19 +1071,22 @@ public with sharing class ECO_ProjectSummaryController {
 					ECO_Service_ProjectSync.flagProjectSitesWithSyncStatus('T', projectId, lastSync);
 		    		syncProgressMsg = 'Flagging customers as sync status = T (Successful Transfer) - Complete!';
 		    		stepMsgs.add(syncProgressMsg);
-		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(16, syncProgressMsg, false)));
+		    		if(ApexPages.currentPage() != null)
+		    			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(16, syncProgressMsg, false)));
 	       		}else{
 					ECO_Service_ProjectSync.flagProjectSitesWithSyncStatus('E', projectId, lastSync);
 		    		syncProgressMsg = 'Flagging customers as sync status = E (Error) - Complete!';
 		    		stepMsgs.add(syncProgressMsg);
-		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(16, syncProgressMsg, true)));
+		    		if(ApexPages.currentPage() != null)
+		    			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(16, syncProgressMsg, true)));
 	       		}
 				
 	    	}catch(Exception e){
 	    		syncErrorOccurred = true;
 	    		syncProgressMsg = 'Error occurred while updating customer records!' + e.getMessage();stepMsgs.add(syncProgressMsg);
 	    		stepMsgs.add(syncProgressMsg);
-		    	ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(16, syncProgressMsg, true)));
+	    		if(ApexPages.currentPage() != null)
+		    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, generateProgressBar(16, syncProgressMsg, true)));
 	    	}    
 	    }
 
@@ -993,7 +1094,8 @@ public with sharing class ECO_ProjectSummaryController {
 	    	syncProgressMsg =  'Project data is currently being processed by oracle. You will receive an email if an error occurs.';
 	    	stepMsgs.add(syncProgressMsg);
 	    	showPollingMsg = true;
-			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(17, syncProgressMsg, false)));
+	    	if(ApexPages.currentPage() != null)
+				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(17, syncProgressMsg, false)));
 	    }
 
 	    private void fakeOracleProjectSyncRequest(){
@@ -1024,8 +1126,21 @@ public with sharing class ECO_ProjectSummaryController {
 			msgType = 'CREATE_PROJECT';
     	}
 
-    	ECO_IntegrationEndpoints__c cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync');
-	    String url = cs.EndPointUrl__c + '&MESSAGE_TYPE=' + msgType;
+		User user = [select Id, ShaKey__c from User where Id = :UserInfo.getUserId()];
+    	ECO_IntegrationEndpoints__c cs;
+    	String url = '';
+    	if(isProjectNumber)
+    	{
+    		cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
+	    	//url = cs.EndPointUrl__c + '&MESSAGE_TYPE=' + msgType;
+	    	url = cs.EndPointUrl__c + user.ShaKey__c + '&MESSAGE_TYPE=' + msgType;
+    	}
+	    else
+	    {
+	    	cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
+	    	//url = cs.EndPointUrl__c + '&MESSAGE_TYPE=' + msgType;
+	    	url = cs.EndPointUrl__c + user.ShaKey__c + '&MESSAGE_TYPE=' + msgType;
+	    }
 		//String url = 'https://ecodev.aecom.com/OA_HTML/jsp/fnd/xxpic/apps/PicDisconn.jsp?PICAction=SalesIntegration&ebizId=X123456&MESSAGE_TYPE=' + msgType;
 
 	    system.debug('endpoint url for project sync request = ' + url);
@@ -1046,7 +1161,9 @@ public with sharing class ECO_ProjectSummaryController {
 			checkResults(resp);
 
 		}catch(Exception e){
-			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Request has returned an error. Response is : ' + e.getMessage()));
+			if(ApexPages.currentPage() != null)
+				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Request has returned an error. Response is : ' + e.getMessage()));
+			throw(e);
 			syncErrorOccurred = true;
 		}
 
@@ -1078,11 +1195,13 @@ public with sharing class ECO_ProjectSummaryController {
 			String syncMsg = '';
 
 			if(msgQueueResult.Status__c == 'Success' || msgQueueResult.Status__c == 'Initiated' || msgQueueResult.Status__c == 'Sent'){
-				syncMsg += 'Request successfully sent! Response is: ' + responseMessage.trim() + ' ' + syncMsg;				
-				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, syncMsg));
+				syncMsg += 'Request successfully sent! Response is: ' + responseMessage.trim() + ' ' + syncMsg;	
+				if(ApexPages.currentPage() != null)			
+					ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, syncMsg));
 			}else if(msgQueueResult.Status__c == 'Error' || msgQueueResult.Status__c == 'Attempted'){
 				syncMsg += 'An error was returned for the request! Error message is: ' + responseMessage + ' ' + errorMsg;
-				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, syncMsg));
+				if(ApexPages.currentPage() != null)
+					ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, syncMsg));
 				syncErrorOccurred = true;
 			}else {
 				syncMsg += 'Request was submitted. Response is : ' + responseMessage;
@@ -1141,7 +1260,7 @@ public with sharing class ECO_ProjectSummaryController {
 			coreFields += checkForEmpty(header.ProjectFunctionalCurrencyCode__c, Schema.SobjectType.pse__Proj__c.fields.ProjectFunctionalCurrencyCode__c.label);
 			coreFields += checkForEmpty(header.ProjectCurrencyCode__c, Schema.SobjectType.pse__Proj__c.fields.ProjectCurrencyCode__c.label);
 			
-			if(header.ProgBarPrelimPlanApproval__c != 'Approved'){
+			if(header.ProgBarPrelimPlanApproval__c != 'Complete'){
 	    		results += '<li> You cannot sync until your project preliminary plan has been approved!</li>';
 	    	}
 

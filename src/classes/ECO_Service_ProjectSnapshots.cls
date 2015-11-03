@@ -44,7 +44,13 @@ public class ECO_Service_ProjectSnapshots {
 		public Decimal SurplusMargin {get; set;}
 		public Decimal LostMargin {get; set;}
 		public Decimal TotalContingency {get; set;}
-		
+		public Decimal CostsODCEXPS {get; set;}
+		public Decimal CostsODCSUBS {get; set;}
+		public Decimal Labor {get; set;}
+		public Decimal Fringe {get; set;}
+		public Decimal Overhead {get; set;}
+		public Decimal Hours {get; set;}
+
 		public FinancialMetrics()
 		{
 			TotalRevenue = 0;
@@ -112,31 +118,36 @@ public class ECO_Service_ProjectSnapshots {
 		projectIds = new list<Id>();
 		projectIds.add(snapshotProjectId);
 		
-		list<EarnedValueHeader__c> evHeaders = [select Id from EarnedValueHeader__c where Project__c = :snapshotProjectId order by Id desc];
-		
-		if(evHeaders.size() > 0){
-			list<EarnedValueSnapshot__c> snapshots = [select Id FROM EarnedValueSnapshot__c
- 												WHERE ProjectTask__r.pse__Project__c = :snapshotProjectId];
+		try {
+			list<EarnedValueHeader__c> evHeaders = [SELECT Id FROM EarnedValueHeader__c WHERE Project__c = :snapshotProjectId order by Id desc];
 			
-			if(snapshots.size() > 0)
-			{
-				earnedValueController = new ECO_EarnedValueReportController(evHeaders[0].Id);
-			
-				list<EarnedValueTask__c> earnedValueTasks =	[SELECT EarnedValueSnapshot__c
-												, EarnedValueSnapshot__r.WeekStartDate__c
-												, SnapshotDate__c
-												, LastModifiedDate
-											FROM EarnedValueTask__c
-											WHERE EarnedValueHeader__c = :evHeaders[0].Id
-											ORDER BY SnapshotDate__c DESC
-											LIMIT 1];
-				//list<EarnedValueSnapshot__c> snapshots = [select Id, WeekStartDate__c from EarnedValueSnapshot__c where WeekStartDate__c <= TODAY and ProjectTask__r.pse__Project__c = :snapshotProjectId order by WeekStartDate__c desc];
-				if(earnedValueTasks.size() > 0)
+			if(evHeaders.size() > 0){
+				list<EarnedValueSnapshot__c> snapshots = [SELECT Id FROM EarnedValueSnapshot__c
+	 												WHERE ProjectTask__r.pse__Project__c = :snapshotProjectId];
+				
+				if(snapshots.size() > 0)
 				{
-					EarnedValueSnapshotDate = earnedValueTasks[0].SnapshotDate__c;
-					EarnedValueLastModifiedDate = earnedValueTasks[0].LastModifiedDate;
+					earnedValueController = new ECO_EarnedValueReportController(evHeaders[0].Id);
+				
+					list<EarnedValueTask__c> earnedValueTasks =	[SELECT EarnedValueSnapshot__c
+													, EarnedValueSnapshot__r.WeekStartDate__c
+													, SnapshotDate__c
+													, LastModifiedDate
+												FROM EarnedValueTask__c
+												WHERE EarnedValueHeader__c = :evHeaders[0].Id
+												ORDER BY SnapshotDate__c DESC
+												LIMIT 1];
+					//list<EarnedValueSnapshot__c> snapshots = [SELECT Id, WeekStartDate__c FROM EarnedValueSnapshot__c WHERE WeekStartDate__c <= TODAY AND ProjectTask__r.pse__Project__c = :snapshotProjectId order by WeekStartDate__c desc];
+					if(earnedValueTasks.size() > 0)
+					{
+						EarnedValueSnapshotDate = earnedValueTasks[0].SnapshotDate__c;
+						EarnedValueLastModifiedDate = earnedValueTasks[0].LastModifiedDate;
+					}
 				}
 			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
 		}
 	}
 		
@@ -151,13 +162,13 @@ public class ECO_Service_ProjectSnapshots {
 		if(projectIds.size() == 1)
 		{
 			//project information
-			pse__Proj__c project = [select Id, Name, ProjectReviewCategory__c, PrimaryEndClientName__c
+			pse__Proj__c project = [SELECT Id, Name, ProjectReviewCategory__c, PrimaryEndClientName__c
 								, pse__Account__r.Name
 								, pse__Project_Manager__c
 								, OracleProjectnumber__c
 								, pse__End_Date__c
 								, pse__Start_Date__c
-								from pse__Proj__c where Id in :projectIds];				
+								FROM pse__Proj__c WHERE Id IN :projectIds];				
 					
 			snapshot.ProjectName__c = project.Name;
 			snapshot.ProjectRating__c = project.ProjectReviewCategory__c;
@@ -208,6 +219,13 @@ public class ECO_Service_ProjectSnapshots {
 				snapshot.EarnedValuePercentBudgetSpent__c = 0;
 			}					
 		}
+
+		// Original Budget
+		FinancialMetrics originalBudgetFinancialMetrics = getOriginalBudgetHeaderInformation(projectIds, false);
+		snapshot.GrossRevenueBudgetOriginal__c = originalBudgetFinancialMetrics.TotalRevenue;
+		snapshot.LaborBudgetOriginal__c = originalBudgetFinancialMetrics.TotalLabor;
+		snapshot.ContingencyBudgetOriginal__c = originalBudgetFinancialMetrics.TotalContingency;
+		
 		//Approved
 		FinancialMetrics approvedBudgetFinancialMetrics = getApprovedBudgetHeaderInformation(projectIds, 'Approved', false);
 		snapshot.GrossRevenueBudget__c = approvedBudgetFinancialMetrics.TotalRevenue;
@@ -231,6 +249,30 @@ public class ECO_Service_ProjectSnapshots {
 		snapshot.LaborMultForecast__c = forecastBudgetFinancialMetrics.LaborMult + snapshot.LaborMultBudget__c;
 		snapshot.ContingencyForecast__c = forecastBudgetFinancialMetrics.TotalContingency + snapshot.ContingencyBudget__c;
 		
+		// Costs Forecast EAC
+		try {
+			snapshot = getForecastBudgetCostsInformation(snapshot);
+		}
+		catch (Exception e) {
+			System.debug(e.getStackTraceString());
+		}
+
+		// Hours Forecast EAC
+		try {
+			snapshot = getForecastBudgetHoursInformation(snapshot, projectIds);
+		}
+		catch (Exception e) {
+			System.debug(e.getStackTraceString());
+		}
+
+		//Previous Forecast
+		try {
+			snapshot = getPreviousFMForecastInformation(snapshot);
+		}
+		catch (Exception e) {
+			System.debug(e.getStackTraceString());
+		}
+		
 		//Draft
 		//FinancialMetrics draftBudgetFinancialMetrics = getDraftBudgetHeaderInformation(projectIds, changeOrderRecordTypeId);
 		FinancialMetrics draftBudgetFinancialMetrics = getDraftBudgetHeaderInformation(projectIds);		
@@ -253,10 +295,29 @@ public class ECO_Service_ProjectSnapshots {
 		snapshot.NMGRUnapproved__c = unapprovedBudgetFinancialMetrics.NMGR;
 		snapshot.LaborMultUnapproved__c = unapprovedBudgetFinancialMetrics.LaborMult;
 		snapshot.ContingencyUnapproved__c = unapprovedBudgetFinancialMetrics.TotalContingency;		
-				
+		
+		// StartDate of FiscalMonth AND FiscalYear
+		Map<String, pse__Time_Period__c> timePeriodMap = new Map<String, pse__Time_Period__c>();
+		List<pse__Time_Period__c> timePeriodList = 
+			[SELECT pse__Type__c, pse__Start_Date__c, pse__End_Date__c FROM pse__Time_Period__c 
+			 WHERE pse__Start_Date__c <= TODAY AND pse__End_Date__c >= TODAY 
+			 AND (pse__Type__c='Month' OR pse__Type__c='Year')];
+
+		for (pse__Time_Period__c tp : timePeriodList) {
+			timePeriodMap.put(tp.pse__Type__c, tp);
+		}
+
 		//MTD
-		FinancialMetrics mtdActualFinancialMetrics = getProjectActualFinancials(projectIds, Date.today().addMonths(-1));
+		//WRONG: FinancialMetrics mtdActualFinancialMetrics = getProjectActualFinancials(projectIds, Date.today().addMonths(-1));
+		FinancialMetrics mtdActualFinancialMetrics = 
+			getProjectActualFinancials(projectIds, timePeriodMap.get('Month').pse__Start_Date__c);
 		snapshot.GrossRevenueMonthToDate__c = mtdActualFinancialMetrics.TotalRevenue;
+		snapshot.CostsODCEXPSMonthToDate__c = mtdActualFinancialMetrics.CostsODCEXPS;
+		snapshot.CostsODCSUBSMonthToDate__c = mtdActualFinancialMetrics.CostsODCSUBS;
+		snapshot.LaborMonthToDate__c = mtdActualFinancialMetrics.Labor;
+		snapshot.FringeMonthToDate__c = mtdActualFinancialMetrics.Fringe;
+		snapshot.OverheadMonthToDate__c = mtdActualFinancialMetrics.Overhead;
+		snapshot.HoursMonthToDate__c = mtdActualFinancialMetrics.Hours;
 		snapshot.CostMonthToDate__c = mtdActualFinancialMetrics.TotalCost;
 		snapshot.NetMarginMonthToDate__c = mtdActualFinancialMetrics.NetMargin;
 		snapshot.NetServiceMonthToDate__c = mtdActualFinancialMetrics.NetServiceRevenue;
@@ -264,9 +325,7 @@ public class ECO_Service_ProjectSnapshots {
 		snapshot.NMGRMonthToDate__c = mtdActualFinancialMetrics.NMGR;
 		snapshot.LaborMultMonthToDate__c = mtdActualFinancialMetrics.LaborMult;
 		snapshot.ContingencyMonthToDate__c = mtdActualFinancialMetrics.TotalContingency;
-		snapshot.SurMarginMonthToDate__c = 0;
-		snapshot.LostMarginMonthToDate__c = 0;
-
+		
 		snapshot.SurMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
 		snapshot.LostMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
 		
@@ -274,6 +333,12 @@ public class ECO_Service_ProjectSnapshots {
 		//ITD
 		FinancialMetrics itdActualFinancialMetrics = getProjectActualFinancials(projectIds, null);
 		snapshot.GrossRevenueITD__c = itdActualFinancialMetrics.TotalRevenue;
+		snapshot.CostsODCEXPSITD__c = itdActualFinancialMetrics.CostsODCEXPS;
+		snapshot.CostsODCSUBSITD__c = itdActualFinancialMetrics.CostsODCSUBS;
+		snapshot.LaborITD__c = itdActualFinancialMetrics.Labor;
+		snapshot.FringeITD__c = itdActualFinancialMetrics.Fringe;
+		snapshot.OverheadITD__c = itdActualFinancialMetrics.Overhead;
+		snapshot.HoursITD__c = itdActualFinancialMetrics.Hours;
 		snapshot.CostITD__c = itdActualFinancialMetrics.TotalCost;
 		snapshot.NetMarginITD__c = itdActualFinancialMetrics.NetMargin;	
 		snapshot.NetServiceITD__c = itdActualFinancialMetrics.NetServiceRevenue;
@@ -281,16 +346,22 @@ public class ECO_Service_ProjectSnapshots {
 		snapshot.NMGRITD__c = itdActualFinancialMetrics.NMGR;
 		snapshot.LaborMultITD__c = itdActualFinancialMetrics.LaborMult;	
 		snapshot.ContingencyITD__c = itdActualFinancialMetrics.TotalContingency;
-		snapshot.SurMarginITD__c = 0;
-		snapshot.LostMarginITD__c = 0;
-
+		
 		snapshot.SurMarginITD__c = ((snapshot.NMNSRITD__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceITD__c)/100;
 		snapshot.LostMarginITD__c = ((snapshot.NMNSRITD__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceITD__c)/100;
 
 
 		//YTD			
-		FinancialMetrics ytdActualFinancialMetrics = getProjectActualFinancials(projectIds, Date.today().addYears(-1));
+		//WRONG: FinancialMetrics ytdActualFinancialMetrics = getProjectActualFinancials(projectIds, Date.today().addYears(-1));
+		FinancialMetrics ytdActualFinancialMetrics = 
+			getProjectActualFinancials(projectIds, timePeriodMap.get('Year').pse__Start_Date__c);
 		snapshot.GrossRevenueYearToDate__c = ytdActualFinancialMetrics.TotalRevenue;
+		snapshot.CostsODCEXPSYearToDate__c = ytdActualFinancialMetrics.CostsODCEXPS;
+		snapshot.CostsODCSUBSYearToDate__c = ytdActualFinancialMetrics.CostsODCSUBS;
+		snapshot.LaborYearToDate__c = ytdActualFinancialMetrics.Labor;
+		snapshot.FringeYearToDate__c = ytdActualFinancialMetrics.Fringe;
+		snapshot.OverheadYearToDate__c = ytdActualFinancialMetrics.Overhead;
+		snapshot.HoursYearToDate__c = ytdActualFinancialMetrics.Hours;
 		snapshot.CostYearToDate__c = ytdActualFinancialMetrics.TotalCost;
 		snapshot.NetMarginYearToDate__c = ytdActualFinancialMetrics.NetMargin;	
 		snapshot.NetServiceYearToDate__c = ytdActualFinancialMetrics.NetServiceRevenue;
@@ -371,7 +442,7 @@ public class ECO_Service_ProjectSnapshots {
 	private String getRelatedProjectTasks(list<Id> projectIds)
 	{
 		String returnString = '';
-		list<pse__Project_Task__c> projectTasks = [select Id, Name, pse__Actual_End_Date__c, pse__Actual_Start_Date__c, pse__End_Date__c, pse__Start_Date__c, ProjectTaskNumber__c from pse__Project_Task__c where pse__Project__c in :projectIds];
+		list<pse__Project_Task__c> projectTasks = [SELECT Id, Name, pse__Actual_End_Date__c, pse__Actual_Start_Date__c, pse__End_Date__c, pse__Start_Date__c, ProjectTaskNumber__c FROM pse__Project_Task__c WHERE pse__Project__c IN :projectIds];
 			
 		for(pse__Project_Task__c projectTask:projectTasks)
 		{
@@ -386,8 +457,8 @@ public class ECO_Service_ProjectSnapshots {
 	
 	private DateTime getLastUpdatedBudgetDate(list<Id> projectIds)
 	{
-		list<BudgetHeader__c> budgets = [select Id, LastModifiedDate from BudgetHeader__c where Project__c in :projectIds
-												and Status__c = 'Approved' order by LastModifiedDate desc];
+		list<BudgetHeader__c> budgets = [SELECT Id, LastModifiedDate FROM BudgetHeader__c WHERE Project__c IN :projectIds
+												AND Status__c = 'Approved' order by LastModifiedDate desc];
 		
 		if(budgets.size() > 0)
 			return budgets[0].LastModifiedDate;
@@ -417,8 +488,8 @@ public class ECO_Service_ProjectSnapshots {
 		map<Id, Decimal> projectsFutureSpendMap = new map<Id, Decimal>();
 		for(AggregateResult ar : [SELECT SUM(ApprovedCost__c) ApprovedCost, Project__c
 									FROM WeeklyRollupEntry__c
-									WHERE Project__c in :projectIds and PeriodStartDate__c > :startDate and PeriodStartDate__c <= :endDate
-									group by Project__c])
+									WHERE Project__c IN :projectIds AND PeriodStartDate__c > :startDate AND PeriodStartDate__c <= :endDate
+									GROUP BY Project__c])
 		{
 			if(ar.get('ApprovedCost') != null)
 			{
@@ -430,9 +501,9 @@ public class ECO_Service_ProjectSnapshots {
 	
 	private void populateOrganizationsMaps(list<Id> projectIds)
 	{	
-		for(ProjectOrganization__c org:[select Id, Type__c, ContributionPercent__c, OrganizationString__r.District__c, OrganizationString__r.Id, OrganizationString__r.Region__c, 
+		for(ProjectOrganization__c org:[SELECT Id, Type__c, ContributionPercent__c, OrganizationString__r.District__c, OrganizationString__r.Id, OrganizationString__r.Region__c, 
 											OrganizationString__r.Name, OrganizationString__r.BusinessLineName__c, Project__c
-											from ProjectOrganization__c where Project__c = :projectIds] )
+											FROM ProjectOrganization__c WHERE Project__c = :projectIds] )
 		{
 			organizationProjectPercentage.put(org.OrganizationString__r.Id + '-' + org.Project__c, org.ContributionPercent__c);
 			if(organizationProjectsMap.get(org.OrganizationString__r.Id) == null)
@@ -447,9 +518,9 @@ public class ECO_Service_ProjectSnapshots {
 	private String getRelatedAgreements(list<Id> projectIds)
 	{	
 		String agreements = '';	
-		for(Agreement__c agreement:[select Id, Name, AgreementType__c, RecordType.Name, Amount__c from Agreement__c
-																where Id in (select Agreement__c from ProjectAgreement__c
-																			where Project__c in :projectIds)])
+		for(Agreement__c agreement:[SELECT Id, Name, AgreementType__c, RecordType.Name, Amount__c FROM Agreement__c
+																WHERE Id IN (SELECT Agreement__c FROM ProjectAgreement__c
+																			WHERE Project__c IN :projectIds)])
 		{
 			if(agreements == '')
 				agreements = agreement.RecordType.Name + ';;' + agreement.AgreementType__c + ';;' + agreement.Amount__c;
@@ -463,12 +534,12 @@ public class ECO_Service_ProjectSnapshots {
 	{
 		
 		String changeOrders = '';
-		for(BudgetHeader__c header:[select Id, Name, BudgetName__c, TotalRevenue__c, TotalCost__c 
-										from BudgetHeader__c 
-										where Project__c in :projectIds
-										and ((Status__c = 'Approved' and ChangeManagerApprovedForSynch__c = true)
-											or (Status__c != 'Approved'))
-										and Id in (select BudgetHeader__c from ChangeManager__c where Project__c in :projectIds)])
+		for(BudgetHeader__c header:[SELECT Id, Name, BudgetName__c, TotalRevenue__c, TotalCost__c 
+										FROM BudgetHeader__c 
+										WHERE Project__c IN :projectIds
+										AND ((Status__c = 'Approved' AND ChangeManagerApprovedForSynch__c = true)
+											OR (Status__c != 'Approved'))
+										AND Id IN (SELECT BudgetHeader__c FROM ChangeManager__c WHERE Project__c IN :projectIds)])
 		{
 			if(changeOrders == '')
 				changeOrders = 	header.BudgetName__c  + ';;' + header.TotalRevenue__c + ';;' + header.TotalCost__c;
@@ -482,9 +553,9 @@ public class ECO_Service_ProjectSnapshots {
 	private String getDraftChangedOrders(list<Id> projectIds, Id recordTypeId)
 	{	
 		String changeOrders = '';	
-		for(BudgetHeader__c header:[select Id, Name, BudgetName__c, TotalRevenue__c, TotalCost__c 
-				from BudgetHeader__c where Project__c in :projectIds 
-										and Id Not in (select BudgetHeader__c from ChangeManager__c where Project__c in :projectIds)])
+		for(BudgetHeader__c header:[SELECT Id, Name, BudgetName__c, TotalRevenue__c, TotalCost__c 
+				FROM BudgetHeader__c WHERE Project__c IN :projectIds 
+										AND Id Not IN (SELECT BudgetHeader__c FROM ChangeManager__c WHERE Project__c IN :projectIds)])
 		{
 			if(changeOrders == '')
 				changeOrders = 	header.BudgetName__c  + ';;' + header.TotalRevenue__c + ';;' + header.TotalCost__c;
@@ -501,33 +572,166 @@ public class ECO_Service_ProjectSnapshots {
 		query += ' , SUM(TotalCost__c) totalCost ';
 		query += ' , SUM(TotalNonLabor__c) totalNonLabor ';
 		query += ' , SUM(TotalLaborAmount__c) totalLabor ';
-		query += ' , sum(TotalContingencyAmount__c) totalContingency ';
+		query += ' , SUM(TotalContingencyAmount__c) totalContingency ';
 		query += ' FROM BudgetHeader__c ';
-		query += ' WHERE Project__c in :projectIds ';
+		query += ' WHERE Project__c IN :projectIds ';
 		query += ' AND Status__c = :status';
 		query += ' AND ChangeManagerApprovedForSynch__c = false';
 		
-		list<AggregateResult> results = database.query(query); 
-		for(AggregateResult ar : results)
-		{
-			metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
-			metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
-			metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
-			metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));	
-			metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));	
+		try {
+			list<AggregateResult> results = database.query(query); 
+			for(AggregateResult ar : results)
+			{
+				metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
+				metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
+				metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
+				metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));	
+				metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));	
+					
+				metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
+				metrics.NetServiceRevenue = metrics.TotalRevenue - metrics.TotalNonLabor;
 				
-			metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
-			metrics.NetServiceRevenue = metrics.TotalRevenue - metrics.TotalNonLabor;
-			
-			if(metrics.TotalRevenue != 0)
-				metrics.NMGR = ((metrics.TotalRevenue - metrics.TotalCost)/metrics.TotalRevenue) * 100;
-			if(metrics.TotalRevenue - metrics.TotalNonLabor != 0)	
-				metrics.NMNSR = ((metrics.TotalRevenue - metrics.TotalCost)/(metrics.TotalRevenue - metrics.TotalNonLabor)) * 100;
-			if(metrics.TotalLabor != 0)
-				metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+				if(metrics.TotalRevenue != 0)
+					metrics.NMGR = ((metrics.TotalRevenue - metrics.TotalCost)/metrics.TotalRevenue) * 100;
+				if(metrics.TotalRevenue - metrics.TotalNonLabor != 0)	
+					metrics.NMNSR = ((metrics.TotalRevenue - metrics.TotalCost)/(metrics.TotalRevenue - metrics.TotalNonLabor)) * 100;
+				if(metrics.TotalLabor != 0)
+					metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+			}
 		}
-				
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}	
 		return metrics;
+	}
+
+	private FinancialMetrics getOriginalBudgetHeaderInformation(List<Id> projectIds, boolean showUnsynchedBudgets)
+	{
+		FinancialMetrics metrics = new FinancialMetrics();
+		String query = 'SELECT SUM(TotalRevenue__c) totalRevenue, '+
+			' SUM(TotalCost__c) totalCost, '+ 
+			' SUM(TotalNonLabor__c) totalNonLabor, '+ 
+			' SUM(TotalLaborAmount__c) totalLabor, '+
+			' SUM(TotalContingencyAmount__c) totalContingency '+
+			' FROM BudgetHeader__c '+
+			' WHERE OriginalBudget__c = true '+
+			' AND Project__c IN :projectIds';
+		
+		try {
+			list<AggregateResult> results = database.query(query); 
+			for(AggregateResult ar : results)
+			{
+				metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
+				metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
+				metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
+				metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));	
+				metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));	
+					
+				metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
+				metrics.NetServiceRevenue = metrics.TotalRevenue - metrics.TotalNonLabor;
+				
+				if(metrics.TotalRevenue != 0)
+					metrics.NMGR = ((metrics.TotalRevenue - metrics.TotalCost)/metrics.TotalRevenue) * 100;
+				if(metrics.TotalRevenue - metrics.TotalNonLabor != 0)	
+					metrics.NMNSR = ((metrics.TotalRevenue - metrics.TotalCost)/(metrics.TotalRevenue - metrics.TotalNonLabor)) * 100;
+				if(metrics.TotalLabor != 0)
+					metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}	
+		return metrics;
+	}
+
+	@TestVisible private ProjectSnapshot__c getOriginalBudgetCostsInformation(ProjectSnapshot__c snapshot) {
+
+		Set<String> plReportCategorySet = getPLReportCategories();
+		Map<String, BudgetAssignment__c> budgetAssignmentMap = new Map<String, BudgetAssignment__c>();
+
+		try {
+			List<BudgetAssignment__c> budgetAssignments = 
+				[SELECT OverrideTotalCost__c, TotalComputedCost__c, BudgetResource__r.PLReportCategory__c
+				 FROM BudgetAssignment__c 
+				 WHERE BudgetResource__r.PLReportCategory__c IN :plReportCategorySet
+				 AND (BudgetResource__r.BudgetHeader__r.Status__c = 'Forecast'
+				 OR BudgetResource__r.BudgetHeader__r.Status__c = 'Approved')
+				 AND ProjectTask__r.pse__Project__r.Id =: snapshot.Project__c];
+
+			for (BudgetAssignment__c ba : budgetAssignments) {
+				budgetAssignmentMap.put(ba.BudgetResource__r.PLReportCategory__c, ba);
+			}
+
+			for (String PLReportCategory : budgetAssignmentMap.keySet()) {
+				BudgetAssignment__c ba = (BudgetAssignment__c) budgetAssignmentMap.get(PLReportCategory);
+				if (ba.BudgetResource__r.BudgetHeader__r.Status__c == 'Forecast') {
+					if (ba.OverrideTotalCost__c > 0) {
+						if (PLReportCategory == 'ODC - Exps') {
+							snapshot.CostsODCEXPSForecast__c = ba.OverrideTotalCost__c;
+						}
+						else if (PLReportCategory == 'ODC - Subs') {
+							snapshot.CostsODCSUBSForecast__c = ba.OverrideTotalCost__c;
+						}
+						else if (PLReportCategory == 'ODC - Contingency') {
+							snapshot.ContingencyForecast__c = ba.OverrideTotalCost__c;
+						}
+						else if (PLReportCategory == 'Labor') {
+							snapshot.LaborForecast__c = ba.OverrideTotalCost__c;
+						}
+						else if (PLReportCategory == 'Fringe') {
+							snapshot.FringeForecast__c = ba.OverrideTotalCost__c;
+						}
+						else if (PLReportCategory == 'Overhead') {
+							snapshot.OverheadForecast__c = ba.OverrideTotalCost__c;
+						}
+					}
+					else {
+						if (PLReportCategory == 'ODC - Exps') {
+							snapshot.CostsODCEXPSForecast__c = ba.TotalComputedCost__c;
+						}
+						else if (PLReportCategory == 'ODC - Subs') {
+							snapshot.CostsODCSUBSForecast__c = ba.TotalComputedCost__c;
+						}
+						else if (PLReportCategory == 'ODC - Contingency') {
+							snapshot.ContingencyForecast__c = ba.TotalComputedCost__c;
+						}
+						else if (PLReportCategory == 'Labor') {
+							snapshot.LaborForecast__c = ba.TotalComputedCost__c;
+						}
+						else if (PLReportCategory == 'Fringe') {
+							snapshot.FringeForecast__c = ba.TotalComputedCost__c;
+						}
+						else if (PLReportCategory == 'Overhead') {
+							snapshot.OverheadForecast__c = ba.TotalComputedCost__c;
+						}
+					}
+				}
+				else {
+					if (PLReportCategory == 'ODC - Exps') {
+						snapshot.CostsODCEXPSBudget__c = ba.TotalComputedCost__c;
+					}
+					else if (PLReportCategory == 'ODC - Subs') {
+						snapshot.CostsODCSUBSBudget__c = ba.TotalComputedCost__c;
+					}
+					else if (PLReportCategory == 'ODC - Contingency') {
+						snapshot.ContingencyBudget__c = ba.TotalComputedCost__c;
+					}
+					else if (PLReportCategory == 'Labor') {
+						snapshot.LaborBudget__c = ba.TotalComputedCost__c;
+					}
+					else if (PLReportCategory == 'Fringe') {
+						snapshot.FringeBudget__c = ba.TotalComputedCost__c;
+					}
+					else if (PLReportCategory == 'Overhead') {
+						snapshot.OverheadBudget__c = ba.TotalComputedCost__c;
+					}
+				}
+			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}
+		return snapshot;
 	}
 
 	private FinancialMetrics getUnapprovedBudgetHeaderInformation(list<Id> projectIds, String status, boolean showUnsynchedBudgets)
@@ -539,33 +743,37 @@ public class ECO_Service_ProjectSnapshots {
 		query += ' , SUM(TotalCost__c) totalCost ';
 		query += ' , SUM(TotalNonLabor__c) totalNonLabor ';
 		query += ' , SUM(TotalLaborAmount__c) totalLabor ';
-		query += ' , sum(TotalContingencyAmount__c) totalContingency ';
+		query += ' , SUM(TotalContingencyAmount__c) totalContingency ';
 		query += ' FROM BudgetHeader__c ';
-		query += ' WHERE Project__c in :projectIds ';
+		query += ' WHERE Project__c IN :projectIds ';
 		query += ' AND Status__c = :status';
-		query += ' AND ID in (select BudgetHeader__c from ChangeManager__c where ApprovalStatus__c != :approvalStatus and  and Project__c in :projectIds)';		
+		query += ' AND ID IN (SELECT BudgetHeader__c FROM ChangeManager__c WHERE ApprovalStatus__c != :approvalStatus AND  AND Project__c IN :projectIds)';		
 
-		list<AggregateResult> results = database.query(query); 
-		
-		for(AggregateResult ar : results)
-		{
-			metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
-			metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
-			metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
-			metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));	
-			metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));	
-				
-			metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
-			metrics.NetServiceRevenue = metrics.TotalRevenue - metrics.TotalNonLabor;
+		try {
+			list<AggregateResult> results = database.query(query); 
 			
-			if(metrics.TotalRevenue != 0)
-				metrics.NMGR = ((metrics.TotalRevenue - metrics.TotalCost)/metrics.TotalRevenue) * 100;
-			if(metrics.TotalRevenue - metrics.TotalNonLabor != 0)	
-				metrics.NMNSR = ((metrics.TotalRevenue - metrics.TotalCost)/(metrics.TotalRevenue - metrics.TotalNonLabor)) * 100;
-			if(metrics.TotalLabor != 0)
-				metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
-		}
+			for(AggregateResult ar : results)
+			{
+				metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
+				metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
+				metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
+				metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));	
+				metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));	
+					
+				metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
+				metrics.NetServiceRevenue = metrics.TotalRevenue - metrics.TotalNonLabor;
 				
+				if(metrics.TotalRevenue != 0)
+					metrics.NMGR = ((metrics.TotalRevenue - metrics.TotalCost)/metrics.TotalRevenue) * 100;
+				if(metrics.TotalRevenue - metrics.TotalNonLabor != 0)	
+					metrics.NMNSR = ((metrics.TotalRevenue - metrics.TotalCost)/(metrics.TotalRevenue - metrics.TotalNonLabor)) * 100;
+				if(metrics.TotalLabor != 0)
+					metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}	
 		return metrics;
 	}	
 
@@ -576,151 +784,429 @@ public class ECO_Service_ProjectSnapshots {
 		query += ' , SUM(TotalCost__c) totalCost ';
 		query += ' , SUM(TotalNonLabor__c) totalNonLabor ';
 		query += ' , SUM(TotalLaborAmount__c) totalLabor ';
-		query += ' , sum(TotalContingencyAmount__c) totalContingency ';
+		query += ' , SUM(TotalContingencyAmount__c) totalContingency ';
 		query += ' FROM BudgetHeader__c ';
-		query += ' WHERE Project__c in :projectIds ';
+		query += ' WHERE Project__c IN :projectIds ';
 		query += ' AND Status__c = :status';
 		
-		list<AggregateResult> results = database.query(query); 
-		for(AggregateResult ar : results)
-		{
-			metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
-			metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
-			metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
-			metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));	
-			metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));	
+		try {
+			list<AggregateResult> results = database.query(query); 
+			for(AggregateResult ar : results)
+			{
+				metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
+				metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
+				metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
+				metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));	
+				metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));	
+					
+				metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
+				metrics.NetServiceRevenue = metrics.TotalRevenue - metrics.TotalNonLabor;
 				
-			metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
-			metrics.NetServiceRevenue = metrics.TotalRevenue - metrics.TotalNonLabor;
-			
-			if(metrics.TotalRevenue != 0)
-				metrics.NMGR = ((metrics.TotalRevenue - metrics.TotalCost)/metrics.TotalRevenue) * 100;
-			if(metrics.TotalRevenue - metrics.TotalNonLabor != 0)	
-				metrics.NMNSR = ((metrics.TotalRevenue - metrics.TotalCost)/(metrics.TotalRevenue - metrics.TotalNonLabor)) * 100;
-			if(metrics.TotalLabor != 0)
-				metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+				if(metrics.TotalRevenue != 0)
+					metrics.NMGR = ((metrics.TotalRevenue - metrics.TotalCost)/metrics.TotalRevenue) * 100;
+				if(metrics.TotalRevenue - metrics.TotalNonLabor != 0)	
+					metrics.NMNSR = ((metrics.TotalRevenue - metrics.TotalCost)/(metrics.TotalRevenue - metrics.TotalNonLabor)) * 100;
+				if(metrics.TotalLabor != 0)
+					metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
 		}
 				
 		return metrics;
 	}
 	
-	private FinancialMetrics getForecastBudgetHeaderInformation(list<Id> projectIds)
+	private FinancialMetrics getForecastBudgetHeaderInformation(List<Id> projectIds)
 	{
 		FinancialMetrics metrics = new FinancialMetrics();
-		for(AggregateResult ar : [SELECT SUM(TotalRevenue__c) totalRevenue
-											, SUM(TotalCost__c) totalCost
-											, SUM(TotalNonLabor__c) totalNonLabor
-											, SUM(TotalLaborAmount__c) totalLabor
-											, sum(TotalContingencyAmount__c) totalContingency
-									FROM BudgetHeader__c
-									WHERE Project__c in :projectIds
-											and Status__c = 'Forecast'])
-		{
-			metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
-			metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
-			metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
-			metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));	
-			metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));	
+		try {
+			for(AggregateResult ar : [SELECT SUM(TotalRevenue__c) totalRevenue
+												, SUM(TotalCost__c) totalCost
+												, SUM(TotalNonLabor__c) totalNonLabor
+												, SUM(TotalLaborAmount__c) totalLabor
+												, SUM(TotalContingencyAmount__c) totalContingency
+										FROM BudgetHeader__c
+										WHERE Project__c IN :projectIds
+												AND Status__c = 'Forecast'])
+			{
+				metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
+				metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
+				metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
+				metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));	
+				metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));	
+					
+				metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
+				metrics.NetServiceRevenue = metrics.TotalRevenue - metrics.TotalNonLabor;
 				
-			metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
-			metrics.NetServiceRevenue = metrics.TotalRevenue - metrics.TotalNonLabor;
-			
-			if(metrics.TotalRevenue != 0)
-				metrics.NMGR = ((metrics.TotalRevenue - metrics.TotalCost)/metrics.TotalRevenue) * 100;
-			if(metrics.TotalRevenue - metrics.TotalNonLabor != 0)	
-				metrics.NMNSR = ((metrics.TotalRevenue - metrics.TotalCost)/(metrics.TotalRevenue - metrics.TotalNonLabor)) * 100;
-			if(metrics.TotalLabor != 0)
-				metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+				if(metrics.TotalRevenue != 0)
+					metrics.NMGR = ((metrics.TotalRevenue - metrics.TotalCost)/metrics.TotalRevenue) * 100;
+				if(metrics.TotalRevenue - metrics.TotalNonLabor != 0)	
+					metrics.NMNSR = ((metrics.TotalRevenue - metrics.TotalCost)/(metrics.TotalRevenue - metrics.TotalNonLabor)) * 100;
+				if(metrics.TotalLabor != 0)
+					metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+			}
 		}
-				
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}	
 		return metrics;
 	}		
+
+	@TestVisible private Set<String> getPLReportCategories() {
+		Set<String> plReportCategorySet = new Set<String>();
+		List<ExpenditureType__c> expTypes = [SELECT PLReportCategory__c FROM ExpenditureType__c];
+		for (ExpenditureType__c expType : expTypes) {
+			plReportCategorySet.add(expType.PLReportCategory__c);
+		}
+		return plReportCategorySet;
+	}
+
+	/*  a) If BudgetAssignment.OverrideTotalCost > 0, use BudgetAssignment.OverrideTotalCost, else use 
+			BudgetAssignment.TotalComputedCost
+		b) Filter by category: BudgetAssignment__r.BudgetResource.PLReportCategory = (whatever category is)
+		c) Filter by status: BudgetAssignment__r.BudgetResource__r.Budgetheader.Status = 'Forecast'
+	*/
+	@TestVisible private ProjectSnapshot__c getForecastBudgetCostsInformation(ProjectSnapshot__c snapshot) {
+
+		Set<String> plReportCategorySet = getPLReportCategories();
+		Map<String, BudgetAssignment__c> budgetAssignmentMap = new Map<String, BudgetAssignment__c>();
+
+		try {
+			List<BudgetAssignment__c> budgetAssignments = 
+				[SELECT OverrideTotalCost__c, TotalComputedCost__c, BudgetResource__r.PLReportCategory__c
+				 FROM BudgetAssignment__c 
+				 WHERE BudgetResource__r.PLReportCategory__c IN :plReportCategorySet
+				 AND (BudgetResource__r.BudgetHeader__r.Status__c = 'Forecast'
+				 OR BudgetResource__r.BudgetHeader__r.Status__c = 'Approved')
+				 AND ProjectTask__r.pse__Project__r.Id =: snapshot.Project__c];
+
+			for (BudgetAssignment__c ba : budgetAssignments) {
+				budgetAssignmentMap.put(ba.BudgetResource__r.PLReportCategory__c, ba);
+			}
+
+			for (String PLReportCategory : budgetAssignmentMap.keySet()) {
+				BudgetAssignment__c ba = (BudgetAssignment__c) budgetAssignmentMap.get(PLReportCategory);
+				if (ba.BudgetResource__r.BudgetHeader__r.Status__c == 'Forecast') {
+					if (ba.OverrideTotalCost__c > 0) {
+						if (PLReportCategory == 'ODC - Exps') {
+							snapshot.CostsODCEXPSForecast__c = ba.OverrideTotalCost__c;
+						}
+						else if (PLReportCategory == 'ODC - Subs') {
+							snapshot.CostsODCSUBSForecast__c = ba.OverrideTotalCost__c;
+						}
+						else if (PLReportCategory == 'ODC - Contingency') {
+							snapshot.ContingencyForecast__c = ba.OverrideTotalCost__c;
+						}
+						else if (PLReportCategory == 'Labor') {
+							snapshot.LaborForecast__c = ba.OverrideTotalCost__c;
+						}
+						else if (PLReportCategory == 'Fringe') {
+							snapshot.FringeForecast__c = ba.OverrideTotalCost__c;
+						}
+						else if (PLReportCategory == 'Overhead') {
+							snapshot.OverheadForecast__c = ba.OverrideTotalCost__c;
+						}
+					}
+					else {
+						if (PLReportCategory == 'ODC - Exps') {
+							snapshot.CostsODCEXPSForecast__c = ba.TotalComputedCost__c;
+						}
+						else if (PLReportCategory == 'ODC - Subs') {
+							snapshot.CostsODCSUBSForecast__c = ba.TotalComputedCost__c;
+						}
+						else if (PLReportCategory == 'ODC - Contingency') {
+							snapshot.ContingencyForecast__c = ba.TotalComputedCost__c;
+						}
+						else if (PLReportCategory == 'Labor') {
+							snapshot.LaborForecast__c = ba.TotalComputedCost__c;
+						}
+						else if (PLReportCategory == 'Fringe') {
+							snapshot.FringeForecast__c = ba.TotalComputedCost__c;
+						}
+						else if (PLReportCategory == 'Overhead') {
+							snapshot.OverheadForecast__c = ba.TotalComputedCost__c;
+						}
+					}
+				}
+				else {
+					if (PLReportCategory == 'ODC - Exps') {
+						snapshot.CostsODCEXPSBudget__c = ba.TotalComputedCost__c;
+					}
+					else if (PLReportCategory == 'ODC - Subs') {
+						snapshot.CostsODCSUBSBudget__c = ba.TotalComputedCost__c;
+					}
+					else if (PLReportCategory == 'ODC - Contingency') {
+						snapshot.ContingencyBudget__c = ba.TotalComputedCost__c;
+					}
+					else if (PLReportCategory == 'Labor') {
+						snapshot.LaborBudget__c = ba.TotalComputedCost__c;
+					}
+					else if (PLReportCategory == 'Fringe') {
+						snapshot.FringeBudget__c = ba.TotalComputedCost__c;
+					}
+					else if (PLReportCategory == 'Overhead') {
+						snapshot.OverheadBudget__c = ba.TotalComputedCost__c;
+					}
+				}
+			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}
+		return snapshot;
+	}
+
+	/* Total number of hours in current forecast budget (by Budget Assignment: ExpenditureResourceType=Lab; 
+	   use Quantity; filter where Budget Header: Status  = Forecast)
+	*/
+	@TestVisible private ProjectSnapshot__c getForecastBudgetHoursInformation(ProjectSnapshot__c snapshot, 
+		List<Id> projectIds) {
+		try {
+			List<AggregateResult> results = 
+				[SELECT SUM(Quantity__c) Hours 
+				 FROM BudgetAssignment__c
+				 WHERE BudgetResource__r.ExpenditureResourceType__c = 'LAB'
+				 AND (BudgetResource__r.BudgetHeader__r.Status__c = 'Forecast' 
+				 OR BudgetResource__r.BudgetHeader__r.Status__c = 'Approved') 
+				 AND ProjectTask__r.pse__Project__r.Id IN : projectIds];
+
+			for(AggregateResult ar: results)
+			{
+				if(ar.get('Hours') != null)
+					snapshot.HoursForecast__c = (Decimal)ar.get('Hours');
+					snapshot.HoursBudget__c = (Decimal)ar.get('Hours');
+			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}
+		return snapshot;
+	}
+
+	@TestVisible private ProjectSnapshot__c getPreviousFMForecastInformation(ProjectSnapshot__c snapshot) 
+	{
+		String prevFiscalMonth = snapshot.SnapshotPreviousFiscalMonth__c;
+		List<ProjectSnapshot__c> projectSnapshots = getPreviousFMForecastInformation(prevFiscalMonth);
+		if (projectSnapshots != null && projectSnapshots.size() > 0) {
+			ProjectSnapshot__c snapshotPrevFM = projectSnapshots[0]; //Should there be multi Snapshots ?
+			snapshot.GrossRevenueForecastPrevME__c = snapshotPrevFM.GrossRevenueForecast__c;
+			snapshot.CostsODCEXPSForecastPrevME__c = snapshotPrevFM.CostsODCEXPSForecast__c;
+			snapshot.CostsODCSUBSForecastPrevME__c = snapshotPrevFM.CostsODCSUBSForecast__c;
+			snapshot.ContingencyForecastPrevME__c = snapshotPrevFM.ContingencyForecast__c;
+			snapshot.LaborForecastPrevME__c = snapshotPrevFM.LaborForecast__c;
+			snapshot.FringeForecastPrevME__c = snapshotPrevFM.FringeForecast__c;
+			snapshot.OverheadForecastPrevME__c = snapshotPrevFM.OverheadForecast__c;
+			snapshot.HoursForecastPrevME__c = snapshotPrevFM.HoursForecast__c;
+			snapshot.ProjectEndDatePrevME__c = snapshotPrevFM.ProjectEndDate__c;
+		}
+		return snapshot;
+	}
+
+	private List<ProjectSnapshot__c> getPreviousFMForecastInformation(String prevFiscalMonth) 
+	{	
+		List<ProjectSnapshot__c> projSnapshots;
+		try {
+			projSnapshots = [SELECT Id, GrossRevenueForecast__c, 
+				CostsODCEXPSForecast__c, CostsODCSUBSForecast__c, ContingencyForecast__c,
+				LaborForecast__c, FringeForecast__c, OverheadForecast__c, HoursForecast__c, 
+				ProjectEndDate__c
+				FROM ProjectSnapshot__c 
+				WHERE SnapshotType__c = 'Auto' 
+				AND SnapshotFiscalMonth__c =: prevFiscalMonth
+				LIMIT 1]; // Which projSnapshot to SELECT if more than 1 ?
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}
+		return projSnapshots;
+	}
 	
 	private FinancialMetrics getDraftBudgetHeaderInformation(list<Id> projectIds)
 	{
 		FinancialMetrics metrics = new FinancialMetrics();
-		for(AggregateResult ar : [SELECT SUM(TotalRevenue__c) totalRevenue
-											, SUM(TotalCost__c) totalCost
-											, SUM(TotalNonLabor__c) totalNonLabor
-											, SUM(TotalLaborAmount__c) totalLabor
-											, sum(TotalContingencyAmount__c) totalContingency
-									FROM BudgetHeader__c
-									WHERE Project__c in :projectIds
-											and Status__c = 'Estimate'])
-		{
-			metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
-			metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
-			metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
-			metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));	
-			metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));	
+		try {
+			for(AggregateResult ar : [SELECT SUM(TotalRevenue__c) totalRevenue
+												, SUM(TotalCost__c) totalCost
+												, SUM(TotalNonLabor__c) totalNonLabor
+												, SUM(TotalLaborAmount__c) totalLabor
+												, SUM(TotalContingencyAmount__c) totalContingency
+										FROM BudgetHeader__c
+										WHERE Project__c IN :projectIds
+												AND Status__c = 'Estimate'])
+			{
+				metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
+				metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
+				metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
+				metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));	
+				metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));	
+					
+				metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
+				metrics.NetServiceRevenue = metrics.TotalRevenue - metrics.TotalNonLabor;
 				
-			metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
-			metrics.NetServiceRevenue = metrics.TotalRevenue - metrics.TotalNonLabor;
-			
-			if(metrics.TotalRevenue != 0)
-				metrics.NMGR = ((metrics.TotalRevenue - metrics.TotalCost)/metrics.TotalRevenue) * 100;
-			if(metrics.TotalRevenue - metrics.TotalNonLabor != 0)	
-				metrics.NMNSR = ((metrics.TotalRevenue - metrics.TotalCost)/(metrics.TotalRevenue - metrics.TotalNonLabor)) * 100;
-			if(metrics.TotalLabor != 0)
-				metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+				if(metrics.TotalRevenue != 0)
+					metrics.NMGR = ((metrics.TotalRevenue - metrics.TotalCost)/metrics.TotalRevenue) * 100;
+				if(metrics.TotalRevenue - metrics.TotalNonLabor != 0)	
+					metrics.NMNSR = ((metrics.TotalRevenue - metrics.TotalCost)/(metrics.TotalRevenue - metrics.TotalNonLabor)) * 100;
+				if(metrics.TotalLabor != 0)
+					metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+			}
 		}
-				
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}	
 		return metrics;
 	}	
 	
+	/* "To find beginning of fiscal month AND fiscal year for MTD AND YTD calculations:
+		Query Time Period object WHERE Start Date <= Today (or any input date) AND End Date >= Today
+		AND WHERE (Type = 'Month' OR Type = 'Year').
+		Take the Start Date FROM those records to become start date for current month or year, respectively.
+		These become your time period start date for data calculations."
+	*/
 	private FinancialMetrics getProjectActualFinancials(list<Id> projectIds, Date asOfDate)
 	{
 		FinancialMetrics metrics = new FinancialMetrics();
 		list<AggregateResult> results = new list<AggregateResult>();
-		String query = 'select sum(Amount__c) totalRevenue from Revenue__c where ProjectNumber__c in :projectIds';
+		String query = 'SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds';
 		if(asOfDate != null)
-			query += ' and GLDate__c >= :asOfDate and GLDate__c <= TODAY';
-		results = database.query(query); 
+			query += ' AND GLDate__c >= :asOfDate AND GLDate__c <= TODAY';
 		
-		for(AggregateResult ar: results)
-		{
-			if(ar.get('totalRevenue') != null)
-				metrics.TotalRevenue = (Decimal)ar.get('totalRevenue');
-		}
-		
-		query = 'select SUM(ProjectRawCost__c) totalCost FROM CostDistLine__c WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id in :projectIds';																						
-		if(asOfDate != null)
-			query += ' and GLDate__c >= :asOfDate and GLDate__c <= TODAY';
-		results = database.query(query);
-		for(AggregateResult ar: results)
-		{
-			if(ar.get('totalCost') != null)
-				metrics.TotalCost = (Decimal)ar.get('totalCost');
-				metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
-		}
+		try {
+			results = database.query(query); 
+			
+			for(AggregateResult ar: results)
+			{
+				if(ar.get('totalRevenue') != null)
+					metrics.TotalRevenue = (Decimal)ar.get('totalRevenue');
+			}
+			
+			query = 'SELECT SUM(ProjectRawCost__c) totalCost FROM CostDistLine__c WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds';																						
+			if(asOfDate != null)
+				query += ' AND GLDate__c >= :asOfDate AND GLDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar: results)
+			{
+				if(ar.get('totalCost') != null)
+					metrics.TotalCost = (Decimal)ar.get('totalCost');
+					metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
+			}
 
-		query = 'select SUM(ProjectRawCost__c) totalLabor FROM CostDistLine__c WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id in :projectIds and ExpenditureItem__r.ExpenditureType__c like  \'LAB% \'';																						
-		if(asOfDate != null)
-			query += ' and GLDate__c >= :asOfDate and GLDate__c <= TODAY';
-		results = database.query(query);
-		for(AggregateResult ar: results)
-		{
-			if(ar.get('totalLabor') != null)
-				metrics.TotalLabor = (Decimal)ar.get('totalLabor');
+			query = 'SELECT SUM(ProjectRawCost__c) totalLabor FROM CostDistLine__c WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND ExpenditureItem__r.ExpenditureType__c like  \'LAB% \'';																						
+			if(asOfDate != null)
+				query += ' AND GLDate__c >= :asOfDate AND GLDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar: results)
+			{
+				if(ar.get('totalLabor') != null)
+					metrics.TotalLabor = (Decimal)ar.get('totalLabor');
+			}
+			
+			query = 'SELECT SUM(ProjectRawCost__c) totalNonLabor FROM CostDistLine__c WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND (NOT ExpenditureItem__r.ExpenditureType__c like  \'LAB% \')';																						
+			if(asOfDate != null)
+				query += ' AND GLDate__c >= :asOfDate AND GLDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar: results)
+			{
+				if(ar.get('totalNonLabor') != null)
+					metrics.TotalNonLabor = (Decimal)ar.get('totalNonLabor');
+			}	
+
+			//CostsODCEXPS
+			query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) CostsODCEXPS FROM CostDistLine__c'+
+				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
+				' ExpenditureItem__r.PLReportCategory__c = \'ODC - Exps\' ';																						
+			if(asOfDate != null)
+				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
+					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar: results)
+			{
+				if(ar.get('CostsODCEXPS') != null)
+					metrics.CostsODCEXPS = (Decimal)ar.get('CostsODCEXPS');
+			}
+
+			//CostsODCSUBS
+			query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) CostsODCSUBS FROM CostDistLine__c'+
+				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
+				' ExpenditureItem__r.PLReportCategory__c = \'ODC - Subs\' ';																						
+			if(asOfDate != null)
+				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
+					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar: results)
+			{
+				if(ar.get('CostsODCSUBS') != null)
+					metrics.CostsODCSUBS = (Decimal)ar.get('CostsODCSUBS');
+			}
+
+			//Labor
+			query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) Labor FROM CostDistLine__c'+
+				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
+				' ExpenditureItem__r.PLReportCategory__c = \'Labor\' AND'+
+				' ExpenditureItem__r.PLReportCategory__c != \'Fringe\' AND'+
+				' ExpenditureItem__r.PLReportCategory__c != \'Overhead\' ';																					
+			if(asOfDate != null)
+				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
+					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar: results)
+			{
+				if(ar.get('Labor') != null)
+					metrics.Labor = (Decimal)ar.get('Labor');
+			}
+			
+			//Fringe
+			query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) Fringe FROM CostDistLine__c'+
+				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
+				' ExpenditureItem__r.PLReportCategory__c = \'Fringe\' ';																					
+			if(asOfDate != null)
+				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
+					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar: results)
+			{
+				if(ar.get('Fringe') != null)
+					metrics.Fringe = (Decimal)ar.get('Fringe');
+			}
+
+			//Overhead
+			query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) Overhead FROM CostDistLine__c'+
+				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
+				' ExpenditureItem__r.PLReportCategory__c = \'Overhead\' ';																					
+			if(asOfDate != null)
+				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
+					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar: results)
+			{
+				if(ar.get('Overhead') != null)
+					metrics.Overhead = (Decimal)ar.get('Overhead');
+			}
+
+			//Hours
+			query = 'SELECT SUM(ExpenditureItem__r.Quantity__c) Hours FROM CostDistLine__c'+
+				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds';																
+			if(asOfDate != null)
+				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
+					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar: results)
+			{
+				if(ar.get('Hours') != null)
+					metrics.Hours = (Decimal)ar.get('Hours');
+			}
+
+			metrics.NetServiceRevenue = getNetService(metrics.TotalRevenue, metrics.TotalNonLabor);	
+			metrics.NMGR = getNMGR(metrics.NetMargin, metrics.TotalRevenue);
+			metrics.NMNSR = getNMNSRC(metrics.NetMargin, metrics.NetServiceRevenue);
+			metrics.LaborMult = getLaborMult(metrics.TotalRevenue, metrics.TotalNonLabor, metrics.TotalLabor);
+			metrics.SurplusMargin = getSurplusMargin();
+			metrics.LostMargin = getLostMargin();
 		}
-		
-		query = 'select SUM(ProjectRawCost__c) totalNonLabor FROM CostDistLine__c WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id in :projectIds  and (NOT ExpenditureItem__r.ExpenditureType__c like  \'LAB% \')';																						
-		if(asOfDate != null)
-			query += ' and GLDate__c >= :asOfDate and GLDate__c <= TODAY';
-		results = database.query(query);
-		for(AggregateResult ar: results)
-		{
-			if(ar.get('totalNonLabor') != null)
-				metrics.TotalNonLabor = (Decimal)ar.get('totalNonLabor');
-		}				
-		
-		metrics.NetServiceRevenue = getNetService(metrics.TotalRevenue, metrics.TotalNonLabor);	
-		metrics.NMGR = getNMGR(metrics.NetMargin, metrics.TotalRevenue);
-		metrics.NMNSR = getNMNSRC(metrics.NetMargin, metrics.NetServiceRevenue);
-		metrics.LaborMult = getLaborMult(metrics.TotalRevenue, metrics.TotalNonLabor, metrics.TotalLabor);
-		metrics.SurplusMargin = getSurplusMargin();
-		metrics.LostMargin = getLostMargin();
-		
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}
 		return metrics;		
 	}
 	
@@ -768,88 +1254,93 @@ public class ECO_Service_ProjectSnapshots {
 		Date endDate;
 		
 		BillingMetrics billingMetrics = new BillingMetrics();
-		for(AggregateResult ar: [select SUM(InvoiceAmount__c) totalBilled, SUM(RetentionAmount__c) totalRetention
-						from Billing__c where ProjectNumber__c in :projectIds])
-		{
-			if(ar.get('totalBilled') != null)
+		try {
+			for(AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled, SUM(RetentionAmount__c) totalRetention
+							FROM Billing__c WHERE ProjectNumber__c IN :projectIds])
 			{
-				if((Decimal)ar.get('totalBilled') != null)
-					billingMetrics.BilledAR = (Decimal)ar.get('totalBilled');	
-				billingMetrics.Retention = 	(Decimal)ar.get('totalRetention');	
-				billingMetrics.TotalUnbilled = totalRevenue - billingMetrics.BilledAR;
-				if((billingMetrics.TotalUnbilled) < 0)
-					billingMetrics.BIEE = 	totalRevenue - billingMetrics.BilledAR;
-			}
-		}	
-				
-		startDate = Date.today();
-		endDate = Date.today().addDays(-30);
-		for(AggregateResult ar: [select SUM(InvoiceAmount__c) totalBilled0to30 
-						from Billing__c where ProjectNumber__c in :projectIds and
-						InvoiceDate__c <= :startDate and InvoiceDate__c >= :endDate])
-		{
-			if(ar.get('totalBilled0to30') != null)
+				if(ar.get('totalBilled') != null)
+				{
+					if((Decimal)ar.get('totalBilled') != null)
+						billingMetrics.BilledAR = (Decimal)ar.get('totalBilled');	
+					billingMetrics.Retention = 	(Decimal)ar.get('totalRetention');	
+					billingMetrics.TotalUnbilled = totalRevenue - billingMetrics.BilledAR;
+					if((billingMetrics.TotalUnbilled) < 0)
+						billingMetrics.BIEE = 	totalRevenue - billingMetrics.BilledAR;
+				}
+			}	
+					
+			startDate = Date.today();
+			endDate = Date.today().addDays(-30);
+			for(AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled0to30 
+							FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
+							InvoiceDate__c <= :startDate AND InvoiceDate__c >= :endDate])
 			{
-				billingMetrics.Billed0to30 = (Decimal)ar.get('totalBilled0to30');
+				if(ar.get('totalBilled0to30') != null)
+				{
+					billingMetrics.Billed0to30 = (Decimal)ar.get('totalBilled0to30');
+				}
 			}
-		}
-		
-		startDate = Date.today().addDays(-31);
-		endDate = Date.today().addDays(-60);
-		for(AggregateResult ar: [select SUM(InvoiceAmount__c) totalBilled31to60 
-						from Billing__c where ProjectNumber__c in :projectIds and
-						InvoiceDate__c <= :startDate and InvoiceDate__c >= :endDate])
-		{
-			if(ar.get('totalBilled31to60') != null)
-				billingMetrics.Billed31to60 = (Decimal)ar.get('totalBilled31to60');
-		}
-
-		startDate = Date.today().addDays(-60);
-		for(AggregateResult ar: [select SUM(InvoiceAmount__c) totalBilled60plus 
-						from Billing__c where ProjectNumber__c in :projectIds and
-						InvoiceDate__c <= :startDate])
-		{
-			if(ar.get('totalBilled60plus') != null)
-				billingMetrics.Billed60Plus = (Decimal)ar.get('totalBilled60plus');
-		}
-		
-		startDate = Date.today().addDays(-90);
-		for(AggregateResult ar: [select SUM(InvoiceAmount__c) totalBilled90plus 
-						from Billing__c where ProjectNumber__c in :projectIds and
-						InvoiceDate__c <= :startDate])
-		{
-			if(ar.get('totalBilled90plus') != null)
-				billingMetrics.Billed90Plus = (Decimal)ar.get('totalBilled90plus');
-		}		
 			
-		startDate = Date.today().addDays(-60);
-		for(AggregateResult ar:[select sum(Amount__c) totalRevenue from Revenue__c where ProjectNumber__c in :projectIds 
-												and  GLDate__c < :startDate])
-		{
-			if((Decimal)ar.get('totalRevenue') != null)
-				billingMetrics.Unbilled60Plus = (Decimal)ar.get('totalRevenue') - billingMetrics.BilledAR;
-			else
-				billingMetrics.Unbilled60Plus = 0 - billingMetrics.BilledAR;
-		}					
+			startDate = Date.today().addDays(-31);
+			endDate = Date.today().addDays(-60);
+			for(AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled31to60 
+							FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
+							InvoiceDate__c <= :startDate AND InvoiceDate__c >= :endDate])
+			{
+				if(ar.get('totalBilled31to60') != null)
+					billingMetrics.Billed31to60 = (Decimal)ar.get('totalBilled31to60');
+			}
 
-		startDate = Date.today().addDays(-30);
-		for(AggregateResult ar:[select sum(Amount__c) totalRevenue from Revenue__c where ProjectNumber__c in :projectIds 
-												and  GLDate__c < :startDate])
-		{
-			if((Decimal)ar.get('totalRevenue') != null)
-				billingMetrics.Unbilled31to60 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled60Plus);
-			else
-				billingMetrics.Unbilled31to60 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled60Plus);
-		}	
-		
-		startDate = Date.today().addDays(0);
-		for(AggregateResult ar:[select sum(Amount__c) totalRevenue from Revenue__c where ProjectNumber__c in :projectIds 
-												and  GLDate__c < :startDate])
-		{
-			if((Decimal)ar.get('totalRevenue') != null)	
-				billingMetrics.Unbilled0to30 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled60Plus + billingMetrics.Unbilled31to60);
-			else
-				billingMetrics.Unbilled0to30 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled60Plus + billingMetrics.Unbilled31to60);
+			startDate = Date.today().addDays(-60);
+			for(AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled60plus 
+							FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
+							InvoiceDate__c <= :startDate])
+			{
+				if(ar.get('totalBilled60plus') != null)
+					billingMetrics.Billed60Plus = (Decimal)ar.get('totalBilled60plus');
+			}
+			
+			startDate = Date.today().addDays(-90);
+			for(AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled90plus 
+							FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
+							InvoiceDate__c <= :startDate])
+			{
+				if(ar.get('totalBilled90plus') != null)
+					billingMetrics.Billed90Plus = (Decimal)ar.get('totalBilled90plus');
+			}		
+				
+			startDate = Date.today().addDays(-60);
+			for(AggregateResult ar:[SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds 
+													AND GLDate__c < :startDate])
+			{
+				if((Decimal)ar.get('totalRevenue') != null)
+					billingMetrics.Unbilled60Plus = (Decimal)ar.get('totalRevenue') - billingMetrics.BilledAR;
+				else
+					billingMetrics.Unbilled60Plus = 0 - billingMetrics.BilledAR;
+			}					
+
+			startDate = Date.today().addDays(-30);
+			for(AggregateResult ar:[SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds 
+													AND GLDate__c < :startDate])
+			{
+				if((Decimal)ar.get('totalRevenue') != null)
+					billingMetrics.Unbilled31to60 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled60Plus);
+				else
+					billingMetrics.Unbilled31to60 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled60Plus);
+			}	
+			
+			startDate = Date.today().addDays(0);
+			for(AggregateResult ar:[SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds 
+													AND GLDate__c < :startDate])
+			{
+				if((Decimal)ar.get('totalRevenue') != null)	
+					billingMetrics.Unbilled0to30 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled60Plus + billingMetrics.Unbilled31to60);
+				else
+					billingMetrics.Unbilled0to30 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled60Plus + billingMetrics.Unbilled31to60);
+			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
 		}
 		return billingMetrics;
 	}

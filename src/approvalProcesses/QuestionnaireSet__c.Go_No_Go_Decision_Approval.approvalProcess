@@ -5,6 +5,26 @@
     <allowedSubmitters>
         <type>owner</type>
     </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>Admin</submitter>
+        <type>roleSubordinates</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>Americas</submitter>
+        <type>roleSubordinates</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>APAC</submitter>
+        <type>roleSubordinates</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>EMEA</submitter>
+        <type>roleSubordinates</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <submitter>Worldwide</submitter>
+        <type>roleSubordinates</type>
+    </allowedSubmitters>
     <approvalPageFields>
         <field>Project__c</field>
         <field>ProjectLongName__c</field>
@@ -17,19 +37,15 @@
         <allowDelegate>true</allowDelegate>
         <assignedApprover>
             <approver>
-                <name>PnLManager__c</name>
+                <name>ProjectApprover__c</name>
                 <type>relatedUserField</type>
             </approver>
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
         </assignedApprover>
-        <entryCriteria>
-            <formula>ISNULL(CreatedDate )</formula>
-        </entryCriteria>
-        <ifCriteriaNotMet>ApproveRecord</ifCriteriaNotMet>
-        <label>PnL Manager</label>
-        <name>PnLManager</name>
+        <label>Project Approver</label>
+        <name>ProjectApprover</name>
     </approvalStep>
-    <emailTemplate>EcoSystem_Templates/EcoTestApproval</emailTemplate>
+    <emailTemplate>EcoSystem_Templates/Go_No_Go_ApprovalSubmission</emailTemplate>
     <enableMobileDeviceAccess>true</enableMobileDeviceAccess>
     <finalApprovalActions>
         <action>
@@ -59,7 +75,7 @@
     <finalRejectionRecordLock>false</finalRejectionRecordLock>
     <initialSubmissionActions>
         <action>
-            <name>EcoApproval_Set_Status_to_Pending</name>
+            <name>EcoApproval_Set_Status_to_Submitted</name>
             <type>FieldUpdate</type>
         </action>
     </initialSubmissionActions>

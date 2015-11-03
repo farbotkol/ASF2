@@ -698,18 +698,41 @@ public without sharing class ECO_Service_PurchaseOrders{
 
 	public static List<POStatus__c> GetPurchaseOrderStatuses(Id sPurchaseOrderId){
 		
-		List<POStatus__c> lPOStatuses = new List<POStatus__c>([SELECT Id,
+		/*List<POStatus__c> lPOStatuses = new List<POStatus__c>([SELECT Id,
 																		Allocated__c,
 																		AP_Invoice__c,
 																		APPaidDate__c,
 																		APTotalAmount__c,
 																		POHeader__c,
 																		Remaining__c,
-																		TotalAmount__c																		
+																		TotalAmount__c,
+                                                               			APInvoiceNumber__c
 																FROM POStatus__c
 																WHERE POHeader__c = :sPurchaseOrderId]);
+        
 
-		return lPOStatuses;
+		return lPOStatuses;*/
+        AggregateResult[] groupedResults  = [SELECT APInvoiceNumber__c, SUM(Allocated__c) Allocated, MAX(APPaidDate__c) APPaidDate, 
+                                     SUM(APTotalAmount__c) APTotalAmount, SUM(Remaining__c) Remaining, 
+                                     SUM(TotalAmount__c) TotalAmount
+									FROM POStatus__c
+                                    WHERE POHeader__c = :sPurchaseOrderId
+									GROUP BY APInvoiceNumber__c];
+        System.debug('groupedResults:' + groupedResults);
+        List<POStatus__c> poStatuses = new List<POStatus__c>();
+        for (AggregateResult ar : groupedResults) {
+            POStatus__c status = new POStatus__c();
+            status.APInvoiceNumber__c = (String)ar.get('APInvoiceNumber__c');
+            status.Allocated__c = (Decimal)ar.get('Allocated');
+            status.APPaidDate__c = (Date)ar.get('APPaidDate');
+            status.APTotalAmount__c = (Decimal)ar.get('APTotalAmount');
+            status.Remaining__c = (Decimal)ar.get('Remaining');
+            status.TotalAmount__c = (Decimal)ar.get('TotalAmount');
+            status.POHeader__c = sPurchaseOrderId;
+            poStatuses.add(status);    
+		}
+        
+        return poStatuses;
 	}
 
 
@@ -932,5 +955,24 @@ public without sharing class ECO_Service_PurchaseOrders{
     	public String PO_NUMBER {get;set;}
     	public String PO_HEADER_ID {get;set;}
     }
-
+    
+    public static void setPurchaseOrderForPurchaseOrderStatuses(List<POStatus__c> newPOStatuses) {
+        Set<String> poNumbers = new Set<String>();
+        Map<String, Id> poNumberToSFDCPOIdMap = new Map<String, Id>();
+        
+        for(POStatus__c poStatus : newPOStatuses) {
+            poNumbers.add(poStatus.PONumber__c);
+        }
+        
+        List<POHeader__c> purchaseOrders = [SELECT Id, Name FROM POHeader__c WHERE Name in : poNumbers];
+        for(POHeader__c po : purchaseOrders) {
+        	poNumberToSFDCPOIdMap.put(po.Name, po.Id);	    
+        }
+        
+        for(POStatus__c poStatus : newPOStatuses) {
+            if((poStatus.PONumber__c != Null) && (poNumberToSFDCPOIdMap.get(poStatus.PONumber__c) != Null)) {
+            	poStatus.POHeader__c = poNumberToSFDCPOIdMap.get(poStatus.PONumber__c);
+            }           
+        }       
+    }
 }

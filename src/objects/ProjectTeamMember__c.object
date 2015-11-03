@@ -110,6 +110,24 @@
         <label>TeamMemberFlyout</label>
     </fieldSets>
     <fields>
+        <fullName>AccessLevel__c</fullName>
+        <externalId>false</externalId>
+        <label>Access Level</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Read</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Edit</fullName>
+                <default>true</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>Active__c</fullName>
         <externalId>false</externalId>
         <formula>IF(EndDate__c &lt; TODAY(), false, true)</formula>
@@ -144,20 +162,24 @@
     </fields>
     <fields>
         <fullName>Contact__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
+        <deleteConstraint>Restrict</deleteConstraint>
         <description>Record Type must be PSA_Resource</description>
         <externalId>false</externalId>
         <inlineHelpText>Record Type must be PSA_Resource</inlineHelpText>
         <label>Name</label>
         <lookupFilter>
-            <active>true</active>
-            <errorMessage>Record Type must be PSA_Resource</errorMessage>
+            <active>false</active>
             <filterItems>
                 <field>Contact.RecordType.DeveloperName</field>
                 <operation>equals</operation>
                 <value>PSA_Resource</value>
             </filterItems>
-            <isOptional>false</isOptional>
+            <filterItems>
+                <field>Contact.pse__Salesforce_User__c</field>
+                <operation>notEqual</operation>
+                <value></value>
+            </filterItems>
+            <isOptional>true</isOptional>
         </lookupFilter>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Project Team Members</relationshipLabel>
@@ -257,7 +279,9 @@
     <fields>
         <fullName>NotifyChange__c</fullName>
         <defaultValue>false</defaultValue>
+        <description>Checked via a trigger when the current project manager is no longer an active employee. User for the PM and Project approver notifications</description>
         <externalId>false</externalId>
+        <inlineHelpText>Checked via a trigger when the current project manager is no longer an active employee. User for the PM and Project approver notifications</inlineHelpText>
         <label>Notify Change</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -454,6 +478,17 @@ S = Successful</inlineHelpText>
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>ProjectLink__c</fullName>
+        <externalId>false</externalId>
+        <formula>LEFT($Api.Partner_Server_URL_260, FIND( &apos;/services&apos;, $Api.Partner_Server_URL_260))&amp;Project__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Link</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>ProjectLongName__c</fullName>
         <externalId>false</externalId>
         <formula>Project__r.ProjectLongName__c</formula>
@@ -493,6 +528,18 @@ S = Successful</inlineHelpText>
         <referenceTo>ProjectRole__c</referenceTo>
         <relationshipLabel>Project Team Members</relationshipLabel>
         <relationshipName>ProjectTeamMembersRole</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Project_P_L_Manager__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>P&amp;L Manager of the associated Project</description>
+        <externalId>false</externalId>
+        <label>Project P&amp;L Manager</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Team_Members</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
@@ -569,6 +616,29 @@ S = Successful</inlineHelpText>
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>Status__c</fullName>
+        <description>Status of the Approval Process to approve a non delegated person for key role.</description>
+        <externalId>false</externalId>
+        <label>Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Pending</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>TeamMemberName__c</fullName>
         <externalId>false</externalId>
         <formula>Contact__r.FirstName + &quot; &quot; +  Contact__r.LastName</formula>
@@ -592,10 +662,10 @@ S = Successful</inlineHelpText>
     <fields>
         <fullName>User__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
-        <description>User must be active</description>
+        <description>Field needs to be decommissioned</description>
         <externalId>false</externalId>
-        <inlineHelpText>User must be active</inlineHelpText>
-        <label>User</label>
+        <inlineHelpText>Field needs to be decommissioned</inlineHelpText>
+        <label>xxUser</label>
         <lookupFilter>
             <active>true</active>
             <errorMessage>User must be active</errorMessage>
@@ -614,6 +684,18 @@ S = Successful</inlineHelpText>
         <type>Lookup</type>
     </fields>
     <label>Project Team Member</label>
+    <listViews>
+        <fullName>Team_Members_List</fullName>
+        <columns>Contact__c</columns>
+        <columns>ProjectRole__c</columns>
+        <columns>ProjectRoleTitle__c</columns>
+        <columns>StartDate__c</columns>
+        <columns>EndDate__c</columns>
+        <columns>Name__c</columns>
+        <filterScope>Everything</filterScope>
+        <label>Team Members List</label>
+        <language>en_US</language>
+    </listViews>
     <nameField>
         <label>Project Team Member</label>
         <type>Text</type>
@@ -623,6 +705,17 @@ S = Successful</inlineHelpText>
         <fullName>KeyMember</fullName>
         <active>true</active>
         <label>Key Member</label>
+        <picklistValues>
+            <picklist>AccessLevel__c</picklist>
+            <values>
+                <fullName>Edit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Read</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
         <picklistValues>
             <picklist>OracleSyncStatus__c</picklist>
             <values>
@@ -677,11 +770,37 @@ S = Successful</inlineHelpText>
                 <default>false</default>
             </values>
         </picklistValues>
+        <picklistValues>
+            <picklist>Status__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pending</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
     </recordTypes>
     <recordTypes>
         <fullName>TeamMember</fullName>
         <active>true</active>
         <label>Team Member</label>
+        <picklistValues>
+            <picklist>AccessLevel__c</picklist>
+            <values>
+                <fullName>Edit</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Read</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
         <picklistValues>
             <picklist>OracleSyncStatus__c</picklist>
             <values>
@@ -716,6 +835,21 @@ S = Successful</inlineHelpText>
                 <default>false</default>
             </values>
         </picklistValues>
+        <picklistValues>
+            <picklist>Status__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Pending</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
     </recordTypes>
     <searchLayouts>
         <lookupDialogsAdditionalFields>Contact__c</lookupDialogsAdditionalFields>
@@ -731,4 +865,16 @@ S = Successful</inlineHelpText>
         <errorConditionFormula>AND(NOT(ISBLANK(StartDate__c)),StartDate__c &lt; Contact__r.pse__Salesforce_User__r.Original_Hire_Date__c)</errorConditionFormula>
         <errorMessage>Key member start date must be greater than or equal to the user&apos;s hire date.</errorMessage>
     </validationRules>
+    <webLinks>
+        <fullName>Manage_Project_Team</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Manage Project Team</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/ECO_Stakeholders?scontrolCaching=1&amp;id={!pse__Proj__c.Id}</url>
+    </webLinks>
 </CustomObject>

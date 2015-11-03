@@ -1,4 +1,4 @@
-<apex:page tabstyle="pse__Proj__c" standardController="pse__Proj__c" extensions="ECO_ProjectChangeManagerController" cache="false">
+<apex:page tabstyle="pse__Proj__c" standardController="pse__Proj__c" extensions="ECO_ProjectChangeManagerController" cache="false" action="{!init}">
     <style>
         .halfWidthWrapper {
             width:30%;
@@ -17,7 +17,7 @@
             color: #4a4a56;  /*Standrd Salesforce Color*/
         }       
         
-        .customHelpText{
+       /* .customHelpText{
             padding:7px;
             border:1px solid #85B3CE;
             min-height:30px;
@@ -33,7 +33,26 @@
             display:block;
             color:#;
             max-width:95%;
-        }    
+        }  */
+
+        /* CUSTOM HELP / GUIDANCE TEXT BOX */
+        .customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 30px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        }   
         
         .changeManagerTable
         {
@@ -61,7 +80,7 @@
                 
     </style>
     <apex:form >    
-    <apex:sectionHeader title="Project Change Management" subtitle="{!pse__Proj__c.Name + "(" + pse__Proj__c.EcoSystemReferenceNumber__c + ")"}"/>
+    <apex:sectionHeader title="Project Change Management" subtitle="{!pse__Proj__c.Name + "(" + pse__Proj__c.ProjectNumber__c + ")"}"/>
  
         <apex:pageBlock title="Project Details">                                                                        
             <apex:pageBlockButtons location="top">
@@ -117,6 +136,7 @@
                     </table>
                     <br/>
                     <apex:outputLabel styleclass="dmeOutput" value="Project Plan Change Status"/>
+                    <c:ECO_HelpIcon helpText="For any sections identified as having changes pending approval, complete a new change request to document the basis or reason for the change and obtain approval."/>
                     <table class="changeManagerTable">
                         <tr>                        
                             <td>
@@ -165,10 +185,10 @@
                                 <apex:outputLabel styleclass="dmeOutput" value="Safety Health & Environment"/>
                             </td>                       
                             <td>
-                                <apex:outputPanel rendered="{!NOT(IsChangedAgreements)}">
+                                <apex:outputPanel rendered="{!NOT(IsChangedAgreements) && NOT(IsChangedFunding)}">
                                     <apex:outputField value="{!pse__Proj__c.ChangeManagerNoChanges__c}" />
                                 </apex:outputPanel>
-                                <apex:outputPanel rendered="{!IsChangedAgreements}">
+                                <apex:outputPanel rendered="{!IsChangedAgreements || IsChangedFunding}">
                                     <apex:outputField value="{!pse__Proj__c.ChangeManagerChanges__c}" />
                                 </apex:outputPanel>
                                 <apex:outputLabel styleclass="dmeOutput" value="Agreements and Funding"/>

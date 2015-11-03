@@ -19,7 +19,7 @@ public class ECO_BillRateManagement {
 		laborCategoryToBillRatePeriodMap = new map<String, list<BillRatePeriod__c>>();
 		
 		agreementId = ApexPages.currentPage().getParameters().get('AgreementId');
-		agreement = [select Id, Name, FundingCurrencyCode__c, AgreementNumber__c from Agreement__c where Id = :agreementId];
+		agreement = [select Id, Name, ContractTitle__c, FundingCurrencyCode__c, AgreementNumber__c from Agreement__c where Id = :agreementId];
 		billRates = [select Id, Name, BillRatePeriod__c, LaborCategory__c, BillRate__c from BillRate__c where Agreement__c = :agreementId];
 		billRatePeriodMap = new map<Id,BillRatePeriod__c>([select Id, BillRateStart__c, BillRateEnd__c from BillRatePeriod__c where Agreement__c = :agreementId]);
 		//laborCategoryBillRateMap = new map<String, list<BillRate__c>>();

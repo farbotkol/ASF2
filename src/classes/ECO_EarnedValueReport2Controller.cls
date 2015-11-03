@@ -50,14 +50,14 @@ public with sharing class ECO_EarnedValueReport2Controller {
         Map<String, String> mapOfReportNameToItsCurrentSavedState = new Map<String, String>();
         
         List<EarnedValueHeader__c> listOfAllEVHsForThisProject = [        
-                                                                                                                                SELECT Id, 
-                                                                                                                                           Project__c, 
-                                                                                                                                           ReportName__c, 
-                                                                                                                                           Comments__c, 
-                                                                                                                                           SnapshotDate__c
-                                                                                                                                FROM EarnedValueHeader__c
-                                                                                                                                WHERE Project__c = :projectId
-                                                                                                                        ];
+                                                                SELECT Id, 
+                                                                           Project__c, 
+                                                                           ReportName__c, 
+                                                                           Comments__c, 
+                                                                           SnapshotDate__c
+                                                                FROM EarnedValueHeader__c
+                                                                WHERE Project__c = :projectId
+                                                        ];
         
         // Initialize the state to UNSAVED for every report                                                                             
         for (EarnedValueHeader__c eachEVH : listOfAllEVHsForThisProject) {
@@ -300,7 +300,7 @@ public with sharing class ECO_EarnedValueReport2Controller {
         
         public ECO_EarnedValueReport2Controller(ApexPages.StandardController stdController) {
                 projectId = stdController.getId();
-                project = [select Name, pse__Start_Date__c, pse__End_Date__c from pse__Proj__c where Id = :projectId];
+                project = [select Name, ProjectSectionHeaderName__c, pse__Start_Date__c, pse__End_Date__c, EVRulesGuidelines__c from pse__Proj__c where Id = :projectId];
         }
         
         

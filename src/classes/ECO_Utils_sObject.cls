@@ -90,4 +90,33 @@ public without sharing class ECO_Utils_sObject {
 
         return result;
     }
+
+    public static String saveResultReturnErrors(SObject sObj){
+
+        Database.SaveResult result = Database.update(sObj,false);
+        String e = '';
+        if (!result.isSuccess()) {
+            Database.Error[] errs = result.getErrors();
+        
+            for(Database.Error err: errs){
+                e += err.getMessage() + '<br/>';
+            }
+        }
+        return e;
+    }  
+        
+    public static String saveInsertReturnErrors(SObject sObj){
+
+        Database.SaveResult resultInsert = Database.insert(sObj,false);
+        
+        String eInsert = '';
+        
+        if (!resultInsert.isSuccess()) {
+            Database.Error[] errsInsert = resultInsert.getErrors();
+            for(Database.Error errInsert: errsInsert){
+                eInsert += errInsert.getMessage();
+            }
+        }
+        return eInsert;
+    }     
 }

@@ -23,7 +23,6 @@
     <tab>State_Province_Emirate__c</tab>
     <tab>Account_Plan_Contacts__c</tab>
     <tab>Practice_Area__c</tab>
-    <tab>BL_District_Forecast__c</tab>
     <tab>PR_Team_Employee__c</tab>
     <tab>PR_Office_Resp__c</tab>
     <tab>Business_Line__c</tab>
@@ -35,4 +34,6 @@
     <tab>CostDistLine__c</tab>
     <tab>EarnedValueHeader__c</tab>
     <tab>VendorSub__c</tab>
+    <tab>DashInsight</tab>
+    <tab>ChangeManager__c</tab>
 </CustomApplication>

@@ -1,3 +1,4 @@
+/* Author: Michael Lawrence */
 public with sharing class ECO_BudgetGridController2 {
 	
 	private class BudgetGridControllerException extends Exception {}
@@ -503,7 +504,7 @@ public with sharing class ECO_BudgetGridController2 {
 		//theBudgetHolder.versionMap.get(submitForApprovalId).Status__c = 'Submitted for Approved'; 
 		//doSaveAction();
 		
-		Id newChangeManagerId = ECO_ChangeManager_Service.createNewInternalChangeManagerFromBudget(submitForApprovalId, theProject.Id);
+		Id newChangeManagerId = ECO_Service_ChangeManager.createNewInternalChangeManagerFromBudget(submitForApprovalId, theProject.Id);
 		//theBudgetHolder.budgetHeaderChangeManagerMap.put(submitForApprovalId, newChangeManagerId);
 		refreshBudgetHolder();
 	}
@@ -513,7 +514,7 @@ public with sharing class ECO_BudgetGridController2 {
 		//theBudgetHolder.versionMap.get(submitForApprovalId).Status__c = 'Submitted for Approved'; 
 		//doSaveAction();
 		
-		Id newChangeManagerId = ECO_ChangeManager_Service.createNewExternalChangeManagerFromBudget(submitForApprovalId, theProject.Id);
+		Id newChangeManagerId = ECO_Service_ChangeManager.createNewExternalChangeManagerFromBudget(submitForApprovalId, theProject.Id);
 		//theBudgetHolder.budgetHeaderChangeManagerMap.put(submitForApprovalId, newChangeManagerId);
 		refreshBudgetHolder();
 		//PageReference changeManagerPage = new PageReference('/apex/ECO_ChangeManagerDetail?Id=' + newChangeManagerId);

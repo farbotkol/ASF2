@@ -17,6 +17,8 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 	public boolean BeginButtonDisabled {get; set;}
 	public boolean showGoNoGoButton {get; set;}
 	public Id navTargetQuestionnaireId {get;set;}
+    public Integer countMA {get;set;}
+    public Integer percentMA {get;set;}
 	public list<Agreement__c> agreementsWithDOACondtions {get; set;}
 
 	public ECO_RMASummaryController(ApexPages.StandardController oStandardController) {
@@ -189,8 +191,8 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 		
 		lNotifications = new List<Notification>();
 		validate();
-		
-
+		marketAssess();
+		System.debug('In controller percentMA:    '+percentMA+'   countMA:  '+countMA);
 
 	}
 	
@@ -220,7 +222,27 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 			
 		//	return null;
 		//}
+		//
+		/*system.debug( 'Approval submitted user = ' + theProject.ProjectApprover__r.pse__Salesforce_User__c );
+        
+		Boolean hasPermissionForApprovalProcess = ECO_Service_RecordAccess.getProjectRecordAccessForApprovalProcess ('Risk__c', theProject.Id);
 		
+        if (! hasPermissionForApprovalProcess)  
+        {   
+            system.debug( 'No Permission for approval process' );
+            
+			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'You do not have permission Permission for Approval Process');
+            ApexPages.addMessage(oPageMessage);            
+
+        	return null;
+        }*/
+
+		//return null;
+        // Above line is just for test purposes, will be taken out. BH
+        
+		// have to set the appover field on the RMA before submitting
+        oQuestionnaireSet.ProjectApprover__c = theProject.ProjectApprover__r.pse__Salesforce_User__c;
+
 		update oQuestionnaireSet;
 		
 		// Create an approval request for the account
@@ -268,8 +290,8 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 	{
 		if(theProject == null)
 		{
-			String query = 'SELECT Id, ProjectNumber__c, CarryingOutOrganization__c, CarryingOutOrganization__r.Region__c, CarryingOutOrganization__r.GeographyName__c, CarryingOutOrganization__r.BusinessLineName__c, AccountManager__c ';
-			//query += 'TotalMargin__c, TotalBidBudget__c, PrimaryEndClient__c, PrimaryBillingClient__c';
+			String query = 'SELECT Id, PrimaryEndClient__c, PrimaryBillingClient__c, ProjectOwningOrg__c, ProjectNumber__c, CarryingOutOrganization__c, CarryingOutOrganization__r.Region__c, CarryingOutOrganization__r.GeographyName__c, CarryingOutOrganization__r.BusinessLineName__c, AccountManager__c, ProjectApprover__r.pse__Salesforce_User__c ';
+			// query += 'TotalMargin__c, TotalBidBudget__c, PrimaryEndClient__c, PrimaryBillingClient__c';
 			for(Schema.FieldSetMember f : getCustomProjSetupFields()) 
 			{
 	            query += ', ' + f.getFieldPath();
@@ -352,7 +374,57 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 			}
 		}
 	}
-
+	
+    public void marketAssess(){
+        countMA = 0;
+        System.debug('lMarketAssessments.size():   '+lMarketAssessments.size());
+        if(lMarketAssessments.size()>0){
+            for(MarketAssessment__c oMA : lMarketAssessments){
+                if(oMa.DocumentedBusinessPlan__c == 'True' || oMA.DocumentedBusinessPlan__c == 'False')
+                    countMA++;
+                if(oMa.DocumentedKeyAccount__c == 'True' || oMa.DocumentedKeyAccount__c == 'False')
+                    countMA++;
+                if(oMa.StrongClientRelationship__c == 'True' || oMa.StrongClientRelationship__c == 'False')
+                    countMA++;
+                if(oMa.RecentProjectExperience__c == 'True' || oMa.RecentProjectExperience__c == 'False')
+                    countMA++;
+                if(oMa.RequiredTechnicalPersonnel__c == 'True' || oMa.RequiredTechnicalPersonnel__c == 'False')
+                    countMA++;
+                if(oMa.StrongPositiveWin__c == 'True' || oMa.StrongPositiveWin__c == 'False')
+                    countMA++;
+                if(oMa.AwareofOpportunity__c == 'True' || oMa.AwareofOpportunity__c == 'False')
+                    countMA++;
+                if(oMa.SufficientTimeandResources__c == 'True' || oMa.SufficientTimeandResources__c == 'False')
+                    countMA++;
+                if(oMa.Incumbent__c == 'True' || oMa.Incumbent__c == 'False')
+                    countMA++;
+                if(oMa.DecisionMaker__c == 'True' || oMa.DecisionMaker__c == 'False')
+                    countMA++;
+                if(oMa.DecisiontoAppoint__c == 'True' || oMa.DecisiontoAppoint__c == 'False')
+                    countMA++;
+                if(oMa.ExpertWitnessorLitigationSupport__c == 'True' || oMa.ExpertWitnessorLitigationSupport__c == 'False')
+                    countMA++;
+                if(oMa.JVinvolvement__c == 'True' || oMa.JVinvolvement__c == 'False')
+                    countMA++;
+                if(oMa.ProgramManagementServices__c == 'True' || oMa.ProgramManagementServices__c == 'False')
+                    countMA++;
+                if(oMa.RFPDevelopmentServices__c == 'True' || oMa.RFPDevelopmentServices__c == 'False')
+                    countMA++;
+                if(oMa.StaffAugmentationorembeddedworkforce__c == 'True' || oMa.StaffAugmentationorembeddedworkforce__c == 'False')
+                    countMA++;
+                if(oMa.Potentialconflictofinterestissues__c == 'True' || oMa.Potentialconflictofinterestissues__c == 'False')
+                    countMA++;
+                if(oMa.Potentialconflictofinterestissues__c == 'True' || oMa.Potentialconflictofinterestissues__c == 'False')
+                    countMA++;
+                
+                
+                percentMA = (countMA * 100) / 18;
+            }
+            
+        }
+        System.debug('In method...  countMA = '+countMA+'   percentMA='+percentMA);
+    }
+    
 	public PageReference SelectNewQuestionnaire()
 	{
 		system.debug(sSelectedQuestionnaireSet);
@@ -382,7 +454,8 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 	
 	public PageReference ReturnToProject()
 	{
-		PageReference oPR = new PageReference('/' + oQuestionnaireSet.Project__c);
+        System.debug('theProject.id:  '+ theProject.Id );
+        PageReference oPR = new PageReference('/' + oQuestionnaireSet.Project__c);
 		oPR.setRedirect(true);
 		return oPR;
 	}

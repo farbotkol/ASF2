@@ -157,6 +157,16 @@ HYPERLINK(&quot;https://imaging.aecomnet.com/viewer/?eid=&quot; + SUBSTITUTE(Ima
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>CostReportCategory__c</fullName>
+        <externalId>false</externalId>
+        <label>Cost Report Category</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>ExpenditureItemDate__c</fullName>
         <externalId>false</externalId>
         <label>Expenditure Item Date</label>
@@ -180,6 +190,26 @@ HYPERLINK(&quot;https://imaging.aecomnet.com/viewer/?eid=&quot; + SUBSTITUTE(Ima
         <externalId>false</externalId>
         <label>Expenditure Org Id</label>
         <length>18</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ExpenditureResourceType__c</fullName>
+        <externalId>false</externalId>
+        <label>Expenditure Resource Type</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ExpenditureTypeCategory__c</fullName>
+        <externalId>false</externalId>
+        <label>Expenditure Type Category</label>
+        <length>80</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -290,6 +320,16 @@ S = Successful</inlineHelpText>
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>PLReportCategory__c</fullName>
+        <externalId>false</externalId>
+        <label>P&amp;L Report Category</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>PersonId__c</fullName>
         <externalId>true</externalId>
         <label>Person Id</label>
@@ -308,6 +348,16 @@ S = Successful</inlineHelpText>
         <scale>5</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ProjectCreateDate__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.CreatedDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Create Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
     </fields>
     <fields>
         <fullName>ProjectFunctionalBurdenedCost__c</fullName>
@@ -330,6 +380,16 @@ S = Successful</inlineHelpText>
         <type>Summary</type>
     </fields>
     <fields>
+        <fullName>ProjectStatusChangedDateOlder__c</fullName>
+        <description>Last time the the project was changed from Closed to reopen. Is the exp item date is after that??</description>
+        <externalId>false</externalId>
+        <formula>Project__r.StatusClosedToReOpenDate__c &lt; CreatedDate</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ProjectStatusChangedDateOlder</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>ProjectTask__c</fullName>
         <externalId>false</externalId>
         <label>Project Task</label>
@@ -348,7 +408,7 @@ S = Successful</inlineHelpText>
         <externalId>false</externalId>
         <label>Project</label>
         <referenceTo>pse__Proj__c</referenceTo>
-        <relationshipLabel>Expenditure Items Project</relationshipLabel>
+        <relationshipLabel>Project Cost Transactions</relationshipLabel>
         <relationshipName>ExpenditureItemsProject</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -452,6 +512,14 @@ S = Successful</inlineHelpText>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Expenditure Items</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Project__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>BillAmount__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>BillJobBillingTitle__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>BillMarkupPercentage__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>BillRate__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>BillRateMultiplier__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ExpenditureItemDate__c</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

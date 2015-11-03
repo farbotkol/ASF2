@@ -4,46 +4,33 @@ public class ECO_HealthCheckEvaluator
 	public static List<Response> EvaluateProject(Id ProjectID)
 	{
 		List<Response> lResponses = new List<Response>();
-		Map<Id,Project_Review_Trigger__c> mActiveTriggers = new Map<Id,Project_Review_Trigger__c>([select Alert_Message__c, Comparator_1__c, Comparator_2__c, Evaluation_Frequency__c, Id, KPI_Metric__c, Name, Operator__c, KPI_Metric__r.Data_Type__c, KPI_Metric__r.Database_Field_Mapping_API_Name__c, KPI_Metric__r.Name from Project_Review_Trigger__c Where Is_Active__c = true]);
-		Set<Id> sKPI_IDs = new Set<Id>();
-		/*dummy values/
-		Map<String,String> mapValues = new Map<String,String>();
-		mapValues.put('actualVSPlannedMarginVarianceFromPriorMonth','22');
-		mapValues.put('ETC','1');
-		mapValues.put('isScheduledEndDateInPast','true');
-		mapValues.put('lastEACUpdateInDays','92');
-		mapValues.put('SPI','1.1');
-		mapValues.put('CPI','1.3');
-		mapValues.put('lastMonthGrossMarginLessThanPrecedingMonth','false');
-		mapValues.put('lastMonthNetMarginLessThanPrecedingMonth','false');
-		mapValues.put('isPMCertified','false');
-		mapValues.put('averageActualLaborRate','9000');
-		mapValues.put('laborIncreaseOverPriorMonthMoreThan30Percent','false');
-		mapValues.put('approvedBudgetGrossRevenue','5000000');
-		mapValues.put('lastMonthLaborChargesAreZero','false');
-		mapValues.put('lastMonthUnBilledAmountMoreThanZero','false');
-		//mapValues.put('Last Invoice Paid','65');
-		*/
-		//
+		Map<Id,Project_Review_Trigger__c> mActiveTriggers = new Map<Id,Project_Review_Trigger__c>([select Id, Alert_Message__c, Comparator_1__c, Comparator_2__c, Evaluation_Frequency__c,
+																									KPI_Metric__c, Name, Operator__c, KPI_Metric__r.Data_Type__c,  
+																									KPI_Metric__r.Database_Field_Mapping_API_Name__c, KPI_Metric__r.Name, 
+																									Comparator_1_KPI__c, TriggerDescription__c
+																									from Project_Review_Trigger__c Where Is_Active__c = true and IsGlobal__c = true]);
+
+		Map<String, KPI_Metric__c> mKPIMetrics = new Map<String, KPI_Metric__c>([select Id, Database_Field_Mapping_API_Name__c from KPI_Metric__c]);
+
+		pse__Proj__c theProject = [select Id, Name, CarryingOutOrganization__r.Region__c from pse__Proj__c where Id = :ProjectID limit 1];
+
+		Map<Id,Project_Review_Trigger__c> overrideRegionTriggersMap = new Map<Id,Project_Review_Trigger__c>();
+		for(Project_Review_Trigger__c regionalTrigger:[select Alert_Message__c, Comparator_1__c, Comparator_2__c, Evaluation_Frequency__c, Id, KPI_Metric__c, Name, Operator__c, KPI_Metric__r.Data_Type__c, KPI_Metric__r.ThresholdDescription__c, 																								
+															KPI_Metric__r.Database_Field_Mapping_API_Name__c, KPI_Metric__r.Name, Comparator_1_KPI__c, OverrideRegion__c, TriggerDescription__c, ParentProjectReviewTrigger__c
+															from Project_Review_Trigger__c Where Is_Active__c = true and IsGlobal__c = false and OverrideRegion__c = :theProject.CarryingOutOrganization__r.Region__c
+															Order By CreatedDate])
+		{
+			overrideRegionTriggersMap.put(regionalTrigger.ParentProjectReviewTrigger__c, regionalTrigger);
+		}
+																																		
 		ECO_KPICalculation oKPICalc = new ECO_KPICalculation();
 		ECO_KPICalculation.CalculationHolder calcHolder = oKPICalc.getProjectHealthCalculations(ProjectID);
 		String sCalc = JSON.serialize(calcHolder);
-		System.debug('JSON serialized: ' + sCalc);
 		Map<String,Object> mapValues = (Map<String,Object>) JSON.deserializeUntyped(sCalc);
-		//
-		for(String s : mapValues.keySet())
-		{
-			System.debug(s + ' = ' + mapValues.get(s));
-		}
-		
-		for(Project_Review_Trigger__c prt : mActiveTriggers.values())
-		{
-			System.debug('Database_Field_Mapping_API_Name__c: ' + prt.KPI_Metric__r.Database_Field_Mapping_API_Name__c);
-		}
+
 		for(Project_Review_Trigger__c prt : mActiveTriggers.values())
 		{
 			Object sValue;
-			System.debug('Database_Field_Mapping_API_Name__c: ' + prt.KPI_Metric__r.Database_Field_Mapping_API_Name__c);
 			
 			if(mapValues.containsKey(prt.KPI_Metric__r.Database_Field_Mapping_API_Name__c))
 			{
@@ -55,8 +42,8 @@ public class ECO_HealthCheckEvaluator
 			{
 				String dataType = prt.KPI_Metric__r.Data_Type__c;
 				String operator = prt.Operator__c;
-				String sComp1 = prt.Comparator_1__c;
-				String sComp2 = prt.Comparator_2__c;
+				String sComp1;
+				String sComp2;
 				Decimal dComp1;
 				Decimal dComp2;
 				Boolean bComp1;
@@ -68,10 +55,32 @@ public class ECO_HealthCheckEvaluator
 				Response r = new Response();
 				r.triggerName = prt.Name;
 				r.evalResult = false;
+				r.regionOverride = false;
+				r.thresholdDescription = prt.TriggerDescription__c;
+
+				if(overrideRegionTriggersMap.containsKey(prt.Id))
+				{
+					sComp1 = overrideRegionTriggersMap.get(prt.Id).Comparator_1__c;
+					sComp2 = overrideRegionTriggersMap.get(prt.Id).Comparator_2__c;
+					r.regionOverride = true;
+				}
+				else
+				{
+					sComp1 = prt.Comparator_1__c;
+					sComp2 = prt.Comparator_2__c;
+				}
 				
-				System.debug('sValue: ' + String.valueOf(sValue));
-				System.debug('sComp1: ' + String.valueOf(sComp1));
-				System.debug('sComp2: ' + String.valueOf(sComp2));
+				//System.debug('sValue: ' + String.valueOf(sValue));
+				//System.debug('sComp1: ' + String.valueOf(sComp1));
+				//System.debug('sComp2: ' + String.valueOf(sComp2));
+
+				if(prt.Comparator_1_KPI__c != null)
+				{
+					Decimal kpiMetricValue;
+					kpiMetricValue = (Decimal)mapValues.get(mKPIMetrics.get(prt.Comparator_1_KPI__c).Database_Field_Mapping_API_Name__c);
+					sComp1 = String.ValueOf(kpiMetricValue);
+					dataType = 'Number';
+				}
 	
 				if(dataType == 'Currency' || dataType == 'Percent' || dataType == 'Number')
 				{
@@ -258,7 +267,9 @@ public class ECO_HealthCheckEvaluator
 	public class Response
 	{
 		public String triggerName {get; set;}
+		public String thresholdDescription {get; set;}
 		public Boolean evalResult {get; set;}
 		public String message {get; set;}
+		public Boolean regionOverride {get; set;}
 	}
 }

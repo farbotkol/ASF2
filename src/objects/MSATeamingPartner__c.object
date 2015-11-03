@@ -18,7 +18,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>Edit</actionName>
-        <type>Default</type>
+        <content>ECO_MSATeamingPartner</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>Follow</actionName>
@@ -58,8 +60,10 @@
     <fields>
         <fullName>Account__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
+        <description>Search for the vendor or sub account (teaming partner).  If not found, use the Global Business Services app to request the creation of a new account record.</description>
         <externalId>false</externalId>
-        <label>Account</label>
+        <inlineHelpText>Search for the vendor or sub account (teaming partner).  If not found, use the Global Business Services app to request the creation of a new account record.</inlineHelpText>
+        <label>Teaming Partner Name</label>
         <referenceTo>Account</referenceTo>
         <relationshipLabel>MSA Teaming Partners</relationshipLabel>
         <relationshipName>MSA_Teaming_Partners</relationshipName>
@@ -83,6 +87,7 @@
     <fields>
         <fullName>Comments__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Provide general notes about the teaming partner that would be beneficial to the task order project teams or general management of the MSA agreement. e.g. special obligations or arrangements with the teaming partner for task order executed under the MSA</inlineHelpText>
         <label>Comments</label>
         <length>32768</length>
         <trackTrending>false</trackTrending>
@@ -92,6 +97,7 @@
     <fields>
         <fullName>Contact_Name__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Provide the name of the primary contact for the teaming partner.</inlineHelpText>
         <label>Contact Name</label>
         <length>255</length>
         <required>false</required>
@@ -102,6 +108,7 @@
     <fields>
         <fullName>Email__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Provide the primary contact&apos;s email address.</inlineHelpText>
         <label>Email</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -111,6 +118,7 @@
     <fields>
         <fullName>Phone__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Provide the primary contact&apos;s phone number.</inlineHelpText>
         <label>Phone</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -119,6 +127,7 @@
     <fields>
         <fullName>Role__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Define the primary contact&apos;s role with the teaming parnter as it relates to the MSA.</inlineHelpText>
         <label>Role</label>
         <length>50</length>
         <required>false</required>
@@ -133,6 +142,15 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>MSA Teaming Partners</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Agreement__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Comments__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Contact_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Email__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Phone__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Role__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATEDBY_USER</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

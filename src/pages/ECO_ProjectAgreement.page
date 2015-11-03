@@ -1,0 +1,130 @@
+<apex:page standardcontroller="ProjectAgreement__c" tabstyle="Agreement__c" extensions="ECO_ProjectAgreementController2" action="{!init}" >
+<apex:messages />
+	<style>
+
+		.table{
+			border-collapse:collapse;
+		}
+
+		.table th, .table td {
+		  padding: 8px 2px 8px 5px;
+		  border: 1px solid #dbdbdb;;
+		  border-collapse: collapse;
+		}
+		
+		.table tr {
+		  border: 1px solid #dbdbdb;;
+		  border-collapse: collapse;
+		}
+		
+		.table td {
+			background-color: white;
+		}
+		
+		td:nth-child(1){
+		}
+
+		.customHelpIcon
+		{
+			display:inline-block;
+			margin:0 5px 0 0;
+			width:24px;
+			height:24px;
+			vertical-align:top !important;
+		}
+        /* CUSTOM HELP / GUIDANCE TEXT BOX */
+        .customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 30px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        } 	
+
+        .message{
+			background-color: #A2D3F1;
+		}	
+		
+	</style>
+	<script type="text/javascript">
+	function recordTypeSelected(recordTypeId)
+	{
+		recordTypeSelected2(recordTypeId);
+	}
+	
+	</script>
+
+<apex:form >
+
+<apex:sectionHeader title="New Agreement" subtitle="{!theProject.ProjectSectionHeaderName__c}" />
+
+<apex:pageBlock title="Project Agreements">
+	<apex:pageBlockButtons location="top">
+		<apex:commandButton action="{!cancel}" value="Return to Project" />
+	</apex:pageBlockButtons>
+	
+    <apex:pageBlockSection title="Existing Agreements" columns="1" collapsible="false">
+        <apex:pageBlockTable value="{!Agreements}" var="agreement" rendered="{!agreements.size > 0}">
+            <apex:column headerValue="ECO Agreement Number">
+                <apex:commandLink action="{!URLFOR($Action.Agreement__c.view, agreement.Id, ['retURL'='/apex/ECO_ProjectAgreement?Id='&ProjectAgreement__c.Id])}">
+                    <apex:outputField value="{!agreement.Name}"/>
+                </apex:commandLink>
+            </apex:column>
+            <apex:column headerValue="Record Type"><apex:outputField value="{!agreement.RecordType.Name}"/></apex:column>
+             <apex:column headerValue="Billing Client"><apex:outputField value="{!agreement.Account__c}"/></apex:column>
+            <apex:column headerValue="Agreement Status"><apex:outputField value="{!agreement.AgreementStatus__c}"/></apex:column>
+            <apex:column headerValue="Agreement Amount(confirmed)"><apex:outputField value="{!agreement.Amount__c}"/></apex:column> 
+        </apex:pageBlockTable>  
+        <apex:outputPanel rendered="{!agreements.size == 0}">
+            <apex:outputText value="No records to display"/>
+        </apex:outputPanel> 
+        
+            
+    </apex:pageBlockSection>	
+
+<apex:actionFunction name="recordTypeSelected2" action="{!recordTypeSelected}" rerender="rtypeid">
+	<apex:param id="test" assignto="{!selectedRecordType}" name="selectedRecordType" value=""/>
+</apex:actionFunction>
+<apex:pageBlockSection columns="1" title="Create New Agreement" collapsible="false">
+		<apex:pageMessage id="headerSummaryMessage" severity="info"  escape="false"  summary="
+		Select a record type to add a new agreement to the project. Agreements can be directly with a client, teaming partner, subcontractor/ sub-consultant or another AECOM legal entity. They can also include non-monetary agreements such as confidentiality or non-disclosure statements. It is best practice to document and manage contractual constraints or obligations associated with all agreement types used on a project, not just the funding agreement.
+		<br /><br />
+		The record type “Prime” or “Prime Task Order” will be sent to Oracle as the primary funding agreement so these record types should be used when selecting an agreement type between AECOM" />
+	<apex:outputPanel >
+	<apex:inputHidden value="{!projectId}"/>
+	<apex:inputHidden value="{!selectedRecordType}" id="rtypeid"/>
+	<table class="table" style="width:100%;">
+		<tr>
+			<th>Record Type Name</th>
+			<th>Record Type Description</th>
+			<th></th>
+		</tr>
+		<apex:repeat value="{!AgreementRecordTypes}" var="agreementRecordType">
+			<tr>	
+				<td><apex:outputField value="{!agreementRecordType.Name}"/></td>
+				<td><apex:outputField value="{!agreementRecordType.Description}"/></td>
+				<td><apex:commandButton value="Select" onclick="recordTypeSelected('{!agreementRecordType.Id}'); return false;"/></td>
+			</tr>		
+		</apex:repeat>
+	</table>
+	
+	</apex:outputPanel>
+</apex:pageBlockSection>
+</apex:pageBlock>
+
+<apex:inputHidden value="{!ProjectAgreement__c.Project__r.PrimaryBillingClient__r.Account__c}"/>
+<apex:inputHidden value="{!ProjectAgreement__c.Project__c}"/>
+<apex:inputHidden value="{!ProjectAgreement__c.Id}"/>
+</apex:form>
+
+</apex:page>

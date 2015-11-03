@@ -1,26 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customButtons>Print_Project_Plan</customButtons>
     <customButtons>EnrichProject</customButtons>
-    <customButtons>pse__Project_Gantt</customButtons>
-    <customButtons>DOA</customButtons>
+    <customButtons>SubmitProjectPlanforApproval</customButtons>
+    <customButtons>Expand_Collapse_PCC_Sections</customButtons>
+    <customButtons>CloseoutApproval</customButtons>
+    <customButtons>Create_Weekly_Rollup_Entries</customButtons>
+    <customButtons>ProjectNumberRequest</customButtons>
     <excludeButtons>Clone</excludeButtons>
     <excludeButtons>Delete</excludeButtons>
-    <layoutSections>
-        <customLabel>true</customLabel>
-        <detailHeading>false</detailHeading>
-        <editHeading>false</editHeading>
-        <label>Status Indicator</label>
-        <layoutColumns>
-            <layoutItems>
-                <height>160</height>
-                <page>ECO_ProjectStatus2</page>
-                <showLabel>false</showLabel>
-                <showScrollbars>false</showScrollbars>
-                <width>100%</width>
-            </layoutItems>
-        </layoutColumns>
-        <style>OneColumn</style>
-    </layoutSections>
+    <excludeButtons>Submit</excludeButtons>
     <layoutSections>
         <customLabel>true</customLabel>
         <detailHeading>false</detailHeading>
@@ -44,18 +33,12 @@
                 <field>OracleProjectnumber__c</field>
             </layoutItems>
             <layoutItems>
-                <emptySpace>true</emptySpace>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Readonly</behavior>
-                <field>PrimaryEndClientName__c</field>
+                <field>ProjectReviewCategory__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>PrimaryBillingClientName__c</field>
-            </layoutItems>
-            <layoutItems>
-                <emptySpace>true</emptySpace>
+                <behavior>Edit</behavior>
+                <field>clAECOMProjectReviewCategory__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -64,7 +47,7 @@
                 <field>OwnerId</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>pse__Project_Manager__c</field>
             </layoutItems>
             <layoutItems>
@@ -72,55 +55,29 @@
                 <field>AccountManager__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>ProjectApprover__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>PnLManager__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>pse__Stage__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>ProjectReviewCategory__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>clAECOMProjectReviewCategory__c</field>
-            </layoutItems>
-            <layoutItems>
-                <emptySpace>true</emptySpace>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>CarryingOutOrganization__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ProjectCurrencyCode__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>ProjectFunctionalCurrencyCode__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
     <layoutSections>
         <customLabel>true</customLabel>
-        <detailHeading>false</detailHeading>
-        <editHeading>false</editHeading>
-        <label>Description</label>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Project Description</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>ProjectDescription__c</field>
-            </layoutItems>
-            <layoutItems>
-                <emptySpace>true</emptySpace>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>
@@ -159,12 +116,24 @@
         <label>Additional Project Information</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>pse__Region__c</field>
+                <behavior>Readonly</behavior>
+                <field>PrimaryEndClientName__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>pse__Practice__c</field>
+                <behavior>Readonly</behavior>
+                <field>PrimaryBillingClientName__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>CarryingOutOrganization__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>RegionOwningOrg__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>BusinessLineOwningOrg__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Required</behavior>
@@ -184,6 +153,22 @@
                 <behavior>Edit</behavior>
                 <field>IsThisProjectConfidential__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>DistributionRule__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>ContractTypes__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>ProjectCurrencyCode__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>ProjectFunctionalCurrencyCode__c</field>
+            </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
@@ -196,6 +181,10 @@
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>RFPIssueDate__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>ProposalSubmittedDate__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -212,11 +201,11 @@
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>EstimatedStartDate__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>EstimatedEndDate__c</field>
             </layoutItems>
             <layoutItems>
@@ -228,11 +217,11 @@
                 <field>pse__End_Date__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>RevisedStartDate__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>RevisedEndDate__c</field>
             </layoutItems>
         </layoutColumns>
@@ -245,11 +234,11 @@
         <label>Project Likelihood</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>GoProbability__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>GetProbability__c</field>
             </layoutItems>
         </layoutColumns>
@@ -268,15 +257,15 @@
         <label>Financials - Bid Budget</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Required</behavior>
+                <behavior>Readonly</behavior>
                 <field>AECOMLabor__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>Subs__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>ODCs__c</field>
             </layoutItems>
             <layoutItems>
@@ -292,10 +281,6 @@
             <layoutItems>
                 <behavior>Readonly</behavior>
                 <field>PotentialProfitCostofBidding__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Createaprojectortaskforbidcosts__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Readonly</behavior>
@@ -315,19 +300,19 @@
                 <field>CapitalValue__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
+                <behavior>Readonly</behavior>
                 <field>EstimatedContractValue__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Required</behavior>
+                <behavior>Readonly</behavior>
                 <field>AECOMLaborCosts__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>SubsCost__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>ODCsCost__c</field>
             </layoutItems>
         </layoutColumns>
@@ -362,55 +347,22 @@
         <label>Financials - Project Budget</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>TotalApprovedCost__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>TotalForecastCost__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>TotalApprovedRevenue__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>TotalForecastRevenue__c</field>
-            </layoutItems>
-        </layoutColumns>
-        <style>TwoColumnsLeftToRight</style>
-    </layoutSections>
-    <layoutSections>
-        <customLabel>true</customLabel>
-        <detailHeading>true</detailHeading>
-        <editHeading>true</editHeading>
-        <label>Project Graphs</label>
-        <layoutColumns>
-            <layoutItems>
-                <reportChartComponent>
-                    <cacheData>true</cacheData>
-                    <contextFilterableField>CUST_ID</contextFilterableField>
-                    <hideOnError>false</hideOnError>
-                    <includeContext>true</includeContext>
-                    <reportName>PP_Approved_Cost_Cumulative</reportName>
-                    <showTitle>false</showTitle>
-                    <size>SMALL</size>
-                </reportChartComponent>
-            </layoutItems>
-        </layoutColumns>
-        <layoutColumns>
-            <layoutItems>
-                <reportChartComponent>
-                    <cacheData>true</cacheData>
-                    <contextFilterableField>CUST_ID</contextFilterableField>
-                    <hideOnError>false</hideOnError>
-                    <includeContext>true</includeContext>
-                    <reportName>PP_Func_Burdened_Cost_Cumulative</reportName>
-                    <showTitle>false</showTitle>
-                    <size>SMALL</size>
-                </reportChartComponent>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsLeftToRight</style>
@@ -452,7 +404,72 @@
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
     </layoutSections>
+    <miniLayout>
+        <fields>Name</fields>
+        <fields>ProjectLongName__c</fields>
+        <fields>pse__Stage__c</fields>
+        <fields>OracleProjectnumber__c</fields>
+        <fields>AECOMrole__c</fields>
+        <fields>EstimatedContractValue__c</fields>
+        <fields>AECOMLabor__c</fields>
+        <fields>AECOMLaborCosts__c</fields>
+        <fields>CarryingOutOrganization__c</fields>
+        <fields>PrimaryBillingClientName__c</fields>
+    </miniLayout>
     <relatedLists>
+        <excludeButtons>New</excludeButtons>
+        <fields>ExpenditureItemDate__c</fields>
+        <fields>NAME</fields>
+        <fields>ExpenditureType__c</fields>
+        <fields>PersonId__c</fields>
+        <fields>VendorId__c</fields>
+        <fields>ProjectFunctionalRawCost__c</fields>
+        <fields>ProjectFunctionalBurdenedCost__c</fields>
+        <fields>BillAmount__c</fields>
+        <relatedList>ExpendItem__c.Project__c</relatedList>
+        <sortField>ExpenditureItemDate__c</sortField>
+        <sortOrder>Desc</sortOrder>
+    </relatedLists>
+    <relatedLists>
+        <fields>NAME</fields>
+        <fields>OraclePurchaseOrderNumber__c</fields>
+        <fields>Agreement__c</fields>
+        <fields>PODate__c</fields>
+        <fields>POType__c</fields>
+        <fields>Requestor__c</fields>
+        <fields>Status__c</fields>
+        <fields>Total__c</fields>
+        <fields>CREATEDBY_USER</fields>
+        <fields>CREATED_DATE</fields>
+        <relatedList>POHeader__c.Project__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <excludeButtons>New</excludeButtons>
+        <fields>NAME</fields>
+        <fields>AccrueThroughDate__c</fields>
+        <fields>AdjustingRevenueFlag__c</fields>
+        <fields>TaskNumber__c</fields>
+        <fields>Amount__c</fields>
+        <fields>GLPeriodName__c</fields>
+        <fields>PAPeriodName__c</fields>
+        <relatedList>Revenue__c.ProjectNumber__c</relatedList>
+        <sortField>PAPeriodName__c</sortField>
+        <sortOrder>Desc</sortOrder>
+    </relatedLists>
+    <relatedLists>
+        <excludeButtons>New</excludeButtons>
+        <fields>NAME</fields>
+        <fields>CreditedInvoiceNumber__c</fields>
+        <fields>InvoiceDate__c</fields>
+        <fields>InvoiceAmount__c</fields>
+        <fields>BalanceDue__c</fields>
+        <fields>PA_Date__c</fields>
+        <fields>GL_Period_Name__c</fields>
+        <fields>Billing_InvoiceImageFileURL__c</fields>
+        <relatedList>Billing__c.ProjectNumber__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <customButtons>ManageChanges</customButtons>
         <fields>NAME</fields>
         <fields>RECORDTYPE</fields>
         <fields>ContributingFactor__c</fields>
@@ -464,45 +481,20 @@
         <sortOrder>Desc</sortOrder>
     </relatedLists>
     <relatedLists>
+        <customButtons>Manage_Reviews_Meetings</customButtons>
         <excludeButtons>New</excludeButtons>
         <fields>NAME</fields>
-        <relatedList>EarnedValueHeader__c.Project__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <customButtons>New_R_M_assessments</customButtons>
-        <excludeButtons>New</excludeButtons>
-        <fields>NAME</fields>
-        <fields>ApprovalStatus__c</fields>
-        <fields>RequestedProjectCategory__c</fields>
-        <fields>GoNoGoRecommendation__c</fields>
-        <fields>GoNoGoDate__c</fields>
-        <fields>MeetingNotes__c</fields>
-        <fields>CREATEDBY_USER</fields>
-        <fields>CREATED_DATE</fields>
-        <relatedList>QuestionnaireSet__c.Project__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>Agreement__c.NAME</fields>
-        <fields>Agreement__c.CUST_RECORDTYPE</fields>
-        <fields>Agreement__c.Description__c</fields>
-        <fields>Agreement__c.Amount__c</fields>
-        <fields>Agreement__c.Account__c</fields>
-        <fields>Fund_Project__c</fields>
-        <relatedList>ProjectAgreement__c.Project__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <customButtons>Manage_Scope_and_Packages</customButtons>
-        <excludeButtons>New</excludeButtons>
-        <fields>PackageTitle__c</fields>
-        <fields>Scope_Owner__c</fields>
-        <fields>Type__c</fields>
-        <fields>Scope_Details__c</fields>
+        <fields>RECORDTYPE</fields>
         <fields>Status__c</fields>
-        <relatedList>Packages__c.Scope__c</relatedList>
-        <sortField>Type__c</sortField>
+        <fields>ScheduledDate__c</fields>
+        <fields>CompletedDate__c</fields>
+        <relatedList>ProjectReview__c.Project__c</relatedList>
+        <sortField>ScheduledDate__c</sortField>
         <sortOrder>Asc</sortOrder>
     </relatedLists>
     <relatedLists>
+        <customButtons>Manage_Deliverable</customButtons>
+        <excludeButtons>New</excludeButtons>
         <fields>NAME</fields>
         <fields>DeliverableType__c</fields>
         <fields>Owner__c</fields>
@@ -514,166 +506,30 @@
         <sortOrder>Asc</sortOrder>
     </relatedLists>
     <relatedLists>
-        <excludeButtons>New</excludeButtons>
-        <fields>NAME</fields>
-        <fields>ProjectTaskNumber__c</fields>
-        <fields>ProjectTaskOwner__c</fields>
-        <fields>pse__Description__c</fields>
-        <fields>pse__Status__c</fields>
-        <fields>pse__Start_Date__c</fields>
-        <fields>pse__End_Date__c</fields>
-        <fields>FinancialTask__c</fields>
-        <relatedList>pse__Project_Task__c.pse__Project__c</relatedList>
-        <sortField>ProjectTaskNumber__c</sortField>
-        <sortOrder>Asc</sortOrder>
-    </relatedLists>
-    <relatedLists>
-        <excludeButtons>New</excludeButtons>
-        <fields>NAME</fields>
-        <fields>BudgetName__c</fields>
-        <fields>RECORDTYPE</fields>
-        <fields>Status__c</fields>
-        <fields>Description__c</fields>
-        <fields>TotalRevenue__c</fields>
-        <fields>TotalCost__c</fields>
-        <fields>CREATEDBY_USER</fields>
-        <fields>CREATED_DATE</fields>
-        <relatedList>BudgetHeader__c.Project__c</relatedList>
-    </relatedLists>
-    <relatedLists>
         <customButtons>Manage_Risks</customButtons>
         <excludeButtons>New</excludeButtons>
         <fields>NAME</fields>
         <fields>CurrentStatus__c</fields>
         <fields>RiskDescription__c</fields>
-        <fields>RiskStatus__c</fields>
-        <fields>LikelihoodofOccurrence__c</fields>
-        <fields>RiskConsequence__c</fields>
+        <fields>PlanElement__c</fields>
+        <fields>MitigationCostTotal__c</fields>
+        <fields>PostmitigationContingencyTotal__c</fields>
         <relatedList>Risk__c.Project__c</relatedList>
     </relatedLists>
     <relatedLists>
         <excludeButtons>New</excludeButtons>
         <fields>NAME</fields>
-        <fields>EnterpriseDOA__c</fields>
-        <fields>RiskTitle__c</fields>
-        <fields>DOATrigger__c</fields>
         <fields>DOAApprovalRequest__c</fields>
-        <relatedList>DOARegister__c.Project__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <excludeButtons>New</excludeButtons>
-        <fields>NAME</fields>
-        <fields>ApprovalStatus__c</fields>
-        <fields>ActualStartDate__c</fields>
-        <fields>DateRequired__c</fields>
-        <fields>Region__c</fields>
-        <relatedList>DOAApprovalRequest__c.Project__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <excludeButtons>New</excludeButtons>
-        <fields>NAME</fields>
-        <fields>ComplianceStatus__c</fields>
-        <fields>ComplianceDate__c</fields>
-        <fields>DOARegister__c</fields>
-        <fields>TriggerDescription__c</fields>
-        <fields>Level__c</fields>
         <fields>Mitigation_Plan__c</fields>
         <relatedList>DOAConditions__c.Project__c</relatedList>
     </relatedLists>
     <relatedLists>
-        <customButtons>ManageAssumptions</customButtons>
-        <excludeButtons>New</excludeButtons>
-        <fields>PlanElement__c</fields>
-        <fields>Assumption__c</fields>
-        <fields>CREATEDBY_USER</fields>
-        <fields>CREATED_DATE</fields>
-        <relatedList>Assumption__c.Project__c</relatedList>
-        <sortField>PlanElement__c</sortField>
-        <sortOrder>Asc</sortOrder>
-    </relatedLists>
-    <relatedLists>
-        <customButtons>ManageSites</customButtons>
-        <excludeButtons>New</excludeButtons>
-        <fields>Account_Name__c</fields>
-        <fields>Address1__c</fields>
-        <fields>City__c</fields>
-        <fields>State__c</fields>
-        <fields>Postal_Code__c</fields>
-        <fields>Country__c</fields>
-        <fields>Type__c</fields>
-        <fields>IsCustomer__c</fields>
-        <fields>IsVendor__c</fields>
-        <fields>Site__c.NAME</fields>
-        <relatedList>Project_Site__c.Project__c</relatedList>
-        <sortField>Type__c</sortField>
-        <sortOrder>Desc</sortOrder>
-    </relatedLists>
-    <relatedLists>
-        <excludeButtons>New</excludeButtons>
-        <fields>NAME</fields>
-        <fields>StakeholderType__c</fields>
-        <fields>Interest__c</fields>
-        <fields>ContactName__c</fields>
-        <fields>AECOMContact__c</fields>
-        <relatedList>Stakeholder__c.Project__c</relatedList>
-        <sortField>NAME</sortField>
-        <sortOrder>Asc</sortOrder>
-    </relatedLists>
-    <relatedLists>
-        <excludeButtons>New</excludeButtons>
-        <fields>NAME</fields>
-        <fields>Site__c.AccountName__c</fields>
-        <fields>Site__c.AccountManager__c</fields>
-        <fields>Site__c.State__c</fields>
-        <fields>Site__c.Country__c</fields>
-        <fields>Site__c.SiteStatus__c</fields>
-        <relatedList>VendorSite__c.Project__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <excludeButtons>New</excludeButtons>
-        <fields>NAME</fields>
-        <fields>RECORDTYPE</fields>
-        <fields>Status__c</fields>
-        <fields>ScheduledDate__c</fields>
-        <fields>CompletedDate__c</fields>
-        <fields>Comments__c</fields>
-        <fields>KPIPassPercentage__c</fields>
-        <relatedList>ProjectReview__c.Project__c</relatedList>
-        <sortField>ScheduledDate__c</sortField>
-        <sortOrder>Asc</sortOrder>
-    </relatedLists>
-    <relatedLists>
-        <excludeButtons>New</excludeButtons>
-        <fields>NAME</fields>
-        <fields>ClientName__c</fields>
-        <fields>CREATED_DATE</fields>
-        <relatedList>ProjectSnapshot__c.Project__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <customButtons>Manage_Project_Organizations</customButtons>
-        <excludeButtons>New</excludeButtons>
-        <fields>Type__c</fields>
-        <fields>OrganizationString__c.OUName__c</fields>
-        <fields>OrganizationString__c.Region__c</fields>
-        <fields>OrganizationString__c.BusinessLineName__c</fields>
-        <fields>OrganizationString__c.Department__c</fields>
-        <fields>OrganizationString__c.OrganizationName__c</fields>
-        <fields>ContributionPercent__c</fields>
-        <relatedList>ProjectOrganization__c.Project__c</relatedList>
-        <sortField>Type__c</sortField>
-        <sortOrder>Asc</sortOrder>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <fields>Agreement__c</fields>
-        <fields>PODate__c</fields>
-        <fields>POType__c</fields>
-        <fields>Requestor__c</fields>
-        <fields>Status__c</fields>
-        <fields>Total__c</fields>
-        <fields>CREATEDBY_USER</fields>
-        <fields>CREATED_DATE</fields>
-        <relatedList>POHeader__c.Project__c</relatedList>
+        <fields>CreatedDate</fields>
+        <fields>StepStatus</fields>
+        <fields>OriginalActor</fields>
+        <fields>Actor</fields>
+        <fields>Comments</fields>
+        <relatedList>RelatedProcessHistoryList</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>TASK.SUBJECT</fields>
@@ -698,14 +554,7 @@
         <relatedList>RelatedNoteList</relatedList>
     </relatedLists>
     <relatedLists>
-        <fields>PeriodStartDate__c</fields>
-        <fields>EarnedValue__c</fields>
-        <fields>AppliedApprovedCost__c</fields>
-        <fields>AppliedRevenue__c</fields>
-        <fields>AppliedAcctBurdenedCost__c</fields>
-        <fields>AppliedAcctRawCost__c</fields>
-        <fields>CPI__c</fields>
-        <fields>SPI__c</fields>
+        <fields>NAME</fields>
         <relatedList>WeeklyRollupEntry__c.Project__c</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>

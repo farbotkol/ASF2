@@ -163,7 +163,7 @@
     <fields>
         <fullName>NewTaskNeedsToBeCreated__c</fullName>
         <externalId>false</externalId>
-        <formula>IF(AND(NOW() &gt;  NextCreateTaskDate__c,  GenerateTask__c), true, false)</formula>
+        <formula>IF(AND(TODAY() &gt;=  NextCreateTaskDate__c,  GenerateTask__c), true, false)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>New Task Needs To Be Created</label>
         <trackTrending>false</trackTrending>
@@ -177,7 +177,7 @@
         <label>Next Create Task Date</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
-        <type>DateTime</type>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>ProjectIsActive__c</fullName>
@@ -238,7 +238,7 @@
         <label>Task Last Generated</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
-        <type>DateTime</type>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>When__c</fullName>
@@ -246,7 +246,7 @@
         <label>When</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
-        <type>DateTime</type>
+        <type>Date</type>
     </fields>
     <label>Communication Plan</label>
     <nameField>
@@ -255,6 +255,16 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Communication Plans</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Project__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Activity__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Audience__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Frequency__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>GenerateTask__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>When__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ResponsiblePerson__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATEDBY_USER</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

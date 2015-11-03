@@ -27,11 +27,14 @@ global virtual class ECO_AgreementController {
     public list<Approved_Sub__c> approvedSubs {get; set;}
     public list<MSATeamingPartner__c> msaTeamingPartners {get; set;}
     public list<Agreement__c> relatedAgreements {get; set;}
+    public list<RelatedAgreement> relAgreements {get; set;}
     public list<BillRate__c> billingRates {get; set;}
     public list<Note> notes {get; set;}
     public list<Funding__c> fundings{get; set;}
     public list<ManagementTeam__c> msaManagementTeamMembers{get;set;}
     public list<DOAConditions__c> msaDOAConditions {get; set;}
+    public list<DOAConditions__c> dOAConditions {get; set;}
+    public list<Contract_Review__c> contractReviews {get; set;}
     public list<pse__Proj__c> projects {get; set;}
     
     protected String projectId;
@@ -45,6 +48,7 @@ global virtual class ECO_AgreementController {
     private Boolean createdFromAgreementPage = false;
     
     public String projectFundingId {get; set;}
+    public ECO_BillRateManagement billRateController {get; set;}
     
     public String contractDocumentType {get; set;}
     public String contractDocumentComments {get; set;}
@@ -56,11 +60,29 @@ global virtual class ECO_AgreementController {
     public string agreementRecordType {get;set;}
     
     public string testTabId {get; set;}
+
+    public String primeScopeText {get; set;}
     
+
+    public class RelatedAgreement
+    {
+        public Agreement__c agreement {get; set;}
+        public Decimal convertedConfirmedValue {get; set;}
+        public Decimal convertedApprovedCost {get; set;}
+
+        public RelatedAgreement(Agreement__c agreement, Decimal convertedConfirmedValue, Decimal convertedApprovedCost)
+        {
+            this.agreement = agreement;
+            this.convertedConfirmedValue = convertedConfirmedValue;
+            this.convertedApprovedCost = convertedApprovedCost;
+        }
+    }
+
     public ECO_AgreementController(ApexPages.standardController sc)
     {
         agreement = (Agreement__c)sc.getRecord();  
-        MSAChanged = false;                  
+        MSAChanged = false;              
+        primeScopeText = '';    
     }
     
     public void handleDeletingCancelledChildObject()
@@ -119,7 +141,8 @@ global virtual class ECO_AgreementController {
             agreementRecordType = agreement.RecordType.Name;
         } 
 
-        populateRelatedAgreementObjects();     
+        populateRelatedAgreementObjects(); 
+        getPrimeScopeText();    
     }
        
     public String getContractReviewStatus()
@@ -130,25 +153,62 @@ global virtual class ECO_AgreementController {
     		return 'Not Submitted';
     	return requests[0].Status_Review__c;  	
     }   
+
+    public void getPrimeScopeText()
+    {
+        primeScopeText = '';
+        if(agreement.ScopePackage__c != null)
+        {
+            list<Packages__c> packages = [select Id, Scope_Details__c from Packages__c where Id = :agreement.ScopePackage__c];
+            if(!packages.isEmpty())
+                primeScopeText = packages[0].Scope_Details__c;
+        }
+    }
+
+    public void primeScopeChangedApex()
+    {
+        update agreement;
+
+        getPrimeScopeText();
+
+        editAgreement();
+    }
     
     private void populateRelatedAgreementObjects()
     {
         if(mode != 'New')
-        {           
+        {  
+            ApexPages.currentPage().getParameters().put('AgreementId', agreement.Id);         
             relatedAgreements = new list<Agreement__c>();
             attachmentsMap = new Map<Id, Attachment>([select Id, Name, ContentType, LastModifiedDate, LastModifiedById from Attachment where parentId = :agreement.Id]);
-            managementTeamMembers = [select Id, Name, TeamMember__r.Name, Role__c, TeamMember__r.Title, TeamMember__r.Phone, TeamMember__r.Email from ManagementTeam__c where Agreement__c = :agreement.Id];				
+            managementTeamMembers = [select Id, Name, Organization__c, TeamMember__r.Name, Role__c, TeamMember__r.Title, TeamMember__r.Phone, TeamMember__r.Email from ManagementTeam__c where Agreement__c = :agreement.Id];				
             approvedSubs = [select Id, Name, Contact_Name__c, Email__c, Phone__c, Role__c, Account__r.Name, Comments__c from Approved_Sub__c where Agreement__c = :agreement.Id];
-            msaTeamingPartners = [select Id, Name, Contact_Name__c, Email__c, Phone__c, Role__c, Account__r.Name from MSATeamingPartner__c where Agreement__c = :agreement.Id];
+            msaTeamingPartners = [select Id, Name, Contact_Name__c, Email__c, Phone__c, Role__c, Account__r.Name, Comments__c from MSATeamingPartner__c where Agreement__c = :agreement.Id];
             otherDirectCosts = [select Id, Name, Type__c, Comments__c, Description__c, Markup__c, Allowable__c from OtherDirectCost__c where Agreement__c = :agreement.Id];
-            relatedAgreements = [select Id, Name, Project__r.pse__Project_Status__c, Project__r.OracleProjectnumber__c, Amount__c,
+            
+            relatedAgreements = [select Id, Name, Project__r.pse__Project_Status__c, Project__r.OracleProjectnumber__c, Amount__c, FundingCurrencyCode__c,
             										Project__r.pse__Billing_Eligible_Last_Updated__c, Project__r.EstimatedContractValue__c, 
-            										Project__r.pse__Project_Manager__c, Project__r.Task_number__c, Project__r.ProjectNumber__c, 
+            										Project__r.pse__Project_Manager__c, Project__r.Task_number__c, Project__r.ProjectNumber__c, CreatedDate,
             										Project__r.Name, project__r.TotalApprovedCost__c, project__r.CostComplete__c, project__r.GoProbability__c, project__r.GetProbability__c
             						from Agreement__c where MSAReference__c = :agreement.Id];
+            RelatedAgreement relAgreement;
+            relAgreements = new list<RelatedAgreement>();
+            for(Agreement__c ag:relatedAgreements)
+            {
+                //relAgreements.add(new RelatedAgreement(ag, 1 * (1/ ECO_Service_ExchangeRate.convertToOrgCurrencyByCurrencyCode(ag.FundingCurrencyCode__c, 1, ag.CreatedDate.date())), ag.Project__r.TotalApprovedCost__c / ECO_Service_ExchangeRate.convertToOrgCurrencyByCurrencyCode(ag.FundingCurrencyCode__c, 1, ag.CreatedDate.date())));
+                if(ag.Amount__c != null)
+                    relAgreements.add(new RelatedAgreement(ag, ag.Amount__c * (1/ ECO_Service_ExchangeRate.convertToOrgCurrencyByCurrencyCode(ag.FundingCurrencyCode__c, 1, ag.CreatedDate.date())), ag.Project__r.TotalApprovedCost__c / ECO_Service_ExchangeRate.convertToOrgCurrencyByCurrencyCode(ag.FundingCurrencyCode__c, 1, ag.CreatedDate.date())));
+                //relAgreements.add(new RelatedAgreement(ag, 1 * (1/ ECO_Service_ExchangeRate.convertToOrgCurrencyByCurrencyCode('NZD', 1, ag.CreatedDate.date())), 1 / ECO_Service_ExchangeRate.convertToOrgCurrencyByCurrencyCode('NZD', 1, ag.CreatedDate.date())));
+            }
+
+
             billingRates = [select Id, Name, BillRatePeriod__r.BillRateStart__c, BillRatePeriod__r.BillRateEnd__c, LaborCategory__c, BillRate__c from BillRate__c where Agreement__c = :agreement.Id order by BillRatePeriod__r.BillRateStart__c, LaborCategory__c limit 10];
+            contractReviews = [select Id, Name, Status_Review__c, Review_Request_Type__c, Opportunity_Name__c, Client_Vendor__c, Date_Required__c from Contract_Review__c where Agreement__c = :agreement.Id];
+            dOAConditions = [select Id, Name, DOARegister__c, Mitigation_Plan__c, DoATriggerNo__c, TriggerDescription__c, DOAApprovalRequest__c, Completed__c, ComplianceDate__c, ComplianceStatus__c, Level__c from DOAConditions__c where Agreement__c = :agreement.Id];
+            billRateController = new ECO_BillRateManagement();
+
             notes = [select Id, ParentId, Title, Body from Note where parentId = :agreement.Id];
-            fundings = [select Id, Name, Project__c, AllocatedAmount__c, DateAllocatedDate__c,CreatedDate, TotalBaselinedAmount__c from Funding__c where Agreement__c = :agreement.Id];   
+            fundings = [select Id, Name, Project__c, FundingClassification__c, AllocatedAmount__c, DateAllocatedDate__c,CreatedDate, TotalBaselinedAmount__c from Funding__c where Agreement__c = :agreement.Id];   
 			if(agreement.MSAReference__c != null)
 			{
             	msaManagementTeamMembers = [select Id, Name, TeamMember__r.Name, Role__c, TeamMember__r.Title, TeamMember__r.Phone, TeamMember__r.Email from ManagementTeam__c where Agreement__c = :agreement.MSAReference__c];				
@@ -181,7 +241,35 @@ global virtual class ECO_AgreementController {
             relatedAgreements = new list<Agreement__c>();
             msaManagementTeamMembers = new list<ManagementTeam__c>();
             msaDOAConditions = new list<DOAConditions__c>();
+            contractReviews = new list<Contract_Review__c>();
+            dOAConditions = new list<DOAConditions__c>();
+            relAgreements = new list<RelatedAgreement>();
         }       
+    }
+
+    public PageReference returnToProjectAgreements()
+    {
+        list<ProjectAgreement__c> projectAgreements = [select Id from ProjectAgreement__c where Agreement__c = :agreement.Id];
+
+        if(!projectAgreements.isEmpty())
+            return new PageReference('/apex/ECO_ProjectAgreement?Id=' + projectAgreements[0].Id);
+        return new PageReference('/');
+    }
+
+    public PageReference deleteAgreement()
+    {
+        try{
+            delete agreement;
+        }
+        catch(Exception e)
+        {
+            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Could not delete Agreement');
+            ApexPages.addMessage(oPageMessage);
+        }
+
+        if(project != null)
+            return new PageReference('/' + project.Id);
+        return new PageReference('/');
     }
     
     /*public Component.Apex.TabPanel getProjectFundingTabs()

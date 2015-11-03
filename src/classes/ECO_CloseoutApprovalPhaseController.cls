@@ -23,6 +23,9 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
     public list<Deliverable__c> DeliverablesFound{get;set;}
     public list<BudgetHeader__c> BudgetHeadersFound{get;set;}
     public list<DOAConditions__c> DOAConditionsFound{get;set;}
+    public list<POHeader__c> POFound{get;set;}
+    public list<Billing__c> BillingFound{get;set;}
+    public list<BillingWrapper> BillingWrapperFound{get;set;}
 
     public list<task> listTask {get;set;}
 
@@ -36,6 +39,15 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
 
     /* Custom classes to facilitate this controller */
     public class EcoControllerException extends Exception {}
+
+    public class BillingWrapper{
+        public Billing__c oB {get;set;}
+        public account oS {get;set;}
+
+        Public BillingWrapper(Billing__c oB){
+            this.oB = ob;
+        }
+    }
 
     public ECO_CloseoutApprovalPhaseController getPageCont(){
         return this;
@@ -58,7 +70,10 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
                             ,ScheduledOnHoldDate__c
                             ,ScheduledRestartDate__c
                             ,OnHoldReason__c
+                            ,ProjectSectionHeaderName__c
                             ,pse__Opportunity__c
+                            ,projclosePOPaidText__c
+                            ,projclosePOPaid__c
                             ,projcloseScheduleMilestoneCompletion__c
                             ,projcloseScheduleMilestoneCompletionText__c
                             ,projcloseProjectTeamLessonsLearned__c
@@ -136,13 +151,15 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
                     where id =: oProject.id];
 
         types = new List<SelectOption>();
-        types.add(new SelectOption('No', 'No'));
+       
         types.add(new SelectOption('Yes', 'Yes'));  
+        types.add(new SelectOption('No', 'No'));
         types.add(new SelectOption('N/A', 'N/A'));  
 
         types2 = new List<SelectOption>();
+        types2.add(new SelectOption('Yes', 'Yes'));
         types2.add(new SelectOption('No', 'No'));
-        types2.add(new SelectOption('Yes', 'Yes'));          
+                  
 
         oldClosureDate = oProject.ClosureDate__c;
 
@@ -152,6 +169,31 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
         DeliverablesFound = [select id from Deliverable__c where Project__c =: oProject.id];
         BudgetHeadersFound = [select id from BudgetHeader__c where Project__c =: oProject.id];
         DOAConditionsFound = [select id from DOAConditions__c where Project__c =: oProject.id];
+        POFound = [select id from POHeader__c where Project__c =:oProject.id];
+        BillingFound = [select id, RAInvoiceNumber__c, InvoiceDate__c, CustomerNumber__c, InvoiceAmount__c, BalanceDue__c from Billing__c where ProjectNumber__c =:oProject.id and BalanceDue__c > 0 ];
+
+        BillingWrapperFound = new list<BillingWrapper>();
+        set<string> customerid = new set<string>();
+
+        for(Billing__c b:BillingFound){
+            BillingWrapperFound.add(new BillingWrapper(b));
+            customerid.add(b.CustomerNumber__c);
+        }
+
+        list<account> lstAccount = [select id, OracleCustomerNumber__c from account where OracleCustomerNumber__c IN: customerid];
+
+        map<string, account> mapSite = new map<string, account>();
+
+        for(account s: lstAccount ){
+            mapSite.put(s.OracleCustomerNumber__c, s);
+        }
+
+        for(BillingWrapper bw:BillingWrapperFound){
+            if(mapSite.containsKey(bw.oB.CustomerNumber__c)){
+                bw.oS = mapSite.get(bw.oB.CustomerNumber__c);
+            }
+        }        
+
 
         alertRecordTypeId = ECO_Utils_Meta.getRecordTypeId(PortalMessage__c.sObjectType, ECO_Constants.PortalMessage_AlertRecordTypeName);
         attachmentsMap = new Map<Id, Attachment>([select Id, Name, ContentType, LastModifiedDate, LastModifiedById from Attachment where parentId = :oproject.Id]);
@@ -252,6 +294,18 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
 
         if(goforward){
 
+            Savepoint oSavePoint = Database.setSavepoint();
+
+            try{
+                //oProject.pse__Stage__c = 'Approved';
+                update oProject;
+            }catch(EcoControllerException e){
+                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e);
+                ApexPages.addMessage(oMsg);
+                Database.rollback(oSavePoint);
+                return null; 
+            } 
+
             list<RecordType> lstRT = [select id from recordtype where sObjectType='ChangeManager__c' and developername='InternalChange'];
 			
 			ChangeManager__c cm;
@@ -274,6 +328,40 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
 
     }
 
+    public pagereference createChangeManagementRestart(){
+
+        oProject.RequestedProjectStatus__c = 'Approved';
+
+        Savepoint oSavePoint = Database.setSavepoint();
+
+        try{
+            //oProject.pse__Stage__c = 'Approved';
+            update oProject;
+        }catch(EcoControllerException e){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e);
+            ApexPages.addMessage(oMsg);
+            Database.rollback(oSavePoint);
+            return null; 
+        } 
+
+        list<RecordType> lstRT = [select id from recordtype where sObjectType='ChangeManager__c' and developername='InternalChange'];
+        
+        ChangeManager__c cm;
+        
+        cm = new ChangeManager__c(recordtypeid = lstRT[0].id, Project__c = oProject.id, IntExtProjectOnHold__c=true, IsProjectRestart__c=true);
+
+        try{
+            insert cm;
+        }catch(EcoControllerException e){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to insert Change Manager: ' + e);
+            ApexPages.addMessage(oMsg);
+            return null; 
+        } 
+
+        return new pagereference('/apex/eco_changemanagerdetail?id=' + cm.id + '&Mode=Edit');
+
+
+    }
 
     public Attachment doRecommendationAttachment
     {

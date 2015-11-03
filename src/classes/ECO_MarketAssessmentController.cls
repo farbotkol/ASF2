@@ -11,8 +11,8 @@ public with sharing class ECO_MarketAssessmentController {
         oStandardController.addFields(lFields);
         
         lAnswerValuesBoolean = new list<SelectOption>{
-            new SelectOption('True', 'True'),
-            new SelectOption('False', 'False')
+            new SelectOption('True', 'Yes'),
+            new SelectOption('False', 'No')
         };
         
         this.oMarketAssessment = (MarketAssessment__c)oStandardController.getRecord();
@@ -24,6 +24,7 @@ public with sharing class ECO_MarketAssessmentController {
             ApexPages.addMessage(oPageMessage);
             return;
 		}
+        
 		
 	}
 	public PageReference SaveRecord()
@@ -44,7 +45,23 @@ public with sharing class ECO_MarketAssessmentController {
 
     	oPageReference.getParameters().put('Id', oMarketAssessment.QuestionnaireSet__c);
     	oPageReference.setRedirect(true);
-
+		
     	return oPageReference;
+    }
+    public PageReference DefaultChildToNo(){
+        if(oMarketAssessment.Potentialconflictofinterestissues__c == 'False'){
+            if(oMarketAssessment.ExpertWitnessorLitigationSupport__c != 'False')
+            	oMarketAssessment.ExpertWitnessorLitigationSupport__c = 'False';
+            if(oMarketAssessment.JVinvolvement__c != 'False')
+            	oMarketAssessment.JVinvolvement__c = 'False';
+            if(oMarketAssessment.ProgramManagementServices__c != 'False')
+            	oMarketAssessment.ProgramManagementServices__c = 'False';
+            if(oMarketAssessment.RFPDevelopmentServices__c != 'False')
+            	oMarketAssessment.RFPDevelopmentServices__c = 'False';
+            if(oMarketAssessment.StaffAugmentationorembeddedworkforce__c != 'False')
+            	oMarketAssessment.StaffAugmentationorembeddedworkforce__c = 'False';
+			    
+        }
+        return null;
     }
 }

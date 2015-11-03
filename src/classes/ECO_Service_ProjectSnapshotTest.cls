@@ -1,7 +1,7 @@
 @isTest
 private class ECO_Service_ProjectSnapshotTest {
 
-   static testMethod void testSingleProject() {
+   /*static testMethod void testSingleProject() {
        
         Account testAccount = new Account();
 		testAccount.Name = 'test account';
@@ -290,5 +290,142 @@ private class ECO_Service_ProjectSnapshotTest {
        	System.AssertEquals(8000, projectSnapshot.GrossRevenueITD__c);
        	
        	System.AssertEquals(null, projectSnapshot.ChangeOrdersPending__c);
-    }    
+    }*/
+
+
+/** By Arman **/
+
+    static User testUser;
+    static Contact testContact;
+    static Id recordTypeId;
+    static pse__Proj__c project;
+    static pse__Project_Task__c projTask;
+    static Site__c testSite;
+    static Account testAccount;
+    static List<ProjectTeamMember__c> projectMembers;
+    static List<ProjectRole__c> projectRoles;
+    static List<ExpenditureType__c> expTypeList;
+
+    @testSetup static void setupTestData() {
+        expTypeList = new List<ExpenditureType__c>();
+        for (Integer i=0; i<2; i++) {
+            expTypeList.add(new ExpenditureType__c(Name='et'+i,  
+            PLReportCategory__c='PLReportCategory'+i, ResourceType__c='rt'+i));    
+        }
+        insert expTypeList;
+        
+        Profile profile = [SELECT Id FROM Profile WHERE Name = 'Standard User'];
+        recordTypeId = ECO_Utils_sObject.getRecordTypeId(Contact.sObjectType, 'PSA Resource');
+
+        testAccount = new Account();
+        testAccount.Name = 'test account';
+        insert testAccount;
+
+        testUser = ECO_Utils_Testing.createTestUser('Standard User');
+        insert testUser;
+
+        //project sites
+        testSite = new Site__c();
+        testSite.Account__c = testAccount.Id;
+        testSite.CurrencyIsoCode = 'USD';
+        testSite.City__c = 'Winnipeg';      
+        testSite.VendorSiteID__c = '654321';
+        testSite.CustomerAccountSiteID__c = '666666';
+        insert testSite;
+
+        testContact = new Contact();
+        testContact.Email = testUser.Email;
+        testContact.FirstName = testUser.FirstName;
+        testContact.LastName =  testUser.LastName;
+        testContact.Phone = '55555555555';
+        testContact.pse__Salesforce_User__c = testUser.Id;
+        testContact.RecordTypeId = recordTypeId;
+        testContact.User__c = testUser.Id;
+        testContact.OwnerId = testUser.Id;
+        testContact.Site__c = testSite.Id;
+        testContact.AccountId = testAccount.Id;
+        testContact.pse__Is_Resource_Active__c = true;
+        testContact.pse__Is_Resource__c = true;
+        insert testContact;
+
+        OrganizationString__c organizationString = new OrganizationString__c(Name = 'Test Organization', ProjectAccountant2__c = testContact.Id, PLManagerContact__c = testContact.Id);
+        insert organizationString;
+
+        projectRoles = new List<ProjectRole__c>();
+        projectRoles.add(new ProjectRole__c(Name = 'Project Manager', Type__c = 'Key Member', Active__c = true));
+        projectRoles.add(new ProjectRole__c(Name = 'Project Approver 2', Type__c = 'Key Member', Active__c = true));
+        projectRoles.add(new ProjectRole__c(Name = 'Project Approver', Type__c = 'Key Member', Active__c = true));
+        projectRoles.add(new ProjectRole__c(Name = 'Resilience Director', Type__c = 'Key Member', Active__c = true));
+        projectRoles.add(new ProjectRole__c(Name = 'Project Worker', Active__c = true));
+        insert projectRoles;
+
+        project = new pse__Proj__c(CarryingOutOrganization__c = organizationString.Id, 
+            pse__Account__c = testAccount.Id, pse__Start_Date__c = Date.today().addDays(30), 
+            pse__End_Date__c = Date.today().addDays(60));
+        insert project;
+
+        Project_Site__c testProjectSite = new Project_Site__c();
+        
+        testProjectSite.BillingContactID__c = '1234';
+        testProjectSite.OracleProjectSiteId__c = '1111';
+        testProjectSite.Project__c = project.Id;
+        testProjectSite.Site__c = testSite.Id;
+        testProjectSite.Contribution__c = 100;
+
+        insert testProjectSite;
+
+        projectMembers = new List<ProjectTeamMember__c>();
+        projectMembers.add(new ProjectTeamMember__c(Project__c = project.Id, CurrencyIsoCode = 'USD', 
+            ProjectRole__c = projectRoles[0].Id, Contact__c = testContact.Id, 
+            StartDate__c = Date.today(), EndDate__c = Date.today().addDays(1)));
+        insert projectMembers;
+
+        projTask = new pse__Project_Task__c(Name='pTask', pse__Project__c=project.Id,
+            pse__Start_Date_Time__c = DateTime.now(), pse__End_Date_Time__c = DateTime.now().addDays(1));
+        insert projTask;
+
+    	List<ProjectSnapshot__c> psList = new List<ProjectSnapshot__c>();
+		for (Integer i=0; i<3; i++) {
+			psList.add(new ProjectSnapshot__c(Name='ps'+i, Project__c=project.Id, GrossRevenueForecast__c=i, 
+			CostsODCEXPSForecast__c=i, CostsODCSUBSForecast__c=i, ContingencyForecast__c=i,
+			LaborForecast__c=i, FringeForecast__c=i, OverheadForecast__c=i, 
+			HoursForecast__c=i, SnapshotType__c = 'Auto', SnapshotFiscalMonth__c=''+i,
+			SnapshotPreviousFiscalMonth__c=''+(i-1) ));
+		}
+		insert psList;
+    }
+
+    static testMethod void testGetPreviousFMForecastInformation() {
+    	List<ProjectSnapshot__c> psList = [SELECT SnapshotPreviousFiscalMonth__c, GrossRevenueForecastPrevME__c, 
+				CostsODCEXPSForecast__c, CostsODCSUBSForecast__c, ContingencyForecast__c,
+				LaborForecast__c, FringeForecast__c, OverheadForecast__c, HoursForecast__c  
+				FROM ProjectSnapshot__c];
+
+		pse__Proj__c project1 = [SELECT Id FROM pse__Proj__c LIMIT 1];
+
+		test.startTest();
+			ECO_Service_ProjectSnapshots psService = new ECO_Service_ProjectSnapshots(project1.Id);
+			ProjectSnapshot__c ps0 = psService.getPreviousFMForecastInformation(psList[0]);
+			ProjectSnapshot__c ps1 = psService.getPreviousFMForecastInformation(psList[1]);
+			ProjectSnapshot__c ps2 = psService.getPreviousFMForecastInformation(psList[2]);
+		test.stopTest();
+
+		System.assertEquals(null, ps0.GrossRevenueForecastPrevME__c);
+		System.assertEquals(0, ps1.GrossRevenueForecastPrevME__c);	
+		System.assertEquals(1, ps2.GrossRevenueForecastPrevME__c);	
+		System.assertEquals(1, ps2.CostsODCEXPSForecastPrevME__c);
+		System.assertEquals(1, ps2.CostsODCSUBSForecastPrevME__c);
+		System.assertEquals(1, ps2.ContingencyForecastPrevME__c);
+		System.assertEquals(1, ps2.LaborForecastPrevME__c);
+		System.assertEquals(1, ps2.FringeForecastPrevME__c);
+		System.assertEquals(1, ps2.OverheadForecastPrevME__c);
+		System.assertEquals(1, ps2.HoursForecastPrevME__c);
+    }
+
+    /* select SUM(ProjectFunctionalBurdenedCost__c) CostsODCEXPS FROM CostDistLine__c'+
+			' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id in :projectIds AND'+
+			' ExpenditureItem__r.ExpenditureTypeGroup__c = \'ODCs\' AND'+
+			' ExpenditureItem__r.ExpenditureResourceType__c = \'EXPS\' */
+
+
 }

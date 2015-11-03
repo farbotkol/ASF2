@@ -84,6 +84,17 @@
         <label>VendorFinder Display Fieldset</label>
     </fieldSets>
     <fields>
+        <fullName>AccountId__c</fullName>
+        <externalId>false</externalId>
+        <formula>Site__r.Account__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>AccountId</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>AccountManager__c</fullName>
         <externalId>false</externalId>
         <formula>Site__r.Account__r.Account_Manager__r.Name</formula>
@@ -457,6 +468,23 @@ S = Successful</inlineHelpText>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Vendor Sites</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>AccountName__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Address1__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Country__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>City__c</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
+    <webLinks>
+        <fullName>ManageVendors</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Manage Vendors/Subs</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/ECO_SubsVendors?scontrolCaching=1&amp;id={!pse__Proj__c.Id}</url>
+    </webLinks>
 </CustomObject>

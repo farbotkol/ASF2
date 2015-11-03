@@ -50,7 +50,7 @@
 			font-weight:bold;
 		}
 		.halfWidthWrapper {
-			width:47%;
+        	width:47%;
 			display:inline-block;
 			vertical-align:top;
 		}
@@ -269,22 +269,24 @@
 				</apex:actionFunction>
 
 				<div class="halfWidthWrapper">
-					<apex:pageBlock title="Table of Contents" id="countBlock">
-						<apex:pageBlockTable value="{!lQuestionnaires}" var="item" styleClass="table table-striped table-hover table-bordered">
-				            <apex:column headerValue="Name">
-				            	<apex:commandLink action="{!goToSpecificQuestionnaire}" value="{!item.Name}" rendered="{!item.Name == Questionnaire__c.Name}" styleClass="currentPageLink">
-				            		<apex:param name="questionnaireId" assignTo="{!navTargetQuestionnaireId}" value="{!item.Id}"/>
-				            	</apex:commandLink>
-				            	<apex:commandLink action="{!goToSpecificQuestionnaire}" value="{!item.Name}" rendered="{!item.Name != Questionnaire__c.Name}">
-				            		<apex:param name="questionnaireId" assignTo="{!navTargetQuestionnaireId}" value="{!item.Id}"/>
-				            	</apex:commandLink>
-				            </apex:column>
-				            <apex:column value="{!item.ProjectRisk__c}" styleClass="centeredColumn"/> 
-				            <apex:column value="{!item.DoATriggers__c}" styleClass="centeredColumn"/> 
-				            <apex:column value="{!item.PercentComplete__c}" styleClass="centeredColumn"/> 
-				        </apex:pageBlockTable>
-					</apex:pageBlock>
-				</div>
+                    <div>
+                        <apex:pageBlock title="Table of Contents" id="countBlock">
+                            <apex:pageBlockTable value="{!lQuestionnaires}" var="item" styleClass="table table-striped table-hover table-bordered">
+                                <apex:column headerValue="Name">
+                                    <apex:commandLink action="{!goToSpecificQuestionnaire}" value="{!item.Name}" rendered="{!item.Name == Questionnaire__c.Name}" styleClass="currentPageLink">
+                                        <apex:param name="questionnaireId" assignTo="{!navTargetQuestionnaireId}" value="{!item.Id}"/>
+                                    </apex:commandLink>
+                                    <apex:commandLink action="{!goToSpecificQuestionnaire}" value="{!item.Name}" rendered="{!item.Name != Questionnaire__c.Name}">
+                                        <apex:param name="questionnaireId" assignTo="{!navTargetQuestionnaireId}" value="{!item.Id}"/>
+                                    </apex:commandLink>
+                                </apex:column>
+                                <apex:column value="{!item.ProjectRisk__c}" styleClass="centeredColumn"/> 
+                                <apex:column value="{!item.DoATriggers__c}" styleClass="centeredColumn"/> 
+                                <apex:column value="{!item.PercentComplete__c}" styleClass="centeredColumn"/> 
+                            </apex:pageBlockTable>
+                        </apex:pageBlock>
+                    </div>
+                </div>
 				<div class="halfWidthWrapper" style="margin-left:25px;">
 					<div class="customHelpText">
 						<div class="customHelpBody">
@@ -312,9 +314,10 @@
 							
 							<apex:commandButton action="{!SaveRecord}" value="Save" rerender="pageMessages, countBlock" onClick="showModal();" onComplete="hideModal();"  disabled="{!oQuestionnaire.QuestionnaireSet__r.ApprovalStatus__c=='Approved'}"/>
 							<apex:commandButton action="{!ReturnToSummary}" value="Return to Summary" rerender="pageMessages" onClick="showModal();" onComplete="hideModal();" />
+                            <!--<apex:commandButton action="{!SetDefaultNo}" value="Default to Remaining to No" />-->
 						</apex:pageBlockButtons>
-
-						<apex:pageBlockSection collapsible="false" title="Risk Assessment"></apex:pageBlockSection>
+                        
+                        <apex:pageBlockSection collapsible="false" title=""></apex:pageBlockSection>
 						<table class="table-hover list" width="100%" cellpadding="0" cellspacing="0" >
 							<tr class="headerRow">
 								<th>Type</th>
@@ -364,11 +367,10 @@
 
 						<br/>
 
-						<apex:outputPanel rendered="{!DOA_SectionAnswer != null}">
-
+						<!--<apex:outputPanel rendered="{!DOA_SectionAnswer != null}">-->
+						<apex:outputPanel rendered="{!showDOASubSection}">
 						<apex:pageBlockSection collapsible="false" title="DOA Triggers"></apex:pageBlockSection>
-
-						<table class="table-hover list" width="100%" cellpadding="0" cellspacing="0" >
+						<!--<table class="table-hover list" width="100%" cellpadding="0" cellspacing="0" >
 							<tr class="headerRow">
 								<th>Type</th>
 								<th>Question</th>
@@ -385,8 +387,8 @@
 									</apex:outputPanel>
 								</td>
 								<td class="cell" valign="bottom" id="{!DOA_SectionAnswer.TemplateQuestion__c}" isSectionHeader="{!DOA_SectionAnswer.TemplateQuestion__r.isDOAmaster__c}">
-									<apex:selectRadio value="{!DOA_SectionAnswer.Value__c}" id="answerRadio" onchange="toggleShow(this);">
-						            	<apex:selectOptions value="{!lAnswerValues}"/>
+									<apex:selectRadio value="{!DOA_SectionAnswer.Value__c}" id="answerRadio" >
+                                        <apex:selectOptions value="{!lAnswerValues}"/>
 						            </apex:selectRadio>
 								</td>
 							</tr>
@@ -398,30 +400,35 @@
 									</td>
 								</tr>
 							</apex:outputPanel>							
-						</table>
+						</table>-->
 
 						<BR/><BR/>
-						<apex:outputPanel id="DOAHeader" rendered="{!showDOASection}">
+						<!--<apex:outputPanel id="DOAHeader" rendered="{!showDOASection}">-->
+                        <apex:outputPanel id="DOAHeader" >
 						<table class="table-hover list" width="100%" cellpadding="0" cellspacing="0">
-
 							<tr class="headerRow">
 								<th>Type</th>
-								<th>DOA Number</th>
-								<th>
+								<th>Enterprise DOA</th>
+                                <th>DCS Sub-DOA</th>
+                                <th>
 									<!--DoA Triggers <button type="button" onClick="showModal();apexShowDOASection();" style="display:inline-block; margin:-2px 0 0 10px;">Show all DOA Questions</button>-->
 								</th>
 								<th>Answer</th>
 							</tr>
 							<apex:repeat value="{!mDoAAnswers}" var="group" id="DoAAnswersOuterRepeater">
 								<apex:repeat value="{!mDoAAnswers[group]}" var="answer" id="DoAAnswersInnerRepeater">
-									<apex:outputPanel id="DoAQuestions" layout="none" rendered="{!answer.TemplateQuestion__r.isDOAmaster__c || showDOASection}">
+									<apex:outputPanel id="DoAQuestions" layout="none" rendered="{!answer.TemplateQuestion__r.isDOAmaster__c || showDOASubSection}">
+                                    <!--<apex:outputPanel id="DoAQuestions" layout="none" rendered="{!answer.TemplateQuestion__r.isDOAmaster__c }">-->
 										<tr>
 											<td width="150px" class="cell">
 												<apex:outputField value="{!answer.TemplateQuestion__r.RiskTitle__c}" />
 											</td>
-											<td width="100px" class="cell">
+											<td width="110px" class="cell">
 												<apex:outputField value="{!answer.TemplateQuestion__r.EnterpriseDOA__c}" />
-											</td>
+											</td >
+                                            <td width="110px" class="cell">
+                                                <apex:outputField value="{!answer.TemplateQuestion__r.DCSSubDOA__c}" />
+                                            </td>
 											<td class="cell">
 												<apex:outputField value="{!answer.TemplateQuestion__r.Question__c}" />
 											</td>
@@ -434,9 +441,30 @@
 										
 										
 									</apex:outputPanel>
+                                    
+                                    <apex:outputPanel layout="none" rendered="{!questionToDOAMap[answer.TemplateQuestion__c].Project__c != null}">
+										<tr class="risk">
+                                            <td></td>
+                                            <td></td>
+											<td class="cell {!answer.TemplateQuestion__r.Indented__c}" align="right" colspan="3">
+												<table style="width: 100%;" >
+													<tr>
+                                                        <td align="right" valign="middle">Risk Mitigation <br /> (Response Required):</td>
+														<td align="right" valign="top"><apex:inputTextarea id="m1" value="{!questionToDOAMap[answer.TemplateQuestion__c].MitigationStrategy__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
+                                                        <!--<td align="right" valign="top"><apex:inputTextarea id="m1" value="{!questionToRiskMap[answer.TemplateQuestion__c].RiskMitigation__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>-->
+													</tr>
+												</table>
+												
+											</td>
+										</tr>
+									</apex:outputPanel>
 								</apex:repeat>
 							</apex:repeat>
 						</table>
+                            <br/>
+                            <div align="right" draggable="false" >
+                            <apex:commandButton action="{!SetDefaultNo}" value="Default Remaining to No" style="margin-right:170px"/>
+                            </div>
 						</apex:outputPanel>	
 						</apex:outputPanel>
 					</apex:pageBlock>

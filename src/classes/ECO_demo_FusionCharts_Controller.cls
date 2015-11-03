@@ -1,0 +1,22 @@
+global class ECO_demo_FusionCharts_Controller{
+    public ECO_demo_FusionCharts_Controller(){}
+        /* Although JSON could dynamically be generated using apex JSON api, for the purpose of this example, I chose to 
+        * send JSON string directly
+        * http://wiki.developerforce.com/page/Getting_Started_with_Apex_JSON
+        */
+    
+        @RemoteAction
+        public static String getJSONColumnData(){
+            return '{ "data" :  [  { "label" : "Week 1", "value" : "14400" },  { "label" : "Week 2", "value" : "19600" },  { "label" : "Week 3", "value" : "24000" },  { "label" : "Week 4", "value" : "15700" } ]}';
+        }
+    
+        @RemoteAction
+        public static String getJSONPieData(){
+            return '{"data":[{"label":"Services","value":"26"},{"label":"Hardware","value":"32"}, {"label":"Software","value":"42"}]}';
+        }
+
+        @RemoteAction
+        public static String getXMLStackedColumn2DChartData(){
+            return '<chart>   <categories>     <category label="Quarter 1"/>     <category label="Quarter 2"/>     <category label="Quarter 3"/>     <category label="Quarter 4"/>   </categories>   <dataset seriesName="Fixed Cost">     <set value="235000"/>     <set value="225100"/>     <set value="222000"/>     <set value="230500"/>   </dataset>   <dataset seriesName="Variable Cost">     <set value="230000"/>     <set value="143000"/>     <set value="198000"/>     <set value="327600"/>   </dataset>   <dataset seriesName="Revenue" renderAs="Line" >     <set value="455000"/>     <set value="334000"/>     <set value="426000"/>     <set value="403000"/>   </dataset></chart>';
+        }
+}

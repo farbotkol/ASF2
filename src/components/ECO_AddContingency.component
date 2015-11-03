@@ -1,0 +1,56 @@
+<apex:component controller="ECO_AddContingencyController" allowDML="true">
+    <apex:attribute name="budgetHeader" description="The Budget Header ID" type="String" required="true" assignTo="{!budgetHeaderId}" />
+
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2_Themes, 'themes/smoothness/jquery-ui.css')}"/>
+
+    <script type="text/javascript">
+        $z = jQuery.noConflict();
+
+        function loading(val) {
+            if (val) {
+              document.getElementById('spinner1').style.display = 'block';
+            }
+            else {
+              document.getElementById('spinner1').style.display = 'none';
+            }
+          }
+
+        $z(document).ready(function () {
+        });
+    </script>
+
+    <style>
+    </style>
+
+    <apex:form >
+
+    <apex:actionStatus id="loading" onstart="loading(true)" onstop="loading(false)" />
+
+
+        <span style="font-size:14pt;font-weight:bold;">Add Resource to Budget</span>
+
+        <div style="display:none; float: right;" id="spinner1">
+            <img height="15" width="15" class="spinner" src="{!$Resource.loading}" alt="loading" title="loading"/>
+        </div>
+
+        <div style="clear:both;"></div>
+
+
+        <div id="tabs" class="tabsForResource tabs" style="height:400px; margin-top:20px">
+         <td style="text-align:right;">Contingency Name:&nbsp;</td>
+            <apex:inputText value="{!jobName}"/>
+        </div>
+
+                <div style="float: right;">
+                    <apex:commandButton value="Add Resource(s)" action="{!addExistingResource}" style="font-size:11px !important; font-family: Arial;" />
+                    
+                    <apex:commandButton value="Cancel" onclick="closeModal('modalDialog0');return false;" style="font-size:11px !important; font-family: Arial;" />
+                </div>
+
+                <div style="clear: both;"></div>
+
+    </apex:form>
+</apex:component>

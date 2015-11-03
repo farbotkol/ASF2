@@ -32,7 +32,7 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>New</actionName>
-        <content>ECO_ReviewMemberManager</content>
+        <content>ECO_ReviewMemberManagerRedirect</content>
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>Visualforce</type>
     </actionOverrides>
@@ -56,7 +56,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
-    <enableReports>false</enableReports>
+    <enableReports>true</enableReports>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fieldSets>
@@ -221,6 +221,16 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>DelegateProject__c</fullName>
+        <externalId>false</externalId>
+        <formula>Deliverable__r.Project__c</formula>
+        <label>Delegate Project</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>DeliverableName__c</fullName>
         <externalId>false</externalId>
         <formula>Deliverable__r.Name</formula>
@@ -246,7 +256,7 @@
         <fullName>DeliverableRevision__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <label>Deliverable Revision</label>
+        <label>Deliverable Version</label>
         <lookupFilter>
             <active>true</active>
             <filterItems>
@@ -266,7 +276,7 @@
     <fields>
         <fullName>DeliverableType__c</fullName>
         <externalId>false</externalId>
-        <formula>TEXT(Deliverable__r.DeliverableType__c)</formula>
+        <formula>&quot;Test&quot;</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Deliverable Type</label>
         <required>false</required>
@@ -319,12 +329,39 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Lock_Fields__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>For Internal Purpose to lock fields on visualforce page</description>
+        <externalId>false</externalId>
+        <label>Lock Fields</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>OriginatorRequiredDate__c</fullName>
         <externalId>false</externalId>
         <label>Originator Required Date</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>ReviewScopeComments__c</fullName>
+        <externalId>false</externalId>
+        <label>Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
+    </fields>
+    <fields>
+        <fullName>ReviewTypeComments__c</fullName>
+        <externalId>false</externalId>
+        <label>Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>10</visibleLines>
     </fields>
     <fields>
         <fullName>ReviewerRequiredDate__c</fullName>
@@ -543,6 +580,15 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Technical Quality Reviews</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Deliverable__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>DeliverableName__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>DeliverableOwner__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>DeliverableType__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>DeliverableRevision__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Approver__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATEDBY_USER</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

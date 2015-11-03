@@ -151,6 +151,8 @@ public without sharing class ECO_ProjectTaskValidator{
             }
 
             //rule: updated task date cannot be before the latest revenue date
+            // ALERT - disabled by Graham per Michael/Phani/Linda on October 29, 2015
+            /*
             if(isUpdate){
                 if(mapProjectTaskRevenue.containsKey(task.Id)){
                     if(task.pse__End_Date_Time__c < mapProjectTaskRevenue.get(task.id)[0].GLDate__c){
@@ -160,9 +162,10 @@ public without sharing class ECO_ProjectTaskValidator{
                 }
 
             }
+            */
 
             //rule: updated task date cannot be before the latest expenditure date
-            if(isUpdate){
+            /*if(isUpdate){
                 if(mapProjectTaskExpenditure.containsKey(task.Id)){
                     if(task.pse__End_Date_Time__c < mapProjectTaskExpenditure.get(task.id)[0].ExpenditureItemDate__c){
                         tasks[pos].addError(injectTaskNameInLabel(String.valueOf(System.Label.ECO_Expenditure_Validation), task.Name)); 
@@ -170,7 +173,7 @@ public without sharing class ECO_ProjectTaskValidator{
 
                 }
 
-            }
+            }*/
 
            	pos ++;
         }

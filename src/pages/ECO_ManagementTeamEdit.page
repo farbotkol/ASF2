@@ -1,4 +1,4 @@
-<apex:page standardController="ManagementTeam__c" extensions="ECO_CreateMSAContact">
+<apex:page standardController="ManagementTeam__c" extensions="ECO_CreateMSAContact" action="{!init}">
 		<style>
 	   	.halfWidthWrapper {
 			width:50%;
@@ -12,16 +12,28 @@
 		}
 		</style>
 <apex:form >
-<apex:sectionheader title="New Management Team" subtitle="Management Team Edit"/>
+<apex:sectionheader title="New Management Team" subtitle="{!agreement.ContractTitle__c}({!agreement.AgreementNumber__c})"/>
 
 <apex:pageBlock title="Management Team Edit" mode="edit">
-	<apex:pageBlockButtons ><apex:commandButton value="Save" action="{!save}"/><apex:commandButton value="Cancel" action="{!cancel}"/><apex:commandButton value="New Contact" action="{!createNewContact}"/></apex:pageBlockButtons>
+	<apex:pageBlockButtons ><apex:commandButton value="Save" action="{!save}"/><apex:commandButton value="Return to MSA" action="{!cancel}"/><apex:commandButton value="New Contact" action="{!createNewContact}"/></apex:pageBlockButtons>
 	<div class="halfWidthWrapper">
-		<apex:pageblocksection columns="1" title="Information">
-			<apex:outputField value="{!ManagementTeam__c.Agreement__c}"/>
+		<apex:pageblocksection columns="1" title="AECOM">
+<!--			<apex:outputField value="{!ManagementTeam__c.Agreement__c}"/>-->
 			<apex:inputField value="{!ManagementTeam__c.TeamMember__c}"/>
 			<apex:inputField value="{!ManagementTeam__c.Role__c}"/>
 		</apex:pageblocksection>
+		<apex:pageblocksection columns="1" title="Client">
+<!--			<apex:outputField value="{!ManagementTeam__c.Agreement__c}"/>-->
+			<apex:inputField value="{!ManagementTeam__c.ClientTeamMember__c}"/>
+			<apex:inputField value="{!ManagementTeam__c.ClientRole__c}"/>
+		</apex:pageblocksection>
+
+		<apex:pageblocksection columns="1" title="Vendor/Sub">
+<!--			<apex:outputField value="{!ManagementTeam__c.Agreement__c}"/>-->
+			<apex:inputField value="{!ManagementTeam__c.VendorTeamMember__c}"/>
+			<apex:inputField value="{!ManagementTeam__c.VendorRole__c}"/>
+		</apex:pageblocksection>		
+
 	</div>
 	
 	<div id="notifications">
@@ -29,13 +41,12 @@
 		<apex:inputField value="{!contact.FirstName}"/>
 		<apex:inputField value="{!contact.LastName}"/>
 		<apex:inputField value="{!contact.AccountId}"/>
-		<apex:inputField value="{!contact.AccountId}"/>
-		<apex:inputField value="{!contact.AccountId}"/>
-		<apex:inputField value="{!contact.AccountId}"/>
 		<apex:outputPanel ><apex:commandButton value="Save" action="{!saveNewContact}"/><apex:commandButton value="Cancel" action="{!cancelNewContact}"/></apex:outputPanel>
 		</apex:pageBlockSection>
 	</div>
 </apex:pageBlock>
+
+<apex:inputHidden value="{!ManagementTeam__c.Agreement__c}"/>
 
 </apex:form>
 

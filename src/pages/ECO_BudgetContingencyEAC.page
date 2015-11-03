@@ -1,0 +1,274 @@
+<apex:page standardController="BudgetHeader__c" extensions="ECO_BudgetContingencyEACController" sidebar="false" showHeader="false">
+    <apex:composition template="ECO_BudgetFrame">
+        <apex:define name="budgetScreen">
+            <script type="text/javascript">
+                $b = jQuery.noConflict();
+                
+                function forecastChange(line) {
+                    var row = $b(line).closest('tr');
+                    var actual = parseFloat(row.find('[id$="actual"]').val());
+                    var forecast = parseFloat(row.find('[id$="forecast"]').val());
+                    actual = actual ? actual : 0.00;
+                    forecast = forecast ? forecast : 0.00;
+                    
+                    row.find('[id$="etc"]').val(forecast-actual);
+                }
+                
+                function etcChange(line) {
+                    var row = $b(line).closest('tr');
+                    var actual = parseFloat(row.find('[id$="actual"]').val());
+                    var etc = parseFloat(row.find('[id$="etc"]').val());
+                    actual = actual ? actual : 0.00;
+                    etc = etc ? etc : 0.00;
+                    
+                    row.find('[id$="forecast"]').val(etc+actual);
+                }
+            </script>
+            
+            <style>
+                .laborDetail>td, .laborDetail>th, td.resourceColumn th, td.resourceColumn td {
+                    border-top: 1px solid black;
+                    border-left: 1px solid black;
+                    border-right: 1px solid black;
+                }
+                .laborDetail>td.lastCell {
+                    border-bottom: 1px solid black;
+                }
+                
+                tr.taskDetail:last-child>td {
+                    border-bottom: 1px solid black;
+                }
+                
+                .taskDetailHeader>td{
+                    border-left: 1px solid black;
+                    border-top: 1px solid black;
+                    border-bottom: 1px solid black;
+                    padding:3px;
+                    height: 20px;
+                }
+                
+                .laborDetail input, .taskDetail input{
+                    width:50px;
+                }
+
+                .taskDetail>td{
+                    border-left: 1px solid black;
+                    border-top: 1px solid black;
+                    padding:3px;
+                    height: 20px;
+                }
+                
+                .taskDetail>td.lastCell{
+                    border-right: 1px solid black;
+                }
+                
+                table.rowHeader>th, table.rowHeader>td {
+                    border-top: 1px solid transparent;
+                    border-left: 1px solid transparent;
+                    border-right: 1px solid transparent;
+               }
+                table.rowHeader>td.lastCell {
+                    border-bottom: 1px solid transparent;
+                }
+                table.laborDetail {
+                    width: 100%;
+                }
+                table.rowHeader>td, table.laborDetail>td, table.rowHeader>th, table.laborDetail>th, td.resourceColumn th, td.resourceColumn td {
+                    padding:3px;
+                    height: 20px;
+                }
+                
+                td.resourceColumn th, td.resourceColumn td{
+                    border-bottom: 1px solid black;
+                }
+                
+                .tableInputs {
+                    padding: 0;
+                    height: 20px;
+                }
+             
+                .blueHeading {
+                    background-color:#00B0F0;
+                    color:#fff;
+                    font-weight: bold;
+                }
+                
+                .lightBlueHeading {
+                    background-color: #C5D9F1;
+                }
+                
+                .bold {
+                    font-weight: bold;
+                }
+                
+                .grayHeading {
+                    background-color: #BFBFBF;
+                    font-weight: bold;
+                }
+            </style>
+            <apex:sectionHeader title="Contingency Details"/>  
+            
+            <!--c:ECO_ModalDialog width="850" padding="20px 20px 20px 20px" name="modalDialog0">
+                <c:ECO_AddSubAndVendor budgetHeader="{!BudgetHeader__c.id}" />
+            </c:ECO_ModalDialog-->
+                
+            <apex:form >                
+                <table style="width:100%" cellpadding="0" cellspacing="0">
+                    <tr>
+                        <td></td>
+                        <td>
+                            <table class="rowHeader" cellpadding="0" cellspacing="0">
+                                <thead>
+                                    <tr>
+                                        <th><apex:commandButton value="Save" action="{!save}"/></th>
+                                        <!--th><apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/></th-->
+                                    </tr>
+                                    <tr><th>&nbsp;</th></tr>
+                                    <tr><th>&nbsp;</th></tr>
+                                    <tr><th>&nbsp;</th></tr>
+                                </thead>
+                            </table>
+                        </td>
+                    <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour">
+                        <td class="resourceColumn">
+                            <table class="laborDetail" cellpadding="0" cellspacing="0">
+                                <thead>
+                                    <tr><th colspan="6" class="blueHeading">{!budgetLabour.resourceType}</th></tr>
+                                    <tr><th colspan="6" class="blueHeading">
+                                        <apex:commandLink title="Clone" action="{!cloneResource}">
+                                            <apex:param name="budgetSubId" value="{!budgetLabour.oBudgetResource.Id}"/>
+                                            <apex:image value="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'clone.png')}" width="12" style="margin-right: 8px;" />
+                                        </apex:commandLink>
+                                        <apex:commandLink title="Delete" action="{!removeEntireColumn}" >
+                                            <apex:param name="budgetSubId" value="{!budgetLabour.oBudgetResource.Id}"/>
+                                            <apex:image value="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" width="12" />
+                                        </apex:commandLink>
+                                    </th></tr>
+                                    <tr><td colspan="6" class="lightBlueHeading">{!budgetLabour.columnHeader}</td></tr>
+                                    <tr><td colspan="6" >{!budgetLabour.jobName}</td></tr>
+                                </thead>
+                                <tbody >
+                                    
+                                </tbody>
+                            </table>
+                        </td>
+                    </apex:repeat>
+                    </tr>
+                    <tr><td style="height: 20px;">&nbsp;</td></tr>
+                    <tr class="taskDetailHeader">
+                        <td class="grayHeading">Task Number</td>
+                        <td class="grayHeading">Task Name</td>
+                    <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour">
+                        <td class="lightBlueHeading bold">
+                            <table width="100%">
+                                <tr>
+                                    <td width="20%">Current Approved Cost</td>
+                                    <td width="20%">Current Forecast Cost</td>
+                                    <td width="20%">Change in Contingency F'cast</td>
+                                    <td width="20%">Revised Forecast Cost</td>
+                                    <td width="20%">Forecast Revenue</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </apex:repeat>
+                        <td class="blueHeading">Cost</td>
+                        <td class="blueHeading">Revenue</td>
+                    </tr>
+                    <tr><td style="height: 5px;">&nbsp;</td></tr>
+                    <tr class="taskDetail">
+                        <td class="bold">Project Total</td>
+                        <td></td>
+                    <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour"> <!--list<DTO_BudgetLaborDetail>-->
+                        <td class="lightBlueHeading">
+                            <table width="100%">
+                                <tr>
+                                <apex:variable value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[budgetLabour.oBudgetResource.Id + 'Total']}" var="totalByResource"/>
+                                    <td width="20%">{!totalByResource.EACCurrentApprovedCost}</td>
+                                    <td width="20%">{!totalByResource.EACCurrentForecastCost}</td>
+                                    <td width="20%">{!totalByResource.EACEstimateToComplete}</td>
+                                    <td width="20%">{!IF(ISNULL(totalByResource.EACCurrentApprovedCost), 0, totalByResource.EACCurrentApprovedCost) + 
+                        IF(ISNULL(totalByResource.EACEstimateToComplete), 0, totalByResource.EACEstimateToComplete)}</td>
+                                    <td width="20%">{!totalByResource.EACForecastRevenue}</td>
+                                </tr>
+                            </table>
+                        </td>
+                    </apex:repeat>
+                        <td class="blueHeading">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!budgetLabourWrapper.grandTotals.EACEstimateToComplete}" />
+                            </apex:outputText>
+                        </td>
+                        <td class="blueHeading">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!budgetLabourWrapper.grandTotals.EACForecastRevenue}" />
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                    <apex:repeat value="{!budgetLabourWrapper.dtoBudgetTasks}" var="budgetTask"> <!--list<DTO_BudgetTask>-->
+                        <tr class="taskDetail">
+                            <td>
+                                <div style="margin-left: {!budgetTask.indentLevel * 13}px;">
+                                    {!budgetTask.taskNumber} (level {!budgetTask.indentLevel})
+                                </div>
+                            </td>
+                            <td>
+                                <div style="margin-left: {!budgetTask.indentLevel * 13}px;">
+                                    {!budgetTask.taskName}
+                                </div>
+                            </td>
+                        <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour"> <!--list<DTO_BudgetLaborDetail>-->
+                            <td>
+                                <table width="100%">
+                                    <tr>
+                                        <td width="20%">
+                                            <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACApprovedTotalCost__c}" rendered="{!budgetTask.children.size == 0}" />
+                                            <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACCurrentApprovedCost}" rendered="{!budgetTask.children.size > 0}"/>
+                                        </td>
+                                        <td width="20%">
+                                            <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastTotalCost__c}" rendered="{!budgetTask.children.size == 0}" />
+                                            <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACCurrentForecastCost}" rendered="{!budgetTask.children.size > 0}"/>
+                                        </td>
+                                        <td width="20%">
+                                            <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c}" id="etc" rendered="{!budgetTask.children.size == 0}" OnKeyUp="etcChange(this);" />
+                                            <apex:outputText value="{!budgetLabourWrapper.mapTotalCostBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}" rendered="{!budgetTask.children.size > 0}"/>
+                                        </td>
+                                        <td width="20%">
+                                            <apex:outputPanel rendered="{!budgetTask.children.size == 0}" > 
+                                                <input type="text" 
+                                                    value="{!IF(budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c == null, 0, budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c) + 
+                                                             IF(budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACActualCost__c == null, 0, budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACActualCost__c)
+                                                           }" 
+                                                    OnKeyUp="forecastChange(this);" id="{!budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id}forecast"/>
+                                            </apex:outputPanel>
+                                            
+                                            <apex:outputText value="{!budgetLabourWrapper.mapTotalCostBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id] + 
+                                                                    budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACActualCost}"
+                                                             rendered="{!budgetTask.children.size > 0}"/>
+                                            
+                                        </td>
+                                        <td width="20%">
+                                            <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalRevenue__c}" rendered="{!budgetTask.children.size == 0}" />
+                                            <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACForecastRevenue}" rendered="{!budgetTask.children.size > 0}"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </td>
+                        </apex:repeat>
+                            <td class="blueHeading">
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                    <apex:param value="{!budgetTask.totalEACApprovedTotalCost}" />
+                                </apex:outputText>
+                            </td>
+                            <td class="blueHeading">
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                    <apex:param value="{!budgetTask.totalContingencyRevenue}" />
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </apex:repeat>
+                </table>
+            </apex:form>
+    
+        </apex:define>
+    </apex:composition>
+</apex:page>

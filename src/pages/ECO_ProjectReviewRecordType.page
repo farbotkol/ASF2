@@ -48,7 +48,7 @@
         }
     </script>
 <apex:form >
-<apex:sectionHeader title="Project Reviews" subtitle="{!pse__Proj__c.Name}" /> <!-- need to add {!theProject.Name} -->
+<apex:sectionHeader title="Project Reviews" subtitle="{!pse__Proj__c.Name + "(" + pse__Proj__c.EcoSystemReferenceNumber__c + ")"}" /> <!-- need to add {!theProject.Name} -->
 
         <div class="customHelpText">
             <div class="customHelpBody">
@@ -59,16 +59,29 @@
 
     
     <apex:pageBlockButtons location="top">
-        <apex:commandButton action="{!cancel}" value="Back to Project" immediate="true"/>
+        <apex:commandButton action="{!cancel}" value="Return to Project" immediate="true"/>
     </apex:pageBlockButtons>
     
     <apex:pageBlockSection title="Existing Project Reviews" columns="1" collapsible="false">
         <apex:pageBlockTable value="{!ProjectReviews}" var="projectReview" rendered="{!ProjectReviews.size > 0}">
-            <apex:column headerValue="Name">
-                <apex:commandLink action="{!URLFOR($Action.ProjectReview__c.view, projectReview.Id, ['retURL'='/apex/ECO_ProjectReviewRecordType?Id='&pse__Proj__c.Id])}">
-                    <apex:outputField value="{!projectReview.Name}"/>
-                </apex:commandLink>
+            <apex:column style="width:60px" headervalue="Action">
+                <apex:outputPanel rendered="{!(NOT(projectReview.IsPerformanceReview__c) && projectReview.CompletedDate__c == null) || (projectReview.IsPerformanceReview__c && projectReview.Status__c != 'Approved')}">
+                    <apex:commandLink style="color:#015ba7;" action="{!URLFOR($Action.ProjectReview__c.delete, projectReview.Id, ['retURL'='/apex/ECO_ProjectReviewRecordType?Id='&pse__Proj__c.Id])}">Del</apex:commandLink>
+                </apex:outputPanel>
             </apex:column>
+            <apex:column headerValue="Name">
+                <apex:outputPanel rendered="{!NOT(projectReview.IsPerformanceReview__c)}">
+                    <apex:commandLink action="{!URLFOR($Action.ProjectReview__c.view, projectReview.Id, ['retURL'='/apex/ECO_ProjectReviewRecordType?Id='&pse__Proj__c.Id])}">
+                        <apex:outputField value="{!projectReview.Name}"/>
+                    </apex:commandLink>
+                </apex:outputPanel>
+                <apex:outputPanel rendered="{!projectReview.IsPerformanceReview__c}">
+                    <apex:outputLink value="{!URLFOR('/apex/ECO_ProjectPerformanceReviews?Id=' + projectReview.Id, null, ['retURL'='/apex/ECO_ProjectReviewRecordType?Id='&pse__Proj__c.Id])}">
+                        <apex:outputField value="{!projectReview.Name}"/>
+                    </apex:outputLink>
+                </apex:outputPanel>
+            </apex:column>
+            <apex:column headervalue="Review Status"><apex:outputField value="{!projectReview.Status__c}"/></apex:column>
             <apex:column headerValue="Record Type"><apex:outputField value="{!projectReview.RecordType.Name}"/></apex:column>
             <apex:column headerValue="Scheduled Date"><apex:outputField value="{!projectReview.ScheduledDate__c}"/></apex:column>
             <apex:column headerValue="Completed Date"><apex:outputField value="{!projectReview.CompletedDate__c}"/></apex:column>
@@ -146,7 +159,7 @@
                 </td>
                 <td><apex:commandButton value="Select" onclick="recordTypeSelected('Project Performance Review'); return false;"/></td>
             </tr>           
-            <tr>
+            <!--<tr>
                 <td><apex:outputText value="Project Closeout"/></td>
                 <td><apex:outputText >
                     The Project Closeout review verifies that all project and performance goals and requirements have been successfully achieved, ensures mandatory project delivery 
@@ -154,7 +167,7 @@
                 </apex:outputText>
                 </td>
                 <td><apex:commandButton value="Select" onclick="recordTypeSelected('Project Closeout'); return false;"/></td>   
-            </tr>
+            </tr>-->
             <tr>
                 <td><apex:outputText value="Other"/></td>
                 <td><apex:outputText >Any other reviews or meetings identified by the PM, project team or client throughout the life of the project.</apex:outputText></td>

@@ -4,7 +4,7 @@
 
     <style>
 
-        /* CUSTOM HELP / GUIDANCE TEXT BOX */
+        /* CUSTOM HELP / GUIDANCE TEXT BOX 
         .customHelpText{
             padding:7px;
             border:1px solid #85B3CE;
@@ -19,7 +19,24 @@
         .customHelpBody{
             color:#;
             max-width:95%;
-        }    
+        }    */
+        .customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 30px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        }
         .searchText{
             text-align:center;
             font-weight:bold;
@@ -35,6 +52,34 @@
         }
         .flyout table th:first{
             width:100px;
+        }
+        .mouseOverInfo {
+            position: absolute;
+            display: none;
+            left: 05px;
+            bottom: 0px;
+            width: 69em;
+            background-color: #fefdb9;
+            padding: 2px;
+            border: 1px solid black;
+            z-index: 9999;
+            opacity: 0;
+            white-space: normal;
+            font-weight: normal;
+            color: #000;
+        }
+
+        .helpIcon{
+            width: 24px;
+            height: 24px;
+        }
+
+         .pbsAssignedDeliverables{
+            font-weight: bold;
+            width:100%;
+            min-height: 25px;
+            margin-left:12px;
+
         }
     </style>
 
@@ -52,12 +97,23 @@
 
 		deleteScope(selectedScope);
 	}
-
+	function setInner(variable)
+        {
+            var selected = variable.value;
+            if(selected == 'Yes' || selected == 'True')
+            {
+                document.getElementById("j_id0:j_id31:j_id36:j_id41:j_id42:j_id46:j_id47:YesMessage").style.display = 'block';
+            }
+            if(selected == 'No' || selected == 'False')
+            {
+                document.getElementById("j_id0:j_id31:j_id36:j_id41:j_id42:j_id46:j_id47:YesMessage").style.display = 'none';
+            }
+            
+        }  
+    
     </script>
 
-
-
-    <apex:sectionHeader title="Scope and Approach: Package Edit" subtitle="{!theProject.Name}" />
+    <apex:sectionHeader title="Scope & Packages" subtitle="{!theProject.ProjectSectionHeaderName__c}" />
 
     <apex:outputpanel id="all">
     <apex:pageMessages />
@@ -95,7 +151,7 @@
                 <apex:outputText value="{!oProjectPackage.PackageTitle__c}" />
                 <apex:inputField id="first" value="{!oProjectPackage.Scope_Owner__c}" />
                 <apex:inputField value="{!oProjectPackage.Status__c}" />
-                <apex:inputField value="{!oProjectPackage.CancelledReason__c}" />
+                <apex:inputField value="{!oProjectPackage.CancelledReason__c}" rendered="{!if(theProject.pse__Stage__c = 'Approved', true, false)}"/>
             </apex:pageBlockSection>
             <apex:pageBlockSection columns="1"  >
                 <apex:pageblockSectionItem helpText="{!$ObjectType.Packages__c.Fields.Scope_Details__c.inlineHelpText}"  >
@@ -113,17 +169,60 @@
             
             <br /><br />
             <div style="font-weight:bold;padding:20px 10px 4px 10px;">BIM</div>
+            <apex:actionRegion immediate="true">
+                <div style="padding:10px">
+                    <apex:panelgrid columns="4" style="float:left;">
+                    This project will use Digital Production Tools, or manage information in a common Data Environment.
+                    <!--<c:ECO_HelpIcon helpText="{!$ObjectType.Packages__c.fields.Utilize_BMI_Technology__c.inlineHelpText}" />-->
+                    &nbsp;&nbsp;
+                    <!--<apex:selectRadio value="{!oProjectPackage.Utilize_BMI_Technology__c}" onchange="setInner(this)" >-->
+                     	 <apex:selectRadio value="{!oProjectPackage.Utilize_BMI_Technology__c}" >
+                            <apex:selectOptions value="{!yesNo}"/>
+                            <apex:actionSupport event="onchange" reRender="Panel"/>
+                         </apex:selectRadio>
+                    </apex:panelgrid>
+                </div>
+                <div style="padding:10px">
+                   <br/>
+                   <apex:outputPanel id="Panel" >
+                       <apex:outputPanel id="YesMessage" rendered="{!if(oProjectPackage.Utilize_BMI_Technology__c, true, false)}" >
+                           <apex:pageMessage severity="info" summary="Projects utilizing BIM will need to provide additional data to determine if a BIM Health Start Review is required. Compelte the BIM intake form for review by your Geography Director." />
+                       </apex:outputPanel>
+                   </apex:outputPanel>
+                   
+                </div>     
+            </apex:actionRegion>
             <div style="padding:10px">
-                This project will use Digital Production Tools, or manage information in a common Data Environment.
-                <c:ECO_HelpIcon helpText="{!$ObjectType.Packages__c.fields.Utilize_BMI_Technology__c.inlineHelpText}" />                
-                &nbsp;&nbsp;
-                <apex:inputCheckbox value="{!oProjectPackage.Utilize_BMI_Technology__c}" label="" />
-
-                <br /><br />
-                <apex:outputLink value="https://jonanunson.typeform.com/to/Fovnuf" target="_blank">BIM intake form</apex:outputLink>
+                <apex:outputLink styleClass="btn" style="text-decoration:none" value="https://jonanunson.typeform.com/to/Fovnuf" target="_blank">BIM intake form</apex:outputLink>
             </div>
-
-            <div style="font-weight:bold;padding:20px 10px 4px 10px;">Package Attachments</div>
+            
+            <div style="font-weight:bold;padding:20px 10px 4px 10px;">Safety in Design</div>
+            <apex:actionRegion immediate="true">
+                <div style="padding:10px">
+                    <apex:panelgrid columns="4" style="float:left;">
+                    Project scope includes design where we need to incorporate Safety in Design (SiD).
+                    <!--<c:ECO_HelpIcon helpText="Safety in Design (SiD) legislation generally requires all parties to do ‘what is practicable’ to reduce health and safety risks and applies to all designers and design activities regardless of discipline. This implies a duty on clients to participate in, or provide information for, design activities relevant to identifying and reducing safety risks at the planning and design stage. It is implicit that staff, at all levels, take action to design out safety and health risks that are readily identifiable.<br/><br/> 
+                                              “Design” includes drawings, design details, specifications and bills of quantities (including specification of articles or substances) relating to a structure, and calculations prepared for the purpose of a design.<br/><br/> 
+                                              “Designer” means any person (including a client, contractor or other person referred to in these Regulations) who in the course or furtherance of a business - (a) prepares or modifies a design; or (b) arranges for, or instructs, any person under their control to do so, relating to a structure, or to a product or mechanical or electrical system intended for a particular structure, and a person is deemed to prepare a design where a design is prepared by a person under their control." /> -->               
+                    &nbsp;&nbsp;
+                    
+                    <apex:selectRadio value="{!oProjectPackage.SafetyInDesign__c}" >
+                        <apex:selectOptions value="{!yesNo}"/>
+                        <apex:actionSupport event="onchange" reRender="Panel2"/>
+                     </apex:selectRadio>
+                    <!--<apex:inputCheckbox value="{!oProjectPackage.SafetyInDesign__c}" label="" />-->
+                    </apex:panelgrid>
+                </div>
+                <div style="padding:10px">
+                    <br />
+                    <apex:outputPanel id="Panel2">
+                        <apex:outputPanel id="YesMessage2" rendered="{!if(oProjectPackage.SafetyInDesign__c, true, false)}">
+                                <apex:pageMessage severity="info" summary="Please provide details of relevant SiD requirements. Ensure relevant legislative requirements are incorporated." />
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+                </div>   
+            </apex:actionRegion>
+            <div style="font-weight:bold;padding:10px 10px 4px 10px;">Package Attachments</div>
             <apex:outputPanel rendered="{!oProjectPackage.Attachments.size == 0}" layout="block" style="padding:10px">
                 <apex:pageMessage severity="info" summary="Package has no attachments" />
             </apex:outputPanel>
@@ -149,19 +248,19 @@
             <apex:variable value="{!lstMapAssignedDeliverables[oProjectPackage.Id]}"  var="myMap" />
 
             <apex:outputPanel >
+
+
                 <div style="font-weight:bold;padding:20px 10px 4px 10px;">
                 <apex:pageMessage severity="info" summary="Deliverables cannot be assigned until all packages are saved" rendered="{!booNewProjectInPlay}" />
                 </div>
 
                 <apex:outputPanel >
-
-                    <apex:pageblocksection title="Assigned Deliverables" columns="1" collapsible="false">
-                            <apex:facet name="header">
-                                <apex:outputPanel >
+                    <apex:outputPanel styleClass="pbsAssignedDeliverables">
                                     Assigned Deliverables
                                     <c:ECO_HelpIcon helpText="A list of Project Deliverables will appear here once added to the project.  Select the Scope Package to which the deliverable belongs to add the deliverable to that scope package." />
-                                </apex:outputPanel>
-                            </apex:facet>
+                    </apex:outputPanel>
+                    <apex:pageblocksection columns="1" collapsible="false" >
+
                         
                         <apex:outputText Value="No Results Were Found." rendered="{!IF(myMap.size > 0, false, true)}" />
 
@@ -188,6 +287,7 @@
             </apex:outputPanel>
             </apex:outputPanel>
 
+
             </c:Tab>
             <!-- Scope Package Section -->
             <apex:repeat value="{!lstPackages}" var="ScopePackage">
@@ -196,6 +296,10 @@
 				<apex:actionFunction name="deleteScope" action="{!DeleteSelectedScope}" rerender="hiddenBlock">     
             		<apex:param name="pSelectePackage" value="" assignTo="{!sSelectedPackageId}" />
         		</apex:actionFunction>
+
+                <div style="text-align:center">
+                <apex:commandButton rendered="{!theProject.pse__Stage__c =='Planning' ||  theProject.pse__Stage__c == 'Pending Go/No Go'  && ScopePackage.PackageTitle__c !=''}" onclick="deleteScope('{!ScopePackage.Id}'); return false;" value="Delete Package"  />
+                </div>
 
                 <apex:pageBlockSection title="{!IF(ScopePackage.PackageTitle__c=='', 'New Scope Package', ScopePackage.PackageTitle__c)} "  columns="2"  collapsible="false">
     
@@ -236,7 +340,7 @@
                         <apex:column value="{!attachment.ContentType}"/>
                     </apex:pageBlockTable>
                 </div>
-
+				
                 <div style="text-align:center">
                     <apex:commandButton value="Attach File to Package" action="{!AttachFile}" reRender="hiddenBlock">
                         <apex:param assignTo="{!sSelectedPackageId}" name="sSelectedPackageId" value="{!ScopePackage.Id}" />
@@ -253,14 +357,11 @@
                 </div>
 
                         <apex:outputPanel >
-
-                            <apex:pageblocksection columns="1" collapsible="false">
-                            <apex:facet name="header">
-                                <apex:outputPanel >
+                            <apex:outputPanel styleClass="pbsAssignedDeliverables">
                                     Assigned Deliverables
                                     <c:ECO_HelpIcon helpText="A list of Project Deliverables will appear here once added to the project.  Select the Scope Package to which the deliverable belongs to add the deliverable to that scope package." />
-                                </apex:outputPanel>
-                            </apex:facet>
+                            </apex:outputPanel>
+                            <apex:pageblocksection columns="1" collapsible="false">
                                 <apex:outputpanel rendered="true" >
                                 </apex:outputpanel>
                                 <apex:outputText Value="No Results Were Found." rendered="{!IF(MapRenderAssigned[ScopePackage.Id], false, true)}" />
@@ -287,9 +388,7 @@
 
                 </apex:outputPanel>
                 </apex:outputPanel>
-                <div style="text-align:center">
-				<apex:commandButton rendered="{!theProject.pse__Stage__c =='Planning' && ScopePackage.PackageTitle__c !=''}" onclick="deleteScope('{!ScopePackage.Id}'); return false;" value="Delete"  />
-				</div>
+
                 </c:Tab>
             </apex:repeat>
 
@@ -299,7 +398,6 @@
             <a id='placeholder' name='placeholder' />
         </apex:pageBlock>
 
-
         
         <apex:pageBlock id="hiddenBlock" rendered="false"></apex:pageBlock>
         <a id='dplaceholder' name='dplaceholder' />
@@ -308,6 +406,7 @@
         <c:ECO_ProjectTeamFlyout ProjectId="{!sProjectId}"  />
         
     </apex:form>
+        
     </apex:outputPanel>
 
     <apex:outputPanel rendered="{!not(selectedTab == null)}">

@@ -3,7 +3,8 @@ Author: NTT Centerstance
 Purpose: To provide extended controller capabilities for the Project Scope Page
 1.0 - Tim C - 30/01/2015 - Created
 ***/
-public with sharing class ECO_ProjectScopeController extends ECO_PageControllerBase { 
+public virtual with sharing class ECO_ProjectScopeController extends ECO_PageControllerBase 
+{ 
 
     private final Packages__c oPackage;
     public integer packageCount;
@@ -22,6 +23,7 @@ public with sharing class ECO_ProjectScopeController extends ECO_PageControllerB
     public string sSelectedPackageId {get; set;}
     public string sSelectedPackageName {get; set;}
     public boolean booNewProjectInPlay {get;set;}
+    public boolean booUtilizeBMI {get;set;}
     public pse__Proj__c theProject {get; set;}
 
     public integer selectedTab {get;set;}
@@ -42,6 +44,7 @@ public with sharing class ECO_ProjectScopeController extends ECO_PageControllerB
                                                     , PackageTitle__c
                                                     ,  Scope_Owner__c
                                                     , Utilize_BMI_Technology__c
+                                                    , SafetyInDesign__c
                                                     , Status__c
                                                     , CancelledReason__c
                                                     , (SELECT Id, Name, ContentType FROM Attachments) 
@@ -124,8 +127,7 @@ public with sharing class ECO_ProjectScopeController extends ECO_PageControllerB
 
 
         lstSearchDeliverables = [SELECT ID, Name, Project_Scope__c, Status__c, Description__c, DeliverableType__c, DueDate__c FROM Deliverable__c WHERE Project__c = :sProjectId];
-
-        lstMapAssignedDeliverables.put(oProjectPackage.id, new list<DeliverableWrapper>());
+		lstMapAssignedDeliverables.put(oProjectPackage.id, new list<DeliverableWrapper>());
 
         if (lstSearchDeliverables.size() > 0)  {
             for(Deliverable__c d: lstSearchDeliverables){
@@ -252,17 +254,21 @@ public with sharing class ECO_ProjectScopeController extends ECO_PageControllerB
         lstRisk = (list<Risk__c>)Database.query(strSOQL);
     }
 
-    /* Constructor */
+    /* Default Constructor */
     public ECO_ProjectScopeController() {
-        sProjectId = ApexPages.currentPage().getParameters().get('projectId');
-
+        this(ApexPages.currentPage().getParameters().get('projectId'));
+    }
+    
+    /* Constructor - refactored by Sujit to support doc gen code reuse */
+    public ECO_ProjectScopeController(Id sProjectId) {
+        this.sProjectId = sProjectId;
 
         if (ECO_Utils_String.NullCheck(sProjectId) == '') {
             ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING,'You have reached this page improperly, please access it from the Project Control Center screen.');
             ApexPages.addMessage(oPageMessage);
             return;
         }
-        theProject = [select Id, Name, pse__Stage__c from pse__Proj__c where Id = :sProjectId limit 1];
+        theProject = [select Id, Name, ProjectSectionHeaderName__c, pse__Stage__c, ProjectNumber__c from pse__Proj__c where Id = :sProjectId limit 1];
  
         scrolltobottom = false;
         lstPackages = new list<Packages__c>();
@@ -300,7 +306,7 @@ public with sharing class ECO_ProjectScopeController extends ECO_PageControllerB
     Public PageReference SavePackages() {
 
         list<Packages__c> lstPackagesToInsert = new list<Packages__c>();
-
+        
         lstPackagesToInsert.addAll(lstPackages);
         lstPackagesToInsert.add(oProjectPackage);
 
@@ -319,7 +325,6 @@ public with sharing class ECO_ProjectScopeController extends ECO_PageControllerB
 
         scrolltobottom = false;
 
-
         return null;
     }
 
@@ -329,9 +334,6 @@ public with sharing class ECO_ProjectScopeController extends ECO_PageControllerB
 
     Public PageReference SaveDeliverables() {
         try {
-
-
-
             system.debug(lstScopeOptions );
             system.debug(lstSearchDeliverables);
 
@@ -378,5 +380,11 @@ public with sharing class ECO_ProjectScopeController extends ECO_PageControllerB
 
         
     }
-
+    
+	public List<SelectOption> getYesNo() {
+        List<SelectOption> options = new List<SelectOption>(); 
+        options.add(new SelectOption('true','Yes')); 
+        options.add(new SelectOption('false','No')); 
+        return options; 
+    }   
 }

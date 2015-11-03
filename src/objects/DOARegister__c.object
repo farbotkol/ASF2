@@ -83,17 +83,17 @@
         <fullName>DOA_TriggerView</fullName>
         <description>Used in the DOA Approval Interface</description>
         <displayedFields>
-            <field>Name</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
-            <field>DOA_Number__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
             <field>RiskTitle__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>DCSsubDOA__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>EnterpriseDOA__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
@@ -196,7 +196,7 @@
         <fullName>DOA_Request_Status__c</fullName>
         <externalId>false</externalId>
         <formula>IF(ISBLANK(TEXT(DOAApprovalRequest__r.ApprovalStatus__c)) || ISNULL(TEXT(DOAApprovalRequest__r.ApprovalStatus__c)), &apos;Not Started&apos;, TEXT(DOAApprovalRequest__r.ApprovalStatus__c))</formula>
-        <label>DOA Request Status</label>
+        <label>Approval Status</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -225,17 +225,26 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>MitigationStrategy__c</fullName>
+        <externalId>false</externalId>
+        <inlineHelpText>Outline which measures you will employ to manage or mitigate the risk.</inlineHelpText>
+        <label>Mitigation Strategy</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>Project__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>Project</label>
         <referenceTo>pse__Proj__c</referenceTo>
         <relationshipLabel>DOA Register</relationshipLabel>
         <relationshipName>DOARegister</relationshipName>
-        <relationshipOrder>0</relationshipOrder>
-        <reparentableMasterDetail>false</reparentableMasterDetail>
+        <required>false</required>
         <trackTrending>false</trackTrending>
-        <type>MasterDetail</type>
-        <writeRequiresMasterRead>false</writeRequiresMasterRead>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Questionnaire__c</fullName>
@@ -260,7 +269,7 @@
     <fields>
         <fullName>RiskTitle__c</fullName>
         <externalId>false</externalId>
-        <label>Risk Title</label>
+        <label>DOA Title</label>
         <length>255</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -293,5 +302,5 @@
         <lookupDialogsAdditionalFields>CREATEDBY_USER</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
     </searchLayouts>
-    <sharingModel>ControlledByParent</sharingModel>
+    <sharingModel>ReadWrite</sharingModel>
 </CustomObject>

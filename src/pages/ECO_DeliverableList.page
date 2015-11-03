@@ -1,0 +1,73 @@
+<apex:page StandardController="pse__Proj__c" extensions="ECO_DeliverableListController" tabStyle="Deliverable__c" >
+<apex:messages />
+<style>
+    /* CUSTOM HELP / GUIDANCE TEXT BOX */
+    .customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 30px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        } 
+    	.alignOutputfield span {
+        	text-align:right;
+        }
+    	.rightAlign {text-align:right;} 
+	   	.leftAlign {text-align:left;} 
+	   	.centerAlign {text-align:center;} 
+    
+    	.odd {
+            background-color: #F0F0F6;
+            }
+            .even {
+            background-color: #FFFFFF;
+            }
+</style>    
+<apex:form >    
+    
+	<apex:sectionHeader title="Deliverables" subtitle="{!pse__Proj__c.Name}" /> 
+    <div class="customHelpText">
+        <div class="customHelpBody">
+            Consider what tasks need to be completed  to fulfill the contractual scope of works.  These tasks, either individually or together, will inform your project deliverables.  Types of deliverables typically include, but are not limited to, reports, design documents, drawings, letters, plans, specifications, data sheets or calculations.  Deliverables do not include project documents that are prepared for internal use.
+        </div>
+    </div> 
+    
+	 <apex:pageBlock >
+    	<apex:pageBlockButtons location="top">
+            <apex:commandButton action="{!returnProj}" value="Return to Project" immediate="true"/>
+            <apex:commandButton action="{!newDeliverable}" value="New Deliverable" immediate="true"/>            
+        </apex:pageBlockButtons>
+       	<apex:pageBlockSection title="Deliverables" columns="1" collapsible="false">
+            <apex:pageBlockTable value="{!Deliverables}" rendered="{!Deliverables.size > 0}" var="deliverlist" rowClasses="even,odd">
+                <apex:column headerValue="Action">
+                    <!--<apex:commandLink value="Edit" action="/{!deliverlist.Id}/e?retURL=/apex/ECO_RiskRegisterList?id={!pse__Proj__c.id}"/>&nbsp;&nbsp;-->
+                    <apex:commandLink value="View" action="/{!deliverlist.Id}"/>&nbsp;&nbsp;
+                    <apex:commandLink value="Delete" action="{!deleteDeliver}">
+                        <apex:param name="recid" value="{!deliverlist.id}"/>
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column headerClass="centerAlign" styleClass="leftAlign"><apex:facet name="header">Deliverable Name</apex:facet><apex:outputField value="{!deliverlist.Name}"/></apex:column>
+                <apex:column headerClass="centerAlign" headerValue="Current Status" styleClass="centerAlign"><apex:outputField value="{!deliverlist.Status__c}"/></apex:column>
+                <apex:column headerClass="centerAlign" styleClass="centerAlign" headerValue="Deliverable Owner"><apex:outputField value="{!deliverlist.DeliverablesOwner__r.Name}"/></apex:column>
+                <apex:column headerClass="centerAlign" styleClass="centerAlign" headerValue="Delivery Type"><apex:outputField value="{!deliverlist.DeliverableType__c}"/></apex:column>
+                <apex:column headerClass="centerAlign" styleClass="centerAlign" headerValue="Due Date"><apex:outputField value="{!deliverlist.DueDate__c}"/></apex:column>
+                <apex:column headerClass="centerAlign" styleClass="centerAlign" headerValue="Submitted Date"><apex:outputField value="{!deliverlist.DateSubmitted__c}"/></apex:column>
+            </apex:pageBlockTable>
+            
+            <apex:outputPanel rendered="{!Deliverables.size == 0}">
+            	<apex:outputText value="No records to display"/>
+        	</apex:outputPanel> 
+        </apex:pageBlockSection>
+    </apex:pageBlock>    
+</apex:form>    
+</apex:page>

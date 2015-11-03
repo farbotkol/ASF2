@@ -1,16 +1,7 @@
 <apex:page standardController="Opportunity" extensions="ECO_SmartSearch_TokenExt" cache="false" showheader="false" sidebar="false" standardstylesheets="false">
     <script>
-    	Coveo.$(function () {
-            Coveo.$('.CoveoPanel').on('beforeInitialization', function (e){
-                var token = '{!coveoToken}'; 
-                Coveo.Rest.SearchEndpoint.endpoints['default'].options.accessToken = token;
-                if(Coveo.Ui.Analytics.analyticsSingleton && !Coveo.Ui.Analytics.analyticsSingleton.endpoint.options.token){
-                	Coveo.Ui.Analytics.analyticsSingleton.endpoint.options.token = token;
-                }
-            });    
-            Coveo.$('.CoveoPanel').on('changeAnalyticsCustomData', function (e, args){
-                args.originLevel1 = "Opportunity Passive Search";
-            });    
+        Coveo.$(function () {
+        	Coveo.Rest.SearchEndpoint.endpoints['default'].options.accessToken = '{!coveoToken}'; 
         });
     </script>
     <div class="search-more">

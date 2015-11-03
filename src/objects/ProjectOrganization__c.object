@@ -167,7 +167,14 @@
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Project Organizations</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>ContributionPercent__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>OrganizationString__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Project__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Type__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATEDBY_USER</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
         <fullName>EcoOrgmustbeactive</fullName>
@@ -209,13 +216,13 @@
         <fullName>Manage_Project_Organizations</fullName>
         <availability>online</availability>
         <displayType>massActionButton</displayType>
-        <linkType>javascript</linkType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
         <masterLabel>Manage Project Organizations</masterLabel>
-        <openType>onClickJavaScript</openType>
+        <openType>noSidebar</openType>
         <protected>false</protected>
         <requireRowSelection>false</requireRowSelection>
-        <url>var location = top.location.href; 
-var projID = location.slice(-15); 
-top.location.href = &apos;/apex/ECO_OrganizationFinder?passedProjectID=&apos; + projID;</url>
+        <url>/apex/ECO_OrganizationFinder?passedProjectID={!pse__Proj__c.Id}</url>
     </webLinks>
 </CustomObject>

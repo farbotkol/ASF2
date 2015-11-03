@@ -183,10 +183,15 @@ public class ECO_AgreementTriggerHandler {
 			{
 				for(Agreement__c taskOrder:msaTaskOrderMap.get(msaAgreement.Id))
 				{
-					if(msaAgreement.FundingCurrencyCode__c != taskOrder.FundingCurrencyCode__c)
+					if(msaAgreement.FundingCurrencyCode__c != taskOrder.FundingCurrencyCode__c && taskOrder.Amount__c != null)
 						totalMSAValue += taskOrder.Amount__c * ECO_Service_ExchangeRate.getExchangeRate(taskOrder.FundingCurrencyCode__c, msaAgreement.FundingCurrencyCode__c, Date.today());
 					else
-						totalMSAValue += taskOrder.Amount__c;
+					{
+						if(taskOrder.Amount__c != null)
+						{
+							totalMSAValue += taskOrder.Amount__c;
+						}
+					}
 				}
 				msaAgreement.TotalTaskOrdersValue__c =	totalMSAValue;	
 			}

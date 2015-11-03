@@ -33,7 +33,7 @@
             <name>SetRiskNumber</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>false</active>
+        <active>true</active>
         <criteriaItems>
             <field>Risk__c.CreatedById</field>
             <operation>notEqual</operation>
@@ -43,10 +43,6 @@
     </rules>
     <rules>
         <fullName>Update Risk Description</fullName>
-        <actions>
-            <name>SetRiskNumber</name>
-            <type>FieldUpdate</type>
-        </actions>
         <actions>
             <name>SetRiskTitle</name>
             <type>FieldUpdate</type>

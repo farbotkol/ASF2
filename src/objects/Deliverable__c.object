@@ -50,7 +50,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
-    <enableHistory>false</enableHistory>
+    <enableHistory>true</enableHistory>
     <enableReports>true</enableReports>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
@@ -118,6 +118,7 @@
         <referenceTo>User</referenceTo>
         <relationshipName>Deliverables2</relationshipName>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -126,6 +127,7 @@
         <defaultValue>true</defaultValue>
         <externalId>false</externalId>
         <label>Change Manager Is Changed</label>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -134,6 +136,7 @@
         <defaultValue>true</defaultValue>
         <externalId>false</externalId>
         <label>ChangeManagerIsNew</label>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -143,18 +146,31 @@
         <inlineHelpText>Date deliverable submitted to the client.</inlineHelpText>
         <label>Date Submitted</label>
         <required>false</required>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>DelegateProject__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__c</formula>
+        <label>Delegate Project</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>DeliverableOwner__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>Pointing towards contact instead of user. do not use</description>
         <externalId>false</externalId>
-        <label>Deliverable Owner</label>
+        <label>xxDeliverable Owner</label>
         <referenceTo>User</referenceTo>
         <relationshipName>Deliverables</relationshipName>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -162,6 +178,7 @@
         <fullName>DeliverableType__c</fullName>
         <description>May be better implemented as record types.</description>
         <externalId>false</externalId>
+        <inlineHelpText>Select the type of deliverable from the menu.  Select more than one if a deliverable is a &quot;package&quot; that includes multiple types, such as drawings, specifications, calculations and data sheets.</inlineHelpText>
         <label>Deliverable Type</label>
         <picklist>
             <picklistValues>
@@ -206,39 +223,54 @@
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Picklist</type>
+        <type>MultiselectPicklist</type>
+        <visibleLines>5</visibleLines>
     </fields>
     <fields>
         <fullName>DeliverablesOwner__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <inlineHelpText>This is the person that is responsible for ensuring deliverables are sent to the client.</inlineHelpText>
+        <inlineHelpText>The person responsible for ensuring the deliverable is prepared, reviewed, approved and submitted to the client.</inlineHelpText>
         <label>Deliverable Owner</label>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Deliverables</relationshipLabel>
         <relationshipName>DeliverablesOwner</relationshipName>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Description__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Provide a brief description of the deliverable.</inlineHelpText>
         <label>Description</label>
         <length>32768</length>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
-        <visibleLines>3</visibleLines>
+        <visibleLines>10</visibleLines>
     </fields>
     <fields>
         <fullName>DueDate__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Date due to the client.</inlineHelpText>
+        <inlineHelpText>The date the deliverable is due to the client.</inlineHelpText>
         <label>Date Due</label>
         <required>false</required>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>InternalDeliverable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Internal Deliverable</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>NumofApprovedStatuses__c</fullName>
@@ -252,6 +284,7 @@
         </summaryFilterItems>
         <summaryForeignKey>TechnicalQualityTeam__c.Deliverable__c</summaryForeignKey>
         <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Summary</type>
     </fields>
@@ -267,6 +300,7 @@
         </summaryFilterItems>
         <summaryForeignKey>TechnicalQualityTeam__c.Deliverable__c</summaryForeignKey>
         <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Summary</type>
     </fields>
@@ -282,6 +316,7 @@
         </summaryFilterItems>
         <summaryForeignKey>TechnicalQualityTeam__c.Deliverable__c</summaryForeignKey>
         <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Summary</type>
     </fields>
@@ -292,6 +327,7 @@
         <label># of Revisions</label>
         <summaryForeignKey>DeliverableRevision__c.Deliverable__c</summaryForeignKey>
         <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Summary</type>
     </fields>
@@ -302,6 +338,7 @@
         <label># of TQT Approvers</label>
         <summaryForeignKey>TechnicalQualityTeam__c.Deliverable__c</summaryForeignKey>
         <summaryOperation>count</summaryOperation>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Summary</type>
     </fields>
@@ -314,6 +351,7 @@
         <referenceTo>User</referenceTo>
         <relationshipName>Deliverables1</relationshipName>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -325,20 +363,42 @@
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
     </fields>
     <fields>
         <fullName>PracticeArea__c</fullName>
         <externalId>false</externalId>
-        <label>Practice Area</label>
+        <inlineHelpText>Select the discipline(s) that will be involved in the preparation and review of the deliverable.</inlineHelpText>
+        <label>Discipline</label>
         <picklist>
             <picklistValues>
-                <fullName>Air Compliance</fullName>
+                <fullName>Acoustics</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Architecture</fullName>
+                <fullName>Air Quality</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Archaeology</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Architectural</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Architecture, Buildings</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Architecture, Landscape</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Asset Strategy</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -346,7 +406,35 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Building Engineering</fullName>
+                <fullName>Building Consulting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Building Physics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Business Economics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Business Performance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Chemical</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Civil</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Commercial</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Communications</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -354,55 +442,211 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Design + Planning and Economics</fullName>
+                <fullName>Cost Engineering</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>EHS Compliance</fullName>
+                <fullName>Cost Estimation</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Emerging Technologies</fullName>
+                <fullName>Cost Management</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Energy Efficiency + Carbon Management</fullName>
+                <fullName>Design Management</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Highways + Bridges</fullName>
+                <fullName>Design/Drafting</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Hydropower + Dams</fullName>
+                <fullName>Development Planning</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Impact Assessment &amp; Permitting</fullName>
+                <fullName>Ecology</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>International Development</fullName>
+                <fullName>Economic Development</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Operations &amp; Mission Support</fullName>
+                <fullName>Economics</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Planning + Advisory</fullName>
+                <fullName>EHS Management Services</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Planning, Environmental + Economics</fullName>
+                <fullName>EIA</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Ports and Marine</fullName>
+                <fullName>Electrical</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Program Management</fullName>
+                <fullName>Energy</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Engineering PMCM serv</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environmental</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Environmental / Env Compliance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Estimating</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Facilities</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Facilities Engineering</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Facilities Management</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Finance</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fire</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Fire Protection</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Geotechnical</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>GIS</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Graphics</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Health &amp; Safety</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Health &amp; Safety Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Highways</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Human Resources</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Instrumentation &amp; Controls</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Interiors</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Landscape</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Lighting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Masterplanning + Urban</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Mechanical</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Municipal Infrastructure</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Nuclear</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Operations Process</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Operations Technical Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Other</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>P3 Advisory</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Planning</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Planning &amp; Scheduling</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Ports &amp; Marine</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Process</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Procurement Advisory</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>program &amp; Project Controls</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Program &amp; Project Mgt</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>program Leadership</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Project Support Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rail</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -410,15 +654,59 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Thermal, Geothermal + Nuclear</fullName>
+                <fullName>Risk Management</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Transit + Rail</fullName>
+                <fullName>Safety</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Transmission + Distribution</fullName>
+                <fullName>Security</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Spec Consulting</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Sports Group</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Structural</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Supply Chain</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Traffic</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Transaction Advisory</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Transport Planning</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Transportation</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Urban Design</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Waste Services</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Wastewater</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -426,23 +714,43 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Wind + Solar</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>Other</fullName>
+                <fullName>Water Resources</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MultiselectPicklist</type>
         <visibleLines>5</visibleLines>
     </fields>
     <fields>
+        <fullName>ProjectTask__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project Task</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>pse__Project_Task__c.pse__Project__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.Project__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>pse__Project_Task__c</referenceTo>
+        <relationshipLabel>Deliverables</relationshipLabel>
+        <relationshipName>DeliverablesProjectTask</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Project_Scope__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
+        <inlineHelpText>Use the lookup function to link the deliverable to a specified scope (as needed).</inlineHelpText>
         <label>Related Scope Package</label>
         <lookupFilter>
             <active>true</active>
@@ -457,6 +765,7 @@
         <relationshipLabel>Deliverables</relationshipLabel>
         <relationshipName>Deliverables</relationshipName>
         <required>false</required>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
     </fields>
@@ -470,6 +779,7 @@
         <relationshipName>Deliverables</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
+        <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
@@ -477,6 +787,7 @@
     <fields>
         <fullName>Status__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Select the status of the project deliverable using the drop down menu.</inlineHelpText>
         <label>Status</label>
         <picklist>
             <picklistValues>
@@ -495,8 +806,13 @@
                 <fullName>Review Complete</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
+        <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
     </fields>
@@ -508,6 +824,7 @@
     </listViews>
     <nameField>
         <label>Deliverable Name</label>
+        <trackHistory>false</trackHistory>
         <type>Text</type>
     </nameField>
     <pluralLabel>Deliverables</pluralLabel>
@@ -519,6 +836,14 @@
         <lookupDialogsAdditionalFields>Description__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>PracticeArea__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Project__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>DateSubmitted__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>DeliverablesOwner__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>DeliverableType__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Description__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>PracticeArea__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>InternalDeliverable__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Status__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
@@ -535,6 +860,30 @@
         <errorConditionFormula>NumofOwners__c &gt;1</errorConditionFormula>
         <errorMessage>There can only be 1 owner per deliverable. Please update the existing technical quality team owner.</errorMessage>
     </validationRules>
+    <webLinks>
+        <fullName>Back_Deliverables</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Return to Deliverables</masterLabel>
+        <openType>noSidebar</openType>
+        <protected>false</protected>
+        <url>/apex/ECO_DeliverableList?id={!Deliverable__c.ProjectId__c}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Manage_Deliverable</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Manage Deliverables</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>true</requireRowSelection>
+        <url>/apex/ECO_DeliverableList?id={!pse__Proj__c.Id}</url>
+    </webLinks>
     <webLinks>
         <fullName>NewDeliverable</fullName>
         <availability>online</availability>

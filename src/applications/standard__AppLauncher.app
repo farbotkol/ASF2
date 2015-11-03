@@ -10,4 +10,6 @@
     <tab>CostDistLine__c</tab>
     <tab>EarnedValueHeader__c</tab>
     <tab>VendorSub__c</tab>
+    <tab>DashInsight</tab>
+    <tab>ChangeManager__c</tab>
 </CustomApplication>

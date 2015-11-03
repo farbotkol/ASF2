@@ -22,6 +22,7 @@ public without sharing class ECO_BudgetTaskTriggers {
 		
 		for (AggregateResult ar : [SELECT ProjectTask__c
 										, SUM(TotalApprovedCost__c) totalApprovedCostAmount
+                                   		, SUM(TotalEstimateCost__c) totalEstimateCostAmount
 									FROM BudgetTask__c
 									WHERE ProjectTask__c IN :projectTaskIds
 										AND ProjectTask__c != null
@@ -32,6 +33,7 @@ public without sharing class ECO_BudgetTaskTriggers {
 			pse__Project_Task__c ptToUpdate = new pse__Project_Task__c();
 			ptToUpdate.Id = (Id)ar.get('ProjectTask__c');
 			ptToUpdate.TotalApprovedCost__c = (Decimal)ar.get('totalApprovedCostAmount');
+            ptToUpdate.TotalEstimateCost__c = (Decimal)ar.get('totalEstimateCostAmount');
 			projectTasksToUpdate.add(ptToUpdate);
 		}
 		

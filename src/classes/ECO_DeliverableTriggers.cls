@@ -1,4 +1,5 @@
-public with sharing class ECO_DeliverableTriggers {
+//public with sharing class ECO_DeliverableTriggers {
+public class ECO_DeliverableTriggers {
 	public ECO_DeliverableTriggers() {
 		
 	}
@@ -121,9 +122,7 @@ public with sharing class ECO_DeliverableTriggers {
 		setProjects.addAll(mapProjectIdByDeliverable.Values());
 		
 		list<pse__Proj__c> listProjects = ECO_Service_Projects.getProjectByIDs(setProjects);
-
 		
-
 		list<TechnicalQualityTeam__c> lAddMembers = new list<TechnicalQualityTeam__c>();
 		System.Debug(logginglevel.error,'ListProjects: ' + listProjects);
 		set<id> setContactID = new set<id>();
@@ -163,7 +162,87 @@ public with sharing class ECO_DeliverableTriggers {
 		}
 
 	}
-
-
+	public void createDeliverableOwnerTeamMember(map<id,Deliverable__c> mapOld, map<id,Deliverable__c> mapNew){
+    //public void createDeliverableOwnerTeamMember(map<id,Deliverable__c> mapNew){
+		System.Debug(logginglevel.error,'Starting the process to add deliverable owner to team.');
+		list<ProjectTeamMember__c> ListTeam = new list<ProjectTeamMember__c>();
+		map<id,id> mapProjectIdByDeliverable = new map<id,id>();
+		map<id,set<Deliverable__c>> mapDeliverablebyProject = new map<id,set<Deliverable__c>>();
+		set<Deliverable__c> setDevs = new set<Deliverable__c>();
+        set<id> setContactID = new set<id>();
+        Boolean proceed = false;
+        Id devOwner = null;
+		list<ProjectTeamMember__c> lAddTeamMembers = new list<ProjectTeamMember__c>();
+		for(Deliverable__c oDeliverable: mapNew.values()){
+			
+            if((oDeliverable.DeliverablesOwner__c != null || oDeliverable.DeliverablesOwner__c != '')
+               && mapOld.get(oDeliverable.Id).DeliverablesOwner__c != oDeliverable.DeliverablesOwner__c ){
+                proceed = true;
+                System.debug('***DEBUG:  oDeliverable.owner: '+oDeliverable.DeliverablesOwner__c);
+                mapProjectIdByDeliverable.put(oDeliverable.id,oDeliverable.Project__c);
+                setContactID.add(oDeliverable.DeliverablesOwner__c);
+                if(mapDeliverableByProject.containsKey(oDeliverable.Project__c)){
+                    setDevs = mapDeliverableByProject.get(oDeliverable.Project__c);
+                }else{
+                    setDevs = new set<Deliverable__c>();
+                } 
+                setDevs.Add(oDeliverable);
+                mapDeliverablebyProject.put(oDeliverable.Project__c,setDevs);
+            }
+		}
+        if(proceed){
+            System.Debug(logginglevel.error,'mapDeliverablebyProject: ' + mapDeliverablebyProject);
+            set<id> setProjects = new set<id>();
+            setProjects.addAll(mapProjectIdByDeliverable.Values());
+            
+            list<pse__Proj__c> listProjects = ECO_Service_Projects.getProjectByIDs(setProjects);
+            list<TechnicalQualityTeam__c> lAddMembers = new list<TechnicalQualityTeam__c>();
+            System.Debug(logginglevel.error,'ListProjects: ' + listProjects);
+            map<id,id> mapUserIdByContact = new map<id,id>();
+            //ProjectTeamMember__c pTM = [Select Id From ProjectTeamMember__c Where Contact__c = :];
+            for(Contact c: [select ID, pse__Salesforce_User__c from Contact where id =: setContactID]){
+                mapUserIdByContact.put(c.id,c.pse__Salesforce_User__c);
+            }
+    		ProjectRole__c role = [Select Id, Name From ProjectRole__c Where Name = 'Deliverable Owner'];
+            for(Deliverable__c oDev : mapNew.values()){
+                devOwner = oDev.DeliverablesOwner__c;
+                System.debug('oDev.DeliverablesOwner__c:  '+devOwner);
+               if(devOwner != null || devOwner != ''){
+                   System.debug('oDev.DeliverablesOwner__c:   '+oDev.DeliverablesOwner__c);
+                   System.Debug(logginglevel.error,'adding member: ');
+                   //ProjectTeamMember__c pTM = new ProjectTeamMember__c();
+                   ProjectTeamMember__c[] pTM = [Select Id From ProjectTeamMember__c Where Contact__c = :oDev.DeliverablesOwner__c AND ProjectRole__c = :role.Id];
+                   lAddMembers.add(New TechnicalQualityTeam__c(Role__c = 'Deliverable Owner',
+                                                               //TechnicalQualityTeamMember__c = oDev.DeliverablesOwner__c,
+                                                               TechnicalQualityTeamMember__c = mapUserIdByContact.get(oDev.DeliverablesOwner__c),
+                                                               RequiredDate__c = System.Today(),
+                                                               Deliverable__c = oDev.ID));
+                   if(pTM.size() == 0){
+                       lAddTeamMembers.add(new ProjectTeamMember__c(Project__c = oDev.Project__c,
+                                                                    Contact__c = oDev.DeliverablesOwner__c,
+                                                                    ProjectRole__c = role.Id,
+                                                                    RecordTypeID = ECO_Utils_Meta.getRecordTypeId(ProjectTeamMember__c.sObjectType,'Team Member')));
+                   }
+               }	
+            }
+           
+            System.debug(logginglevel.error,'lAddMembers: ' + lAddMembers);
+            System.debug(logginglevel.error,'lAddTeamMembers: ' + lAddTeamMembers);
+            
+            Savepoint sp = Database.setSavepoint();
+            try{
+                if(lAddMembers != null && lAddMembers.size() > 0)
+                	insert lAddMembers;
+                if(lAddTeamMembers != null && lAddTeamMembers.size() > 0)
+                	insert lAddTeamMembers;
+            }catch(Exception e){
+                System.Debug(logginglevel.error,' error: ' + e.getMessage() + ' : ' + e.getStackTraceString());
+                Database.rollback(sp);
+                
+            }
+            
+    
+        }
+	}
 	
 }

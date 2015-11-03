@@ -6,6 +6,41 @@ public with sharing class ECO_pse_Project_TriggerDispatcher
     {
         Boolean EvaluateHealthyStart_Enabled = ECO_TriggerSettings.getIsTriggerEnabled('EvaluateHealthyStart');
         
+
+        if(isBefore && (isUpdate || isInsert)){
+
+            set<id> sContactIds = new set<id>();
+            list<pse__Proj__c> lstProjectsToUpdate = new list<pse__Proj__c>();
+            map<id, id> contactToUser = new map<id, id>();
+
+
+            for(pse__Proj__c p: newList){
+
+                if(isInsert || (isUpdate && p.ProjectApprover__c != oldMap.get(p.id).ProjectApprover__c)){
+                    if(p.ProjectApprover__c != null){
+                        sContactIds.add(p.ProjectApprover__c);
+                        lstProjectsToUpdate.add(p);
+                    }
+                }
+            }
+
+            if(sContactIds.size() > 0){
+                list<contact> lstContact = [select id, pse__Salesforce_User__c from contact where id IN: sContactIds];
+
+                for(contact c: lstContact){
+                    if(c.pse__Salesforce_User__c != null){
+                        contactToUser.put(c.id, c.pse__Salesforce_User__c);
+                    }
+                }
+
+                for(pse__Proj__c p: lstProjectsToUpdate){
+                    if(contactToUser.containskey(p.ProjectApprover__c)){
+                        p.ProjectApproverUser__c = contactToUser.get(p.ProjectApprover__c);
+                    }
+                }
+            }
+        }
+
         if(isAfter)
         {
             if(isInsert || isUpdate)

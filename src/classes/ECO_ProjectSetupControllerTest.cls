@@ -71,7 +71,7 @@ private class ECO_ProjectSetupControllerTest
 
 		insert testSites;
 
-
+		/*
 		List<OrganizationString__c> lOrgStrings = new List<OrganizationString__c>();
 		OrganizationString__c Org1 = INC_Utils_Testing.createTestOrg();
 		OrganizationString__c Org2 = INC_Utils_Testing.createTestOrg();
@@ -90,6 +90,7 @@ private class ECO_ProjectSetupControllerTest
 
 		lOrgStrings.add(Org2);
 		insert lOrgStrings;		
+		*/
 	}
 
 

@@ -18,7 +18,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>Edit</actionName>
-        <type>Default</type>
+        <content>ECO_DOA_ApprovalRequest_Redirect</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>Follow</actionName>
@@ -30,7 +32,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>New</actionName>
-        <type>Default</type>
+        <content>ECO_DOA_ApprovalRequestRecordType</content>
+        <skipRecordTypeSelect>true</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>SaveEdit</actionName>
@@ -42,7 +46,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <type>Default</type>
+        <content>ECO_DOA_ApprovalRequest_Redirect</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -50,7 +56,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
-    <enableReports>false</enableReports>
+    <enableReports>true</enableReports>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fieldSets>
@@ -77,6 +83,116 @@
             <isRequired>false</isRequired>
         </displayedFields>
         <label>DOA_RequestView</label>
+    </fieldSets>
+    <fieldSets>
+        <fullName>ECO_ApprovalsRequired</fullName>
+        <description>Used in ECO_DOAApprovals Visualforce page</description>
+        <displayedFields>
+            <field>GeographyApprovalsRequired__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>GeographyApprovalRAG__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>GroupApprovalsRequired__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>GroupApprovalRag__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>EnterpriseApprovalsRequired__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>EnterpriseApprovalRag__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>DCSHubApprovalsRequired__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>DCSApprovalStatusRAG__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>AECOMHubApprovalsRequired__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>AECOMHubApprovalRAG__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>ECO_ApprovalsRequired</label>
+    </fieldSets>
+    <fieldSets>
+        <fullName>ECO_Approver_Counts</fullName>
+        <description>Used in Visualforce page ECO_DOA_ApprovalRequest_UserBased</description>
+        <displayedFields>
+            <field>GeoCountOfApprovers__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>EnterpriseCountofApprovers__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>GeoCountofApproved__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>EnterpriseCountofApproved__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>DCSHubCountofApprovers__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>GroupCountofApprovers__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>DCSHubCountOfApproved__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>GroupCountofApproved__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>AECOMHubCountofApprovers__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>AECOMHubCountofApproved__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>ECO_Approver_Counts</label>
     </fieldSets>
     <fieldSets>
         <fullName>EcoAECOMHubDoAapprovalCheck</fullName>
@@ -243,7 +359,7 @@
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -316,11 +432,25 @@
     </fields>
     <fields>
         <fullName>AECOMHubAdministratorCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>AECOM Hub Administrator Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>AECOMHubAdministratorTimeApp__c</fullName>
@@ -334,7 +464,7 @@
         <fullName>AECOMHubApprovalRAG__c</fullName>
         <externalId>false</externalId>
         <formula>IF(ISPICKVAL( AECOMApprovalStatus__c, &quot;&quot;),null, 
-IF(ISPICKVAL( AECOMApprovalStatus__c, &quot;Approved&quot;), &quot;Complete&quot; 
+IF(ISPICKVAL( AECOMApprovalStatus__c, &quot;Completed&quot;), &quot;Completed&quot; 
 ,&quot;Pending&quot;))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>AECOM Hub Approval</label>
@@ -481,6 +611,10 @@ Now() - AECOMHubTimeSubmittedforApproval__c))</formula>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
                 <fullName>Approved</fullName>
                 <default>false</default>
             </picklistValues>
@@ -523,11 +657,25 @@ Level: Area</inlineHelpText>
     </fields>
     <fields>
         <fullName>AreaCounselCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Area Counsel Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>AreaCounselTimeApp__c</fullName>
@@ -563,11 +711,25 @@ Level: Area</description>
     </fields>
     <fields>
         <fullName>AreaManagerCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Area Manager Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>AreaManagerTimeApp__c</fullName>
@@ -634,11 +796,25 @@ Level: Region</inlineHelpText>
     </fields>
     <fields>
         <fullName>BusinessUnitLeaderCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Business Unit Lead Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>BusinessUnitLeaderTimeApp__c</fullName>
@@ -686,11 +862,25 @@ Level: Region</inlineHelpText>
     </fields>
     <fields>
         <fullName>CEOCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>CEO Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>CEOTimeApp__c</fullName>
@@ -770,11 +960,25 @@ Level: Area</inlineHelpText>
     </fields>
     <fields>
         <fullName>CounselContractsManagerCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Counsel Contracts Manager Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>CounselContractsManagerTimeApp__c</fullName>
@@ -788,7 +992,7 @@ Level: Area</inlineHelpText>
         <fullName>DCSApprovalStatusRAG__c</fullName>
         <externalId>false</externalId>
         <formula>IF(ISPICKVAL(  DCSHubApprovalStatus__c , &quot;&quot;),null, 
-IF(ISPICKVAL( DCSHubApprovalStatus__c , &quot;Approved&quot;),&quot;Complete&quot; 
+IF(ISPICKVAL( DCSHubApprovalStatus__c , &quot;Completed&quot;),&quot;Completed&quot; 
 ,&quot;Pending&quot;))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>DCS Approval</label>
@@ -820,11 +1024,25 @@ IF(ISPICKVAL( DCSHubApprovalStatus__c , &quot;Approved&quot;),&quot;Complete&quo
     </fields>
     <fields>
         <fullName>DCSHubAdministratorCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>DCS Hub Administrator Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>DCSHubAdministratorTimeApp__c</fullName>
@@ -844,7 +1062,7 @@ IF(ISPICKVAL( DCSHubApprovalStatus__c , &quot;Approved&quot;),&quot;Complete&quo
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -936,11 +1154,25 @@ Now() - DCSHubTimeSubmittedforApproval__c))</formula>
     </fields>
     <fields>
         <fullName>DCSgeoRiskCommitteeCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>DCS Geo Risk Committee Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>DCSgeoRiskCommitteeTimeApp__c</fullName>
@@ -957,6 +1189,26 @@ Now() - DCSHubTimeSubmittedforApproval__c))</formula>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>DoAApproverPage__c</fullName>
+        <externalId>false</externalId>
+        <formula>&quot;https://aecom--ecosysdev--c.cs15.visual.force.com/apex/ECO_DOAApprovals?Id=&quot;&amp;Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>DoA Approver Page</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Enable_RCST_Button__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Used in apex controller to set it to true or false. This field is referred to enable RCST button.</description>
+        <externalId>false</externalId>
+        <label>Enable RCST Button</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>EndClientPrimary__c</fullName>
@@ -987,7 +1239,7 @@ Now() - DCSHubTimeSubmittedforApproval__c))</formula>
         <fullName>EnterpriseApprovalRag__c</fullName>
         <externalId>false</externalId>
         <formula>IF(ISPICKVAL( EnterpriseApprovalStatus__c, &quot;&quot;),null, 
-IF(ISPICKVAL( EnterpriseApprovalStatus__c, &quot;Approved&quot;),&quot;Complete&quot;, &quot;Pending&quot;))</formula>
+IF(ISPICKVAL( EnterpriseApprovalStatus__c, &quot;Completed&quot;),&quot;Completed&quot;, &quot;Pending&quot;))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Enterprise Approval</label>
         <required>false</required>
@@ -1005,7 +1257,7 @@ IF(ISPICKVAL( EnterpriseApprovalStatus__c, &quot;Approved&quot;),&quot;Complete&
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -1081,11 +1333,25 @@ Now() - EnterpriseTimeSubmittedforApproval__c))</formula>
     </fields>
     <fields>
         <fullName>EnterpriseOtherCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Enterprise Other Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>EnterpriseOtherTimeApp__c</fullName>
@@ -1118,11 +1384,25 @@ Now() - EnterpriseTimeSubmittedforApproval__c))</formula>
     </fields>
     <fields>
         <fullName>EnterpriseRiskCommitteeCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Enterprise Risk Committee Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>EnterpriseRiskCommitteeTimeApp__c</fullName>
@@ -1216,11 +1496,25 @@ Level: All</inlineHelpText>
     </fields>
     <fields>
         <fullName>FedContractsandProcurementCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Fed Contracts and Procurement Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>FedContractsandProcurementTimeApp__c</fullName>
@@ -1253,11 +1547,25 @@ Level: All</inlineHelpText>
     </fields>
     <fields>
         <fullName>FinanceGeographyControlCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Finance Geography Controller Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>FinanceGeographyControlTimeApp__c</fullName>
@@ -1290,11 +1598,25 @@ Level: All</inlineHelpText>
     </fields>
     <fields>
         <fullName>GeneralCounselCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>General Counsel Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>GeneralCounselTimeApp__c</fullName>
@@ -1330,11 +1652,25 @@ Level: Geography</inlineHelpText>
     </fields>
     <fields>
         <fullName>GeoChiefOperatingOfficerCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Geo Chief Operating Officer Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>GeoChiefOperatingOfficerTimeApp__c</fullName>
@@ -1389,11 +1725,25 @@ Level: Geography</inlineHelpText>
     </fields>
     <fields>
         <fullName>GeoOtherCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Geography Other Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>GeoOtherTimeApp__c</fullName>
@@ -1429,11 +1779,25 @@ Level: Geography</inlineHelpText>
     </fields>
     <fields>
         <fullName>GeoPresidentCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Geography President Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>GeoPresidentTimeApp__c</fullName>
@@ -1447,7 +1811,7 @@ Level: Geography</inlineHelpText>
         <fullName>GeographyApprovalRAG__c</fullName>
         <externalId>false</externalId>
         <formula>IF(ISPICKVAL( GeographyApprovalStatus__c, &quot;&quot;),null,
-IF(ISPICKVAL( GeographyApprovalStatus__c, &quot;Approved&quot;),&quot;Complete&quot;
+IF(ISPICKVAL( GeographyApprovalStatus__c, &quot;Completed&quot;),&quot;Completed&quot;
 ,&quot;Pending&quot;))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Geography Approval</label>
@@ -1466,7 +1830,7 @@ IF(ISPICKVAL( GeographyApprovalStatus__c, &quot;Approved&quot;),&quot;Complete&q
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -1505,11 +1869,25 @@ IF(ISPICKVAL( GeographyApprovalStatus__c, &quot;Approved&quot;),&quot;Complete&q
     </fields>
     <fields>
         <fullName>GeographyChiefCounselCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Geography Chief Counsel Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>GeographyChiefCounselTimeApp__c</fullName>
@@ -1554,7 +1932,7 @@ Now() - GeographyTimeSubmittedforApproval__c))</formula>
         <fullName>GroupApprovalRag__c</fullName>
         <externalId>false</externalId>
         <formula>IF(ISPICKVAL( GroupApprovalStatus__c, &quot;&quot;),null,
-IF(ISPICKVAL( GroupApprovalStatus__c, &quot;Approved&quot;),&quot;Complete&quot;
+IF(ISPICKVAL( GroupApprovalStatus__c, &quot;Completed&quot;),&quot;Completed&quot;
 ,&quot;Pending&quot;))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Group Approval</label>
@@ -1573,7 +1951,7 @@ IF(ISPICKVAL( GroupApprovalStatus__c, &quot;Approved&quot;),&quot;Complete&quot;
                 <default>false</default>
             </picklistValues>
             <picklistValues>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -1615,11 +1993,25 @@ Level: Group</inlineHelpText>
     </fields>
     <fields>
         <fullName>GroupChiefCounselCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Group Chief Counsel Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>GroupChiefCounselTimeApp__c</fullName>
@@ -1655,11 +2047,25 @@ Level: Group</inlineHelpText>
     </fields>
     <fields>
         <fullName>GroupChiefExecutiveCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Group Chief Executive Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>GroupChiefExecutiveTimeApp__c</fullName>
@@ -1695,11 +2101,25 @@ Level: Group</inlineHelpText>
     </fields>
     <fields>
         <fullName>GroupChiefFinancialOfficerCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Group Chief Financial Officer Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>GroupChiefFinancialOfficerTimeApp__c</fullName>
@@ -1772,14 +2192,28 @@ Level: Group</inlineHelpText>
     </fields>
     <fields>
         <fullName>GroupOtherCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Group Other Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
-        <fullName>GroupTimeApp__c</fullName>
+        <fullName>GroupOtherTimeApp__c</fullName>
         <externalId>false</externalId>
         <label>Group Other Time Approved</label>
         <required>false</required>
@@ -1825,14 +2259,28 @@ Level: Group</inlineHelpText>
     </fields>
     <fields>
         <fullName>HRDirectorGeographyDirCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>HR Director - Geo Director Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
-        <fullName>HRDirectorGeographyTimeApp__c</fullName>
+        <fullName>HRDirectorGeographyDirTimeApp__c</fullName>
         <externalId>false</externalId>
         <label>HR Director - Geo Director Time Approved</label>
         <required>false</required>
@@ -1855,11 +2303,25 @@ Level: Geography</inlineHelpText>
     </fields>
     <fields>
         <fullName>LeadEnvironmentCounselCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Lead Environment Counsel Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>LeadEnvironmentCounselTimeApp__c</fullName>
@@ -1868,6 +2330,18 @@ Level: Geography</inlineHelpText>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>LinktoDoAManager__c</fullName>
+        <externalId>false</externalId>
+        <formula>SUBSTITUTE(LEFT($Api.Partner_Server_URL_260, FIND( &apos;.&apos;, $Api.Partner_Server_URL_260)),&quot;.&quot;, &quot;--c&quot;)+MID($Api.Partner_Server_URL_260, FIND( &apos;.&apos;, $Api.Partner_Server_URL_260),
+FIND( &apos;my.salesforce&apos;, $Api.Partner_Server_URL_260)-FIND( &apos;.&apos;, $Api.Partner_Server_URL_260))+&quot;visual.force.com/apex/ECO_DOA_ApprovalRequest?projectID=&quot;&amp;Project__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Link to DoA Manager</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>NetServicesRevenue__c</fullName>
@@ -1894,6 +2368,16 @@ Level: Geography</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>OpportunityNumber__c</fullName>
+        <externalId>false</externalId>
+        <label>Opportunity Number</label>
+        <length>15</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Opportunity__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -1906,12 +2390,36 @@ Level: Geography</inlineHelpText>
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>OracleProjectNumber__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Project Number</label>
+        <length>15</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>OtherCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Other Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>OtherCommentsNeeded__c</fullName>
@@ -1929,6 +2437,80 @@ Level: Geography</inlineHelpText>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>PLManager__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.PnLManager__r.FirstName&amp;&quot; &quot;&amp;Project__r.PnLManager__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>P&amp;L Manager</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Participant1__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>This participant will receive workflow related communication for DOA Approval Requests</inlineHelpText>
+        <label>Participant 1</label>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>DOA Approval Requests (Participant 1)</relationshipLabel>
+        <relationshipName>DOAApprovalRequestsParticipant1</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Participant2__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>This participant will receive workflow related communication for DOA Approval Requests</inlineHelpText>
+        <label>Participant 2</label>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>DOA Approval Requests (Participant 2)</relationshipLabel>
+        <relationshipName>DOAApprovalRequestsParticipant2</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Participant3__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <inlineHelpText>This participant will receive workflow related communication for DOA Approval Requests</inlineHelpText>
+        <label>Participant 3</label>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>DOA Approval Requests (Participant 3)</relationshipLabel>
+        <relationshipName>DOAApprovalRequestsParticipant3</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Participant4__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Participant 4</label>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>DOA Approval Requests (Participant4)</relationshipLabel>
+        <relationshipName>DOAApprovalRequestsParticipant4</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Participant5__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Participant 5</label>
+        <referenceTo>User</referenceTo>
+        <relationshipLabel>DOA Approval Requests (Participant5)</relationshipLabel>
+        <relationshipName>DOAApprovalRequestsParticipant5</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>Phase__c</fullName>
@@ -1979,11 +2561,25 @@ Level: Geography</inlineHelpText>
     </fields>
     <fields>
         <fullName>PresidentCFOCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>President/CFO Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>PresidentCFOTimeApp__c</fullName>
@@ -2037,11 +2633,25 @@ Level: All</inlineHelpText>
     </fields>
     <fields>
         <fullName>ProjectManagerCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Project Manager Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>ProjectManagerTimeApp__c</fullName>
@@ -2050,6 +2660,27 @@ Level: All</inlineHelpText>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>ProjectManager__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.pse__Project_Manager__r.pse__Salesforce_User__r.FirstName&amp;&quot; &quot;&amp; Project__r.pse__Project_Manager__r.pse__Salesforce_User__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Manager</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectNameSubject__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Name/Subject</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>ProjectNumber__c</fullName>
@@ -2138,11 +2769,25 @@ Level: Region</inlineHelpText>
     </fields>
     <fields>
         <fullName>RegBLExecutiveCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Region/BL Executive Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>RegBLExecutiveTimeApp__c</fullName>
@@ -2178,11 +2823,25 @@ Level: Geography</inlineHelpText>
     </fields>
     <fields>
         <fullName>RegionChiefCounselCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Region Chief Counsel Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>RegionChiefCounselTimeApp__c</fullName>
@@ -2334,6 +2993,16 @@ Level: Geography</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Test_DoA_Approver_Page__c</fullName>
+        <externalId>false</externalId>
+        <formula>SUBSTITUTE(LEFT($Api.Partner_Server_URL_260, FIND( &apos;.&apos;, $Api.Partner_Server_URL_260)),&quot;.&quot;, &quot;--c&quot;)+MID($Api.Partner_Server_URL_260, FIND( &apos;.&apos;, $Api.Partner_Server_URL_260),FIND( &apos;my.salesforce&apos;, $Api.Partner_Server_URL_260)-FIND( &apos;.&apos;, $Api.Partner_Server_URL_260))+&quot;visual.force.com/&quot;</formula>
+        <label>Test DoA Approver Page</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>TreasuryApprover__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -2349,11 +3018,25 @@ Level: Other</inlineHelpText>
     </fields>
     <fields>
         <fullName>TreasuryCheckApp__c</fullName>
-        <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Treasury Approval</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
         <trackTrending>false</trackTrending>
-        <type>Checkbox</type>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>TreasuryTimeApp__c</fullName>
@@ -2388,19 +3071,19 @@ Level: Other</inlineHelpText>
         </sharedTo>
     </listViews>
     <nameField>
-        <displayFormat>RFA-{0}</displayFormat>
-        <label>RFA ID</label>
+        <displayFormat>DOA-{0}</displayFormat>
+        <label>DOA Request For Approval Id</label>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>DOA Approval Requests</pluralLabel>
     <recordTypes>
         <fullName>DOACreate</fullName>
         <active>true</active>
-        <label>DOA Create</label>
+        <label>Ecosystem Project (Create)</label>
         <picklistValues>
             <picklist>AECOMApprovalStatus__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2440,6 +3123,21 @@ Level: Other</inlineHelpText>
             </values>
             <values>
                 <fullName>MS</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AECOMHubAdministratorCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -2481,11 +3179,60 @@ Level: Other</inlineHelpText>
                 <default>false</default>
             </values>
             <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AreaCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AreaManagerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>BusinessUnitLeaderCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -2497,13 +3244,73 @@ Level: Other</inlineHelpText>
             </values>
         </picklistValues>
         <picklistValues>
-            <picklist>DCSHubApprovalStatus__c</picklist>
+            <picklist>CEOCheckApp__c</picklist>
             <values>
                 <fullName>Approved</fullName>
                 <default>false</default>
             </values>
             <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>CounselContractsManagerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DCSHubAdministratorCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DCSHubApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DCSgeoRiskCommitteeCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -2517,18 +3324,138 @@ Level: Other</inlineHelpText>
         <picklistValues>
             <picklist>EnterpriseApprovalStatus__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>EnterpriseOtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>EnterpriseRiskCommitteeCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>FedContractsandProcurementCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>FinanceGeographyControlCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeneralCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeoChiefOperatingOfficerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeoOtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeoPresidentCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
         <picklistValues>
             <picklist>GeographyApprovalStatus__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -2537,13 +3464,133 @@ Level: Other</inlineHelpText>
             </values>
         </picklistValues>
         <picklistValues>
-            <picklist>GroupApprovalStatus__c</picklist>
+            <picklist>GeographyChiefCounselCheckApp__c</picklist>
             <values>
                 <fullName>Approved</fullName>
                 <default>false</default>
             </values>
             <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupChiefCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupChiefExecutiveCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupChiefFinancialOfficerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupOtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HRDirectorGeographyDirCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LeadEnvironmentCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -2563,6 +3610,66 @@ Level: Other</inlineHelpText>
             </values>
             <values>
                 <fullName>3 - Project Award</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>PresidentCFOCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ProjectManagerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>RegBLExecutiveCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>RegionChiefCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -2608,427 +3715,18 @@ Level: Other</inlineHelpText>
                 <default>false</default>
             </values>
         </picklistValues>
-    </recordTypes>
-    <recordTypes>
-        <fullName>DOAJointVentureApproval</fullName>
-        <active>true</active>
-        <label>DOA Joint Venture Approval</label>
         <picklistValues>
-            <picklist>AECOMApprovalStatus__c</picklist>
+            <picklist>TreasuryCheckApp__c</picklist>
             <values>
                 <fullName>Approved</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>AECOMGroup__c</picklist>
-            <values>
-                <fullName>CS-BC</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>CS-EIC</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Corporate</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>DCS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>DCS - APAC</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>DCS EMEA%2FI</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>DCS-Americas</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MS</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>ApprovalRequestedTo__c</picklist>
-            <values>
-                <fullName>Negotiate Contract</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>New Contract Terms</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>New Scope</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Prepare Proposal</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Sign Contract</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submit Bid</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>ApprovalStatus__c</picklist>
-            <values>
-                <fullName>Approved</fullName>
+                <fullName>Conditionally Approved</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Rejected</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Business_Group__c</picklist>
-            <values>
-                <fullName>TBD</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>DCSHubApprovalStatus__c</picklist>
-            <values>
-                <fullName>Approved</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>EndMarket__c</picklist>
-            <values>
-                <fullName>TBD</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>EnterpriseApprovalStatus__c</picklist>
-            <values>
-                <fullName>Approved</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>GeographyApprovalStatus__c</picklist>
-            <values>
-                <fullName>Approved</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>GroupApprovalStatus__c</picklist>
-            <values>
-                <fullName>Approved</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Phase__c</picklist>
-            <values>
-                <fullName>0 - Initial Prospect Identity</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>1 - Pursuit Approval</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>2 - Proposal Submission</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>3 - Project Award</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RegionPicklist__c</picklist>
-            <values>
-                <fullName>TBD</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RequestType__c</picklist>
-            <values>
-                <fullName>Joint Venture</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Non-Project</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project %28Eco%29 - Approval</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project %28Eco%29 - Revenue at Risk</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project %28Eco%29 - Work at Risk</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project %28Non-Eco%29 - Approval</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project %28Non-Eco%29 - Revenue at Risk</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project %28Non-Eco%29 - Work at Risk</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-    </recordTypes>
-    <recordTypes>
-        <fullName>DOANonProjectApproval</fullName>
-        <active>true</active>
-        <label>DOA Non-Project Approval</label>
-        <picklistValues>
-            <picklist>AECOMApprovalStatus__c</picklist>
-            <values>
-                <fullName>Approved</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>AECOMGroup__c</picklist>
-            <values>
-                <fullName>CS-BC</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>CS-EIC</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Corporate</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>DCS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>DCS - APAC</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>DCS EMEA%2FI</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>DCS-Americas</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MS</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>ApprovalRequestedTo__c</picklist>
-            <values>
-                <fullName>Negotiate Contract</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>New Contract Terms</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>New Scope</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Prepare Proposal</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Sign Contract</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submit Bid</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>ApprovalStatus__c</picklist>
-            <values>
-                <fullName>Approved</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Rejected</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Business_Group__c</picklist>
-            <values>
-                <fullName>TBD</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>DCSHubApprovalStatus__c</picklist>
-            <values>
-                <fullName>Approved</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>EndMarket__c</picklist>
-            <values>
-                <fullName>TBD</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>EnterpriseApprovalStatus__c</picklist>
-            <values>
-                <fullName>Approved</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>GeographyApprovalStatus__c</picklist>
-            <values>
-                <fullName>Approved</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>GroupApprovalStatus__c</picklist>
-            <values>
-                <fullName>Approved</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>Phase__c</picklist>
-            <values>
-                <fullName>0 - Initial Prospect Identity</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>1 - Pursuit Approval</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>2 - Proposal Submission</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>3 - Project Award</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RegionPicklist__c</picklist>
-            <values>
-                <fullName>TBD</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>RequestType__c</picklist>
-            <values>
-                <fullName>Joint Venture</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Non-Project</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project %28Eco%29 - Approval</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project %28Eco%29 - Revenue at Risk</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project %28Eco%29 - Work at Risk</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project %28Non-Eco%29 - Approval</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project %28Non-Eco%29 - Revenue at Risk</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project %28Non-Eco%29 - Work at Risk</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -3036,11 +3734,11 @@ Level: Other</inlineHelpText>
     <recordTypes>
         <fullName>DOAQueueEntry</fullName>
         <active>true</active>
-        <label>DOA Queue Entry</label>
+        <label>Ecosystem (Submitted)</label>
         <picklistValues>
             <picklist>AECOMApprovalStatus__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -3084,6 +3782,21 @@ Level: Other</inlineHelpText>
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>AECOMHubAdministratorCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>ApprovalRequestedTo__c</picklist>
             <values>
                 <fullName>Negotiate Contract</fullName>
@@ -3117,11 +3830,60 @@ Level: Other</inlineHelpText>
                 <default>false</default>
             </values>
             <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AreaCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AreaManagerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>BusinessUnitLeaderCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -3133,13 +3895,73 @@ Level: Other</inlineHelpText>
             </values>
         </picklistValues>
         <picklistValues>
-            <picklist>DCSHubApprovalStatus__c</picklist>
+            <picklist>CEOCheckApp__c</picklist>
             <values>
                 <fullName>Approved</fullName>
                 <default>false</default>
             </values>
             <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>CounselContractsManagerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DCSHubAdministratorCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DCSHubApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DCSgeoRiskCommitteeCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -3153,18 +3975,138 @@ Level: Other</inlineHelpText>
         <picklistValues>
             <picklist>EnterpriseApprovalStatus__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>EnterpriseOtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>EnterpriseRiskCommitteeCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>FedContractsandProcurementCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>FinanceGeographyControlCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeneralCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeoChiefOperatingOfficerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeoOtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeoPresidentCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
         <picklistValues>
             <picklist>GeographyApprovalStatus__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
@@ -3173,13 +4115,133 @@ Level: Other</inlineHelpText>
             </values>
         </picklistValues>
         <picklistValues>
-            <picklist>GroupApprovalStatus__c</picklist>
+            <picklist>GeographyChiefCounselCheckApp__c</picklist>
             <values>
                 <fullName>Approved</fullName>
                 <default>false</default>
             </values>
             <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupChiefCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupChiefExecutiveCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupChiefFinancialOfficerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupOtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HRDirectorGeographyDirCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LeadEnvironmentCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -3199,6 +4261,66 @@ Level: Other</inlineHelpText>
             </values>
             <values>
                 <fullName>3 - Project Award</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>PresidentCFOCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ProjectManagerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>RegBLExecutiveCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>RegionChiefCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -3241,6 +4363,1332 @@ Level: Other</inlineHelpText>
             </values>
             <values>
                 <fullName>Project %28Non-Eco%29 - Work at Risk</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>TreasuryCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>NonEcosystemCreate</fullName>
+        <active>true</active>
+        <label>Non-Ecosystem (Create)</label>
+        <picklistValues>
+            <picklist>AECOMApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AECOMGroup__c</picklist>
+            <values>
+                <fullName>CS-BC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CS-EIC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Corporate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DCS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DCS - APAC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DCS EMEA%2FI</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DCS-Americas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MS</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AECOMHubAdministratorCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ApprovalRequestedTo__c</picklist>
+            <values>
+                <fullName>Negotiate Contract</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Contract Terms</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Scope</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prepare Proposal</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sign Contract</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submit Bid</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ApprovalStatus__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AreaCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AreaManagerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>BusinessUnitLeaderCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Business_Group__c</picklist>
+            <values>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>CEOCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>CounselContractsManagerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DCSHubAdministratorCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DCSHubApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DCSgeoRiskCommitteeCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>EndMarket__c</picklist>
+            <values>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>EnterpriseApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>EnterpriseOtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>EnterpriseRiskCommitteeCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>FedContractsandProcurementCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>FinanceGeographyControlCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeneralCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeoChiefOperatingOfficerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeoOtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeoPresidentCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeographyApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeographyChiefCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupChiefCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupChiefExecutiveCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupChiefFinancialOfficerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupOtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HRDirectorGeographyDirCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LeadEnvironmentCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Phase__c</picklist>
+            <values>
+                <fullName>0 - Initial Prospect Identity</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1 - Pursuit Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2 - Proposal Submission</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3 - Project Award</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>PresidentCFOCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ProjectManagerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>RegBLExecutiveCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>RegionChiefCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>RegionPicklist__c</picklist>
+            <values>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>RequestType__c</picklist>
+            <values>
+                <fullName>Joint Venture</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Non-Project</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project %28Eco%29 - Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project %28Eco%29 - Revenue at Risk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project %28Eco%29 - Work at Risk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project %28Non-Eco%29 - Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project %28Non-Eco%29 - Revenue at Risk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project %28Non-Eco%29 - Work at Risk</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>TreasuryCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
+    <recordTypes>
+        <fullName>NonProject</fullName>
+        <active>true</active>
+        <description>For both non-project and project that aren&apos;t stored within Ecosystem</description>
+        <label>Non-Ecosystem (Submitted)</label>
+        <picklistValues>
+            <picklist>AECOMApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AECOMGroup__c</picklist>
+            <values>
+                <fullName>CS-BC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>CS-EIC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Corporate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DCS</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DCS - APAC</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DCS EMEA%2FI</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>DCS-Americas</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>MS</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AECOMHubAdministratorCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ApprovalRequestedTo__c</picklist>
+            <values>
+                <fullName>Negotiate Contract</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Contract Terms</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>New Scope</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Prepare Proposal</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sign Contract</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submit Bid</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ApprovalStatus__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AreaCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>AreaManagerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>BusinessUnitLeaderCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Business_Group__c</picklist>
+            <values>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>CEOCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>CounselContractsManagerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DCSHubAdministratorCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DCSHubApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>DCSgeoRiskCommitteeCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>EndMarket__c</picklist>
+            <values>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>EnterpriseApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>EnterpriseOtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>EnterpriseRiskCommitteeCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>FedContractsandProcurementCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>FinanceGeographyControlCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeneralCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeoChiefOperatingOfficerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeoOtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeoPresidentCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeographyApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GeographyChiefCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupApprovalStatus__c</picklist>
+            <values>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupChiefCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupChiefExecutiveCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupChiefFinancialOfficerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>GroupOtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HRDirectorGeographyDirCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>LeadEnvironmentCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OtherCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Phase__c</picklist>
+            <values>
+                <fullName>0 - Initial Prospect Identity</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>1 - Pursuit Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>2 - Proposal Submission</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>3 - Project Award</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>PresidentCFOCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ProjectManagerCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>RegBLExecutiveCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>RegionChiefCounselCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>RegionPicklist__c</picklist>
+            <values>
+                <fullName>TBD</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>RequestType__c</picklist>
+            <values>
+                <fullName>Joint Venture</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Non-Project</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project %28Eco%29 - Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project %28Eco%29 - Revenue at Risk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project %28Eco%29 - Work at Risk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project %28Non-Eco%29 - Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project %28Non-Eco%29 - Revenue at Risk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project %28Non-Eco%29 - Work at Risk</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>TreasuryCheckApp__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Conditionally Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -3257,6 +5705,10 @@ Level: Other</inlineHelpText>
         <lookupDialogsAdditionalFields>ApprovalStatus__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>OWNER.FIRST_NAME</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>OWNER.LAST_NAME</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Project__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>DateRequired__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Requestor__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ApprovalStatus__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <validationRules>
@@ -3266,6 +5718,43 @@ Level: Other</inlineHelpText>
         <errorConditionFormula>AND(GeoCountOfApprovers__c == 0, ISCHANGED( SubmitGeographyforApproval__c), SubmitGeographyforApproval__c = True)</errorConditionFormula>
         <errorMessage>You must add Geography approvers in order to submit for approval</errorMessage>
     </validationRules>
+    <webLinks>
+        <fullName>DOA_Admin_Page</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>DOA Admin Page</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <url>/apex/ECO_DOA_ApprovalRequest_UserBased?Id=</url>
+    </webLinks>
+    <webLinks>
+        <fullName>Manage_DoA_Approvals</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Manage DoA Approvals</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/ECO_DOA_ApprovalRequest?projectID={!pse__Proj__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>New_Page</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>New Page</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <url>/apex/ECO_DOAApprovals?Id=</url>
+    </webLinks>
     <webLinks>
         <fullName>RiskCommitteeSubmittal_Template</fullName>
         <availability>online</availability>

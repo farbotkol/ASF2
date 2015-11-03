@@ -1,0 +1,904 @@
+<apex:component layout="none" controller="ECO_EarnedValueEstimatedFlyoutController" allowDML="true">
+    <apex:attribute name="ProjectId" description="Parent Project ID" type="ID" assignTo="{!sProjectId}"  required="true"/>
+
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/css/font-awesome.min.css')}" />
+    
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+
+    <script type="text/javascript"
+          src="https://www.google.com/jsapi?autoload={
+            'modules':[{
+              'name':'visualization',
+              'version':'1',
+              'packages':['corechart']
+            }]
+          }">
+    </script>
+
+    <script>
+        $y = jQuery.noConflict();
+
+        //Number.prototype.format = function(n, x) {
+        //    var re = '\\d(?=(\\d{' + (x || 3) + '})+' + (n > 0 ? '\\.' : '$') + ')';
+        //    return this.toFixed(Math.max(0, ~~n)).replace(new RegExp(re, 'g'), '$&,');
+        //};
+
+Number.prototype.format = function(c, d, t){
+var n = this, 
+    c = isNaN(c = Math.abs(c)) ? 2 : c, 
+    d = d == undefined ? "." : d, 
+    t = t == undefined ? "," : t, 
+    s = n < 0 ? "-" : "", 
+    i = parseInt(n = Math.abs(+n || 0).toFixed(c)) + "", 
+    j = (j = i.length) > 3 ? j % 3 : 0;
+   return s + (j ? i.substr(0, j) + t : "") + i.substr(j).replace(/(\d{3})(?=\d)/g, "$1" + t) + (c ? d + Math.abs(n - i).toFixed(c).slice(2) : "");
+ };
+        $y.fn.editableTableWidget = function (options) {
+            'use strict';
+            return $y(this).each(function () {
+                var buildDefaultOptions = function () {
+                        var opts = $y.extend({}, $y.fn.editableTableWidget.defaultOptions);
+                        opts.editor = opts.editor.clone();
+                        return opts;
+                    },
+                    activeOptions = $y.extend(buildDefaultOptions(), options),
+                    ARROW_LEFT = 37, ARROW_UP = 38, ARROW_RIGHT = 39, ARROW_DOWN = 40, ENTER = 13, ESC = 27, TAB = 9,
+                    element = $y(this),
+                    editor = activeOptions.editor.css('position', 'absolute').hide().appendTo(element.parent()),
+                    active,
+                    showEditor = function (select) {
+                        active = element.find('td:focus');
+                        if (active.length) {
+                    
+                            // Prevent edit of the columns specified
+                            if ($y.inArray(active.index() + 1, activeOptions.preventColumns) != -1) {
+                                active.blur();
+
+                                return;
+                            }
+
+                            editor.val(active.text())
+                                .removeClass('error')
+                                .show()
+                                .offset(active.offset())
+                                .css(active.css(activeOptions.cloneProperties))
+                                .width(active.width())
+                                .height(active.height())
+                                .focus();
+                            if (select) {
+                                editor.select();
+                            }
+                        }
+                    },
+                    setActiveText = function () {
+                        var text = editor.val(),
+                            evt = $y.Event('change'),
+                            originalContent;
+                        if (active.text() === text || editor.hasClass('error')) {
+                            return true;
+                        }
+
+                        var vals = [];
+                        vals[0] = text;
+                        vals[1] = active.html();
+
+                        originalContent = active.html();
+
+                        active.text(text).trigger(evt, vals);
+                        if (evt.result === false) {
+                            active.html(originalContent);
+                        }
+                    },
+                    movement = function (element, keycode) {
+                        if (keycode === ARROW_RIGHT) {
+                            return element.next('td');
+                        } else if (keycode === ARROW_LEFT) {
+                            return element.prev('td');
+                        } else if (keycode === ARROW_UP) {
+                            return element.parent().prev().children().eq(element.index());
+                        } else if (keycode === ARROW_DOWN) {
+                            return element.parent().next().children().eq(element.index());
+                        }
+                        return [];
+                    };
+                editor.blur(function () {
+                    setActiveText();
+                    editor.hide();
+                }).keydown(function (e) {
+                    if (e.which === ENTER) {
+                        setActiveText();
+                        editor.hide();
+                        active.focus();
+                        e.preventDefault();
+                        e.stopPropagation();
+                    } else if (e.which === ESC) {
+                        editor.val(active.text());
+                        e.preventDefault();
+                        e.stopPropagation();
+                        editor.hide();
+                        active.focus();
+                    } else if (e.which === TAB) {
+                        active.focus();
+                    } else if (this.selectionEnd - this.selectionStart === this.value.length) {
+                        var possibleMove = movement(active, e.which);
+                        if (possibleMove.length > 0) {
+                            possibleMove.focus();
+                            e.preventDefault();
+                            e.stopPropagation();
+                        }
+                    }
+                })
+                .on('input paste', function () {
+                    var evt = $y.Event('validate');
+                    active.trigger(evt, editor.val());
+                    if (evt.result === false) {
+                        editor.addClass('error');
+                    } else {
+                        editor.removeClass('error');
+                    }
+                });
+                element.on('click keypress dblclick', showEditor)
+                .css('cursor', 'pointer')
+                .keydown(function (e) {
+                    var prevent = true,
+                        possibleMove = movement($y(e.target), e.which);
+                    if (possibleMove.length > 0) {
+                        possibleMove.focus();
+                    } else if (e.which === ENTER) {
+                        showEditor(false);
+                    } else if (e.which === 17 || e.which === 91 || e.which === 93) {
+                        showEditor(true);
+                        prevent = false;
+                    } else {
+                        prevent = false;
+                    }
+                    if (prevent) {
+                        e.stopPropagation();
+                        e.preventDefault();
+                    }
+                });
+
+                element.find('td').prop('tabindex', 1);
+
+                $y(window).on('resize', function () {
+                    if (editor.is(':visible')) {
+                        editor.offset(active.offset())
+                        .width(active.width())
+                        .height(active.height());
+                    }
+                });
+            });
+
+        };
+
+        $y.fn.editableTableWidget.defaultOptions = {
+            cloneProperties: ['padding', 'padding-top', 'padding-bottom', 'padding-left', 'padding-right',
+                              'text-align', 'font', 'font-size', 'font-family', 'font-weight',
+                              'border', 'border-top', 'border-bottom', 'border-left', 'border-right'],
+            editor: $y('<input>')
+        };
+
+        var evEstFlyout = {
+            init : function(){
+
+                $y('body').on('click', evEstFlyout.hideContentFlyout);
+                
+                $y('#evEstPane').on('click', function(event) { 
+                    event.stopPropagation();
+                });
+                
+                $y('#evEstPane .tab').on('click', evEstFlyout.showContentFlyout);
+                
+                $y('#evEstPane .close').click(function(){
+                    evEstFlyout.hideContentFlyout();
+                });
+            },
+
+            hideContentFlyout : function(){
+                var width = $y('#evEstPane').outerWidth() * -1 + 'px';
+                
+                $y('#evEstPane').animate({
+                    right : width
+                  }, 550, 'easeInCubic');
+            },
+           
+            showContentFlyout : function(event){
+                event.stopPropagation();
+                
+                if($y('#evEstPane').css('right') == '0px'){
+                    evEstFlyout.hideContentFlyout();
+                }else{
+                    $y('#evEstPane').animate({
+                        right : 0
+                      }, 550, 'easeOutCubic');
+                }
+            }
+        }
+
+        $y(document).ready(function (){
+            evEstFlyout.init();
+
+            $y('.mainTable2').editableTableWidget({preventColumns: [1, 3, 6, 7, 8]});
+
+            $y('.mainTable2 td').on('change', function(evt, newValue, oldValue) {
+                var col = $y(this).parent().children().index($y(this));
+
+                if (newValue == '?') {
+                    if (col == 1) {
+                        diff = parseFloat(oldValue.replace(/,/g, '')) - parseFloat($y('#plannedCostVariance').html().replace(/,/g, ''));
+
+                        $y(this).html(diff.format(2));
+
+                        if (diff < 0) {
+                            $y(this).addClass('negativeNumber');
+                        } else {
+                            $y(this).removeClass('negativeNumber');
+                        }
+                    } else if (col == 4) {
+                        diff = parseFloat(oldValue.replace(/,/g, '')) - parseFloat($y('#cashInVariance').html().replace(/,/g, ''));
+
+                        if (diff < 0) {
+                            $y(this).addClass('negativeNumber');
+                        } else {
+                            $y(this).removeClass('negativeNumber');
+                        }
+
+                        $y(this).html(diff.format(2));
+                    }
+                }
+
+                var row = $y(this).parent().parent().children().index($y(this).parent());
+  
+                val = getValue2(this);
+
+                if (col == 1) {
+                    $y($y($y('.dataTable2 tbody tr')[row]).children()[1]).find('input').val(val);
+                } else if (col == 4) {
+                    $y($y($y('.dataTable2 tbody tr')[row]).children()[3]).find('input').val(val);
+                }
+
+                copyFromDataTable2();
+            });
+
+            copyFromDataTable2();
+        });
+
+      google.setOnLoadCallback(drawChart2);
+
+      var chartJson2 = {!chartData};
+
+      function drawChart2() {
+        var data = google.visualization.arrayToDataTable(chartJson2);
+
+        var options = {
+          curveType: 'none',
+          legend: { position: 'bottom' },
+          vAxis: {format: 'currency'},
+          pointSize: 2,
+          seriesType: "line",
+          titlePosition: "none",
+          series: {0: {type: "bars"}},
+          colors: ['#cad7e9', '#0066ad'],
+          chartArea: {left:130, top:20, width: '75%', height:'50%'}
+        };
+
+        var chart = new google.visualization.ComboChart(document.getElementById('curve_chart2'));
+
+        chart.draw(data, options);
+      }
+
+      function getValue2(obj) {
+        r = 0;
+
+        try {
+            r = parseFloat($y(obj).html().trim().replace(/,/g, ''));
+        } catch (ex) {
+            return null;
+        }
+
+        if (isNaN(r)) {
+            return null;
+        }
+
+        return r;
+      }
+
+      function recalcColumn2(ps) {
+        x = 0;
+
+        $y('.mainTable2 tbody tr td:nth-child(' + ps + ')').each( function() {
+            y = 0;
+
+            try {
+                y = parseFloat($y(this).html().trim().replace(/,/g, ''));
+            } catch (ex) {
+
+            }
+
+            if (isNaN(y)) {
+                y = 0;
+            }
+
+            $y(this).html(y.format(2));
+
+            if (y < 0) {
+                $y(this).addClass('negativeNumber');
+            } else {
+                $y(this).removeClass('negativeNumber');
+            }
+
+            x += y;
+            $y(this).next('td').html(x.format(2));
+
+            if (x < 0) {
+                $y(this).next('td').addClass('negativeNumber');
+            } else {
+                $y(this).next('td').removeClass('negativeNumber');
+            }
+        });
+      }
+
+      function calcTotal2() {
+        $y('.mainTable2 tbody tr td:nth-child(2)').each( function() {
+            y = 0;
+
+            try {
+                y = parseFloat($y(this).html().trim().replace(/,/g, ''));
+            } catch (ex) {
+            }
+
+            if (isNaN(y)) {
+                y = 0;
+            }
+
+            z = 0;
+
+            try {
+                z = parseFloat($y($y(this).parent().children()[4]).html().trim().replace(/,/g, ''));
+            } catch (ex) {
+            }
+
+            if (isNaN(z)) {
+                z = 0;
+            }
+
+            sum = -y + z;
+
+            $y($y(this).parent().children()[6]).html(sum.format(2));
+
+            if (sum < 0) {
+                $y($y(this).parent().children()[6]).addClass('negativeNumber');
+            } else {
+                $y($y(this).parent().children()[6]).removeClass('negativeNumber');
+            }
+        });         
+      }
+
+      function recalculateCumulative2() {
+        recalcColumn2('2');
+        recalcColumn2('5');
+
+        calcTotal2();
+
+        recalcColumn2('7');
+      }
+
+      function getCellValue2(obj, idx) {
+        ret = 0.0;
+
+        try {
+            ret = parseFloat($y($y(obj).children()[idx]).html().trim().replace(/,/g, ''));
+        } catch (ex) {
+
+        }
+
+        if (isNaN(ret)) {
+            ret = 0.0;
+        }
+
+        return ret;
+      }
+
+      function getInputValue2(obj, idx) {
+        ret = 0.0;
+
+        try {
+            ret = parseFloat($y($y(obj).children()[idx]).find('input').val().trim().replace(/,/g, ''));
+        } catch (ex) {
+            return null;
+        }
+
+        if (isNaN(ret)) {
+            ret = null;
+        }
+
+        return ret;
+      }
+
+      function copyFromDataTable2() {
+        row = 0;
+
+        main = $y('.mainTable2 tbody tr');
+
+        $y('.mainTable2 tbody tr td').removeClass('editedCell');
+
+        var totalPlannedCost = 0;
+        var totalCashIn = 0;
+
+        $y('.dataTable2 tbody tr').each(function() {
+            appliedCost = getCellValue2(this, 0);
+            overrideAppliedCost = getInputValue2(this, 1);
+            revenue = getCellValue2(this, 2);
+            overrideRevenue = getInputValue2(this, 3);
+
+            if (overrideAppliedCost == null) {
+                $y($y(main[row]).children()[1]).html(appliedCost.format(2));
+                totalPlannedCost += appliedCost;
+            } else {
+                $y($y(main[row]).children()[1]).html(overrideAppliedCost.format(2));
+                $y($y(main[row]).children()[1]).addClass('editedCell');
+                totalPlannedCost += overrideAppliedCost;
+            }
+
+            if (overrideRevenue == null) {
+                $y($y(main[row]).children()[4]).html(revenue.format(2));
+                totalCashIn += revenue;
+            } else {
+                $y($y(main[row]).children()[4]).html(overrideRevenue.format(2));
+                $y($y(main[row]).children()[4]).addClass('editedCell');
+                totalCashIn += overrideRevenue;
+            }
+
+            row++;
+        });
+
+        $y('#overriddenPlannedCostTotal').html(totalPlannedCost.format(2));
+
+        if (totalPlannedCost < 0) {
+            $y('#overriddenPlannedCostTotal').addClass('negativeNumber');
+        } else {
+            $y('#overriddenPlannedCostTotal').removeClass('negativeNumber');
+        }
+
+        $y('#overriddenCashInTotal').html(totalCashIn.format(2));
+
+        if (totalCashIn < 0) {
+            $y('#overriddenCashInTotal').addClass('negativeNumber');
+        } else {
+            $y('#overriddenCashInTotal').removeClass('negativeNumber');
+        }
+
+        diff1 = parseFloat((totalPlannedCost - {!plannedCostTotal}).toFixed(2));
+
+        $y('#plannedCostVariance').html(diff1.format(2));
+
+        if (diff1 < 0) {
+            $y('#plannedCostVariance').addClass('negativeNumber');
+        } else {
+            $y('#plannedCostVariance').removeClass('negativeNumber');
+        }
+
+        diff2 = parseFloat((totalCashIn - {!cashInTotal}).toFixed(2));
+
+        $y('#cashInVariance').html(diff2.format(2));
+
+        if (diff2 < 0) {
+            $y('#cashInVariance').addClass('negativeNumber');
+        } else {
+            $y('#cashInVariance').removeClass('negativeNumber');
+        }
+
+        if (totalPlannedCost != {!plannedCostTotal}) {
+            $y('#plannedCostVarianceLabel').addClass('varianceBad');
+        } else {
+            $y('#plannedCostVarianceLabel').removeClass('varianceBad');
+        }
+
+        if (totalCashIn != {!cashInTotal}) {
+            $y('#cashInVarianceLabel').addClass('varianceBad');
+        } else {
+            $y('#cashInVarianceLabel').removeClass('varianceBad');
+        }
+
+        recalculateCumulative2();
+
+        row = 1;
+        $y('.mainTable2 tbody tr td:nth-child(7)').each( function() {
+            chartJson2[row++][1] = parseFloat($y(this).html().trim().replace(/,/g, ''));
+        });
+
+        row = 1;
+        $y('.mainTable2 tbody tr td:nth-child(8)').each( function() {
+            chartJson2[row++][2] = parseFloat($y(this).html().trim().replace(/,/g, ''));
+        });
+
+        drawChart2();
+      }
+
+      function checkSave2() {
+        plannedCostVariance = Math.abs(parseFloat($y('#plannedCostVariance').html().replace(/,/g, '')));
+        cashInVariance = Math.abs(parseFloat($y('#cashInVariance').html().replace(/,/g, '')));
+
+        if (plannedCostVariance >= 1.00) {
+            alert('Can\'t save until Planned Cost Variance is less than 1.00 (preferably balanced to 0.00).');
+
+            return false;
+        } else if (plannedCostVariance > 0) {
+            return confirm('There is a small Planned Cost Variance.  Are you sure you want to save without balancing it first?');
+        }
+
+        if (cashInVariance >= 1.00) {
+            alert('Can\'t save until Cash In Variance is less than 1.00 (preferably balanced to 0.00).');
+
+            return false;
+        } else if (cashInVariance > 0) {
+            return confirm('There is a small Cash In Variance.  Are you sure you want to save without balancing it first?');
+        }
+
+        return true;
+      }
+    </script>
+
+    <style>
+        /*
+                FLYOUT STYLES
+        */
+
+         #evEstPane.evEstFlyout {
+            background-color:#f3f3f3;
+            position: fixed;
+            width: 925px;
+            right: -950px;
+            top: 50px;
+            height:550px;
+            padding: 10px 0 20px 20px;
+            border-right: none;
+            -webkit-border-top-left-radius: 20px;
+            -webkit-border-bottom-left-radius: 20px;
+            -moz-border-radius-topleft: 20px;
+            -moz-border-radius-bottomleft: 20px;
+            border-top-left-radius: 20px;
+            border-bottom-left-radius: 20px;
+            z-index: 5000;
+            margin-left: 42px;
+            min-height: 400px;
+            box-shadow: 0 0 10px #787878;
+            border: 1px solid #DEDEDE;
+        }
+
+         #evEstPane.evEstFlyout .tab {
+            position: absolute;
+            border-right: none;
+            background-color: #f3f3f3;
+            
+            -webkit-border-top-left-radius: 10px;
+            -webkit-border-top-right-radius: 10px;
+            -moz-border-radius-topleft: 10px;
+            border-top-left-radius: 10px;
+            cursor: pointer;
+            padding:7px 8px;
+            box-shadow:0 -3px 4px #959595;
+
+            top:450px; /* 330px */
+            left: -72px;
+
+            -webkit-transform: rotate(-90deg); 
+            -moz-transform: rotate(-90deg); 
+            -ms-transform: rotate(-90deg);
+        }
+
+         #evEstPane.evEstFlyout .close {
+            color: #D6D6D6;
+            cursor: pointer;
+            display: block;
+            float: right;
+            font-family: 'Platform-Font', Helvetica, Arial, sans-serif;
+            padding-left: 25px;
+            padding-right: 20px;
+            text-align: right;
+            text-transform: uppercase;
+        }
+
+         #evEstPane.evEstFlyout .delete{
+            position: absolute;
+            top: 12px;
+            right: 7px;
+            padding: 6px 8px;
+        }
+
+         #evEstPane.evEstFlyout .delete:hover{
+            text-decoration:underline;
+        }
+
+         #evEstPane.evEstFlyout .header {
+            color: #333;
+            font-size: 25px;
+            padding-bottom: 15px;
+            padding-top: 10px;
+        }
+        
+         #evEstPane.evEstFlyout .body {
+            padding-right: 20px;
+            overflow: scroll;
+        }
+
+         #evEstPane.evEstFlyout select{
+            margin:2px 0 5px 0;
+        }
+
+         #evEstPane.evEstFlyout .table{
+            width: 100%;
+            max-width: 100%;
+            margin-bottom: 20px;
+            margin-top:15px;
+        }
+
+         #evEstPane.evEstFlyout .table th{
+            font-size: 1.05em;
+            font-weight: 600;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.14);
+        }
+
+         #evEstPane.evEstFlyout .table-striped > tbody > tr:nth-child(4n),  #evEstPane.evEstFlyout .table-striped > tbody > tr:nth-child(4n-1){
+            background-color: #f6f8fa;
+        }
+
+         #evEstPane.evEstFlyout .table td{
+            border-top: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+         #evEstPane.evEstFlyout .table>tbody>tr>td, .flyout .table>tbody>tr>th, .flyout .table>tfoot>tr>td, .flyout .table>tfoot>tr>th, .flyout .table>thead>tr>td, .flyout .table>thead>tr>th{
+            padding: 8px;
+            line-height: 1.42857143;
+            vertical-align: top;
+        }
+
+         #evEstPane.evEstFlyout .label-table{
+            display: inline-block;
+            width: 80%;
+            min-width: 8ex;
+            font-size: 1em;
+            max-width: 100px;
+            padding: 5px;
+            text-overflow: ellipsis;
+            overflow: hidden;
+        }
+
+        /* tables */
+         #evEstPane.evEstFlyout table.tablesorter {
+            font-family:arial;
+            background-color: #CDCDCD;
+            margin:10px 0pt 15px;
+            font-size: 8pt;
+            width: 100%;
+            text-align: left;
+        }
+
+         #evEstPane.evEstFlyout table.tablesorter thead tr th, table.tablesorter tfoot tr th {
+            background-color: #aebdee;
+            border: 1px solid #FFF;
+            font-size: 8pt;
+            padding: 4px;
+        }
+
+         #evEstPane.evEstFlyout table.tablesorter thead tr .header {
+            background-image: url(bg.gif);
+            background-repeat: no-repeat;
+            background-position: center right;
+            cursor: pointer;
+        }
+
+         #evEstPane.evEstFlyout table.tablesorter tbody td {
+            color: #3D3D3D;
+            padding: 4px;
+            background-color: #FFF;
+            vertical-align: top;
+            height: 20px;
+        }
+
+         #evEstPane.evEstFlyout table.tablesorter tbody tr.odd td {
+            background-color:#F0F0F6;
+        }
+
+         #evEstPane.evEstFlyout table.tablesorter thead tr .headerSortUp {
+            background-image: url(asc.gif);
+        }
+
+         #evEstPane.evEstFlyout table.tablesorter thead tr .headerSortDown {
+            background-image: url(desc.gif);
+        }
+
+         #evEstPane.evEstFlyout table.tablesorter thead tr .headerSortDown, table.tablesorter thead tr .headerSortUp {
+        background-color: #8dbdd8;
+        }
+
+        .noteText{
+            color:#818181;
+            font-style: italic;
+        }
+
+        .tableHeader1 {
+            padding: 3px;
+            text-align: center;
+            border-style:solid;
+            border-color:#ffffff;
+            border-width: 1px;
+        }
+
+        .tableHeader2 {
+            background-color: #aac0dd;
+            width:110px;
+            min-width:110px;
+            max-width:110px;
+            overflow:hidden;
+        }
+
+        .tableCell1 {
+            width:110px;
+            min-width:110px;
+            max-width:110px;
+            padding:3px;
+            overflow:hidden;
+            border:1px solid #ffffff;
+        }
+
+        .nonEditable {
+            background-color: #d4dfee;
+        }
+
+        .editedCell {
+/*          color:#00a000; */
+            background-color:#f0f0b0;
+        }
+
+        .varianceBad {
+            color:#ff0000;
+        }
+
+        .negativeNumber {
+            color:#ff0000;
+        }
+    </style>
+    
+        <div id="evEstPane" class="evEstFlyout flyout">
+            <div class="close">
+                <i class="fa fa-arrow-right" style="color:#333;"></i>
+            </div>
+            <div class="tab">
+                Earned Value (est)
+            </div>
+            <div class="header">
+                Project Earned Value Estimated
+            </div>
+
+            <apex:outputPanel id="evEstPanel">
+                <div class="body">
+                    <apex:pageBlock mode="mainDetail">
+                        <div style="height:450px;">
+
+                            <div id="curve_chart2" style="width: 592px; height: 200px; float:left;"></div>
+                            <div style="width:270px; height:200px; padding-left:20px; float:right; padding-right:5px;">
+
+                            <div style="float:right;">
+                                <apex:commandButton onclick="return checkSave2();" action="{!save}" value="Save" style="margin-right:10px; margin-bottom: 15px;"/>
+                                <apex:commandButton action="{!clearAllOverrides}" value="Clear All Overrides" style="margin-right:0px; margin-bottom: 15px;" onclick="return confirm('Are you sure you want to clear all overrides?  This action cannot be undone!');"/>
+                             </div>   
+
+                             <div style="float:right;">
+                            <table style="width:260px;">
+                                <tr>
+                                    <td>Original Planned Cost Total:</td>
+                                    <td style="padding-left:5px; text-align:right;" class="{!IF(plannedCostTotal<0, 'negativeNumber', '')}">
+                                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                        <apex:param value="{!plannedCostTotal}" />
+                                    </apex:outputText>  
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Applied Planned Cost Total:</td>
+                                    <td id="overriddenPlannedCostTotal" style="padding-left:5px; text-align:right;"></td>
+                                </tr>
+
+                                <tr>
+                                    <td id="plannedCostVarianceLabel">Planned Cost Variance:</td>
+                                    <td id="plannedCostVariance" style="padding-left:5px; text-align:right;"></td>
+                                </tr>
+
+                                <tr>
+                                    <td style="padding-top:10px;">Original Cash In Total:</td>
+                                    <td style="padding-top:10px; padding-left:5px; text-align:right;" class="{!IF(cashInTotal<0, 'negativeNumber', '')}">
+                                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                        <apex:param value="{!cashInTotal}" />
+                                    </apex:outputText>  
+                                    </td>
+                                </tr>
+
+                                <tr>
+                                    <td>Applied Cash In Total:</td>
+                                    <td id="overriddenCashInTotal" style="padding-left:5px; text-align:right;"></td>
+                                </tr>
+
+                                <tr>
+                                    <td id="cashInVarianceLabel">Cash In Variance:</td>
+                                    <td id="cashInVariance" style="padding-left:5px; text-align:right;"></td>
+                                </tr>
+
+                                <tr>
+                                    <td colspan="2" style="padding-top:10px;">
+                                        <i>Enter '?' in any cell to balance the variance to that cell.</i>
+                                    </td>
+                                </tr>   
+                            </table>
+                            </div>
+                            <div style="clear:both;"></div>
+
+                            </div>
+
+
+                            <div style="width:5px; height:20px;clear:both;"></div>
+
+                            <div style="display:none;">  <!-- should be display:none -->
+                                <apex:pageBlockTable styleClass="dataTable2" value="{!lWeeklyRollupEntries}" var="row" border="1">
+                                    <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2">
+
+                                        <apex:outputText value="{!row.EstimatedCost__c}" />
+                                    </apex:column>
+
+                                    <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2">
+                                        <apex:inputField value="{!row.OverrideEstimatedCost__c}" />
+                                    </apex:column>
+
+                                    <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2">
+                                        <apex:outputText value="{!row.Revenue__c}" />
+                                    </apex:column>
+
+                                    <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2">
+                                        <apex:inputField value="{!row.OverrideRevenue__c}" />
+                                    </apex:column>
+                                </apex:pageBlockTable>
+                            </div>
+
+                            <table style="border-collapse:collapse;border-width: 1px 1px 0px 1px;border-style:solid;border-color:#ffffff;table-layout:fixed;">
+                                <thead>
+                                    <tr class="headerRow">
+                                        <th class="tableHeader1 tableHeader2">Period Start Date</th>
+                                        <th class="tableHeader1 tableHeader2">Estimated Cost<br />(In Period)</th>
+                                        <th class="tableHeader1 tableHeader2">Estimated Cost<br />(Cumulative)</th>
+                                        <th class="tableHeader1 tableHeader2">Billing<br />(In Period)</th>
+                                        <th class="tableHeader1 tableHeader2">Cash In<br />(In Period)</th>
+                                        <th class="tableHeader1 tableHeader2">Cash In<br />(Cumulative)</th>
+                                        <th class="tableHeader1 tableHeader2">Net Cash Position<br />(In Period)</th>
+                                        <th class="tableHeader1 tableHeader2">Cash Flow<br />(Cumulative)</th>
+                                    </tr>
+                                </thead>
+                            </table>
+
+                            <div style="height:185px; overflow:scroll;">
+
+                            <apex:pageBlockTable styleClass="mainTable2" value="{!lWeeklyRollupEntries}" var="row" style="border-collapse:collapse;border:1px solid #ffffff;table-layout:fixed;">
+                                <apex:column styleClass="nonEditable tableCell1">
+                                    <apex:outputText value="{0,date,M/d/yyyy}">
+                                        <apex:param value="{!row.PeriodStartDate__c}"/>
+                                    </apex:outputText>
+                                </apex:column>
+
+                                <apex:column styleClass="tableCell1" style="text-align:right;" ></apex:column>
+                                <apex:column styleClass="tableCell1 nonEditable" style="text-align:right;" ></apex:column>
+                                <apex:column styleClass="tableCell1" style="text-align:right;" ></apex:column>
+                                <apex:column styleClass="tableCell1" style="text-align:right;" ></apex:column>
+                                <apex:column styleClass="tableCell1 nonEditable" style="text-align:right;" ></apex:column>
+                                <apex:column styleClass="tableCell1 nonEditable" style="text-align:right;" ></apex:column>
+                                <apex:column styleClass="tableCell1 nonEditable" style="text-align:right;" ></apex:column>
+                            </apex:pageBlockTable>
+
+                            </div>
+                    </div>  
+
+                    </apex:pageBlock>
+                </div>
+            </apex:outputPanel>
+        </div>
+    
+</apex:component>

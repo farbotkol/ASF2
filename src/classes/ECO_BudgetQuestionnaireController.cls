@@ -3,10 +3,13 @@ public with sharing class ECO_BudgetQuestionnaireController {
 	private class BudgetQuestionnaireControllerException extends Exception {}
 	
 	public pse__Proj__c theProject							{ get; set; }
+    public Map<Integer, Task> tasks							{ get; set; }
 	public Map<Integer, BudgetMilestone__c>	milestones		{ get; set; }
 	public Map<Integer, RelocationSecondment__c> relocs		{ get; set; }
 	public Integer selectedRecordNumber						{ get; set; }
+    public Integer selectedTaskNumber						{ get; set; }
 	
+    private List<Task> tasksToDelete;
 	private Set<BudgetMilestone__c> milestonesToDelete;
 	private List<RelocationSecondment__c> relocsToDelete;
 	private String retURL;
@@ -17,6 +20,10 @@ public with sharing class ECO_BudgetQuestionnaireController {
 		
 	public ECO_BudgetQuestionnaireController (ApexPages.StandardController con) {
 		theProject = ECO_Service_Projects.getProjectById(con.getId());
+        
+        if(theProject.DateOfFirstInvoice__c == Null) {
+            theProject.DateOfFirstInvoice__c = theProject.pse__Start_Date__c;
+        }
 		
 		if (theProject.DateLastCompletedBudgetQuestionnaire__c == null 
 			&& !theProject.AgreementsProject__r.isEmpty()) {
@@ -29,9 +36,11 @@ public with sharing class ECO_BudgetQuestionnaireController {
 			retURL = '/'+theProject.Id;
 		}
 		
+        tasksToDelete = new List<Task>();
 		milestonesToDelete = new Set<BudgetMilestone__c>();
 		relocsToDelete = new List<RelocationSecondment__c>();
 		
+        populateTasks();
 		populateMilestones();
 		populateRelocs();
 		populateAttachmentsMap();
@@ -135,6 +144,32 @@ public with sharing class ECO_BudgetQuestionnaireController {
 			}
 		}
 	}
+    
+    private void populateTasks() {
+        tasks = new Map<Integer, Task>();
+        
+        Integer recordNumber = 0;
+        for(Task task : [SELECT
+                        		Id,
+                         		WhatId,
+                         		Subject,
+                         		Description,
+                         		OwnerId,
+                         		ActivityDate
+                         FROM 
+                         		Task
+                         WHERE
+                         		WhatId =: theProject.Id
+                         ORDER BY
+                         ActivityDate]) {
+        	tasks.put(recordNumber, task);
+            recordNumber++;
+    	}
+        
+        if(tasks.isEmpty()) {
+                addTask();
+        } 
+    }
 	
 	private void populateRelocs () {
 		relocs = new Map<Integer, RelocationSecondment__c>();
@@ -172,6 +207,16 @@ public with sharing class ECO_BudgetQuestionnaireController {
 		}
 		return milestoneNumber;
 	}
+    
+    private Integer getNextTaskNumber () {
+		Integer taskNumber = 0;
+		for (Integer i : tasks.keySet()) {
+			if (taskNumber <= i) {
+				taskNumber = i+1;
+			}
+		}
+		return taskNumber;
+	}
 	
 	private Integer getNextRelocNumber () {
 		Integer relocNumber = 0;
@@ -200,16 +245,34 @@ public with sharing class ECO_BudgetQuestionnaireController {
 			update theProject;
 
 			List<BudgetMilestone__c> milestonesToUpsert = new List<BudgetMilestone__c>();
+            List<Task> tasksToUpsert = new List<Task>();
 
-			for (BudgetMilestone__c milestone : milestones.values()) {
+			for (Task task : tasks.values()) {
+				if (task.ActivityDate != null) {
+                    if(task.OwnerId == Null)  {
+                        task.OwnerId = UserInfo.getUserId();
+                    }
+					tasksToUpsert.add(task);
+				}
+			}
+            
+            for (BudgetMilestone__c milestone : milestones.values()) {
 				if (milestone.ExDate__c != null) {
 					milestonesToUpsert.add(milestone);
 				}
 			}
+            
+            if(!tasksToUpsert.isEmpty()) {
+                upsert tasksToUpsert;
+            }
 			
 			if (!milestonesToUpsert.isEmpty()) {
 				upsert milestonesToUpsert;
 			}
+            
+            if(!tasksToDelete.isEmpty()) {
+                delete tasksToDelete;
+            }
 			
 			if (!milestonesToDelete.isEmpty()) {
 				delete new List<BudgetMilestone__c>(milestonesToDelete);
@@ -233,6 +296,11 @@ public with sharing class ECO_BudgetQuestionnaireController {
 		milestones.put(getNextMilestoneNumber(), new BudgetMilestone__c(Project__c = theProject.Id));
 		return null;
 	}
+    
+    public PageReference addTask() {
+        tasks.put(getNextTaskNumber(), new Task(WhatId = theProject.Id, Subject = 'Budget Escalation'));
+        return null;
+    }
 	
 	public PageReference removeMilestone () {
 		system.debug('milestones:  '+milestones);
@@ -245,6 +313,20 @@ public with sharing class ECO_BudgetQuestionnaireController {
 		}
 		
 		milestones.remove(selectedRecordNumber);
+		return null;
+	}
+    
+    public PageReference removeTask () {
+		system.debug('Tasks : ' + tasks);
+		system.debug('selectedTaskNumber: ' + selectedTaskNumber);
+		
+		Task selectedTask = tasks.get(selectedTaskNumber);
+		
+		if (selectedTask.Id != null) {
+			tasksToDelete.add(new Task(Id = selectedTask.Id));
+		}
+		
+		tasks.remove(selectedTaskNumber);
 		return null;
 	}
 	
@@ -301,8 +383,23 @@ public with sharing class ECO_BudgetQuestionnaireController {
 			Integer daysBetweenStartAndEnd = theProject.pse__Start_Date__c.daysBetween(theProject.pse__End_Date__c);
 			Integer wholePeriodsBetweenStartAndEnd = Integer.valueOf(daysBetweenStartAndEnd / theProject.MilestoneFrequency__c);
 			
+            for(BudgetMilestone__c budgetMileStone : milestones.values()) {
+                if(budgetMilestone.Id != Null) {
+                    milestonesToDelete.add(budgetMilestone);
+                }
+            }
+            
 			milestones = new Map<Integer, BudgetMilestone__c>();
-			Date milestoneDate = theProject.pse__Start_Date__c;
+            
+			Date milestoneDate;// = theProject.pse__Start_Date__c;
+            
+            if(theProject.DateOfFirstInvoice__c != Null) {
+                milestoneDate = theProject.DateOfFirstInvoice__c;
+            }
+            else {
+                milestoneDate = theProject.pse__Start_Date__c;
+            }
+                
 			for (Integer i=0;i<wholePeriodsBetweenStartAndEnd;i++) {
 				BudgetMilestone__c newMilestone = new BudgetMilestone__c(Project__c = theProject.Id);
 				newMilestone.ExDate__c = milestoneDate;

@@ -21,6 +21,9 @@ public with sharing virtual class ECO_ProjectReviewsController
 	public List<KPI_Result__c> lKPI_Results {get; set;}
 	public list<DOAConditions__c> lstDOAConditions {get; set;}
 	public list<Task> reviewTasks {get; set;}
+	public ProjectReview__c lastProjectReview {get; set;}
+
+	public string tabState {get;set;}
 
 	public ECO_ProjectReviewsController(ApexPages.StandardController oStandardController) 
 	{
@@ -53,7 +56,7 @@ public with sharing virtual class ECO_ProjectReviewsController
 
 		mRecordTypes = new Map<Id,RecordType>([Select Id, Name From RecordType Where Id = :oProjectReview.RecordTypeId]);
 		
-		if(ECO_Utils_String.NullCheck(oProjectReview.Name) == '')
+		/*bak if(ECO_Utils_String.NullCheck(oProjectReview.Name) == '')
 		{
 			if(mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Project Performance Review' || mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Monthly Project Review')
 			{	
@@ -64,14 +67,17 @@ public with sharing virtual class ECO_ProjectReviewsController
 			else {
 				oProjectReview.Name = mRecordTypes.get(oProjectReview.RecordTypeId).Name + ' ' + 'Review';
 			}
-		} 		
+		} */		
+
+
 
 		if(ECO_Utils_String.NullCheck(oProjectReview.ProjectReviewTemplate__c) == '')
 		{
-			List<ProjectReviewTemplate__c> lPRT = new List<ProjectReviewTemplate__c>([Select Id From ProjectReviewTemplate__c Where TemplateType__c = :mRecordTypes.get(oProjectReview.RecordTypeId).Name Limit 1]);
+			List<ProjectReviewTemplate__c> lPRT = new List<ProjectReviewTemplate__c>([Select Id, Purpose__c From ProjectReviewTemplate__c Where TemplateType__c = :mRecordTypes.get(oProjectReview.RecordTypeId).Name Limit 1]);
 			if(!lPRT.isEmpty())
 			{
 				oProjectReview.ProjectReviewTemplate__c = lPRT[0].Id;
+				oProjectReview.Purpose__c = lPRT[0].Purpose__c;
 			}
 		}
 
@@ -99,70 +105,189 @@ public with sharing virtual class ECO_ProjectReviewsController
 			fetchInviteesAndAttendees();
 		}
 		
-
-
-		if(oProjectReview.Status__c == null)
-		{
-			oProjectReview.Status__c = 'Not Started';
-		}
-		if(oProjectReview.Status__c != 'Not Started')
-		{
-			perfActiveStatus = true;
-		}
-
-		if(mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Project Performance Review' || mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Monthly Project Review') {
+		/*bak if(mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Project Performance Review' || mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Monthly Project Review') {
 			showKPIs = true;
 		} else {
 			showKPIs = false;
-		}
-		loadConditions();	
-		
-		
-			
+		}*/
+		loadConditions();					
 	}
-	
-	public void init()
-	{
-		if(mRecordTypes.get(oProjectReview.RecordTypeId).Name != 'Project Performance Review' && mRecordTypes.get(oProjectReview.RecordTypeId).Name != 'Monthly Project Review')
-		{
-			oProjectReview.Status__c = 'Assessing';
-		}
-				
-		if(ApexPages.currentPage().getParameters().get('ProjectId') != null)
-			insert oProjectReview;
 
-		
-		if(mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Project Performance Review' || mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Monthly Project Review')
-		{
-			PerformHealthCheck();
-			isPerfReview = true;
-			if(mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Project Performance Review')
-				isProjectPerfReview = true;
-		}		
-		
-		if(isPerfReview && perfActiveStatus)
-		{
-			showOtherSections = true;
-		}
-		else if(!isPerfReview)
-		{		
-			showOtherSections = true;
-		}		
-		
+	public List<Schema.FieldSetMember> getCustomProjFields()
+	{
+		if(theProject.pse__Stage__c == 'Planning')	
+			return SObjectType.pse__Proj__c.FieldSets.ProjectFieldsforRMASummary.getFields();
+		else
+			return SObjectType.pse__Proj__c.FieldSets.ProjectInformationExecution.getFields();
+		//return SObjectType.pse__Proj__c.FieldSets.pse_ProjectFieldsforCustomProjectSetup.getFields();
+	}
+
+
+	public ProjectReview__c getProjectReview(Id projectReviewId)
+	{
 		ECO_Utils_Meta.SelectAll soUtil = new ECO_Utils_Meta.SelectAll();
 		soUtil.GetFields('ProjectReview__c');
 		String queryString = soUtil.SOQL;
+		queryString = queryString.remove('lastreferenceddate,');
 		queryString = querystring.replace('FROM ProjectReview__c', ', ProjectReviewTemplate__r.Purpose__c, RecordType.Name FROM ProjectReview__c');
-		queryString += ' WHERE Id = \''+ oProjectReview.Id +'\'';
+		queryString += ' WHERE Id = \''+ projectReviewId +'\'';
 		
 		list<ProjectReview__c> projectReviews = Database.query(queryString);
-		oProjectReview = projectReviews[0];
+		return projectReviews[0];
+	}
+	
+	public PageReference init()
+	{
+		if(mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Project Performance Review' || mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Monthly Project Review')
+		//if(oProjectReview.isPerformanceReview__c)
+		{
+			return new PageReference('/apex/ECO_ProjectPerformanceReviews?Id=' + oProjectReview.Id + '&RecordTypeId=' + oProjectReview.RecordTypeId + '&ProjectId=' + oProjectReview.Project__c);
+		}
+
+		showKPIs = false;
+		showOtherSections = true;
+
+		if(ECO_Utils_String.NullCheck(oProjectReview.Name) == '')
+			oProjectReview.Name = mRecordTypes.get(oProjectReview.RecordTypeId).Name + ' ' + 'Review';		
+
+		if(ECO_Utils_String.NullCheck(oProjectReview.Status__c) == '')
+			oProjectReview.Status__c = 'Assessing';
+
+		if(ApexPages.currentPage().getParameters().get('ProjectId') != null && oProjectReview.Id == null)
+		{
+			insert oProjectReview;
+			return new PageReference('/apex/ECO_ProjectReviews?Id=' + oProjectReview.Id + '&RecordTypeId=' + oProjectReview.RecordTypeId + '&ProjectId=' + oProjectReview.Project__c);
+		}
+
+		oProjectReview = getProjectReview(oProjectReview.Id);
 		
 		reviewTasks = [select Id, Subject,  ActivityDate, OwnerId from Task where whatId = :oProjectReview.Id];
 	
 		fetchAgendaItems();
 		
 		lDelete_AgendaItems = new List<AgendaItem__c>();	
+
+		list<ProjectReview__c> previousReviews = [select Id, MeetingMinutes__c from ProjectReview__c where Id != :oProjectReview.Id and RecordTypeId = :oProjectReview.RecordTypeId and CreatedDate < :oProjectReview.CreatedDate order by id desc ];
+		if(!previousReviews.isEmpty())
+			lastProjectReview = previousReviews[0];
+
+		if(oProjectReview.Responsible_Person__c == null)	
+			oProjectReview.Responsible_Person__c = ECO_Service_ProjectTeam.getProjectManagerFromProjectTeam(theProject.Id);
+
+		return null;
+	}
+
+	public PageReference initPerformanceReviews()
+	{
+		showKPIs = true;
+		tabState = 'name1';
+
+		if((mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Project Performance Review' || mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Monthly Project Review') && oProjectReview.Id == null)
+		//if(oProjectReview.isPerformanceReview__c && oProjectReview.Id == null)
+		{	
+			DateTime dt = DateTime.now();
+			String month = dt.format('MMMMM');
+			String dateString  = dt.format('dd-MMM-yyyy');
+			oProjectReview.Name = mRecordTypes.get(oProjectReview.RecordTypeId).Name + ' ' + dateString;	
+		}		
+
+		if(ApexPages.currentPage().getParameters().get('ProjectId') != null && oProjectReview.Id == null)
+		{
+			insert oProjectReview;
+			return new PageReference('/apex/ECO_ProjectPerformanceReviews?Id=' + oProjectReview.Id + '&RecordTypeId=' + oProjectReview.RecordTypeId + '&ProjectId=' + oProjectReview.Project__c);
+		}
+		else
+		{
+			if(oProjectReview.Status__c != 'Approved')
+				update oProjectReview;
+		}
+
+		oProjectReview = getProjectReview(oProjectReview.Id);
+
+		if(oProjectReview.Responsible_Person__c == null)	
+			oProjectReview.Responsible_Person__c = ECO_Service_ProjectTeam.getProjectManagerFromProjectTeam(theProject.Id);
+
+		if(oProjectReview.ProjectApprover__c == null)	
+			oProjectReview.ProjectApprover__c = ECO_Service_ProjectTeam.getActiveProjectApproverId(theProject.Id);				
+
+		if(oProjectReview.ProjectAccountant__c == null)	
+			oProjectReview.ProjectAccountant__c = ECO_Service_ProjectTeam.getActiveProjectAccountantId(theProject.Id);
+
+		if(oProjectReview.Status__c == null)
+		{
+			oProjectReview.Status__c = 'Not Started';
+		}
+		
+		if(oProjectReview.Status__c != 'Not Started')
+		{
+			perfActiveStatus = true;
+		}
+
+		PerformHealthCheck();
+		isPerfReview = true;
+		if(mRecordTypes.get(oProjectReview.RecordTypeId).Name == 'Project Performance Review')
+			isProjectPerfReview = true;
+
+		lastProjectReview = getPreviousProjectReview();		
+
+		if(isPerfReview && perfActiveStatus)
+		{
+			showOtherSections = true;
+		}
+		reviewTasks = [select Id, Subject,  ActivityDate, OwnerId from Task where whatId = :oProjectReview.Id];
+		return null;
+	}
+
+	private ProjectReview__c getPreviousProjectReview()
+	{
+		list<ProjectReview__c> previousReviews = [select Id, MeetingMinutes__c, SafetyExceptionReport__c, ClientRelations__c, ChangeManagementExceptionReport__c, FinancialPerformanceExceptionReport__c,
+		                                          SheduleExceptionReport__c, QualityException__c, RiskManagement__c, StaffResourcesExceptionReport__c, SubsExceptionReport__c from ProjectReview__c where  Project__c = :oProjectReview.Project__c and Id != :oProjectReview.Id and RecordTypeId = :oProjectReview.RecordTypeId and CreatedDate < :oProjectReview.CreatedDate order by id desc ];
+		if(!previousReviews.isEmpty())
+			return previousReviews[0];	
+		return null;
+	}
+
+	public PageReference returnToAllReviews()
+	{
+		PageReference pageRef = new PageReference('/apex/ECO_ProjectReviewRecordType?Id=' + oProjectReview.Project__c);
+		return pageRef;
+	}
+
+	public PageReference copyComments()
+	{			
+		if(oProjectReview.MeetingMinutes__c != null)
+		{
+			oProjectReview.MeetingMinutes__c += lastProjectReview.MeetingMinutes__c;
+			oProjectReview.SafetyExceptionReport__c += lastProjectReview.SafetyExceptionReport__c;
+			oProjectReview.ClientRelations__c += lastProjectReview.ClientRelations__c;
+			oProjectReview.ChangeManagementExceptionReport__c += lastProjectReview.ChangeManagementExceptionReport__c;
+			oProjectReview.FinancialPerformanceExceptionReport__c += lastProjectReview.FinancialPerformanceExceptionReport__c;
+			oProjectReview.SheduleExceptionReport__c += lastProjectReview.SheduleExceptionReport__c;
+			oProjectReview.QualityException__c += lastProjectReview.QualityException__c;
+			oProjectReview.RiskManagement__c += lastProjectReview.RiskManagement__c;
+			oProjectReview.StaffResourcesExceptionReport__c += lastProjectReview.StaffResourcesExceptionReport__c;
+			oProjectReview.SubsExceptionReport__c += lastProjectReview.SubsExceptionReport__c;
+		}
+		else
+		{
+			oProjectReview.MeetingMinutes__c = lastProjectReview.MeetingMinutes__c;
+			oProjectReview.SafetyExceptionReport__c = lastProjectReview.SafetyExceptionReport__c;
+			oProjectReview.ClientRelations__c = lastProjectReview.ClientRelations__c;
+			oProjectReview.ChangeManagementExceptionReport__c = lastProjectReview.ChangeManagementExceptionReport__c;
+			oProjectReview.FinancialPerformanceExceptionReport__c = lastProjectReview.FinancialPerformanceExceptionReport__c;
+			oProjectReview.SheduleExceptionReport__c = lastProjectReview.SheduleExceptionReport__c;
+			oProjectReview.QualityException__c = lastProjectReview.QualityException__c;
+			oProjectReview.RiskManagement__c = lastProjectReview.RiskManagement__c;
+			oProjectReview.StaffResourcesExceptionReport__c = lastProjectReview.StaffResourcesExceptionReport__c;
+			oProjectReview.SubsExceptionReport__c = lastProjectReview.SubsExceptionReport__c;
+		}
+		oProjectReview.CommentsCopiedFromPreviousReview__c = true;
+		update oProjectReview;
+
+		PageReference pageRef = new PageReference('/apex/ECO_ProjectReviews?Id=' + oProjectReview.Id);
+		pageRef.getParameters().put('ProjectId', oProjectReview.Project__c);
+		pageRef.getParameters().put('RecordTypeId', oProjectReview.RecordTypeId);
+		return pageRef;
 	}
 
 	private void loadConditions(){
@@ -189,7 +314,7 @@ public with sharing virtual class ECO_ProjectReviewsController
 	
 	public void PerformHealthCheck()
 	{
-		lKPI_Results = [Select Id, Trigger_Name__c, Evaluation_Result__c, Alert_Message__c, Explanation__c From KPI_Result__c Where Project_Review__c = :oProjectReview.Id Order By Evaluation_Result__c DESC];
+		lKPI_Results = [Select Id, Trigger_Name__c, Evaluation_Result__c, Alert_Message__c, Explanation__c, KPI_Result__c.ThresholdDescription__c From KPI_Result__c Where Project_Review__c = :oProjectReview.Id Order By Trigger_Name__c];
 		if(lKPI_Results.isEmpty())
 		{
 			System.debug('PerformHealthCheck, ProjectID: ' + oProjectReview.Project__c);
@@ -202,6 +327,8 @@ public with sharing virtual class ECO_ProjectReviewsController
 				oKPI.Project_Review__c = oProjectReview.Id;
 				oKPI.Evaluation_Result__c = resp.evalResult;
 				oKPI.Alert_Message__c = resp.message;
+				oKPI.ThresholdDescription__c = resp.thresholdDescription;
+				oKPI.OverrideRegion__c = resp.regionOverride;
 				lKPI_Results.add(oKPI);
 			}
 		}
@@ -244,8 +371,9 @@ public with sharing virtual class ECO_ProjectReviewsController
 	{
 		if(theProject == null)
 		{
-			String query = 'SELECT Id, ProjectNumber__c, CarryingOutOrganization__c, CarryingOutOrganization__r.Region__c, pse__Project_Manager__c, NetServicesRevenue__c, ProjectOwningOrg__c, TotalMargin__c, PrimaryEndClient__c, TotalBidBudget__c, PrimaryBillingClient__c';
-			for(Schema.FieldSetMember f : getCustomProjSetupFields()) 
+			String query = 'SELECT Id, ProjectNumber__c, pse__Stage__c, pse__End_Date__c, CarryingOutOrganizationFormula__c, PercentageMargin__c, WeightedNSR__c, ProjectApprover__c, pse__Start_Date__c, RecordType.Name, CarryingOutOrganization__c, CarryingOutOrganization__r.Region__c, pse__Project_Manager__c, NetServicesRevenue__c, ProjectOwningOrg__c, TotalMargin__c, PrimaryEndClient__c, PrimaryEndClientName__c, TotalBidBudget__c, PrimaryBillingClient__c, PrimaryBillingClientName__c';
+			for(Schema.FieldSetMember f : getCustomProjSetupFields())
+			//for(Schema.FieldSetMember f : getCustomProjFields())
 			{
 	            query += ', ' + f.getFieldPath();
 	        }
@@ -376,7 +504,9 @@ public with sharing virtual class ECO_ProjectReviewsController
 				evt.RecordTypeId = eventRecordTypeId;
 				insert evt;
 				oProjectReview.EventID__c = evt.Id;
-				update oProjectReview;				
+				update oProjectReview;	
+
+				createProjectTeamInvites(evt);			
 			}
 		}
 		else
@@ -388,6 +518,25 @@ public with sharing virtual class ECO_ProjectReviewsController
 		return ManageEvent();
 	}
 	
+	private void createProjectTeamInvites(Event event)
+	{
+
+		Id userId = UserInfo.getUserId();
+		
+		EventRelation eventRelation;
+		Map<Id, EventRelation> eventRelationsMap = new Map<Id, EventRelation>();
+		for(ProjectTeamMember__c projectTeamMember:[select Id, Name, Contact__r.pse__Salesforce_User__c from ProjectTeamMember__c where Project__c = :theProject.Id])
+		{
+			if(projectTeamMember.Contact__r.pse__Salesforce_User__c != null && projectTeamMember.Contact__r.pse__Salesforce_User__c != userId)
+			{
+				eventRelation = new EventRelation(EventId = event.Id, RelationId=projectTeamMember.Contact__r.pse__Salesforce_User__c);
+				eventRelationsMap.put(projectTeamMember.Contact__r.pse__Salesforce_User__c, eventRelation);
+			}
+		}
+		if(!eventRelationsMap.values().isEmpty())
+			insert eventRelationsMap.values();
+	}
+
 	public PageReference ManageEvent()
 	{
 		PageReference oPR;
@@ -412,10 +561,28 @@ public with sharing virtual class ECO_ProjectReviewsController
 		}
 		return oPR;
 	}
-	
-	public String getProjectSnapshotRecord()
+
+	public PageReference SubmitForApproval()
 	{
-		list<ProjectSnapshot__c> projectSnapshotRecords = [select Id from ProjectSnapshot__c where Project__c = :theProject.Id  order by Id desc limit 1];
+		//oProjectReview.Status__c = 'Submitted';
+		update oProjectReview;
+		Approval.ProcessSubmitRequest req1 = new Approval.ProcessSubmitRequest();  
+		req1.setComments('Submitted for Approval');
+		req1.setObjectId(oProjectReview.Id);
+		Approval.ProcessResult result = Approval.process(req1); 
+
+		if(result.isSuccess())
+		{
+			return new PageReference('/' + oProjectReview.Id);
+			//return null;
+  			//return new PageReference('/apex/ECO_ProjectPerformanceReviews?Id=' + oProjectReview.Id + '&RecordTypeId=' + oProjectReview.RecordTypeId + '&ProjectId=' + oProjectReview.Project__c);
+		}
+		return null;
+	}
+	
+	public virtual String getProjectSnapshotRecord()
+	{
+		list<ProjectSnapshot__c> projectSnapshotRecords = [select Id from ProjectSnapshot__c where Project__c = :theProject.Id  and ProjectReview__c = :oProjectReview.Id order by Id desc limit 1];
 		
 		if(projectSnapshotRecords.size() > 0)
 			return projectSnapshotRecords[0].Id;

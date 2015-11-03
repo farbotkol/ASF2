@@ -1,0 +1,395 @@
+<apex:page showHeader="true" sidebar="false" standardController="ProjectReview__c" extensions="ECO_ProjectReviewsController" action="{!initPerformanceReviews}" docType="html-5.0">
+
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+
+
+	<style>
+		.dmeOutput{  
+			font-size: 1.1em;
+  			font-weight: bold; 
+  			color: #4a4a56;  /*Standrd Salesforce Color*/
+  		}
+
+       .rich-tabpanel{
+            margin:10px 10px 0 10px;
+            width:98.5%;
+        }
+        .pbBody .rich-tabpanel .rich-tab-header{
+            border: 1px solid #d3d3d3 !important;
+            background: ;
+            color: #555 !important;
+            border-top-right-radius: 4px !important;
+            border-top-left-radius: 4px !important;
+            padding: 7px 12px;
+            width: 250px;
+            text-decoration:none;
+            font-size:13px;
+            background: #999999; /* Old browsers */
+            /* IE9 SVG, needs conditional override of 'filter' to 'none' */
+            background: url(data:image/svg+xml;base64,PD94bWwgdmVyc2lvbj0iMS4wIiA/Pgo8c3ZnIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyIgd2lkdGg9IjEwMCUiIGhlaWdodD0iMTAwJSIgdmlld0JveD0iMCAwIDEgMSIgcHJlc2VydmVBc3BlY3RSYXRpbz0ibm9uZSI+CiAgPGxpbmVhckdyYWRpZW50IGlkPSJncmFkLXVjZ2ctZ2VuZXJhdGVkIiBncmFkaWVudFVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgeDE9IjAlIiB5MT0iMCUiIHgyPSIwJSIgeTI9IjEwMCUiPgogICAgPHN0b3Agb2Zmc2V0PSIwJSIgc3RvcC1jb2xvcj0iIzk5OTk5OSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUxJSIgc3RvcC1jb2xvcj0iI2Q2ZDZkNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUxJSIgc3RvcC1jb2xvcj0iIzIwN2NjYSIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjUxJSIgc3RvcC1jb2xvcj0iI2Q2ZDZkNiIgc3RvcC1vcGFjaXR5PSIxIi8+CiAgICA8c3RvcCBvZmZzZXQ9IjEwMCUiIHN0b3AtY29sb3I9IiNlNWU1ZTUiIHN0b3Atb3BhY2l0eT0iMSIvPgogIDwvbGluZWFyR3JhZGllbnQ+CiAgPHJlY3QgeD0iMCIgeT0iMCIgd2lkdGg9IjEiIGhlaWdodD0iMSIgZmlsbD0idXJsKCNncmFkLXVjZ2ctZ2VuZXJhdGVkKSIgLz4KPC9zdmc+);
+            background: -moz-linear-gradient(top,  #999999 0%, #d6d6d6 51%, #207cca 51%, #d6d6d6 51%, #e5e5e5 100%); /* FF3.6+ */
+            background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#999999), color-stop(51%,#d6d6d6), color-stop(51%,#207cca), color-stop(51%,#d6d6d6), color-stop(100%,#e5e5e5)); /* Chrome,Safari4+ */
+            background: -webkit-linear-gradient(top,  #999999 0%,#d6d6d6 51%,#207cca 51%,#d6d6d6 51%,#e5e5e5 100%); /* Chrome10+,Safari5.1+ */
+            background: -o-linear-gradient(top,  #999999 0%,#d6d6d6 51%,#207cca 51%,#d6d6d6 51%,#e5e5e5 100%); /* Opera 11.10+ */
+            background: -ms-linear-gradient(top,  #999999 0%,#d6d6d6 51%,#207cca 51%,#d6d6d6 51%,#e5e5e5 100%); /* IE10+ */
+            background: linear-gradient(to bottom,  #999999 0%,#d6d6d6 51%,#207cca 51%,#d6d6d6 51%,#e5e5e5 100%); /* W3C */
+            filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#999999', endColorstr='#e5e5e5',GradientType=0 ); /* IE6-8 */
+        }
+        .rich-tab-active{
+            background: #f1f1f1 !important;
+            font-weight:bold !important;
+        }
+        .pbBody .rich-tabpanel .rich-tab-header.activeTab{
+            border-bottom:none !important;
+        }
+        .pbBody .rich-tabpanel .disabledTab{
+            opacity:0.45 !important;
+        }
+        .rich-tabhdr-side-border, .rich-tabhdr-side-border{
+            background:none !important;
+            display:none;
+        }
+        .rich-tabhdr-side-cell{
+            border-top:none;
+        }
+
+        body .bEditBlock .pbBody .pbSubheader, body .bWizardBlock .pbBody .pbSubheader{
+            background-image:none !important;
+            color:#27282e;
+        }
+
+		.customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 30px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        }
+    </style>
+
+   <script type="text/javascript">
+        var j$ = jQuery.noConflict();
+
+        j$(function(){
+            /*j$(document.getElementById('{!$Component.thepage.WholeForm}')).bind('keypress', function(e){
+                    if (e.keyCode == 13) {
+                        SearchSites();
+                    }
+            });
+
+            j$("#ProjectInput input").bind('keypress', function(e){
+                    if (e.keyCode == 13) {
+                        CreateProject();
+                    }
+            });
+
+            j$("#ProjectInput2 input").bind('keypress', function(e){
+                    if (e.keyCode == 13) {
+                        CreateProject();
+                    }
+            });*/
+        
+            j$(document.getElementById('{!$Component.thepage.WholeForm}')).keypress(function (e) {
+                if (e.keyCode == 13) { 
+                    e.preventDefault();
+                }
+            });
+
+
+
+            j$('#AddressInput').bind('keydown', function(event) {
+                if (event.keyCode == 13) {
+                    event.preventDefault();
+                    SearchSites();
+                }
+            });
+        });
+
+
+
+    </script>
+
+	<apex:sectionHeader title="{!oProjectReview.RecordType.Name}" subtitle="{!theProject.Name}({!theProject.ProjectNumber__c})" />
+	<apex:form >	
+	<apex:pageBlock mode="edit">
+
+		<apex:pageBlockButtons >
+			<apex:commandButton action="{!SaveHealthCheck}" value="Take Project Snapshot" rendered="{!NOT(perfActiveStatus) && isPerfReview && oProjectReview.Snapshot_Date__c == null}" />
+			<apex:commandButton action="{!saveAll}" value="Save" rendered="{!oProjectReview.Status__c != 'Approved'}"/> 
+			<apex:commandButton action="{!returnToProjectFromReview}" value="Return to Project" immediate="true" />
+			<apex:commandButton action="{!returnToAllReviews}" value="Return to All Project Reviews" immediate="true"/>
+			
+		</apex:pageBlockButtons>
+
+		<apex:outputPanel id="tabPanel" > 
+
+		
+			<apex:tabPanel id="thetabpanel" switchType="client" value="{!TabState}"  tabClass="activeTab" inactiveTabClass="inactiveTab" disabledTabClass="disabledTab">
+
+	
+				<apex:inputHidden value="{!ProjectReview__c.Name}"/>
+				<apex:inputHidden value="{!ProjectReview__c.Status__c}"/>
+				<apex:inputHidden value="{!ProjectReview__c.MeetingMinutes__c}"/>
+				<apex:inputHidden value="{!ProjectReview__c.IsPerformanceReview__c}"/>
+				<apex:inputHidden value="{!ProjectReview__c.IsProjectPerformanceReview__c}"/>
+
+				<apex:tab label="Step 1 – KPI Review" name="name1" id="tabOne">
+
+					<div class="customHelpText">
+                		<div class="customHelpBody">
+                			Review the KPI assessment results against current project metrics and revisit the Project Plan to confirm and/or correct, as needed.  When ready, click “Take Project Snapshot” above to document the KPI assessment for the month and progress to Step 2.  Note that an explanation for triggered KPIs must be provided prior to submitting the project review for approval.            
+                		</div>
+            		</div>
+
+					<apex:pageBlockSection title="Project Information" collapsible="true" columns="2">
+	           			<apex:repeat value="{!CustomProjFields}" var="f">
+                    		<apex:outputField value="{!theProject[f.fieldPath]}" />
+                    	</apex:repeat> 	
+
+		            	<!--<apex:outputField value="{!theProject.Name}" />-->
+		            	<!--<apex:outputField value="{!theProject.OwnerId}" />-->
+		            	<!--<apex:outputField value="{!theProject.pse__Opportunity__c}" />-->
+		            	<!--<apex:outputField value="{!theProject.ProjectNumber__c}" />-->
+		            	<!--<apex:outputField value="{!theProject.EstimatedContractValue__c}" />-->
+		            	<!--<apex:outputField value="{!theProject.pse__Project_Manager__c}" />-->
+		            	<!--<apex:outputField value="{!theProject.NetServicesRevenue__c}" />-->
+		            	<!--<apex:outputField value="{!theProject.ProjectOwningOrg__c}" />-->
+		            	<!--<apex:outputField value="{!theProject.TotalMargin__c}" />-->
+		            	<!--<apex:outputField value="{!theProject.PrimaryEndClient__c}" />-->
+	                    <!--<apex:outputField value="{!theProject.PrimaryEndClientName__c}" />-->
+		            	<!--<apex:outputField value="{!theProject.TotalBidBudget__c}" />-->
+		            	<!--<apex:outputField value="{!theProject.PrimaryBillingClient__c}" />-->
+	                    <!--<apex:outputField value="{!theProject.PrimaryBillingClientName__c}" />-->
+		            	<!--<apex:outputField value="{!theProject.EstimatedStartDate__c}" />-->
+            		</apex:pageBlockSection>
+ 
+ 					<apex:inputHidden value="{!ProjectReview__c.Name}"/>
+
+					<apex:inputHidden value="{!ProjectReview__c.Status__c}"/>
+					<apex:inputHidden value="{!ProjectReview__c.MeetingMinutes__c}"/>
+					           	
+				<apex:pageBlockSection id="ReviewDetails" title="Review Details" columns="2" collapsible="false">			
+					<apex:inputField value="{!oProjectReview.Name}" required="true" style="width: 250px" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+					<apex:outputField value="{!oProjectReview.Name}" style="width: 250px" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+					
+					<apex:pageBlockSectionItem >
+						<apex:outputText value="Review Status"/>
+						<apex:outputField value="{!oProjectReview.Status__c}" />
+					</apex:pageBlockSectionItem>
+					<apex:outputField label="Record Type" value="{!oProjectReview.RecordType.Name}" />
+					<apex:inputField value="{!oProjectReview.Responsible_Person__c}" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+					<apex:inputField value="{!oProjectReview.OtherPart1__c}" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+					<apex:inputField value="{!oProjectReview.OperationsParticipant__c}" rendered="{!oProjectReview.Status__c != 'Approved'}"/>					
+					<apex:inputField value="{!oProjectReview.OtherPart2__c}" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+					<apex:inputField value="{!oProjectReview.FAParticipant__c}" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+					<apex:inputField value="{!oProjectReview.OtherPart3__c}" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+
+					<apex:outputField value="{!oProjectReview.Responsible_Person__c}" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+					<apex:outputField value="{!oProjectReview.OtherPart1__c}" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+					<apex:outputField value="{!oProjectReview.OperationsParticipant__c}" rendered="{!oProjectReview.Status__c == 'Approved'}"/>					
+					<apex:outputField value="{!oProjectReview.OtherPart2__c}" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+					<apex:outputField value="{!oProjectReview.FAParticipant__c}" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+					<apex:outputField value="{!oProjectReview.OtherPart3__c}" rendered="{!oProjectReview.Status__c == 'Approved'}"/>					
+					<!--<apex:outputField value="{!oProjectReview.Snapshot_Date__c}" rendered="{!IsPerfReview}"/>-->
+					<!--<apex:inputField value="{!oProjectReview.ScheduledDate__c}" />
+					<apex:inputField value="{!oProjectReview.CompletedDate__c}" />-->
+
+				</apex:pageBlockSection>
+
+
+					<apex:outputPanel id="KPIResults" rendered="{!isPerfReview}">
+						<apex:pageBlockSection title="KPI Results" columns="1" collapsible="false" >
+							<apex:pageBlockTable value="{!lKPI_Results}" var="item" width="100%" id="KPITable" columnsWidth="20%,30%,10%,20%,20%">
+								<apex:column >
+									<apex:facet name="header">KPI</apex:facet>
+									<apex:outputField value="{!item.Trigger_Name__c}" />
+								</apex:column>
+								<apex:column >
+									<apex:facet name="header">Threshold</apex:facet>
+									<apex:outputField value="{!item.ThresholdDescription__c}" />
+								</apex:column>
+								<apex:column ><!-- styleClass="{!item.Evaluation_Result__c}"-->
+									<apex:facet name="header">Status</apex:facet>
+									<!--<apex:outputText value="{!item.Evaluation_Result__c}" />-->
+									<apex:image height="30px" width="30px" value="{!IF(item.Evaluation_Result__c, $Resource.redTriangle, $Resource.greenStar)}" />
+								</apex:column> 
+								<apex:column >
+									<apex:facet name="header">Alert</apex:facet>
+									<apex:outputField value="{!item.Alert_Message__c}" />
+								</apex:column>
+								<apex:column >
+									<apex:facet name="header">Explanation</apex:facet>
+									<apex:inputField value="{!item.Explanation__c}" style="width:80%" rendered="{!oProjectReview.Snapshot_Date__c != null && item.Evaluation_Result__c && oProjectReview.Status__c !='Approved'}" required="true"/>
+									<apex:outputField value="{!item.Explanation__c}" style="width:80%" rendered="{!oProjectReview.Snapshot_Date__c == null || NOT(item.Evaluation_Result__c) || oProjectReview.Status__c == 'Approved'}"/>
+								</apex:column>
+							</apex:pageBlockTable>
+						</apex:pageBlockSection>
+					</apex:outputPanel>					
+				</apex:tab>
+
+					<apex:tab label="Step 2 – Financial Summary" name="name2" id="tabTwo" disabled="{!oProjectReview.Snapshot_Date__c == null}">
+						<div class="customHelpText">
+	                		<div class="customHelpBody">
+	                			Review the summary of current project financial data for the review period.  Add any comments to the Cash Performance section, as needed, and click “Save Summary” to capture the comments.            
+	                		</div>
+	            		</div>
+						<!--<apex:pageBlockSection title="Project Snapshot" columns="1" rendered="{!isPerfReview && oProjectReview.Status__c != 'Not Started'}" >-->
+						<!-- <apex:outputText escape="false" value="{!projectSnapshotRecord}"/> -->
+							<iframe src="/apex/ECO_ProjectSnapshot?Id={!ProjectSnapshotRecord}" scrolling="true" id="iframe_id" width="100%" height="400"/>
+						<!--</apex:pageBlockSection>	-->
+
+					</apex:tab>					
+
+					<apex:tab label="Step 3 – Comments and Approval" name="name3" id="tabThree" disabled="{!oProjectReview.Snapshot_Date__c == null}">
+						<div class="customHelpText">
+							<apex:outputPanel rendered="{!NOT(isProjectPerfReview)}">
+		                		<div class="customHelpBody">
+		                		Provide any general comments for the review period, as needed, and click “Submit for Approval”.	            
+		                		</div>
+	                		</apex:outputPanel>
+	                		<apex:outputPanel rendered="{!isProjectPerfReview}">
+		                		<div class="customHelpBody">
+		                		Provide any general comments for the review period, as needed, complete the Exception Report, and click “Submit for Approval”.	            
+		                		</div>
+	                		</apex:outputPanel>
+            			</div>
+				<div align="center">
+				<apex:commandButton value="Submit for Approval" action="{!SubmitForApproval}" id="Submit_for_Approval" rendered="{!oProjectReview.Status__c != 'Submitted' && oProjectReview.Status__c != 'Approved'}"/>
+				</div>
+
+				<apex:pageBlockSection columns="1" title="General Comments" collapsible="false">
+					<apex:commandButton value="Copy Comments from Previous Review" action="{!copyComments}" rendered="{!lastProjectReview != null && NOT(oProjectReview.CommentsCopiedFromPreviousReview__c) && oProjectReview.Status__c != 'Approved'}"/>
+					<apex:inputField label="" value="{!oProjectReview.MeetingMinutes__c}" rendered="{!oProjectReview.Status__c != 'Approved'}" />
+					<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
+						<apex:outputText label="" value="{!oProjectReview.MeetingMinutes__c}" rendered="{!oProjectReview.Status__c == 'Approved'}" />
+						<apex:outputText value="No Comments" rendered="{!oProjectReview.MeetingMinutes__c == null || oProjectReview.MeetingMinutes__c = ''}"/>
+					</apex:outputPanel>
+				</apex:pageBlockSection>
+
+
+				<apex:pageBlockSection title="Exception Report" collapsible="false" rendered="{!isProjectPerfReview && oProjectReview.Status__c != 'Not Started'}" columns="1">
+					<apex:outputPanel >
+						<apex:outputlabel value="Safety" styleclass="dmeOutput"/><br/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.SafetyExceptionReport__c}" html-placeholder="Note any issues, incidents or near misses in the period and whether these have been reported" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.SafetyExceptionReport__c}" html-placeholder="Note any issues, incidents or near misses in the period and whether these have been reported" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+							<apex:outputText value="No Comments" rendered="{!oProjectReview.SafetyExceptionReport__c == null || oProjectReview.SafetyExceptionReport__c = ''}"/>
+							<br/>
+						</apex:outputPanel>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Client Relations" styleclass="dmeOutput"/><br/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.ClientRelations__c}" html-placeholder="Note any client feedback in the period" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.ClientRelations__c}" html-placeholder="Note any client feedback in the period" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+							<apex:outputText value="No Comments" rendered="{!oProjectReview.ClientRelations__c == null || oProjectReview.ClientRelations__c = ''}"/>
+							<br/>
+						</apex:outputPanel>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Change Management" styleclass="dmeOutput"/><br/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.ChangeManagementExceptionReport__c}" html-placeholder="Note any outstanding change issues (Scope, budget/funding, schedule, quality, other)" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.ChangeManagementExceptionReport__c}" html-placeholder="Note any outstanding change issues (Scope, budget/funding, schedule, quality, other)" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+							<apex:outputText value="No Comments" rendered="{!oProjectReview.ChangeManagementExceptionReport__c == null || oProjectReview.ChangeManagementExceptionReport__c = ''}"/>
+							<br/>
+						</apex:outputPanel>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Financial Performance" styleclass="dmeOutput"/><br/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.FinancialPerformanceExceptionReport__c}" html-placeholder="Note any financial issues (EAC changes (cost & Rev), EAC - budget differences, margin changes, aged unbilled / AR, LDs)" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.FinancialPerformanceExceptionReport__c}" html-placeholder="Note any financial issues (EAC changes (cost & Rev), EAC - budget differences, margin changes, aged unbilled / AR, LDs)" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+							<apex:outputText value="No Comments" rendered="{!oProjectReview.FinancialPerformanceExceptionReport__c == null || oProjectReview.FinancialPerformanceExceptionReport__c = ''}"/>
+							<br/>
+						</apex:outputPanel>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Schedule" styleclass="dmeOutput"/><br/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.SheduleExceptionReport__c}" html-placeholder="Note any threats to approved schedule (is client aware, is action being taken?)" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.SheduleExceptionReport__c}" html-placeholder="Note any threats to approved schedule (is client aware, is action being taken?)" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+							<apex:outputText value="No Comments" rendered="{!oProjectReview.SheduleExceptionReport__c == null || oProjectReview.SheduleExceptionReport__c = ''}"/>
+							<br/>
+						</apex:outputPanel>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Quality" styleclass="dmeOutput" /><br/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.QualityException__c}" html-placeholder="Note any quality issues including any unresolved audit findings" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.QualityException__c}" html-placeholder="Note any quality issues including any unresolved audit findings" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+							<apex:outputText value="No Comments" rendered="{!oProjectReview.QualityException__c == null || oProjectReview.QualityException__c = ''}"/>
+							<br/>
+						</apex:outputPanel>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Risk Management" styleclass="dmeOutput" html-placeholder=""/><br/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.RiskManagement__c}" html-placeholder="Note any emerging risks and opportunites.  Excluding any threatened claims by clients or others, which should be notified to legal" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.RiskManagement__c}" html-placeholder="Note any emerging risks and opportunites.  Excluding any threatened claims by clients or others, which should be notified to legal" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+							<apex:outputText value="No Comments" rendered="{!oProjectReview.RiskManagement__c == null || oProjectReview.RiskManagement__c = ''}"/>
+							<br/>
+						</apex:outputPanel>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Staff Resources" styleclass="dmeOutput" /><br/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.StaffResourcesExceptionReport__c}" html-placeholder="Note any staff resourcing issues" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.StaffResourcesExceptionReport__c}" html-placeholder="Note any staff resourcing issues" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+							<apex:outputText value="No Comments" rendered="{!oProjectReview.StaffResourcesExceptionReport__c == null || oProjectReview.StaffResourcesExceptionReport__c = ''}"/>
+							<br/>					
+						</apex:outputPanel>
+					</apex:outputPanel>
+					<apex:outputPanel >
+						<apex:outputlabel value="Subs" styleclass="dmeOutput"/><br/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.SubsExceptionReport__c}" html-placeholder="Note any issues (contractual, performance)" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.SubsExceptionReport__c}" html-placeholder="Note any issues (contractual, performance)" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+							<apex:outputText value="No Comments" rendered="{!oProjectReview.SubsExceptionReport__c == null || oProjectReview.SubsExceptionReport__c = ''}"/>
+							<br/>
+						</apex:outputPanel>
+					</apex:outputPanel>
+				</apex:pageBlockSection>	
+
+				<apex:pageBlockSection title="Follow-up Tasks" columns="1" collapsible="false" rendered="{!showOtherSections && oProjectReview.Status__c != 'Not Started'}">
+					<apex:commandButton value="New Task" action="{!newTask}"/>
+					<apex:pageBlockTable value="{!ReviewTasks}" var="item" width="100%" id="TasksTable" rendered="{!IF(ReviewTasks.size > 0, true, false)}">
+                		<apex:column style="width:60px" headervalue="Action">
+                    		<apex:commandLink style="color:#015ba7;" action="{!URLFOR($Action.Task.edit, item.Id, ['retURL'='/apex/ECO_ProjectPerformanceReviews?Id='&oProjectReview.Id])}">Edit</apex:commandLink><apex:outputText value=" | "/>
+                    		<apex:commandLink style="color:#015ba7;" action="{!URLFOR($Action.Task.delete, item.Id, ['retURL'='/apex/ECO_ProjectPerformanceReviews?Id='&oProjectReview.Id])}">Del</apex:commandLink>
+                		</apex:column>						
+						<apex:column headervalue="Due Date" >
+							<apex:outputField value="{!item.ActivityDate}" />
+						</apex:column>
+						<apex:column headervalue="Subject" >
+							<apex:outputField value="{!item.Subject}" />
+						</apex:column>
+						<apex:column headervalue="Assigned To">
+							<apex:outputField value="{!item.OwnerId}" />
+						</apex:column>
+					</apex:pageBlockTable>
+					<apex:pageMessage severity="info" rendered="{!IF(ReviewTasks.size = 0, true, false)}" summary="No tasks have been specified." />
+				</apex:pageBlockSection>
+					</apex:tab>	
+
+			</apex:tabPanel>
+
+		</apex:outputPanel>	
+	
+	</apex:pageBlock>
+	</apex:form>
+	<apex:relatedList list="ProcessSteps" rendered="{!oProjectReview.Status__c == 'Submitted' || oProjectReview.Status__c == 'Approved'}" />
+	<apex:relatedList list="CombinedAttachments"/>
+
+</apex:page>

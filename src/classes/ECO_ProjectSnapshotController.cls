@@ -1,6 +1,7 @@
 public class ECO_ProjectSnapshotController {
 	
 	public ProjectSnapshot__c projectSnapshot {get; set;}
+    public String projectReviewStatus {get; set;}
 	
 	public class BudgetChangeOrder
 	{
@@ -37,7 +38,11 @@ public class ECO_ProjectSnapshotController {
 	
 	public ECO_ProjectSnapshotController(ApexPages.standardController sc)
     {
-        projectSnapshot = (ProjectSnapshot__c)sc.getRecord();  
+        projectSnapshot = (ProjectSnapshot__c)sc.getRecord(); 
+        projectReviewStatus = '';
+
+        if(projectSnapshot.ProjectReview__c != null) 
+            projectReviewStatus = [select Id, Status__c from ProjectReview__c where Id = :projectSnapshot.ProjectReview__c limit 1].Status__c;
     }
     
     public class FutureSpendOrg

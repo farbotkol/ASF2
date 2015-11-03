@@ -3,6 +3,7 @@
     <alerts>
         <fullName>EcoTQT_Email_Lead_Verifier</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoTQT Email Lead Verifier, Reviewer and Independent Reviewer</description>
         <protected>false</protected>
         <recipients>

@@ -129,7 +129,7 @@ public with sharing virtual class ECO_ClientFinderController{
         }
 
 
-		Project_Site__c oProjectSite = new Project_Site__c(BillingContactID__c = billingid,  site__c = idSiteID, Project__c = oProject.id, name = SelectedSite.AccountName__c );
+		Project_Site__c oProjectSite = new Project_Site__c(BillingContactID__c = billingid,  site__c = idSiteID, Project__c = oProject.id, name = SelectedSite.AccountName__c, Contribution__c = 0 );
 
         lstProjectSites.add(oProjectSite);
 
@@ -139,6 +139,7 @@ public with sharing virtual class ECO_ClientFinderController{
 			oProjectSite.Is_Default_Top_Task__c = true;
 			oProjectSite.Is_End__c = true;
 			oProjectSite.Is_Primary_End__c = true;
+            oProjectSite.Contribution__c = 100;
 
             oPrimaryEnd = oProjectSite;
             oTopTask = oProjectSite;
@@ -190,7 +191,7 @@ public with sharing virtual class ECO_ClientFinderController{
     		strSOQL += fsmField.getFieldPath() + ', ';
     	}
     	
-    	strSOQL += 'BillingContactID__c, ID, SITE__C, Is_Billing__c, Is_Default_Top_Task__c, Is_End__c, Is_Primary_End__c, Site__r.Account__c  FROM Project_Site__c WHERE Project__c=\'' + oProject.Id + '\'';
+    	strSOQL += 'BillingContactID__c, ID, SITE__C, Is_Billing__c, Is_Default_Top_Task__c, Is_End__c, Is_Primary_End__c, Site__r.Account__c, Contribution__c  FROM Project_Site__c WHERE Project__c=\'' + oProject.Id + '\'';
 
     	lstProjectSites = (list<Project_Site__c>)Database.query(strSOQL);
 

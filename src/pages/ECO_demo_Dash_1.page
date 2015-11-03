@@ -1,0 +1,42 @@
+<apex:page >
+Fusion Charts apex example page
+    <br/>
+    <h1>Column 2D Chart</h1>
+    <h3>Built using JSON data</h3>
+    <c:ECO_demo_fusioncharts chartId="firstChart" chart="{!URLFOR($Resource.FusionCharts, 'Charts/Column3D.swf')}"
+        width="400" height="300" debugMode="0"
+        dataController="ECO_demo_FusionCharts_Controller.getJSONColumnData" caption="Weekly Sales Summary!" xAxisName="Week" yAxisName="Sales" 
+        numberPrefix="$"/>
+    
+    <h1>Pie chart</h1>
+    <h3>Built using JSON data</h3>
+    <c:ECO_demo_fusioncharts chartId="secondChart" chart="{!URLFOR($Resource.FusionCharts, 'Charts/Pie3D.swf')}"
+        width="400" height="300" debugMode="0"
+        dataController="ECO_demo_FusionCharts_Controller.getJSONPieData" caption="Weekly Sales Summary!" xAxisName="Week" yAxisName="Sales" 
+        numberPrefix="$"/>
+
+    <h1>Stacked Column 2D Chart</h1>
+    <h3>Built using XML data</h3>
+    <c:ECO_demo_fusioncharts chart="{!URLFOR($Resource.FusionCharts, 'Charts/StackedColumn2DLine.swf')}"
+        chartId="xmlStackedColumn2DChart" 
+        width="400" height="300" debugMode="0"
+        dataController="ECO_demo_FusionCharts_Controller.getXMLStackedColumn2DChartData" 
+        showValues="0" 
+        caption="Cost-Revenue Analysis" 
+       	numberPrefix="$" 
+		xAxisName="Quarters" 
+		yAxisName="Cost" 
+        useRoundEdges="1"/>
+
+    <c:ECO_demo_fusioncharts chartId="xmlmscolumn3dlinedy" 
+        chart="{!URLFOR($Resource.FusionCharts, 'Charts/mscolumn3dlinedy.swf')}"
+        width="400" height="300" debugMode="0"
+        dataController="ECO_demo_FusionCharts_Controller.getXMLStackedColumn2DChartData" 
+        showValues="0" 
+        caption="Cost-Revenue Analysis" 
+       	numberPrefix="$" 
+		xAxisName="Quarters" 
+		yAxisName="Cost" 
+        />
+    
+</apex:page>

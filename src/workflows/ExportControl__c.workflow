@@ -2,7 +2,9 @@
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
     <alerts>
         <fullName>EcoApproval_Send_Email_to_Submitter</fullName>
-        <description>EcoSend Email to Submitter</description>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <description>EcoSend Email to Submitted</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -13,6 +15,7 @@
     <alerts>
         <fullName>Ecosystem_Email_Export_Controls_Team</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoEmail Export Controls Team</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -60,7 +63,7 @@
             <name>Ecosystem_Email_Export_Controls_Team</name>
             <type>Alert</type>
         </actions>
-        <active>false</active>
+        <active>true</active>
         <criteriaItems>
             <field>ExportControl__c.Status__c</field>
             <operation>equals</operation>

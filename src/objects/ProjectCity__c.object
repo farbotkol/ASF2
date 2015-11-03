@@ -79,6 +79,27 @@
         <label>Clone Project City Fields</label>
     </fieldSets>
     <fields>
+        <fullName>AECOMWork__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>AECOM Work</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>BusinessRisk__c</fullName>
+        <externalId>false</externalId>
+        <formula>ProjectCountryRisk__r.CountryRisk__r.BusinessRisk__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Business Risk</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>CityName1__c</fullName>
         <externalId>false</externalId>
         <formula>xxCity__r.Name</formula>
@@ -117,6 +138,43 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Country__c</fullName>
+        <externalId>false</externalId>
+        <formula>ProjectCountryRisk__r.CountryName__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Country</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DetentionDiscrimination__c</fullName>
+        <externalId>false</externalId>
+        <formula>ProjectCountryRisk__r.DetentionDiscrimination__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Detention &amp; Discrimination</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>KidnapRansom__c</fullName>
+        <externalId>false</externalId>
+        <formula>ProjectCountryRisk__r.CountryRisk__r.KidnapRansom__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Kidnap &amp; Ransom</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -174,6 +232,22 @@ S = Successful</inlineHelpText>
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>Other__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Other</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>PhysicalProject__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Physical Project</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>ProjectCountryRisk__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -197,6 +271,32 @@ S = Successful</inlineHelpText>
         <trackTrending>false</trackTrending>
         <type>MasterDetail</type>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    </fields>
+    <fields>
+        <fullName>Property__c</fullName>
+        <externalId>false</externalId>
+        <formula>ProjectCountryRisk__r.CountryRisk__r.Property__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Property</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>SafetyRating__c</fullName>
+        <externalId>false</externalId>
+        <formula>ProjectCountryRisk__r.CountryRisk__r.SafetyRating__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Safety Rating</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>State_Name__c</fullName>
@@ -245,7 +345,16 @@ S = Successful</inlineHelpText>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Project Cities</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>AECOMWork__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>BusinessRisk__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CityName__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>DetentionDiscrimination__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>KidnapRansom__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ClassCategory__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ClassCode__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>PhysicalProject__c</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <webLinks>
         <fullName>ManageCities</fullName>
@@ -254,10 +363,10 @@ S = Successful</inlineHelpText>
         <encodingKey>UTF-8</encodingKey>
         <height>600</height>
         <linkType>url</linkType>
-        <masterLabel>Manage Cities</masterLabel>
+        <masterLabel>Manage Locations and Resilience</masterLabel>
         <openType>sidebar</openType>
         <protected>false</protected>
         <requireRowSelection>false</requireRowSelection>
-        <url>/apex/ECO_CityCountryFinder?scontrolCaching=1&amp;id={!pse__Proj__c.Id}</url>
+        <url>/apex/ECO_Resilience?scontrolCaching=1&amp;id={!pse__Proj__c.Id}</url>
     </webLinks>
 </CustomObject>

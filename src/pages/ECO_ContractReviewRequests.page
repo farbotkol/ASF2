@@ -1,0 +1,24 @@
+<apex:page standardController="DOAApprovalRequest__c" extensions="ECO_ContractReviewRequestExtension" >
+    <apex:pageMessages id="messages" />
+
+	<apex:form id="theform">
+        <apex:pageBlock id="thepageblock">
+		<apex:pageBlockSection columns="1">
+        	<apex:pageMessage severity="INFO" rendered="{!IF(tableRows.size > 0, false, true)}" summary="No Results Were Found."></apex:pageMessage> 
+            <apex:pageBlockTable value="{!tableRows}" rendered="{!IF(tableRows.size > 0, true, false)}" var="Row" width="100%">
+                <apex:column headerValue="Contract Review" >
+                    <apex:outputLink value="/{!Row.objContractReview.Id}" target="_blank">{!Row.objContractReview.Name}</apex:outputLink>
+                </apex:column>
+                <apex:column headerValue="Agreement"  >
+                    <apex:outputLink value="/{!Row.objContractReview.Agreement__c}" target="_blank">{!Row.objAgreement.Name}</apex:outputLink>
+                </apex:column>
+                <apex:column value="{!Row.objAgreement.AgreementType__c}"/>
+                <apex:column value="{!Row.objAgreement.AgreementStatus__c}"/>
+            </apex:pageBlockTable>
+        </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form>
+    
+    
+    
+</apex:page>

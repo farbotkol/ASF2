@@ -13,7 +13,7 @@ public with sharing class ECO_ProjectReviewsControllerPdf extends ECO_ProjectRev
 		Apexpages.currentPage().getHeaders().put('content-disposition', 'inline; filename=' + pdfFileName);		
 	}
 	
-	public String getProjectSnapshotRecord()
+	public override String getProjectSnapshotRecord()
 	{
 		list<ProjectSnapshot__c> projectSnapshotRecords = [select Id from ProjectSnapshot__c where ProjectReview__c = :oProjectReview.Id order by Id desc];
 		

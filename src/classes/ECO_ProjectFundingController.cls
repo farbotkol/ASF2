@@ -38,15 +38,15 @@ public class ECO_ProjectFundingController {
         
         if(projectId != null)
         {
-            project = [select Id, Name, ProjectLevelFundingFlag__c, ProjectCurrencyCode__c, isSegmented__c, SegmentationStatus__c, ProjectFunctionalCurrencyCode__c, EnableTopTaskCustomerFlag__c, DistributionRule__c, OUID__c  from pse__Proj__c where Id = :projectId];
+            project = [select Id, Name, TotalApprovedRevenue__c, TotalForecastRevenue__c, ProjectLevelFundingFlag__c, ProjectCurrencyCode__c, isSegmented__c, SegmentationStatus__c, ProjectFunctionalCurrencyCode__c, EnableTopTaskCustomerFlag__c, DistributionRule__c, OUID__c  from pse__Proj__c where Id = :projectId];
         }
         else
         {
             list<ProjectAgreement__c> projectAgreements = [select Id, Agreement__c, Project__c from ProjectAgreement__c where Agreement__c = :agreementId];
-            project = [select Id, Name, ProjectLevelFundingFlag__c, isSegmented__c, SegmentationStatus__c, ProjectCurrencyCode__c, ProjectFunctionalCurrencyCode__c, EnableTopTaskCustomerFlag__c, DistributionRule__c, OUID__c from pse__Proj__c where Id = :projectAgreements[0].Project__c];
+            project = [select Id, Name, ProjectLevelFundingFlag__c, TotalApprovedRevenue__c, CurrencyIsoCode, TotalForecastRevenue__c, isSegmented__c, SegmentationStatus__c, ProjectCurrencyCode__c, ProjectFunctionalCurrencyCode__c, EnableTopTaskCustomerFlag__c, DistributionRule__c, OUID__c from pse__Proj__c where Id = :projectAgreements[0].Project__c];
             //topTask = project.EnableTopTaskCustomerFlag__c;
         }
-        agreement = [select Id, Name, Amount__c, Account__c, Description__c, FundingCurrencyCode__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
+        agreement = [select Id, Name, Amount__c, Account__c, Description__c, FundingCurrencyCode__c, CurrencyIsoCode, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
         
         if(!project.ProjectLevelFundingFlag__c)
         {
@@ -87,7 +87,7 @@ public class ECO_ProjectFundingController {
     
     private void initializeProjectTaskLevelFundingProjectTasks()
     {
-        projectTasks = [select Id, Name, pse__Project__c, TotalApprovedCost__c, TopTaskOwningCustomer__c, TopTaskOwningCustomer__r.Name, TopTaskOwningCustomer__r.Account_Name__c, TotalFunding__c, CurrencyIsoCode from pse__Project_Task__c where pse__Project__c = :projectId];
+        projectTasks = [select Id, Name, pse__Project__c, TotalApprovedCost__c, TopTaskOwningCustomer__c, TopTaskOwningCustomer__r.Name, TopTaskOwningCustomer__r.Account_Name__c, TotalFunding__c, CurrencyIsoCode, ProjectTaskNUmber__c from pse__Project_Task__c where pse__Project__c = :projectId and IsTopLevelTask__c = true];
         projectTasksFundedMap = new map<Id, list<Funding>>();
         projectTasksFundedAllAgreementsMap = new map<Id, list<Funding>>();
         projectTasksFundingTotalsMap = new map<Id, Decimal>();
@@ -188,55 +188,6 @@ public class ECO_ProjectFundingController {
         return new PageReference('/' + projectId);
     }
     
-   /* private static Decimal convertToOrgCurrency(String currencyIso, Decimal currencyVal, Date currencyDate) {
-        
-        Decimal res;
-        Map<Id,DatedConversionRate> dcrIdToDcrMap;
-        
-        if (currencyIso == null || currencyVal == null) {
-            return 0;
-        }
-        else {
-            if (dcrIdToDcrMap == null)              // build the map only once for life of the transaoction
-                dcrIdToDcrMap = new Map<ID,DatedConversionRate> ([select id, isoCode, conversionrate, nextStartDate, startDate from DatedConversionRate]);
-            for (DatedConversionRate dcr: dcrIdToDcrMap.values()) {
-                if (dcr.isoCode != currencyIso)                                         
-                    continue;   // look for a match in table against input currency
-                if (currencyDate < dcr.startDate || currencyDate >= dcr.nextStartDate)  
-                    continue;   // not in the range of effective dates
-                System.debug(LoggingLevel.INFO,'Converting using dcr: ' + dcr);
-                res =  currencyVal / dcr.conversionRate;
-                break;  
-            }
-        }
-        return res;
-    }   */
-    
-    //  ----------------------------------------
-    //  convertFromOrgCurrency - convert value in org currency to some iso currency as of given date 
-    //  ----------------------------------------
-   /* private static Decimal convertFromOrgCurrency(String currencyIso, Decimal currencyVal, Date currencyDate) {
-        Decimal res;
-        Map<Id,DatedConversionRate> dcrIdToDcrMap;
-        if (currencyIso == null || currencyVal == null) {
-            return 0;
-        }
-        else {
-            if (dcrIdToDcrMap == null)              // build the map only once for life of the transaoction
-                dcrIdToDcrMap = new Map<ID,DatedConversionRate> ([select id, isoCode, conversionrate, nextStartDate, startDate from DatedConversionRate]);
-            for (DatedConversionRate dcr: dcrIdToDcrMap.values()) {
-                if (dcr.isoCode != currencyIso)                                         
-                    continue;   // look for a match in table against input currency
-                if (currencyDate < dcr.startDate || currencyDate >= dcr.nextStartDate)  
-                    continue;   // not in the range of effective dates
-                System.debug(LoggingLevel.INFO,'Converting using dcr: ' + dcr);
-                res =  currencyVal * dcr.conversionRate;
-                break;  
-            }
-        }
-        return res;
-    }   */
-    
     public void save()
     {               
         list<Funding__c> fundingRecordsToBeSaved = new list<Funding__c>();
@@ -333,6 +284,13 @@ public class ECO_ProjectFundingController {
             initializeProjectTaskLevelFundingProjectTasks();
             initializeProjectTaskLevelFundingLines();            
         }
+
+        if(project.ProjectLevelFundingFlag__c && fundingRecordsToBeSaved.size() == 0)
+        {
+            initializeProjectLevelFunding();
+        }
+
+
 		agreement = [select Id, Name, Amount__c, Account__c, Description__c, FundingCurrencyCode__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
                 
         creatingNewFunding = false;                 

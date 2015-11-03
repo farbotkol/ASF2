@@ -1,5 +1,20 @@
 <apex:page standardController="pse__Proj__c" extensions="ECO_SubsVendorsController" showHeader="true" sidebar="false">
 	<apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+
+
+    <style>
+
+        .searchText{
+            text-align:center;
+            font-weight:bold;
+            font-size:20px;
+        }
+
+        .message{
+			background-color: #A2D3F1;
+		}
+    </style>
+    
 	<script>
 		$(document).keypress(function(e) 
 		{
@@ -12,17 +27,29 @@
 	</script>
 	<apex:form id="topForm">
 		<div style="position:relative">
-			<apex:sectionHeader title="Subs and Vendors" subtitle="{!pse__Proj__c.Name}" />
+			<apex:sectionHeader title="Subs and Vendors" subtitle="{!pse__Proj__c.ProjectSectionHeaderName__c}" />
 		</div>
 		<apex:pageMessages id="messages" />
+		<apex:pageMessage id="headerSummaryMessage" severity="info"  escape="false"  summary="
+					Use this section to identify and list all subcontractors, subconsultants or vendors required for the project.  Contact Global Business Services (GBS) if the desired vendor or sub record does not exist or if the current contact details are incorrect.  
+					<br /><br />
+					All required Subs and Vendors must be added to this list prior to requesting a Purchase Order and committing the expenditure in Oracle.   Upload the respective subcontracts in the Agreements section." />
 		<apex:pageBlock title="Subs and Vendors">
 			<apex:pageBlockButtons location="top">
-				<apex:commandButton action="{!CreateUpdateVendor}" value="Create/Update Vendor" />
+				<!--<apex:commandButton action="{!CreateUpdateVendor}" value="Create/Update Vendor" />-->
+		        <apex:commandlink style="text-decoration: none;" action="{!URLFOR($action.SharedServicesRequest__c.new, null, [returl=$CurrentPage.url])}" target="_blank">
+		            <apex:commandButton value="Create/Update Vendor"/>
+		        </apex:commandLink>
 		        <apex:commandlink style="text-decoration: none;" action="{!AddPO}" target="_blank">
 		            <apex:commandButton value="Add PO"/>
 		        </apex:commandLink>
+		        <apex:commandlink style="text-decoration: none;" action="/apex/ECO_ProjectAgreementpage?project={!pse__Proj__c.id}" target="_blank">
+		            <apex:commandButton value="Create Agreement"/>
+		        </apex:commandLink>
 				<apex:commandButton action="{!ReturnToProject}" value="Return to Project" />
 			</apex:pageBlockButtons>
+
+
 			<!--
 			<apex:pageBlockSection title="Subs Team" columns="1" collapsible="false">
 				<apex:pageBlockTable value="{!lVendorSubs}" var="item" width="100%" columnsWidth="60px" id="VendorSubTable">
@@ -80,7 +107,15 @@
 									<apex:outputPanel id="SiteSelect" rendered="{!if(lstVendorSites.size > 0, true, false)}">
 
 									<div style="padding:0 12px;margin-top:7px">
+										<apex:variable var="rowNumInd" value="{!0}"/>
 										<apex:pageBlockTable value="{!lstVendorSites}" var="Site" rendered="{!if(lstVendorSites.size > 0, true, false)}">
+				                            <apex:column headerValue="Action">
+				                                <apex:variable var="rowNumInd" value="{!rowNumInd + 1}"/>
+				                                <apex:commandLink value="Remove" action="{!removeSiteVendoRowNum}" reRender="SiteTab">
+				                                    <apex:param name="rowNumInd" value="{!rowNumInd}" assignTo="{!removeSiteVendoRowNum}"/>
+				                                </apex:commandLink>
+
+				                            </apex:column>  
 											<apex:repeat value="{!$ObjectType.VendorSite__c.FieldSets.VendorFinder_Display_Fieldset}" var="SearchField">
 												<apex:column value="{!Site[SearchField]}" />
 											</apex:repeat>
@@ -92,7 +127,43 @@
 							</apex:outputPanel>						
 						</apex:facet>
 					</apex:actionStatus>
+
+					<!--<div style="padding:0 12px;margin-top:7px">
+
+						<apex:outputText Value="No Agreements Were Found." rendered="{!IF(lstSitesSearchResults.size > 0, false, true)}" />
+
+						<apex:pageBlockTable value="{!lstSitesSearchResults}" rendered="{!IF(lstSitesSearchResults.size > 0, true, false)}" var="Site">
+							<apex:column width="200">
+								<apex:facet name="header">Action</apex:facet>
+				            	<apex:commandLink action="{!SelectSiteAsSub}" value="Add as Sub" rerender="SitePanel,messages" status="SiteSelectUpdateStatus">
+				            		<apex:param assignTo="{!idSiteID}" name="SiteID" value="{!Site.id}" />
+				            	</apex:commandLink>&nbsp;&nbsp;&nbsp;&nbsp;
+				            	<apex:commandLink action="{!SelectSiteAsVendor}" value="Add as Vendor" rerender="SitePanel,messages" status="SiteSelectUpdateStatus">
+				            		<apex:param assignTo="{!idSiteID}" name="SiteID" value="{!Site.id}" />
+				            	</apex:commandLink>&nbsp;&nbsp;
+							</apex:column>
+							<apex:repeat value="{!$ObjectType.Site__c.FieldSets.pse_ClientFinder_Search_Result_Fieldset}" var="SearchField">
+								<apex:column value="{!Site[SearchField]}" rendered="{!NOT(SearchField.label == 'Client Name')}" />
+								<apex:column rendered="{!SearchField.label == 'Client Name'}">
+									<apex:facet name="header">Sub/Vendor Name</apex:facet>
+									{!Site[SearchField]}
+								</apex:column>
+
+							</apex:repeat>
+						</apex:pageBlockTable>
+					</div>-->
+
+
 				</apex:outputPanel>	
+
+			<apex:pageBlockSection title="Agreements" columns="1" collapsible="false">
+			<apex:pageMessage severity="INFO" rendered="{!IF(lstAgreements.size > 0, false, true)}" summary="No Agreements were found."></apex:pageMessage> 
+			<apex:pageBlockTable value="{!lstAgreements}" var="a" rendered="{!if(lstAgreements.size > 0, true, false)}">
+				<apex:repeat value="{!$ObjectType.ProjectAgreement__c.FieldSets.SubVendorView}" var="field">
+					<apex:column value="{!a[field]}" />
+				</apex:repeat>
+			</apex:pageBlockTable>
+			</apex:pageBlockSection>
 
 				<apex:outputPanel id="AddressInput">
 					<apex:actionFunction action="{!SearchSites}" name="SearchSites" rerender="SiteTab" status="SiteSearchUpdateStatus" />
@@ -152,6 +223,9 @@
 									</apex:pageBlockTable>
 								</div>
 								<BR /><BR /><BR />
+								<div style="text-align:center;">
+									<apex:commandButton value="{!IF(bMore, 'Less', 'More')}" action="{!toggle}" reRender="SiteSearch" />
+								</div>
 							</apex:outputPanel>
 							</apex:outputPanel>
 						</apex:facet>

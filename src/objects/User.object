@@ -59,7 +59,7 @@
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>true</enableFeeds>
     <externalSharingModel>Private</externalSharingModel>
-    <fields>
+	<fields>
         <fullName>AD_MobilePhone__c</fullName>
         <externalId>false</externalId>
         <label>AD MobilePhone</label>
@@ -328,6 +328,30 @@
         <scale>2</scale>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>DTWApplicationLevel__c</fullName>
+        <description>Denotes the highest level this user plays in the DTW Application process</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Denotes the highest level this user plays in the DTW Application process</inlineHelpText>
+        <label>DTW Application Level</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Corporate</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DTW Admin</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>DTW Approver</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>Date_Proxy_Added__c</fullName>
@@ -980,6 +1004,14 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>NormalTransDateTime__c</fullName>
+        <externalId>false</externalId>
+        <label>Normal Trans Date Time</label>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>DateTime</type>
+    </fields>
+    <fields>
         <fullName>OfficeAddress1__c</fullName>
         <externalId>false</externalId>
         <label>Office Address 1</label>
@@ -1177,6 +1209,22 @@
         <type>Hierarchy</type>
     </fields>
     <fields>
+        <fullName>ProjectAccountantAuthority__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Project Accountant Authority</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>ProjectManagerAuthority__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Project Manager Authority</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Project_Approver__c</fullName>
         <externalId>false</externalId>
         <label>Project Approver</label>
@@ -1345,6 +1393,16 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>ShaKey__c</fullName>
+        <externalId>false</externalId>
+        <label>ShaKey</label>
+        <length>255</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Shared_Services_Is_Executive__c</fullName>
         <defaultValue>false</defaultValue>
         <description>Is the current User a senior executive?  This will affect the prioritization of incoming requests for help.</description>
@@ -1431,7 +1489,7 @@
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
-        <unique>true</unique>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Training_Summary__c</fullName>
@@ -1552,6 +1610,16 @@
         <trackFeedHistory>false</trackFeedHistory>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>isDoaAdmin__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>This box should be checked for all DoA Admins managing the DoA Approval queue. This box will enable users to access the admin view of DoA</description>
+        <externalId>false</externalId>
+        <inlineHelpText>This box should be checked for all DoA Admins managing the DoA Approval queue. This box will enable users to access the admin view of DoA</inlineHelpText>
+        <label>isDoa Admin</label>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>smartSearchMyRecentSearch__c</fullName>
@@ -1791,7 +1859,6 @@
         <columns>CORE.USERS.USERNAME</columns>
         <columns>CORE.USER_ROLE.NAME</columns>
         <columns>CREATED_DATE</columns>
-        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>CORE.USERS.ACTIVE</field>
@@ -1808,7 +1875,6 @@
         <columns>CORE.USERS.USERNAME</columns>
         <columns>CORE.USERS.LAST_LOGIN</columns>
         <columns>CORE.USER_ROLE.NAME</columns>
-        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>CORE.PROFILE.NAME</columns>
         <columns>CORE.USERS.ACTIVE</columns>
         <columns>CORE.USERS.EMAIL</columns>
@@ -1830,7 +1896,6 @@
         <columns>CORE.USERS.EMAIL</columns>
         <columns>CORE.USERS.LAST_LOGIN</columns>
         <columns>CORE.USER_ROLE.NAME</columns>
-        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>CORE.PROFILE.NAME</columns>
         <columns>MANAGER</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -1942,7 +2007,6 @@
         <fullName>Canada_East_Users</fullName>
         <columns>FULL_NAME</columns>
         <columns>Auto_Deactivation_Exception__c</columns>
-        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>CORE.USERS.USERNAME</columns>
         <columns>CORE.USERS.ACTIVE</columns>
         <columns>LAST_UPDATE</columns>
@@ -2433,7 +2497,6 @@
         <columns>CORE.PROFILE.NAME</columns>
         <columns>CORE.USERS.LAST_LOGIN</columns>
         <columns>CORE.USERS.LAST_NAME</columns>
-        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>CORE.USERS.EMAIL</columns>
         <columns>EMPLOYEE_NUMBER</columns>
         <columns>CREATED_BY_NAME</columns>
@@ -2592,17 +2655,12 @@
     </listViews>
     <listViews>
         <fullName>users_without_federation_ID</fullName>
-        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.USERNAME</columns>
         <columns>CORE.USERS.LAST_LOGIN</columns>
         <columns>CORE.USER_ROLE.NAME</columns>
         <columns>CORE.PROFILE.NAME</columns>
         <filterScope>Everything</filterScope>
-        <filters>
-            <field>CORE.USERS.SAML_SUBJECT</field>
-            <operation>equals</operation>
-        </filters>
         <filters>
             <field>CORE.USERS.ACTIVE</field>
             <operation>equals</operation>
@@ -2630,8 +2688,6 @@
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.PHONE</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.EXTENSION</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.CELL</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>00Ne0000001U3NH</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>00Ne0000001U3N7</lookupPhoneDialogsAdditionalFields>
         <searchFilterFields>FULL_NAME</searchFilterFields>
         <searchFilterFields>CORE.USERS.FIRST_NAME</searchFilterFields>
         <searchFilterFields>CORE.USERS.LAST_NAME</searchFilterFields>

@@ -41,5 +41,24 @@ public with sharing class ECO_QuestionnaireSet_TriggerDispatcher
 
 			}
 		}
+        
+		/*if(isBefore)
+		{        
+			if(isUpdate)
+            {        
+                Id projectId = newList[0].project__c;
+                
+                if( ECO_Service_RecordAccess.getRecordAccess( projectId, 'QuestionnaireSet__c' ) )
+                    system.debug( 'Has access' );
+                else
+                {            
+                    for( QuestionnaireSet__c ques : newList )            
+                    {
+                        //ques.addError( 'Editing Risk and Market Assessment is not permistted for this user. Please update Team member role' );
+                    }                
+                }            
+		    }              
+        }*/
+
 	}
 }

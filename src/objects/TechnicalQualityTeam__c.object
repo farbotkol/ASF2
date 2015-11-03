@@ -50,7 +50,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
-    <enableReports>false</enableReports>
+    <enableReports>true</enableReports>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
@@ -66,6 +66,32 @@ False)))</formula>
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Approved__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Approved</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Checker_DateTime__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( Approved__c,  NOW() , null)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Checker Date/Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
+        <fullName>Checker_Date_Time__c</fullName>
+        <externalId>false</externalId>
+        <label>Checker Date/Time</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>DateTime</type>
+    </fields>
+    <fields>
         <fullName>Deliverable__c</fullName>
         <externalId>false</externalId>
         <label>Deliverable</label>
@@ -79,8 +105,20 @@ False)))</formula>
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <fields>
+        <fullName>Projid__c</fullName>
+        <externalId>false</externalId>
+        <formula>Deliverable__r.Project__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Projid</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>RequiredDate__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>The date the deliverable is scheduled for review.</inlineHelpText>
         <label>Review Date</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -89,6 +127,7 @@ False)))</formula>
     <fields>
         <fullName>Role__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>This is the role the team member will play in the technical quality review (e.g., Approver, Reviewer, Owner, Originator, Lead Verifier, Independent Reviewer).</inlineHelpText>
         <label>Role</label>
         <picklist>
             <picklistValues>
@@ -113,6 +152,10 @@ False)))</formula>
             </picklistValues>
             <picklistValues>
                 <fullName>Approver</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Deliverable Owner</fullName>
                 <default>false</default>
             </picklistValues>
             <sorted>false</sorted>
@@ -165,9 +208,8 @@ False)))</formula>
     <fields>
         <fullName>TechnicalQualityTeamMember__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
-        <description>Lookup to user for the technical quality team member who will be set as the approver for the approval process.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Reminder: Consider SiD when selecting reviewers for deliverable technical quality reviews</inlineHelpText>
+        <inlineHelpText>Search for the project team member who will be selected to play a role in the technical quality review. If applicable, remember to consider Safety in Design (SiD) requirements when selecting reviewers.</inlineHelpText>
         <label>Technical Quality Team Member</label>
         <referenceTo>User</referenceTo>
         <relationshipName>Technical_Quality_Team</relationshipName>
@@ -182,7 +224,16 @@ False)))</formula>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Technical Quality Team</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>TechnicalQualityTeamMember__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Checker_Date_Time__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Deliverable__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>RequiredDate__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Role__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Status__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATEDBY_USER</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <webLinks>
         <fullName>Kill_Approval</fullName>

@@ -77,6 +77,6 @@ public with sharing class ECO_RiskFlyoutController {
     }
 
     public PageReference viewRegister(){
-        return new PageReference('/apex/ECO_RiskRegister?projectId=' + sProjectId);
+        return new PageReference('/apex/ECO_RiskRegisterList?Id=' + sProjectId);
     }
 }

@@ -27,6 +27,14 @@
       	ga('create', 'UA-33974532-24', 'auto');
       	ga('send', 'pageview');    
     </script>
+    <script>
+    /* Michael Wolf 09/23/2015: Code fix for blank page issue affecting iOS | https://success.salesforce.com/issues_view?id=a1p300000008Y6nAAE */
+    (function(){try{var a=navigator.userAgent;
+    if((a.indexOf('Salesforce')!=-1)&&(a.indexOf('iPhone')!=-1||a.indexOf('iPad')!=-1)&&(a.indexOf('OS/8')!=-1||a.indexOf('OS 8')!=-1)&&(a.indexOf('Safari')==-1)){
+    var s=document.createElement('style');
+    s.innerHTML="html,html body{overflow: auto;-webkit-overflow-scrolling:touch;}body{position:absolute;left:0;right:0;top:0;bottom:0;}";
+    document.getElementsByTagName('head')[0].appendChild(s);}}catch(e){}})();
+    </script>
     <style>
     @media screen and (max-width:768px){
         .add-tooltip.visible-xs{

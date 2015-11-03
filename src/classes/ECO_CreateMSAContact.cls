@@ -3,12 +3,17 @@ public class ECO_CreateMSAContact {
 	public ManagementTeam__c managementTeam {get; set;}
 	public boolean creatingNewContact {get; set;}
 	public Contact contact {get; set;}
-	private Agreement__c agreement {get; set;}
+	public Agreement__c agreement {get; set;}
 	
 	public ECO_CreateMSAContact(ApexPages.standardController sc)
 	{
 		managementTeam = (ManagementTeam__c)sc.getRecord();
 //		managementTeam.Agreement__c = 'a4Ye00000009lshEAA';
+	}
+
+	public void init()
+	{
+		agreement = [select Id, AgreementNumber__c, ContractTitle__c from Agreement__c where Id = :managementTeam.Agreement__c limit 1];
 	}
 
 	public PageReference createNewContact()

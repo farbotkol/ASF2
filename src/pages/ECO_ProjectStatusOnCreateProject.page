@@ -1,0 +1,163 @@
+<apex:page >
+    <style>
+        body{
+            font-family:helvetica, arial, sans-serif;
+            font-family:;
+            padding:0;
+            width:100%;
+            height:100%;
+            line-height:100%:;
+            padding-left:12px;
+        }
+
+       /* STATUS BAR BUTTON GROUP */
+        body span ul, body div ul{
+            margin:0;
+            padding:0;
+        }
+        body span ul.progress{
+            margin:0 0 8px 0 !important;
+        }
+        ul.progress li{
+            display:inline-block;
+            width:8%;
+            height:45px;
+            vertical-align:top;
+            position: relative;
+            background-color:#727272;
+            border-radius:3px;
+            padding:0 5px 0 0;
+        	min-width:100px;
+        	cursor:pointer;
+        	margin-left : 0.3em;
+        	background-image: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(255,255,255,0.09) 57%, rgba(0,0,0,0.15) 100%); /* FF3.6+ */
+            background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(57%,rgba(255,255,255,0.09)), color-stop(100%,rgba(0,0,0,0.15))); /* Chrome,Safari4+ */
+            background-image: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.09) 57%,rgba(0,0,0,0.15) 100%); /* Chrome10+,Safari5.1+ */
+            background-image: -o-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.09) 57%,rgba(0,0,0,0.15) 100%); /* Opera 11.10+ */
+            background-image: -ms-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.09) 57%,rgba(0,0,0,0.15) 100%); /* IE10+ */
+            background-image: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.09) 57%,rgba(0,0,0,0.15) 100%); /* W3C */
+        }
+        ul.progress li a{
+            position: absolute;
+            left: 7px; 
+            top: 3%; 
+            width: 90%; 
+            height: 45px; 
+            display: table; 
+            font-size:10px;
+            text-decoration:none;
+            font-weight:bold;
+            color:#fff;
+        }
+        ul.progress li div{ 
+            display: table-cell; 
+            vertical-align: middle; 
+        	text-align: center; 
+        }
+        ul.progress li:before{
+            width: 0; 
+            height: 0; 
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 15px solid #727272;
+        }
+        .container{
+            width:100%;
+            height:100%;
+        }
+        .boxed{
+            max-width:1200px;
+            min-width:800px;
+            margin:0 auto;
+        }
+        
+		/* conditional colors */
+        /* not started, default gray, defined above in anchor #404040 */
+        ul.progress li.Ready{
+            background-color:#0099FF;
+            border-color:#0099FF !important;
+        }
+        ul.progress li.Started{
+            background-color:#daca2e;
+            border-color:#daca2e !important;
+        }
+        /*ul.progress li.Started.decission{
+            background:#4058e0;
+            border-color:#4058e0 !important;
+        }*/
+        ul.progress li.Complete{
+            background-color:#52c934;
+            border-color:#52c934 !important;
+        }
+        /*ul.progress li.Complete2{
+            background:#54A340;
+            border-color:#54A340 !important;
+        }*/
+        /*ul.progress li.Complete.decission{
+            background-color:#52c934;
+            border-color:#52c934 !important;
+        }*/
+        ul.progress li.Rejected{
+            background-color:#e53d2d;
+            border-color:#e53d2d !important;
+        }
+        ul.progress li.decission{
+            border-radius:50px;
+        }
+        ul.progress li.decission2{
+            border-radius:50px;
+        }
+
+        
+    </style>
+    <apex:form >
+        <apex:outputPanel >
+            <ul class="breadcrumb progress">
+        <li class="Ready">
+            <a href="#" title="Create the project within the Ecosystem & link to opportunity in Salesforce" target="_parent">
+                <div>Create<br/>Project</div>
+            </a>
+        </li>
+        <li class="activeHover" >
+            <a href="#" onmouseover="GNGdisp('GoNoGoButtons')">
+                <div>R&amp;M<br/>Assessment<br/>for Go / No Go</div>
+            </a>
+        </li>
+        <li class="decission2">
+            <a href="#" title="Approval of the Go/No Go Decision – may relate to initial approval to spend BD money to prepare a bid or at any subsequent appropriate times">
+                <div>Go/No Go</div></a>
+        </li>
+        <li class="activeHover">
+            <a href="#">
+                <div>Prepare Project<br/>Plan &amp; Bid</div>
+            </a>
+        </li> 
+        <li class="decission">
+            <a href="#" title="Approval of the Preliminary Plan incorporates and constitutes formal approval to submit the bid document and requires upload of any approval supporting documents (e.g. ERC approval)">
+                <div>Plan<br/> Approval</div>
+            </a>
+        </li>
+        <!--<li class="{!pse__Proj__c.ProgBarBidSubmission__c} activeHover">-->
+        <li >
+            <a href="#" title="This step is not covered within the Ecosystem Tool, however the project plan should be revised to incorporate and negotiated changes, and the R&M Assessment and Go/No Go repeated for any significant changes">
+                <div>Submit Bid &amp;<br/>Negotiate</div></a>
+        </li>
+        <li class="activeHover">
+            <a href="#" title="This step is not covered within the Ecosystem Tool, however the project plan should be revised to incorporate and negotiated changes, and the R&M Assessment and Go/No Go repeated for any significant changes" >
+                <div>Contract Review &amp; Approval OR Work At Risk</div>
+            </a>
+        </li>
+        <li class="activeHover">
+            <a href="#" title = "Update the Project Plan to reflect any changes resulting from Bid Negotiation" onmouseover="GNGdisp('ReviseProjButtons')">
+                <div>Revise Project <br/>Plan</div>
+            </a>
+        </li>
+        <li class=" decission">
+            <a href="#" title="This step is the formal approval of the project plan as the baseline into Execution.This step will also create the project in Oracle.As part of this process, the associated Opportunity status may be updated if appropriate.">
+                <div>Approval<br/>To Execute</div>
+            </a>
+        </li>
+    </ul>
+        </apex:outputPanel>
+    </apex:form>
+</apex:page>

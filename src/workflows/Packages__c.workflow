@@ -3,6 +3,7 @@
     <alerts>
         <fullName>EcoSendHealthyStartEmail</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoSend Healthy Start Email</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>

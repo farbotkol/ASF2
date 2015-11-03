@@ -271,47 +271,53 @@
 												Risk Title
 											</th>
 											<th>
-												Contingency Value($)
-											</th>
-											<th>
-												Weighted Contingency (%)
-											</th>
-											<th>
 												Current Status
 											</th>
+											<th>Mitigation Strategy</th>
+											<th>
+												Post-Mitigation Contingency
+											</th>
+
 										</tr>
 									</thead>
 
 									<tbody>
 										<apex:repeat value="{!lRisks}" var="risk">
 											<tr>
-												<td rowspan="2" align="center">
+												<td rowspan="1" align="center">
 													<a href="/{!risk.Id}">View</a>
 												</td>
-												<td rowspan="2">
+												<td rowspan="1">
 													<apex:outputField rendered="{!NOT(ISBLANK(risk.PlanElement__c))}" value="{!risk.PlanElement__c}" />
 													<apex:outputText styleClass="noteText" rendered="{!ISBLANK(risk.PlanElement__c)}" value="Uncategorized" />
 												</td>
-												<td>
-													<apex:outputField value="{!risk.RiskDescription__c}" />
+												<td rowspan="1">
+													<apex:outputField value="{!risk.Name}" />
 												</td>
-												<td rowspan="2">
+												<!--<td rowspan="2">
 													<apex:outputField value="{!risk.ContingencyDollars__c}" />
-												</td>
-												<td rowspan="2">
-													<apex:outputField rendered="{!NOT(ISBLANK(risk.ContingencyPercent__c))}" value="{!risk.ContingencyPercent__c}" />
-													<apex:outputText styleClass="noteText" rendered="{!ISBLANK(risk.ContingencyPercent__c)}" value="Not Estimated" />
-												</td>
-												<td rowspan="2">
+												</td>-->
+												<td rowspan="1">
 													<apex:outputField value="{!risk.CurrentStatus__c}" />
 												</td>
+												<td rowspan="1">
+													<apex:outputField rendered="{!NOT(ISBLANK(risk.RiskMitigation__c))}" value="{!risk.RiskMitigation__c}" />
+													<apex:outputText styleClass="noteText" rendered="{!ISBLANK(risk.RiskMitigation__c)}" value="No Mitigation Provided" />
+												</td>												
+												<td rowspan="1">
+                									<apex:outputtext value="{0, number, currency}">
+				   										<apex:param value="{!risk.PostmitigationContingencyTotal__c}" />
+													</apex:outputtext>  												
+													<!--<apex:outputField value="{!risk.PostmitigationContingencyTotal__c}" />-->
+												</td>
+
 											</tr>
-											<tr>
+<!--											<tr>
 												<td>
 													<apex:outputField rendered="{!NOT(ISBLANK(risk.RiskMitigation__c))}" value="{!risk.RiskMitigation__c}" />
 													<apex:outputText styleClass="noteText" rendered="{!ISBLANK(risk.RiskMitigation__c)}" value="No Mitigation Provided" />
 												</td>
-											</tr>
+											</tr>-->
 										</apex:repeat>
 									</tbody>
 								</table>

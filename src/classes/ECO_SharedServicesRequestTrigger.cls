@@ -8,6 +8,7 @@ public class ECO_SharedServicesRequestTrigger {
 	public Site__c oSiteBilling {get;set;}
 	public Site__c oSiteRemit {get;set;}
 	
+	public contact oPrimaryContact {get;set;}
 	public contact oBillingContact {get;set;}
 	public contact oContact {get;set;}
 	public contact oContact2 {get;set;}
@@ -205,6 +206,10 @@ public class ECO_SharedServicesRequestTrigger {
 			if(wrapper.oContact2 != null){
 				lstContactsToInsert.add(wrapper.oContact2);
 			}
+			if(wrapper.oPrimaryContact != null){
+				lstContactsToInsert.add(wrapper.oPrimaryContact);
+			}
+			
 		}
 
 
@@ -277,6 +282,13 @@ public class ECO_SharedServicesRequestTrigger {
 		map<string, id> mapNameToID = new map<string, id>();
 		list<recordtype> lstRT = [select id, developername from recordtype where sobjecttype='SharedServicesRequest__c' and (developername='CreateCustomer' OR developername='CreateSub' OR developername='CreateVendor' OR developername='AddSite')];
 
+		list<Country__c> lstCounty = [select id, name from Country__c];
+		map<string, id> mapCountry = new map<string, id>();
+
+		for(Country__c c: lstCounty){
+			mapCountry.put(c.name, c.id);
+		}
+
 		for(recordtype rt: lstRT){
 			mapNameToID.put(rt.developername, rt.id);
 		}
@@ -325,6 +337,8 @@ public class ECO_SharedServicesRequestTrigger {
 				oAccount.SmallDisadvnBusiness__c = oSharedServicesRequest.SocioSmallDisadvantagedBusinessSDB__c;
 				oAccount.MK_Denial__c = oSharedServicesRequest.MKDenialStatus__c;
 				oAccount.HubZone__c = oSharedServicesRequest.SocioHUBZone__c;
+				oAccount.Client_Group__c = 'Industrial/Commercial';
+				oAccount.Client_Subgroup__c = 'Other Industrial/Commercial';
 
 				oAccount.Type__c = 'Vendor';
 				oAccount.Type = 'Vendor';
@@ -352,8 +366,11 @@ public class ECO_SharedServicesRequestTrigger {
 				oAccount.SmallDisadvnBusiness__c = oSharedServicesRequest.SocioSmallDisadvantagedBusinessSDB__c;
 				oAccount.MK_Denial__c = oSharedServicesRequest.MKDenialStatus__c;
 				oAccount.HubZone__c = oSharedServicesRequest.SocioHUBZone__c;
+				oAccount.Client_Group__c = 'Industrial/Commercial';
+				oAccount.Client_Subgroup__c = 'Other Industrial/Commercial';	
 				oAccount.Type__c = 'Subcontractor';
 				oAccount.Type = 'Subcontractor';
+			
 
 			}
 
@@ -370,9 +387,14 @@ public class ECO_SharedServicesRequestTrigger {
 					oAccount.street__c += ', ' + oSharedServicesRequest.Address4StreetPOBox__c;
 				}	
 
+				oAccount.phone = oSharedServicesRequest.OfficePhone__c;
 				oAccount.City__c = oSharedServicesRequest.City__c;
 				oAccount.State_Province_Emerate__c = oSharedServicesRequest.StateProvinceEmirate__c;
 				oAccount.Zip__c = oSharedServicesRequest.ZipPostalCode__c;
+
+				if(mapCountry.containskey(oSharedServicesRequest.Country__c)){
+					oAccount.CountryLookup__c = mapCountry.get(oSharedServicesRequest.Country__c);
+				}
 
 			} else if (oSharedServicesRequest.BillingAddress1isPrimary__c) {
 
@@ -389,9 +411,13 @@ public class ECO_SharedServicesRequestTrigger {
 					oAccount.street__c += ', ' + oSharedServicesRequest.BillingAddress4StreetPOBox__c;
 				}
 
+				oAccount.phone = oSharedServicesRequest.BillingOfficePhone__c;
 				oAccount.City__c = oSharedServicesRequest.BillingAddressCity__c;
 				oAccount.State_Province_Emerate__c = oSharedServicesRequest.BillingStateProvinceEmirate__c;
-				oAccount.Zip__c = oSharedServicesRequest.BillingZipPostalCode__c;				
+				oAccount.Zip__c = oSharedServicesRequest.BillingZipPostalCode__c;		
+				if(mapCountry.containskey(oSharedServicesRequest.BillingAddressCountry__c)){
+					oAccount.CountryLookup__c = mapCountry.get(oSharedServicesRequest.BillingAddressCountry__c);
+				}		
 
 			} else if (oSharedServicesRequest.RemitIsPrimaryAddress__c) {
 
@@ -401,9 +427,15 @@ public class ECO_SharedServicesRequestTrigger {
 					oAccount.street__c += ', ' + oSharedServicesRequest.RemitToAddressLine2__c;
 				}
 
+				oAccount.phone = oSharedServicesRequest.RemitToOfficePhone__c;
 				oAccount.City__c = oSharedServicesRequest.RemitToCity__c;
 				oAccount.State_Province_Emerate__c = oSharedServicesRequest.RemitToStateProvinceEmirate__c;
 				oAccount.Zip__c = oSharedServicesRequest.RemitToZipPostalCode__c;
+
+				if(mapCountry.containskey(oSharedServicesRequest.RemitToCountry__c)){
+					oAccount.CountryLookup__c = mapCountry.get(oSharedServicesRequest.RemitToCountry__c);
+				}		
+
 
 			}
 		}else{
@@ -543,6 +575,25 @@ public class ECO_SharedServicesRequestTrigger {
 			}
 
 		}
+
+		if(oSharedServicesRequest.PrimaryContactLastName__c != null){
+
+			oPrimaryContact = new contact();
+
+			oPrimaryContact.lastname = oSharedServicesRequest.PrimaryContactLastName__c;
+			oPrimaryContact.firstname = oSharedServicesRequest.PrimaryContactFirstName__c;
+			oPrimaryContact.email = oSharedServicesRequest.PrimaryContactEmail__c;
+			oPrimaryContact.phone = oSharedServicesRequest.PrimaryContactPhone__c;
+
+			if(oPrimaryContact.lastname == null ||
+				oPrimaryContact.lastname == null ||
+				(oPrimaryContact.email == null && 
+					oPrimaryContact.phone==null)){
+				oPrimaryContact = null;
+			}
+
+		}
+
 	}
 
 
@@ -558,6 +609,10 @@ public class ECO_SharedServicesRequestTrigger {
 		if(oContact2 != null){
 			oContact2.AccountId = oAccount.id;
 		}
+		if(oPrimaryContact != null){
+			oPrimaryContact.AccountId = oAccount.id;
+		}
+
 	}
 
 	Public void AssociateSite(){

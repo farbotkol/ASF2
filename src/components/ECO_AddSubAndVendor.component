@@ -1,0 +1,203 @@
+<apex:component controller="ECO_AddSubAndVendorController" allowDML="true">
+    <apex:attribute name="budgetHeader" description="The Budget Header ID" type="String" required="true" assignTo="{!budgetHeaderId}" />
+
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2_Themes, 'themes/smoothness/jquery-ui.css')}"/>
+    
+    {!ready}
+
+    <script type="text/javascript">
+    	$z = jQuery.noConflict();
+
+        function loading(val) {
+        	if (val) {
+              document.getElementById('spinner1').style.display = 'block';
+            }
+            else {
+              document.getElementById('spinner1').style.display = 'none';
+            }
+		}
+
+        function clearAll() {
+            $z('.searchField').val('');
+        }  
+
+        function toggleAll(inx) {
+            $z('.check1').prop('checked', $z(inx).is(":checked"));
+        }
+
+        $z(document).ready(function () {
+			$z('.tabsForResource').tabs();         
+        });
+    </script>
+    
+    <style>
+        .tabs { 
+            padding: 0px; 
+            background: none; 
+            border-width: 0px;
+        }
+
+        .ui-tabs-nav { 
+            padding-left: 0px; 
+            background: transparent; 
+            border-width: 0px 0px 1px 0px; 
+            -moz-border-radius: 0px; 
+            -webkit-border-radius: 0px; 
+            border-radius: 0px; 
+        } 
+
+        .ui-tabs-panel { 
+            background: #ffffff;
+            border-width: 0px 1px 1px 1px;
+        }
+
+        .tableClass {
+            background-color: black;
+            border-spacing: 1px;
+            border-collapse: inherit;
+        }
+
+        td.textCell {
+            background-color: white;
+        }
+
+        th.headerCell {
+            background-color: #f0f0f0;
+            text-align: center;
+            font-family: Arial, Helvetica;
+            font-size: 10pt;
+            font-weight: bold;
+        }
+    </style>
+    
+    <apex:form >
+    	<apex:actionFunction name="SearchSites" action="{!SearchSites}" rerender="theTable" status="loading" />
+        
+    	<apex:actionStatus id="loading" onstart="loading(true)" onstop="loading(false)" />
+
+        <span style="font-size:14pt;font-weight:bold;">Add Resource to Sub &amp; Vendor</span>
+
+        <div style="display:none; float: right;" id="spinner1">
+            <img height="15" width="15" class="spinner" src="{!$Resource.loading}" alt="loading" title="loading"/>
+        </div>
+
+        <div style="clear:both;"></div>
+
+        <div id="tabs" class="tabsForResource tabs" style="height:400px; margin-top:20px">
+            <ul class="ui-tabs-nav">
+                <li><a class="tabs-1" href="#tabs-1">Subs &amp; Vendor</a></li>
+                <li><a class="tabs-2" href="#tabs-2">Find Sub Or Vendor</a></li>
+            </ul>
+            
+            <div id="tabs-1" class="ui-tabs-panel">
+                <div style="height:325px;">
+                    <table class="tableClass" cellspacing="1" cellpadding="5" border="0" width="780px;" style="table-layout:fixed;">
+                        <tr>
+                            <th class="headerCell" style="width: 25px;"><apex:inputCheckbox onclick="toggleAll(this);" /></th>
+                            <th class="headerCell" style="width: 120px;">Account Name</th>
+                            <th class="headerCell" style="width: 40px;">City</th>
+                            <th class="headerCell" style="width: 20px;">State</th>
+                            <th class="headerCell" style="width: 60px;">Country</th>
+                            <th class="headerCell" style="width: 20px;">Type</th>
+                        </tr>
+                    </table>
+
+                    <div style="height:280px; overflow:scroll;">
+                        <table class="tableClass" cellspacing="1" cellpadding="5" border="0" width="780px;" style="table-layout:fixed;">
+                            <apex:repeat value="{!lstVendorSites}" var="vendorSite">
+                                <tr>
+                                    <td class="textCell" style="width: 25px; text-align: center;"><apex:inputCheckbox value="{!vendorSite.selected}" styleClass="check1" /></td>
+                                    <td class="textCell" style="width: 120px;"><apex:outputText value="{!vendorSite.vendorSite.Site__r.AccountName__c}" /></td>
+                                    <td class="textCell" style="width: 40px;"><apex:outputText value="{!vendorSite.vendorSite.Site__r.City__c}" /></td>
+                                    <td class="textCell" style="width: 20px;"><apex:outputText value="{!vendorSite.vendorSite.Site__r.State__c}" /></td>
+                                    <td class="textCell" style="width: 60px;"><apex:outputText value="{!vendorSite.vendorSite.Site__r.Country__c}" /></td>
+                                    <td class="textCell" style="width: 20px;"><apex:outputText value="{!vendorSite.vendorSite.Type__c}" /></td>
+                                </tr>
+                            </apex:repeat>                    
+                        </table>
+                    </div>
+                </div>
+
+                <div style="float: right;">
+                    <apex:commandButton value="Add Resource(s)" action="{!addExistingResource}" style="font-size:11px !important; font-family: Arial;" />
+                    
+                    <apex:commandButton value="Cancel" onclick="closeModal('modalDialog0');return false;" style="font-size:11px !important; font-family: Arial;" />
+                </div>
+
+                <div style="clear: both;"></div>
+            </div>
+
+            <div id="tabs-2" class="ui-tabs-panel">
+                <div style="height:325px;">
+                    <table border="0" cellspacing="2" cellpadding="3">
+                        <tr>
+                            <td style="text-align:right;">Account Name:</td>
+                            <td><apex:inputText value="{!searchAcctName}" styleClass="searchField" /></td>
+
+                            <td style="text-align:right; padding-left:75px;">City/Town:</td>
+                            <td><apex:inputText value="{!searchCityTown}" styleClass="searchField" /></td>
+                        </tr>
+
+                        <tr>
+                            <td style="text-align:right;">State/Province/Emirate:</td>
+                            <td><apex:inputText value="{!searchStateProvinceEmirate}" styleClass="searchField" /></td>
+
+                            <td style="text-align:right; padding-left:75px;">Country:</td>
+                            <td><apex:inputText value="{!searchCountry}" styleClass="searchField" /></td>
+                        </tr>
+
+                        <tr>
+                            <td colspan="4" style="text-align: center; padding-top:10px;">
+                                <apex:commandButton onclick="SearchSites(); return false;" value="Search" style="font-size:11px !important; font-family: Arial;"/>
+                                <apex:commandButton onclick="clearAll(); SearchSites(); return false;" value="Clear / All" style="font-size:11px !important; font-family: Arial;"/>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <br/>
+
+                    <apex:outputPanel id="theTable">
+                        <div style="height:180px; overflow:scroll;">
+                            <table class="tableClass" cellspacing="1" cellpadding="5" border="0" width="780px;">
+                                <tr>
+                                    <th class="headerCell">Add as</th>
+                                    <th class="headerCell">Sub/Vendor Name</th>
+                                    <th class="headerCell">Address</th>
+                                    <th class="headerCell">City/Town</th>
+                                    <th class="headerCell">State/Province/Emirate</th>
+                                    <th class="headerCell">Country</th>
+                                </tr>
+    
+                                <apex:repeat value="{!lstSitesSearchResults}" var="Site">
+                                    <tr> 
+                                        <td class="textCell">
+                                            <apex:commandLink onclick="closeModal('modalDialog0');return true;" action="{!SelectSiteAsSub}" value="Sub">
+                                                <apex:param assignTo="{!idSiteID}" name="SiteID" value="{!Site.id}" />
+                                            </apex:commandLink>&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <apex:commandLink onclick="closeModal('modalDialog0');return true;" action="{!SelectSiteAsVendor}" value="Vendor">
+                                                <apex:param assignTo="{!idSiteID}" name="SiteID" value="{!Site.id}" />
+                                            </apex:commandLink>&nbsp;&nbsp;    
+                                        </td>
+                                        <td class="textCell"><apex:outputText value="{!Site.AccountName__c}" /></td>
+                                        <td class="textCell"><apex:outputText value="{!Site.Address1__c}" /></td>
+                                        <td class="textCell"><apex:outputText value="{!Site.City__c}" /></td>
+                                        <td class="textCell"><apex:outputText value="{!Site.State__c}" /></td>
+                                        <td class="textCell"><apex:outputText value="{!Site.Country__c}" /></td>
+                                    </tr>
+                                </apex:repeat>                    
+                            </table>
+                        </div>
+                    </apex:outputPanel>
+                </div>
+                <div style="float: right;">
+                    <apex:commandButton value="Cancel" onclick="closeModal('modalDialog0');return false;" style="font-size:11px !important; font-family: Arial;" />
+                </div>
+
+                <div style="clear: both;"></div>
+            </div>
+        </div>
+    </apex:form>
+</apex:component>

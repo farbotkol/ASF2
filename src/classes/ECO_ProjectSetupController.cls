@@ -93,11 +93,13 @@ public with sharing class ECO_ProjectSetupController {
         public Site__c oSite {get;set;}
         public String strType {get;set;}
         public string billingContact {get;set;}
+        public integer contributions {get;set;}
 
         public boolean booIsBilling {get;set;}
         public boolean booIsDefaultTopTask {get;set;}
         public boolean booIsEnd {get;set;}
         public boolean booIsPrimaryEnd {get;set;}
+        public map<string, string> oidmap {get;set;}
 
         public  list<SelectOption> contacts { get; set; }
 
@@ -110,9 +112,14 @@ public with sharing class ECO_ProjectSetupController {
 
             contacts = new List<SelectOption>();
 
+            oidmap = new map<string, string>();
+
             for(contact c:[select id, lastname, firstname, OracleContactID__c from contact where site__c =: oTargetSite.id]){
                 contacts.add(new SelectOption(c.OracleContactID__c, c.lastname + ', ' + c.firstname));
+                oidmap.put(c.OracleContactID__c, c.id);
             }
+
+            contributions = 0;
 
         }
     }
@@ -123,6 +130,7 @@ public with sharing class ECO_ProjectSetupController {
         public ProjectOrganization__c oProjectOrganization {get;set;}
         public String strType {get;set;}
         public integer ContributionPercent {get;set;}
+        
 
         public OrganizationWrapper(OrganizationString__c oTargetOrganization){
             this.oOrganization = oTargetOrganization;
@@ -375,6 +383,7 @@ public with sharing class ECO_ProjectSetupController {
         if (!mapSites.containskey(idSiteID)) {
             SiteWrapper oSite = new SiteWrapper(mapSearchSites.get(idSiteID));
             mapSites.put(idSiteID, oSite);
+
             lstSites.add(oSite);
         }
 
@@ -383,6 +392,7 @@ public with sharing class ECO_ProjectSetupController {
             lstSites[0].booIsBilling = true;
             lstSites[0].booIsEnd = true;
             lstSites[0].booIsDefaultTopTask = true;
+            lstSites[0].contributions = 100;
 
             oPrimaryEnd = lstSites[0];
             oPrimaryEnd1 = lstSites[0];
@@ -499,6 +509,8 @@ public with sharing class ECO_ProjectSetupController {
     }
 
     public PageReference SkipOpportunity(){
+        oProject.pse__Opportunity__c = null;
+        oProject.name = null;
         tabState = 'name3';
         bOppSelected = true;    
         return null;    
@@ -621,6 +633,7 @@ public with sharing class ECO_ProjectSetupController {
             }
 
             try {    
+
                 update oProject;
             
             } catch (Exception e) {
@@ -900,6 +913,7 @@ public with sharing class ECO_ProjectSetupController {
             if(oOrganization.strType == 'Primary'){
                 oProject.CarryingOutOrganization__c = sString;
                 oProject.CurrencyIsoCode = oOrganization.oOrganization.CurrencyIsoCode;
+                oProject.ProjectCurrencyCode__c = oOrganization.oOrganization.CurrencyIsoCode;
                 oProject.ProjectFunctionalCurrencyCode__c = oOrganization.oOrganization.CurrencyIsoCode;
                 //oProject.PrimaryOrganization__c = sString;
                 oPrimaryOrganization = oOrganization.oOrganization;
@@ -938,6 +952,7 @@ public with sharing class ECO_ProjectSetupController {
             if(oOrganization.strType == 'Primary'){
                 oProject.CarryingOutOrganization__c = sString;
                 oProject.CurrencyIsoCode = oOrganization.oOrganization.CurrencyIsoCode;
+                oProject.ProjectCurrencyCode__c = oOrganization.oOrganization.CurrencyIsoCode;
                 oProject.ProjectFunctionalCurrencyCode__c = oOrganization.oOrganization.CurrencyIsoCode;
                 //oProject.PrimaryOrganization__c = sString;
                 oPrimaryOrganization = oOrganization.oOrganization;
@@ -970,7 +985,7 @@ public with sharing class ECO_ProjectSetupController {
         list<Project_Site__c> lstProjectSitesToInsert = new list<Project_Site__c>();
 
         for (SiteWrapper oSiteWrapper:lstSites){
-            lstProjectSitesToInsert.add(new Project_Site__c( BillingContactID__c = oSiteWrapper.billingContact, Project__c = oProject.Id, name=oSiteWrapper.oSite.AccountName__c, Site__c = oSiteWrapper.oSite.id, Is_Billing__c = oSiteWrapper.booIsBilling, Is_Default_Top_Task__c = oSiteWrapper.booIsDefaultTopTask, Is_End__c = oSiteWrapper.booIsEnd, Is_Primary_End__c = oSiteWrapper.booIsPrimaryEnd));
+            lstProjectSitesToInsert.add(new Project_Site__c(Contribution__c=oSiteWrapper.contributions, BillingContactID__c = oSiteWrapper.billingContact, BillingContact__c = oSiteWrapper.oidmap.get(oSiteWrapper.billingContact), Project__c = oProject.Id, name=oSiteWrapper.oSite.AccountName__c, Site__c = oSiteWrapper.oSite.id, Is_Billing__c = oSiteWrapper.booIsBilling, Is_Default_Top_Task__c = oSiteWrapper.booIsDefaultTopTask, Is_End__c = oSiteWrapper.booIsEnd, Is_Primary_End__c = oSiteWrapper.booIsPrimaryEnd));
         }
 
         insert lstProjectSitesToInsert;
@@ -1065,6 +1080,8 @@ public with sharing class ECO_ProjectSetupController {
                     id contactID = oOrganizationWrapper.oOrganization.ProjectApprover__c;
 
                     listProjectTeamMemberToInsert.add(new ProjectTeamMember__c(Contact__c = contactID, ProjectRole__c = auth2ID, Project__c = oProject.Id, StartDate__c = oProject.EstimatedStartDate__c));
+
+                    oProject.ProjectApprover__c = contactID;
                 } else {
                     ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.INFO,'Unable to populate Project Approver based on Project Approver on Primary Org: ' + oOrganizationWrapper.oOrganization.name);
                     ApexPages.addMessage(oMsg);

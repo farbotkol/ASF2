@@ -159,6 +159,8 @@ public without sharing class ECO_Service_EarnedValue {
 		
 		Decimal averageAmount = projTask.TotalApprovedCost__c / numOfWeeks;
 		Decimal runningTotal = 0;
+        Decimal averageAmountEstimate = projTask.TotalEstimateCost__c / numOfWeeks;
+		Decimal runningTotalEstimate = 0;
 		Integer weekNum = 1;
 		Date weekStartDateRunning = startDateWeekStartDay;
 		
@@ -170,12 +172,15 @@ public without sharing class ECO_Service_EarnedValue {
 			system.debug('averageAmount:  '+averageAmount);
 			
 			Decimal taskAmount = Math.log(Math.pow((Double)averageAmount, (Double)i+1));
+            Decimal taskAmountEstimate = Math.log(Math.pow((Double)averageAmountEstimate, (Double)i+1));
 			
 			taskAmount = taskAmount.setScale(2, System.RoundingMode.HALF_UP);
+            taskAmountEstimate = taskAmountEstimate.setScale(2, System.RoundingMode.HALF_UP);
 			
 			system.debug('taskAmount:  '+taskAmount);
 			
 			runningTotal += taskAmount;
+            runningTotalEstimate += taskAmountEstimate;
 			
 			EarnedValueSnapshot__c newEVSnap = new EarnedValueSnapshot__c();
 			newEVSnap.ProjectTask__c = projTask.Id;
@@ -185,6 +190,7 @@ public without sharing class ECO_Service_EarnedValue {
 			newEVSnap.WeekStartDate__c = weekStartDateRunning;
 			newEVSnap.ThisWeekNumber__c = weekNum;
 			newEVSnap.ThisWeekAmount__c = taskAmount;
+            newEVSnap.ThisWeekAmountEst__c = taskAmountEstimate;
 			
 			evsToUpsert.add(newEVSnap);
 			
@@ -197,33 +203,41 @@ public without sharing class ECO_Service_EarnedValue {
 		
 		// now we have task amounts that are way too huge to be the final amount, but we have good ratios between them, step it down
 		Decimal fixerRatio = projTask.TotalApprovedCost__c / runningTotal;
+        Decimal fixerRatioEstimate = projTask.TotalEstimateCost__c / runningTotalEstimate;
 		
 		system.debug('fixerRatio:  '+fixerRatio);
 		
 		// reset the running total
 		runningTotal = 0;
+        runningTotalEstimate = 0;
 		
 		// with the ratio we can fix the amounts
 		for (EarnedValueSnapshot__c evs : evsToUpsert) {
 			evs.ThisWeekAmount__c = (evs.ThisWeekAmount__c * fixerRatio).setScale(2, System.RoundingMode.HALF_UP);
+            evs.ThisWeekAmountEst__c = (evs.ThisWeekAmountEst__c * fixerRatioEstimate).setScale(2, System.RoundingMode.HALF_UP);
 			
 			//system.debug('fixed evs.ThisWeekAmount__c:  '+evs.ThisWeekAmount__c);
 			
 			runningTotal += evs.ThisWeekAmount__c;
+            runningTotalEstimate += evs.ThisWeekAmountEst__c;
 			
 			evs.ThisWeekRunningTotalAmount__c = runningTotal;
+            evs.ThisWeekAmountCumulativeEst__c = runningTotalEstimate;
 			evs.ThisWeekTotalRemaining__c = projTask.TotalApprovedCost__c - runningTotal;
 		}
 		
 		// reset the running total
 		runningTotal = 0;
+        runningTotalEstimate = 0;
 		
 		List<Decimal> valuesList = new List<Decimal>(); // We'll use this to hold values in the order we want them
+        List<Decimal> valuesListEstimate = new List<Decimal>(); // We'll use this to hold values in the order we want them
 		
 		// Now we have the curve, let's reverse it for front loaded.
 		for (Integer i = evsToUpsert.size()-1 ; i >= 0 ; i--) {
 			
 			valuesList.add(evsToUpsert[i].ThisWeekAmount__c);
+            valuesListEstimate.add(evsToUpsert[i].ThisWeekAmountEst__c);
 			
 			system.debug('reverse order:  '+evsToUpsert[i].ThisWeekAmount__c);
 		}
@@ -232,10 +246,13 @@ public without sharing class ECO_Service_EarnedValue {
 		Integer listPos = 0;
 		for (EarnedValueSnapshot__c evs : evsToUpsert) {
 			evs.ThisWeekAmount__c = valuesList[listPos];
+            evs.ThisWeekAmountEst__c = valuesListEstimate[listPos];
 			
 			runningTotal += evs.ThisWeekAmount__c;
+            runningTotalEstimate += evs.ThisWeekAmountEst__c;
 			
 			evs.ThisWeekRunningTotalAmount__c = runningTotal;
+            evs.ThisWeekAmountCumulativeEst__c = runningTotalEstimate;
 			evs.ThisWeekTotalRemaining__c = projTask.TotalApprovedCost__c - runningTotal;
 			
 			listPos++;
@@ -278,6 +295,8 @@ public without sharing class ECO_Service_EarnedValue {
 		
 		Decimal averageAmount = projTask.TotalApprovedCost__c / numOfWeeks;
 		Decimal runningTotal = 0;
+        Decimal averageAmountEstimate = projTask.TotalEstimateCost__c / numOfWeeks;
+		Decimal runningTotalEstimate = 0;
 		Integer weekNum = 1;
 		Date weekStartDateRunning = startDateWeekStartDay;
 		
@@ -289,12 +308,15 @@ public without sharing class ECO_Service_EarnedValue {
 			system.debug('averageAmount:  '+averageAmount);
 			
 			Decimal taskAmount = Math.log(Math.pow((Double)averageAmount, (Double)i+1));
+            Decimal taskAmountEstimate = Math.log(Math.pow((Double)averageAmount, (Double)i+1));
 			
 			taskAmount = taskAmount.setScale(2, System.RoundingMode.HALF_UP);
+            taskAmountEstimate = taskAmountEstimate.setScale(2, System.RoundingMode.HALF_UP);
 			
 			system.debug('taskAmount:  '+taskAmount);
 			
 			runningTotal += taskAmount;
+            runningTotalEstimate += taskAmountEstimate;
 			
 			EarnedValueSnapshot__c newEVSnap = new EarnedValueSnapshot__c();
 			newEVSnap.ProjectTask__c = projTask.Id;
@@ -304,6 +326,7 @@ public without sharing class ECO_Service_EarnedValue {
 			newEVSnap.WeekStartDate__c = weekStartDateRunning;
 			newEVSnap.ThisWeekNumber__c = weekNum;
 			newEVSnap.ThisWeekAmount__c = taskAmount;
+            newEVSnap.ThisWeekAmountEst__c = taskAmountEstimate;
 			
 			evsToUpsert.add(newEVSnap);
 			
@@ -316,21 +339,26 @@ public without sharing class ECO_Service_EarnedValue {
 		
 		// now we have task amounts that are way too huge to be the final amount, but we have good ratios between them, step it down
 		Decimal fixerRatio = projTask.TotalApprovedCost__c / runningTotal;
+        Decimal fixerRatioEstimate = projTask.TotalEstimateCost__c / runningTotalEstimate;
 		
 		system.debug('fixerRatio:  '+fixerRatio);
 		
 		// reset the running total
 		runningTotal = 0;
+		runningTotalEstimate = 0;
 		
 		// with the ratio we can fix the amounts
 		for (EarnedValueSnapshot__c evs : evsToUpsert) {
 			evs.ThisWeekAmount__c = (evs.ThisWeekAmount__c * fixerRatio).setScale(2, System.RoundingMode.HALF_UP);
+            evs.ThisWeekAmountEst__c = (evs.ThisWeekAmountEst__c * fixerRatioEstimate).setScale(2, System.RoundingMode.HALF_UP);
 			
 			system.debug('fixed evs.ThisWeekAmount__c:  '+evs.ThisWeekAmount__c);
 			
 			runningTotal += evs.ThisWeekAmount__c;
+            runningTotalEstimate += evs.ThisWeekAmountEst__c;
 			
 			evs.ThisWeekRunningTotalAmount__c = runningTotal;
+            evs.ThisWeekAmountCumulativeEst__c = runningTotalEstimate;
 			evs.ThisWeekTotalRemaining__c = projTask.TotalApprovedCost__c - runningTotal;
 		}
 		
@@ -371,7 +399,9 @@ public without sharing class ECO_Service_EarnedValue {
 		Integer numOfWeeks = (daysBetween/7)+1;
 		
 		Decimal averageAmount = projTask.TotalApprovedCost__c / numOfWeeks;
+		Decimal averageAmountEstimate = projTask.TotalEstimateCost__c / numOfWeeks;
 		Decimal runningTotal = 0;
+        Decimal runningTotalEstimate = 0;
 		Integer weekNum = 1;
 		Date weekStartDateRunning = startDateWeekStartDay;
 		
@@ -381,10 +411,13 @@ public without sharing class ECO_Service_EarnedValue {
 		for (Decimal i = 0; i < numOfWeeks; i++) {
 			
 			Decimal taskAmount = averageAmount;
+            Decimal taskAmountEstimate = averageAmountEstimate;
 			
 			taskAmount = taskAmount.setScale(2, System.RoundingMode.HALF_UP);
+			taskAmountEstimate = taskAmountEstimate.setScale(2, System.RoundingMode.HALF_UP);
 			
 			runningTotal += taskAmount;
+			runningTotalEstimate += taskAmountEstimate;
 			
 			EarnedValueSnapshot__c newEVSnap = new EarnedValueSnapshot__c();
 			newEVSnap.ProjectTask__c = projTask.Id;
@@ -395,6 +428,8 @@ public without sharing class ECO_Service_EarnedValue {
 			newEVSnap.ThisWeekNumber__c = weekNum;
 			newEVSnap.ThisWeekAmount__c = taskAmount;
 			newEVSnap.ThisWeekRunningTotalAmount__c = runningTotal;
+			newEVSnap.ThisWeekAmountEst__c = taskAmountEstimate;
+			newEVSnap.ThisWeekAmountCumulativeEst__c = runningTotalEstimate;
 			newEVSnap.ThisWeekTotalRemaining__c = projTask.TotalApprovedCost__c - runningTotal;
 			
 			evsToUpsert.add(newEVSnap);
@@ -440,7 +475,9 @@ public without sharing class ECO_Service_EarnedValue {
 		Integer numOfWeeks = (daysBetween/7)+1;
 		
 		Decimal runningTotal = 0;
+		Decimal runningTotalEstimate = 0;
 		Decimal totalAmount = projTask.TotalApprovedCost__c;
+        Decimal totalAmountEstimate = projTask.TotalEstimateCost__c;
 		Decimal numWeeksTotal = numOfWeeks;
 		Decimal halfWeeks = numWeeksTotal/2;
 		Decimal negWeekStart = halfWeeks*-1;
@@ -461,10 +498,13 @@ public without sharing class ECO_Service_EarnedValue {
 			system.debug('i number:  '+i);
 			//system.debug('rawSigmoid:  '+rawSigmoid);
 			Decimal taskAmount = ((rawSigmoid*totalAmount));
+            Decimal taskAmountEstimate = ((rawSigmoid*totalAmountEstimate));
 			
 			taskAmount = taskAmount.setScale(2, System.RoundingMode.HALF_UP);
+            taskAmountEstimate = taskAmountEstimate.setScale(2, System.RoundingMode.HALF_UP);
 			
 			runningTotal += taskAmount;
+			runningTotalEstimate += taskAmountEstimate;
 			
 			system.debug('Task Amount:  '+taskAmount+', total:  '+runningTotal);
 			//system.debug('Week Number:  '+weekNum);
@@ -477,6 +517,8 @@ public without sharing class ECO_Service_EarnedValue {
 			newEVSnap.WeekStartDate__c = weekStartDateRunning;
 			newEVSnap.ThisWeekNumber__c = weekNum;
 			newEVSnap.ThisWeekAmount__c = taskAmount;
+            newEVSnap.ThisWeekAmountCumulativeEst__c = runningTotalEstimate;
+            newEVSnap.ThisWeekAmountEst__c = taskAmountEstimate;
 			
 			evsToUpsert.add(newEVSnap);
 			
@@ -489,14 +531,18 @@ public without sharing class ECO_Service_EarnedValue {
 		
 		// reset the running total
 		runningTotal = 0;
+        runningTotalEstimate = 0;
 		
 		// with the ratio we can fix the amounts
 		for (EarnedValueSnapshot__c evs : evsToUpsert) {
 			evs.ThisWeekAmount__c = (evs.ThisWeekAmount__c * fixerRatio).setScale(2, System.RoundingMode.HALF_UP);
+			evs.ThisWeekAmountEst__c = (evs.ThisWeekAmountEst__c * fixerRatio).setScale(2, System.RoundingMode.HALF_UP);
 			
 			runningTotal += evs.ThisWeekAmount__c;
+            runningTotalEstimate += evs.ThisWeekAmountEst__c;
 			
 			evs.ThisWeekRunningTotalAmount__c = runningTotal;
+			evs.ThisWeekAmountCumulativeEst__c = runningTotalEstimate;
 			evs.ThisWeekTotalRemaining__c = totalAmount - runningTotal;
 		}
 		
@@ -541,7 +587,9 @@ public without sharing class ECO_Service_EarnedValue {
 		Integer numOfWeeks = (daysBetween/7)+1;
 		
 		Decimal runningTotal = 0;
+        Decimal runningTotalEstimate = 0;
 		Decimal totalAmount = projTask.TotalApprovedCost__c;
+		Decimal totalAmountEstimate = projTask.TotalEstimateCost__c;
 		Decimal numWeeksTotal = numOfWeeks;
 		Decimal meanWeeks = (numWeeksTotal+1)/2;
 		
@@ -552,19 +600,21 @@ public without sharing class ECO_Service_EarnedValue {
 		
 		Integer weekNum = 1;
 		
-		
 		Decimal meanValue = totalAmount / numWeeksTotal;
 		
 		for (Decimal i = 0; i < numWeeksTotal; i++) {
 
 			Decimal taskAmount = totalAmount - ((Math.abs(((i+1) - meanWeeks))) * meanValue);
+			Decimal taskAmountEstimate = totalAmountEstimate - ((Math.abs(((i+1) - meanWeeks))) * meanValue);
 			
 			taskAmount = taskAmount.setScale(2, System.RoundingMode.HALF_UP);
+			taskAmountEstimate = taskAmountEstimate.setScale(2, System.RoundingMode.HALF_UP);
 			
 			//system.debug('Calced Sigma:  '+(totalAmount - (Math.abs(((i+1) - meanWeeks))) * meanValue));
 			//system.debug('Calced Sigma:  '+((Math.abs(((i+1) - meanWeeks))) * meanValue));
 			
 			runningTotal += taskAmount;
+			runningTotalEstimate += taskAmountEstimate;
 			
 			system.debug('Task Amount:  '+taskAmount+', total:  '+runningTotal);
 			//system.debug('Week Number:  '+weekNum);
@@ -577,6 +627,10 @@ public without sharing class ECO_Service_EarnedValue {
 			newEVSnap.WeekStartDate__c = weekStartDateRunning;
 			newEVSnap.ThisWeekNumber__c = weekNum;
 			newEVSnap.ThisWeekAmount__c = taskAmount;
+			newEVSnap.ThisWeekAmountEst__c = taskAmountEstimate;
+            newEVSnap.ThisWeekRunningTotalAmount__c = runningTotal;
+            newEVSnap.ThisWeekAmountCumulativeEst__c = runningTotalEstimate;
+			newEVSnap.ThisWeekTotalRemaining__c = totalAmount - runningTotal;
 			
 			evsToUpsert.add(newEVSnap);
 			
@@ -590,16 +644,20 @@ public without sharing class ECO_Service_EarnedValue {
 		
 		// reset the running total
 		runningTotal = 0;
+        runningTotalEstimate = 0;
 		
 		// with the ratio we can fix the amounts
 		for (EarnedValueSnapshot__c evs : evsToUpsert) {
 			evs.ThisWeekAmount__c = (evs.ThisWeekAmount__c * fixerRatio).setScale(2, System.RoundingMode.HALF_UP);
+            evs.ThisWeekAmountEst__c = (evs.ThisWeekAmountEst__c * fixerRatio).setScale(2, System.RoundingMode.HALF_UP);
 			
 			system.debug('fixed evs.ThisWeekAmount__c :  '+evs.ThisWeekAmount__c );
 			
 			runningTotal += evs.ThisWeekAmount__c;
+			runningTotalEstimate += evs.ThisWeekAmountEst__c;
 			
 			evs.ThisWeekRunningTotalAmount__c = runningTotal;
+            evs.ThisWeekAmountCumulativeEst__c = runningTotalEstimate;
 			evs.ThisWeekTotalRemaining__c = totalAmount - runningTotal;
 		}
 		

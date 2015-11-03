@@ -11,43 +11,11 @@
     <approvalPageFields>
         <field>Name</field>
         <field>Owner</field>
-        <field>IntExtBudget__c</field>
-        <field>IntExtBudgetComments__c</field>
-        <field>IntExtChangeManagement__c</field>
-        <field>IntExtChangeManagementChanges__c</field>
-        <field>IntExtChangeManagementComments__c</field>
-        <field>IntExtChangeManagementNoChanges__c</field>
-        <field>IntExtClassifications__c</field>
-        <field>IntExtClassificationsComments__c</field>
-        <field>IntExtContractManagement__c</field>
-        <field>IntExtContractManagementComments__c</field>
-        <field>IntExtCustomers__c</field>
-        <field>IntExtCustomersComments__c</field>
-        <field>IntExtDocumentManagement__c</field>
-        <field>IntExtDocumentManagementComments__c</field>
-        <field>IntExtKeyMembers__c</field>
-        <field>IntExtKeyMembersComments__c</field>
-        <field>IntExtProjectReview__c</field>
-        <field>IntExtProjectReviewComments__c</field>
-        <field>IntExtProjectTasks__c</field>
-        <field>IntExtProjectTasksComments__c</field>
-        <field>IntExtDeliverables__c</field>
-        <field>IntExtDeliverablesComments__c</field>
-        <field>IntExtResources__c</field>
-        <field>IntExtResourcesComments__c</field>
-        <field>IntExtRiskManagement__c</field>
-        <field>IntExtRiskManagementComments__c</field>
-        <field>IntExtSafetyHealthEnv__c</field>
-        <field>IntExtSafetyHealthEnvComments__c</field>
-        <field>IntExtSchedule__c</field>
-        <field>IntExtScheduleComments__c</field>
-        <field>IntExtScope__c</field>
-        <field>IntExtScopeComments__c</field>
-        <field>IntExtSecurity__c</field>
-        <field>IntExtSecurityComments__c</field>
-        <field>IntExtStakeholdersCommComments__c</field>
-        <field>IntExtStakeholdersComm__c</field>
-        <field>CreatedBy</field>
+        <field>Project__c</field>
+        <field>Client__c</field>
+        <field>ProjectValue__c</field>
+        <field>ProjectRequestOnHoldDate__c</field>
+        <field>ProjectRequestRestartDate__c</field>
     </approvalPageFields>
     <approvalStep>
         <allowDelegate>false</allowDelegate>
@@ -61,6 +29,21 @@
         <label>EcoProjectApprover</label>
         <name>EcoProjectApprover</name>
     </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>ProjectAccountantApprover__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <label>EcoProjectAccountant</label>
+        <name>EcoProjectAccountant</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
+    </approvalStep>
     <emailTemplate>EcoSystem_Templates/EcoCMOnHoldApprovalRequest</emailTemplate>
     <enableMobileDeviceAccess>true</enableMobileDeviceAccess>
     <entryCriteria>
@@ -68,6 +51,11 @@
             <field>ChangeManager__c.IntExtProjectOnHold__c</field>
             <operation>equals</operation>
             <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>ChangeManager__c.IsProjectRestart__c</field>
+            <operation>equals</operation>
+            <value>False</value>
         </criteriaItems>
     </entryCriteria>
     <finalApprovalActions>
@@ -78,6 +66,10 @@
         <action>
             <name>EcoCMOnHoldApprovalApprovedRej</name>
             <type>Alert</type>
+        </action>
+        <action>
+            <name>EcoSetOracleSyncStatusToApproved</name>
+            <type>FieldUpdate</type>
         </action>
     </finalApprovalActions>
     <finalApprovalRecordLock>true</finalApprovalRecordLock>
@@ -93,6 +85,10 @@
     </finalRejectionActions>
     <finalRejectionRecordLock>false</finalRejectionRecordLock>
     <initialSubmissionActions>
+        <action>
+            <name>ECOOracleSyncStatus</name>
+            <type>FieldUpdate</type>
+        </action>
         <action>
             <name>Update_Approval_Status_to_Submitted</name>
             <type>FieldUpdate</type>
@@ -110,5 +106,5 @@
         </action>
     </recallActions>
     <recordEditability>AdminOnly</recordEditability>
-    <showApprovalHistory>false</showApprovalHistory>
+    <showApprovalHistory>true</showApprovalHistory>
 </ApprovalProcess>

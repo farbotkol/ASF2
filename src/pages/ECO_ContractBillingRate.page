@@ -20,6 +20,34 @@
   white-space:nowrap; 
   display:block;
 }
+
+        .customHelpIcon
+        {
+            display:inline-block;
+            margin:0 5px 0 0;
+            width:24px;
+            height:24px;
+            vertical-align:top !important;
+        }
+        /* CUSTOM HELP / GUIDANCE TEXT BOX */
+        .customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 10px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        }   
+
 </style>
 
 <script>
@@ -30,16 +58,29 @@
 </script>
 
 <apex:form >
+
+
 <apex:actionFunction id="updateBillRateApex" name="updateBillRateApex" rerender="updatedKey, updatedValue" action="{!updateBillRateApex}" immediate="true">
 	<apex:param id="updatedKey" name="updatedKey" assignto="{!updatedKey}" value=""/>
 	<apex:param id="updatedValue" name="updatedValue" assignto="{!updatedValue}" value=""/>	
 </apex:actionFunction>
-<apex:sectionHeader subtitle="{!agreement.Name}" title="Agreement Bill Rate Edit"/>
-<apex:pageBlock title="Agreement Bill Rate Edit" mode="edit">
-<apex:pageBlockButtons location="top"><apex:commandButton value="Save" action="{!saveBillRates}" immediate="false"/><apex:commandButton value="Return To Agreement" action="{!returnToAgreement}"/></apex:pageBlockButtons>
+<apex:sectionHeader subtitle="{!agreement.ContractTitle__c}({!agreement.AgreementNumber__c})" title="Contract Billing Rate Edit"/>
+        <div class="customHelpText">
+            <div class="customHelpBody">
+Complete this section to add any contract bill rates that Project Managers should be aware of when estimating task order proposals and invoicing projects.   Billing rate records by labor category can be created for periods of time (e.g. fiscal or calendar years) or for the life of the contract.  <br/><br/>
+
+Select "Create Bill Rate Period" to create a start and end date of the effective period, then "Create New Labor Category" to enter labor categories and the respective bill rates .  Additional billing rate periods can then be added for the defined labor categories.   Billing rate sheets can also be attached to the Contracts section on the home page. 
+            </div>
+        </div> 
+
+<apex:pageBlock title="Contract Billing Rate Edit" mode="edit">
+<apex:pageBlockButtons location="top"><apex:commandButton value="Save" action="{!saveBillRates}" immediate="false"/><apex:commandButton value="Return To MSA" action="{!returnToAgreement}"/></apex:pageBlockButtons>
 
 <apex:pageBlockSection columns="1">
-	<apex:outputField value="{!agreement.AgreementNumber__c}"/>
+	<apex:pageBlockSectionItem >
+		<apex:outputText value="Contract Number"/>
+		<apex:outputText value="{!agreement.AgreementNumber__c}"/>
+	</apex:pageBlockSectionItem>
 	<apex:pageBlockSectionItem >
 	<apex:outputText value="Agreement Currency"/>
 	<apex:outputField value="{!agreement.FundingCurrencyCode__c}"/>
@@ -84,11 +125,14 @@
 	<apex:commandButton value="Cancel" action="{!cancelNewBillRate}"/>	
 </apex:outputPanel>
 <apex:outputPanel ><apex:commandButton value="Create New Bill Rate Period" rendered="{!NOT(creatingNewBillRate) && NOT(creatingNewBillRatePeriod)}" action="{!createNewBillRatePeriod}" /></apex:outputPanel>
-<apex:outputPanel rendered="{!creatingNewBillRatePeriod}" styleclass="test">
-	<apex:outputLabel value=" Bill Rate Start"/>
-	<apex:inputField value="{!newBillRatePeriod.BillRateStart__c}"/> 
-	<apex:outputLabel value=" Bill Rate End"/>	
-	<apex:inputField value="{!newBillRatePeriod.BillRateEnd__c}"/> 
+
+<apex:outputPanel rendered="{!creatingNewBillRatePeriod}" >
+		<apex:outputLabel value=" Bill Rate Start"/><c:ECO_HelpIcon helpText="The  date the bill rate is in effect." />
+		<apex:inputField value="{!newBillRatePeriod.BillRateStart__c}"/> 
+
+		<apex:outputLabel value=" Bill Rate End"/><c:ECO_HelpIcon helpText="The date the effective bill rate ends." />	
+		<apex:inputField value="{!newBillRatePeriod.BillRateEnd__c}"/> 
+
 	<apex:commandButton value="Save" action="{!saveNewBillRatePeriod}"/>
 	<apex:commandButton value="Cancel" action="{!cancelNewBillRatePeriod}"/>
 </apex:outputPanel>

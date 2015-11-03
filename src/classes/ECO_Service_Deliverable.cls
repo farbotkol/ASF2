@@ -110,8 +110,9 @@ public with sharing class ECO_Service_Deliverable {
 
 	public static list<Deliverable__c> getDeliverable(set<String> setId){
         return [Select id, Approver__c, DueDate__c, DateSubmitted__c,DeliverableOwner__c,
-                       DeliverableType__c,Description__c,Owner__c,PracticeArea__c,Project__c,
-                       Status__c,
+                     DeliverableType__c, Description__c,Owner__c,PracticeArea__c,Project__c,
+                       
+                     Status__c,
                        (Select id, ApprovalNeeded__c,Deliverable__c,RequiredDate__c,Role__c,
                                    Status__c,Submit_For_Approval__c, TechnicalQualityTeamMember__c,
                                    TechnicalQualityTeamMember__r.Name
@@ -134,8 +135,8 @@ public with sharing class ECO_Service_Deliverable {
 	/*Technical Quality Team Methods */
 	/*
 		Mapping from Technical Quality Team Member to Project Team Member Role: 
-		Owner = Project Team Member
-		Originator = Project Team Member
+		Owner = TQR Participant
+		Originator = TQR Participant
 		Reviewer = Reviewer
 		Lead Verifier = Lead Verifier
 		Independent Reviewer = Independent Reviewer
@@ -145,7 +146,16 @@ public with sharing class ECO_Service_Deliverable {
 		map<String,id> mapProjectRoles = ECO_Service_Deliverable.getProjectRoles();
 		
 		String sKey = 'Project Team Member';
-		if(oTQT.Role__c == 'Approver'){
+		if(oTQT.Role__c == 'Owner'){
+			sKey = 'TQR Participant';
+		}
+        if(oTQT.Role__c == 'Deliverable Owner'){
+			sKey = 'Deliverable Owner';
+		}
+        if(oTQT.Role__c == 'Originator'){
+            sKey = 'TQR Participant';
+        }
+        if(oTQT.Role__c == 'Approver'){
 			sKey = 'Project Manager';
 		}
 		if(oTQT.Role__c == 'Lead Verifier'){
@@ -154,13 +164,16 @@ public with sharing class ECO_Service_Deliverable {
 		if(oTQT.Role__c == 'Independent Reviewer'){
 			sKey = 'Independent Reviewer';
 		}
+        if(oTQT.Role__c == 'Reviewer'){
+			sKey = 'Reviewer';
+		}
 
 		return mapProjectRoles.get(sKey);
 	}
 	public static map<String,id> getProjectRoles(){
 		map<String,id> mapReturn = new map<String,id>();
 		set<String> setNames = new set<String>{'Project Team Member','Reviewer','Lead Verifier',
-										  				'Independent Reviewer','Project Manager'};
+										  				'Independent Reviewer','Project Manager','TQR Participant'};
 		for(ProjectRole__c oProjectRole: [Select ID
 													, Name 
 										  From ProjectRole__c 

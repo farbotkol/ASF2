@@ -111,7 +111,7 @@ IF( ISPICKVAL(MarginType__c , &apos;Amount&apos;),  OverrideBillRate__c ,  Overr
    )
 )
 ,
-SubsAndVendors__r.VendorName__c
+VendorSite__r.Site__r.AccountName__c
 ,
 IF(ISBLANK( ProjectTeamMember__c )
    ,
@@ -127,6 +127,24 @@ IF(ISBLANK( ProjectTeamMember__c )
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>CostCalcType__c</fullName>
+        <externalId>false</externalId>
+        <label>Cost Calc Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Amount</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Each</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>CostRate__c</fullName>
         <externalId>false</externalId>
         <formula>OverrideRawCost__c + (OverrideRawCost__c * OverrideFringeMultiplier__c ) 
@@ -139,6 +157,36 @@ IF(ISBLANK( ProjectTeamMember__c )
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>CostReportCategory__c</fullName>
+        <externalId>false</externalId>
+        <label>Cost Report Category</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ExpenditureResourceType__c</fullName>
+        <externalId>false</externalId>
+        <label>Expenditure Resource Type</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ExpenditureTypeCategory__c</fullName>
+        <externalId>false</externalId>
+        <label>Expenditure Type Category</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>ExpenditureType__c</fullName>
@@ -186,6 +234,30 @@ IF(ISBLANK( ProjectTeamMember__c )
         <type>Summary</type>
     </fields>
     <fields>
+        <fullName>IsBillable__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>IsBillable</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsEstimated__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>IsEstimated</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsQuoted__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>IsQuoted</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>JobName__c</fullName>
         <externalId>false</externalId>
         <label>Job Name</label>
@@ -214,6 +286,16 @@ IF(ISBLANK( ProjectTeamMember__c )
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>MarkupPercentage__c</fullName>
+        <externalId>false</externalId>
+        <label>Markup Percentage</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
         <fullName>OriginalResourceAlias__c</fullName>
         <externalId>false</externalId>
         <label>Original Resource Alias</label>
@@ -234,9 +316,29 @@ IF(ISBLANK( ProjectTeamMember__c )
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>OverrideFringeMultiplierField__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Fringe Multiplier (Field)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
         <fullName>OverrideFringeMultiplier__c</fullName>
         <externalId>false</externalId>
         <label>Override Fringe Multiplier</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>OverrideOverheadMultiplierField__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Overhead Multiplier (Field)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -280,6 +382,16 @@ IF(ISBLANK( ProjectTeamMember__c )
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>PLReportCategory__c</fullName>
+        <externalId>false</externalId>
+        <label>P&amp;L Report Category</label>
+        <length>80</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>ProjectTeamMember__c</fullName>
@@ -433,6 +545,16 @@ IF(  ISPICKVAL( ResourceType__c , &apos;ODC/FEE&apos;) , 3
         <type>Summary</type>
     </fields>
     <fields>
+        <fullName>TotalQuantity__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Quantity</label>
+        <summarizedField>BudgetAssignment__c.Quantity__c</summarizedField>
+        <summaryForeignKey>BudgetAssignment__c.BudgetResource__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
         <fullName>TotalRawCost__c</fullName>
         <externalId>false</externalId>
         <label>Total Raw Cost</label>
@@ -452,6 +574,46 @@ IF(  ISPICKVAL( ResourceType__c , &apos;ODC/FEE&apos;) , 3
         <trackTrending>false</trackTrending>
         <type>Summary</type>
     </fields>
+    <fields>
+        <fullName>UnitCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Unit Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>UnitType__c</fullName>
+        <externalId>false</externalId>
+        <label>Unit Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Each</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Amount</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>VendorSite__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Vendor Site</label>
+        <referenceTo>VendorSite__c</referenceTo>
+        <relationshipLabel>Budget Resources</relationshipLabel>
+        <relationshipName>Budget_Resources</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
     <label>Budget Resource</label>
     <nameField>
         <displayFormat>BR-{000000000}</displayFormat>
@@ -459,7 +621,14 @@ IF(  ISPICKVAL( ResourceType__c , &apos;ODC/FEE&apos;) , 3
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Budget Resources</pluralLabel>
-    <searchLayouts/>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>AppliedBillRate__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>AppliedResourceAlias__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>BudgetHeader__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CostRate__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>ExpenditureType__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Resource__c</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
         <fullName>Cannot_have_both_resource_and_PTA</fullName>

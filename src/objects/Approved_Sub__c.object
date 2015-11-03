@@ -18,7 +18,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>Edit</actionName>
-        <type>Default</type>
+        <content>ECO_ApprovedSub</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>Follow</actionName>
@@ -59,9 +61,10 @@
         <fullName>Account__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <label>Account</label>
+        <inlineHelpText>Search for the vendor or sub account.  If not found, use the Global Business Services app to request the creation of a new account record.</inlineHelpText>
+        <label>Subcontractor Name</label>
         <referenceTo>Account</referenceTo>
-        <relationshipLabel>Approved Subs</relationshipLabel>
+        <relationshipLabel>Approved or Preferred Subs/Vendors</relationshipLabel>
         <relationshipName>Approved_Subs</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -72,7 +75,6 @@
         <externalId>false</externalId>
         <label>Agreement</label>
         <referenceTo>Agreement__c</referenceTo>
-        <relationshipLabel>Approved Subs</relationshipLabel>
         <relationshipName>Approved_Subs</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
@@ -83,6 +85,7 @@
     <fields>
         <fullName>Comments__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Provide any general notes or comments about the  sub or vendor that would be beneficial to the task order project teams or general management of the MSA agreement.</inlineHelpText>
         <label>Comments</label>
         <length>32768</length>
         <trackTrending>false</trackTrending>
@@ -92,6 +95,7 @@
     <fields>
         <fullName>Contact_Name__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Provide the name of the primary contact for the vendor/sub.</inlineHelpText>
         <label>Contact Name</label>
         <length>255</length>
         <required>false</required>
@@ -102,6 +106,7 @@
     <fields>
         <fullName>Email__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Provide the primary contact&apos;s email address.</inlineHelpText>
         <label>Email</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -111,6 +116,7 @@
     <fields>
         <fullName>Phone__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Provide the primary contact&apos;s phone number.</inlineHelpText>
         <label>Phone</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -119,6 +125,7 @@
     <fields>
         <fullName>Role__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Define the primary contact&apos;s role with the vendor/sub as it relates to the MSA</inlineHelpText>
         <label>Role</label>
         <length>50</length>
         <required>false</required>
@@ -126,13 +133,21 @@
         <type>Text</type>
         <unique>false</unique>
     </fields>
-    <label>Approved Sub</label>
+    <label>Approved or Preferred Subs/Vendors</label>
     <nameField>
         <displayFormat>AS-{0000}</displayFormat>
         <label>Approved Sub Id</label>
         <type>AutoNumber</type>
     </nameField>
-    <pluralLabel>Approved Subs</pluralLabel>
-    <searchLayouts/>
+    <pluralLabel>Approved or Preferred Subs/Vendors</pluralLabel>
+    <searchLayouts>
+        <lookupDialogsAdditionalFields>Account__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Agreement__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Comments__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Contact_Name__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Email__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Phone__c</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>Role__c</lookupDialogsAdditionalFields>
+    </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
 </CustomObject>

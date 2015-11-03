@@ -1,4 +1,9 @@
 public without sharing class ECO_KPICalculation {
+
+	private static Decimal thisPeriodRevenue;
+	private static Decimal lastPeriodRevenue;
+	private static Decimal thisPeriodNetMargin;
+	private static Decimal lastPeriodNetMargin;
 	
 	public CalculationHolder getProjectHealthCalculations(Id theProjectId) {
 		return getProjectHealthCalculations(theProjectId, Date.today());
@@ -6,91 +11,372 @@ public without sharing class ECO_KPICalculation {
 	
 	public static CalculationHolder getProjectHealthCalculations(Id theProjectId, date asOfDate) {
 		CalculationHolder returnCalcs = new CalculationHolder();
-		
 		pse__Proj__c theProject = ECO_Service_Projects.getProjectById(theProjectId);
-		User theProjectManager = ECO_Service_Users.getUserInfoById(theProject.OwnerId);
 
-// Is PM Certified?	
+		returnCalcs.isPMCertified = calculatePMCetified(theProject);
+		returnCalcs.isScheduledEndDateInPast = calculateScheduledEndDateInThePast(theProject, asOfDate);
+		returnCalcs.averageActualLaborRate = calculateAverageActualLaborRate(theProject, asOfDate);
+		returnCalcs.approvedBudgetLaborRate = calculateApprovedBudgetLaborRate(theProject);
+		returnCalcs.CPI = calculateCPI(theProject);
+		returnCalcs.SPI = calculateSPI(theProject);
+		returnCalcs.EAC = theProject.TotalForecastCost__c;
+		returnCalcs.costSoFar = calculateCostSoFar(theProject, asOfDate);
+		returnCalcs.ETC = calculateETC(theProject, asOfdate, returnCalcs.costSoFar);
+		returnCalcs.etcRunRate = calculateETCRunRate(theProject, asOfdate, returnCalcs.costSoFar);
+		returnCalcs.lastEACUpdateInDays = calculateNumberOfDaysSinceLastEACUpdate(theProject, asOfDate);
+		returnCalcs.laborIncreaseOverPriorMonthMoreThan30Percent = calculateLaborIncreaseOverPriorMonthMoreThan30Percent(theProject, asOfDate);
+		returnCalcs.actualVSPlannedMarginVarianceFromPriorMonth = calculateActualVersusPlannedMarginVariance(theProject, asOfDate);
 
-		boolean answer = false;
+		returnCalcs.negativeNetMargin = theProject.CurrentForecastCostBudget__c - theProject.CurrentForecastRevenueBudget__c;
+		if(theProject.TotalApprovedRevenue__c == null)
+			returnCalcs.approvedBudgetGrossRevenue = 0;
+		else
+			returnCalcs.approvedBudgetGrossRevenue = theProject.TotalApprovedRevenue__c;
+		returnCalcs.contractValue = calculateContractValue(theProject); 
+		returnCalcs.hasProjectPlan = calculateHasProjectPlan(theProject);
+
+		//needs calculation
+		returnCalcs.lastMonthNetMarginLessThanPrecedingMonth = false;
+		returnCalcs.lastMonthNetMarginLessThanPrecedingMonth = false;
+		returnCalcs.unBilledAmount60Days = calculateUnBillAmount60Days(theProject, asOfDate);
+		returnCalcs.arGreaterThan90Days = calculateARGreaterThan90Days(theProject, asOfDate);
+
+		return returnCalcs;
+	}
+
+	private static Boolean calculateUnBillAmount60Days(pse__Proj__c project, Date asOfDate )
+	{
+		Decimal totalBilled = 0;
+		for(AggregateResult ar: [select SUM(InvoiceAmount__c) totalBilled
+						from Billing__c where ProjectNumber__c = :project.Id])
+		{
+			if(ar.get('totalBilled') != null)
+			{
+				if((Decimal)ar.get('totalBilled') != null)
+					totalBilled = (Decimal)ar.get('totalBilled');
+			}
+		}
+		Date startDate = asOfDate.addDays(-60);
+
+		for(AggregateResult ar:[select sum(Amount__c) totalRevenue from Revenue__c where ProjectNumber__c = :project.Id 
+												and  GLDate__c < :startDate])
+		{
+			if((Decimal)ar.get('totalRevenue') != null)
+				return (((Decimal)ar.get('totalRevenue') - totalBilled)) > 0 ? true: false ;
+			else
+				return false;
+		}
+		return false;
+	}
+
+	private static Boolean calculateARGreaterThan90Days(pse__Proj__c project, Date asOfDate)
+	{
+		list<Billing__c> billings = [select Id from Billing__c where ProjectNumber__c = :project.Id and
+									InvoiceDate__c > :asOfdate.addDays(-90)];
+		if(billings.isEmpty())
+			return true;
+
+		return false;
+	}
+
+	private static Boolean calculateHasProjectPlan(pse__Proj__c project)
+	{
+		if(project.ProgBarPrelimPlanApproval__c != 'Complete')
+			return false;
+
+		return true;
+	}
+
+	private static Decimal calculateContractValue(pse__Proj__c project)
+	{
+		List<AggregateResult> contractValues = [SELECT SUM(Amount__c) totalAmount
+												FROM Agreement__c
+												WHERE Project__c = :project.Id];
+
+		if(!contractValues.isEmpty())
+		{
+			if(contractValues[0].get('totalAmount') != null)
+				return (Decimal)contractValues[0].get('totalAmount');
+		}
+
+		return 0;
+	}
+
+	private static Decimal calculateLastMonthUnBilledAmountMoreThanZero(pse__Proj__c project, Date asOfDate)
+	{
+		List<AggregateResult> actualRevenueResultsSinceInception = [SELECT SUM(Amount__c) totalAmount
+																	FROM Revenue__c
+																	WHERE ProjectNumber__c = :project.Id
+																		AND GLDate__c <= :asOfDate];
+																		
+		List<AggregateResult> billedAmount = [SELECT SUM(InvoiceAmount__c) totalAmount
+												FROM Billing__c
+												WHERE ProjectNumber__c = :project.Id
+													AND InvoiceDate__c <= :asOfDate];
+													
+		Decimal unBilledAmount;
+		if(!actualRevenueResultsSinceInception.isEmpty() && !billedAmount.isEmpty())
+		{
+			if(actualRevenueResultsSinceInception[0].get('totalAmount') != null && billedAmount[0].get('totalAmount') != null)
+			{
+				return (Decimal)actualRevenueResultsSinceInception[0].get('totalAmount') - (Decimal)billedAmount[0].get('totalAmount');
+			}
+		}
+		
+		return 0;
+	}
+
+	private static boolean calculatePMCetified(pse__Proj__c project)
+	{
+		User theProjectManager = ECO_Service_Users.getUserInfoById(project.OwnerId);
 
 		if(theProjectManager.Certified_PM__c == 'Yes'){
-			answer = true;
+			return true;
 		}
+		return false;
+	}
 
-		returnCalcs.isPMCertified = answer;
+	private static boolean calculateScheduledEndDateInThePast(pse__Proj__c project, Date asOfDate)
+	{
 
-// Is Scheduled End Date In Past?
-		if(theProject.pse__End_Date__c != null)
+		if(project.pse__End_Date__c != null)
 		{
-			returnCalcs.isScheduledEndDateInPast = (asOfDate >=  theProject.pse__End_Date__c) ? true : false;
+			return (asOfDate >=  project.pse__End_Date__c) ? true : false;
 		}
+		return true;
+	}
 
-// Average Actual Labor Rate
-		
+	private static Decimal calculateAverageActualLaborRate(pse__Proj__c project, Date asOfDate)
+	{
 		List<AggregateResult> averageActualLaborRate = [SELECT AVG(AcctBurdCostTimesQuantity__c) rate
 														FROM CostDistributionLine__c
 														WHERE GLDate__c <= :asOfDate
-															AND ProjectNumber__c = :theProjectId
-															AND ExpenditureItemID__r.ExpenditureType__c LIKE 'LAB%'];
-															
+															AND ProjectNumber__c = :project.Id
+															AND ExpenditureItemID__r.ExpenditureType__c LIKE 'LAB%'];													
 		if(!averageActualLaborRate.isEmpty())
 		{
-			returnCalcs.averageActualLaborRate = (Decimal)averageActualLaborRate[0].get('rate');
-		}
+			if((Decimal)averageActualLaborRate[0].get('rate') != null)
+				return (Decimal)averageActualLaborRate[0].get('rate');
+		}	
+		return 0;	
+	}
 
-// Approved Budget Labor Rate
-													
+	private static Decimal calculateApprovedBudgetLaborRate(pse__Proj__c project) 
+	{
 		List<AggregateResult> averageApprovedBudgetLaborRate = [SELECT AVG(FullyBurdenedCostRate__c) rate
 																FROM BudgetAssignment__c
-																WHERE BudgetResource__r.BudgetHeader__r.Project__c = :theProjectId
+																WHERE BudgetResource__r.BudgetHeader__r.Project__c = :project.Id
 																	AND BudgetResource__r.ResourceType__c IN ('Labor/Person', 'Subcontractor')
-																	AND BudgetResource__r.BudgetHeader__r.Status__c = 'Approved'];
-																	
+																	AND BudgetResource__r.BudgetHeader__r.Status__c = 'Approved'];															
 		if(!averageApprovedBudgetLaborRate.isEmpty())
 		{
-			returnCalcs.approvedBudgetLaborRate = (Decimal)averageApprovedBudgetLaborRate[0].get('rate');
-		}
+			if((Decimal)averageApprovedBudgetLaborRate[0].get('rate') != null)
+				return (Decimal)averageApprovedBudgetLaborRate[0].get('rate');
+		}	
+		return 0;	
+	}	
 
-		//SPI CPI
-
-		returnCalcs.SPI = 0;
-		returnCalcs.CPI = 0;
-
-		List<EarnedValueHeader__c> listOfEVRs = [	SELECT Id, 
-														   Project__c, 
-														   ReportName__c, 
-														   Comments__c, 
-														   SnapshotDate__c
-    												FROM EarnedValueHeader__c
-    												WHERE Project__c = :theProjectId
-    												  AND SnapshotDate__c != null
-    												ORDER BY SnapshotDate__c desc
-    											];
+	private static Decimal calculateCPI(pse__Proj__c project)
+	{
+		List<EarnedValueHeader__c> listOfEVRs = [SELECT Id, Project__c, ReportName__c, Comments__c, SnapshotDate__c
+										    	FROM EarnedValueHeader__c WHERE Project__c = :project.Id												
+    												  AND SnapshotDate__c != null ORDER BY SnapshotDate__c desc];
+    												   											
     	if (!listOfEVRs.isEmpty()) {
     		EarnedValueHeader__c existingReport = listOfEVRs.get(0);
     		Date currentSnapshotDate = existingReport.SnapshotDate__c;
     	
-
-
-			string sCompositeKey = ECO_Service_Snapshots.DateToSnapshotKey(currentSnapshotDate, theProjectId);
-			List<WeeklyRollupEntry__c> lWeeklyRollupEntry = new List<WeeklyRollupEntry__c>([SELECT Id, SPI__c, CPI__c FROM WeeklyRollupEntry__c WHERE CompositeKey__c = :sCompositeKey]);
+			string sCompositeKey = ECO_Service_Snapshots.DateToSnapshotKey(currentSnapshotDate, project.Id);
+			List<WeeklyRollupEntry__c> lWeeklyRollupEntry = new List<WeeklyRollupEntry__c>([SELECT Id, CPI__c FROM WeeklyRollupEntry__c WHERE CompositeKey__c = :sCompositeKey]);
 			WeeklyRollupEntry__c oWeeklyRollEntry = new WeeklyRollupEntry__c();
 
-			if(lWeeklyRollupEntry.size() > 0){
+			if(!lWeeklyRollupEntry.isEmpty()){
 				oWeeklyRollEntry = lWeeklyRollupEntry.get(0);
-				// SPI
-				returnCalcs.SPI = oWeeklyRollEntry.SPI__c; // TODO Calc this during earned value stuff
-
-				// CPI
-				returnCalcs.CPI = oWeeklyRollEntry.CPI__c; // TODO Calc this during earned value stuff
+				return oWeeklyRollEntry.CPI__c; 
 			}
 		}
+		return 0;
+	}
 
-// EAC
+	private static Decimal calculateSPI(pse__Proj__c project)
+	{
+		List<EarnedValueHeader__c> listOfEVRs = [SELECT Id, Project__c, ReportName__c, Comments__c, SnapshotDate__c
+										    	FROM EarnedValueHeader__c WHERE Project__c = :project.Id												
+    												  AND SnapshotDate__c != null ORDER BY SnapshotDate__c desc];
+    												   											
+    	if (!listOfEVRs.isEmpty()) {
+    		EarnedValueHeader__c existingReport = listOfEVRs.get(0);
+    		Date currentSnapshotDate = existingReport.SnapshotDate__c;
+    	
+			string sCompositeKey = ECO_Service_Snapshots.DateToSnapshotKey(currentSnapshotDate, project.Id);
+			List<WeeklyRollupEntry__c> lWeeklyRollupEntry = new List<WeeklyRollupEntry__c>([SELECT Id, SPI__c FROM WeeklyRollupEntry__c WHERE CompositeKey__c = :sCompositeKey]);
+			WeeklyRollupEntry__c oWeeklyRollEntry = new WeeklyRollupEntry__c();
+
+			if(!lWeeklyRollupEntry.isEmpty()){
+				oWeeklyRollEntry = lWeeklyRollupEntry.get(0);
+				return oWeeklyRollEntry.SPI__c; 
+			}
+		}
+		return 0;
+	}	
+
+	private static Decimal calculateNumberOfDaysSinceLastEACUpdate(pse__Proj__c project, Date asOfDate)
+	{
+		Set<Id> budgetHeaderIds = new Set<Id>();
+		for (BudgetHeader__c bh : project.BudgetHeaders__r) {
+			budgetHeaderIds.add(bh.Id);
+		}
 		
-		returnCalcs.EAC = theProject.TotalForecastCost__c;
+		List<ProcessInstance> processInstanceList = [SELECT Id, CompletedDate
+													FROM ProcessInstance 
+													WHERE TargetObjectId IN :budgetHeaderIds
+														AND CompletedDate <= :asOfDate
+														AND Status = 'Approved'
+													ORDER BY CompletedDate DESC
+													LIMIT 1];
+													
+		if (!processInstanceList.isEmpty()) 
+		{
+			return processInstanceList[0].CompletedDate.date().daysBetween(asOfDate);
+		} 
+		return -1;
+	}
 
+	private static Decimal calculateCostSoFar(pse__Proj__c project, Date asOfDate)
+	{
+		List<AggregateResult> actualCost = [SELECT SUM(AcctBurdCostTimesQuantity__c) totalCost
+											FROM CostDistributionLine__c
+											WHERE GLDate__c <= :asOfDate
+												AND ProjectNumber__c = :project.Id];	
+		if(!actualCost.isEmpty())
+		{
+			if(actualCost[0].get('totalCost') != null)
+				return (Decimal)actualCost[0].get('totalCost');
+		}
+		return 0;
+	}
+
+	private static Decimal calculateETC(pse__Proj__c project, Date asOfDate, Decimal costSoFar)
+	{	
+		if(project.TotalForecastCost__c != null)
+		{
+			return project.TotalForecastCost__c - costSoFar;
+		}
+
+		return 0 - costSoFar;
+	}
+
+	private static Decimal calculateETCRunRate(pse__Proj__c project, Date asOfDate, Decimal costSoFar)
+	{
+		return 0;
+	}
+
+	private static Boolean calculateLaborIncreaseOverPriorMonthMoreThan30Percent(pse__Proj__c project, Date asOfDate)
+	{
+		List<String> periodNames = new List<String>();
+		periodNames.add(ECO_Utils_Date.getPeriodNameFromDate(asOfDate.addMonths(-1))); // Last Month
+		periodNames.add(ECO_Utils_Date.getPeriodNameFromDate(asOfDate.addMonths(-2))); // Month before Last
+
+		List<AggregateResult> laborAmountsPerPeriod = [SELECT GLPeriodName__c
+															, SUM(AcctBurdCostTimesQuantity__c) totalAmount
+														FROM CostDistributionLine__c
+														WHERE GLDate__c <= :asOfDate
+															AND ProjectNumber__c = :project.Id
+															AND ExpenditureItemID__r.ExpenditureType__c LIKE 'LAB%'
+															AND GLPeriodName__c IN :periodNames
+														GROUP BY GLPeriodName__c
+														ORDER BY GLPeriodName__c];
+		
+		Decimal thisPeriodLaborAmount;
+		Decimal lastPeriodLaborAmount;
+		for (AggregateResult ar : laborAmountsPerPeriod) {
+			if (periodNames[0].equalsIgnoreCase((String)ar.get('GLPeriodName__c'))) {
+				thisPeriodLaborAmount = (Decimal)ar.get('totalAmount');
+			}
+			
+			if (periodNames[1].equalsIgnoreCase((String)ar.get('GLPeriodName__c'))) {
+				thisPeriodLaborAmount = (Decimal)ar.get('totalAmount');
+			}
+		}
+				
+		if (lastPeriodLaborAmount < thisPeriodLaborAmount) {
+			Decimal greaterDifferenceAmount = thisPeriodLaborAmount - lastPeriodLaborAmount;
+			if ((greaterDifferenceAmount / lastPeriodLaborAmount) >= .3) {
+				return true;
+			}
+		}		
+		
+		return false;
+	}
+
+	private static Decimal calculateActualVersusPlannedMarginVariance(pse__Proj__c project, Date asOfDate)
+	{
+
+		List<String> periodNames = new List<String>();
+		periodNames.add(ECO_Utils_Date.getPeriodNameFromDate(asOfDate.addMonths(-1))); // Last Month
+		periodNames.add(ECO_Utils_Date.getPeriodNameFromDate(asOfDate.addMonths(-2))); // Month before Last
+
+		List<AggregateResult> actualNetCostResults = [SELECT SUM(AcctBurdCostTimesQuantity__c) totalAmount
+															, GLPeriodName__c
+													FROM CostDistributionLine__c
+													WHERE ProjectNumber__c = :project.Id
+														AND GLPeriodName__c = :periodNames
+													GROUP BY GLPeriodName__c];
+													
+		List<AggregateResult> actualRevenueResults = [SELECT SUM(Amount__c) totalAmount
+															, GLPeriodName__c
+													FROM Revenue__c
+													WHERE ProjectNumber__c = :project.Id
+														AND GLPeriodName__c IN :periodNames
+													GROUP BY GLPeriodName__c];
+													
+		Decimal thisPeriodNetCost;
+		
+		Decimal lastPeriodNetCost;
+		
+		for (AggregateResult ar : actualNetCostResults) {
+			if (periodNames[0].equalsIgnoreCase((String)ar.get('GLPeriodName__c'))) {
+				thisPeriodNetCost = (Decimal)ar.get('totalAmount');
+			} else {
+				lastPeriodNetCost = (Decimal)ar.get('totalAmount');
+			}
+		}
+		
+		for (AggregateResult ar : actualRevenueResults) {
+			if (periodNames[0].equalsIgnoreCase((String)ar.get('GLPeriodName__c'))) {
+				thisPeriodRevenue = (Decimal)ar.get('totalAmount');
+			} else {
+				lastPeriodRevenue = (Decimal)ar.get('totalAmount');
+			}
+		}
+		
+		if(thisPeriodRevenue != null && thisPeriodNetCost != null)
+		{
+			thisPeriodNetMargin = thisPeriodRevenue - thisPeriodNetCost;
+		}
+		if(lastPeriodRevenue != null && lastPeriodNetCost != null)
+		{
+			lastPeriodNetMargin = lastPeriodRevenue - lastPeriodNetCost;
+		}
+		Decimal variance;
+		
+		if(thisPeriodNetMargin != null && lastPeriodNetMargin != null)
+		{
+			if (thisPeriodNetMargin >= lastPeriodNetMargin) {
+				return lastPeriodNetMargin / thisPeriodNetMargin;
+			} else {
+				return (-1 * (thisPeriodNetMargin / lastPeriodNetMargin));
+			}
+		}
+		
+		return 0;		
+	}
+
+
+	private static void tempMethod(pse__Proj__c theProject, Date asOfDate, Id theProjectId, Decimal costSoFar)
+	{
+
+		CalculationHolder returnCalcs;
 // Geo Threshold
 		
 		List<GeographyThreshold__c> geoThresholdsList = [SELECT Id 
@@ -105,20 +391,8 @@ public without sharing class ECO_KPICalculation {
 			returnCalcs.geographyThreshold = 0;
 		}
 
-// ETC		
+
 		
-		List<AggregateResult> actualCost = [SELECT SUM(AcctBurdCostTimesQuantity__c) totalCost
-											FROM CostDistributionLine__c
-											WHERE GLDate__c <= :asOfDate
-												AND ProjectNumber__c = :theProjectId];
-		
-		if(!actualCost.isEmpty())
-		{
-			if(theProject.TotalForecastCost__c != null && actualCost[0].get('totalCost') != null)
-			{
-				returnCalcs.ETC = theProject.TotalForecastCost__c - (Decimal)actualCost[0].get('totalCost');
-			}
-		}
 
 // Labor Increase Over Prior Month More Than 30 Percent?
 		
@@ -162,11 +436,11 @@ public without sharing class ECO_KPICalculation {
 
 // Project Completed more than 75%
 
-		Decimal costSoFar;
-		if(!actualCost.isEmpty())
-		{
-			costSoFar = (Decimal)actualCost[0].get('totalCost');
-		}
+		//Decimal costSoFar;
+		//if(!actualCost.isEmpty())
+		//{
+		//	costSoFar = (Decimal)actualCost[0].get('totalCost');
+		//}
 		
 		Boolean completedMoreThan75Percent = false;
 		
@@ -182,64 +456,7 @@ public without sharing class ECO_KPICalculation {
 		
 // actual versus planned margin variance from prior month
 
-		List<AggregateResult> actualNetCostResults = [SELECT SUM(AcctBurdCostTimesQuantity__c) totalAmount
-															, GLPeriodName__c
-													FROM CostDistributionLine__c
-													WHERE ProjectNumber__c = :theProjectId
-														AND GLPeriodName__c = :periodNames
-													GROUP BY GLPeriodName__c];
-													
-		List<AggregateResult> actualRevenueResults = [SELECT SUM(Amount__c) totalAmount
-															, GLPeriodName__c
-													FROM Revenue__c
-													WHERE ProjectNumber__c = :theProjectId
-														AND GLPeriodName__c IN :periodNames
-													GROUP BY GLPeriodName__c];
-													
-		Decimal thisPeriodRevenue;
-		Decimal thisPeriodNetCost;
-		Decimal lastPeriodRevenue;
-		Decimal lastPeriodNetCost;
-		
-		for (AggregateResult ar : actualNetCostResults) {
-			if (periodNames[0].equalsIgnoreCase((String)ar.get('GLPeriodName__c'))) {
-				thisPeriodNetCost = (Decimal)ar.get('totalAmount');
-			} else {
-				lastPeriodNetCost = (Decimal)ar.get('totalAmount');
-			}
-		}
-		
-		for (AggregateResult ar : actualRevenueResults) {
-			if (periodNames[0].equalsIgnoreCase((String)ar.get('GLPeriodName__c'))) {
-				thisPeriodRevenue = (Decimal)ar.get('totalAmount');
-			} else {
-				lastPeriodRevenue = (Decimal)ar.get('totalAmount');
-			}
-		}
-		
-		Decimal thisPeriodNetMargin;
-		Decimal lastPeriodNetMargin;
 
-		if(thisPeriodRevenue != null && thisPeriodNetCost != null)
-		{
-			thisPeriodNetMargin = thisPeriodRevenue - thisPeriodNetCost;
-		}
-		if(lastPeriodRevenue != null && lastPeriodNetCost != null)
-		{
-			lastPeriodNetMargin = lastPeriodRevenue - lastPeriodNetCost;
-		}
-		Decimal variance;
-		
-		if(thisPeriodNetMargin != null && lastPeriodNetMargin != null)
-		{
-			if (thisPeriodNetMargin >= lastPeriodNetMargin) {
-				variance = lastPeriodNetMargin / thisPeriodNetMargin;
-			} else {
-				variance = -1 * (thisPeriodNetMargin / lastPeriodNetMargin);
-			}
-		}
-		
-		returnCalcs.actualVSPlannedMarginVarianceFromPriorMonth = variance;
 		
 // last month gross margin less than preceding month
 
@@ -262,6 +479,7 @@ public without sharing class ECO_KPICalculation {
 		}
 		Decimal thisPeriodGrossMargin;
 		Decimal lastPeriodGrossMargin;
+		returnCalcs.lastMonthGrossMarginLessThanPrecedingMonth = false;
 		if(thisPeriodRevenue != null && thisPeriodGrossCost != null)
 		{
 			thisPeriodGrossMargin = thisPeriodRevenue - thisPeriodGrossCost;
@@ -270,24 +488,25 @@ public without sharing class ECO_KPICalculation {
 		{
 			lastPeriodGrossMargin = lastPeriodRevenue - lastPeriodGrossCost;
 		}
-		
+
 		if(thisPeriodGrossMargin != null && lastPeriodGrossMargin != null)
 		{
 			returnCalcs.lastMonthGrossMarginLessThanPrecedingMonth = (thisPeriodGrossMargin < lastPeriodGrossMargin) ? true : false;
 		}
 		
 // last month net margin less than preceding month
+		returnCalcs.lastMonthNetMarginLessThanPrecedingMonth = false;
 		if(thisPeriodNetMargin != null && lastPeriodNetMargin != null)
 		{
 			returnCalcs.lastMonthNetMarginLessThanPrecedingMonth = (thisPeriodNetMargin < lastPeriodNetMargin) ? true : false;
 		}
 // approved budget gross revenue
 
-		returnCalcs.approvedBudgetGrossRevenue = theProject.TotalApprovedRevenue__c;
+
 		
 // contractValue
 
-		returnCalcs.contractValue = 0;  // TODO:  Calculate this when I receive direction from Jodi and Christina
+		 // TODO:  Calculate this when I receive direction from Jodi and Christina
 		
 // last month unbilled amount more than zero
 
@@ -318,29 +537,11 @@ public without sharing class ECO_KPICalculation {
 
 // days since last update
 		
-		Set<Id> budgetHeaderIds = new Set<Id>();
-		for (BudgetHeader__c bh : theProject.BudgetHeaders__r) {
-			budgetHeaderIds.add(bh.Id);
-		}
+
 		
-		List<ProcessInstance> processInstanceList = [SELECT Id, CompletedDate
-													FROM ProcessInstance 
-													WHERE TargetObjectId IN :budgetHeaderIds
-														AND CompletedDate <= :asOfDate
-														AND Status = 'Approved'
-													ORDER BY CompletedDate DESC
-													LIMIT 1];
-													
-		if (!processInstanceList.isEmpty()) {
-			returnCalcs.lastEACUpdateInDays = processInstanceList[0].CompletedDate.date().daysBetween(asOfDate);
-		} else {
-			returnCalcs.lastEACUpdateInDays = -1;
-		}
-		
-// ALL DONE!!
-		
-		return returnCalcs;
+// ALL DONE!!	
 	}
+	//}
 	
 	public class CalculationHolder {
 		public Boolean isPMCertified;
@@ -352,6 +553,7 @@ public without sharing class ECO_KPICalculation {
 		public Decimal EAC;
 		public Decimal geographyThreshold;
 		public Decimal ETC;
+		public Decimal etcRunRate;
 		public Boolean laborIncreaseOverPriorMonthMoreThan30Percent;
 		public Boolean projectCompletedMoreThan75Percent;
 		public Decimal actualVSPlannedMarginVarianceFromPriorMonth;
@@ -362,7 +564,11 @@ public without sharing class ECO_KPICalculation {
 		public Boolean lastMonthUnBilledAmountMoreThanZero;
 		public Boolean lastMonthLaborChargesAreZero;
 		public Decimal lastEACUpdateInDays;
-		
+		public Decimal costSoFar;
+		public Boolean hasProjectPlan;
+		public Decimal negativeNetMargin;
+		public Boolean unBilledAmount60Days;
+		public Boolean arGreaterThan90Days;		
 	}
 	
 }

@@ -1,4 +1,4 @@
-<apex:page standardController="ProjectSnapshot__c" extensions="ECO_ProjectSnapshotController">
+<apex:page standardController="ProjectSnapshot__c" extensions="ECO_ProjectSnapshotController" showHeader="false" sidebar="false">
 <apex:form >
 	<style>
 		.infoTable {
@@ -76,10 +76,10 @@
 
 <apex:pageBlock title="Project Snapshot">
 <apex:pageBlockButtons >
-	<apex:commandButton value="Save" action="{!save}"/>
-	<apex:commandButton value="Return to Project" action="{!ReturnToProject}"/>
+	<apex:commandButton value="Save Summary" action="{!save}" rendered="{!projectReviewStatus != 'Approved'}"/>
+	<!--<apex:commandButton value="Return to Project" action="{!ReturnToProject}"/>-->
 </apex:pageBlockButtons>
-<apex:pageBlockSection title="Meeting Participants" collapsible="false">
+<!--<apex:pageBlockSection title="Meeting Participants" collapsible="false">
 <apex:outputField value="{!ProjectSnapshot__c.ProjectManager__c}"/>
 <apex:inputField value="{!ProjectSnapshot__c.OtherParticipant1__c}"/>
 <apex:outputField value="{!ProjectSnapshot__c.ProjectDirector__c}"/> 
@@ -87,9 +87,9 @@
 <apex:inputField value="{!ProjectSnapshot__c.OperationsParticipantTitle__c}"/>
 <apex:inputField value="{!ProjectSnapshot__c.OtherParticipant3__c}"/>
 <apex:inputField value="{!ProjectSnapshot__c.FandAParticipantTitle__c}"/>
-</apex:pageBlockSection>
+</apex:pageBlockSection>-->
 
-
+<apex:inputHidden value="{!ProjectSnapshot__c.ProjectReview__c}"/>
 <apex:pageBlockSection title="Project Information" collapsible="false">
 
 <apex:outputField value="{!ProjectSnapshot__c.ProjectName__c}"/>
@@ -401,31 +401,46 @@
 		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfUnbilled0__c}" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c >= 0}"/>
 			<apex:outputText value="---" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c < 0}"/>
 		</td>
-		<td><apex:inputField value="{!ProjectSnapshot__c.CashPerfUnbilled0Comments__c}" style="width:400px"/></td>
+		<td>
+			<apex:inputField value="{!ProjectSnapshot__c.CashPerfUnbilled0Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+			<apex:outputField value="{!ProjectSnapshot__c.CashPerfUnbilled0Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+		</td>
 	</tr>
 	<tr><td>Unbilled 31-60</td>
 		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfUnbilled30__c}" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c >= 0}"/>
 			<apex:outputText value="---" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c < 0}"/>
 		</td>
-		<td><apex:inputField value="{!ProjectSnapshot__c.CashPerfUnbilled30Comments__c}" style="width:400px"/></td>
+		<td>
+			<apex:inputField value="{!ProjectSnapshot__c.CashPerfUnbilled30Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+			<apex:outputField value="{!ProjectSnapshot__c.CashPerfUnbilled30Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+		</td>
 	</tr>
 	<tr><td>Unbilled > 60</td>
 		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfUnbilled60__c}" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c >= 0}"/>
 			<apex:outputText value="---" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c < 0}"/>
 		</td>
-		<td><apex:inputField value="{!ProjectSnapshot__c.CashPerfUnbilled60Comments__c}" style="width:400px"/></td>
+		<td>
+			<apex:inputField value="{!ProjectSnapshot__c.CashPerfUnbilled60Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+			<apex:outputField value="{!ProjectSnapshot__c.CashPerfUnbilled60Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+		</td>
 	</tr>
 	<tr><td>Total Unbilled</td>
 		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c}" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c >= 0}"/>
 			<apex:outputText value="---" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c < 0}"/>
 		</td>
-		<td><apex:inputField value="{!ProjectSnapshot__c.CashPerfTotalUnbilledComments__c}" style="width:400px"/></td>
+		<td>
+			<apex:inputField value="{!ProjectSnapshot__c.CashPerfTotalUnbilledComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+			<apex:outputField value="{!ProjectSnapshot__c.CashPerfTotalUnbilledComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+		</td>
 	</tr>
 	<tr><td>BIEE</td>
 		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfBIEE__c}" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c < 0}"/>
 			<apex:outputText value="---" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c >= 0}"/>
 		</td>
-		<td><apex:inputField value="{!ProjectSnapshot__c.CashPerfBIEEComments__c}" style="width:400px"/></td>
+		<td>
+			<apex:inputField value="{!ProjectSnapshot__c.CashPerfBIEEComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+			<apex:outputField value="{!ProjectSnapshot__c.CashPerfBIEEComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+		</td>
 	</tr>
 
 
@@ -435,27 +450,45 @@
 	</tr>
 	<tr><td>Billed 0-30</td>
 		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled0__c}"/></td>
-		<td><apex:inputField value="{!ProjectSnapshot__c.CashPerfBilled0Comments__c}" style="width:400px"/></td>
+		<td>
+			<apex:inputField value="{!ProjectSnapshot__c.CashPerfBilled0Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+			<apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled0Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+		</td>
 	</tr>
 	<tr><td>Billed 31-60</td>
 		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled31__c}"/></td>
-		<td><apex:inputField value="{!ProjectSnapshot__c.CashPerfBilled31Comments__c}" style="width:400px"/></td>
+		<td>
+			<apex:inputField value="{!ProjectSnapshot__c.CashPerfBilled31Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+			<apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled31Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+		</td>
 	</tr>
 	<tr><td>Billed > 60</td>
 		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled60__c}"/></td>
-		<td><apex:inputField value="{!ProjectSnapshot__c.CashPerfBilled60Comments__c}" style="width:400px"/></td>
+		<td>
+			<apex:inputField value="{!ProjectSnapshot__c.CashPerfBilled60Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+			<apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled60Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+		</td>
 	</tr>
 	<tr><td>Billed > 90</td>
 		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled90__c}"/></td>
-		<td><apex:inputField value="{!ProjectSnapshot__c.CashPerfBilled90Comments__c}" style="width:400px"/></td>
+		<td>
+			<apex:inputField value="{!ProjectSnapshot__c.CashPerfBilled90Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+			<apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled90Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+		</td>
 	</tr>
 	<tr><td>Billed A/R</td>
 		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfBilledAR__c}"/></td>
-		<td><apex:inputField value="{!ProjectSnapshot__c.CashPerfBilledARComments__c}" style="width:400px"/></td>
+		<td>
+			<apex:inputField value="{!ProjectSnapshot__c.CashPerfBilledARComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+			<apex:outputField value="{!ProjectSnapshot__c.CashPerfBilledARComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+		</td>
 	</tr>
 	<tr><td>Retention</td>
 		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfRetention__c}"/></td>
-		<td><apex:inputField value="{!ProjectSnapshot__c.CashPerfRetentionComments__c}" style="width:400px"/></td>
+		<td>
+			<apex:inputField value="{!ProjectSnapshot__c.CashPerfRetentionComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+			<apex:outputField value="{!ProjectSnapshot__c.CashPerfRetentionComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+		</td>
 	</tr>
 	</table>
 </div>
@@ -547,12 +580,12 @@
 </apex:outputPanel>
 </apex:pageBlockSection>
 
-<apex:pageBlockSection title="Overall Project Status Commentary" columns="1" collapsible="false">
+<!--<apex:pageBlockSection title="Overall Project Status Commentary" columns="1" collapsible="false">
 <apex:outputPanel >
 <apex:outputField value="{!ProjectSnapshot__c.OverallProjectSummary__c}"/>
 <apex:inputField value="{!ProjectSnapshot__c.OverallProjectSummary__c}"/>
 </apex:outputPanel>
-</apex:pageBlockSection>
+</apex:pageBlockSection>-->
 
 </apex:pageBlock>
 </apex:form>

@@ -11,6 +11,10 @@ public class ECO_ProjectAgreementController {
 	public ECO_ProjectAgreementController(ApexPages.StandardController controller)
 	{
 		projectAgreement = (ProjectAgreement__c)controller.getRecord();
+
+		if(projectAgreement.Project__c == null){
+			projectAgreement.Project__c = ApexPages.currentPage().getParameters().get('project');
+		}
 	}
 	
 	public PageReference recordTypeSelected()
@@ -53,14 +57,20 @@ public class ECO_ProjectAgreementController {
 		return 	newAgreementRef;				
 	}
 	
+    public PageReference returnToProject(){
+        projectId = ApexPages.currentPage().getParameters().get('project');
+        PageReference returnToProject = new PageReference('/' + projectId);
+		return returnToProject;
+    }
+    
 	public PageReference init()
 	{				
-		PageReference returnPR;
-		
+		PageReference returnPR;	
+
 		recordTypeId = ApexPages.currentPage().getParameters().get('RecordType');
 		recordToDelete = ApexPages.currentPage().getParameters().get('RecordToDelete');
 		projectId = projectAgreement.Project__c;
-		
+		System.debug('projectId:   '+projectId);
 		
 		//first time you come to the project agreement, redirect to the recordtype selector page
 		if(recordToDelete == null || recordToDelete == '')
@@ -73,6 +83,7 @@ public class ECO_ProjectAgreementController {
 		if(recordToDelete != null && recordToDelete != '')
 		{
 			projectId = ApexPages.currentPage().getParameters().get('ProjectId');
+            
 			Agreement__c agreementToDelete = ECO_Service_Agreement.getAgreementFromId(recordToDelete);
 			delete agreementToDelete;
 			

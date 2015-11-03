@@ -70,7 +70,7 @@
 	
 	<apex:form id="mainForm">
 		<div style="position:relative">
-			<apex:sectionHeader title="Project Review" subtitle="{!theProject.Name}" />
+            <apex:sectionHeader title="{!oProjectReview.RecordType.Name}" subtitle="{!theProject.Name}({!theProject.ProjectNumber__c})" />
 		</div>
 		<apex:pageMessages id="pgMessages" />
 		<div class="projectSummary">
@@ -85,6 +85,7 @@
 					<apex:commandButton action="{!SaveHealthCheck}" value="Take Project Snapshot" rendered="{!NOT(perfActiveStatus) && isPerfReview && oProjectReview.Snapshot_Date__c == null}" />
 					<apex:commandButton action="{!SaveAll}" value="Save"/> 
 					<apex:commandButton action="{!ReturnToProjectFromReview}" value="Return to Project"  />
+					<apex:commandButton action="{!returnToAllReviews}" value="Return to All Project Reviews"  />
 				</apex:pageBlockButtons>
 				<!--
 				<apex:pageBlockSection title="Project Information" collapsible="false">
@@ -94,39 +95,59 @@
 	           	</apex:pageBlockSection>
 	           	-->
 	           	<apex:pageBlockSection title="Project Information" collapsible="true" columns="2">
-	            	<apex:outputField value="{!theProject.Name}" />
-	            	<apex:outputField value="{!theProject.OwnerId}" />
-	            	<apex:outputField value="{!theProject.pse__Opportunity__c}" />
-	            	<apex:outputField value="{!theProject.EstimatedContractValue__c}" />
-	            	<apex:outputField value="{!theProject.pse__Project_Manager__c}" />
-	            	<apex:outputField value="{!theProject.NetServicesRevenue__c}" />
-	            	<apex:outputField value="{!theProject.ProjectOwningOrg__c}" />
-	            	<apex:outputField value="{!theProject.TotalMargin__c}" />
-	            	<apex:outputField value="{!theProject.PrimaryEndClient__c}" />
-	            	<apex:outputField value="{!theProject.TotalBidBudget__c}" />
-	            	<apex:outputField value="{!theProject.PrimaryBillingClient__c}" />
-	            	<apex:outputField value="{!theProject.EstimatedStartDate__c}" />
+	           		<apex:repeat value="{!CustomProjFields}" var="f">
+                    	<apex:outputField value="{!theProject[f.fieldPath]}" />
+                    </apex:repeat> 	
+
+	            <!--	<apex:outputField value="{!theProject.Name}" />
+	            	<apex:outputField value="{!theProject.OwnerId}" />-->
+	            	<!--<apex:outputField value="{!theProject.pse__Opportunity__c}" />-->
+	            	<!--<apex:outputField value="{!theProject.ProjectNumber__c}" />-->
+	            	<!--<apex:outputField value="{!theProject.EstimatedContractValue__c}" />-->
+	            	<!--<apex:outputField value="{!theProject.pse__Project_Manager__c}" />-->
+	            	<!--<apex:outputField value="{!theProject.NetServicesRevenue__c}" />-->
+
+	            	<!--<apex:outputField value="{!theProject.TotalMargin__c}" />-->
+	            	<!--<apex:outputField value="{!theProject.ProjectOwningOrg__c}" />-->
+	            	<!--<apex:outputField value="{!theProject.PrimaryEndClient__c}" />-->
+	            	<!--<apex:outputField value="{!theProject.TotalBidBudget__c}" />-->
+                    <!--<apex:outputField value="{!theProject.PrimaryEndClientName__c}" />-->
+	            	
+	            	<!--<apex:outputField value="{!theProject.PrimaryBillingClient__c}" />-->
+	            	<!--<apex:outputField value="{!theProject.EstimatedStartDate__c}" />-->
+                    <!--<apex:outputField value="{!theProject.PrimaryBillingClientName__c}" />-->
+
+	            	
             	</apex:pageBlockSection>
  
  					<apex:inputHidden value="{!ProjectReview__c.Name}"/>
+
 					<apex:inputHidden value="{!ProjectReview__c.Status__c}"/>
 					<apex:inputHidden value="{!ProjectReview__c.MeetingMinutes__c}"/>
+					<apex:inputHidden value="{!ProjectReview__c.IsPerformanceReview__c}"/>
+					<apex:inputHidden value="{!ProjectReview__c.IsProjectPerformanceReview__c}"/>
 					           	
 				<apex:pageBlockSection id="ReviewDetails" title="Project Review Details" columns="2" collapsible="false">			
 					<apex:inputField value="{!oProjectReview.Name}" required="true" style="width: 250px"/>
-					<apex:outputField value="{!oProjectReview.Status__c}" />
+					
+					<apex:pageBlockSectionItem >
+						<!--<apex:outputText value="Review Status"/>
+						<apex:outputField value="{!oProjectReview.Status__c}" /> -->
+					</apex:pageBlockSectionItem>
 					<apex:outputField label="Record Type" value="{!oProjectReview.RecordType.Name}" />
-					<apex:inputField value="{!oProjectReview.ResponsiblePerson__c}" />
-					<apex:outputField value="{!oProjectReview.Snapshot_Date__c}" rendered="{!IsPerfReview}"/>
+					<apex:inputField value="{!oProjectReview.Responsible_Person__c}" />
+					<!--<apex:outputField value="{!oProjectReview.Snapshot_Date__c}" rendered="{!IsPerfReview}"/>-->
 					<apex:inputField value="{!oProjectReview.ScheduledDate__c}" />
 					<apex:inputField value="{!oProjectReview.CompletedDate__c}" />
-
 				</apex:pageBlockSection>
-				<apex:pageBlockSection >
+				<apex:pageBlockSection columns="1" collapsible="false">
+					<apex:inputField value="{!oProjectReview.Purpose__c}" style="width:1100px"/>
+				</apex:pageBlockSection>
+				<!--<apex:pageBlockSection >
 					<apex:outputField value="{!oProjectReview.ProjectReviewTemplate__r.Purpose__c}" rendered="{!NOT(ISBLANK(oProjectReview.ProjectReviewTemplate__c))}"/>
-            	</apex:pageBlockSection>
+            	</apex:pageBlockSection>-->
             	
-            	<apex:pageBlockSection title="Admin View" collapsible="false">
+            	<apex:pageBlockSection title="Admin View" collapsible="false" rendered="{!showKPIs}">
 					<apex:outputField value="{!oProjectReview.TotalKPIs__c}"  rendered="{!showKPIs}"/>
 					<apex:outputField value="{!oProjectReview.PassedKPIs__c}" rendered="{!showKPIs}" />
 					<apex:outputField value="{!oProjectReview.KPIPassPercentage__c}"  rendered="{!showKPIs}"/>        	
@@ -136,8 +157,13 @@
 				<apex:pageBlockSection title="KPI Results" columns="1" collapsible="false" >
 					<apex:pageBlockTable value="{!lKPI_Results}" var="item" width="100%" id="KPITable">
 						<apex:column >
-							<apex:facet name="header">Trigger Name</apex:facet>
+							<!--<apex:facet name="header">Trigger Name</apex:facet>-->
+							<apex:facet name="header">KPI</apex:facet>
 							<apex:outputField value="{!item.Trigger_Name__c}" />
+						</apex:column>
+						<apex:column >
+							<apex:facet name="header">Threshold</apex:facet>
+							
 						</apex:column>
 						<apex:column ><!-- styleClass="{!item.Evaluation_Result__c}"-->
 							<apex:facet name="header">Has Triggered</apex:facet>
@@ -191,7 +217,7 @@
 					</apex:actionStatus>
 				</apex:pageBlockSection> 
 
-				<apex:pageBlockSection title="Approval Conditions"  columns="1" collapsible="false" rendered="{!oProjectReview.Status__c != 'Not Started'}">
+				<!--<apex:pageBlockSection title="Approval Conditions"  columns="1" collapsible="false" rendered="{!oProjectReview.Status__c != 'Not Started'}">
 				<apex:pageMessage severity="INFO" rendered="{!if(lstDOAConditions.size > 0, false, true)}" summary="No DOA Conditions Found"></apex:pageMessage> 
 				<apex:pageBlockTable value="{!lstDOAConditions}" var="Condition" rendered="{!if(lstDOAConditions.size > 0, true, false)}">
 					<apex:column headerValue="View"  width="40">
@@ -201,9 +227,11 @@
 						<apex:column value="{!Condition[SearchField]}" />
 					</apex:repeat>
 				</apex:pageBlockTable>
-				</apex:pageBlockSection>
+				</apex:pageBlockSection>-->
 
-				<apex:pageBlockSection title="Meeting Minutes" columns="1" collapsible="false" rendered="{!showOtherSections && oProjectReview.Status__c != 'Not Started'}">
+                <apex:pageBlockSection id="meetingMinutes" title="Agenda/Meeting Minutes" columns="1" collapsible="false" rendered="{!showOtherSections && oProjectReview.Status__c != 'Not Started'}">
+                	<!--<apex:commandButton value="Copy Comments from Previous Review" action="{!copyComments}" rendered="{!lastProjectReview != null}">
+                	</apex:commandButton>-->
 					<apex:inputField label="" value="{!oProjectReview.MeetingMinutes__c}" />
 				</apex:pageBlockSection>
 
@@ -250,6 +278,10 @@
 				<apex:pageBlockSection title="Follow-up Tasks" columns="1" collapsible="false" rendered="{!showOtherSections && oProjectReview.Status__c != 'Not Started'}">
 					<apex:commandButton value="New Task" action="{!newTask}"/>
 					<apex:pageBlockTable value="{!ReviewTasks}" var="item" width="100%" id="TasksTable" rendered="{!IF(ReviewTasks.size > 0, true, false)}">
+						<apex:column style="width:60px" headervalue="Action">
+                    		<apex:commandLink style="color:#015ba7;" action="{!URLFOR($Action.Task.edit, item.Id, ['retURL'='/apex/ECO_ProjectReviews?Id='&oProjectReview.Id])}">Edit</apex:commandLink><apex:outputText value=" | "/>
+                    		<apex:commandLink style="color:#015ba7;" action="{!URLFOR($Action.Task.delete, item.Id, ['retURL'='/apex/ECO_ProjectReviews?Id='&oProjectReview.Id])}">Del</apex:commandLink>
+                		</apex:column>					
 						<apex:column headervalue="Due Date" >
 							<apex:outputField value="{!item.ActivityDate}" />
 						</apex:column>
@@ -308,12 +340,13 @@
 				</apex:pageBlockSection>		
 			</apex:pageBlock>
 		</div>
+
+
 	</apex:form>
 	
 	<!--<apex:relatedList list="OpenActivities" rendered="{!showOtherSections}" />-->
 	<!-- <apex:relatedList list="ActivityHistories" rendered="{!showOtherSections}" /> -->
-	<apex:relatedList list="NotesAndAttachments" rendered="{!showOtherSections && oProjectReview.Status__c != 'Not Started'}" />
-	<apex:relatedList list="ProcessSteps" rendered="{!showOtherSections && oProjectReview.Status__c != 'Not Started'}" />
-	<apex:relatedList list="ProjectSnapshots__r" rendered="{!isPerfReview}"/>
+	<apex:relatedList list="CombinedAttachments" />
+	<!--<apex:relatedList list="ProjectSnapshots__r" rendered="{!isPerfReview}"/>-->
 
 </apex:page>

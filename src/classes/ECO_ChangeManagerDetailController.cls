@@ -9,22 +9,115 @@ public class ECO_ChangeManagerDetailController {
     public list<VendorSite__c> listOfVendorSites {get;set;}
     private list<String> changeManagerSubmittedIds {get; set;}
     private Boolean isSubmitted {get; set;}
+    public String projectMsg {get; set;}
+    public String taskMsg {get; set;}
+    public String keyMemberMsg {get; set;}
+    public String customersMsg {get; set;}
+    public String projectSynchMessages {get; set;}
+    public Boolean needOracleLogin {get; set;}
+    private static ECO_ProjectSummaryController projectSummaryController;
+    //public list<ECO_ProjectSummaryController.nonSyncItem> 
+    public list<ECO_ProjectSummaryController.nonSyncItem> invalidTasks {get;set;}
+    public list<ECO_ProjectSummaryController.nonSyncItem> invalidCustomers {get;set;}
+   	public list<ECO_ProjectSummaryController.nonSyncItem> invalidKeyMembers {get;set;}
+    public String OracleUserName {get; set;}
+    public String OraclePassword {get; set;}
+    public String authenticationResult {get; set;}
+    public Boolean pollMessageQueue {get; set;}
+    public Boolean showPollingMsg {get; set;}
+    public String pollingMessageQueueMsg {get; set;}
+    public String pollingMessageQueueMsgBottom {get; set;}
+    
+    //    	public Id recordId {get;set;}
+    //		public String recordName {get;set;}
+    //		public String validationErrorMessage{get;set;}
     
     public class SinglePageBlockChangeItem
 	{
 		public String ActionName {get;set;}
 		public pse__Proj__c Project {get; set;}
 	}
+
+    public PageReference authenticateCredentials()
+    {
+        String username = ApexPages.currentPage().getParameters().get('username');
+        String password = ApexPages.currentPage().getParameters().get('password');
+        //authenticationResult = 'SUCCESS';
+        //CHUNGDL/DEV12ORACLE
+        authenticationResult = ECO_Service_Authentication.TestProxy('https://ecodev.aecom.com/OA_HTML/jsp/fnd/PicDisconnSF.jsp', 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + password);
+
+        return null;
+    }
     
     public ECO_ChangeManagerDetailController(ApexPages.StandardController controller)
     {
+        //changeManager = (ChangeManager__c)controller.getRecord();
+        //changeManager = getChangeChangeManager();
+
+        invalidTasks = new list<ECO_ProjectSummaryController.nonSyncItem>();
+        invalidCustomers = new list<ECO_ProjectSummaryController.nonSyncItem>(); 
+        invalidKeyMembers = new list<ECO_ProjectSummaryController.nonSyncItem>();
+        changeManagerSubmittedIds = new list<String>();
+
     	mode = ApexPages.currentPage().getParameters().get('Mode');
     	if(mode == null)	
     		mode = '';
         changeManager = (ChangeManager__c)controller.getRecord();
-        //
+
+        needOracleLogin = false;
+
+        if(changeManager.OracleApprovalSyncStatus__c == 'Approved')
+        {
+            showPollingMsg = true;
+            pollMessageQueue = true;
+            pollingMessageQueueMsg = 'Checking if project has been processed in <span id="pollingTimer">10</span> seconds...';
+            pollingMessageQueueMsgBottom = 'Checking if project has been processed in <span id="pollingTimerBottom">10</span> seconds...';  
+        }      
+    }
+
+    public void checkIfSyncHasBeenProcessed()
+    {
+        pollMessageQueue = true;
+        IntegrationMessageQueue__c msgQueueResult = ECO_Service_ProjectSync.getMessageQueue(changeManager.LatestMessageQueueId__c);
+        if(msgQueueResult == null){
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'The message queue record with Id =' + changeManager.LatestMessageQueueId__c + ' could not be found!'));
+            pollMessageQueue = false;
+            return;
+        }
+
+        if(msgQueueResult.Status__c.equalsIgnoreCase('Success') || msgQueueResult.Status__c.equalsIgnoreCase('Error'))
+        {
+            if(msgQueueResult.Status__c.equalsIgnoreCase('Success')){
+                pollingMessageQueueMsg = 'The project was successfully processed!';
+            }
+            else
+            {
+                pollingMessageQueueMsg = 'An error occurred while processing the project!<br/>' + msgQueueResult.ErrorMessage__c;
+                changeManager.OracleApprovalSyncError__c = msgQueueResult.ErrorMessage__c;
+                update changeManager;
+            } 
+            pollMessageQueue = false;           
+        }
+        else
+        {
+            pollingMessageQueueMsg = 'Checking if project sync has been processed in <span id="pollingTimer">10</span> seconds...';
+        }
+    }    
+
+    public PageReference returnToProjectChanges()
+    {
+        PageReference pageRef = new PageReference('/apex/ECO_ProjectChangeManager?Id=' + changeManager.Project__c);
+        return pageRef;
     }
     
+    public PageReference closeAuthenticationWindow()
+    {
+        PageReference editAgreement = new PageReference('/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id);        
+        editAgreement.getParameters().put('mode', mode);
+        editAgreement.getParameters().put('retURL', '/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id); 
+        return editAgreement;          
+    }
+
     public PageReference initEdit()
     {
     	PageReference editAgreement = new PageReference('/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id);        
@@ -36,10 +129,42 @@ public class ECO_ChangeManagerDetailController {
     
     public PageReference returnToChangeManager()
     {
-        mode = '';
-        return null;    	
+        PageReference editAgreement = new PageReference('/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id);        
+        editAgreement.getParameters().put('mode', '');
+        editAgreement.getParameters().put('retURL', '/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id); 
+        return editAgreement;   	
     }
     
+    //public PageReference synchronizeProject()
+    //{
+    //    PageReference pageRef = new PageReference('/apex/ECO_ProjectSummary');
+    //    pageRef.getParameters().put('projectId', changeManager.Project__c);
+    //    return pageRef;
+    //}
+
+    public PageReference SubmitForApproval()
+    {
+        //oProjectReview.Status__c = 'Submitted';
+        if(changeManager.IsExecutionApprovalChange__c)
+                populateSelectedBudgetsForSynch();
+
+        update changeManager;
+        
+        Approval.ProcessSubmitRequest req1 = new Approval.ProcessSubmitRequest();  
+        req1.setComments('Submitted for Approval');
+        req1.setObjectId(changeManager.Id);
+        Approval.ProcessResult result = Approval.process(req1); 
+
+        if(result.isSuccess())
+        {
+            return new PageReference('/' + changeManager.Id);
+            //return null;
+            //return new PageReference('/apex/ECO_ProjectPerformanceReviews?Id=' + oProjectReview.Id + '&RecordTypeId=' + oProjectReview.RecordTypeId + '&ProjectId=' + oProjectReview.Project__c);
+        }
+        return null;
+    }
+
+
     public PageReference viewProjectClosureRequest()
     {
     	PageReference closureRequest = new PageReference('/apex/ECO_CloseoutProjectApprovalPhase?Id='+changeManager.Project__c);        
@@ -49,10 +174,18 @@ public class ECO_ChangeManagerDetailController {
     
     public void init()
     {
+        //if(changeManager.ApprovalStatus__c == 'Sync Approved')
+        //{
+        //    project = [select Id, Name, EcoSystemReferenceNumber__c, OracleProjectnumber__c  from pse__Proj__c where Id = :changeManager.Project__c limit 1];            
+
+        //    isSubmitted = true;
+        //    synchronizeProject(project.Id);
+        //}               
+
     	recordTypeId = ApexPages.currentPage().getParameters().get('RecordType'); 
         mode = ApexPages.currentPage().getParameters().get('Mode'); 
         
-        if(recordTypeId != '' && recordTypeId != null && mode != 'View')
+        if(recordTypeId != '' && recordTypeId != null && mode != 'View' && changeManager.ApprovalStatus__c != 'Sync Approved')
         {
         	mode = 'New';
         	upsert changeManager;
@@ -62,41 +195,85 @@ public class ECO_ChangeManagerDetailController {
         	mode = '';
     		
         changeManager = getChangeChangeManager();
-               
-    	if(changeManager.ProjectApprover__c == null)
-    	{
-    		changeManager.ProjectApprover__c = populateProjectApprover();
-    		update changeManager;
-    	}
- 
-     	if(changeManager.ProjectAccountantApprover__c == null)
-     	{
-    		changeManager.ProjectAccountantApprover__c = populateProjectAccountant();
-    		update changeManager;
-     	}
-    		
-    	if(changeManager.FinanceApprover__c == null)
-    	{
-    		changeManager.FinanceApprover__c = populateProjectFinanceLead();  
-    		update changeManager;
-    	}  		   		       
+        
+        if((changeManager.IsExecutionApprovalChange__c || changeManager.IsExternalChange__c || changeManager.IsInternalChange__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed'))
+        {
+            needOracleLogin = !ECO_Service_Authentication.authenticateOracleToken(UserInfo.getUserId());
+            if(needOracleLogin)
+            {
+                ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING, 'Your Oracle Token has expired and you are required to login to Oracle before Approving the Approval Process.  Please click the Login button and enter your Oracle credentials.');
+                ApexPages.addMessage(oPageMessage);
+            }
+        }
 
         project = [select Id, Name, EcoSystemReferenceNumber__c, OracleProjectnumber__c  from pse__Proj__c where Id = :changeManager.Project__c limit 1];            
-        listOfVendorSites = [select Id, Name, AccountName__c, Site__r.Account__c from VendorSite__c where Project__c = :changeManager.Project__c];           
-    	if(changeManager.ApprovalStatus__c == 'Submitted')
-    	{
-    		isSubmitted = true;
-    		if(changeManager.SubmittedIdsForApproval__c != null)
-    			changeManagerSubmittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
-    		else
-    			changeManagerSubmittedIds = new list<String>();
-    	}	
-    	else
-    	{
-    		isSubmitted = false;
-    		changeManagerSubmittedIds = ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id);	
-    	}
+
+        if(changeManager.IsExecutionApprovalChange__c )
+            populateInitialBudgetsForExecution(); 
+        //if(changeManager.ApprovalStatus__c == 'Sync Approved')
+        //{
+        //    isSubmitted = true;
+        //    synchronizeProject(changeManager.Project__c);
+
+        //}       
+        //else
+        //{       
+        	if(changeManager.ProjectApprover__c == null)
+        	{
+        		changeManager.ProjectApprover__c = ECO_Service_ProjectTeam.getActiveProjectApproverId(changeManager.Project__c); //populateProjectApprover();
+        		update changeManager;
+        	}
+     
+         	if(changeManager.ProjectAccountantApprover__c == null)
+         	{
+        		changeManager.ProjectAccountantApprover__c = ECO_Service_ProjectTeam.populateProjectAccountant(changeManager.Project__c);
+        		update changeManager;
+         	}
+        		
+        	if(changeManager.FinanceApprover__c == null)
+        	{
+        		changeManager.FinanceApprover__c = ECO_Service_ProjectTeam.populateProjectFinanceLead(changeManager.Project__c);  
+        		update changeManager;
+        	}  		   		       
+
+            project = [select Id, Name, EcoSystemReferenceNumber__c, OracleProjectnumber__c  from pse__Proj__c where Id = :changeManager.Project__c limit 1];            
+    		ApexPages.currentPage().getParameters().put('projectId', changeManager.Project__c);
+            listOfVendorSites = [select Id, Name, AccountName__c, Site__r.Account__c from VendorSite__c where Project__c = :changeManager.Project__c];           
+        	if(changeManager.ApprovalStatus__c == 'Submitted')
+        	{
+        		isSubmitted = true;
+        		if(changeManager.SubmittedIdsForApproval__c != null)
+        			changeManagerSubmittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
+        		else
+        			changeManagerSubmittedIds = new list<String>();
+        	}	
+        	else
+        	{
+        		isSubmitted = false;
+        		changeManagerSubmittedIds = ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id);	
+        	}
+        	
+        	ECO_ProjectSummaryController projectSummaryController2 = new ECO_ProjectSummaryController();
+	
+            projectSynchMessages = '';
+        	projectSynchMessages += projectSummaryController2.projectMsg;
+        	projectSynchMessages += projectSummaryController2.taskMsg;
+        	projectSynchMessages += projectSummaryController2.keyMemberMsg;
+        	projectSynchMessages += projectSummaryController2.customersMsg;  
+
+            if(projectSynchMessages != '' && projectSynchMessages != null)
+               projectSynchMessages = '<ol>' + projectSynchMessages + '</ol>';
+
+        	invalidTasks = projectSummaryController2.invalidTasks;
+       		invalidCustomers = projectSummaryController2.invalidCustomers;
+       		invalidKeyMembers = projectSummaryController2.invalidKeyMembers;
+        //}
     }    
+
+    public void RefreshChangeManager()
+    {
+        changeManager = getChangeChangeManager();
+    }
     
     private ChangeManager__c getChangeChangeManager()
     {
@@ -112,35 +289,35 @@ public class ECO_ChangeManagerDetailController {
     	return changeManager;
     }
     
-    private Id populateProjectApprover()
-    {
-    	list<ProjectTeamMember__c> teamMembers = [select Id, User__c, Contact__r.pse__Salesforce_User__c from ProjectTeamMember__c where ProjectRole__r.Name = 'Project Approver' and Project__c = :changeManager.Project__c and Active__c = true];
-		if(!teamMembers.isEmpty())
-		{
-			return teamMembers[0].Contact__r.pse__Salesforce_User__c;
-		}
-    	return null;
-    }
+    //private Id populateProjectApprover()
+    //{
+    //	list<ProjectTeamMember__c> teamMembers = [select Id, User__c, Contact__r.pse__Salesforce_User__c from ProjectTeamMember__c where ProjectRole__r.Name = 'Project Approver' and Project__c = :changeManager.Project__c and Active__c = true];
+	//	if(!teamMembers.isEmpty())
+	//	{
+	//		return teamMembers[0].Contact__r.pse__Salesforce_User__c;
+	//	}
+    //	return null;
+    //}
     
-    private Id populateProjectAccountant()
-    {
-    	list<ProjectTeamMember__c> teamMembers = [select Id, User__c, Contact__r.pse__Salesforce_User__c from ProjectTeamMember__c where ProjectRole__r.Name = 'Project Accountant' and Project__c = :changeManager.Project__c and Active__c = true];
-		if(!teamMembers.isEmpty())
-		{
-			return teamMembers[0].Contact__r.pse__Salesforce_User__c;
-		}
-    	return null;
-    }
+    //private Id populateProjectAccountant()
+    //{
+    //	list<ProjectTeamMember__c> teamMembers = [select Id, User__c, Contact__r.pse__Salesforce_User__c from ProjectTeamMember__c where ProjectRole__r.Name = 'Project Accountant' and Project__c = :changeManager.Project__c and Active__c = true];
+	//	if(!teamMembers.isEmpty())
+	//	{
+	//		return teamMembers[0].Contact__r.pse__Salesforce_User__c;
+	//	}
+    //	return null;
+    //}
     
-    private Id populateProjectFinanceLead()
-    {
-    	list<ProjectTeamMember__c> teamMembers = [select Id, User__c, Contact__r.pse__Salesforce_User__c from ProjectTeamMember__c where ProjectRole__r.Name = 'Finance Lead' and Project__c = :changeManager.Project__c and Active__c = true];
-		if(!teamMembers.isEmpty())
-		{
-			return teamMembers[0].Contact__r.pse__Salesforce_User__c;
-		}
-    	return null;
-    }
+    //private Id populateProjectFinanceLead()
+    //{
+    //	list<ProjectTeamMember__c> teamMembers = [select Id, User__c, Contact__r.pse__Salesforce_User__c from ProjectTeamMember__c where ProjectRole__r.Name = 'Finance Lead' and Project__c = :changeManager.Project__c and Active__c = true];
+	//	if(!teamMembers.isEmpty())
+	//	{
+	//		return teamMembers[0].Contact__r.pse__Salesforce_User__c;
+	//	}
+    //	return null;
+    //}
     
     public PageReference createNewChangeManager()
     {
@@ -168,7 +345,7 @@ public class ECO_ChangeManagerDetailController {
     
     public list<pse__Project_Task__c> getChangedTasks()
     {
-        list<pse__Project_Task__c> tasks = ECO_ChangeManager_Service.getChangedTasks(project.Id, changeManagerSubmittedIds, isSubmitted );
+        list<pse__Project_Task__c> tasks = ECO_Service_ChangeManager.getChangedTasks(project.Id, changeManagerSubmittedIds, isSubmitted );
         
         if(tasks.isEmpty())
             return null;    
@@ -177,7 +354,7 @@ public class ECO_ChangeManagerDetailController {
     
     public list<ProjectTeamMember__c> getChangedKeyMembers()
     {
-        list<ProjectTeamMember__c> teamMembers = ECO_ChangeManager_Service.getChangedKeyMembers(project.Id, changeManagerSubmittedIds, isSubmitted );
+        list<ProjectTeamMember__c> teamMembers = ECO_Service_ChangeManager.getChangedKeyMembers(project.Id, changeManagerSubmittedIds, isSubmitted );
                                                                                                 
         if(teamMembers.isEmpty())                     
             return null;
@@ -190,7 +367,7 @@ public class ECO_ChangeManagerDetailController {
 //                                              from Project_Site__c where project__c = :project.Id
 //                                              and ChangeManagerIsChanged__c = true and ChangeManagerApprovedForSynch__c = false
 //                                              and Id not in :projectChangeManagerSubmittedIds];
-        list<Project_Site__c> projectSites = ECO_ChangeManager_Service.getChangedCustomers(project.Id, changeManagerSubmittedIds, isSubmitted );
+        list<Project_Site__c> projectSites = ECO_Service_ChangeManager.getChangedCustomers(project.Id, changeManagerSubmittedIds, isSubmitted );
                                                 
         if(projectSites.isEmpty())                        
             return null;
@@ -220,7 +397,7 @@ public class ECO_ChangeManagerDetailController {
         
     public list<pse__Proj__c> getChangedSafetyHealthEnv()
     {        
-        list<pse__Proj__c> projects = ECO_ChangeManager_Service.getChangedSafetyHealthEnv(project.Id);
+        list<pse__Proj__c> projects = ECO_Service_ChangeManager.getChangedSafetyHealthEnv(project.Id);
         
         if(projects.isEmpty())
         	return null;
@@ -230,7 +407,7 @@ public class ECO_ChangeManagerDetailController {
     
     public list<pse__Proj__c> getChangedResilience()
     {
-        list<pse__Proj__c> projects = ECO_ChangeManager_Service.getChangedResilience(project.Id);
+        list<pse__Proj__c> projects = ECO_Service_ChangeManager.getChangedResilience(project.Id);
         
         if(projects.isEmpty())
         	return null;
@@ -243,7 +420,7 @@ public class ECO_ChangeManagerDetailController {
 //    	list<Risk__c> risks = [select Id, Name, CurrentStatus__c, ChangeManagerIsNew__c, RiskOwner__c, RiskCategory__c, LikelihoodofOccurrence__c, CreatedDate, CreatedById, LastModifiedById, LastModifiedDate 
 //    							from Risk__c where Project__c = :changeManager.Project__c and ChangeManagerIsChanged__c = true
 //    							and Id not in :projectChangeManagerSubmittedIds];
-        list<Risk__c> risks = ECO_ChangeManager_Service.getChangedRiskManagement(project.Id, changeManagerSubmittedIds, isSubmitted );
+        list<Risk__c> risks = ECO_Service_ChangeManager.getChangedRiskManagement(project.Id, changeManagerSubmittedIds, isSubmitted );
         
 		if(risks.isEmpty())
 			return null;
@@ -257,7 +434,7 @@ public class ECO_ChangeManagerDetailController {
                                                     and ChangeManagerIsChanged__c = true
                                                     and Id not in :projectChangeManagerSubmittedIds];*/
  
-        list<Agreement__c> agreements = ECO_ChangeManager_Service.getChangedAgreements(project.Id, changeManagerSubmittedIds, isSubmitted );
+        list<Agreement__c> agreements = ECO_Service_ChangeManager.getChangedAgreements(project.Id, changeManagerSubmittedIds, isSubmitted );
         
         if(agreements.isEmpty())
             return null;
@@ -273,7 +450,7 @@ public class ECO_ChangeManagerDetailController {
                                             from Funding__c where project__c = :project.Id
                                                     and ChangeManagerIsChanged__c = true
                                                     and Id not in :projectChangeManagerSubmittedIds];*/
-		list<Funding__c> fundings = ECO_ChangeManager_Service.getChangedFunding(project.Id, changeManagerSubmittedIds, isSubmitted );
+		list<Funding__c> fundings = ECO_Service_ChangeManager.getChangedFunding(project.Id, changeManagerSubmittedIds, isSubmitted );
         
         if(fundings.isEmpty())
             return null;
@@ -287,7 +464,7 @@ public class ECO_ChangeManagerDetailController {
                                                     and ChangeManagerIsChanged__c = true
                                                     and Id not in :projectChangeManagerSubmittedIds];*/
 
-		list<Packages__c> scopes = ECO_ChangeManager_Service.getChangedScope(project.Id, changeManagerSubmittedIds, isSubmitted );
+		list<Packages__c> scopes = ECO_Service_ChangeManager.getChangedScope(project.Id, changeManagerSubmittedIds, isSubmitted );
 
         if(scopes.isEmpty())
             return null;
@@ -307,7 +484,7 @@ public class ECO_ChangeManagerDetailController {
     {
     	//list<pse__Proj__c> projects = [select Id, Name, CMProjectClosureIsChanged__c, RequestedProjectStatus__c, ClosureDate__c, ScheduledOnHoldDate__c, ProjectClosureNotes__c, OnHoldReason__c, CreatedDate, CreatedById, LastModifiedById, LastModifiedDate, ChangeManagerProjectStatusUpdatedBy__c, ChangeManagerProjectStatusUpdatedDate__c from pse__Proj__c where Id = :project.Id];
 
-		list<pse__Proj__c> projects = ECO_ChangeManager_Service.getChangedProjectClosure(changeManager.Project__c);
+		list<pse__Proj__c> projects = ECO_Service_ChangeManager.getChangedProjectClosure(changeManager.Project__c);
     
     	if(projects.isEmpty())
     		return null;
@@ -323,6 +500,46 @@ public class ECO_ChangeManagerDetailController {
     	return projects[0];
     }    */
     
+    public class BudgetHeaderWrapper
+    {
+        public boolean isSelected {get; set;}
+        public BudgetHeader__c budgetHeader {get; set;}
+
+        public BudgetHeaderWrapper(boolean selected, BudgetHeader__c budgetHeader)
+        {
+            this.isSelected = selected;
+            this.budgetHeader = budgetHeader;
+        }
+    }
+
+    public list<BudgetHeaderWrapper> initialBudgetsForExecution {get; set;}
+
+    public void populateInitialBudgetsForExecution()
+    {
+        initialBudgetsForExecution = new list<BudgetHeaderWrapper>();
+        //list<BudgetHeaderWrapper> budgetHeaders = new list<BudgetHeaderWrapper>();
+
+        if(changeManager.BudgetIdsSelectedForExecution__c == null)
+            changeManager.BudgetIdsSelectedForExecution__c = '';
+            
+        for(BudgetHeader__c budget:[select Id, Name, BudgetName__c, LastModifiedById, LastModifiedDate from BudgetHeader__c where Project__c = :changeManager.Project__c])
+        {
+            if(changeManager.BudgetIdsSelectedForExecution__c == null || changeManager.BudgetIdsSelectedForExecution__c == '')
+                initialBudgetsForExecution.add(new BudgetHeaderWrapper(true, budget)); 
+            else
+            {   
+                if(changeManager.BudgetIdsSelectedForExecution__c.contains(budget.Id))
+                    initialBudgetsForExecution.add(new BudgetHeaderWrapper(true, budget));                
+                else
+                    initialBudgetsForExecution.add(new BudgetHeaderWrapper(false, budget));
+            }
+        }
+        //if(!budgetHeaders.isEmpty())
+        //    return budgetHeaders;
+
+        //return null;
+    }
+
     public Decimal getChangedBudgetContingency()
     {
         list<BudgetHeader__c> budgets = [select Id, TotalContingencyAmount__c, CreatedDate, CreatedById, LastModifiedById, LastModifiedDate from BudgetHeader__c where Id = :changeManager.BudgetHeader__c];
@@ -335,8 +552,8 @@ public class ECO_ChangeManagerDetailController {
     {
     	//list<VendorSite__c> subsAndVendors = [select Id, Name, ChangeManagerIsNew__c, AccountName__c, CreatedById, CreatedDate, LastModifiedById, LastModifiedDate 
     	//									from VendorSite__c where Project__c = :changeManager.Project__c 
-    	//									and ChangeManagerIsChanged__c = true and Id not in :projectChangeManagerSubmittedIds];
-		list<VendorSite__c> subsAndVendors = ECO_ChangeManager_Service.getChangedResources(changeManager.Project__c, changeManagerSubmittedIds, isSubmitted);
+    	//									and ChangeManagerIsChanged__c = true and Id not in :projectChangeManagerFortedIds];
+		list<VendorSite__c> subsAndVendors = ECO_Service_ChangeManager.getChangedResources(changeManager.Project__c, changeManagerSubmittedIds, isSubmitted);
 		
 		if(subsAndVendors.isEmpty())
 			return null;
@@ -347,7 +564,7 @@ public class ECO_ChangeManagerDetailController {
     {
 //    	list<Deliverable__c> deliverables = [select Id, Name, ChangeManagerIsNew__c, DeliverableType__c, DeliverableOwner__c, DueDate__c, CreatedById, CreatedDate, LastModifiedById, LastModifiedDate from Deliverable__c where Project__c = :changeManager.Project__c and ChangeManagerIsChanged__c = true];
 
-		list<Deliverable__c> deliverables = ECO_ChangeManager_Service.getChangedDeliverables(changeManager.Project__c, changeManagerSubmittedIds, isSubmitted);
+		list<Deliverable__c> deliverables = ECO_Service_ChangeManager.getChangedDeliverables(changeManager.Project__c, changeManagerSubmittedIds, isSubmitted);
 
 		if(deliverables.isEmpty())
 			return null;
@@ -358,7 +575,7 @@ public class ECO_ChangeManagerDetailController {
     {
 //       list<pse__Proj__c> projects = [select Id, Name, CreatedDate, ChangeManagerDocManageUpdatedBy__c, ChangeManagerDocManageUpdatedDate__c, CreatedById, LastModifiedById, LastModifiedDate from pse__Proj__c where Id = :changeManager.Project__c and ChangeManagerIsChangedDocManage__c = true];
 
-        list<pse__Proj__c> projects = ECO_ChangeManager_Service.getChangedDocumentManagement(changeManager.Project__c);
+        list<pse__Proj__c> projects = ECO_Service_ChangeManager.getChangedDocumentManagement(changeManager.Project__c);
 
         if(projects.isEmpty())
         	return null;
@@ -369,7 +586,7 @@ public class ECO_ChangeManagerDetailController {
     public list<Stakeholder__c> getChangedStakeholders()
     {
         //list<Stakeholder__c> stakeholders = [select Id, Name, ChangeManagerIsNew__c, AECOMContact__c, ContactName__c, ContactPhone__c, Interest__c, Organization__c, StakeholderType__c, CreatedById, CreatedDate, LastModifiedById, LastModifiedDate from Stakeholder__c where Project__c = :changeManager.Project__c and ChangeManagerIsChanged__c = true];
-    	list<Stakeholder__c> stakeholders = ECO_ChangeManager_Service.getChangedStakeholders(changeManager.Project__c, changeManagerSubmittedIds, isSubmitted);
+    	list<Stakeholder__c> stakeholders = ECO_Service_ChangeManager.getChangedStakeholders(changeManager.Project__c, changeManagerSubmittedIds, isSubmitted);
     	
     	if(stakeholders.isEmpty())
     		return null;
@@ -396,14 +613,66 @@ public class ECO_ChangeManagerDetailController {
         mode = 'Edit';
         return null; 
     }
+
+    private void populateSelectedBudgetsForSynch()
+    {
+        //changeManager.BudgetIdsSelectedForExecution__c = '';
+        String selectedIds = '';
+        for(BudgetHeaderWrapper wrapper:initialBudgetsForExecution)
+        {
+            if(wrapper.isSelected && selectedIds == '')
+                selectedIds = wrapper.budgetHeader.Id;
+            else if(wrapper.isSelected && changeManager.BudgetIdsSelectedForExecution__c != '' ) 
+                selectedIds += ',' + wrapper.budgetHeader.Id;   
+        }
+        changeManager.BudgetIdsSelectedForExecution__c = selectedIds;
+    }
+
+    public PageReference SynchronizeProject()
+    {
+        changeManager.LatestMessageQueueId__c = ECO_Service_ProjectSync.createMessageQueueForRequest(changeManager.Project__c, ECO_Service_ProjectSync.JOBNAME_PROJECT_SYNC);
+        changeManager.OracleApprovalSyncStatus__c = 'Approved';
+        update changeManager;
+
+
+        if(changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c)
+            ECO_Service_ChangeManager.synchronizeProject2(changeManager.LatestMessageQueueId__c, changeManager.Project__c);
+        else
+            ECO_Service_ChangeManager.synchronizeProject(changeManager.LatestMessageQueueId__c, changeManager.Project__c);
+
+        PageReference changeManagerPageRef = new PageReference('/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id);        
+        changeManagerPageRef.getParameters().put('mode', '');
+        changeManagerPageRef.setRedirect(true);
+        return changeManagerPageRef;  
+    }
     
     public PageReference saveChangeManager()
     {
-        update changeManager;
+        //String results = ECO_Utils_sObject.saveResultReturnErrors(changeManager);
+        try
+        {
+            if(changeManager.IsExecutionApprovalChange__c)
+                populateSelectedBudgetsForSynch();
+
+            update changeManager;
+        }
+        catch(Exception e)
+        {
+            ApexPages.addMessages(e);
+            mode = 'Edit';
+            return null;            
+        }
+
+        //if(results != ''){
+        //    ApexPages.addMessages(new ApexPages.Message(ApexPages.Severity.ERROR, results.replace('&quot;', '"')));
+        //    mode = 'Edit';
+        //    return null;
+        //}
 
    		mode = '';
    		return null;
     }
+
     
     public PageReference takeProjectSnapshot()
     {

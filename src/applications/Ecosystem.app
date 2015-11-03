@@ -5,17 +5,10 @@
     <tab>Ecosystem</tab>
     <tab>pse__Proj__c</tab>
     <tab>standard-Account</tab>
-    <tab>standard-Contact</tab>
-    <tab>standard-Opportunity</tab>
+    <tab>Contract_Review__c</tab>
+    <tab>Agreement__c</tab>
+    <tab>DOAApprovalRequest__c</tab>
+    <tab>standard-report</tab>
     <tab>standard-Idea</tab>
     <tab>SharedServicesRequest__c</tab>
-    <tab>Contract_Review__c</tab>
-    <tab>DOAApprovalRequest__c</tab>
-    <tab>standard-Dashboard</tab>
-    <tab>standard-report</tab>
-    <tab>Revenue__c</tab>
-    <tab>Billing__c</tab>
-    <tab>CostDistLine__c</tab>
-    <tab>EarnedValueHeader__c</tab>
-    <tab>VendorSub__c</tab>
 </CustomApplication>

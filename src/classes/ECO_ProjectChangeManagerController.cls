@@ -2,81 +2,113 @@ public class ECO_ProjectChangeManagerController {
         
         public pse__Proj__c project {get; set;}
         private list<String> changeManagerSubmittedIds;
+        private String mode;
         
         public ECO_ProjectChangeManagerController(ApexPages.standardController controller)
         {
+           		mode = '';
+           		mode = Apexpages.currentPage().getParameters().get('mode');
+           		
                 project = (pse__Proj__c)controller.getRecord();
-                changeManagerSubmittedIds = ECO_ChangeManager_Service.getChangeManagerSubmittedIds(project.Id);
+                changeManagerSubmittedIds = ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id);
+        }
+        
+        public PageReference init()
+        {
+           	if(mode == 'ExecutionApproval')
+           	{
+           		Id approvalForExecutionChangeManager = approvalForExecution();	
+           		return new PageReference('/' + approvalForExecutionChangeManager);  
+           	}          
+           	return null;        	
         }
                 
         public boolean getIsChangedTasks()
         {
-                return ECO_ChangeManager_Service.isChangedTasks(project.Id, changeManagerSubmittedIds);         
+                return ECO_Service_ChangeManager.isChangedTasks(project.Id, changeManagerSubmittedIds);         
         }
         
         public boolean getIsChangedKeyMembers()
         {
-                return ECO_ChangeManager_Service.isChangedKeyMembers(project.Id, changeManagerSubmittedIds);
+                return ECO_Service_ChangeManager.isChangedKeyMembers(project.Id, changeManagerSubmittedIds);
         }
         
         public boolean getIsChangedCustomers()
         {
-                return ECO_ChangeManager_Service.isChangedCustomers(project.Id, changeManagerSubmittedIds);
+                return ECO_Service_ChangeManager.isChangedCustomers(project.Id, changeManagerSubmittedIds);
         }
 
         public boolean getIsChangedClassifications()
         {
-                return ECO_ChangeManager_Service.isChangedClassifications(project.Id);
+                return ECO_Service_ChangeManager.isChangedClassifications(project.Id);
         }
 
         public boolean getIsChangedSHE()
         {
-                return ECO_ChangeManager_Service.isChangedSafetyHealthEnv(project.Id);
+                return ECO_Service_ChangeManager.isChangedSafetyHealthEnv(project.Id);
         }
         
         public boolean getIsChangedAgreements()
         {
-                return ECO_ChangeManager_Service.isChangedAgreements(project.Id, changeManagerSubmittedIds);
+                return ECO_Service_ChangeManager.isChangedAgreements(project.Id, changeManagerSubmittedIds);
         }
 
         public boolean getIsChangedFunding()
         {
-                return ECO_ChangeManager_Service.isChangedFunding(project.Id, changeManagerSubmittedIds);
+                return ECO_Service_ChangeManager.isChangedFunding(project.Id, changeManagerSubmittedIds);
         }       
 
         public boolean getIsChangedDocManage()
         {
-                return ECO_ChangeManager_Service.isChangedDocumentManagement(project.Id);
+                return ECO_Service_ChangeManager.isChangedDocumentManagement(project.Id);
         }               
         
         public boolean getIsChangedStakeComm()
         {
-                return ECO_ChangeManager_Service.isChangedStakeholders(project.Id, changeManagerSubmittedIds);
+                return ECO_Service_ChangeManager.isChangedStakeholders(project.Id, changeManagerSubmittedIds);
         }       
         
         public boolean getIsChangedResources()
         {
-                return ECO_ChangeManager_Service.isChangedResources(project.Id, changeManagerSubmittedIds);
+                return ECO_Service_ChangeManager.isChangedResources(project.Id, changeManagerSubmittedIds);
         }       
         
         public boolean getIsChangedDeliverables()
         {
-                return ECO_ChangeManager_Service.isChangedDeliverables(project.Id, changeManagerSubmittedIds);
+                return ECO_Service_ChangeManager.isChangedDeliverables(project.Id, changeManagerSubmittedIds);
         }       
         
         public boolean getIsChangedScope()
         {
-                return ECO_ChangeManager_Service.isChangedScope(project.Id, changeManagerSubmittedIds);
+                return ECO_Service_ChangeManager.isChangedScope(project.Id, changeManagerSubmittedIds);
         }       
         
         public boolean getIsChangedResilience()
         {
-                return ECO_ChangeManager_Service.isChangedResilence(project.Id);
+                return ECO_Service_ChangeManager.isChangedResilence(project.Id);
         }       
 
         public boolean getIsChangedRisk()
         {
-                return ECO_ChangeManager_Service.isChangedRisk(project.Id, changeManagerSubmittedIds);
-        }       
+                return ECO_Service_ChangeManager.isChangedRisk(project.Id, changeManagerSubmittedIds);
+        }   
+        
+        public Id approvalForExecution()
+    	{
+    		Id executionApprovalRecordTypeId = ECO_Utils_Meta.getRecordTypeId(ChangeManager__c.sObjectType, 'Execution Approval');
+    		
+    		list<ChangeManager__c> approvalForExecutionChangeManagers = [select Id from ChangeManager__c 
+                                                                        where RecordTypeId = :executionApprovalRecordTypeId 
+                                                                        and Project__c = :project.Id order by Id desc];
+    		
+    		if(approvalForExecutionChangeManagers.isEmpty())
+    		{
+    			ChangeManager__c approvalForExecutionChangeManager = new ChangeManager__c(Project__c = project.Id, RecordTypeId = executionApprovalRecordTypeId);
+    			insert approvalForExecutionChangeManager;
+    		
+    			return approvalForExecutionChangeManager.Id;
+    		}
+    		return approvalForExecutionChangeManagers[0].Id;
+    	}    
 
 }

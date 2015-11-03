@@ -1,0 +1,307 @@
+<apex:page standardController="BudgetHeader__c" extensions="ECO_BudgetContingencyController" sidebar="false" showHeader="false">
+    
+    <apex:composition template="ECO_BudgetFrame">
+    <apex:define name="budgetScreen">
+
+    <style>
+        .laborDetail>td, .laborDetail>th, td.resourceColumn th, td.resourceColumn td {
+            border-top: 1px solid black;
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+        }
+        .laborDetail>td.lastCell {
+            border-bottom: 1px solid black;
+        }
+        
+        tr.taskDetail:last-child>td {
+            border-bottom: 1px solid black;
+        }
+        
+        .taskDetailHeader>td{
+            border-left: 1px solid black;
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            padding:3px;
+            height: 20px;
+        }
+        
+        .taskDetail>td{
+            border-left: 1px solid black;
+            border-top: 1px solid black;
+            padding:3px;
+            height: 20px;
+        }
+        
+        .taskDetail>td.lastCell{
+            border-right: 1px solid black;
+        }
+        
+        table.rowHeader>th, table.rowHeader>td {
+            border-top: 1px solid transparent;
+            border-left: 1px solid transparent;
+            border-right: 1px solid transparent;
+       }
+        table.rowHeader>td.lastCell {
+            border-bottom: 1px solid transparent;
+        }
+        table.laborDetail {
+            width: 100%;
+        }
+        table.rowHeader>td, table.laborDetail>td, table.rowHeader>th, table.laborDetail>th, td.resourceColumn th, td.resourceColumn td{
+            padding:3px;
+            height: 20px;
+        }
+        
+        td.resourceColumn th, td.resourceColumn td{
+        	border-bottom: 1px solid black;
+        }
+        
+        .tableInputs {
+            padding: 0;
+            height: 20px;
+        }
+        
+        .purpleHeading {
+            background-color:#582A72;
+            color:#fff;
+            font-weight: bold;
+        }
+        
+        .lightPurpleHeading {
+            background-color: #9775AA;
+        }
+        
+        .redHeading {
+            background-color: red;
+        }
+        .bold {
+            font-weight: bold;
+        }
+        
+        .grayHeading {
+            background-color: #BFBFBF;
+            font-weight: bold;
+        }
+    </style>
+    
+    <apex:sectionHeader title="Contingency Details"/>  
+
+    <c:ECO_ModalDialog width="600" padding="20px 20px 20px 20px" name="modalDialog0">
+        <c:ECO_AddContingency budgetHeader="{!BudgetHeader__c.id}" />
+    </c:ECO_ModalDialog>    
+    
+    <apex:form >
+        
+    <table style="width:100%" cellpadding="0" cellspacing="0">
+        <tr>
+            <td></td>
+            <td>
+                <table class="rowHeader" cellpadding="0" cellspacing="0">
+                    <thead>
+                        <tr><th>All values shown in : {!projectCurrency}</th></tr>
+                        <tr><th>
+                            <apex:commandButton value="Save" action="{!save}"/>
+                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/>
+                        </th></tr>
+                        <tr><th>&nbsp;</th></tr>
+                        <tr><th>&nbsp;</th></tr>
+                    </thead>
+                    <!--tbody>
+                        <tr><td>Total Cost Rate  (FBLR)</td></tr>
+                        <tr><td>Raw</td></tr>
+                        <tr><td>Fringe</td></tr>
+                        <tr><td>O/H</td></tr>
+                    
+                        <tr><td style="height: 20px;">&nbsp;</td></tr>
+                    
+                        <tr><td>Revenue Rate</td></tr>
+                        <tr><td>Margin Type</td></tr>
+                        <tr><td class="lastCell">Bill Rate or % Markup</td></tr>
+                    </tbody-->
+                </table>
+            </td>
+        <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour">
+            <td class="resourceColumn">
+                <table class="laborDetail" cellpadding="0" cellspacing="0">
+                    <thead>
+                        <tr><th colspan="2" class="purpleHeading">{!budgetLabour.resourceType}</th></tr>
+                        <tr><th colspan="2" class="purpleHeading">
+                            <apex:commandLink title="Clone" action="{!cloneResource}">
+                                <apex:param name="budgetSubId" value="{!budgetLabour.oBudgetResource.Id}"/>
+                                <apex:image value="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'clone.png')}" width="12" style="margin-right: 8px;" />
+                            </apex:commandLink>
+                            <apex:commandLink title="Delete" action="{!removeEntireColumn}" >
+                                <apex:param name="budgetSubId" value="{!budgetLabour.oBudgetResource.Id}"/>
+                                <apex:image value="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" width="12" />
+                            </apex:commandLink>
+                        </th></tr>
+                        <!--<tr><td colspan="2" class="lightPurpleHeading">{!budgetLabour.columnHeader}</td></tr>-->
+                        <tr><td colspan="2" ><apex:inputText value="{!budgetLabour.jobName}"/></td></tr>
+                    </thead>
+                    <tbody >
+
+                    </tbody>
+                    <!--tr><td style="height: 20px;">&nbsp;</td></tr>
+                    <tbody class="revenue">
+                        <tr><td class="lightPurpleHeading bold"><apex:outputText value="{!budgetLabour.revenueRate}"/></td></tr>
+                        <tr>
+                            <td>
+                                <apex:selectList value="{!budgetLabour.marginType}" size="1">
+                                    <apex:selectOption itemValue="Amount" itemLabel="Amount" />
+                                    <apex:selectOption itemValue="Percent" itemLabel="Percent" />
+                                </apex:selectList>
+                            </td>
+                        </tr>
+                        <tr><td class="lastCell"><apex:inputText value="{!budgetLabour.billRateOrMarkup}"/></td></tr>
+                    </tbody-->
+                </table>
+            </td>
+        </apex:repeat>
+        </tr>
+        <tr><td style="height: 20px;">&nbsp;</td></tr>
+        <tr class="taskDetailHeader">
+            <td class="grayHeading">Task Number</td>
+            <td class="grayHeading">Task Name</td>
+        <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour">
+            <td class="lightPurpleHeading bold">
+                <table width="100%">
+                    <tr>
+                        <td width="50%">Cost</td>
+                        <td width="50%">Revenue</td>        
+                    </tr>
+                </table>
+            </td>
+        </apex:repeat>
+            <td class="purpleHeading">Cost</td>
+            <td class="purpleHeading">Revenue</td>
+        </tr>
+        <tr><td style="height: 5px;">&nbsp;</td></tr>
+        <tr class="taskDetail">
+            <td class="bold">Project Total</td>
+            <td></td>
+        <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour"> <!--list<DTO_BudgetLaborDetail>-->
+            <td class="lightPurpleHeading">
+                <table width="100%">
+                    <tr>
+                        <td width="50%">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!budgetLabour.totalCostByPerson}" />
+                            </apex:outputText>
+                        </td>
+                        <td width="50%">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!budgetLabour.totalRevenueByPerson}" />
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </apex:repeat>
+            <td class="purpleHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!totalRow.totalContingency}" />
+                </apex:outputText>
+            </td>
+            <td class="purpleHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!totalRow.totalContingencyRevenue}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <apex:repeat value="{!budgetLabourWrapper.dtoBudgetTasks}" var="budgetTask"> <!--list<DTO_BudgetTask>-->
+            <tr class="taskDetail">
+                <td>
+                    <div style="margin-left: {!budgetTask.indentLevel * 13}px;">
+                        {!budgetTask.taskNumber} (level {!budgetTask.indentLevel})
+                    </div>
+                </td>
+                <td>
+                    <div style="margin-left: {!budgetTask.indentLevel * 13}px;">
+                        {!budgetTask.taskName}
+                    </div>
+                </td>
+            <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour"> <!--list<DTO_BudgetLaborDetail>-->
+                <td>
+                    <table width="100%">
+                        <tr>
+                            <td width="50%">
+                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c}" rendered="{!budgetTask.children.size == 0}" />
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
+                                    <apex:param value="{!budgetLabourWrapper.mapTotalCostBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}"/>
+                                </apex:outputText>
+                            </td>
+                            <td width="50%">
+                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalRevenue__c}" rendered="{!budgetTask.children.size == 0}" />
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
+                                    <apex:param value="{!budgetLabourWrapper.mapTotalRevenueBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}"/>
+                                </apex:outputText>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </apex:repeat>
+                <td class="purpleHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalContingency}" />
+                    </apex:outputText>
+                </td>
+                <td class="purpleHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalContingencyRevenue}" />
+                    </apex:outputText>
+                </td>
+            </tr>
+        </apex:repeat>
+        <!--tr class="taskDetail">
+            <td></td>
+            <td>Total Cost by Person</td>
+        <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour">
+            <td class="lightPurpleHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabour.totalCostByPerson}" />
+                </apex:outputText>
+            </td>
+        </apex:repeat>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr-->
+        <!--tr class="taskDetailHeader">
+            <td></td>
+            <td>Total Revenue by Person</td>
+        <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour">
+            <td class="lightPurpleHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabour.totalRevenueByPerson}" />
+                </apex:outputText>
+            </td>
+        </apex:repeat>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr-->
+    </table>
+    <table>
+        <tr><td>&nbsp;</td></tr>
+        <tr class="taskDetailHeader">
+            <td class="purpleHeading">Per Risk Register</td>
+            <td class="lightPurpleHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!totalRisk}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr class="taskDetailHeader">
+            <td class="purpleHeading">Variance from Budget</td>
+            <td class="{!IF(totalRisk<totalBudgetContingencies,'redHeading','lightPurpleHeading')}">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!totalRisk-totalBudgetContingencies}" />
+                </apex:outputText>
+           </td>
+        </tr>
+    </table>
+    </apex:form>
+
+    </apex:define>
+    </apex:composition>
+</apex:page>

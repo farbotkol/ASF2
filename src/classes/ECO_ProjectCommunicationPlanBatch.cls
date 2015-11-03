@@ -20,7 +20,7 @@ global class ECO_ProjectCommunicationPlanBatch implements Database.Batchable<sOb
                                     ReminderDateTime = System.now()+1, 
                                     WhatId = plan.Project__c    );             
              tasks.add(newTask);
-             plan.TaskLastGenerated__c = DateTime.Now();		
+             plan.TaskLastGenerated__c = Date.Today();		
 		} 			
 		insert tasks;
 		update communicationPlans;

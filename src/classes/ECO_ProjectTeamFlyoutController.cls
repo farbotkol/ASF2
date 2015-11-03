@@ -9,7 +9,7 @@ public with sharing class ECO_ProjectTeamFlyoutController {
         bInitialDefault = true;
 		lTeamRoleTypes = new List<SelectOption>();
 		lTeamRoleTypes.add(new SelectOption('', '--None--'));     
-		for(ProjectRole__c role:[Select Id, Name, Type__c From ProjectRole__c Where Active__c = true and Type__c = 'Team Member' Order By SortOrder__c ASC]) 
+		for(ProjectRole__c role:[Select Id, Name, Type__c From ProjectRole__c Where Active__c = true and Type__c = 'Team Member' Order By Name ASC]) 
 		{
 			lTeamRoleTypes.add(new SelectOption(role.Id, role.Name));
 		}  

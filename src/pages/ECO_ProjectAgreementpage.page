@@ -24,17 +24,7 @@
 		td:nth-child(1){
      		font-weight: bold;
 		}
-		
-		.customHelpText
-		{
-			padding:10px 5px;
-			border:1px solid #85B3CE;
-			min-height:25px;
-			display:block;
-			width:auto;
-			margin:5px 5px;
-			background-color:#E3F0F8;
-		}
+
 		.customHelpIcon
 		{
 			display:inline-block;
@@ -43,13 +33,24 @@
 			height:24px;
 			vertical-align:top !important;
 		}
-		.customHelpBody
-		{
-			padding: 6px 3px;
-			display:inline-block;
-			color:#;
-			max-width:95%;
-		} 		
+        /* CUSTOM HELP / GUIDANCE TEXT BOX */
+        .customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 30px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        } 		
 		
 	</style>
 	<script type="text/javascript">
@@ -66,7 +67,7 @@
 
 <apex:pageBlock >
 	<apex:pageBlockButtons location="top">
-		<apex:commandButton action="{!cancel}" value="Return to Project" />
+		<apex:commandButton action="{!returnToProject}" value="Return to Project" />
 	</apex:pageBlockButtons>
 
 <apex:actionFunction name="recordTypeSelected2" action="{!recordTypeSelected}" rerender="rtypeid">
@@ -75,7 +76,9 @@
 
 		<div class="customHelpText">
 			<div class="customHelpBody">
-				Select a record type to add a new agreement to the project.  Agreements can be directly with a client, teaming partner, subcontractor/ sub-consultant or another AECOM legal entity.  They can also include non-monetary agreements such as confidentiality or non-disclosure statements.  It is best practice to document and manage contractual constraints or obligations associated with all agreement types used on a project, not just the funding agreement.<br/>The record type “Prime”, “Prime Interim Agreement” or “Prime Task Order” will be sent to Oracle as the primary funding agreement so these record types should be used when selecting an agreement type between AECOM
+				Select a record type to add a new agreement to the project.  Agreements can be directly with a client, teaming partner, subcontractor/ sub-consultant or another AECOM legal entity.  They can also include non-monetary agreements such as confidentiality or non-disclosure statements.  It is best practice to document and manage contractual constraints or obligations associated with all agreement types used on a project, not just the funding agreement.<br/><br/>
+
+				The record type “Prime”, “Prime Interim Agreement” or “Prime Task Order” will be sent to Oracle as the primary funding agreement so these record types should be used when selecting an agreement type between AECOM and the billing client.
 			</div>
 		</div>
 	<apex:outputPanel >

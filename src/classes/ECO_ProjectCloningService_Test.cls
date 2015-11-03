@@ -291,7 +291,7 @@ private class ECO_ProjectCloningService_Test{
 		final Integer numTestSubTasksPerTask = 0;
 		final Integer numTestProjectMilestones = 300;
 		final Integer numTestSubProjects = 50;
-		final Integer numTeamMembers = 100;
+		final Integer numTeamMembers = 1;
 
 		Account testAccount = new Account();
 		testAccount.Name = 'test Account';

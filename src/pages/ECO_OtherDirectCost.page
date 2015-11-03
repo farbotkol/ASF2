@@ -1,6 +1,43 @@
 <apex:page standardController="OtherDirectCost__c" extensions="ECO_OtherDirectCostController" action="{!init}">
+
+<style>
+        .customHelpIcon
+        {
+            display:inline-block;
+            margin:0 5px 0 0;
+            width:24px;
+            height:24px;
+            vertical-align:top !important;
+        }
+        /* CUSTOM HELP / GUIDANCE TEXT BOX */
+        .customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 10px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        }   
+
+</style>
+
 <apex:form >
-	<apex:sectionHeader title="Other Direct Cost Edit" subtitle="New Other Direct Cost"/>
+	<apex:sectionHeader title="Other Direct Cost Edit" subtitle="{!agreement.ContractTitle__c}({!agreement.AgreementNumber__c})"/>
+        <div class="customHelpText">
+            <div class="customHelpBody">
+Complete this section to add contract-specific billing limitations or requirements for other direct costs (non-labor) that Project Managers should be aware of when estimating task order proposals and invoicing projects.   One record can be created per direct cost, such as travel, materials and equipment.   
+            </div>
+        </div> 
+
 	<apex:pageBlock title="Other Direct Cost Edit">
 
 	<apex:pageBlockButtons >
@@ -8,17 +45,20 @@
 		<apex:commandButton value="Return to MSA" action="{!cancel}"/>
 	</apex:pageBlockButtons>
 
-	<apex:pageBlockSection title="Information" collapsible="false">
-		<apex:inputField value="{!OtherDirectCost__c.Type__c}"/>
+	<apex:pageBlockSection collapsible="false">
+		<apex:pageBlockSectionItem helpText="Enter the type of non-labor direct cost (e.g., travel, equipment, materials, printing, courier, PPE).">
+			<apex:outputText value="Other Direct Cost"/>
+			<apex:inputField value="{!OtherDirectCost__c.Type__c}"/>
+		</apex:pageBlockSectionItem>
 		<apex:inputField value="{!OtherDirectCost__c.Description__c}"/>
 		<apex:inputField value="{!OtherDirectCost__c.Markup__c}"/>
 		<apex:inputField value="{!OtherDirectCost__c.Allowable__c}"/>
 		<apex:inputField value="{!OtherDirectCost__c.Comments__c}"/>
 	</apex:pageBlockSection>
-	
-	<apex:pageBlockSection title="System Information" collapsible="false">
+	<apex:inputHidden value="{!OtherDirectCost__c.Agreement__c}"/>
+<!--	<apex:pageBlockSection title="System Information" collapsible="false">
 		<apex:outputField value="{!OtherDirectCost__c.Agreement__c}"/>
-	</apex:pageBlockSection>
+	</apex:pageBlockSection> -->
 
 </apex:pageBlock>
 </apex:form>

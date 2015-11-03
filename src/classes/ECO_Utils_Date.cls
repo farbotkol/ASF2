@@ -1,6 +1,7 @@
 public without sharing class ECO_Utils_Date {
 	
 	private static Map<Integer, String> monthNameMap;
+	private static map<String, Integer> monthNumberMap;
 	
 	public static String getMonthPrefixFromDate (Date theDate) {
 		if (monthNameMap == null) {
@@ -22,6 +23,43 @@ public without sharing class ECO_Utils_Date {
 		return monthNameMap.get(theDate.month());
 	}
 	
+	public static Integer getMonthNumberFromPrefix (String monthPrefix) {
+		if (monthNumberMap == null) {
+			monthNumberMap = new Map<String, Integer>();
+			monthNumberMap.put('JAN', 1);
+			monthNumberMap.put('FEB', 2);
+			monthNumberMap.put('MAR', 3);
+			monthNumberMap.put('APR', 4);
+			monthNumberMap.put('MAY', 5);
+			monthNumberMap.put('JUN', 6);
+			monthNumberMap.put('JUL', 7);
+			monthNumberMap.put('AUG', 8);
+			monthNumberMap.put('SEP', 9);
+			monthNumberMap.put('OCT', 10);
+			monthNumberMap.put('NOV', 11);
+			monthNumberMap.put('DEC', 12);
+		}
+		
+		return monthNumberMap.get(monthPrefix);
+	}
+
+	public static DateTime getDateTimeFromPICRequestStatusString(String dateTimeString)
+	{
+		//01-OCT-15 10.32.42.000000 PM UTC
+		String dd=dateTimeString.subString(0,2);
+		String mm=string.valueOf(getMonthNumberFromPrefix(dateTimeString.subString(3,6)));
+		String yy=dateTimeString.subString(7,9);
+		String hh=dateTimeString.subString(10, 12);
+		String mn=dateTimeString.subString(13, 15);
+		String ss=dateTimeString.subString(16, 18);
+		String period=dateTimeString.subString(26, 28); 
+
+		if(period == 'PM' && integer.valueOf(hh) < 12)
+			hh = string.valueOf(integer.valueOf(hh) + 12);
+
+		return DateTime.newInstanceGMT(2000 + integer.valueOf(yy), integer.valueOf(mm), integer.valueOf(dd), integer.valueOf(hh), integer.valueOf(mn), integer.valueOf(ss));
+	}
+
 	public static Integer getTwoDigitYearFromDate (Date theDate) {
 		Integer returnInteger;
 		

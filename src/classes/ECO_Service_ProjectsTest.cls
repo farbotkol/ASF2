@@ -9,7 +9,7 @@ private class ECO_Service_ProjectsTest {
 		ECO_Utils_Testing.createTestDataForProjectNumberRequest();
 		pse__Proj__c testProject = [SELECT Id, Name FROM pse__Proj__c LIMIT 1];
 
-		ECO_Service_ProjectSync.ProjectMessageWrapper  wrapper = ECO_Service_ProjectSync.createProjectMessageWrapper(testProject.Id, true);
+		ECO_Service_ProjectSync.ProjectMessageWrapper  wrapper = ECO_Service_ProjectSync.createProjectMessageWrapper(testProject.Id, true, true);
 
 		system.assertEquals(testProject.Name, wrapper.PROJECT_HEADER.PROJECT_NAME);			
 
@@ -24,7 +24,7 @@ private class ECO_Service_ProjectsTest {
 
 		test.StartTest();
 
-		ECO_Service_ProjectSync.ProjectMessageWrapper  wrapper = ECO_Service_ProjectSync.createProjectMessageWrapper(testProjectId, false);
+		ECO_Service_ProjectSync.ProjectMessageWrapper  wrapper = ECO_Service_ProjectSync.createProjectMessageWrapper(testProjectId, false, true);
 
 		system.assertEquals(numTeamMembers, wrapper.KEYMEMBERS_COLLECTION.size());
 		system.assertEquals(false, wrapper.CLASSIFICATION_COLLECTION.isEmpty());	//note all checkbox datatype classification fields get sent to service as they can never be null

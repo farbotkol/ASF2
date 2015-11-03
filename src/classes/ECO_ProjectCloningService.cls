@@ -383,6 +383,12 @@ Public without sharing class ECO_ProjectCloningService {
 							Set<String> lookupFieldApiNames = mapLevelLookupFieldApiNames.get(i);
 							system.debug('level ' + i + ' lookupFieldApiNames size = ' + lookupFieldApiNames.size());
 							system.debug('level ' + i + ' objects to insert size = ' + objectsToInsert.size());
+                            
+                            /*for( string s : lookupFieldApiNames )
+                            {                                
+                            	system.debug( '==' + s );
+                            }*/
+                            
 							for(SObject sObj : objectsToInsert){
 								Id origParentId = (Id)sObj.get(parentObjectApiName);
 								//verify parent id exists for clone and is mapped to the source parent id
@@ -413,14 +419,21 @@ Public without sharing class ECO_ProjectCloningService {
 						system.debug('level ' + i + ' - dml call limit before insert = ' + Limits.getDMLStatements());
 						system.debug('level ' + i + ' - dml record limit before insert = ' + Limits.getDMLRows());
 						system.debug('level ' + i + ' - soql queries executed before insert = ' + Limits.getQueries());
+                        
+                        system.debug( 'objectsToInsert size : ' + objectsToInsert.size() );
 						
 						//special handling for tasks and dependent items - pse triggers not bulkified for subtasks				
 						if(!doBatchApexProcessing && objectUsesBatchProcessing){
 							doBatchApexProcessing = true;
 							batchProcessingSettingsId = objectCloneSettingId;													
 						}else if(!objectUsesBatchProcessing){
-							insert objectsToInsert;
-							//update the source to target id mapping, objects just inserted should be in same order
+                            
+                            if ( objectsToInsert.size() > 0 )
+                            {
+						    	system.debug( ' objectsToInsert ' + objectsToInsert );
+								insert objectsToInsert;
+                            }    
+                                //update the source to target id mapping, objects just inserted should be in same order
 							Integer index = 0;
 							for(SObject objJustCreated : objectsToInsert){						
 								mapOrigToNewIds.put(mapIndexSourceIds.get(index), objJustCreated.Id);

@@ -24,7 +24,7 @@ public class ECO_ProjectReviewRecordTypeController {
         
         public list<ProjectReview__c> getProjectReviews()
         {
-                return [select Id, Name, RecordType.Name, ScheduledDate__c, CompletedDate__c, ResponsiblePerson__c from ProjectReview__c where Project__c = :theProject.Id];
+                return [select Id, Name, RecordType.Name, Status__c, IsPerformanceReview__c, ScheduledDate__c, CompletedDate__c, ResponsiblePerson__c from ProjectReview__c where Project__c = :theProject.Id];
         }
         
         public PageReference createNewProjectReview()
@@ -36,7 +36,10 @@ public class ECO_ProjectReviewRecordTypeController {
                 //return null;
         
                 RecordType recordType = [select Id, Name from RecordType where SobjectType = 'ProjectReview__c' and Name = :selectedRecordType limit 1];
-                
+        
+                if(selectedRecordType == 'Project Performance Review'  || selectedRecordType == 'Monthly Project Review' )  
+                     return new PageReference('/apex/ECO_ProjectPerformanceReviews?ProjectId=' + theProject.Id + '&' + 'RecordTypeId=' + recordType.Id);        
+
                 return new PageReference('/apex/ECO_ProjectReviews?ProjectId=' + theProject.Id + '&' + 'RecordTypeId=' + recordType.Id);
         
                 //else

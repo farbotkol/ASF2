@@ -10,11 +10,6 @@ private class Eco_Project_TeamMember_Trigger_Test {
                         
             ECO_Utils_Testing.createTestDataForProjectSync( 2, 2 );
             
-            /*Project__c p = new Project__c();
-            p.Name = 'Proj';
-            p.ownerId = testUser.id;
-            insert p;*/
-            
             pse__Proj__c projectOne = ECO_Utils_Testing.createTestProject('Project One');
             Insert projectOne;
             
@@ -24,7 +19,6 @@ private class Eco_Project_TeamMember_Trigger_Test {
 
             for(ProjectTeamMember__c p : lptm)
             {
-                //p.Active__c = false;
                 p.EndDate__c = Date.today().addDays(-4);
                 p.StartDate__c = Date.today().addDays(-14);
             }
@@ -33,8 +27,6 @@ private class Eco_Project_TeamMember_Trigger_Test {
             
             BatchDeleteProjectSharing myBatchObject = new BatchDeleteProjectSharing();
             Database.executeBatch(myBatchObject);            
-            
-            //ProjectTeamMember__c tm1 = new ProjectTeamMember__c();
-            //insert tm1;
+
         }
 }

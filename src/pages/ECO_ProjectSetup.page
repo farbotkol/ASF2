@@ -1,4 +1,4 @@
-<apex:page extensions="ECO_ProjectSetupController" standardController="pse__Proj__c" tabStyle="pse__Proj__c" showHeader="true" sidebar="false" id="thepage">
+<apex:page extensions="ECO_ProjectSetupController" standardController="pse__Proj__c" tabStyle="pse__Proj__c" showHeader="true" sidebar="false" id="thepage" docType="html-5.0">
     
     <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
     <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
@@ -284,8 +284,13 @@
                     <br/>
             </div>
         </div>  
-
-
+        <br/>
+        <br/>
+        <br/>
+		<apex:include pageName="ECO_ProjectStatusOnCreateProject"/>
+        <br/>
+        <br/>
+        <br/>
         <apex:form id="theform">
 
             <apex:outputPanel id="SelectAddressPanel">
@@ -395,10 +400,13 @@
                                                                             </apex:actionSupport>
                                                                         </apex:inputCheckbox>
                                                                     </apex:column>
-                                                                    <apex:column headerValue="Client Contact">
+                                                                    <apex:column headerValue="Billing Contact">
                                                                         <apex:selectList value="{!Site.billingContact}" disabled="{!NOT(Site.booIsBilling)}">
                                                                             <apex:selectOptions value="{!Site.contacts}"></apex:selectoptions>
                                                                         </apex:selectList>
+                                                                    </apex:column>
+                                                                    <apex:column headerValue="Contributions">
+                                                                        <apex:input value="{!Site.contributions}" type="number" />
                                                                     </apex:column>
                                                                 </apex:pageBlockTable>
                                                             </div>

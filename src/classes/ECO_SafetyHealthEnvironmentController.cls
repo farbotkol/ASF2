@@ -2,6 +2,7 @@ public class ECO_SafetyHealthEnvironmentController {
         
         public pse__Proj__c project;
         public list<Induction__c> inductionRegistrations {get;set;}
+        public list<Induction__c> inductionRegistrationsRemove {get;set;}
         public list<InductedProjectTeamMembers__c> inductedProjectTeamMembers {get;set;} 
         public map<id, list<InductedProjectTeamMembers__c>> inductedProjectTeamMembersMap {get; set;}
         public map<id, list<Attachment>> inductionAttachmentsMap {get; set;}
@@ -23,30 +24,94 @@ public class ECO_SafetyHealthEnvironmentController {
         public Id inductionId {get; set;}
         
         public list<Attachment> inductionAttachments;
+
+        public list<ProjectActivities__c> ProjActivities {get;set;}
+        public list<ProjectActivities__c> ProjActivitiesRemove {get;set;}
+
+        public integer rowNumber {get;set;}
+        public integer rowNumberInduction {get;set;}
         
         
         public ECO_SafetyHealthEnvironmentController(ApexPages.StandardController sc)
         {
-                inductionAttachmentsMap = new map<id, list<Attachment>>();
-                inductedProjectTeamMembersMap = new map<id, list<InductedProjectTeamMembers__c>>();
+            inductionAttachmentsMap = new map<id, list<Attachment>>();
+            inductedProjectTeamMembersMap = new map<id, list<InductedProjectTeamMembers__c>>();
                 
-                project = (pse__Proj__c)sc.getRecord();
-                defaultAnswersFromRiskMarketAssessment();       
+            project = (pse__Proj__c)sc.getRecord();
+            defaultAnswersFromRiskMarketAssessment();       
+
+            queryProjectActivities();
+
+            ProjActivitiesRemove = new list<ProjectActivities__c>();
+            inductionRegistrationsRemove = new list<Induction__c>();
         }
         
- public list<selectOption> getImpactStatusOptions()
-    {    
-        list<selectOption> options = new list<selectOption>();
-       Schema.DescribeFieldResult fieldResult = pse__Proj__c.SafetyHealthEnvImpactStatus__c.getDescribe();
 
-        list<Schema.PicklistEntry> ple = fieldResult.getPickListValues();
-        for(Schema.PicklistEntry p : ple)
-        {
-            options.add(new SelectOption(p.getLabel(), p.getValue()));
+        private void queryProjectActivities(){
+            ProjActivities = [select id, ImpactonEnv__c, Name, Significance__c, Control__c, ProposedAction__c, ActionTaken__c from ProjectActivities__c where Project__c =: project.id];
         }
 
-        return options;
-    }
+        public PageReference newProjectActivities(){
+
+            /*ProjActivities.add(new ProjectActivities__c(Project__c = project.id));
+
+            return null;*/
+
+
+            update project;
+            
+            ProjectActivities__c pa =  new ProjectActivities__c(Project__c = project.Id, Name='New Project Activity');
+            insert pa;
+            
+            PageReference myPage = new PageReference('/' + pa.Id + '/e');
+            myPage.getParameters().put('saveURL', '/apex/ECO_SafetyHealthEnvironment?Id=' + project.Id);
+            myPage.getParameters().put('retURL', '/apex/ECO_SafetyHealthEnvironment?Id=' + project.Id + '&RecordToDelete='+ pa.Id + '&RecordType=ProjAct');
+      
+            return myPage;
+
+
+        }
+
+        public PageReference RemoveProjectActivities(){
+            ProjectActivities__c pa = ProjActivities[rowNumber-1];
+
+            if(pa.id != null){
+                ProjActivitiesRemove.add(pa);
+            }
+
+            ProjActivities.remove(rowNumber-1);
+
+            return null;
+
+        }
+
+        public PageReference RemoveInduciton(){
+            Induction__c ind = inductionRegistrations[rowNumberInduction-1];
+
+            if(ind.id != null){
+                inductionRegistrationsRemove.add(ind);
+            }
+
+            inductionRegistrations.remove(rowNumberInduction-1);
+
+            return null;
+
+        }
+
+
+        public list<selectOption> getImpactStatusOptions()
+        {    
+            list<selectOption> options = new list<selectOption>();
+            Schema.DescribeFieldResult fieldResult = pse__Proj__c.SafetyHealthEnvImpactStatus__c.getDescribe();
+
+            list<Schema.PicklistEntry> ple = fieldResult.getPickListValues();
+            for(Schema.PicklistEntry p : ple)
+            {
+                options.add(new SelectOption(p.getLabel(), p.getValue()));
+            }
+
+            return options;
+        }
         
         private void defaultAnswersFromRiskMarketAssessment()
         {
@@ -80,6 +145,8 @@ public class ECO_SafetyHealthEnvironmentController {
         
         public void init()
         {
+
+
                 if(Apexpages.currentPage().getParameters().get('RecordToDelete') != null)
                 {
                         String recordId = Apexpages.currentPage().getParameters().get('RecordToDelete');
@@ -87,7 +154,14 @@ public class ECO_SafetyHealthEnvironmentController {
                         {       
                                 Induction__c induction = [select Id from Induction__c where Id = :recordId];
                                 delete induction;
+
                         }
+                        else if(Apexpages.currentPage().getParameters().get('RecordType') == 'ProjAct'){
+                                ProjectActivities__c projAct = [select Id from ProjectActivities__c where Id = :recordId];
+                                delete projAct;
+                                queryProjectActivities();
+                        }
+
                         else
                         {
                                 InductedProjectTeamMembers__c teamMember = [select Id from InductedProjectTeamMembers__c where Id = :recordId];
@@ -169,6 +243,9 @@ public class ECO_SafetyHealthEnvironmentController {
                 if(attachmentsMap.containsKey(attachmentId) && attachmentId != null && attachmentId != '')
                         attachments.add(attachmentsMap.get(attachmentId));
         }
+                        
+		system.debug( 'attachments size => ' + attachments.size() );        
+
         return attachments;     
     }
        
@@ -188,7 +265,7 @@ public class ECO_SafetyHealthEnvironmentController {
         list<String> attachmentIds = new list<String>();
         if(project.SafetyHealthPlanAttachments__c != null)
                         attachmentIds = project.SafetyHealthPlanAttachments__c.split(';');
-                        
+
         return getAttachmentListFromIdList(attachmentIds);
     }   
     
@@ -198,7 +275,7 @@ public class ECO_SafetyHealthEnvironmentController {
         list<String> attachmentIds = new list<String>();
         if(project.SafetyHealthInspectionAttachments__c != null)
                         attachmentIds = project.SafetyHealthInspectionAttachments__c.split(';');
-                        
+        
         return getAttachmentListFromIdList(attachmentIds);
     }      
     
@@ -245,6 +322,18 @@ public class ECO_SafetyHealthEnvironmentController {
     public PageReference save()
     {
         update project;
+        upsert ProjActivities;
+
+        if(ProjActivitiesRemove.size() >0){
+            delete ProjActivitiesRemove;
+            ProjActivitiesRemove = new list<ProjectActivities__c>();
+        }
+
+        if(inductionRegistrationsRemove.size() >0){
+            delete inductionRegistrationsRemove;
+            inductionRegistrationsRemove = new list<Induction__c>();
+        }
+
         return null;
     }
     
@@ -261,8 +350,8 @@ public class ECO_SafetyHealthEnvironmentController {
                 else
                         project.SafetyHealthInspectionAttachments__c = safetyHealthInspectionAttachment.Id + ';'; 
                                         
-                update project;
-                
+                update project;                
+        
                 attachmentsMap = new Map<Id, Attachment>([select Id, Name, ContentType, LastModifiedDate, LastModifiedById from Attachment where parentId = :project.Id]);
                 safetyHealthInspectionAttachment = null;
  //     }               
@@ -308,8 +397,8 @@ public class ECO_SafetyHealthEnvironmentController {
     
     public PageReference createInductionAttachment()
     {   
-                PageReference myPage = new PageReference('/p/attach/NoteAttach?pid=' + inductionId2.left(15) + '&parentname=' + inductionName2 + '&retURL=/apex/ECO_SafetyHealthEnvironment?Id='+project.Id);
-                return myPage;
+        PageReference myPage = new PageReference('/p/attach/NoteAttach?pid=' + inductionId2.left(15) + '&parentname=' + inductionName2 + '&retURL=/apex/ECO_SafetyHealthEnvironment?Id='+project.Id);
+        return myPage;
     }   
 
 }

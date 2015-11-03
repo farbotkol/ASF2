@@ -54,7 +54,9 @@
 	</script>
 
 	<apex:form id="mainForm">
-		<apex:actionFunction name="loadMetric" action="{!loadMetric}" rerender="topBlock" />
+		<apex:actionFunction name="loadMetric" action="{!loadMetric}" rerender="bottomBlock" />
+		<apex:actionFunction name="reloadTriggerDetails" rerender="topBlock"/>
+		<apex:actionFunction name="loadRegionalDetails" rerender="topBlock,blockRegional,bottomBlockRegion" action="{!loadRegionDetails}"/>
 		<div style="position:relative">
 			<apex:sectionHeader title="Project Review Trigger" />
 		</div>
@@ -64,9 +66,35 @@
 				<apex:pageBlockButtons location="top">
 					<apex:commandButton value="Save" action="{!doSave}"/>
 					<apex:commandButton value="Delete" action="{!delete}" />
+					<apex:commandButton value="Return To Project Review Triggers" action="{!cancel}" immediate="true"/>
 				</apex:pageBlockButtons>
+
+			<apex:pageBlockSection title="Trigger Details" collapsible="false" id="blockGlobal" rendered="{!recordType.Name == 'Global'}">
+				<apex:inputField id="Name" value="{!Project_Review_Trigger__c.Name}" style="width: 250px;"/>
+				<apex:inputField id="IsActive" value="{!Project_Review_Trigger__c.Is_Active__c}" />		
+				<apex:inputField value="{!Project_Review_Trigger__c.TriggerDescription__c}" style="width: 250px;"/>			
+				<apex:inputField id="EvalFreq" value="{!Project_Review_Trigger__c.Evaluation_Frequency__c}" />	
+				<apex:outputPanel />			
+				<apex:outputField value="{!Project_Review_Trigger__c.RecordTypeId}" />
+			</apex:pageBlockSection>
+
+			<apex:pageBlockSection title="Trigger Details" collapsible="false" id="blockRegional" rendered="{!recordType.Name != 'Global'}">
+				<apex:inputField value="{!Project_Review_Trigger__c.ParentProjectReviewTrigger__c}" onchange="loadRegionalDetails();"/>
+				<apex:inputField id="IsActive" value="{!Project_Review_Trigger__c.Is_Active__c}" rendered="{!Project_Review_Trigger__c.ParentProjectReviewTrigger__c != null}" />	
+				<apex:inputField value="{!Project_Review_Trigger__c.TriggerDescription__c}" style="width: 250px;" rendered="{!Project_Review_Trigger__c.ParentProjectReviewTrigger__c != null}"/>	
+				<!--<apex:outputField id="Name" value="{!oProjectReviewTrigger.Name}" style="width: 250px;" rendered="{!Project_Review_Trigger__c.ParentProjectReviewTrigger__c != null}"/> -->
+				<apex:outputField id="EvalFreq" value="{!Project_Review_Trigger__c.Evaluation_Frequency__c}" rendered="{!Project_Review_Trigger__c.ParentProjectReviewTrigger__c != null}"/>	
+							
+				<apex:inputField value="{!Project_Review_Trigger__c.OverrideRegion__c}" required="{!Project_Review_Trigger__c.ParentProjectReviewTrigger__c != null}" rendered="{!Project_Review_Trigger__c.ParentProjectReviewTrigger__c != null}"/>				
+				<apex:outputField value="{!Project_Review_Trigger__c.RecordTypeId}"/>
+
+				
+			</apex:pageBlockSection>			
+
+			<apex:pageBlockSection columns="1" title="Trigger Criteria" collapsible="false" id="bottomBlockGlobal" rendered="{!recordType.Name == 'Global'}">
+				<apex:outputPanel >
 				<table border="0" cellpadding="0" cellspacing="0" width="100%">
-					<tr>
+					<!--<tr>
 						<td style="padding-left:5%;">
 							Name:&nbsp;&nbsp;<apex:inputField id="Name" value="{!Project_Review_Trigger__c.Name}" />
 						</td>
@@ -76,14 +104,14 @@
 						<td colspan="2">
 							Active:&nbsp;&nbsp;<apex:inputField id="IsActive" value="{!Project_Review_Trigger__c.Is_Active__c}" />
 						</td>
-					</tr>
-					<tr>
+					</tr> -->
+					<!--<tr>
 						<td colspan="4" style="height:30px">&nbsp;</td>
-					</tr>
+					</tr>-->
 					<tr>
 						<td style="padding-left:5%;width:15%">
 							If&nbsp;&nbsp;
-							<apex:selectList id="KPIMetric" size="1" value="{!Project_Review_Trigger__c.KPI_Metric__c}" onChange="loadMetric()">
+							<apex:selectList id="KPIMetric" size="1" value="{!oProjectReviewTrigger.KPI_Metric__c}" onChange="loadMetric()">
 								<apex:selectOptions value="{!lMetricOptions}" />
 							</apex:selectList>
 						</td> 
@@ -92,9 +120,17 @@
 							<apex:inputField id="Operator" value="{!Project_Review_Trigger__c.Operator__c}" onChange="showRangeFields()"/>
 						</td>
 						<td style="width:8%">
-							<apex:inputField id="Comparator1" style="width:80px;" value="{!Project_Review_Trigger__c.Comparator_1__c}" html-placeholder="Enter value" />
-							&nbsp;&nbsp;
-							<apex:outputLabel id="UnitOfMeasure1" value="{!unitOfMeasure}" />
+							<apex:outputPanel rendered="{!unitOfMeasure != 'KPI'}">
+								<apex:inputField id="Comparator1" style="width:80px;" value="{!Project_Review_Trigger__c.Comparator_1__c}" html-placeholder="Enter value" />
+								&nbsp;&nbsp;
+								<apex:outputLabel id="UnitOfMeasure1" value="{!unitOfMeasure}" />
+							</apex:outputPanel>
+
+							<apex:outputPanel rendered="{!unitOfMeasure == 'KPI'}">
+								<apex:selectList id="KPIMetricCompareTo" size="1" value="{!Project_Review_Trigger__c.Comparator_1_KPI__c}">
+									<apex:selectOptions value="{!lMetricOptions}" />
+								</apex:selectList>
+							</apex:outputPanel>
 						</td>
 						<!-- <apex:outputPanel id="RangeSelection"> -->
 						<td style="width:16%">
@@ -119,6 +155,61 @@
 						</td>
 					</tr>
 				</table>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
+			<apex:inputHidden value="{!Project_Review_Trigger__c.KPI_Metric__c}"/>
+			<apex:pageBlockSection columns="1" title="Trigger Criteria" collapsible="false" id="bottomBlockRegion" rendered="{!Project_Review_Trigger__c.ParentProjectReviewTrigger__c != null && recordType.Name == 'Regional'}">
+				<apex:outputPanel >
+				<table border="0" cellpadding="0" cellspacing="0" width="100%">
+					<tr>
+						<td style="padding-left:5%;width:15%">
+							If&nbsp;&nbsp;<apex:outputField value="{!oProjectReviewTrigger.KPI_Metric__c}"/>
+							<!--<apex:selectList id="KPIMetric" size="1" value="{!oProjectReviewTrigger.KPI_Metric__c}" onChange="loadMetric()">
+								<apex:selectOptions value="{!lMetricOptions}" />
+							</apex:selectList>-->
+						</td> 
+						<td style="width:12%">
+							is&nbsp;&nbsp;
+							<apex:outputField id="Operator" value="{!Project_Review_Trigger__c.Operator__c}"/>
+						</td>
+						<td style="width:8%">
+							<apex:outputPanel rendered="{!unitOfMeasure != 'KPI'}">
+								<apex:inputField id="Comparator1" style="width:80px;" value="{!Project_Review_Trigger__c.Comparator_1__c}" html-placeholder="Enter value" />
+								&nbsp;&nbsp;
+								<apex:outputLabel id="UnitOfMeasure1" value="{!unitOfMeasure}" />
+							</apex:outputPanel>
+
+							<apex:outputPanel rendered="{!unitOfMeasure == 'KPI'}">
+								<apex:selectList id="KPIMetricCompareTo" size="1" value="{!Project_Review_Trigger__c.Comparator_1_KPI__c}">
+									<apex:selectOptions value="{!lMetricOptions}" />
+								</apex:selectList>
+							</apex:outputPanel>
+						</td>
+						<!-- <apex:outputPanel id="RangeSelection"> -->
+						<td style="width:16%">
+							<div id="RangeSelection" style="display:none;">
+							and&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+							<apex:inputField id="Comparator2" style="width:80px;" value="{!Project_Review_Trigger__c.Comparator_2__c}" html-placeholder="Enter value" />
+							&nbsp;&nbsp;
+							<apex:outputLabel id="UnitOfMeasure2" value="{!unitOfMeasure}" />
+							</div>
+						</td>
+						<!-- </apex:outputPanel> -->
+					</tr>
+					<tr>
+						<td colspan="4" style="height:30px">&nbsp;</td>
+					</tr>
+					<tr>
+						<td style="padding-left:10%; text-align:center">
+							Then create alert:
+						</td>
+						<td colspan="3">
+							<apex:inputField id="AlertMessage" value="{!Project_Review_Trigger__c.Alert_Message__c}" style="width:50%" />
+						</td>
+					</tr>
+				</table>
+				</apex:outputPanel>
+			</apex:pageBlockSection>
 			</apex:pageBlock>
 		</div>
 	</apex:form>

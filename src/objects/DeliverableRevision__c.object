@@ -72,7 +72,6 @@
         <externalId>false</externalId>
         <label>Deliverable</label>
         <referenceTo>Deliverable__c</referenceTo>
-        <relationshipLabel>Deliverable Revisions</relationshipLabel>
         <relationshipName>Deliverable_Revisions</relationshipName>
         <relationshipOrder>0</relationshipOrder>
         <reparentableMasterDetail>false</reparentableMasterDetail>
@@ -87,6 +86,25 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>ProjId__c</fullName>
+        <externalId>false</externalId>
+        <formula>Deliverable__r.Project__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>ProjectId</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Review_Completed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Review Completed</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>RevisionDate__c</fullName>
@@ -108,12 +126,12 @@
         <type>Number</type>
         <unique>false</unique>
     </fields>
-    <label>Deliverable Revision</label>
+    <label>Deliverable Version</label>
     <nameField>
-        <label>Deliverable Revision Name</label>
+        <label>Deliverable Version Name</label>
         <type>Text</type>
     </nameField>
-    <pluralLabel>Deliverable Revisions</pluralLabel>
+    <pluralLabel>Deliverable Versions</pluralLabel>
     <searchLayouts>
         <lookupDialogsAdditionalFields>RevisionNum__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Deliverable__c</lookupDialogsAdditionalFields>
@@ -134,5 +152,27 @@
         <protected>false</protected>
         <requireRowSelection>false</requireRowSelection>
         <url>{!URLFOR( $Action.DeliverableRevision__c.New,null, [retURL= Deliverable__c.Link,saveURL= DeliverableRevision__c.Link ,CF00Ne0000001HVRQlkid= Deliverable__c.Id,CF00Ne0000001HVRQ= Deliverable__c.Name ,CF00Ne0000001HVRalkid= Deliverable__c.ApproverId__c,CF00Ne0000001HVRa= Deliverable__c.Approver__c,Name= Deliverable__c.Name&amp;&quot;-&quot;&amp; (TEXT(Deliverable__c.NumofRevisions__c + 1))] )}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>ReturntoDeliverable</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Return to Deliverable</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>/{!DeliverableRevision__c.DeliverableId__c}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>ReturntoProject</fullName>
+        <availability>online</availability>
+        <displayType>button</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Return to Project</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <url>/{!DeliverableRevision__c.ProjId__c}</url>
     </webLinks>
 </CustomObject>

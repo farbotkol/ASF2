@@ -19,9 +19,11 @@ public class ECO_ProjectCommunicationPlanTest {
 		insert testProject;
 		
 		CommunicationPlan__c communicationPlan = new CommunicationPlan__c(Project__c = testProject.Id, 
-																	      When__c = DateTime.now().addHours(-1),
+																	      When__c = Date.Today().addDays(-1),
 																	      GenerateTask__c = true,
-																	      Activity__c = 'Test');	
+																	      Activity__c = 'Test');
+
+
 		insert communicationPlan;
 		 		
 		Test.StartTest();                

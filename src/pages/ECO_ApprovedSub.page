@@ -1,30 +1,75 @@
 <apex:page standardcontroller="Approved_Sub__c" action="{!init}" extensions="ECO_ApprovedSubController">
 
+	<style>
+        .customHelpIcon
+        {
+            display:inline-block;
+            margin:0 5px 0 0;
+            width:24px;
+            height:24px;
+            vertical-align:top !important;
+        }
+        /* CUSTOM HELP / GUIDANCE TEXT BOX */
+        .customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 10px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        }   
+
+	</style>
+
 
 <apex:form >
-<apex:sectionHeader title="Approved Sub Edit" subtitle="{!Approved_Sub__c.Name}"/>
-<apex:pageBlock title="Approved Sub Edit">
+
+
+
+<apex:sectionHeader title="Approved or Preferred Subs/Vendors Edit" subtitle="{!agreement.ContractTitle__c}({!agreement.AgreementNumber__c})"/>
+
+
+        <div class="customHelpText">
+            <div class="customHelpBody">
+If applicable, add any vendors, subconsultants or subcontractors (subs) that have been approved or are preferred for use on the MSA task order projects.  This could include vendors /subs that were included as part of the proposal during pursuit of the MSA and have been approved by the client, or vendors/subs that have special pricing/rates that were negotiated for the MSA.<br/><br/>
+
+Attach any executed agreements or blanket orders for each vendor or sub, specific to the MSA, to the Contracts section on the home page.   Agreements specific to each task order should be attached to the respective project record.
+            </div>
+        </div> 
+<apex:pageBlock title="Approved or Preferred Subs/Vendors Edit">
 
 <apex:pageBlockButtons >
 	<apex:commandButton value="Save" action="{!save}"/>
 	<apex:commandButton value="Return to MSA" action="{!cancel}"/>
 </apex:pageBlockButtons>
 
-<apex:pageBlockSection title="Information" collapsible="false">
-	<apex:inputField value="{!approvedSub.Account__c}"/>
-	<apex:inputField value="{!approvedSub.Comments__c}"/>
+<apex:pageBlockSection collapsible="false">
+	<apex:inputField value="{!Approved_Sub__c.Account__c}"/>
+	<apex:inputField value="{!Approved_Sub__c.Comments__c}"/>
 </apex:pageBlockSection>
 
 <apex:pageBlockSection title="Contact Information" collapsible="false">
-	<apex:inputField value="{!approvedSub.Contact_Name__c}"/>
-	<apex:inputField value="{!approvedSub.Role__c}"/>
-	<apex:inputField value="{!approvedSub.Phone__c}"/>
-	<apex:inputField value="{!approvedSub.Email__c}"/>
+	<apex:inputField value="{!Approved_Sub__c.Contact_Name__c}"/>
+	<apex:inputField value="{!Approved_Sub__c.Role__c}"/>
+	<apex:inputField value="{!Approved_Sub__c.Phone__c}"/>
+	<apex:inputField value="{!Approved_Sub__c.Email__c}"/>
 </apex:pageBlockSection>
 
-<apex:pageBlockSection title="System Information" collapsible="false">
+<apex:inputHidden value="{!Approved_Sub__c.Agreement__r.ContractTitle__c}"/>
+<apex:inputHIdden value="{!Approved_Sub__c.Agreement__c}"/>
+<apex:inputHIdden value="{!Approved_Sub__c.Agreement__r.Id}"/>
+<!--<apex:pageBlockSection title="System Information" collapsible="false">
 	<apex:outputField value="{!approvedSub.Agreement__c}"/>
-</apex:pageBlockSection>
+</apex:pageBlockSection>-->
 
 </apex:pageBlock>
 

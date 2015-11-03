@@ -1,0 +1,78 @@
+<apex:page controller="ECO_BudgetFrameController">
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+<!--    <apex:includeScript value="{!URLFOR($Resource.ECO_Bootstrap_3_3_2, 'js/bootstrap.min.js')}"/> -->
+    
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2_Themes, 'themes/smoothness/jquery-ui.css')}"/>
+<!--    <apex:stylesheet value="{!URLFOR($Resource.ECO_Bootstrap_3_3_2, 'css/bootstrap-bs1.min.css')}" /> -->
+
+    <style>
+    	.budgetFrameWrapper{
+        	margin:0 40px;
+        }
+
+        #HUD{
+            position: fixed;
+            padding:8px;
+            padding-left:5px;
+            background:#d0d0d0;
+            top:20px;
+            right:20px;
+        }
+
+        .hudButton {
+            margin-left: 4px !important;
+            padding: 4px 14px !important;
+        }
+
+        .dropdown ul li, .dropdown ol li{
+            margin-left:0px;
+        }
+    </style>
+    
+    <apex:sectionHeader title="Budget Manager" />
+    
+    <div id="HUD">
+        <apex:form >
+            <!-- Single button -->
+            <div class="btn-group dropdown" style="padding-left:1px;">
+              <button type="button" class="btn btn-default dropdown-toggle hudButton" data-toggle="#dropdown" aria-expanded="false">
+                View... <span class="caret"></span>
+              </button>
+              
+              <ul class="dropdown-menu" role="menu">
+                <li><apex:commandLink action="{!showBudgetList}" value="Budget List" /></li>
+
+                <apex:outputPanel layout="none" rendered="{!bHasBudgetHeader}">
+                    <li class="divider"></li>
+
+                    <li><apex:commandLink action="{!showBudgetSummary}" value="Budget Summary" /></li>
+
+                    <li class="divider"></li>
+                    <li><apex:commandLink action="{!showTaskTab}" value="Tasks" /></li>
+                    <li><apex:commandLink action="{!showLaborTab}" value="Labor/Person" /></li>
+                    <li><apex:commandLink action="{!showSubTab}" value="Subcontractor" /></li>
+                    <li><apex:commandLink action="{!showODCTab}" value="ODC/FEE" /></li>
+                    <li><apex:commandLink action="{!showContTab}" value="Contingency" /></li>
+                </apex:outputPanel>
+              </ul>
+            </div>
+
+            <apex:commandButton action="{!createChangeOrder}" value="New Change Order" styleClass="btn btn-default hudButton" />
+            <apex:commandButton action="{!createEAC}" value="New EAC" styleClass="btn btn-default hudButton" />         
+            <apex:commandButton action="{!gotoSetup}" value="Setup" styleClass="btn btn-default hudButton" />
+            <apex:commandButton action="{!returnToProject}" value="Return to Project" styleClass="btn btn-default hudButton" />
+        </apex:form>
+    </div>
+
+
+    <div class="budgetFrameWrapper">
+    	<apex:insert name="budgetScreen"/>
+    </div>
+    
+    <apex:form >
+        <c:ECO_RiskFlyout PlanElement="Budget" ProjectID="{!sProjectId}" />
+        <c:ECO_AssumptionFlyout PlanElement="Budget" ProjectID="{!sProjectId}" />
+        <c:ECO_CashFlowFlyout ProjectID="{!sProjectId}" />
+    </apex:form>
+</apex:page>

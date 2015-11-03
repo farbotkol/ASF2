@@ -18,7 +18,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>Edit</actionName>
-        <type>Default</type>
+        <content>ECO_AgreementView</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>Follow</actionName>
@@ -58,11 +60,41 @@
     <enableReports>true</enableReports>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fieldSets>
+        <fullName>SubVendorView</fullName>
+        <description>Determine which columns show up in the SubVendor listview</description>
+        <displayedFields>
+            <field>Name</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>AgreementStatus__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>VendorName__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>AgreementAmountEstimated__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Amount__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>Sub Vendor View</label>
+    </fieldSets>
     <fields>
         <fullName>Account__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
-        <description>Agreement&apos;s account</description>
         <externalId>false</externalId>
+        <inlineHelpText>The prime client on the contract.</inlineHelpText>
         <label>Billing Client</label>
         <referenceTo>Account</referenceTo>
         <relationshipLabel>Agreements (Billing Client)</relationshipLabel>
@@ -106,6 +138,17 @@ U = Update</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>AgreementExecutedBy2__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Agreement Executed By</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>AgreementsExecutedBy2</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>AgreementExecutedBy__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>Select the name of the person who executed the contract</description>
@@ -135,7 +178,7 @@ U = Update</inlineHelpText>
         <caseSensitive>false</caseSensitive>
         <description>This is a unique identifier assigned to all Agreement Records in Ecosystem.  Use this reference for Contract Reviews.</description>
         <externalId>false</externalId>
-        <inlineHelpText>This is a unique identifier assigned to all Agreement Records in Ecosystem.  Use this reference for Contract Reviews.</inlineHelpText>
+        <inlineHelpText>Enter the number of the contract with the client.</inlineHelpText>
         <label>Contract Number</label>
         <length>50</length>
         <required>false</required>
@@ -177,6 +220,10 @@ U = Update</inlineHelpText>
                 <fullName>Executed</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackTrending>false</trackTrending>
@@ -184,7 +231,9 @@ U = Update</inlineHelpText>
     </fields>
     <fields>
         <fullName>AgreementType__c</fullName>
+        <description>Select the contract type from a master list of contract types available in the drop down list.</description>
         <externalId>false</externalId>
+        <inlineHelpText>Select the contract type from a master list of contract types available in the drop down list.</inlineHelpText>
         <label>Contract Type</label>
         <picklist>
             <picklistValues>
@@ -485,6 +534,19 @@ U = Update</inlineHelpText>
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>AgreementVariance__c</fullName>
+        <externalId>false</externalId>
+        <formula>Amount__c -  TotalApprovedRevenueLimit__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Agreement Variance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>AgreementsMSA__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -668,6 +730,7 @@ U = Update</inlineHelpText>
     <fields>
         <fullName>ContractingAgency__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Enter the name of the agency managing or procuring the contract, if different from the client name.  This is typically relevant for government clients.</inlineHelpText>
         <label>Contracting Agency</label>
         <length>255</length>
         <required>false</required>
@@ -694,8 +757,19 @@ U = Update</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>DelegateProject__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__c</formula>
+        <label>Delegate Project</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Description__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Provide a one or two sentence description of the contract.</inlineHelpText>
         <label>Description</label>
         <length>32768</length>
         <trackTrending>false</trackTrending>
@@ -1302,6 +1376,71 @@ U = Update</inlineHelpText>
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>InterimApprovalComments__c</fullName>
+        <externalId>false</externalId>
+        <label>Interim Approval Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>InterimApprovalCostLimit__c</fullName>
+        <externalId>false</externalId>
+        <label>Interim Approval Cost Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InterimApprovalDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Interim Approval Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>InterimApprovalExpiryDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Interim Approval Expiry Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>InterimApprovalRevenueFeeLimit__c</fullName>
+        <externalId>false</externalId>
+        <label>Interim Approval Revenue/Fee Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>InterimApprovalType__c</fullName>
+        <externalId>false</externalId>
+        <label>Interim Approval Type</label>
+        <picklist>
+            <picklistValues>
+                <fullName>DoA - Work at Risk</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Interim Agreement</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
+    </fields>
+    <fields>
         <fullName>InvoiceLimitFlag__c</fullName>
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
@@ -1340,6 +1479,18 @@ U = Update</inlineHelpText>
         <label>Is Task Order</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>JointVenturePartner__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Joint Venture Partner</label>
+        <referenceTo>Account</referenceTo>
+        <relationshipLabel>Agreements (Joint Venture Partner)</relationshipLabel>
+        <relationshipName>Agreements1</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>MSAReference__c</fullName>
@@ -1477,6 +1628,7 @@ S = Successful</inlineHelpText>
     </fields>
     <fields>
         <fullName>OrderingPeriod__c</fullName>
+        <description>Enter the start and end dates of the contract.</description>
         <externalId>false</externalId>
         <label>Ordering Period</label>
         <picklist>
@@ -1612,6 +1764,16 @@ S = Successful</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>PnLManager__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.PnLManager__c</formula>
+        <label>PnL Manager</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>ProfIndemnityLiabilityAmt__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Enter the total value of Professional Indemnity/Liability nominated in the contract</inlineHelpText>
@@ -1654,7 +1816,7 @@ S = Successful</inlineHelpText>
                 <operation>equals</operation>
                 <valueField>$Source.Project__c</valueField>
             </filterItems>
-            <isOptional>true</isOptional>
+            <isOptional>false</isOptional>
         </lookupFilter>
         <referenceTo>ProjectTeamMember__c</referenceTo>
         <relationshipLabel>Agreements</relationshipLabel>
@@ -1710,9 +1872,9 @@ S = Successful</inlineHelpText>
     </fields>
     <fields>
         <fullName>ScopeOfServices__c</fullName>
-        <description>Provide a brief outline of the scope of services for this agreement</description>
+        <description>Provide a detailed description of the scope of services available under the agreement.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Provide a brief outline of the scope of services for this agreement</inlineHelpText>
+        <inlineHelpText>Provide a detailed description of the scope of services available under the agreement.</inlineHelpText>
         <label>Scope of Services</label>
         <length>32768</length>
         <trackTrending>false</trackTrending>
@@ -1824,7 +1986,7 @@ S = Successful</inlineHelpText>
         <deleteConstraint>SetNull</deleteConstraint>
         <description>Search and select the Team Leader for the Intercompany Subconsultant</description>
         <externalId>false</externalId>
-        <inlineHelpText>Search and select the Team Leader for the Intercompany Subconsultant</inlineHelpText>
+        <inlineHelpText>Search and select the Team Leader for the Intercompany Subconsultant2</inlineHelpText>
         <label>Team Leader (Name)</label>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Agreements (Team Leader)</relationshipLabel>
@@ -1854,6 +2016,17 @@ S = Successful</inlineHelpText>
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>TotalApprovedRevenueLimit__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Approved Revenue Limit</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>TotalContractValueConverted__c</fullName>
         <description>set via oracle if contract currency different.</description>
         <externalId>false</externalId>
@@ -1867,6 +2040,7 @@ S = Successful</inlineHelpText>
     <fields>
         <fullName>TotalContractValue__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Enter the ceiling amount or upper limit of the contract, if available.</inlineHelpText>
         <label>Total Contract Value</label>
         <precision>18</precision>
         <required>false</required>
@@ -1969,6 +2143,7 @@ S = Successful</inlineHelpText>
     <fields>
         <fullName>TotalTaskOrdersValue__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>The sum of all Ecosystem task orders linked to the master agreement (automatic calculation).</inlineHelpText>
         <label>Total Task Orders Value</label>
         <precision>18</precision>
         <required>false</required>
@@ -1996,6 +2171,19 @@ S = Successful</inlineHelpText>
         <label>US Federal Government Project</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>UnallocatedFunding__c</fullName>
+        <externalId>false</externalId>
+        <formula>TotalApprovedRevenueLimit__c -  TotalFundingAmount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Unallocated Funding</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>VarianceReason__c</fullName>
@@ -2027,6 +2215,27 @@ S = Successful</inlineHelpText>
         <referenceTo>VendorSub__c</referenceTo>
         <relationshipLabel>Agreements</relationshipLabel>
         <relationshipName>AgreementsVendorName</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>VendorSite__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Vendor Site</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>VendorSite__c.Project__c</field>
+                <operation>equals</operation>
+                <valueField>$Source.Project__c</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
+        <referenceTo>VendorSite__c</referenceTo>
+        <relationshipLabel>Agreements</relationshipLabel>
+        <relationshipName>Agreements</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
@@ -2432,6 +2641,28 @@ S = Successful</inlineHelpText>
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>InterCompanyAgreement</fullName>
+        <columns>NAME</columns>
+        <columns>AgreementNumber__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>Account__c</columns>
+        <columns>ExecutionDate__c</columns>
+        <columns>ExpirationDate__c</columns>
+        <columns>Project__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>TERMID__c</columns>
+        <columns>OUID__c</columns>
+        <columns>OUIDLegacy__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Agreement__c.InterCompany</value>
+        </filters>
+        <label>Inter-Company Agreement</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>MSA_View</fullName>
         <columns>NAME</columns>
         <filterScope>Everything</filterScope>
@@ -2465,6 +2696,50 @@ S = Successful</inlineHelpText>
         <label>MSA&apos;s</label>
         <language>en_US</language>
     </listViews>
+    <listViews>
+        <fullName>PrimeAgreements</fullName>
+        <columns>NAME</columns>
+        <columns>AgreementNumber__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>Account__c</columns>
+        <columns>ExecutionDate__c</columns>
+        <columns>ExpirationDate__c</columns>
+        <columns>Project__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>TERMID__c</columns>
+        <columns>OUID__c</columns>
+        <columns>OUIDLegacy__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Agreement__c.Prime</value>
+        </filters>
+        <label>Prime Agreements</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>PrimeTaskOrder</fullName>
+        <columns>NAME</columns>
+        <columns>AgreementNumber__c</columns>
+        <columns>RECORDTYPE</columns>
+        <columns>Account__c</columns>
+        <columns>ExecutionDate__c</columns>
+        <columns>ExpirationDate__c</columns>
+        <columns>Project__c</columns>
+        <columns>LAST_UPDATE</columns>
+        <columns>TERMID__c</columns>
+        <columns>OUID__c</columns>
+        <columns>OUIDLegacy__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>Agreement__c.PrimeTaskOrder</value>
+        </filters>
+        <label>Prime Task Order</label>
+        <language>en_US</language>
+    </listViews>
     <nameField>
         <displayFormat>AN-{0000000}</displayFormat>
         <label>Ecosystem Agreement Number</label>
@@ -2489,6 +2764,10 @@ S = Successful</inlineHelpText>
         </picklistValues>
         <picklistValues>
             <picklist>AgreementStatus__c</picklist>
+            <values>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </values>
             <values>
                 <fullName>Draft</fullName>
                 <default>false</default>
@@ -3323,6 +3602,17 @@ S = Successful</inlineHelpText>
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>InterimApprovalType__c</picklist>
+            <values>
+                <fullName>DoA - Work at Risk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interim Agreement</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>OracleSyncStatus__c</picklist>
             <values>
                 <fullName>E</fullName>
@@ -3658,6 +3948,10 @@ S = Successful</inlineHelpText>
         </picklistValues>
         <picklistValues>
             <picklist>AgreementStatus__c</picklist>
+            <values>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </values>
             <values>
                 <fullName>Draft</fullName>
                 <default>false</default>
@@ -4496,6 +4790,17 @@ S = Successful</inlineHelpText>
             </values>
             <values>
                 <fullName>ZMW</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>InterimApprovalType__c</picklist>
+            <values>
+                <fullName>DoA - Work at Risk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interim Agreement</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -4836,6 +5141,10 @@ S = Successful</inlineHelpText>
         <picklistValues>
             <picklist>AgreementStatus__c</picklist>
             <values>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Draft</fullName>
                 <default>false</default>
             </values>
@@ -5673,6 +5982,17 @@ S = Successful</inlineHelpText>
             </values>
             <values>
                 <fullName>ZMW</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>InterimApprovalType__c</picklist>
+            <values>
+                <fullName>DoA - Work at Risk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interim Agreement</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -5997,7 +6317,7 @@ S = Successful</inlineHelpText>
     <recordTypes>
         <fullName>Prime</fullName>
         <active>true</active>
-        <description>Any type of single use contract for general consulting services between AECOM and the client.</description>
+        <description>Any type of single use contract for general consulting services between AECOM and the client.  This type of agreement will be interfaced to Oracle to provide the contract value and approved funding for the project.</description>
         <label>Prime</label>
         <picklistValues>
             <picklist>ActionCode__c</picklist>
@@ -6013,6 +6333,10 @@ S = Successful</inlineHelpText>
         <picklistValues>
             <picklist>AgreementStatus__c</picklist>
             <values>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Draft</fullName>
                 <default>false</default>
             </values>
@@ -6854,1179 +7178,13 @@ S = Successful</inlineHelpText>
             </values>
         </picklistValues>
         <picklistValues>
-            <picklist>OracleSyncStatus__c</picklist>
+            <picklist>InterimApprovalType__c</picklist>
             <values>
-                <fullName>E</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>P</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>S</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>T</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>OrderingPeriod__c</picklist>
-            <values>
-                <fullName>TBD</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>PaymentTerms__c</picklist>
-            <values>
-                <fullName>120 DAYS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>14 DAYS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>15 DAYS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>20th Next Month</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>30 DAYS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>30 NET</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>35 DAYS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>38 DAYS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>40 DAYS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>45 DAYS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>60 DAYS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>7 DAYS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>75 DAYS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>80 DAYS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>90 DAYS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>IMMEDIATE</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Pay on Receipt</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>ReviewStatus__c</picklist>
-            <values>
-                <fullName>TBD</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>SegApprovalStatus__c</picklist>
-            <values>
-                <fullName>Approved</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>VarianceReason__c</picklist>
-            <values>
-                <fullName>Approved to Work at risk</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Billed %26 Paid</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Revenue at Risk</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segAdherence__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segAggregatePrice__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segAmendmentOption__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segGrossProfitRates__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segNegotiatedWithoutRegard__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segOptionDoesNotQualify__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segPricingPolicy__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segProductOrServiceDiffers__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segProposalSubmitted__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segRightToAccept__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segSeparateComponents__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segSeparatePhases__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segSeparateProposal__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segSignificantHisory__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segTermsAndScope__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segUnderOriginalContract__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>segVerifiable__c</picklist>
-            <values>
-                <fullName>N</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Y</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-    </recordTypes>
-    <recordTypes>
-        <fullName>PrimeInterimAgreement</fullName>
-        <active>true</active>
-        <description>An interim agreement where a client has engaged AECOM to provide services but a formal contract has not been agreed and signed. It is intended to be replaced by a formal contract.</description>
-        <label>Prime Interim Agreement</label>
-        <picklistValues>
-            <picklist>ActionCode__c</picklist>
-            <values>
-                <fullName>C</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>U</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>AgreementStatus__c</picklist>
-            <values>
-                <fullName>Draft</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Executed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>In Review</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Under Negotiation</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>AgreementType__c</picklist>
-            <values>
-                <fullName>ANZ Industry Standard %28AS4122%2C IPENZ%2FACENZ%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Agreement for the Transfer of Digital Model Files</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Alliance</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Architectural Design Services Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Architectural Design Services Agreement %28Transnational%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>CAD Conditions of Use Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Cash on Delivery Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Client %28Day1%29 Contract</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Client Authorization to Proceed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Client Data Confidentiality Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Conditions of Engagement for Accredited Design Verification Services</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Confidentiality Agreement%2FDeed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Construction %2F EPC Contract</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Consulting Services Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Consulting Services Agreement %28Transnational%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Consulting Services Subcontract</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Consulting Services Subcontract %28Transnational%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Data Confidentiatlity Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Deed Poll</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Design Engineering Services Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Digital Information Consent and Acknowledgement Form</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Economics Services Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Economics Services Agreement %28Transnational%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Electronic Data Licence Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Engineering Design Services %28Transnational%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Expert Services Consultant Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>FIDIC 2006 Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>FIDIC Sub Consultancy Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Indefinite Deliverable%2FIndefinite Quantity %28ID%2FIQ%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Independent Contractor Agreement</fullName>
+                <fullName>DoA - Work at Risk</fullName>
                 <default>false</default>
             </values>
             <values>
                 <fullName>Interim Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Interiors Design Services Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>International Consultancy Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Joint Venture Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Land Development Data Licensing</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Major Works Construction Subcontract</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Master Design Engineering Services Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Master Services Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Master Services Agreement %28First Nation Bands%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Master Services Agreement %28Transnational%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Master Services Subcontract Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Master Services Subcontract Agreement %28Transnational%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Medium Works Subcontract</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Memorandum of Understanding</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Minor Works Subcontract</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>NEC3 Professional Services Contract</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Non-Disclosure Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Notice to Proceed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Notice to Proceed %28Subconsultant%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Novation Deed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Other</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Panel Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Personnel Secondment Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Probity Deed</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Professional Services Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Project Consultant Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Property Consultancy Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Purchase Order</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Secondment Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Services Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Services Authorization</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Site Work Contract</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Software Licensing Agreements</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Specialist Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Standard Day Terms</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Standing Offer Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Strategic Consultant Services Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Subconsultancy%2FSubcontract Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Subconsultancy%2FSubcontract Agreement %28with Native American Tribes%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Subconsultancy%2FSubcontract Agreement %28with University Professors%29</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Task Order</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Teaming Agreement</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Tender Services Agreement</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>CommercialStructure__c</picklist>
-            <values>
-                <fullName>Cost Plus</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Fixed Fee</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>GMP</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>T%26M</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>FeeType__c</picklist>
-            <values>
-                <fullName>Discounted rate with success fee</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Incentivised Fee Structure</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Lump Sum</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Other - Please describe in the comments below</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Time %26 Materials</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Time %26 Materials - with a guaranteed maximum price</fullName>
-                <default>false</default>
-            </values>
-        </picklistValues>
-        <picklistValues>
-            <picklist>FundingCurrencyCode__c</picklist>
-            <values>
-                <fullName>AED</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>AFN</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>ARS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>AUD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>AZN</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BAM</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BDT</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BGN</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BHD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BIF</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BMD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BND</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BOB</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BRL</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BSD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BTN</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>BWP</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>CAD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>CDF</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>CHF</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>CLP</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>CNY</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>COP</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>CZK</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>DJF</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>DKK</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>DOP</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>DZD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>EEK</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>EGP</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>ETB</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>EUR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>FJD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>GBP</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>GEL</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>GHS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>GMD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>GNF</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>HKD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>HNL</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>HRK</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>HTG</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>HUF</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>IDR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>ILS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>INR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>IQD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>JMD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>JOD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>JPY</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>KES</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>KGS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>KHR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>KRW</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>KWD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>KZT</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>LAK</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>LBP</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>LKR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>LRD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>LSL</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>LTL</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>LVL</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>LYD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MAD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MDL</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MGA</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MMK</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MOP</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MRO</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MUR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MVR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MWK</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MXN</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MYR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>MZN</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>NAD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>NGN</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>NOK</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>NPR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>NZD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>OMR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PEN</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PGK</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PHP</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PKR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PLN</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>PYG</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>QAR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>ROL</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>RON</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>RSD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>RUB</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>RWF</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SAR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SBD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SEK</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SGD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SLL</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>SZL</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>THB</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TJS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TOP</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TRY</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TTD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TWD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>TZS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>UAH</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>UGX</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>USD</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>UZS</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>VEB</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>VEF</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>VND</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>VUV</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>WST</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>XAF</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>XOF</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>ZAR</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>ZMW</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -8367,6 +7525,10 @@ S = Successful</inlineHelpText>
         <picklistValues>
             <picklist>AgreementStatus__c</picklist>
             <values>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Draft</fullName>
                 <default>false</default>
             </values>
@@ -9204,6 +8366,17 @@ S = Successful</inlineHelpText>
             </values>
             <values>
                 <fullName>ZMW</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>InterimApprovalType__c</picklist>
+            <values>
+                <fullName>DoA - Work at Risk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interim Agreement</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -9528,7 +8701,7 @@ S = Successful</inlineHelpText>
     <recordTypes>
         <fullName>PrimeTaskOrder</fullName>
         <active>true</active>
-        <description>An order issued under a master services-type agreement with the client to perform specified individual services or tasks.   Also referred to as Delivery Orders or Purchase Orders.</description>
+        <description>An order issued under a master services-type agreement with the client to perform specified individual services or tasks.  This type of agreement will be interfaced to Oracle to provide the contract value and approved funding for the project.</description>
         <label>Prime Task Order</label>
         <picklistValues>
             <picklist>ActionCode__c</picklist>
@@ -9543,6 +8716,10 @@ S = Successful</inlineHelpText>
         </picklistValues>
         <picklistValues>
             <picklist>AgreementStatus__c</picklist>
+            <values>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </values>
             <values>
                 <fullName>Draft</fullName>
                 <default>false</default>
@@ -10381,6 +9558,17 @@ S = Successful</inlineHelpText>
             </values>
             <values>
                 <fullName>ZMW</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>InterimApprovalType__c</picklist>
+            <values>
+                <fullName>DoA - Work at Risk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interim Agreement</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -10721,6 +9909,10 @@ S = Successful</inlineHelpText>
         <picklistValues>
             <picklist>AgreementStatus__c</picklist>
             <values>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </values>
+            <values>
                 <fullName>Draft</fullName>
                 <default>false</default>
             </values>
@@ -11558,6 +10750,17 @@ S = Successful</inlineHelpText>
             </values>
             <values>
                 <fullName>ZMW</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>InterimApprovalType__c</picklist>
+            <values>
+                <fullName>DoA - Work at Risk</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Interim Agreement</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -11907,6 +11110,15 @@ S = Successful</inlineHelpText>
         <searchResultsAdditionalFields>PaymentTerms__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>EcoAgreementCurrencyCannotChangeOnceSynd</fullName>
+        <active>true</active>
+        <description>Agreement currency cannot be changes once an agreement is synced to Oracle.</description>
+        <errorConditionFormula>AND(ISCHANGED(FundingCurrencyCode__c),
+ISPICKVAL(OracleSyncStatus__c,&apos;S&apos;))</errorConditionFormula>
+        <errorDisplayField>FundingCurrencyCode__c</errorDisplayField>
+        <errorMessage>Agreement currency cannot be changes once an agreement is synced to Oracle.</errorMessage>
+    </validationRules>
     <validationRules>
         <fullName>Ordering_Start_needs_to_be_before_End</fullName>
         <active>true</active>

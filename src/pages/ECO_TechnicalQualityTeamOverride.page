@@ -136,8 +136,6 @@
       		 <apex:commandButton value="Save" action="{!SaveChanges}" reRender="TQTPB,TQTInformationPBS"></apex:commandButton>
  	   		 <apex:commandButton value="Return to Deliverable" action="{!Cancel}">
  	   		 </apex:commandButton>
- 	   		
-
 
  	  </apex:pageBlockButtons>
       <apex:pagemessages ></apex:pagemessages>
@@ -145,7 +143,7 @@
 
 	  <div class="customHelpText">
 			<div class="customHelpBody">
-				Reminder: Consider SiD when selecting reviewers for deliverable technical quality reviews.
+				Assign the appropriate technical reviewers for the project deliverable.  Reference the global quality review policy and procedure for guidance when selecting roles.  This section must be completed prior to initiating and scheduling a quality review.  If applicable, consider Safety in Design (SiD) requirements when selecting the team. 
 			</div>
 	  </div>	
 
@@ -153,8 +151,8 @@
       	<apex:pageMessage severity="INFO" rendered="{!IF(ListDisplayTeamKeys.size > 0, false, true)}" summary="No valid team members found."></apex:pageMessage> 
  	   	<apex:pageBlockTable value="{!ListDisplayTeamKeys}" var="avaRow" rendered="{!IF(ListDisplayTeamKeys.size > 0, true, false)}">
  	   	  <apex:column headerValue="Select" title="Select user to add to team." width="40">
- 	   	     <apex:inputCheckbox value="{!mapDisplayTeamAvailable[avaRow].bSelected}" disabled="{!NOT(mapDisplayTeamAvailable[avaRow].bCanBeUser)}">
- 	   	  </apex:inputCheckbox>
+ 	   	     	<apex:inputCheckbox value="{!mapDisplayTeamAvailable[avaRow].bSelected}" disabled="{!NOT(mapDisplayTeamAvailable[avaRow].bCanBeUser)}">
+ 	   	  		</apex:inputCheckbox>
  	   	  </apex:column>
  	   	  <apex:column value="{!mapDisplayTeamAvailable[avaRow].oProjectTeamMember.Contact__r.Name}">
  	   	  </apex:column>
@@ -166,7 +164,6 @@
  	   	  </apex:column>
  	   	</apex:pageBlockTable>
  	   </apex:pageblocksection>
-
 
  	   <apex:pageblocksection id="TQTInformationPBS" title="Select Technical Quality Team" columns="1"  collapsible="false">
  	   	<apex:pageBlockTable value="{!mapDisplayTQTExisting}" var="extsRow">
@@ -204,15 +201,23 @@
  	   		</TR>
  	   		<TR>
  	   			<TD class="borderclass">Reviewer</TD>
- 	   			<TD class="borderclass">The person responsible for performing the technical accuracy check of the deliverable. Person must be qualified based on discipline, experience and registration/certification OR as approved by BL</TD>
+ 	   			<TD class="borderclass">The person responsible for performing the technical accuracy check of the deliverable.  Person must be qualified based on discipline, experience and registration/certification OR as approved by BL.  The Reviewer checks to ensure that work is technically correct and complete, as well as determining that spelling, grammar, and calculations are correct.</TD>
  	   		</TR>
  	   		<TR>
  	   			<TD class="borderclass">Lead Verifier</TD>
- 	   			<TD class="borderclass">The person authorized by Business Line to approve certain types of deliverables due to inherent risk.</TD>
+ 	   			<TD class="borderclass">The person authorized by Business Line to approve certain types of deliverables due to inherent risk.  Verification is an independent review of work product for compliance with scope, meeting regulatory requirements, and consistency with accepted professional practice.</TD>
  	   		</TR>
  	   		<TR>
+ 	   			<TD class="borderclass">Independent Review</TD>
+ 	   			<TD class="borderclass">The examination of project work/deliverable by someone who has not been directly involved with the production of the work product or deliverable.   In the Americas, this is only required when identified for high risk projects.</TD>
+ 	   		</TR>
+            <TR>
+ 	   			<TD class="borderclass">Interdisciplinary Review </TD>
+ 	   			<TD class="borderclass">Entails multidisciplinary reviews for compatibility, consistency, interface, and avoidance of design conflicts.</TD>
+ 	   		</TR>
+            <TR>
  	   			<TD class="borderclass">Approver</TD>
- 	   			<TD class="borderclass">The person identified in the Project Plan who is responsible for the approval and release of deliverables.</TD>
+ 	   			<TD class="borderclass">The person identified in the Project Plan who is responsible for the approval and release of deliverables (typically the PM).  Approval is confirmation by a reviewer that project work is ready for delivery.</TD>
  	   		</TR>
  	   	</TABLE>
 

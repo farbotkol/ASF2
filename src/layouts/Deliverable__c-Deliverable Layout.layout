@@ -1,13 +1,30 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
     <customButtons>Open_Project_Scope</customButtons>
+    <customButtons>Back_Deliverables</customButtons>
     <customButtons>Return_to_Project</customButtons>
     <excludeButtons>Submit</excludeButtons>
     <layoutSections>
         <customLabel>false</customLabel>
         <detailHeading>false</detailHeading>
-        <editHeading>true</editHeading>
+        <editHeading>false</editHeading>
         <label>Information</label>
+        <layoutColumns>
+            <layoutItems>
+                <height>235</height>
+                <page>ECO_DeliverablesHelpText</page>
+                <showLabel>false</showLabel>
+                <showScrollbars>false</showScrollbars>
+                <width>100%</width>
+            </layoutItems>
+        </layoutColumns>
+        <style>OneColumn</style>
+    </layoutSections>
+    <layoutSections>
+        <customLabel>true</customLabel>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Deliverable Information</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>
@@ -23,38 +40,42 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>DueDate__c</field>
-            </layoutItems>
-        </layoutColumns>
-        <layoutColumns>
-            <layoutItems>
-                <behavior>Required</behavior>
-                <field>Status__c</field>
+                <field>ProjectTask__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>DeliverablesOwner__c</field>
             </layoutItems>
+        </layoutColumns>
+        <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>DeliverableType__c</field>
+                <field>Status__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>DueDate__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
                 <field>DateSubmitted__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>InternalDeliverable__c</field>
+            </layoutItems>
         </layoutColumns>
-        <style>TwoColumnsTopToBottom</style>
+        <style>TwoColumnsLeftToRight</style>
     </layoutSections>
     <layoutSections>
         <customLabel>true</customLabel>
-        <detailHeading>false</detailHeading>
-        <editHeading>false</editHeading>
-        <label>Description</label>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Deliverable Type/Discipline</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Description__c</field>
+                <field>DeliverableType__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
@@ -67,16 +88,19 @@
     </layoutSections>
     <layoutSections>
         <customLabel>true</customLabel>
-        <detailHeading>false</detailHeading>
-        <editHeading>false</editHeading>
-        <label>Description (2 Column)</label>
+        <detailHeading>true</detailHeading>
+        <editHeading>true</editHeading>
+        <label>Description</label>
         <layoutColumns>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Description__c</field>
+            </layoutItems>
             <layoutItems>
                 <emptySpace>true</emptySpace>
             </layoutItems>
         </layoutColumns>
-        <layoutColumns/>
-        <style>TwoColumnsLeftToRight</style>
+        <style>OneColumn</style>
     </layoutSections>
     <layoutSections>
         <customLabel>false</customLabel>
@@ -107,6 +131,29 @@
         <layoutColumns/>
         <style>CustomLinks</style>
     </layoutSections>
+    <miniLayout>
+        <fields>Name</fields>
+        <fields>Status__c</fields>
+        <fields>Project__c</fields>
+        <fields>DateSubmitted__c</fields>
+        <fields>DueDate__c</fields>
+        <fields>DeliverablesOwner__c</fields>
+        <fields>DeliverableType__c</fields>
+        <fields>PracticeArea__c</fields>
+        <fields>InternalDeliverable__c</fields>
+        <fields>ProjectTask__c</fields>
+        <fields>Project_Scope__c</fields>
+        <fields>CreatedById</fields>
+        <fields>LastModifiedById</fields>
+    </miniLayout>
+    <relatedLists>
+        <fields>NAME</fields>
+        <fields>RevisionDate__c</fields>
+        <fields>Description__c</fields>
+        <fields>Approver__c</fields>
+        <fields>Review_Completed__c</fields>
+        <relatedList>DeliverableRevision__c.Deliverable__c</relatedList>
+    </relatedLists>
     <relatedLists>
         <customButtons>New_TQT</customButtons>
         <excludeButtons>New</excludeButtons>
@@ -121,13 +168,6 @@
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
-        <fields>RevisionDate__c</fields>
-        <fields>Description__c</fields>
-        <fields>Approver__c</fields>
-        <relatedList>DeliverableRevision__c.Deliverable__c</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
         <fields>DeliverableName__c</fields>
         <fields>DeliverableType__c</fields>
         <fields>Status__c</fields>
@@ -137,14 +177,6 @@
     </relatedLists>
     <relatedLists>
         <relatedList>RelatedNoteList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>CreatedDate</fields>
-        <fields>StepStatus</fields>
-        <fields>OriginalActor</fields>
-        <fields>Actor</fields>
-        <fields>Comments</fields>
-        <relatedList>RelatedProcessHistoryList</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>

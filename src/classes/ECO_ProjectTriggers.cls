@@ -34,8 +34,6 @@ public without sharing class ECO_ProjectTriggers {
     		projectStatusFieldSet.add(field.getFieldPath());
 		}
 		
-		
-		
 		for(pse__Proj__c project:updatedProjects)
 		{
 			//check classifications
@@ -198,12 +196,128 @@ public without sharing class ECO_ProjectTriggers {
 		newPM.LinkToRecord__c = URL.getSalesforceBaseUrl().toExternalForm()+'/'+proj.Id;
 		return newPM;
 	}	
-	
-	public static void handleProjectRestart(map<Id, pse__Proj__c> projOldMap, map<Id, pse__Proj__c> projNewMap)
+    
+	public static void handleProjectCloseTo_OtherStatus(map<Id, pse__Proj__c> projOldMap, map<Id, pse__Proj__c> projNewMap, list<pse__Proj__c> updatedProjects)
+	{
+        // If the project Stage went from Closed to something other than Close (reopen), then set the date that it (Reopen) happened.
+        system.debug( 'handleProjectCloseTo_OtherStatus called' );
+        
+        for(pse__Proj__c updatedProject:projNewMap.values())
+		{
+			system.debug( 'handleProjectCloseTo_OtherStatus called ' + projOldMap.get(updatedProject.Id).pse__Stage__c + ' updatedProject.pse__Stage__c ' + updatedProject.pse__Stage__c );
+
+			if( (projOldMap.get(updatedProject.Id).pse__Stage__c == 'Closed') && (updatedProject.pse__Stage__c != projOldMap.get(updatedProject.Id).pse__Stage__c) )
+			{
+				updatedProject.StatusClosedToReOpenDate__c = date.Today();
+			}			
+		}        
+    } 
+        
+   	public static void approveResilience_SetApproveDate(map<Id, pse__Proj__c> projOldMap, map<Id, pse__Proj__c> projNewMap, list<pse__Proj__c> updatedProjects){
+        // If the project Stage went from Closed to something other than Close (reopen), then set the date that it (Reopen) happened.
+        for(pse__Proj__c updatedProject:projNewMap.values())
+		{
+			if( (projOldMap.get(updatedProject.Id).OSPApproved__c != null) && (updatedProject.OSPApproved__c != projOldMap.get(updatedProject.Id).OSPApproved__c) )
+			{
+				updatedProject.StatusClosedToReOpenDate__c = date.Today();
+			}			
+		} 
+    }
+    
+   	public static void createResilienceDirectorTeamMember(map<Id, pse__Proj__c> projOldMap, map<Id, pse__Proj__c> projNewMap, list<pse__Proj__c> updatedProjects){
+
+		string uName = UserInfo.getUserName();
+        string uId = UserInfo.getUserId();
+        string uFirstName = UserInfo.getFirstName();
+        string uLastName = UserInfo.getLastName();
+        
+		// bjacobi@ae.com.ecosysdev
+        //if(! ( ( uName == 'bobby.hoque@aecom.com.ecosysdev' ) || ( uName == 'bjacobi@ae.com.ecosysdev' ) ) )
+        //    return ; 
+
+		ProjectTeamMember__c[] projectTeamMembers = [ Select Id, Project__c, User__c, contact__r.user__r.IsActive, contact__c,  contact__r.user__r.name, user__r.Name From ProjectTeamMember__c Where ProjectRole__r.Name = 'Resilience Director' and Project__c = :updatedProjects and contact__r.user__r.isactive = true ];
+
+        ProjectRole__c role = [Select Id, Name From ProjectRole__c Where Name = 'Resilience Director'];
+        
+        system.debug( 'pTM ' + projectTeamMembers.size() + ' ' + projectTeamMembers );
+        
+        Map<String, ProjectTeamMember__c> mapProjTM_PTM = new Map<String, ProjectTeamMember__c> ();
+        Map<Id, ProjectTeamMember__c> mapProj_PTM = new Map<Id, ProjectTeamMember__c> ();
+        
+        String combinedKey;
+ 		String projId;
+        string userId;
+        string contactId;
+        
+        for( ProjectTeamMember__c pTm : projectTeamMembers )
+        {
+        	projId = pTm.Project__c;
+            //userId = pTm.contact__r.user__r.id;
+            contactId = pTm.contact__c;
+            combinedKey = projId + contactId;
+            mapProjTM_PTM.put(combinedKey, pTm);
+            mapProj_PTM.put(projId, pTm);
+        }   
+        
+        Set<Id> contactIds = new Set<Id> ();
+        
+        for(pse__Proj__c oProject: projNewMap.values() ){
+			contactIds.add(projNewMap.get(oProject.Id).OSPApprover__c);        	    
+        }      
+        
+        //Map<Id, Contact> mapIdContact = new Map<Id, Contact>([ SELECT Id, Name From Contact Where pse__Salesforce_User__c In :uId ]);
+        //List<Contact> currentUserContact = [ SELECT Id, Name From Contact Where pse__Salesforce_User__c = :uId Limit 1 ];
+        
+        system.debug( 'mapProjTM_PTM	 ' + mapProjTM_PTM );
+        
+        List<ProjectTeamMember__c> listPTM_To_Insert = new List<ProjectTeamMember__c> ();
+        
+   		for(pse__Proj__c oProject: updatedProjects /*projNewMap.values() */ ){
+
+            if( (projNewMap.get(oProject.Id).OSPApproved__c == true) && (oProject.OSPApproved__c != projOldMap.get(oProject.Id).OSPApproved__c) )
+            {
+                oProject.OSPApprovedBy__c = uFirstName + ' ' + uLastName;
+                oProject.OSPDateTimeApproved__c = DateTime.now();
+            }
+
+            // There is a valid approver, and the approver has changed
+            if( ( projNewMap.get(oProject.Id).OSPApprover__c != null ) && ( projNewMap.get(oProject.Id).OSPApprover__c != projOldMap.get(oProject.Id).OSPApprover__c ) )
+            {
+				System.debug( '***DEBUG:  oProject.OSPApprover__c changed : '+oProject.OSPApprover__c + '  oProject.OSPApprovedBy__c ' +  oProject.OSPApprovedBy__c );	
+                string s = string.valueof(oProject.Id) + string.valueof(projNewMap.get(oProject.Id).OSPApprover__c);
+                System.debug('***DEBUG: Combined key : '+s+ ' === ' + mapProjTM_PTM );	                
+                    	
+                if( ! mapProjTM_PTM.containsKey(s) )
+                {
+                    // Current user is not already a Res director, so add him / her. Multiple res dir is fine as long as diff people
+                    //
+                    system.debug( 'Line 263 = projNewMap.get(oProject.Id).OSPApprover__c ' + projNewMap.get(oProject.Id).OSPApprover__c );
+                    
+					listPTM_To_Insert.add(new ProjectTeamMember__c(Project__c = oProject.id,
+                                                                    Contact__c = projNewMap.get(oProject.Id).OSPApprover__c,
+                                                                    ProjectRole__c = role.Id,
+                                                                    RecordTypeID = ECO_Utils_Meta.getRecordTypeId(ProjectTeamMember__c.sObjectType,'Team Member')));   
+                }    
+            }
+            
+			System.debug('***DEBUG:  oProject.OSPApprover__c: '+oProject.OSPApprover__c + ' Diff ' + projNewMap.get(oProject.Id).OSPApprover__c + ' === ' + projOldMap.get(oProject.Id).OSPApprover__c);			
+		}      
+        
+        System.debug( 'listPTM_To_Insert ' + listPTM_To_Insert );
+        
+        if( listPTM_To_Insert.size() > 0 )
+        {
+            upsert listPTM_To_Insert;            
+        }            
+
+    }
+    
+	public static void handleProjectRestart( map<Id, pse__Proj__c> projOldMap, map<Id, pse__Proj__c> projNewMap )
 	{
 		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('PROJ_Restart')) {
 			return;
-		}
+		}        
+        
 		list<Id> projectIds = new list<Id>();
 		alertRecordTypeId = ECO_Utils_Meta.getRecordTypeId(PortalMessage__c.sObjectType, ECO_Constants.PortalMessage_AlertRecordTypeName);
 		
@@ -262,7 +376,46 @@ public without sharing class ECO_ProjectTriggers {
 		update projectTasksToUpdate;	
 	}
 
-
+	public static void setExpenditureFlagOnProjectReOpen(list<pse__Proj__c> lProjects){
+		
+		// bjacobi@ae.com.ecosysdev
+        //if(! ( ( uName == 'bobby.hoque@aecom.com.ecosysdev' ) || ( uName == 'bjacobi@ae.com.ecosysdev' ) ) )
+        //    return ; 
+        //    
+        //    
+        if( ( lProjects[0].ReOpenProjectExpenditureEmailFlag__c == true ) || ( lProjects[0].StatusClosedToReOpenDate__c == null ) )
+            return;
+                
+		string uName = UserInfo.getUserName();
+        
+        //if(! ( uName == 'bobby.hoque@aecom.com.ecosysdev' ) )
+        //    return ; 
+        
+        List<AggregateResult> expendFlagResult = new List<AggregateResult>();
+        
+        expendFlagResult = [SELECT project__c, count(Id) total_Exp_count
+			FROM expenditem__c
+			WHERE ProjectStatusChangedDateOlder__c = true and Project__c = : lProjects[0].id
+			GROUP BY rollup(project__c)
+			];
+        
+        system.debug( 'expendFlagResult ' + expendFlagResult );
+        
+        Integer ExpResultsAfter = 0;
+        for(AggregateResult sobj : expendFlagResult)
+		{   
+            ExpResultsAfter = Integer.valueOf(sobj.get('total_Exp_count'));
+            
+            system.debug( 'ExpResultsAfter ' + ExpResultsAfter );
+		}
+        
+		// If there has been any expenditure items since we have close our project then set this flag to true
+        if( ExpResultsAfter > 0 )
+        {
+        	lProjects[0].ReOpenProjectExpenditureEmailFlag__c = true;   
+        }            
+    }    
+    
 	public static void replicateNewProjectTask(list<pse__Project_Task__c> lProjectTasks){
 		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('PROJTASK_BudgetReplicate')) {
 			return;

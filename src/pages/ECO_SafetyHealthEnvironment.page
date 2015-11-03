@@ -91,7 +91,6 @@
             border-collapse: collapse;
             border: 1px solid #eee;
             /* box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1), 0px 10px 20px rgba(0, 0, 0, 0.05), 0px 20px 20px rgba(0, 0, 0, 0.05), 0px 30px 20px rgba(0, 0, 0, 0.05); */
-            width: 100%;
             heigth: 20px;
             table-layout: fixed;
         }
@@ -152,9 +151,11 @@
 
         }       
 
-        ul {
+        ul, ol {
             margin-top: -10px;
+            list-style: disc outside none;
         }
+
 
     </style>
     
@@ -190,6 +191,7 @@
     </script>
     <apex:form >
     <apex:inputHidden value="{!pse__Proj__c.Name}"/>
+    <apex:inputHidden value="{!pse__Proj__c.SafetyHealthEnvRegulations__c}"/>
     <apex:inputHidden value="{!inductionId}" id="inductionId" />
     <apex:sectionHeader title="Safety, Health & Environment " subtitle="{!pse__Proj__c.Name}"/>
     
@@ -205,7 +207,7 @@
 
     <br/>
 
-    <apex:pageBlock title="Safety, Health & Environment Edit" mode="edit">
+    <apex:pageBlock title="Safety, Health & Environment" mode="edit">
     <apex:actionFunction name="attachInduction" action="{!createInductionAttachment}">     
         <apex:param id="uid" name="inductionId" value="" />
         <apex:param id="uname" name="inductionName" value="" />     
@@ -217,7 +219,10 @@
 
         <br/>
         <apex:pageBlockButtons location="top">
-            <apex:commandButton value="Save" action="{!save}"/><apex:commandButton value="Return to Project" action="{!cancel}"/>
+            <apex:commandButton value="Save" action="{!save}"/>
+            <apex:commandButton value="Return to Project" action="{!cancel}"/>
+            <apex:commandLink target="_blank" action="http://my.aecomnet.com/Intranet/AECOM+Corporate/Safety,+Health+&+Environment" style="text-decoration:none;"><apex:commandButton value="myAECOM SH&E" /></apex:commandLink>
+            
         </apex:pageBlockButtons>
         <apex:pageBlockSection title="Safety & Health" columns="1" id="safetyAndHealth">
             <apex:outputPanel id="safetyAndHealth1" >
@@ -248,46 +253,91 @@
 
                 <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthUndertakeWork__c == 'Yes'}">
                 <div class="ouputPanelSep">
-                    <ul>
-                    <li>All members of the project team who will be working at the client or project offices may undergo the induction applicable to that location.</li>                               
-                    <li>A Communication Plan should also be completed for travel to/from the office if appropriate.</li>                                
-                    <li>An Inductions Register will be created to capture details of indictions for your project.</li>
-                    </ul>
+                    <div class="customHelpText" >
+	                    <div class="customHelpBody">
+	                        Project team members who will be working at the client or project offices may be required to undergo a safety induction(s) (i.e., site-specific training).  Click the “New Induction” button to create a register of all required inductions for the project.  Once each induction record has been created and added to the register, add the required project team member(s) and relevant document(s) by clicking “Add” within each record line.   Relevant documents may include application forms, induction location information or completed induction certificates.
+	                    </div>                                                                      
+	                </div>
+	                <br/>
+
+                    
         <!--            <apex:outputLabel style="font-weight:bold;">Inductions Register</apex:outputLabel><br/> -->
                     <apex:outputPanel >
-                        <apex:commandButton value="New Induction" action="{!newInduction}"/><br/>
+                        
+
+
+                        <apex:variable var="rowNumInd" value="{!0}"/>
+
                         <apex:pageBlockTable value="{!inductionRegistrations}" var="induction" rendered="{!inductionRegistrations.size > 0}">
+
+                            <apex:column headerValue="Action">
+                                <apex:variable var="rowNumInd" value="{!rowNumInd + 1}"/>
+                                <apex:commandLink value="Remove" action="{!RemoveInduciton}" reRender="undertakeWork">
+                                    <apex:param name="rowNumInd" value="{!rowNumInd}" assignTo="{!rowNumberInduction}"/>
+                                </apex:commandLink>
+
+                            </apex:column>    
+
                             <apex:column headervalue="Name of Induction">
                                 <apex:commandLink style="color:#015ba7;" action="{!URLFOR($Action.Induction__c.View, induction.Id, ['saveURL'='/apex/ECO_SafetyHealthEnvironment?Id='+pse__Proj__c.Id, 'retURL'='/apex/ECO_SafetyHealthEnvironment?Id='+pse__Proj__c.Id])}"><apex:outputText value="{!induction.Name}"/></apex:commandLink>
                             </apex:column>
                             <apex:column headervalue="Required By" value="{!induction.RequiredBy__c}"></apex:column>
                             <apex:column headervalue="Project Team Members">
+                                <table class="teamMemberGrid" width="100%">
+                                <TR >
+
+
+                                <TD style="border:none">
                                 <table class="teamMemberGrid">
                                     <apex:repeat value="{!inductedProjectTeamMembersMap[induction.Id]}" var="inductionTeamMember">
                                     <tr><td style="border:none"><apex:outputText value="{!inductionTeamMember.TeamMember__c}"/></td></tr>
                                     </apex:repeat>
                                 </table>
-                            <apex:commandButton value="Add Team Member" action="{!newInductionTeamMember}" rerender="inductionId">
-                                    <apex:param name="inductionId" value="{!induction.Id}" assignTo="{!inductionId}"/>
-                            </apex:commandButton>
+                                </TD>
+                                <TD style="border:none; text-align: right;">
+                                    <apex:commandLink value="Add" action="{!newInductionTeamMember}" rerender="inductionId" title="Add Project Team Members">
+                                            <apex:param name="inductionId" value="{!induction.Id}" assignTo="{!inductionId}"/>
+                                    </apex:commandLink>
+                                </TD>
+
+                                </TR>
+                                </table>
                             </apex:column>
-                        
+                     
                             <apex:column headervalue="Location of Induction" value="{!induction.LocationofInduction__c}"></apex:column>
                             <apex:column headervalue="Frequency" value="{!induction.Frequency__c}" ></apex:column>
-                            <apex:column headervalue="Fee" value="{!induction.Fee__c}"></apex:column>               
+                            <apex:column headervalue="Fee">
+                                <apex:outputtext value="{0, number, ###,###,##0.00}">
+                                    <apex:param value="{!induction.Fee__c}" />
+                                </apex:outputtext>  
+                            </apex:column>               
                             <apex:column headervalue="Notes" value="{!induction.Notes__c}"></apex:column>
                             <apex:column headervalue="Attachments">
+                                <table class="teamMemberGrid" width="100%">
+                                <TR >
+
+                                <TD style="border:none">
                                 <table class="teamMemberGrid">
                                     <apex:repeat value="{!inductionAttachmentsMap[induction.Id]}" var="attachment">
                                     <tr><td style="border:none"><apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachment.Id)}" target="_blank"><apex:outputText value="{!attachment.Name}"/></apex:outputLink></td></tr>
                                     </apex:repeat>
                                 </table>
-                                <apex:commandButton value="Add Attachments" action="{!createInductionAttachment}" rerender="id2">
-                                    <apex:param name="inductionId" value="{!induction.Id}" assignTo="{!inductionId2}"/>
-                                    <apex:param name="inductionName" value="{!induction.Name}" assignTo="{!inductionName2}" />                                  
-                                </apex:commandButton>
+                                </TD>
+                                <TD style="border:none; text-align: right;">
+                                    <apex:commandLink value="Add" action="{!createInductionAttachment}" rerender="id2"  title="Add Attachments">
+                                        <apex:param name="inductionId" value="{!induction.Id}" assignTo="{!inductionId2}"/>
+                                        <apex:param name="inductionName" value="{!induction.Name}" assignTo="{!inductionName2}" />                                  
+                                    </apex:commandLink>
+                                </TD>
+
+                                </TR>
+                                </table>
+
                             </apex:column>          
                         </apex:pageBlockTable>
+                        <P>
+                            <apex:commandButton value="New Induction" action="{!newInduction}"/>
+                        </P>
                     </apex:outputPanel> 
                 <apex:outputPanel rendered="{!inductionRegistrations.size == 0}">
                     <apex:outputText value="No records to display"/>
@@ -313,8 +363,8 @@
             <div class="ouputPanelSep">
                 <div class="customHelpText" >
                     <div class="customHelpBody">
-                        All field activities require a Task Risk Analysis to be undertaken.<br/><br/>               
-                        A Task Risk Analysis Register has been created for your project to enable the identification of these activies and subsequently complete the analysis.<br/>  Once the tasks have been identified, complete the required analysis per your geography safety standard (e.g., Job Safety Analysis, Safe Work Method Statement,<br/> Task Hazard Analysis) and upload the completed documents for access and reference by the project team unless a project-specific <br/>health and safety plan is prepared for the project.
+                        All field activities require a Task Risk Analysis to be undertaken. Complete the required analysis per your geography safety standard (e.g., Job Safety Analysis, Safe Work Method Statement, Task Hazard Analysis) and upload the completed documents for access and reference by the project team unless a project-specific
+                         health and safety plan is prepared for the project.
                     </div>                                                                      
                 </div>
                 <br/>
@@ -329,7 +379,7 @@
                         <apex:column value="{!attachedSafetyInspectionFile.LastModifiedDate}" />    
                         <apex:column value="{!attachedSafetyInspectionFile.LastModifiedById}" />
                     </apex:pageBlockTable></div>
-                    <apex:inputFile id="safetyHealthInspectionAttachment" value="{!newSafetyHealthInspectionAttachment.Body}" contentType="{!newSafetyHealthInspectionAttachment.ContentType}" fileName="{!newSafetyHealthInspectionAttachment.Name}" onchange="fileChosen('{!$Component.cmdSafetyHealthInspectionAttachment}', this, '{!$Component.overrideSafetyHealthInspectionName}'); return false;"/>
+                    <apex:inputFile id="safetyHealthInspectionAttachment" value="{!newSafetyHealthInspectionAttachment.Body}" contentType="{!newSafetyHealthInspectionAttachment.ContentType}" fileName="{!newSafetyHealthInspectionAttachment.Name}" onchange="fileChosen('{!$Component.cmdSafetyHealthInspectionAttachment}', this, '{!$Component.overrideSafetyHealthInspectionName}'); return false;" />
                     <apex:inputText id="overrideSafetyHealthInspectionName" value="{!overrideSafetyHealthInspectionName}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
                     <apex:commandButton id="cmdSafetyHealthInspectionAttachment" value="Attach" action="{!saveSafetyHealthInspectionAttachmentAndProject}" styleclass="attachNewFile"/><br/>
                 <br/></div></apex:outputPanel></apex:outputPanel>
@@ -339,7 +389,7 @@
             <apex:outputPanel id="healthRequirements">      
             <apex:actionregion >    
                 <table><tr>
-                    <td width="800px"><apex:outputText ><b><br/>Are their client specific safety and health requirements for this project?</b></apex:outputText></td>
+                    <td width="800px"><apex:outputText ><b><br/>Are there client specific safety and health requirements for this project?</b></apex:outputText></td>
                     <td><apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthSpecificRequirements__c}" >
                         <apex:selectOptions value="{!YesNoOptions}"/>
                         <apex:actionSupport event="onchange" rerender="healthRequirements"/>
@@ -408,7 +458,6 @@
                 Contact your local SH&amp;E Manager to determine if a Journey Management Plan is required for travel to remote or austere locations.
                 </apex:outputText><br/><br/>
                 
-                
                 <apex:commandButton id="cmdLocationsAndResilience" value="Locations and Resilience" action="{!gotoLocationsAndResilience}"/><br/>
                 </apex:outputPanel>
             </apex:outputPanel>
@@ -417,48 +466,23 @@
         </apex:pageBlockSection>
         
         <apex:pageBlockSection title="Environment" columns="1" id="environmentImpact">
-        <apex:pageMessage severity="info"  escape="false"  summary="Undertaking an environmental review of projects demonstrates AECOMs commitment to work in an environmentally responsible manner in the delivery of our services (and is also in compliance with ISO 14001) by:
-                <br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;1. Identifying and assessing the environmental impacts relating to our projects and the services we provide;<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2. Using this assessment to assist in controlling significant environmental issues i.e. to adopt a proactive approach, and;<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;3. Ensuring that we work within the framework of legislation and good practice guidelines."/>     
-            <apex:outputPanel >
-            <apex:actionRegion >
-            <table>
-                <tr><td width="800px">
-                    <apex:outputText ><b><br/>Does work require compliance with environmental regulations (impacts to land, air, water; waste disposal or discharge; noise or nuisance)?</b></apex:outputText>                                      
-                </td>
-                <td><apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthEnvRegulations__c}" >
-                    <apex:selectOptions value="{!YesNoOptions}"/>
-                    <apex:actionSupport event="onchange" rerender="environmentImpact"/>
-                </apex:selectRadio></td>
-                
-            </tr></table>
-            </apex:actionRegion>
-            </apex:outputPanel>
-            
-            <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthEnvRegulations__c =='Yes'}">
-            <apex:outputPanel >
+        <apex:pageMessage severity="info"  escape="false"  summary="Where your region is certified to ISO 14001, Environmental Management, a Project Environmental Review must be completed.  Where your region is not certified, it is recommended that a Project Environmental Review is completed demonstrating AECOM’s commitment to work in an environmentally responsible manner. <br /><br />
+In completing the Environmental Review within the Project Plan it is not intended that all of the ‘normal’ environmental impacts should be listed and commented on, but rather that any ‘unusual or particularly significant’ activities or requirements should be highlighted by exception and assessed."/>     
 
-            <table><tr><td width="800px">
-            <apex:outputText ><b><br/>Does our project or the Client's Project have an impact on the following areas?</b></apex:outputText>
-            </td>
-            <td><apex:actionRegion ><apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthEnvProjectImpact__c}" >
-                <apex:selectOptions value="{!YesNoOptions}"/>
-                <apex:actionSupport event="onchange" rerender="environmentImpact"/>
-            </apex:selectRadio></apex:actionRegion></td>        
-            </tr>
-            </table>
-            </apex:outputPanel>
-            <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthEnvProjectImpact__c == 'Yes'}">
-            <apex:pageMessage severity="info"  escape="false"  summary="List all of the activities that may have a potential impact on the environment.<br/> 
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Subjectively rank the significance of each impact as high, medium or low <br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- Note whether AECOM can either control or influence each identified potential impact<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- For impacts that have been identifieid as being of high or medium significance, and where AECOM can control or influence them, set out our proposed actions to manage these issues<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- At each project reveiw, update this assessment and note action taken (if applicable)<br/>
-                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- If there are no environmental impacts, please say &quot;none&quot; (rather than &quot;not applicable&quot;) and provide the reason why."/>          
-            <br/><apex:outputLabel style="font-weight: bold" value="List of Project Activities"/>
-            
+        
+To complete the Environmental Review:<br/><br/>
+<ul>
+<li>Subjectively rank the significance of each impact as high medium or low</li>
+<li>Note whether AECOM can either control or influence each identified potential impact</li>
+<li>For impacts that have been identified as being of high or medium significant and where AECOM can control or influence then, set out our proposed actions to manage these issues; and</li>
+<li>At each project review, update this assessment and note action taken (if applicable)</li>
+<li>If there are no environmental impacts, please note “none” to highlight that a review has been undertaken</li>
+</ul>
+
+
+    <apex:outputPanel id="projectact">
+        <apex:outputLabel style="font-weight: bold" value="List of Project Activities and Impacts"/>
+            <!--
             <table class="table">
                 <tr>
                     <th></th>
@@ -492,132 +516,133 @@
                     <td>Installed filter in stream around dig site</td>
                 </tr>
             </table>
-            
-            <apex:commandLink value="New Activity"/><br/><br/>
-            
-            
-            </apex:outputPanel>
-            <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthEnvProjectImpact__c == 'No'}">
-            <apex:outputText >
-            Select the "Not Applicable" option below.
-            </apex:outputText>
-            </apex:outputPanel>         
-            <apex:outputPanel >
+            -->
+            <apex:actionregion >
+            <apex:variable var="rowNum" value="{!0}"/>
+            <apex:pageBlockTable value="{!ProjActivities}" var="PA">
+                <apex:column headerValue="Action">
+                     <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                     <apex:commandLink value="Remove" action="{!RemoveProjectActivities}" reRender="projectact">
+                        <apex:param name="rowIndex" value="{!rowNum}" assignTo="{!rowNumber}"/>
+                     </apex:commandLink>
+                     
+                </apex:column>
+                <apex:column headervalue="Activity">
+                    
+                    <apex:commandLink style="color:#015ba7;" action="{!URLFOR($Action.ProjectActivities__c.View, PA.Id, ['saveURL'='/apex/ECO_SafetyHealthEnvironment?Id='+pse__Proj__c.Id, 'retURL'='/apex/ECO_SafetyHealthEnvironment?Id='+pse__Proj__c.Id])}"><apex:outputField value="{!PA.Name}" /></apex:commandLink>
+                </apex:column>            
+                <apex:column headervalue="Impact on the Environment">
+                    <apex:outputField value="{!PA.ImpactonEnv__c}" />
+                </apex:column>
+                <apex:column headervalue="Significance">
+                    <apex:outputField value="{!PA.Significance__c}" />
+                </apex:column>
+                <apex:column headervalue="Control">
+                    <apex:outputField value="{!PA.Control__c}" />
+                </apex:column>
+                <apex:column headervalue="Proposed Action">
+                    <apex:outputField value="{!PA.ProposedAction__c}" />
+                </apex:column>
+                <apex:column headervalue="Action Taken">
+                    <apex:outputField value="{!PA.ActionTaken__c}" />                   
+                </apex:column>
+            </apex:pageBlockTable>
 
-            <table><tr><td width="800px">
-            <apex:outputText ><b>This section can be completed once all impacts have completed actions recorded.</b></apex:outputText>
-            </td>
-            <td>
-            <apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthEnvImpactStatus__c}" >
-                <apex:selectOptions value="{!ImpactStatusOptions}"/>
-            </apex:selectRadio> </td>           
-            </tr>
-            </table>
+            <P>
+            <apex:commandButton value="New Activity" action="{!newProjectActivities}" rerender="projectact" />
+            </P>
 
-            </apex:outputPanel>
-            
-            
-            
-            <div class="infoTable">
-                <table  border="1" cellpadding="0" cellspacing="0">
+            <br/><br/>
+            </apex:actionregion>
+    </apex:outputPanel>                              
+        
+
+            <b>Additional Guidance </b><br /><br />
+            The Project Environmental Review is compliant by:<br /><br />
+            <ol type="a">
+            <li>Identifying and assessing the environmental impacts relating to our projects and the services we provide;</li>
+            <li>Using this assessment to assist in controlling significant environmental issues i.e. to adopt a proactive approach, and;</li>
+            <li>Ensuring that we work within the framework of legislation and good practice guidelines.</li>
+            </ol>
+            The requirement to undertake environmental reviews is limited to our ability to influence or control the Environmental Impacts (either positive or negative) of a Project.  In turn our ability to influence or control is determined by our brief.
+            The principles of Environmental Review are generic across the business, although the particular issues are likely to differ between Business Lines.  The following table identifies a range of typical environmental impacts related to construction projects.  It is not intended to be exhaustive.
+
+            <br /><br />
+
+            <div >
+                <table class="infoTable" border="1" cellpadding="0" cellspacing="0">
                     <tr>
                         <th>Emissions to Air</th>
-                    </tr>
-                    <TR>
-                        <TD>Carbon dioxide emissions from energy use during building lifetime (global impact)</TD>
-                    </TR>   
-                    <TR>
-                        <TD>Green house gas depletion from refrigerants and insulants</TD>
-                    </TR>
-                    <TR >
-                        <TD>NOx emissions from burners (global - leading to acid rain)</TD>
-                    </TR>   
-                    <TR>
-                        <td>Indoor environment (local)</td>
-                    </TR>
-                    <TR>
-                        <td>Release of hazardous materials to air (global and local)</td>
-                    </TR>                   
-                    <TR>
-                        <td>During Construction – Dust, noise, light, VOC’s , Ash/Particulates, Litter, Steam, Methane</td>
-                    </TR>
-                    <tr>
                         <th>Releases to Water</th>
                     </tr>
                     <TR>
-                        <td>Storm Water</td>
-                    </TR>
-                    <TR>
-                        <td>Silt</td>
-                    </TR>
-                    <TR>
-                        <td>Oil/Fuel Spillage</td>
-                    </TR>
-                    <TR>
-                        <td>Chemicals</td>
-                    </TR>
-                    <TR>
-                        <td>Hot Water (to natural rivers, ponds or other sensitive water courses)</td>
-                    </TR>
-                    <TR>
-                        <td>Process Effluent</td>
-                    </TR>       
-                    <TR>
-                        <td>Fire Dowsing</td>
-                    </TR>
-                    <TR>
-                        <td>Waste leaching</td>
-                    </TR>
+                        <TD>
+                            <P>
+                            <ul>
+                                <li>Carbon dioxide emissions from energy use during building lifetime (global impact)</li>
+                                <li>Green house gas depletion from refrigerants and insulants</li>
+                                <li>NOx emissions from burners (global - leading to acid rain)</li>
+                                <li>Indoor environment (local)</li>
+                                <li>Release of hazardous materials to air (global and local)</li>
+                                <li>During Construction – Dust, noise, light, VOC’s , Ash/Particulates, Litter, Steam, Methane</li>
+                            </ul>
+                            </P>
+                        </TD>
+                        <TD>
+                            <P>
+                            <ul>
+                                <li>Contamination of ground water (global and local)</li>
+                                <li>Contamination of surface water (global and local)</li>
+                                <li>Storm water</li>
+                                <li>Silt</li>
+                                <li>Oil/Fuel Spillage</li>
+                                <li>Chemicals</li>
+                                <li>Hot Water (to natural rivers, ponds or other sensitive water courses)</li>
+                                <li>Process Effluent</li>
+                                <li>Fire Dowsing</li>
+                                <li>Waste leaching</li>
+                                <li>Sewage</li>
+                                <li>Detergents</li>
+                            </ul>
+                            </P>
+                        </TD>
+                    </TR>   
                     <tr>
                         <th>Materials and Waste Management</th>
-                    </tr>                   
-                    <TR>
-                        <td>Materials extraction, manufacture, use and transportation</td>
-                    </TR>
-                    <TR>
-                        <td>Waste disposal - land use, transport etc (global and local)</td>
-                    </TR>
-                    <TR>
-                        <td>Possible waste by-products (wood, concrete, brick/aggregates, plastic, metal, paper, batteries, electrical items, clinical, asbestos, copper, garden waste, fluorescent lights)</td>
-                    </TR>
-                    <TR>
-                        <td>Managing / cleaning up contamination</td>
-                    </TR>
-                    <TR>
-                        <td>Embodied energy, material selection, the use of recycled materials</td>
-                    </TR>   
-
-                    <tr>
                         <th>Local Environment and Community Issues</th>
                     </tr>
                     <TR>
-                        <td>Noise</td>
-                    </TR>   
-                    <TR>
-                        <td>Vibration</td>
-                    </TR>   
-                    <TR>
-                        <td>Dust</td>
-                    </TR>       
-                    <TR>
-                        <td>Light</td>
-                    </TR>   
-                    <TR>
-                        <td>Transport</td>
-                    </TR>   
-                    <TR>
-                        <td>Effect on local ecology (global and local)</td>
-                    </TR>   
-                    <TR>
-                        <td>Mud/litter on the road</td>
-                    </TR>       
-                    <TR>
-                        <td>Litter</td>
-                    </TR>                                                                                                                                                                                                                                                                                                                                                   
+                        <TD>
+                            <P>
+                            <ul>
+                                <li>Materials extraction, manufacture, use and transportation</li>
+                                <li>Waste disposal - land use, transport etc (global and local)</li>
+                                <li>Possible waste by-products (wood, concrete, brick/aggregates, plastic, metal, <br/> paper, batteries, electrical items, clinical, asbestos, copper, garden waste, fluorescent lights)</li>
+                                <li>Managing / cleaning up contamination</li>
+                                <li>Embodied energy, material selection, the use of recycled materials</li>                     
+                            </ul>
+                            </P>
+                        </TD>
+                        <TD>
+                            <P>
+                            <ul>
+                                <li>Nuisance to neighbours (local impact)</li>
+                                <li>Noise</li>
+                                <li>Vibration</li>
+                                <li>Dust</li>
+                                <li>Light</li>
+                                <li>Transport</li>
+                                <li>Effect on local ecology (global and local)</li>
+                                <li>Mud/litter on the road</li>
+                                <li>Litter</li>
+                                <li>Consequences of Population growth, positive (improvements in population, employment)</li>                 
+                            </ul>
+                            </P>
+                        </TD>
+                    </TR>                                                                                                                                                                                                                                                                                                                                                 
                 </table>
             </div>
-            </apex:outputPanel>                                                     
-        </apex:pageBlockSection>
+            </apex:pageBlockSection>
 
     </apex:pageBlock>
     <c:ECO_RiskFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="SH&E" />

@@ -1,6 +1,6 @@
 public with sharing class ECO_PurchaseOrderSummaryController{
 
-
+	public class POException extends Exception {}
 
 	public string sJSON {get; set;}
 	
@@ -8,10 +8,8 @@ public with sharing class ECO_PurchaseOrderSummaryController{
     private Id messageQueueId;
     private String messageQueueJobName;
 
-
     public Integer numSuccessfulSyncs {get; private set;}
     public Integer numFailedAttemptedSyncs {get; private set;}
-
 
     private final Integer numberRelatedItemsToDisplay = 20;
  
@@ -25,6 +23,7 @@ public with sharing class ECO_PurchaseOrderSummaryController{
     public List<nonSyncItem> invalidDistributions {get;set;}
     public List<Distribution__c> validDistributions {get;set;}
     public POStatus__c poStatus {get; private set;}
+    public List<POStatus__c> poStatusList {get; private set;}
 
 	public String validPOLineItemLimitMsg {get; private set;}
 	public String invalidPOLineItemLimitMsg {get; private set;}
@@ -50,7 +49,6 @@ public with sharing class ECO_PurchaseOrderSummaryController{
     public Integer numValidDistributions {get; private set;}
 
     public POHeader__c poHeader {get;set;}
-
 
     public boolean allowNewPOLineItems {get; private set;}
 
@@ -95,7 +93,6 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 
 	public List<SelectOption> optAgreements {get; private set;}
 
-
 	public String showHideDistributionBtnStr {get; private set;}
 
 	public String selectedVendorId {get;set;}
@@ -113,15 +110,12 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 
 	private Boolean useApprovalProcess;
 
-
-
     public Boolean showSyncMsg {get;set;}
     public String syncProgressMsg {get;set;}
     private boolean syncErrorOccurred = false;
 
     @TestVisible
     private List<String> stepMsgs;
-
 
     private Integer intProgressBarNumCells;
     private String progressErrors;
@@ -135,9 +129,11 @@ public with sharing class ECO_PurchaseOrderSummaryController{
     private String syncAttemptResult;
 
     public Boolean isApprovedDoSyncNow {get; private set;}
+    
+    public Decimal totalPurchaseOrderLineAmount{get; private set;}
 
     public ECO_PurchaseOrderSummaryController(ApexPages.StandardController stdController) {
-
+        
     	POHeader__c rec = (POHeader__c)stdController.getRecord();
 
     	purchaseOrderId = rec.Id;
@@ -176,20 +172,21 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 		debugMode = isDebugEnabled();
 		canEditHeader = false;
 
-    	if(purchaseOrderId == null){
+    	if(purchaseOrderId == null) {
     		savePOBtnValue = 'Add Purchase Order Lines';
     		allowRequestSubmit = false;
     		showCreateAndSubmitForApproval = true;
     		projectId = checkForUrlIdParam('projectId');
     		agreementId = checkForUrlIdParam('agreementId');
-    		if(projectId == null && agreementId == null){
+    		
+            if(projectId == null && agreementId == null) {
     			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'A You have reached this page incorrectly. A Project Id or Agreement Id is missing!'));
     			hideEverything = true;
 				return;
-			}else if(projectId == null && agreementId != null){
+			} else if(projectId == null && agreementId != null) {
 				projectId = [SELECT Project__c FROM Agreement__c WHERE Id = :agreementId].Project__c;
 
-				if(projectId == null){
+				if(projectId == null) {
 					ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING, 'A Project must be selected for the Agreement! Please return the the Agreement and select a Project.'));
 	    			allowPOHeaderSave = false;
 	    			returnBtnValue = 'Return to Agreement';
@@ -198,8 +195,7 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 				}				
     		}
 
-
-    		if(projectId != null){
+    		if(projectId != null) {
     			projectManager = getProjectManager();
     			poHeader.Project__c = projectId;
     			if(projectManager != null){
@@ -207,20 +203,20 @@ public with sharing class ECO_PurchaseOrderSummaryController{
     			}   			
     		}
     			
-    		if(agreementId != null){
+    		if(agreementId != null) {
     			poHeader.Agreement__c = agreementId;
     			returnBtnValue = 'Return to Agreement';
     			isFromAgreement = true;
     		}
     		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, 'Click \'Add Purchase Order Lines\' to create a new Purchase Order.'));
     		
-    	}else{
+    	} else {
     		savePOBtnValue = 'Save Purchase Order';
     		poHeader = ECO_Service_PurchaseOrders.GetPurchaseOrder(purchaseOrderId);
 
-    		if(!String.isEmpty(poHeader.Agreement__r.VendorName__r.VendorName__c)){
+    		if(!String.isEmpty(poHeader.Agreement__r.VendorName__r.VendorName__c)) {
 				agreementIdentifier = poHeader.Agreement__r.VendorName__r.VendorName__c + ' ' +  poHeader.Agreement__r.Name;		
-    		}else{
+    		}else {
 				agreementIdentifier = poHeader.Agreement__r.Name;
     		}
     			
@@ -229,35 +225,35 @@ public with sharing class ECO_PurchaseOrderSummaryController{
     		selProjectSiteId = poHeader.VendorSite__c;
     		projectManager = getProjectManager();
     		
-    		if(poHeader.CancelFlag__c || poHeader.Status__c == 'Closeout'){
+    		if(poHeader.CancelFlag__c || poHeader.Status__c == 'Closeout') {
     			poIsClosedOutOrClosedOut = true;
     		}
     		//getTasksForProject();
-    		if(agreementId != null && projectId == null){
+    		if(agreementId != null && projectId == null) {
     			returnBtnValue = 'Return to Agreement';
     			isFromAgreement = true;
     		}
 
     		//if(isPurchasedOrderApproved()){
-    			//poHeader.Status__c = 'APPROVED';
-    			if(poHeader.VendorSite__c != null){
-                    allowNewPOLineItems = true;
+    		//poHeader.Status__c = 'APPROVED';
+            if(poHeader.VendorSite__c != null){
+                allowNewPOLineItems = true;
+            }
+            
+            allowPOHeaderSave = false;	//can't update poheader - fields will be read only
+            if(!String.isEmpty(poHeader.OraclePurchaseOrderId__c)){
+                allowPOCancel = true;	
+                
+                List<POStatus__c> poStatuses = ECO_Service_PurchaseOrders.GetPurchaseOrderStatuses(purchaseOrderId);
+                if(!poStatuses.isEmpty()){
+                    poStatus = poStatuses.get(0);
+                    if(poStatus.AP_Invoice__c != null){
+                        allowPOCloseout = true;	
+                        allowPOCancel = false;
+                    }
                 }
                 
-    			allowPOHeaderSave = false;	//can't update poheader - fields will be read only
-    			if(!String.isEmpty(poHeader.OraclePurchaseOrderId__c)){
-    				allowPOCancel = true;	
-
-    				List<POStatus__c> poStatuses = ECO_Service_PurchaseOrders.GetPurchaseOrderStatuses(purchaseOrderId);
-    				if(!poStatuses.isEmpty()){
-    					poStatus = poStatuses.get(0);
-    					if(poStatus.AP_Invoice__c != null){
-    						allowPOCloseout = true;	
-    						allowPOCancel = false;
-    					}
-    				}
-					
-    			}   			
+            }   			
     		//}else{
     		//	allowRequestSubmit = false;    			
     		//}
@@ -266,11 +262,8 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 
     		//disabled for testing
     		//if(useApprovalProcess){
-    			pendingApproval = isPurchasedOrderPendingApproval();
+    		pendingApproval = isPurchasedOrderPendingApproval();
     		//}
-    		
-
-
     	}
 
     	optSelectProjectSites = getVendorProjectSites();
@@ -281,8 +274,6 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 
     	currentPOLineItem = new POLineItem__c();
     	currentPOLineItem_Id = '';
-
-
 
 		retUrl = '/apex/' + ApexPages.currentPage().getUrl().split('/apex/')[1];
 
@@ -297,7 +288,6 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 		invalidPOLineItemLimitMsg = '';
 		validDistributionLimitMsg = '';
 		invalidDistributionLimitMsg = '';
-
 	
 		hasSyncHistory = false;
 		hasRequestFailures = false;
@@ -313,8 +303,7 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 		invalidDistributions = new List<nonSyncItem>();
      	validDistributions = new  List<Distribution__c>();
 
-
-		if(purchaseOrderId != null){
+		if(purchaseOrderId != null) {
 
 			sJSON = ECO_Service_PurchaseOrders.createPurchaseOrderMessageWrapperJSON(purchaseOrderId, null);
 	     	poHeader = ECO_Service_PurchaseOrders.GetPurchaseOrder(purchaseOrderId);
@@ -322,13 +311,12 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 	     	//get last sync date to use to filter out items that have changed
 			lastSync = ECO_Service_PurchaseOrders.getLastSuccessfulSyncDateTime(purchaseOrderId, messageQueueJobName);
 		    lastSyncStr = 'The project has not yet been synced';
-		    if(lastSync == null){
+		    if(lastSync == null) {
 		    	lastSync = DateTime.newInstance(1900, 1, 1);
-		    }else{
+		    } else {
 		    	lastSyncStr = 'Last sync: ' + lastSync.format();
 		    }
 		    lastSyncStr = 'Last sync: ' + lastSync.format();
-
 
 		    validatedAndDisplayWarnings();
 
@@ -336,33 +324,17 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 		    if(!poStatuses.isEmpty()){
 		    	poStatus = poStatuses.get(0);
 		    }
-
+            
+            poStatusList = ECO_Service_PurchaseOrders.GetPurchaseOrderStatuses(purchaseOrderId);
 	    }
-
-
-	    
-
-
 	    //allowRequestSubmit = true;	
-
-
-
 	    //numValidPOLineItems = validPOLineItems.size();
-
 	    /*
 		//to do remove call to construct wrapper - replaced by sfdc objects
 		requestDTO =  ECO_Service_Projects.createProjectMessageWrapper(projectId, false, false);
-
 		poHeaderMsg = validateProject(project, false);
-
 		*/
-		
-		
-
-
-			
 		messageQueueJobName = ECO_Service_PurchaseOrders.JOBNAME_PO_SYNC;	//NOT SURE IF THIS NEEDS TO BE DIFFERENT VALUE OR NOT
-
 
 	    generateSyncHistory();
 
@@ -373,14 +345,13 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 	    poCommitments = getPOCommitmentsForProject();
     }
     
-    private list<POcommitment__c> getPOCommitmentsForProject()
-    {
+    private list<POcommitment__c> getPOCommitmentsForProject() {
     	list<POcommitment__c> poCommits = [select Id, Name, ExpenditureType__c, PODate__c, PONumber__c, POLine__c, POLineStatus__c, SupplierID__c, SupplierName__c, SupplierNumber__c, POLineAmount__c, POAmountBilled__c from POcommitment__c where ProjectNumber__c = :poHeader.Project__c order by PODate__c, PONumber__c, POLine__c];
    		
    		return poCommits;
     }
 
-    public Boolean isDebugEnabled(){
+    public Boolean isDebugEnabled() {
     	Boolean result = false;
     	Id userId = UserInfo.getUserId();
     	List<User> users = [SELECT Id, UserPreferencesApexPagesDeveloperMode
@@ -400,7 +371,7 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 	
 
     public void getDefaultPaymentTermsForVendor(){
-    	if(!vendorSites.isEmpty()){
+    	if(!vendorSites.isEmpty() && selectedVendorId !=''){
     		for(VendorSite__c projSite : vendorSites){
     			if(projSite.Id == selectedVendorId){
     				poHeader.VendorSite__c = projSite.Site__r.Id;
@@ -589,7 +560,7 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 
 		try{
 
-            if(poHeader.VendorSite__c == null){
+            if(selProjectSiteId == null){
                 ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'The Vendor Site has not been selected and must be picked before saving the Purchase Order.'));
                 return saveSuccessful;
 
@@ -694,11 +665,38 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 					
 					system.debug('pm is not user - sending for approval');
 
-					String retUrl = '/apex/ECO_PurchaseOrderSummary?projectId=' + projectId + '&id=' + poHeader.Id;
+					/*String retUrl = '/apex/ECO_PurchaseOrderSummary?projectId=' + projectId + '&id=' + poHeader.Id;
 					pageRef = new PageReference('/p/process/Submit');
 					pageRef.getParameters().put('id', poHeader.Id);
 					pageRef.getParameters().put('retURL', retUrl);
-					pageRef.setRedirect(true);
+					pageRef.setRedirect(true);*/
+                    
+                    List<Contact> lContacts = new List<Contact>([SELECT Id, pse__Salesforce_User__r.Id FROM Contact WHERE Id = :poHeader.Requestor__c]);
+                    
+                    Contact oContact = new Contact();
+                    
+                    if(lContacts.size() > 0){
+                        oContact = lContacts.get(0);
+                    }else{
+                        throw new POException('No Requestor has been specified or requestor is not a Salesforce user!');
+                    }
+                    
+                    // Create an approval request for the account
+                    Approval.ProcessSubmitRequest req1 = new Approval.ProcessSubmitRequest();
+                    req1.setComments('Submitting request for approval.');
+                    req1.setObjectId(poHeader.Id);
+                    
+                    // Submit on behalf of a specific submitter
+                    req1.setSubmitterId(oContact.pse__Salesforce_User__c); 
+                    
+                    // Submit the record to specific process and skip the criteria evaluation
+                    req1.setProcessDefinitionNameOrId('EcoPurchaseOrder');
+                    //req1.setSkipEntryCriteria(true);
+                    
+                    // Submit the approval request for the account
+                    Approval.ProcessResult result = Approval.process(req1);
+                    
+                    return null;
 				}
 			}else{
 				isApprovedDoSyncNow = true;
@@ -1032,7 +1030,14 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 		}
 
 		validPOLineItemLimitMsg = '(' +numValidPOLineItems + ' records)';
-		
+        
+        totalPurchaseOrderLineAmount = 0.0;
+        for(POLineItem__c lineItem : validPOLineItems) {
+            if(lineItem.Amount__c != null) {
+                totalPurchaseOrderLineAmount =  totalPurchaseOrderLineAmount + lineItem.Amount__c;
+            }            
+        }
+        
     	return results;
     }	
 

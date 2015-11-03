@@ -6,17 +6,56 @@
             font-weight:bold;
             font-size:20px;
         }
+        .bPageBlock .detailList .list table td{
+        	border-bottom: 0px !important;
+        }
+        .sfdc_richtext{
+        	border-bottom: 0px !important;
+        }
+        .customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 30px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        }
 	</style>
+    <script>
+    	function selectAll(box)
+        {
+            var tags = document.querySelectorAll("[name$=\":checkboxes\"]");
+            for(var i = 0; i < tags.length; ++i)
+            {
+                if(tags[i].type == 'checkbox')
+                	tags[i].checked = true;
+            }
+        }  
+    </script>
 
-	<apex:sectionHeader title="DOA Approval Request" subtitle="{!theProject.Name}" />
+	<apex:sectionHeader title="DOA Approval Request" subtitle="{!theProject.Name}  {!theProject.ProjectNumber__c}" />
 
 	<apex:pageMessages id="messages" />
-
+	<div class="customHelpText">
+        <div class="customHelpBody">
+            Select trigger(s) from the DOA Register to commence the request for approval process.  The DOA Register presents triggers identified during the project Risk &amp; Market Assessment.  Triggers not previously identified may be added to the DOA Register using the “Add DOA Trigger” function.  Note that triggers previously submitted for approval cannot be selected again.  The status of all DOA approval requests for the project and resultant conditions of approval will be captured in the sections below and in the ePM Project Plan.
+		</div>
+    </div>  
 	<apex:form id="theform">
 		<apex:pageBlock title="DOA Register" id="thepageblock">
 			<apex:pageBlockButtons location="top">
 				<apex:commandbutton value="Request Approval" action="{!questions}" />
-				<apex:commandbutton value="Back to Project" action="/{!projectID}" rendered="{!IF(projectID == null, false, true)}" />
+				<apex:commandbutton value="Return to Project" action="/{!projectID}" rendered="{!IF(projectID == null, false, true)}" />
+                <apex:commandButton value="Select All" onclick="selectAll(this)"/>
 			</apex:pageBlockButtons>
 
 			<apex:outputPanel id="ProjectTriggerPanel">
@@ -29,12 +68,16 @@
 					<apex:facet name="stop">
 						<apex:outputPanel >
 		                    <apex:pageMessage severity="INFO" rendered="{!if(lstDOATriggers.size > 0, false, true)}" summary="No DOA Triggers Found"></apex:pageMessage> 
-							<apex:pageBlockTable value="{!lstDOATriggers}" var="Trigger" rendered="{!if(lstDOATriggers.size > 0, true, false)}">
-								<apex:column headerValue="Select"  width="40">
-									<apex:inputCheckbox value="{!Trigger.bChecked}" disabled="{!Trigger.oTrigger.DOAApprovalRequest__c != null}" />
+							<apex:pageBlockTable value="{!lstDOATriggers}" var="Trigger" rendered="{!if(lstDOATriggers.size > 0, true, false)}" id="TriggerTable">
+								<apex:column headerValue="Select"  width="40" id="selectBox" >
+									<apex:inputCheckbox value="{!Trigger.bChecked}" disabled="{!Trigger.oTrigger.DOAApprovalRequest__c != null}" id="checkboxes"/>
 								</apex:column>
-								<apex:column headerValue="View"  width="40">
-									<apex:outputLink value="/{!Trigger.oTrigger.id}">View</apex:outputLink>
+								<apex:column headerValue="Action"  width="80">
+                                    <apex:outputLink value="/{!Trigger.oTrigger.id}/e?retURL=%2F{!Trigger.oTrigger.id}">Edit</apex:outputLink>
+                                    &nbsp;&nbsp;
+                                    <apex:commandLink action="{!deleteDOA}" value="Delete" rerender="ProjectTriggerPanel, messages">
+                                    	<apex:param assignTo="{!deleteId}" name="DeleteId" value="{!Trigger.oTrigger.id}" />
+                                    </apex:commandLink>
 								</apex:column>	
 								<apex:repeat value="{!$ObjectType.DOARegister__c.FieldSets.DOA_TriggerView}" var="SearchField">
 									<apex:column value="{!Trigger.oTrigger[SearchField]}" />
@@ -45,23 +88,60 @@
 					</apex:facet>
 				</apex:actionStatus>
 			</apex:outputPanel>
-
-
-			<apex:pageBlockSection title="Add DOA Trigger" columns="2"  id="thepageblocksection">
-				<apex:repeat value="{!$ObjectType.DOARegister__c.FieldSets.DOAInputFields}" var="Field1">
+            <br/>
+			<apex:pageBlockSection title="Add DOA Trigger" columns="1"  id="thepageblocksection" collapsible="true">
+                
+				<!--<apex:repeat value="{!$ObjectType.DOARegister__c.FieldSets.DOAInputFields}" var="Field1">
 		           	<apex:inputField value="{!newTrigger[Field1]}" />
 				</apex:repeat>				
 			
-			<BR /><BR />
-			<div style="text-align:center;padding:0 0 5px 10px;">
-				<apex:commandButton value="Add" action="{!addTrigger}" reRender="ProjectTriggerPanel, messages" status="ProjectTriggerPanelStatus"/>
-
-			</div>
-			<BR /><BR /><BR />
-			</apex:pageBlockSection>
-			<script> twistSection(document.getElementById('{!$Component.theform.thepageblock.thepageblocksection}').getElementsByTagName('img')[0]) </script>
-
-			<apex:pageBlockSection title="DOA REQUESTS"  columns="1" collapsible="false"></apex:pageBlockSection>
+                <BR /><BR />
+                <apex:commandButton value="Add" action="{!addTrigger}" reRender="ProjectTriggerPanel, messages" status="ProjectTriggerPanelStatus"/>-->
+                <!--<apex:selectList id="business" value="{!selectBusiness}" size="1"> 
+                    <apex:selectOptions value="{!BusinessLines}"> Business Lines Available To &nbsp;</apex:selectOptions>
+                </apex:selectList> -->
+                <apex:outputPanel >
+                    <apex:selectList id="business" value="{!selectBusiness}" size="1"> 
+                        <apex:selectOptions value="{!BusinessLines}"> Business Lines Available To: &nbsp;</apex:selectOptions>
+                    </apex:selectList>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<apex:selectList id="geography" value="{!selectGeography}" size="1" >
+                        <apex:selectOptions value="{!Geographies}">Geographies Available To: &nbsp;</apex:selectOptions>
+                    </apex:selectList>
+                    <br/><br/><apex:selectList id="questionnaire" value="{!selectQuestionnaire}" size="1"> 
+                        <apex:selectOptions value="{!Questionnaires}"> Questionnaire Template: &nbsp;</apex:selectOptions>
+                    </apex:selectList>
+                    <br/><br/>
+                    <div align="center">
+                        <apex:commandButton action="{!searchQuestionnaire}" value="Search" reRender="thepageblocksection" />
+                    </div>
+                    
+                </apex:outputPanel>
+                
+                <apex:pageMessage severity="INFO" rendered="{!IF(lstTemplateQues.size > 0, false, true)}" summary="No Results Were Found."></apex:pageMessage> 
+                <apex:pageBlockTable value="{!lstTemplateQues}" rendered="{!IF(lstTemplateQues.size > 0, true, false)}" var="Questions" >
+                    <apex:column width="100px">
+                        <apex:facet name="header">Select</apex:facet>
+                        <apex:commandLink action="{!addQuestion}" value="Select" rerender="ProjectTriggerPanel, messages">
+                            <apex:param assignTo="{!idQuestionID}" name="QuestionId" value="{!Questions.id}" />
+                        </apex:commandLink>&nbsp;&nbsp;
+                    </apex:column>
+                    <apex:repeat value="{!$ObjectType.TemplateQuestion__c.FieldSets.DOA_Register_Fields}" var="SearchField">
+                        <apex:column value="{!Questions[SearchField]}"/>
+                    </apex:repeat>
+                </apex:pageBlockTable>
+                <apex:outputPanel >
+                    <div style="padding-left: 400px;">
+                    <apex:commandButton value="<<" rerender="thepageblocksection" action="{!FirstPage}" disabled="{!prev}"/>
+                    <apex:commandButton value="<" rerender="thepageblocksection" action="{!previous}" disabled="{!prev}"/>
+                    <apex:commandButton value=">" rerender="thepageblocksection" action="{!next}" disabled="{!nxt}"/>
+                    <apex:commandButton value=">>" rerender="thepageblocksection" action="{!LastPage}" disabled="{!nxt}"/>
+                	</div>
+                </apex:outputPanel>
+            </apex:pageBlockSection>  
+            
+            <script> twistSection(document.getElementById('{!$Component.theform.thepageblock.thepageblocksection}').getElementsByTagName('img')[0]) </script>
+			
+			<apex:pageBlockSection title="DOA Request For Approval "  columns="1" collapsible="false"></apex:pageBlockSection>
 			<apex:pageMessage severity="INFO" rendered="{!if(lstDOARequests.size > 0, false, true)}" summary="No DOA Requests Found"></apex:pageMessage> 
 			<apex:pageBlockTable value="{!lstDOARequests}" var="Request" rendered="{!if(lstDOARequests.size > 0, true, false)}">
 				<apex:column headerValue="View" width="40">
@@ -72,15 +152,24 @@
 				</apex:repeat>
 			</apex:pageBlockTable>
 
-			<apex:pageBlockSection title="DOA Conditions"  columns="1" collapsible="false"></apex:pageBlockSection>
+			<apex:pageBlockSection title="DOA Conditions of Approval"  columns="1" collapsible="false"></apex:pageBlockSection>
 			<apex:pageMessage severity="INFO" rendered="{!if(lstDOAConditions.size > 0, false, true)}" summary="No DOA Conditions Found"></apex:pageMessage> 
 			<apex:pageBlockTable value="{!lstDOAConditions}" var="Condition" rendered="{!if(lstDOAConditions.size > 0, true, false)}">
 				<apex:column headerValue="View"  width="40">
 					<apex:outputLink value="/{!Condition.id}">View</apex:outputLink>
 				</apex:column>				
-				<apex:repeat value="{!$ObjectType.DOAConditions__c.FieldSets.DOA_ApprovalView}" var="SearchField">
+				<!--<apex:repeat value="{!$ObjectType.DOAConditions__c.FieldSets.DOA_ApprovalView}" var="SearchField">
 					<apex:column value="{!Condition[SearchField]}" />
-				</apex:repeat>
+				</apex:repeat>-->
+                <apex:column headerValue="Approver" >
+                    <apex:outputField value="{!Condition.CreatedBy__c}"/>
+                </apex:column>
+                <apex:column headerValue="Status">
+                    <apex:outputField value="{!Condition.Mitigation_Plan__c}"/>
+                </apex:column>
+                <apex:column headerValue="Created Date">
+                    <apex:outputField value="{!Condition.CreatedDate}"/>
+                </apex:column>
 			</apex:pageBlockTable>
 
 

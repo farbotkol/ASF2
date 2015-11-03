@@ -26,6 +26,11 @@ public class ECO_Service_ContractReview {
 															 , InvoicingClient__c
 															 , InvoicingClient__r.Name
 															 , AgreementAmountEstimated__c
+															 , VendorSite__c
+															 , VendorSite__r.AccountName__c
+															 , VendorSite__r.AccountId__c
+															 , Account__c
+															 , Account__r.Name
 															 from Agreement__c where Id = :agreementId];
 															 
 		list<pse__Proj__c> projects = [select Id, Name, CarryingOutOrganization__r.BusinessLineName__c, USFederalGovernmentProject__c,
@@ -55,7 +60,7 @@ public class ECO_Service_ContractReview {
 				contractReviewDTO.ProjectId = oracleProjectNumberProjectIdMap.get(project.OracleProjectNumber__c);
 			}
 				
-			contractReviewDTO.ProjectId = project.Id; 
+			//contractReviewDTO.ProjectId = project.Id; 
 			contractReviewDTO.ProjectName = project.Name;	
 			contractReviewDTO.OpportunityIds = projectOpportunityMap.get(project.Id);
 			
@@ -76,7 +81,7 @@ public class ECO_Service_ContractReview {
 			contractReviewDTO.AgreementCurrency = agreement.FundingCurrencyCode__c;
 			contractReviewDTO.EstimatedFee = agreement.AgreementAmountEstimated__c;
 			
-			if(agreement.ScopePackage__c != null && agreement.ScopePackage__c != '')
+			if(agreement.ScopePackage__c != null)
 				contractReviewDTO.ScopeOfServices = agreement.ScopePackage__r.Scope_Details__c;
 			else
 				contractReviewDTO.ScopeOfServices = agreement.ScopeOfServices__c;	
@@ -84,20 +89,20 @@ public class ECO_Service_ContractReview {
 			contractReviewDTO.ProfessionalIndemnity = agreement.ProfIndemnityLiabilityAmt__c;
 			contractReviewDTO.PublicIndemnity = agreement.PublicGeneralLiabilityAmt__c;
 		
-			if(agreement.IntercompanySubconsultant__c != null && agreement.IntercompanySubconsultant__c != '')
+			if(agreement.IntercompanySubconsultant__c != null)
 			{
 				contractReviewDTO.ClientVendorId = agreement.IntercompanySubconsultant__c;
 				contractReviewDTO.ClientVendorName = agreement.IntercompanySubconsultant__r.Name;
 			}
-			else if(agreement.VendorName__c != null && agreement.VendorName__c != '')
+			else if(agreement.VendorSite__c != null )
 			{
-				contractReviewDTO.ClientVendorId = agreement.VendorName__c;
-				contractReviewDTO.ClientVendorName = agreement.VendorName__r.Name;
+				contractReviewDTO.ClientVendorId = agreement.VendorSite__r.AccountId__c;
+				contractReviewDTO.ClientVendorName = agreement.VendorSite__r.AccountName__c;
 			}
 			else
 			{
-				contractReviewDTO.ClientVendorId = agreement.InvoicingClient__c;
-				contractReviewDTO.ClientVendorId = agreement.InvoicingClient__r.Name;				
+				contractReviewDTO.ClientVendorId = agreement.Account__c;
+				contractReviewDTO.ClientVendorName = agreement.Account__r.Name;				
 			}
 				
 			contractReviewDTOs.add(contractReviewDTO);

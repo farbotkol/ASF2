@@ -1,0 +1,118 @@
+<apex:component controller="ECO_AddODCController" allowDML="true">
+	<apex:attribute name="budgetHeader" description="The Budget Header ID" type="String" required="true" assignTo="{!budgetHeaderId}" />
+
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+
+    <apex:stylesheet value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2_Themes, 'themes/smoothness/jquery-ui.css')}"/>
+
+    {!ready}
+
+    <script type="text/javascript">
+        $z = jQuery.noConflict();
+
+        function loading(val) {
+            if (val) {
+              document.getElementById('spinner1').style.display = 'block';
+            }
+            else {
+              document.getElementById('spinner1').style.display = 'none';
+            }
+          }
+
+        $z(document).ready(function () {
+        });
+
+        function updateVisibility(val, blid) {
+            if ($z(val).val() == 'Each') {
+                $z('.' + blid).show();
+            } else if ($z(val).val() == 'Amount') {
+                $z('.' + blid).hide();
+            }
+        }
+
+    </script>
+
+    <style>
+    </style>
+
+    <apex:form >
+
+    <apex:actionStatus id="loading" onstart="loading(true)" onstop="loading(false)" />
+
+
+        <span style="font-size:14pt;font-weight:bold;">Add Resource to Budget</span>
+
+        <div style="display:none; float: right;" id="spinner1">
+            <img height="15" width="15" class="spinner" src="{!$Resource.loading}" alt="loading" title="loading"/>
+        </div>
+
+        <div style="clear:both;"></div>
+
+
+        <apex:outputPanel layout="none" id="theTabs">
+        <div id="tabs" class="tabsForResource tabs" style="height:400px; margin-top:20px">
+            <table cellpadding="5" border="0">
+                <tr>
+                    <td>Resource Name:</td>
+                    <td><apex:inputText value="{!jobName}" /></td>
+                </tr>
+
+                <tr>
+                    <td>Expenditure Type:</td>
+                    <td>
+                        <apex:selectList value="{!expenditureType}" multiselect="false" size="1">
+                            <apex:selectOptions value="{!expenditureTypes}" />
+                        </apex:selectList>
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Unit Type:</td>
+                    <td>
+                        <apex:selectList value="{!unitType}" multiselect="false" size="1" onchange="updateVisibility(this, 'unitCostGroup');">
+                            <apex:selectOptions value="{!unitTypes}" />
+                        </apex:selectList>
+                    </td>
+                </tr>
+
+                <apex:outputPanel layout="none">
+                <tr>
+                    <td><div class="unitCostGroup">Unit Cost:</div></td>
+                    <td><div class="unitCostGroup"><apex:inputText value="{!unitCost}" /></div></td>
+                </tr>
+                </apex:outputPanel>
+
+                <tr>
+                    <td>Markup Percentage:</td>
+                    <td><apex:inputText value="{!markupPercentage}" /></td>
+                </tr>
+
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><apex:inputCheckbox value="{!isQuoted}" />&nbsp;Quoted</td>
+                </tr>
+
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><apex:inputCheckbox value="{!isEstimated}" />&nbsp;Estimated</td>
+                </tr>
+
+                <tr>
+                    <td>&nbsp;</td>
+                    <td><apex:inputCheckbox value="{!isBillable}" />&nbsp;Billable</td>
+                </tr>
+            </table>
+        </div>
+        </apex:outputPanel>
+
+                <div style="float: right;">
+                    <apex:commandButton value="Add Resource" action="{!addExistingResource}" style="font-size:11px !important; font-family: Arial;" />
+                    
+                    <apex:commandButton value="Cancel" onclick="closeModal('modalDialog0');return false;" style="font-size:11px !important; font-family: Arial;" />
+                </div>
+
+                <div style="clear: both;"></div>
+
+    </apex:form>
+</apex:component>

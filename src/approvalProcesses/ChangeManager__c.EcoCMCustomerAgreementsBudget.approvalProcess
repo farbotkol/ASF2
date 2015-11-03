@@ -11,43 +11,17 @@
     <approvalPageFields>
         <field>Name</field>
         <field>Owner</field>
+        <field>Project__c</field>
+        <field>ProjectNumber__c</field>
+        <field>Client__c</field>
+        <field>ProjectValue__c</field>
         <field>IntExtBudget__c</field>
         <field>IntExtBudgetComments__c</field>
         <field>IntExtChangeManagement__c</field>
-        <field>IntExtChangeManagementChanges__c</field>
-        <field>IntExtChangeManagementComments__c</field>
-        <field>IntExtChangeManagementNoChanges__c</field>
-        <field>IntExtClassifications__c</field>
-        <field>IntExtClassificationsComments__c</field>
         <field>IntExtContractManagement__c</field>
         <field>IntExtContractManagementComments__c</field>
         <field>IntExtCustomers__c</field>
         <field>IntExtCustomersComments__c</field>
-        <field>IntExtDocumentManagement__c</field>
-        <field>IntExtDocumentManagementComments__c</field>
-        <field>IntExtKeyMembers__c</field>
-        <field>IntExtKeyMembersComments__c</field>
-        <field>IntExtProjectReview__c</field>
-        <field>IntExtProjectReviewComments__c</field>
-        <field>IntExtProjectTasks__c</field>
-        <field>IntExtProjectTasksComments__c</field>
-        <field>IntExtDeliverables__c</field>
-        <field>IntExtDeliverablesComments__c</field>
-        <field>IntExtResources__c</field>
-        <field>IntExtResourcesComments__c</field>
-        <field>IntExtRiskManagement__c</field>
-        <field>IntExtRiskManagementComments__c</field>
-        <field>IntExtSafetyHealthEnv__c</field>
-        <field>IntExtSafetyHealthEnvComments__c</field>
-        <field>IntExtSchedule__c</field>
-        <field>IntExtScheduleComments__c</field>
-        <field>IntExtScope__c</field>
-        <field>IntExtScopeComments__c</field>
-        <field>IntExtSecurity__c</field>
-        <field>IntExtSecurityComments__c</field>
-        <field>IntExtStakeholdersCommComments__c</field>
-        <field>IntExtStakeholdersComm__c</field>
-        <field>CreatedBy</field>
     </approvalPageFields>
     <approvalStep>
         <allowDelegate>true</allowDelegate>
@@ -79,12 +53,7 @@
     <emailTemplate>EcoSystem_Templates/EcoCMCustomerContractBudgetApprovalReq</emailTemplate>
     <enableMobileDeviceAccess>true</enableMobileDeviceAccess>
     <entryCriteria>
-        <booleanFilter>1 OR 2 OR 3</booleanFilter>
-        <criteriaItems>
-            <field>ChangeManager__c.IntExtCustomers__c</field>
-            <operation>equals</operation>
-            <value>True</value>
-        </criteriaItems>
+        <booleanFilter>1 OR 2</booleanFilter>
         <criteriaItems>
             <field>ChangeManager__c.IntExtContractManagement__c</field>
             <operation>equals</operation>
@@ -120,10 +89,6 @@
     <finalRejectionRecordLock>false</finalRejectionRecordLock>
     <initialSubmissionActions>
         <action>
-            <name>Update_Approval_Status_to_Submitted</name>
-            <type>FieldUpdate</type>
-        </action>
-        <action>
             <name>Update_Status_to_Submitted</name>
             <type>FieldUpdate</type>
         </action>
@@ -140,5 +105,5 @@
         </action>
     </recallActions>
     <recordEditability>AdminOnly</recordEditability>
-    <showApprovalHistory>false</showApprovalHistory>
+    <showApprovalHistory>true</showApprovalHistory>
 </ApprovalProcess>

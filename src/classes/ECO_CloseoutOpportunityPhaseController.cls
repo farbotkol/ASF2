@@ -31,6 +31,7 @@ public class ECO_CloseoutOpportunityPhaseController {
                             ,InternalDebriefNotes__c
                             ,pse__Opportunity__c
                             ,pse__Opportunity__r.name
+                            ,ProjectSectionHeaderName__c
                     from pse__Proj__c
                     where id =: oProject.id];
 
@@ -95,6 +96,9 @@ public class ECO_CloseoutOpportunityPhaseController {
         Savepoint oSavePoint = Database.setSavepoint();
 
         try{
+            if(oProject.ProjOpptyClosureStatus__c != null){
+                oProject.pse__Stage__c = oProject.ProjOpptyClosureStatus__c.split(' ', 2)[1];
+            }
             update oProject;
         }catch(EcoControllerException e){
             ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e);

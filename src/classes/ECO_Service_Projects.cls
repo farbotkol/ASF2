@@ -47,6 +47,15 @@ public without sharing class ECO_Service_Projects {
 		
 		return Database.query(queryString);
 	}
+    
+    public static Id getProjectIdByBudgetHeader(Id sBudgetHeaderId){
+        list<BudgetHeader__c> lBudgetHeaders = new list<BudgetHeader__c>([SELECT Project__r.Id FROM BudgetHeader__c WHERE Id = :sBudgetHeaderId]);
+    
+    	if(lBudgetHeaders.size() > 0)
+            return lBudgetHeaders.get(0).Project__r.Id;
+        
+        return null;
+    }
 
 	public static list<pse__Proj__c> getProjectByIDs(set<id> setProjectID){
 		if(setProjectID == null || setProjectID.size() == 0){
@@ -80,7 +89,15 @@ public without sharing class ECO_Service_Projects {
 																		, BudgetStrategy__c
 																		, EscalationDate__c
 																		, BudgetQuestionnaireAttachments__c
-																		,CarryingOutOrganization__c
+																		, CarryingOutOrganization__c
+                                                               			, BudgetStrategyRevenue__c
+                                                               			, pse__Start_Date__c 
+                                                               			, TotalEstSecondmentCost__c
+                                                               			, EstimatedStartDate__c
+                                                               			, ProjectNumber__c
+                                                               			, CurrentForecastCostBudget__c
+                                                               			, CurrentForecastRevenueBudget__c
+                                                               			, ProgBarPrelimPlanApproval__c
 																		, (SELECT Id
 																					, Type__c
 																					, OrganizationString__r.OrganizationName__c

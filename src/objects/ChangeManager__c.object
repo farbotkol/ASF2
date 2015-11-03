@@ -84,6 +84,10 @@
                 <fullName>Auto Approved</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>Sync Approved</fullName>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackTrending>false</trackTrending>
@@ -99,6 +103,15 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>BudgetIdsSelectedForExecution__c</fullName>
+        <externalId>false</externalId>
+        <label>Budget Ids Selected for Execution</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>Client__c</fullName>
@@ -1402,6 +1415,15 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>IsExecutionApprovalChange__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( RecordType.Name == &quot;Execution Approval&quot;, true, false)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is Execution Approval Change</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>IsExternalChange__c</fullName>
         <externalId>false</externalId>
         <formula>IF( RecordType.Name == &quot;External Change&quot;, true, false)</formula>
@@ -1427,6 +1449,68 @@
         <label>Is PM Handover Change</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsProjectRestart__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is Project Restart</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>LatestMessageQueueId__c</fullName>
+        <externalId>false</externalId>
+        <label>Latest Message Queue Id</label>
+        <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>NeedsOracleSynch__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( OR(IsExecutionApprovalChange__c, AND(OR( IsExternalChange__c, IsExternalChange__c), OR( IntExtClassifications__c,  IntExtProjectClosure__c,  IntExtCustomers__c,  IntExtKeyMembers__c,  IntExtProjectTasks__c ))) ,true, false )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Needs Oracle Synch</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>OracleApprovalSyncError__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Approval/Sync Error</label>
+        <length>1000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>OracleApprovalSyncStatus__c</fullName>
+        <externalId>false</externalId>
+        <label>Oracle Approval/Sync Status</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Error</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
     </fields>
     <fields>
         <fullName>OutgoingPM__c</fullName>
@@ -1471,11 +1555,33 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>ProjectLink__c</fullName>
+        <externalId>false</externalId>
+        <formula>LEFT($Api.Partner_Server_URL_260, FIND( &apos;/services&apos;, $Api.Partner_Server_URL_260))&amp;Project__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Link</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>ProjectLongName__c</fullName>
         <externalId>false</externalId>
         <formula>Project__r.ProjectLongName__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Project Long Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectManager__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.pse__Project_Manager__r.FirstName&amp;&quot; &quot;&amp;Project__r.pse__Project_Manager__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Manager</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -1596,13 +1702,656 @@
         <type>LongTextArea</type>
         <visibleLines>3</visibleLines>
     </fields>
+    <fields>
+        <fullName>delegateProject__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__c</formula>
+        <label>Delegate Project</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
     <label>Change</label>
+    <listViews>
+        <fullName>All1</fullName>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+    </listViews>
     <nameField>
         <displayFormat>CM-{0}</displayFormat>
         <label>Change Number</label>
         <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Changes</pluralLabel>
+    <recordTypes>
+        <fullName>ExecutionApproval</fullName>
+        <active>true</active>
+        <label>Execution Approval</label>
+        <picklistValues>
+            <picklist>ApprovalStatus__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Auto Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Cancelled</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Sync Approved</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ContributingFactorDetails__c</picklist>
+            <values>
+                <fullName>Additional paid construction work</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Additional paid design work</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Additional unpaid construction work</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Additional unpaid design work</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Additional work given to a subs</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Adjust budget to invoiced and paid</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Agreement corrections at project close</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Agreement corrections due to acquisitions</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Agreements poorly documented</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Assumptions and limitations poorly documented</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Budget not managed according to contract</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Calcultion check performed too late in project</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Carryover of previous project problems</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Change in site conditions</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Change incorporated without client approval and additional costs not funded</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Change of client personnel</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Changes not documented</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Client Issues %28Change of Client PM%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Client expectations not documented</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Client provided information not verified or not adequately verified</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Client%27s expectations not understood by team</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Critical path items inadequately deocumented</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Data entry error</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Deliverable did not match project scope</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Equipment failure</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Essential skills missed or under-represented</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Events beyond control</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Excesive editorial erors</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Improper or inadequate SH%26E planning</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inaccessible project file</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inadequate budget forecasting</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inadequate communication with subcontractor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inadequate mix of skills</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inadequate or no check or review of proposal</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inadequate oversight of PM</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Inadequate planning for QC and QA</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Increase the budget amount due to a performance bonus</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Increased level of client expectations</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Intercompany Challenges</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Key project team members or technical staff not available</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lack of necessary equipment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Late charges to project not billed or added after closeout</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Lost or misplaced project documentation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Multiple</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Multiplier review</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No documentation or proof of agreed%2Fapproved change</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>No or inadequate Project Plan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Not trained in proper use of PM tools%2Fequipment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Overly aggressive bid</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PM inexperienced or unqualified</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PM not accredited</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PM not following Project Plan</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PM personality conflict with client</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Political%2FStakeholder Challenges</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Political%2Fstakeholder issues</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Poor communciation with client</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Poor negotiation skills</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Poor performance by subcontractor</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Poor schedule management</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Poor time management by PM or team members %28overcommitted%29</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Poorly negotiated contract</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Plan not distributed to team</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project closed with active or pending claim</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project file not used or not used correctly</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project file poorly setup or not setup</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project team not adequately briefed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Proposal poorly written</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Quality activities not factored into budget</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Reduction in fee due to a reduced scope</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SH%26E Incident or Accident</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Scope creep not managed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Staff levels too high or too low</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Subcontractor was not evaluated</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Supplied%2Fsubcontracted product was not verified</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Team responsibilities not clearly defined</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Technical errors found</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Technical review not completed or poorly executed</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Technical reviewers not trained%2Fqualified</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Technically complex %28hish risk%29 SOW</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Timesheet error</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Turnover issues</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Under priciing due to incorrect budgeting for tasks</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Under pricing due to failure to understand the scope</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Under pricing due to incorrect interpretation of scope</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Under pricing due to poorly defined scope that was not clarified</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Under pricing due to spreadsheet calculation erros</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Use of uncalibrated equipment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Wrong person selected for technical reviews</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>ContributingFactor__c</picklist>
+            <values>
+                <fullName>Budget</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Change Control</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Client%2FStakeholders</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Communication</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Contract</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Documentation</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Equipment</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>PM Responsibility</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Planning</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Closeout</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Project Controls</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Resource Management</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>SH%26E Issues</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Scope%2FTechnical Approach</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Suppliers%2FSubcontracts</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Verification and Checking</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HandoverActionsRaised__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HandoverBudgetUpdated__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HandoverCommReporting__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HandoverContractualDocuments__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HandoverContractualObligations__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HandoverCriticalProjectPaperwork__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HandoverKnownRisks__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HandoverMandatoryProjectApprovals__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HandoverProjectTeamInform__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HandoverRelevantProjectFiles__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HandoverSignedCopies__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>HandoverSubsonProject__c</picklist>
+            <values>
+                <fullName>No</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OracleApprovalSyncStatus__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Error</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>RequestedProjectReviewCategory__c</picklist>
+            <values>
+                <fullName>C-0</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>C-1</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>C-1%2B</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>C-2</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>C-3</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
     <recordTypes>
         <fullName>ExternalChange</fullName>
         <active>true</active>
@@ -2178,6 +2927,25 @@
             </values>
             <values>
                 <fullName>Yes</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>OracleApprovalSyncStatus__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Error</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -2788,6 +3556,25 @@
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>OracleApprovalSyncStatus__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Error</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>RequestedProjectReviewCategory__c</picklist>
             <values>
                 <fullName>C-0</fullName>
@@ -3390,6 +4177,25 @@
             </values>
         </picklistValues>
         <picklistValues>
+            <picklist>OracleApprovalSyncStatus__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Error</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
             <picklist>RequestedProjectReviewCategory__c</picklist>
             <values>
                 <fullName>C-0</fullName>
@@ -3414,16 +4220,145 @@
         </picklistValues>
     </recordTypes>
     <searchLayouts>
+        <customTabListAdditionalFields>Project__c</customTabListAdditionalFields>
+        <customTabListAdditionalFields>ApprovalStatus__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>RECORDTYPE</customTabListAdditionalFields>
         <customTabListAdditionalFields>ContributingFactor__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>ContributingFactorDetails__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields>Project__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>CREATED_DATE</customTabListAdditionalFields>
+        <customTabListAdditionalFields>CREATEDBY_USER</customTabListAdditionalFields>
+        <lookupDialogsAdditionalFields>Project__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>RECORDTYPE</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>ContributingFactor__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>ContributingFactorDetails__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields>Project__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>CREATED_DATE</lookupDialogsAdditionalFields>
+        <lookupDialogsAdditionalFields>CREATEDBY_USER</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Project__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>IsExternalChange__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>IsInternalChange__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>RECORDTYPE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ApprovalStatus__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ContributingFactor__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>ContributingFactorDetails__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATEDBY_USER</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
+    <validationRules>
+        <fullName>Agreement_Changes</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(IntExtContractManagement__c, OR( IsInternalChange__c,  IsExternalChange__c), 
+OR(ISNULL(IntExtContractManagementComments__c),  ISBLANK(IntExtContractManagementComments__c))), true, false)</errorConditionFormula>
+        <errorDisplayField>IntExtContractManagementComments__c</errorDisplayField>
+        <errorMessage>Agreements and Funding Change Notes are Required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Customer_Changes</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(IntExtCustomers__c, OR( IsInternalChange__c,  IsExternalChange__c), 
+OR(ISNULL(IntExtCustomersComments__c),  ISBLANK(IntExtCustomersComments__c))), true, false)</errorConditionFormula>
+        <errorDisplayField>IntExtCustomersComments__c</errorDisplayField>
+        <errorMessage>Customers Change Notes are Required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Deliverable_Changes</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(IntExtDeliverables__c, OR( IsInternalChange__c,  IsExternalChange__c), 
+OR(ISNULL(IntExtDeliverablesComments__c),  ISBLANK(IntExtDeliverablesComments__c))), true, false)</errorConditionFormula>
+        <errorDisplayField>IntExtDeliverablesComments__c</errorDisplayField>
+        <errorMessage>Deliverables Change Notes are Required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>DocumentManagement_Changes</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(IntExtDocumentManagement__c, OR( IsInternalChange__c,  IsExternalChange__c), 
+OR(ISNULL(IntExtDocumentManagementComments__c),  ISBLANK(IntExtDocumentManagementComments__c))), true, false)</errorConditionFormula>
+        <errorDisplayField>IntExtDocumentManagementComments__c</errorDisplayField>
+        <errorMessage>Document Management Change Notes are Required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Project_Classification_Changes</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(IntExtClassifications__c, OR( IsInternalChange__c,  IsExternalChange__c), 
+OR(ISNULL(IntExtClassificationsComments__c),  ISBLANK(IntExtClassificationsComments__c))), true, false)</errorConditionFormula>
+        <errorDisplayField>IntExtClassificationsComments__c</errorDisplayField>
+        <errorMessage>Project Classifications Change Notes are Required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Project_Task_Changes</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(IntExtProjectTasks__c, OR( IsInternalChange__c,  IsExternalChange__c), 
+OR(ISNULL(IntExtProjectTasksComments__c),  ISBLANK(IntExtProjectTasksComments__c))), true, false)</errorConditionFormula>
+        <errorDisplayField>IntExtProjectTasksComments__c</errorDisplayField>
+        <errorMessage>Schedule/WBS Change Notes are Required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Project_Team_Changes</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(IntExtKeyMembers__c, OR( IsInternalChange__c,  IsExternalChange__c), 
+OR(ISNULL(IntExtKeyMembersComments__c),  ISBLANK(IntExtKeyMembersComments__c))), true, false)</errorConditionFormula>
+        <errorDisplayField>IntExtKeyMembersComments__c</errorDisplayField>
+        <errorMessage>Project Team Change Notes are Required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Resilience_Changes</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(IntExtSecurity__c, OR( IsInternalChange__c,  IsExternalChange__c), 
+OR(ISNULL(IntExtSecurityComments__c),  ISBLANK(IntExtSecurityComments__c))), true, false)</errorConditionFormula>
+        <errorDisplayField>IntExtSecurityComments__c</errorDisplayField>
+        <errorMessage>Resilience Change Notes are Required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>RiskManagement_Changes</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(IntExtRiskManagement__c, OR( IsInternalChange__c,  IsExternalChange__c), 
+OR(ISNULL(IntExtRiskManagementComments__c),  ISBLANK(IntExtRiskManagementComments__c))), true, false)</errorConditionFormula>
+        <errorDisplayField>IntExtRiskManagementComments__c</errorDisplayField>
+        <errorMessage>Risk Register Change Notes are Required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>SafetyHealthEnv_Changes</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(IntExtSafetyHealthEnv__c, OR( IsInternalChange__c,  IsExternalChange__c), 
+OR(ISNULL(IntExtSafetyHealthEnvComments__c),  ISBLANK(IntExtSafetyHealthEnvComments__c))), true, false)</errorConditionFormula>
+        <errorDisplayField>IntExtSafetyHealthEnvComments__c</errorDisplayField>
+        <errorMessage>Safety, Health and Environment Change Notes are Required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Scope_Changes</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(IntExtScope__c, OR( IsInternalChange__c,  IsExternalChange__c), 
+OR(ISNULL(IntExtScopeComments__c),  ISBLANK(IntExtScopeComments__c))), true, false)</errorConditionFormula>
+        <errorDisplayField>IntExtScopeComments__c</errorDisplayField>
+        <errorMessage>Scope and Packages Change Notes</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>StakeholderCommunincation_Changes</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(IntExtStakeholdersComm__c, OR( IsInternalChange__c,  IsExternalChange__c), 
+OR(ISNULL(IntExtStakeholdersCommComments__c),  ISBLANK(IntExtStakeholdersCommComments__c))), true, false)</errorConditionFormula>
+        <errorDisplayField>IntExtStakeholdersCommComments__c</errorDisplayField>
+        <errorMessage>Stakeholder and Communications Change Notes are Required</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>SubsVendor_Changes</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(IntExtResources__c, OR( IsInternalChange__c,  IsExternalChange__c), 
+OR(ISNULL(IntExtResourcesComments__c),  ISBLANK(IntExtResourcesComments__c))), true, false)</errorConditionFormula>
+        <errorDisplayField>IntExtResourcesComments__c</errorDisplayField>
+        <errorMessage>Subs and Vendors Change Notes are Required</errorMessage>
+    </validationRules>
+    <webLinks>
+        <fullName>ManageChanges</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Manage Changes</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/ECO_ProjectChangeManager?id={!pse__Proj__c.Id}</url>
+    </webLinks>
 </CustomObject>

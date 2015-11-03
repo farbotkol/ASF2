@@ -55,6 +55,36 @@
     <enableReports>false</enableReports>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fieldSets>
+        <fullName>SubVendorView</fullName>
+        <description>SubVendorView</description>
+        <displayedFields>
+            <field>Agreement__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Fund_Project__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Name</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Agreement__r.VendorName__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Agreement__r.AgreementType__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <label>SubVendorView</label>
+    </fieldSets>
     <fields>
         <fullName>Agreement__c</fullName>
         <externalId>false</externalId>
@@ -109,11 +139,12 @@
         <fullName>New_Agreement</fullName>
         <availability>online</availability>
         <displayType>massActionButton</displayType>
-        <linkType>javascript</linkType>
-        <masterLabel>New Agreement</masterLabel>
-        <openType>onClickJavaScript</openType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Manage Project Agreements</masterLabel>
+        <openType>replace</openType>
         <protected>false</protected>
         <requireRowSelection>false</requireRowSelection>
-        <url>window.location.href = &apos;/apex/ECO_ProjectAgreementpage?ProjectId={!pse__Proj__c.Id}&apos;</url>
+        <url>/apex/ECO_ProjectAgreementpage?project={!pse__Proj__c.Id}&amp;scontrolCaching=1</url>
     </webLinks>
 </CustomObject>

@@ -12,6 +12,22 @@
 
 	<script type='text/javascript'>
 
+    function closeAuthenticationModal(){
+        closeModal('modalDialogOracleLogin');
+        closeAuthenticationWindow();
+        return false;
+    }
+
+    function authenticate()
+    {
+        authenticateCredentials($x('[id$=username]').val(), $x('[id$=password]').val());
+    }
+
+    function cancelModal()
+    {
+        closeModal('modalDialogOracleLogin');
+        return false;
+    }
 
 
 		function doSyncStep(step){
@@ -94,7 +110,9 @@
 
 		function doMessageQueuePolling(){	
 
+
 			if(pollMessageQueue == "true"){
+
 				var timerVal = document.getElementById('pollingTimer').innerHTML; 		    	
 			    var seconds = parseInt(timerVal);
 		 
@@ -261,11 +279,12 @@
 			<!--
 			<apex:commandButton value="{!btnValue}" action="{!doRequest}" onclick="initiateOracleProjectSyncRequest_JS();" reRender="opTemp" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber}"/>
 			-->
-			<apex:commandButton value="{!btnValue}" action="{!doRequest}" onclick="numberRequest_Step1_start_JS(); return false;" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber}"/>
+			<apex:commandButton value="{!btnValue}" action="{!doRequest}" onclick="numberRequest_Step1_start_JS(); return false;" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber && NOT(needOracleLogin)}"/>
 
-			<apex:commandButton value="Send Project Sync Request" onclick="doSyncStep(0); return false;"  rendered="{!!isProjectNumber}" disabled="{!!allowRequestSubmit}"/>
+			<apex:commandButton value="Send Project Sync Request" onclick="doSyncStep(0); return false;"  rendered="{!!isProjectNumber && NOT(needOracleLogin)}" disabled="{!!allowRequestSubmit}"/>
 			<apex:commandButton value="Save" action="{!updateProject}" status="statusBar"/>
 			<apex:commandButton value="Return to Project" action="{!returnToProject}" />
+			<apex:commandButton value="Login to Oracle" rendered="{!needOracleLogin}" onclick="openModal('modalDialogOracleLogin');return false;"/>
 		
 		</apex:pageBlockButtons>
 
@@ -1268,7 +1287,60 @@
 			<apex:pageMessage escape="false" summary="{!pollingMessageQueueMsgBottom}" severity="INFO" ></apex:pageMessage>
 			</div>
 		</apex:outputPanel>
-		
+
+        <c:ECO_ModalDialog width="350" padding="0px 0px 0px 0px" name="modalDialogOracleLogin">
+            <apex:pageBlock title="Oracle Authentication">
+            <div align="center">
+            <apex:outputText style="font-weight:bold" value="Username:"/>
+            <apex:inputText label="Username:" value="{!OracleUserName}" id="username"/><br/>
+
+            <apex:outputText style="font-weight:bold" value="Password:"/>
+            <apex:inputSecret label="Password" value="{!OraclePassword}" id="password"/><br/><br/>
+            </div>
+
+            <apex:outputPanel id="btn1">
+                <apex:outputPanel rendered="{!authenticationResult != 'SUCCESS'}">
+                    <div align="center">
+                        <apex:outputPanel layout="inline" styleClass="btn" onclick="authenticate()">Login</apex:outputPanel>
+                        <apex:outputPanel layout="inline" styleClass="btn" onclick="cancelModal()">Cancel</apex:outputPanel>
+                    </div>
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+            <apex:outputPanel id="btn2">
+                <apex:outputPanel rendered="{!authenticationResult == 'SUCCESS'}">
+                    <div align="center">
+                        <apex:outputPanel layout="inline" styleClass="btn" onclick="closeAuthenticationModal()">Close</apex:outputPanel>
+                    </div>
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+            <apex:outputPanel id="result">
+                <apex:outputPanel rendered="{!authenticationResult != null}" ><br/>
+                    <b>Result: </b><apex:outputText value="{!authenticationResult}" id="authenticationResult" />
+                </apex:outputPanel>
+            </apex:outputPanel>
+
+            <apex:actionStatus id="queryStatus">
+                <apex:facet name="start">
+                    <p style="padding-bottom:20px;text-align:center;" class="searchText"><img style="position:relative;top:24px;" src="/img/loading32.gif" /> Authenticating...</p>
+                </apex:facet>
+            </apex:actionStatus>
+            </apex:pageBlock>
+        </c:ECO_ModalDialog> 		
+      <apex:actionFunction name="authenticateCredentials" action="{!authenticateCredentials}" rerender="result, btn1, btn2" status="queryStatus" immediate="true">
+            <apex:param name="username" value=""/>
+            <apex:param name="password" value=""/>
+        </apex:actionFunction>
+
+
+        <apex:actionStatus id="closeAuthentication">
+            <apex:facet name="start">
+                <p style="padding-bottom:20px;text-align:center;" class="searchText"><img style="position:relative;top:24px;" src="/img/loading32.gif" /> Closing...</p>
+            </apex:facet>
+        </apex:actionStatus>
+
+        <apex:actionFunction name="closeAuthenticationWindow" action="{!closeAuthenticationWindow}" status="closeAuthentication" immediate="true"/>      		
 <!--
 
 		<apex:commandButton action="{!testTaskSync}" value="test task sync prototype"></apex:commandButton>

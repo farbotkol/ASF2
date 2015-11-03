@@ -32,9 +32,7 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>New</actionName>
-        <content>ECO_ProjectReviewRecordType</content>
-        <skipRecordTypeSelect>true</skipRecordTypeSelect>
-        <type>Visualforce</type>
+        <type>Default</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>SaveEdit</actionName>
@@ -116,6 +114,14 @@
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
+        <fullName>CommentsCopiedFromPreviousReview__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Comments Copied From Previous Review</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Comments__c</fullName>
         <externalId>false</externalId>
         <label>Comments</label>
@@ -131,6 +137,16 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>DelegateProject__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__c</formula>
+        <label>Delegate Project</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>EstimatedContractValue__c</fullName>
@@ -155,6 +171,17 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>FAParticipant__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>FAParticipant</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Reviews1</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>FinancialPerformanceExceptionReport__c</fullName>
         <externalId>false</externalId>
         <label>Financial Performance</label>
@@ -169,6 +196,24 @@
         <formula>IF(OR( ISPICKVAL(Status__c, &quot;Not Started&quot;), ISPICKVAL(Status__c, &quot;Assessing&quot;), ISPICKVAL(Status__c, &quot;In Progress&quot;), ISPICKVAL(Status__c, &quot;Submitted&quot;)), true, false)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Is Open</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsPerformanceReview__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(OR((RecordType.Name == &apos;Monthly Project Review&apos; ), (RecordType.Name == &apos;Project Performance Review&apos;)), true, false)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is Performance Review</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsProjectPerformanceReview__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(RecordType.Name == &apos;Project Performance Review&apos;, true, false)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is Project Performance Review</label>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
     </fields>
@@ -196,6 +241,75 @@
         <visibleLines>10</visibleLines>
     </fields>
     <fields>
+        <fullName>MonthYear__c</fullName>
+        <externalId>false</externalId>
+        <formula>CASE(MONTH(DateValue(CreatedDate)), 
+1, &quot;January&quot;, 
+2, &quot;February&quot;, 
+3, &quot;March&quot;, 
+4, &quot;April&quot;, 
+5, &quot;May&quot;, 
+6, &quot;June&quot;, 
+7, &quot;July&quot;, 
+8, &quot;August&quot;, 
+9, &quot;September&quot;, 
+10, &quot;October&quot;, 
+11, &quot;November&quot;, 
+12, &quot;December&quot;, 
+&quot;None&quot;) + &quot;, &quot; +  
+TEXT(YEAR(DateValue(CreatedDate)))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Month Year</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OperationsParticipant__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>OperationsParticipant</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Reviews2</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>OtherPart1__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Other Participant 1</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Reviews3</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>OtherPart2__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Other Participant 2</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Reviews4</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>OtherPart3__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Other Participant 3</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Reviews5</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>PassedKPIs__c</fullName>
         <description>Represents the total amount of KPI&apos;s that have passed.</description>
         <externalId>false</externalId>
@@ -209,6 +323,83 @@
         <summaryOperation>count</summaryOperation>
         <trackTrending>false</trackTrending>
         <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>PnLManager__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.PnLManager__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>PnL Manager</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectAccountant__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project Accountant</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>ProjectReviewsProjectAccountant</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ProjectApprover__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project Approver</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>ProjectReviewsProjectApprover</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ProjectLongName__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.ProjectLongName__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Long Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectManager__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.pse__Project_Manager__r.FirstName&amp;&quot; &quot;&amp;Project__r.pse__Project_Manager__r.LastName</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Manager</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectName__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.Name</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ProjectNumber__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.ProjectNumber__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Number</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>ProjectReviewCategory__c</fullName>
@@ -247,6 +438,15 @@
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <fields>
+        <fullName>Purpose__c</fullName>
+        <externalId>false</externalId>
+        <label>Purpose</label>
+        <length>2000</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
         <fullName>QualityException__c</fullName>
         <externalId>false</externalId>
         <label>Quality Exception</label>
@@ -263,6 +463,17 @@
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Project Reviews (Responsible Person)</relationshipLabel>
         <relationshipName>ProjectReviewsReponsiblePerson</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Responsible_Person__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Responsible Person</label>
+        <referenceTo>User</referenceTo>
+        <relationshipName>Project_Reviews</relationshipName>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
@@ -374,6 +585,14 @@
                 <fullName>Rejected</fullName>
                 <default>false</default>
             </picklistValues>
+            <picklistValues>
+                <fullName>Scheduled</fullName>
+                <default>false</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Completed</fullName>
+                <default>false</default>
+            </picklistValues>
             <sorted>false</sorted>
         </picklist>
         <trackTrending>false</trackTrending>
@@ -459,27 +678,11 @@
         <picklistValues>
             <picklist>Status__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Assessing</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>In Progress</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Not Started</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Rejected</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
+                <fullName>Scheduled</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -533,27 +736,11 @@
         <picklistValues>
             <picklist>Status__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Assessing</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>In Progress</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Not Started</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Rejected</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
+                <fullName>Scheduled</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -608,23 +795,11 @@
         <picklistValues>
             <picklist>Status__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>In Progress</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Not Started</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Rejected</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
+                <fullName>Scheduled</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -679,27 +854,11 @@
         <picklistValues>
             <picklist>Status__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Assessing</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>In Progress</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Not Started</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Rejected</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
+                <fullName>Scheduled</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -754,27 +913,11 @@
         <picklistValues>
             <picklist>Status__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Assessing</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>In Progress</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Not Started</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Rejected</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
+                <fullName>Scheduled</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -904,27 +1047,11 @@
         <picklistValues>
             <picklist>Status__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Assessing</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>In Progress</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Not Started</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Rejected</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
+                <fullName>Scheduled</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -979,27 +1106,11 @@
         <picklistValues>
             <picklist>Status__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Assessing</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>In Progress</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Not Started</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Rejected</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
+                <fullName>Scheduled</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -1080,7 +1191,7 @@
     </recordTypes>
     <recordTypes>
         <fullName>Tier1ProjectPerformance_Review</fullName>
-        <active>true</active>
+        <active>false</active>
         <label>Tier 1 Project Performance Review</label>
         <picklistValues>
             <picklist>ApprovedProjectReviewCategory__c</picklist>
@@ -1127,27 +1238,11 @@
         <picklistValues>
             <picklist>Status__c</picklist>
             <values>
-                <fullName>Approved</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
             </values>
             <values>
-                <fullName>Assessing</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>In Progress</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Not Started</fullName>
-                <default>true</default>
-            </values>
-            <values>
-                <fullName>Rejected</fullName>
-                <default>false</default>
-            </values>
-            <values>
-                <fullName>Submitted</fullName>
+                <fullName>Scheduled</fullName>
                 <default>false</default>
             </values>
         </picklistValues>
@@ -1245,6 +1340,14 @@
         <lookupDialogsAdditionalFields>ProjectReviewCategory__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>ReviewFrequency__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>KPIPassPercentage__c</lookupDialogsAdditionalFields>
+        <searchResultsAdditionalFields>Project__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Purpose__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>RECORDTYPE</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>Comments__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CompletedDate__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>EstimatedContractValue__c</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATEDBY_USER</searchResultsAdditionalFields>
+        <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
     <validationRules>
@@ -1258,4 +1361,17 @@ ProjectReviewCategory__c &lt;&gt; &quot;C-1+&quot;,
 AND(ProjectReviewCategory__c &lt;&gt; &quot;C-2&quot;, EstimatedContractValue__c &lt; 5000000)))</errorConditionFormula>
         <errorMessage>Healthy start may only be selected for C-0,C-1,C-1+,C-2 projects and projects with revenue greater than or equal to 5M</errorMessage>
     </validationRules>
+    <webLinks>
+        <fullName>Manage_Reviews_Meetings</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Manage Reviews/Meetings</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/ECO_ProjectReviewRecordType?Id={!pse__Proj__c.Id}</url>
+    </webLinks>
 </CustomObject>

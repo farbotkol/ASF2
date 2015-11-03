@@ -37,4 +37,18 @@ trigger ECO_ProjectTask_AllEvents on pse__Project_Task__c (before insert, before
     if(trigger.IsAfter && trigger.IsInsert){
         ECO_ProjectTaskTriggers.replicateNewProjectTask(trigger.new);
     }
+    if( trigger.isBefore && ( trigger.isUpdate || trigger.isInsert ) ){
+        ECO_Service_RecordAccess.getProjectRecordAccess( trigger.new );
+        
+        //Added By Eric Starts Here
+        if(trigger.isUpdate)
+        {
+            ECO_ProjectTaskTriggerHelper.OnBeforeUpdate(trigger.New,trigger.Oldmap);
+        }
+        else if(trigger.isInsert)
+        {
+            ECO_ProjectTaskTriggerHelper.OnBeforeInsert(trigger.New);
+        }
+        //Added By Eric Ends Here
+    }    
 }

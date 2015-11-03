@@ -2686,32 +2686,22 @@
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
-            <field>IsChargeable__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
-            <field>IsBillable__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
-            <field>FinancialTask__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
-            <field>AllowCrossCharge__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
             <field>pse__Blocked__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
             <field>CostIndRateSCHID__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>ScheduleVariance__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>DurationVariance__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
@@ -3632,6 +3622,20 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>DurationVariance__c</fullName>
+        <externalId>false</externalId>
+        <formula>((pse__End_Date__c - pse__Start_Date__c ) - (ForecastEndDate__c - ForecastStartDate__c))*-1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Duration Variance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Duration__c</fullName>
         <externalId>false</externalId>
         <formula>TEXT(pse__End_Date__c-pse__Start_Date__c)</formula>
@@ -3684,6 +3688,17 @@
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>External_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>External ID</label>
+        <length>82</length>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>FinancialTask__c</fullName>
         <defaultValue>false</defaultValue>
         <description>This box should be checked if this project task is a financial task. Unchecked means the task represents a non-financial task.</description>
@@ -3731,6 +3746,16 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>IsTopLevelTask__c</fullName>
+        <externalId>false</externalId>
+        <formula>ISBLANK( pse__Parent_Task__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is Top Level Task</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>LongProjTaskName__c</fullName>
         <externalId>false</externalId>
         <label>Long Task Name</label>
@@ -3748,6 +3773,17 @@
         <summarizedField>ExpendItem__c.ExpenditureItemDate__c</summarizedField>
         <summaryForeignKey>ExpendItem__c.ProjectTask__c</summaryForeignKey>
         <summaryOperation>max</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>MinExpenditureDate__c</fullName>
+        <externalId>false</externalId>
+        <label>Min Expenditure Date</label>
+        <summarizedField>ExpendItem__c.ExpenditureItemDate__c</summarizedField>
+        <summaryForeignKey>ExpendItem__c.ProjectTask__c</summaryForeignKey>
+        <summaryOperation>min</summaryOperation>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Summary</type>
@@ -3929,6 +3965,20 @@ S = Successful</inlineHelpText>
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>ScheduleVariance__c</fullName>
+        <externalId>false</externalId>
+        <formula>(ForecastEndDate__c- pse__End_Date__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Schedule Variance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>1</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>ShipTo__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -3973,6 +4023,19 @@ S = Successful</inlineHelpText>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Task_Sequence_No__c</fullName>
+        <description>Added this filed to maintain the sequence number for Task while adding Peer and Sub Task.</description>
+        <externalId>false</externalId>
+        <label>Task Sequence No.</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>TaxReceivingTask__c</fullName>
@@ -4036,6 +4099,17 @@ TopTaskOwningCustomer__r.Site__r.Account__r.OracleCustomerID__c
         <fullName>TotalApprovedCost__c</fullName>
         <externalId>false</externalId>
         <label>Total Approved Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>TotalEstimateCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Estimate Cost</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -4843,20 +4917,6 @@ TopTaskOwningCustomer__r.Site__r.Account__r.OracleCustomerID__c
         <type>Date</type>
     </fields>
     <fields>
-        <fullName>xxDateVarianceofLastChange__c</fullName>
-        <externalId>false</externalId>
-        <formula>( pse__End_Date__c -   pse__Start_Date__c ) -  (EndDateBeforeChange__c - StartDateBeforeChange__c)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>xxDate Variance of Last Change</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>0</scale>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>xxProject_Task_Owner_Temp__c</fullName>
         <description>Temp field to display project task owner on Gantt until issue is resolved with look-up fields on Gantt.</description>
         <externalId>false</externalId>
@@ -4955,6 +5015,12 @@ TopTaskOwningCustomer__r.Site__r.Account__r.OracleCustomerID__c
     </searchLayouts>
     <sharingModel>ReadWrite</sharingModel>
     <validationRules>
+        <fullName>Can_not_change_parent_when_task_is_OSync</fullName>
+        <active>true</active>
+        <errorConditionFormula>IF(AND(NOT(ISNULL(pse__Parent_Task__c)),OR(ISPICKVAL(OracleSyncStatus__c,&apos;S&apos;),ISPICKVAL(OracleSyncStatus__c,&apos;T&apos;)), ISCHANGED(pse__Parent_Task__c) ),true,false)</errorConditionFormula>
+        <errorMessage>Parent task can not be changed when Task is synced with Oracle.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>Description_May_Only_be_240_Characters</fullName>
         <active>true</active>
         <description>The PSA Description Field is limited to 240 Characters due to Oracle data constraints.</description>
@@ -4963,11 +5029,37 @@ TopTaskOwningCustomer__r.Site__r.Account__r.OracleCustomerID__c
         <errorMessage>The project task description may only be 240 characters long. Please revise the description accordingly.</errorMessage>
     </validationRules>
     <validationRules>
-        <fullName>EcoTaskSentCannotBeMoved</fullName>
+        <fullName>EcoProjectTaskDateMustAdhereToExpenditur</fullName>
         <active>true</active>
+        <description>Approved project task start and end dates cannot fall outside the minimum or maximum expenditure dates.</description>
+        <errorConditionFormula>OR(
+
+AND(ISCHANGED(pse__Start_Date_Time__c),
+OR(MinExpenditureDate__c &lt; DateValue(pse__Start_Date_Time__c),
+MinExpenditureDate__c &gt; DateValue(pse__End_Date_Time__c))),
+
+AND(
+ISCHANGED(pse__End_Date_Time__c),
+OR(Max_Expenditure_Date__c &gt; DateValue(pse__End_Date_Time__c),
+Max_Expenditure_Date__c  &lt; DateValue(pse__Start_Date_Time__c))))</errorConditionFormula>
+        <errorMessage>Approved project task start and end dates cannot fall outside the minimum or maximum expenditure dates associated with the task.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>EcoTaskSentCannotBeMoved</fullName>
+        <active>false</active>
         <description>A task may not be moved to another level or re-parented if previously sent to Oracle.</description>
         <errorConditionFormula>AND(ISPICKVAL(OracleSyncStatus__c, &quot;S&quot;),OR(ISCHANGED(pse__Hierarchy_Depth__c), ISCHANGED(pse__Parent_Task__c)))</errorConditionFormula>
         <errorMessage>A task may not be moved to another level or re-parented if previously sent to Oracle.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>EcoTopTaskCannotBeChangedOnceSetAndSyncd</fullName>
+        <active>true</active>
+        <description>The top task customer may not be changed once synced with oracle</description>
+        <errorConditionFormula>AND(NOT(ISBLANK(TopTaskOwningCustomer__c)),
+ISCHANGED(TopTaskOwningCustomer__c),
+ISPICKVAL(OracleSyncStatus__c,&apos;S&apos;))</errorConditionFormula>
+        <errorDisplayField>TopTaskOwningCustomer__c</errorDisplayField>
+        <errorMessage>The top task customer cannot be changed once set and the project task has synced with Oracle.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>EcoTopTaskCustomer</fullName>
@@ -4977,7 +5069,7 @@ TopTaskOwningCustomer__r.Site__r.Account__r.OracleCustomerID__c
         <errorMessage>The top task owning customer can only be set if the top task flag is enabled at the project level</errorMessage>
     </validationRules>
     <validationRules>
-        <fullName>Eco_Work_Plan_Tasks_Cannot_be_Converted</fullName>
+        <fullName>EcoWorkPlanTasksCannotbeConverted</fullName>
         <active>true</active>
         <description>Workplan tasks cannot be converted to Financial task, if the parent financial task has charges</description>
         <errorConditionFormula>AND(NOT(ISBLANK(pse__Parent_Task__c)), pse__Parent_Task__r.TotalProjectFunctionalBurdenedCost__c &gt; 0,
@@ -4986,8 +5078,17 @@ ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Execution&quot;)))</errorCondition
         <errorMessage>Workplan tasks cannot be converted to Financial task, if the parent financial task has charges.</errorMessage>
     </validationRules>
     <validationRules>
+        <fullName>Eco_Work_Plan_Tasks_Cannot_be_Converted</fullName>
+        <active>false</active>
+        <description>Workplan tasks cannot be converted to Financial task, if the parent financial task has charges</description>
+        <errorConditionFormula>AND(NOT(ISBLANK(pse__Parent_Task__c)), pse__Parent_Task__r.TotalProjectFunctionalBurdenedCost__c &gt; 0,
+ISCHANGED( FinancialTask__c ), FinancialTask__c  = True, OR(ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Approved&quot;),
+ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Execution&quot;)))</errorConditionFormula>
+        <errorMessage>Workplan tasks cannot be converted to Financial task, if the parent financial task has charges.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>Financial_Task_Oracle_Sync</fullName>
-        <active>true</active>
+        <active>false</active>
         <description>A financial task may not be changed to a non-financial task once synced with Oracle.</description>
         <errorConditionFormula>AND(PRIORVALUE(FinancialTask__c) = True,  FinancialTask__c = False, OR(ISPICKVAL(OracleSyncStatus__c,&apos;S&apos;),ISPICKVAL(OracleSyncStatus__c,&apos;T&apos;)))</errorConditionFormula>
         <errorDisplayField>FinancialTask__c</errorDisplayField>
@@ -4995,18 +5096,47 @@ ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Execution&quot;)))</errorCondition
     </validationRules>
     <validationRules>
         <fullName>OracleSyncTopTaskCannotChange</fullName>
-        <active>true</active>
+        <active>false</active>
         <description>The top task cannot be changed once synced with Oracle</description>
         <errorConditionFormula>AND(ISCHANGED(pse__Top_level_Parent_Task__c), OR(ISPICKVAL(OracleSyncStatus__c,&apos;S&apos;),ISPICKVAL(OracleSyncStatus__c,&apos;T&apos;)))</errorConditionFormula>
         <errorMessage>The top task cannot be changed once synced with Oracle</errorMessage>
     </validationRules>
     <validationRules>
-        <fullName>ProjTaskName_Can_Only_Have_20_Characters</fullName>
+        <fullName>Parent_Task_must_be_Financial</fullName>
+        <active>true</active>
+        <description>All tasks that are parents of a Financial task must be Financial</description>
+        <errorConditionFormula>IF( AND(NOT(ISNULL(pse__Parent_Task__c)), FinancialTask__c),IF( pse__Parent_Task__r.FinancialTask__c == false,true,false),false)</errorConditionFormula>
+        <errorMessage>All tasks that are parents of a Financial task must be Financial</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>ProjTaskName_CanOnlyHave20Characters</fullName>
         <active>true</active>
         <description>The project task name may only contain 20 characters</description>
         <errorConditionFormula>LEN(Name) &gt; 20</errorConditionFormula>
         <errorDisplayField>Name</errorDisplayField>
         <errorMessage>The project task name may only contain 20 characters.  Please revise the name of the project task.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>ProjTaskName_Can_Only_Have_20_Characters</fullName>
+        <active>false</active>
+        <description>The project task name may only contain 20 characters</description>
+        <errorConditionFormula>LEN(Name) &gt; 20</errorConditionFormula>
+        <errorDisplayField>Name</errorDisplayField>
+        <errorMessage>The project task name may only contain 20 characters.  Please revise the name of the project task.</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Task_Nos_must_be_unique_at_oracle_synced</fullName>
+        <active>true</active>
+        <description>Task Numbers must be unique and cannot be changed once used for a budget or actual cost</description>
+        <errorConditionFormula>IF(AND(AND(NOT(ISNULL( ProjectTaskNumber__c )),NOT(ISBLANK( ProjectTaskNumber__c ))),OR(ISPICKVAL(OracleSyncStatus__c,&apos;S&apos;),ISPICKVAL(OracleSyncStatus__c,&apos;T&apos;)), ISCHANGED(ProjectTaskNumber__c) ),true,false)</errorConditionFormula>
+        <errorMessage>Task Numbers must be unique and cannot be changed once used for a budget or actual cost</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>TopTaskCannotChangedUponOracleSync</fullName>
+        <active>true</active>
+        <description>The top task cannot be changed once synced with Oracle</description>
+        <errorConditionFormula>AND(ISCHANGED(pse__Top_level_Parent_Task__c), OR(ISPICKVAL(OracleSyncStatus__c,&apos;S&apos;),ISPICKVAL(OracleSyncStatus__c,&apos;T&apos;)))</errorConditionFormula>
+        <errorMessage>The top task cannot be changed once synced with Oracle</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>pse__Actual_Start_Must_Be_Before_End</fullName>
@@ -5109,6 +5239,30 @@ ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Execution&quot;)))</errorCondition
         <page>ECO_MassDeleteProjectTasks</page>
         <protected>false</protected>
         <requireRowSelection>true</requireRowSelection>
+    </webLinks>
+    <webLinks>
+        <fullName>ManageBudgetTasks</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Manage Budget Tasks</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/ECO_TaskDetail?id={!pse__Proj__c.Id}</url>
+    </webLinks>
+    <webLinks>
+        <fullName>ScheduleWBS</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <linkType>url</linkType>
+        <masterLabel>Schedule &amp; WBS</masterLabel>
+        <openType>replace</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/pse__ProjectTaskGantt?id={!pse__Proj__c.Id}</url>
     </webLinks>
     <webLinks>
         <fullName>pse__Add_project_Task_from_Template</fullName>

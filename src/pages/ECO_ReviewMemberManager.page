@@ -1,50 +1,94 @@
-<apex:page showHeader="true" sidebar="true" standardController="TechnicalQualityReview__c" extensions="ECO_ReviewMemberManagerController">
+<apex:page showHeader="true" sidebar="true" standardController="TechnicalQualityReview__c" extensions="ECO_ReviewMemberManagerController" >
 
 
 	<style>
-		.ErrorRow{
+        .customHelpText{
+			padding: 7px;
+		    border: 1px solid #85B3CE;
+		    min-height: 30px;
+		    display: block;
+		    width: auto;
+		    margin: 0 0 5px 0;
+		    background-repeat: no-repeat;
+		    border-radius: 4px;
+		    background-color: #A2D3F1;
+		    
+		}
+		.customHelpBody{
+			display:inline-block;
+			color:#;
+			max-width:95%;
+		}
+        .ErrorRow{
 			background-color: #FFFF00;
 		}
 
-		.tableclass{
+        .tableclass{
 			border: 1px solid black; border-collapse: collapse; padding: 30px;
 		}
 
 		.borderclass{
 			border: 1px solid black;padding: 10px;
-		}
+        }
 
 		.searchText{
 			text-align:center;
 			font-weight:bold;
 			font-size:20px;
 		}
+        body .bPageBlock, body .bPageBlock .pbBody, body .bPageBlock .pbBottomButtons {
+        	background-color: #FFFFFF;
+        }
+        .mouseOverInfo {
+            position: absolute;
+            display: none;
+            left: 05px;
+            bottom: 0px;
+            width: 69em;
+        	height: 2em;
+            background-color: #fefdb9;
+            padding: 2px;
+            border: 1px solid black;
+            z-index: 11;
+            opacity: 0;
+            white-space: normal;
+            font-weight: normal;
+            color: #000;
+        }
 	</style>
-
-	<apex:form >
-		<apex:outputPanel id="wholePanel">
+                  
+	<apex:form id="newForm">
+        <apex:outputPanel id="wholePanel">
 		<apex:outputfield value="{!TechnicalQualityReview__c.Deliverable__c}" rendered="false"/>
 		<apex:outputfield value="{!TechnicalQualityReview__c.ApproverRequiredDate__c}" rendered="false"/>
 		<apex:outputfield value="{!TechnicalQualityReview__c.ReviewerRequiredDate__c}" rendered="false"/>
 		<apex:outputfield value="{!TechnicalQualityReview__c.OriginatorRequiredDate__c}" rendered="false"/>
 		<apex:outputfield value="{!TechnicalQualityReview__c.LeadVerifierRequiredDate__c}" rendered="false"/>
-
 		<div style="visibility:hidden;">
-		<apex:inputField value="{!TechnicalQualityReview__c.Deliverable__c}" />
+		<apex:inputField value="{!oTechnicalQualityReview.Deliverable__c}" />
 		</div>
-		<apex:sectionheader title="Manage Technical Members" />
+		<apex:sectionheader title="Technical Quality Review" subtitle="{!oTechnicalQualityReview.Deliverable__r.Project__r.Name} - {!TechnicalQualityReview__c.Deliverable__r.Project__r.ProjectNumber__c }" id="secHeader"/>
 
 		<apex:pagemessages />
-		 
+		<div class="customHelpText">
+			<div class="customHelpBody">
+                <p>Project Manager or Deliverable Owner:  Use this section to 1) schedule the review date(s), 2) select the requested type of review, 3) select what the review must encompass, 4) confirm the assigned technical team members and 5) submit the deliverable for review.  Once the review is complete, document your approval of the review process at the bottom of the page. </p>
+                <p>Technical Review Team:  Review this section to understand the type and scope of review requested for the project deliverable.  Once your review is complete in accordance with the responsibilities of your assigned role, document your review against your name under Technical Quality Review Status. </p>
+
+			</div>
+	  	</div>		 
 		<apex:pageBlock mode="edit" id="TQTPB" title="Add Members to Technical Quality Team">
 
 			<apex:pageBlockButtons location="top">
+                <apex:commandButton action="{!savePage}" value="Save" disabled="{!NOT(inputFields)}" status="savestatus" />
+                <apex:commandButton action="{!saveRequest}" value="Submit Review Request" status="savestatus" disabled="{!NOT(inputFields)}"/>
 				<apex:commandButton action="/{!TechnicalQualityReview__c.Deliverable__c}" value="Return to Deliverable" immediate="true"/>
-				<apex:commandButton action="{!saveRequest}" value="Save" reRender="wholePanel" status="savestatus" />
+                
 			</apex:pageBlockButtons>
 
 			<apex:pageBlockButtons location="bottom">
-				<apex:commandButton action="{!saveRequest}" value="Save" reRender="wholePanel" status="savestatus" />
+                <apex:commandButton action="{!saveRequest}" value="Submit Review Request" status="savestatus" disabled="{!NOT(inputFields)}"/>
+                
 			</apex:pageBlockButtons>
 
 			<apex:actionStatus id="savestatus">
@@ -53,31 +97,110 @@
 				</apex:facet>
 				<apex:facet name="stop">
 					<apex:outputPanel >
-
-					<apex:pageblocksection title="Request Details" collapsible="false" >
+                
+					<apex:pageblocksection title="Review Details" collapsible="false" rendered="{!inputFields}">
 						<apex:repeat value="{!$ObjectType.TechnicalQualityReview__c.FieldSets.TQR_Field_View}" var="Field1">
 							<apex:inputField value="{!oTechnicalQualityReview[Field1]}" required="true" rendered="{!Field1.required}"/>
 				           	<apex:inputField value="{!oTechnicalQualityReview[Field1]}" rendered="{!not(Field1.required)}" />
 						</apex:repeat>
 					</apex:pageblocksection>
-					<apex:pageblocksection title="Type" collapsible="false" >
-						<apex:repeat value="{!$ObjectType.TechnicalQualityReview__c.FieldSets.TypeSet}" var="Field1">
-							<apex:inputField value="{!oTechnicalQualityReview[Field1]}" required="true" rendered="{!Field1.required}"/>
-				           	<apex:inputField value="{!oTechnicalQualityReview[Field1]}" rendered="{!not(Field1.required)}" />
+                    <apex:pageblocksection title="Review Details" collapsible="false" rendered="{!NOT(inputFields)}">
+						<apex:repeat value="{!$ObjectType.TechnicalQualityReview__c.FieldSets.TQR_Field_View}" var="Field1">
+							<apex:outputField value="{!oTechnicalQualityReview[Field1]}"/>
+				           	<!--<apex:inputField value="{!oTechnicalQualityReview[Field1]}" rendered="{!not(Field1.required)}" />-->
 						</apex:repeat>
 					</apex:pageblocksection>
-					<apex:pageblocksection title="Review Scope" collapsible="false" >
-						<apex:repeat value="{!$ObjectType.TechnicalQualityReview__c.FieldSets.ReviewScopeSet}" var="Field1">
+					<apex:pageblocksection title="Review Type" collapsible="false" id="typeBlock" rendered="{!inputFields}">
+						<!--<apex:repeat value="{!$ObjectType.TechnicalQualityReview__c.FieldSets.TypeSet}" var="Field1">
 							<apex:inputField value="{!oTechnicalQualityReview[Field1]}" required="true" rendered="{!Field1.required}"/>
 				           	<apex:inputField value="{!oTechnicalQualityReview[Field1]}" rendered="{!not(Field1.required)}" />
-						</apex:repeat>
+						</apex:repeat>-->
+                        <apex:inputField value="{!oTechnicalQualityReview.TypeCalculationCheck__c}" />
+                        <apex:inputField value="{!oTechnicalQualityReview.TypeDetailCheck__c}"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.TypeIndependentReviewIR__c}" label="Independent Review (IR)"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.TypeInterdisciplinaryCoordinationReview__c}"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.TypeBidabilityReview__c}"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.TypeDesignReview__c}"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.TypeSpecificationPackageReview__c}"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.TypeSubconsultantClient__c}" label="Subconsultant, Client, or Third-Party Info Review"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.TypeConstructabilityReview__c}"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.TypeDesignAssumptions__c}" label="Design Assumptions (Technical Approach) Review"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.TypeOther__c}" label="Other"/>
+                    </apex:pageblocksection>
+                    <apex:pageBlockSection columns="1" rendered="{!(inputFields)}">
+                        <apex:inputField value="{!oTechnicalQualityReview.ReviewTypeComments__c}" style="width:100%"/>
+                    </apex:pageBlockSection>
+                    <apex:pageblocksection title="Review Type" collapsible="false" rendered="{!NOT(inputFields)}" >
+						<!--<apex:repeat value="{!$ObjectType.TechnicalQualityReview__c.FieldSets.TypeSet}" var="Field1">
+							<apex:inputField value="{!oTechnicalQualityReview[Field1]}" required="true" rendered="{!Field1.required}"/>
+				           	<apex:inputField value="{!oTechnicalQualityReview[Field1]}" rendered="{!not(Field1.required)}" />
+						</apex:repeat>-->
+                        <apex:outputField value="{!oTechnicalQualityReview.TypeCalculationCheck__c}" />
+                        <apex:outputField value="{!oTechnicalQualityReview.TypeDetailCheck__c}"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.TypeIndependentReviewIR__c}" label="Independent Review (IR)"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.TypeInterdisciplinaryCoordinationReview__c}"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.TypeBidabilityReview__c}"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.TypeDesignReview__c}"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.TypeSpecificationPackageReview__c}"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.TypeSubconsultantClient__c}" label="Subconsultant, Client, or Third-Party Info Review"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.TypeConstructabilityReview__c}"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.TypeDesignAssumptions__c}" label="Design Assumptions (Technical Approach) Review"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.TypeOther__c}" label="Other"/>
+                    </apex:pageblocksection>
+                    <apex:pageBlockSection columns="1" rendered="{!NOT(inputFields)}">
+                        <apex:outputField value="{!oTechnicalQualityReview.ReviewTypeComments__c}" style="width:100%"/>
+                    </apex:pageBlockSection>
+					<apex:pageblocksection title="Review Scope" collapsible="false" rendered="{!inputFields}">
+						<!--<apex:repeat value="{!$ObjectType.TechnicalQualityReview__c.FieldSets.ReviewScopeSet}" var="Field1">
+							<apex:inputField value="{!oTechnicalQualityReview[Field1]}" required="true" rendered="{!Field1.required}"/>
+				           	<apex:inputField value="{!oTechnicalQualityReview[Field1]}" rendered="{!not(Field1.required)}" />
+						</apex:repeat>-->
+                        <apex:inputField value="{!oTechnicalQualityReview.ScopeGrammerElements__c}" label="Edit for elements such as grammar, Technical punctuation and formatting." />
+                        <apex:inputField value="{!oTechnicalQualityReview.ScopeSoundnessofApproach__c}" label="Soundness of Approach/Design"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.ScopeAdequacyofStatements__c}" label="Adequacy of Statements of Limitations"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.ScopeConformancewithStandards__c}" label="Conformance with Standards"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.ScopeBasisandValidity__c}" label="Basis and Validity of conclusion / recommendation"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.ScopeDetailCalcCheck__c}" label="Detail Check of Calculations and graphics."/>
+                        <apex:inputField value="{!oTechnicalQualityReview.ScopeComplianceWithScope__c}" label="Compliance With Scope"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.ScopeClientandThirdPartyInformation__c}" label="Review of client and third-party Information"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.ScopeOrgClarityCompleteness__c}" label="Organization, clarity and Completeness"/>
+                        <apex:inputField value="{!oTechnicalQualityReview.ScopeOther__c}" label="Other"/>
 					</apex:pageblocksection>
+                    <apex:pageBlockSection columns="1" rendered="{!inputFields}">
+							<apex:inputField value="{!oTechnicalQualityReview.ReviewScopeComments__c}" style="width:100%"/>                        
+                    </apex:pageBlockSection>
+                    <apex:pageblocksection title="Review Scope" collapsible="false" rendered="{!NOT(inputFields)}">
+						<!--<apex:repeat value="{!$ObjectType.TechnicalQualityReview__c.FieldSets.ReviewScopeSet}" var="Field1">
+							<apex:inputField value="{!oTechnicalQualityReview[Field1]}" required="true" rendered="{!Field1.required}"/>
+				           	<apex:inputField value="{!oTechnicalQualityReview[Field1]}" rendered="{!not(Field1.required)}" />
+						</apex:repeat>-->
+                        <apex:outputField value="{!oTechnicalQualityReview.ScopeGrammerElements__c}" label="Edit for elements such as grammar, Technical punctuation and formatting." />
+                        <apex:outputField value="{!oTechnicalQualityReview.ScopeSoundnessofApproach__c}" label="Soundness of Approach/Design"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.ScopeAdequacyofStatements__c}" label="Adequacy of Statements of Limitations"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.ScopeConformancewithStandards__c}" label="Conformance with Standards"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.ScopeBasisandValidity__c}" label="Basis and Validity of conclusion / recommendation"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.ScopeDetailCalcCheck__c}" label="Detail Check of Calculations and graphics."/>
+                        <apex:outputField value="{!oTechnicalQualityReview.ScopeComplianceWithScope__c}" label="Compliance With Scope"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.ScopeClientandThirdPartyInformation__c}" label="Review of client and third-party Information"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.ScopeOrgClarityCompleteness__c}" label="Organization, clarity and Completeness"/>
+                        <apex:outputField value="{!oTechnicalQualityReview.ScopeOther__c}" label="Other"/>
+					</apex:pageblocksection>
+                    <apex:pageBlockSection columns="1" rendered="{!NOT(inputFields)}">
+							<apex:outputField value="{!oTechnicalQualityReview.ReviewScopeComments__c}" style="width:100%"/>                        
+                    </apex:pageBlockSection>
 					<BR /><BR /><BR />
 
 					
-					<apex:tabPanel switchType="ajax" value="{!tabNmae}">
-						<apex:tab label="Selected Technical Quality Team" name="tabOne" id="tabOne" rendered="{!oTechnicalQualityReview.id != null}" >
-
+					<!--<apex:tabPanel switchType="ajax" value="{!tabNmae}">-->
+						<!--<apex:tab label="Selected Technical Quality Team" name="tabOne" id="tabOne" rendered="{!oTechnicalQualityReview.id != null}" >-->
+						<apex:pageBlockSection title="Technical Quality Review Status" id="tabOne" rendered="{!oTechnicalQualityReview.id != null}" collapsible="false" columns="1" >
+                            
+                            <div class="customHelpText">
+                                <div class="customHelpBody">
+                                    <p>For each technical team member, complete this section once your review of the document per your assigned role is completed.  Select your discipline, identify the format of your review comments and attach any relevant document (e.g., hard copy edits or comment review form).  Verifiers must also select if there are no outstanding issues or unresolved issues.  Completion of your review will be documented in the system once the “Review Completed” box is checked.</p>
+                    
+                                </div>
+                            </div>
 							<apex:actionStatus id="approvalstatus">
 							<apex:facet name="start">
 								<p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Saving...</p>
@@ -85,74 +208,185 @@
 							<apex:facet name="stop">
 								<apex:outputPanel id="STQT">					
 
-									<apex:pageblocksection title="Selected Technical Quality Team" columns="1" collapsible="false" />
+									<!--<apex:pageblocksection title="Selected Technical Quality Team" columns="1" collapsible="false" />-->
 									<apex:pageMessage severity="INFO" rendered="{!IF(lstReviewMember_Wrapper.size > 0, false, true)}" summary="No Technical Quality Team Members associated with the request."></apex:pageMessage> 
 									<apex:pageBlockTable value="{!lstReviewMember_Wrapper}" var="members"  rendered="{!IF(lstReviewMember_Wrapper.size > 0, true, false)}">
-										<!--<apex:column headerValue="Select">
-											<apex:inputCheckbox value="{!members.bSelected}" />
+										<!--<apex:column headerValue="Select" >
+											<apex:inputCheckbox value="{!members.bSelected}" disabled="{!NOT(AND(members.oReviewMember.Status__c!= 'Submitted', members.bSelected, NOT(bLockFields)))}"/>
 										</apex:column>-->
-										<apex:column headerValue=""> 
-											<apex:outputLink value="/{!members.oReviewMember.id}">View</apex:outputLink>
+                                        <apex:column headerValue="Member"> 
+                                            <apex:outputText > {!members.oReviewMember.TechnicalQualityTeamMember__r.TechnicalQualityTeamMember__r.Name}</apex:outputText>
+										</apex:column> 
+                                        <!--<apex:column headerValue="View">
+                                            <apex:outputLink value="/{!members.oReviewMember.id}" >View</apex:outputLink>
+                                        </apex:column>
+                                        <apex:column headerValue="">
+                                            <apex:commandLink action="{!saveReview}" value="Save" />
 										</apex:column>
 										<apex:column headerValue="Member"> 
 											<apex:outputField value="{!members.oReviewMember.TechnicalQualityTeamMember__r.TechnicalQualityTeamMember__c}" />
-										</apex:column>
+										</apex:column>-->
 										<apex:column Headervalue="Role">
 											<apex:outputField value="{!members.oReviewMember.TechnicalQualityTeamMember__r.Role__c}" />
 										</apex:column>
 										<apex:column Headervalue="Discipline">
-											<apex:inputField value="{!members.oReviewMember.Discipline__c}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected)}" />
-											<apex:outputField value="{!members.oReviewMember.Discipline__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', not(members.bSelected))}" />
+											<apex:inputField value="{!members.oReviewMember.Discipline__c}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected, NOT(bLockFields))}" />
+											<apex:outputField value="{!members.oReviewMember.Discipline__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', not(members.bSelected), bLockFields)}" />
 										</apex:column>
-										<apex:column Headervalue="Description">
-											<apex:inputField value="{!members.oReviewMember.Description__c}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected)}" />
-											<apex:outputField value="{!members.oReviewMember.Description__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', not(members.bSelected))}" />
-										</apex:column>
-										<apex:column Headervalue="Comments">
-											<apex:inputField value="{!members.oReviewMember.Comments__c}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected)}" />
-											<apex:outputField value="{!members.oReviewMember.Comments__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', not(members.bSelected))}" />
-										</apex:column>		
-										<apex:column Headervalue="General Description">
+										<!--<apex:column Headervalue="Description">
+											<apex:inputField value="{!members.oReviewMember.Description__c}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected, bLockFields)}" />
+											<apex:outputField value="{!members.oReviewMember.Description__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', not(members.bSelected), NOT(bLockFields))}" />
+										</apex:column>-->
+										<apex:column Headervalue="Comment Format">
+											<apex:inputField value="{!members.oReviewMember.Comments__c}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected, NOT(bLockFields))}" />
+											<apex:outputField value="{!members.oReviewMember.Comments__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', not(members.bSelected), bLockFields)}" />
+										</apex:column>	
+                                        <!--<apex:column Headervalue="General Description">
 											<apex:inputField value="{!members.oReviewMember.General_Description__c}" rendered="{!AND(members.oReviewMember.Status__c!= 'Submitted', members.bSelected)}" />
 											<apex:outputField value="{!members.oReviewMember.General_Description__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', not(members.bSelected))}" />
-										</apex:column>					
-										<apex:column Headervalue="Status">
-											<apex:outputField value="{!members.oReviewMember.Status__c}" rendered="{!members.bSelected}" />
+										</apex:column>-->
+                                        <apex:column >
+                                            <apex:facet name="header">
+                                                <apex:outputPanel layout="none">
+                                                    <!--<apex:outputText value="No Outstanding issues"/><br/><apex:outputText value="(Verifiers Only)"/>
+                                                    <div><c:ECO_HelpIcon helpText="Verifier has verified that comments have been adequately addressed. There are no outstanding issues."/></div>-->
+                                                    No Outstanding issues<br/>(Verifiers Only)
+                                                    <c:ECO_HelpIcon helpText="Verifier has verified that comments have been adequately addressed. There are no outstanding issues."/>
+                                                </apex:outputPanel>
+                                            </apex:facet>  
+											<apex:inputField value="{!members.oReviewMember.VerifierNoOutstandingIssues__c}" rendered="{!AND(members.oReviewMember.Status__c!= 'Submitted', members.oReviewMember.Role__c = 'Lead Verifier', members.bSelected, NOT(bLockFields))}" />
+											<apex:outputField value="{!members.oReviewMember.VerifierNoOutstandingIssues__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', members.oReviewMember.Role__c != 'Lead Verifier', not(members.bSelected), bLockFields)}" />
 										</apex:column>
+                                        <apex:column >
+                                            <apex:facet name="header">
+                                            <apex:outputPanel layout="none">
+                                                <!--<apex:outputText value="Unresolved issues "/><br/><apex:outputText value="  (Verifiers Only)"/>
+                                                <div><c:ECO_HelpIcon helpText="Verifier has verified that comments have been adequately addressed, except for unresolved issues. Any unresolved issues have been submitted to the Project Manager or Designee for final resolution."/></div>-->
+                                                Unresolved issues <br/>(Verifiers Only)
+                                                <c:ECO_HelpIcon helpText="Verifier has verified that comments have been adequately addressed, except for unresolved issues. Any unresolved issues have been submitted to the Project Manager or Designee for final resolution."/>
+                                            </apex:outputPanel>
+                                            </apex:facet>  
+											<apex:inputField value="{!members.oReviewMember.VerifierUnresolvedIssues__c}" rendered="{!AND(members.oReviewMember.Status__c!= 'Submitted', members.oReviewMember.Role__c = 'Lead Verifier', members.bSelected, NOT(bLockFields))}" />
+											<apex:outputField value="{!members.oReviewMember.VerifierUnresolvedIssues__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', members.oReviewMember.Role__c != 'Lead Verifier', not(members.bSelected), bLockFields)}" />
+										</apex:column>
+										<!--<apex:column Headervalue="Status">
+											<apex:outputField value="{!members.oReviewMember.Status__c}" rendered="{!members.bSelected}" />
+										</apex:column>-->
+                                        <apex:column Headervalue="Review Completed">
+											<apex:inputField value="{!members.oReviewMember.ReviewCompleted__c}" rendered="{!AND(members.oReviewMember.Status__c!= 'Submitted', members.bSelected, NOT(bLockFields))}" />
+											<apex:outputField value="{!members.oReviewMember.ReviewCompleted__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', not(members.bSelected), bLockFields)}" />
+										</apex:column>
+                                        <apex:column Headervalue="Date/Time">
+											<!--<apex:inputField value="{!members.oReviewMember.CheckerDateTime__c}"  rendered="{!AND(members.oReviewMember.Status__c!= 'Submitted', members.bSelected, NOT(bLockFields))}"/>-->
+                                            <apex:outputField value="{!members.oReviewMember.CheckerDateTime__c}"/>
+										</apex:column>
+                                        <!--<apex:column Headervalue="Attachment" >
+                                            <apex:inputFile value="{!attach.body}" filename="{!attach.name}" disabled="{!NOT(AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected))}" />
+                                        </apex:column>-->
+                                        <apex:column headervalue="Attachments">
+                                            <table width="100%">
+                                            <TR >
+            
+                                            <TD style="border:none">
+                                            <table >
+                                                <apex:repeat value="{!RMAttachmentsMap[members.oReviewMember.id]}" var="attachment">
+                                                <tr><td style="border:none"><apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachment.Id)}" target="_blank"><apex:outputText value="{!attachment.Name}"/></apex:outputLink></td></tr>
+                                                </apex:repeat>
+                                            </table>
+                                            </TD>
+                                            <TD style="border:none; text-align: right;">
+                                                <apex:commandLink value="Add" action="{!createRMAttachment}" rerender="id2"  title="Add Attachments" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected, NOT(bLockFields))}">
+                                                    <apex:param name="inductionId" value="{!members.oReviewMember.id}" assignTo="{!sRMId2}"/>
+                                                    <apex:param name="inductionName" value="{members.oReviewMember.Name}" assignTo="{!sRMName2}" />                                  
+                                                </apex:commandLink>
+                                            </TD>
+            
+                                            </TR>
+                                            </table>
+
+                            			</apex:column>
 										<apex:column Headervalue="Action">
-											<apex:commandButton value="Submit" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected)}" action="{!submitForApproval}" reRender="wholePanel, STQT" status="approvalstatus"  />
-											<apex:commandButton value="Recall" rendered="{!AND(members.oReviewMember.Status__c == 'Submitted', members.bSelected)}" action="{!killApproval}" reRender="wholePanel, STQT" status="approvalstatus" />
-										</apex:column>																																																
+                                            <apex:actionRegion >
+                                            <apex:commandButton value="Save" action="{!saveReview}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected, NOT(bLockFields))}"/>
+                                            <!--<apex:commandButton value="Submit" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected)}" action="{!submitForApproval}" reRender="wholePanel, STQT" status="approvalstatus"  />
+											<apex:commandButton value="Recall" rendered="{!AND(members.oReviewMember.Status__c == 'Submitted', members.bSelected)}" action="{!killApproval}" reRender="wholePanel, STQT" status="approvalstatus" />-->
+                                            </apex:actionRegion>
+                                        </apex:column>																																																
 									</apex:pageBlockTable>		
 								</apex:outputPanel>
 							</apex:facet>
 							</apex:actionStatus>
+							</apex:pageBlockSection>
+                        
+                        <apex:pageBlockSection title="Approval" id="tabOnee" rendered="{!oTechnicalQualityReview.id != null}" collapsible="false" columns="1" >
+							<apex:facet name="header">
+                                <apex:outputPanel >
+                                    <br/>
+                                    <h3>Approval</h3>
+                                    <c:ECO_HelpIcon helpText="Project Manager or Designee confirms that the Check / Review process has been followed. " />
+                                </apex:outputPanel>
+							</apex:facet>
+                            <apex:actionStatus id="approvalstatus">
+							<apex:facet name="start">
+								<p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Saving...</p>
+							</apex:facet>
+							<apex:facet name="stop">
+								<apex:outputPanel id="STQT">					
+									<apex:pageMessage severity="INFO" rendered="{!IF(lstReviewApprover_Wrapper.size > 0, false, true)}" summary="No Approvals found"></apex:pageMessage> 
+									<apex:pageBlockTable value="{!lstReviewApprover_Wrapper}" var="members"  rendered="{!IF(lstReviewApprover_Wrapper.size > 0, true, false)}">
+										<!--<apex:column headerValue="Select" >
+											<apex:inputCheckbox value="{!members.bSelected}" disabled="{!NOT(AND(members.oReviewMember.Status__c!= 'Submitted', members.bSelected))}"/>
+										</apex:column>-->
+                                        <apex:column headerValue="Member"> 
+                                            <apex:outputText > {!members.oReviewMember.TechnicalQualityTeamMember__r.TechnicalQualityTeamMember__r.Name}</apex:outputText>
+										</apex:column> 
+                                        <apex:column Headervalue="Role">
+											<apex:outputField value="{!members.oReviewMember.TechnicalQualityTeamMember__r.Role__c}" />
+										</apex:column>
+                                        <apex:column headerValue="Approved">
+                                            <!--<apex:inputField value="{!members.oReviewMember.Approved__c}"  />-->
+                                        	<apex:inputField value="{!members.oReviewMember.Approved__c}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected, NOT(bLockFields))}" />
+											<apex:outputField value="{!members.oReviewMember.Approved__c}" rendered="{!OR(members.oReviewMember.Status__c == 'Submitted', not(members.bSelected), bLockFields)}" />	
+                                        </apex:column>
+										<apex:column Headervalue="Date/Time">
+											<apex:outputField value="{!members.oReviewMember.CheckerDateTime__c}" />
+										</apex:column>
+                                        <apex:column Headervalue="Action">
+                                            <apex:commandButton value="Save" action="{!saveReview}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected, NOT(bLockFields))}" reRender="wholePanel, STQT, TQTPB" oncomplete="location.reload();"/>
+                                            <!--<apex:commandButton value="Submit" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected)}" action="{!submitForApproval}" reRender="wholePanel, STQT" status="approvalstatus"  />
+											<apex:commandButton value="Recall" rendered="{!AND(members.oReviewMember.Status__c == 'Submitted', members.bSelected)}" action="{!killApproval}" reRender="wholePanel, STQT" status="approvalstatus" />-->
+                                        </apex:column>																																																
+									</apex:pageBlockTable>		
+								</apex:outputPanel>
+							</apex:facet>
+							</apex:actionStatus>
+							</apex:pageBlockSection>
+						<!--</apex:tab>
+						<apex:tab label="Existing Technical Quality Team" name="tabTwo" id="tabTwo">-->
+                        
+                        <apex:actionRegion immediate="true">
+                            <apex:pageBlockSection title="Available Team Members" id="tabTwo" collapsible="false" columns="1">
+                                <!--<apex:pageblocksection id="TQTInformationPBS" title="Technical Quality Review Status" columns="1" collapsible="false" />-->
+    
+                                <apex:pageMessage severity="INFO" rendered="{!IF(lstTQT_Wrapper.size > 0, false, true)}" summary="There are no Technical Quality Team Members available."></apex:pageMessage> 
+                                <apex:pageBlockTable value="{!lstTQT_Wrapper}" var="extsRow" rendered="{!IF(lstTQT_Wrapper.size > 0, true, false)}">
+                                    <apex:column headerValue="Select">
+                                        <apex:inputCheckbox value="{!extsRow.bSelected}" disabled="{!NOT(inputFields)}"/>
+                                    </apex:column>
+                                    <apex:column headerValue="Member"> 
+                                        <!--<apex:outputField value="{!extsRow.oTechnicalQualityTeam.TechnicalQualityTeamMember__c}" />-->
+                                        <apex:outputText > {!extsRow.oTechnicalQualityTeam.TechnicalQualityTeamMember__r.Name}</apex:outputText>
+                                    </apex:column>
+                                    <apex:column Headervalue="Role">
+                                        <apex:outputField value="{!extsRow.oTechnicalQualityTeam.Role__c}" />
+                                    </apex:column>
+                                    
+                                </apex:pageBlockTable>
+                            </apex:pageBlockSection>
+                        </apex:actionRegion>
+						<!--</apex:tab>
 
-						</apex:tab>
-						<apex:tab label="Existing Technical Quality Team" name="tabTwo" id="tabTwo">
-
-							<apex:pageblocksection id="TQTInformationPBS" title="Existing Technical Quality Team" columns="1" collapsible="false" />
-
-							<apex:pageMessage severity="INFO" rendered="{!IF(lstTQT_Wrapper.size > 0, false, true)}" summary="There are no Technical Quality Team Members available."></apex:pageMessage> 
-							<apex:pageBlockTable value="{!lstTQT_Wrapper}" var="extsRow" rendered="{!IF(lstTQT_Wrapper.size > 0, true, false)}">
-								<apex:column headerValue="Select">
-									<apex:inputCheckbox value="{!extsRow.bSelected}" />
-								</apex:column>
-								<apex:column headerValue="Member"> 
-									<apex:outputField value="{!extsRow.oTechnicalQualityTeam.TechnicalQualityTeamMember__c}" />
-								</apex:column>
-								<apex:column Headervalue="Role">
-									<apex:outputField value="{!extsRow.oTechnicalQualityTeam.Role__c}" />
-								</apex:column>
-							</apex:pageBlockTable>
-
-						</apex:tab>
-
-					</apex:tabPanel>
-
-
-
-
+					</apex:tabPanel>-->
 					</apex:outputPanel>
 				</apex:facet>
 			</apex:actionStatus>	

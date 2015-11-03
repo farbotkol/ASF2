@@ -3,6 +3,7 @@
     <alerts>
         <fullName>EcoSystem_Final_Approval_for_Go_No_Go</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoFinal Approval for Go/No Go</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -11,6 +12,7 @@
     <alerts>
         <fullName>EcoSystem_Recall_Notification_for_Go_No_Go</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoRecall Notification for Go/No Go</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -28,6 +30,7 @@
     <fieldUpdates>
         <fullName>EcoApproval_Clear_Approval_Status</fullName>
         <field>ApprovalStatus__c</field>
+        <literalValue>Pending Approval</literalValue>
         <name>EcoApproval - Clear Approval Status</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
@@ -70,10 +73,10 @@
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
-        <fullName>EcoApproval_Set_Status_to_Pending</fullName>
+        <fullName>EcoApproval_Set_Status_to_Submitted</fullName>
         <field>ApprovalStatus__c</field>
-        <literalValue>Pending Approval</literalValue>
-        <name>EcoApproval - Set Status to Pending</name>
+        <literalValue>Submitted</literalValue>
+        <name>EcoApproval - Set Status to Submitted</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>

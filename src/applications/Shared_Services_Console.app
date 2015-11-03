@@ -176,7 +176,6 @@
     <tab>Ecosystem</tab>
     <tab>Project_Review_Trigger__c</tab>
     <tab>KPI_Metric__c</tab>
-    <tab>RoutingMember__c</tab>
     <tab>CountryRisk__c</tab>
     <tab>ProjectCountry_Risk__c</tab>
     <tab>BurdenReference__c</tab>
@@ -187,6 +186,8 @@
     <tab>CostDistLine__c</tab>
     <tab>EarnedValueHeader__c</tab>
     <tab>VendorSub__c</tab>
+    <tab>DashInsight</tab>
+    <tab>ChangeManager__c</tab>
     <workspaceMappings>
         <mapping>
             <tab>Billing__c</tab>
@@ -195,10 +196,16 @@
             <tab>BurdenReference__c</tab>
         </mapping>
         <mapping>
+            <tab>ChangeManager__c</tab>
+        </mapping>
+        <mapping>
             <tab>CostDistLine__c</tab>
         </mapping>
         <mapping>
             <tab>CountryRisk__c</tab>
+        </mapping>
+        <mapping>
+            <tab>DashInsight</tab>
         </mapping>
         <mapping>
             <tab>EarnedValueHeader__c</tab>
@@ -229,9 +236,6 @@
         </mapping>
         <mapping>
             <tab>Revenue__c</tab>
-        </mapping>
-        <mapping>
-            <tab>RoutingMember__c</tab>
         </mapping>
         <mapping>
             <tab>Site__c</tab>

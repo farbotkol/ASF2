@@ -1,0 +1,49 @@
+<apex:page standardController="DOAConditions__c" extensions="ECO_DOAConditionsOfApprovalController" action="{!init}">
+	<style>
+    	.hideDropdown select{
+            display:none !important;
+        }
+    </style>
+    <apex:form >
+	<apex:sectionHeader title="DOA Conditions of Approval Edit" subtitle="{!agreement.ContractTitle__c}({!agreement.AgreementNumber__c})" rendered="{!IF(agreement.ContractTitle__c != null,true,false)}"/>
+	<apex:sectionHeader title="DOA Conditions of Approval Edit" rendered="{!IF(agreement.ContractTitle__c == null,true,false)}"/>
+    <apex:pageBlock title="DOA Conditions of Approval Edit">
+
+	<apex:pageBlockButtons >
+		<apex:commandButton value="Save" action="{!save}"/>
+		<apex:commandButton value="Return to MSA" action="{!returnToDOA}" rendered="{!IF(doaConditions.DOAApprovalRequest__c == null,true,false)}"/>
+        <apex:commandButton value="Return to DOA" action="{!returnToDOA}" rendered="{!IF(doaConditions.DOAApprovalRequest__c == null,false,true)}"/>
+        
+	</apex:pageBlockButtons>
+
+	<apex:pageBlockSection collapsible="false">
+		<apex:pageBlockSectionItem >
+			<apex:outputText value="DOA Condition"/>
+			<apex:inputField value="{!DOAConditions__c.Name}"/>
+		</apex:pageBlockSectionItem>
+        <apex:inputField value="{!DOAConditions__c.DOAApprovalRequest__c}"/>
+        
+		<apex:inputField value="{!DOAConditions__c.DOARegister__c}" rendered="{!IF(DoaApprovalId == null,true,false)}"/>
+        <apex:inputField value="{!DOAConditions__c.Project__c}" rendered="{!IF(DOAConditions__c.Project__c != null,true,false)}" id="proj"/>
+        <script>document.getElementById('{!$Component.proj}').disabled = true; </script>
+		
+        <apex:inputField value="{!DOAConditions__c.DoATriggerNo__c}" rendered="{!IF(DoaApprovalId == null,true,false)}"/>
+		<apex:inputField value="{!DOAConditions__c.TriggerDescription__c}" rendered="{!IF(DoaApprovalId == null,true,false)}" style="width:50%;"/>
+    </apex:pageBlockSection>
+    <apex:pageBlockSection columns="1">
+		<apex:inputField value="{!DOAConditions__c.Mitigation_Plan__c}" style="height: 120px;width:100%;"/>
+    </apex:pageBlockSection>
+    <apex:pageBlockSection >
+        <apex:pageBlockSectionItem rendered="{!IF(DoaApprovalId != null,true,false)}">
+            <apex:outputLabel value="Approver" />
+            <apex:inputField styleClass="hideDropdown" value="{!DOAConditions__c.CreatedBy__c}"/>
+        </apex:pageBlockSectionItem>
+	</apex:pageBlockSection>
+	<apex:inputHidden value="{!DOAConditions__c.Agreement__c}"/>
+<!--	<apex:pageBlockSection title="System Information" collapsible="false">
+		<apex:outputField value="{!OtherDirectCost__c.Agreement__c}"/>
+	</apex:pageBlockSection> -->
+
+</apex:pageBlock>
+</apex:form>
+</apex:page>

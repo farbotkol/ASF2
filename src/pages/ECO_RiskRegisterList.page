@@ -1,0 +1,93 @@
+<apex:page StandardController="pse__Proj__c" extensions="ECO_RiskRegisterListController" tabStyle="Risk__c" >
+<apex:messages />
+<style>
+    /* CUSTOM HELP / GUIDANCE TEXT BOX */
+    .customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 30px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        } 
+    	.alignOutputfield span {
+        	text-align:right;
+        }
+    	.rightAlign {text-align:right;} 
+	   	.leftAlign {text-align:left;} 
+	   	.centerAlign {text-align:center;} 
+    
+    	.odd {
+            background-color: #F0F0F6;
+            }
+            .even {
+            background-color: #FFFFFF;
+            }
+</style>
+    
+<apex:form >
+	<apex:sectionHeader title="Risk register" subtitle="{!pse__Proj__c.Name}" /> 
+    <div class="customHelpText">
+        <div class="customHelpBody">
+            Risk management is fundamental to successful project delivery.  Proactive management of risks increases the probability and impact of positive events, and decreases the probability and impact of negative events on the project.  A Risk Register acts as a central repository for all project risks that have a probability of occurrence throughout the entire project lifecycle.  The project Risk Register should be as comprehensive as possible and reviewed frequently to ensure that the risks are being appropriately managed.
+        </div>
+    </div> 
+	 <apex:pageBlock >
+    	<apex:pageBlockButtons location="top">
+            <apex:commandButton action="{!newRisk}" value="New Risk" immediate="true"/>
+            <apex:commandButton action="{!returnProj}" value="Return to Project" immediate="true"/>
+            <apex:commandButton action="{!exportCSV}" value="Export to CSV"/>
+        </apex:pageBlockButtons>
+       	<apex:pageBlockSection title="Project Risks" columns="1" collapsible="false">
+            <apex:pageBlockTable value="{!Risks}" rendered="{!Risks.size > 0}" var="risklist" rowClasses="even,odd">
+                <apex:column headerValue="Action">
+                    <!--<apex:commandLink value="Edit" action="/{!risklist.Id}/e?retURL=/apex/ECO_RiskRegisterList?id={!pse__Proj__c.id}"/>&nbsp;&nbsp;-->
+                    <apex:commandLink value="View" action="/{!risklist.Id}"/>&nbsp;&nbsp;
+                    <apex:commandLink value="Delete" action="{!deleteRisk}">
+                        <apex:param name="recid" value="{!risklist.id}"/>
+                    </apex:commandLink>
+                </apex:column>
+                <apex:column headerClass="centerAlign" styleClass="leftAlign"><apex:facet name="header">Risk Title</apex:facet><apex:outputField value="{!risklist.Name}"/></apex:column>
+                <apex:column headerClass="centerAlign" headerValue="Current Status" styleClass="centerAlign"><apex:outputField value="{!risklist.CurrentStatus__c}"/></apex:column>
+                <apex:column headerClass="centerAlign" headerValue="Event Phase" styleClass="centerAlign"><apex:outputField value="{!risklist.EventPhase__c}"/></apex:column>
+                <apex:column headerClass="centerAlign" styleClass="centerAlign" headerValue="Risk Owner"><apex:outputField value="{!risklist.RiskOwner__c}"/></apex:column>
+                <apex:column headerClass="centerAlign" styleClass="centerAlign"><apex:facet name="header">Pre-mitigation<br/>Rating</apex:facet><apex:outputField value="{!risklist.Premitigationrating__c}"/></apex:column>
+                <apex:column headerClass="centerAlign" styleClass="rightAlign"><apex:facet name="header">Pre-mitigation<br/>Contingency</apex:facet>
+                <apex:outputtext value="{0, number, currency}">
+				   <apex:param value="{!risklist.ContingencyDollars__c}" />
+				</apex:outputtext>                
+				</apex:column>	                    
+                
+                <apex:column headerClass="centerAlign" styleClass="leftAlign" headerValue="Mitigation Strategy"><apex:outputField value="{!risklist.RiskMitigation__c}"/></apex:column>
+                <apex:column headerClass="centerAlign" styleClass="rightAlign"><apex:facet name="header">Mitigation<br/>Cost Total</apex:facet>
+                <apex:outputtext value="{0, number, currency}">
+				   <apex:param value="{!risklist.MitigationCostTotal__c}" />
+				</apex:outputtext>                     
+                </apex:column>
+                <apex:column headerClass="centerAlign" styleClass="centerAlign"><apex:facet name="header">Post-mitigation<br/>Rating</apex:facet>
+	                <apex:outputField value="{!risklist.Postmitigationrating__c}"/>                
+				</apex:column>	
+                <apex:column headerClass="centerAlign" styleClass="rightAlign"><apex:facet name="header">Post-mitigation<br/>Contingency Total</apex:facet>
+                <apex:outputtext value="{0, number, currency}">
+				   <apex:param value="{!risklist.PostmitigationContingencyTotal__c}" />
+				</apex:outputtext>                     
+                </apex:column>
+            </apex:pageBlockTable>
+            
+            <apex:outputPanel rendered="{!Risks.size == 0}">
+            	<apex:outputText value="No records to display"/>
+        	</apex:outputPanel> 
+        </apex:pageBlockSection>
+    </apex:pageBlock>
+</apex:form>
+    <apex:relatedList list="OpenActivities"/>
+</apex:page>

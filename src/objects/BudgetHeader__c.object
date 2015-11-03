@@ -50,7 +50,7 @@
     <enableBulkApi>true</enableBulkApi>
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
-    <enableReports>false</enableReports>
+    <enableReports>true</enableReports>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
@@ -88,6 +88,17 @@
         <externalId>false</externalId>
         <label>Budget Name</label>
         <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CarryingoutOrganization_OUID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Project__r.CarryingOutOrganization__r.OUID__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>CarryingoutOrganization OUID</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -163,6 +174,15 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>MultiLineBurdened__c</fullName>
+        <externalId>false</externalId>
+        <formula>TRUE</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Multi line Burdened</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>NMNSR__c</fullName>
         <externalId>false</externalId>
         <formula>IF(NetServicesRevenue__c = 0, 0, NetMargin__c / NetServicesRevenue__c)</formula>
@@ -197,6 +217,14 @@
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>OriginalBudget__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Original Budget</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>OverrideTotalRevenue__c</fullName>
@@ -317,6 +345,11 @@
         <externalId>false</externalId>
         <label>Total Fringe</label>
         <summarizedField>BudgetResource__c.TotalFringe__c</summarizedField>
+        <summaryFilterItems>
+            <field>BudgetResource__c.ResourceType__c</field>
+            <operation>equals</operation>
+            <value>Labor/Person</value>
+        </summaryFilterItems>
         <summaryForeignKey>BudgetResource__c.BudgetHeader__c</summaryForeignKey>
         <summaryOperation>sum</summaryOperation>
         <trackTrending>false</trackTrending>
@@ -357,6 +390,11 @@
         <externalId>false</externalId>
         <label>Total Overhead</label>
         <summarizedField>BudgetResource__c.TotalOverhead__c</summarizedField>
+        <summaryFilterItems>
+            <field>BudgetResource__c.ResourceType__c</field>
+            <operation>equals</operation>
+            <value>Labor/Person</value>
+        </summaryFilterItems>
         <summaryForeignKey>BudgetResource__c.BudgetHeader__c</summaryForeignKey>
         <summaryOperation>sum</summaryOperation>
         <trackTrending>false</trackTrending>
@@ -367,6 +405,11 @@
         <externalId>false</externalId>
         <label>Total Raw Cost</label>
         <summarizedField>BudgetResource__c.TotalRawCost__c</summarizedField>
+        <summaryFilterItems>
+            <field>BudgetResource__c.ResourceType__c</field>
+            <operation>equals</operation>
+            <value>Labor/Person</value>
+        </summaryFilterItems>
         <summaryForeignKey>BudgetResource__c.BudgetHeader__c</summaryForeignKey>
         <summaryOperation>sum</summaryOperation>
         <trackTrending>false</trackTrending>
@@ -523,6 +566,57 @@
             </values>
         </picklistValues>
     </recordTypes>
+    <recordTypes>
+        <fullName>EAC</fullName>
+        <active>true</active>
+        <label>EAC</label>
+        <picklistValues>
+            <picklist>BudgetMethod__c</picklist>
+            <values>
+                <fullName>Project</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Task</fullName>
+                <default>true</default>
+            </values>
+        </picklistValues>
+        <picklistValues>
+            <picklist>Status__c</picklist>
+            <values>
+                <fullName>Approved</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Estimate</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Exclude</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Forecast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Rejected</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted for Approval</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Submitted for Forecast</fullName>
+                <default>false</default>
+            </values>
+            <values>
+                <fullName>Work at Risk</fullName>
+                <default>false</default>
+            </values>
+        </picklistValues>
+    </recordTypes>
     <searchLayouts>
         <customTabListAdditionalFields>BudgetName__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>RECORDTYPE</customTabListAdditionalFields>
@@ -553,4 +647,17 @@
         <searchResultsAdditionalFields>CREATED_DATE</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
+    <webLinks>
+        <fullName>ManageBudget</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <encodingKey>UTF-8</encodingKey>
+        <height>600</height>
+        <linkType>url</linkType>
+        <masterLabel>Manage Budgets</masterLabel>
+        <openType>sidebar</openType>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
+        <url>/apex/ECO_BudgetHeaderSummary?id={!pse__Proj__c.Id}</url>
+    </webLinks>
 </CustomObject>

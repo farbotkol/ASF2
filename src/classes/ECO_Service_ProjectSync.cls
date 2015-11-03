@@ -36,7 +36,7 @@ public without sharing class ECO_Service_ProjectSync{
 
 	public static string SendProjectData(Id sProjectId, Id messageQueueId){
 
-		ProjectMessageWrapper oProjectMessageWrapper = createProjectMessageWrapper(sProjectId, false);
+		ProjectMessageWrapper oProjectMessageWrapper = createProjectMessageWrapper(sProjectId, false, true);
 		oProjectMessageWrapper.PROJECT_HEADER.JOB_ID = messageQueueId;
 
 		//return json
@@ -45,7 +45,7 @@ public without sharing class ECO_Service_ProjectSync{
 		return json_ProjectMessageWrapper;
 	}
 
-	public static ProjectMessageWrapper createProjectMessageWrapper(Id sProjectId, Boolean isProjectNumberRequest){
+	public static ProjectMessageWrapper createProjectMessageWrapper(Id sProjectId, Boolean isProjectNumberRequest, Boolean synchRelatedObjects){
 		//get project info, exception will be thrown if project can't be found
 		pse__Proj__c project = GetOracleProjectRecord(sProjectId);
 
@@ -162,69 +162,82 @@ public without sharing class ECO_Service_ProjectSync{
 				oProjectMessageWrapper.PROJECT_HEADER.UPDATES_TO_CLASSIFICATION = 'N';
 			}
 
-			List<pse__Project_Task__c> tasks = GetOracleProjectTaskRecords(sProjectId, queryDateTime);
-			oProjectMessageWrapper.WBS_COLLECTION = getOracleTaskCollection(tasks, project);	
-			oProjectMessageWrapper.PROJECT_HEADER.UPDATES_TO_WBS = 'N';
-			if(!oProjectMessageWrapper.WBS_COLLECTION.isEmpty()){
-				for(pse__Project_Task__c task : tasks){
-					if(task.LastModifiedDate > lastProjectSyncDateTime){
-						taskUpdates = true;
+			if(synchRelatedObjects)
+			{
+				List<pse__Project_Task__c> tasks = GetOracleProjectTaskRecords(sProjectId, queryDateTime);
+				oProjectMessageWrapper.WBS_COLLECTION = getOracleTaskCollection(tasks, project);	
+				oProjectMessageWrapper.PROJECT_HEADER.UPDATES_TO_WBS = 'N';
+				if(!oProjectMessageWrapper.WBS_COLLECTION.isEmpty()){
+					for(pse__Project_Task__c task : tasks){
+						if(task.LastModifiedDate > lastProjectSyncDateTime){
+							taskUpdates = true;
+						}
 					}
+					if(taskUpdates){
+						oProjectMessageWrapper.PROJECT_HEADER.UPDATES_TO_WBS = 'Y';
+					}				
 				}
-				if(taskUpdates){
-					oProjectMessageWrapper.PROJECT_HEADER.UPDATES_TO_WBS = 'Y';
-				}				
 			}
 
-			List<ProjectTeamMember__c> keyMembers = GetOracleKeyMemberRecords(sProjectId, queryDateTime);
-			oProjectMessageWrapper.KEYMEMBERS_COLLECTION = getOracleKeyMemberCollection(keyMembers);
-			oProjectMessageWrapper.PROJECT_HEADER.UPDATES_TO_KEYMEMBERS = 'N';
-			if(!oProjectMessageWrapper.KEYMEMBERS_COLLECTION.isEmpty()){
-				for(ProjectTeamMember__c keyMember : keyMembers){
-					if(keyMember.LastModifiedDate > lastProjectSyncDateTime){
-						keyMemberUpdates = true;
+			if(synchRelatedObjects)
+			{
+				List<ProjectTeamMember__c> keyMembers = GetOracleKeyMemberRecords(sProjectId, queryDateTime);
+				oProjectMessageWrapper.KEYMEMBERS_COLLECTION = getOracleKeyMemberCollection(keyMembers);
+				oProjectMessageWrapper.PROJECT_HEADER.UPDATES_TO_KEYMEMBERS = 'N';
+				if(!oProjectMessageWrapper.KEYMEMBERS_COLLECTION.isEmpty()){
+					for(ProjectTeamMember__c keyMember : keyMembers){
+						if(keyMember.LastModifiedDate > lastProjectSyncDateTime){
+							keyMemberUpdates = true;
+						}
 					}
+					if(keyMemberUpdates){
+						oProjectMessageWrapper.PROJECT_HEADER.UPDATES_TO_KEYMEMBERS = 'Y';
+					}				
 				}
-				if(keyMemberUpdates){
-					oProjectMessageWrapper.PROJECT_HEADER.UPDATES_TO_KEYMEMBERS = 'Y';
-				}				
 			}
 
-	
 
-
-			List<Project_Site__c> customers = GetOracleProjectSiteRecords(sProjectId, queryDateTime);
-			oProjectMessageWrapper.CUSTOMERS_COLLECTION = getOracleCustomerCollection(customers);
-			oProjectMessageWrapper.PROJECT_HEADER.UPDATES_TO_CUSTOMERS = 'N';
-			if(!oProjectMessageWrapper.CUSTOMERS_COLLECTION.isEmpty()){
-				for(Project_Site__c customer : customers){
-					if(customer.LastModifiedDate > lastProjectSyncDateTime){
-						customerUpdates = true;
+			if(synchRelatedObjects)
+			{	
+				List<Project_Site__c> customers = GetOracleProjectSiteRecords(sProjectId, queryDateTime);
+				oProjectMessageWrapper.CUSTOMERS_COLLECTION = getOracleCustomerCollection(customers);
+				oProjectMessageWrapper.PROJECT_HEADER.UPDATES_TO_CUSTOMERS = 'N';
+				if(!oProjectMessageWrapper.CUSTOMERS_COLLECTION.isEmpty()){
+					for(Project_Site__c customer : customers){
+						if(customer.LastModifiedDate > lastProjectSyncDateTime){
+							customerUpdates = true;
+						}
 					}
+					if(customerUpdates){
+						oProjectMessageWrapper.PROJECT_HEADER.UPDATES_TO_CUSTOMERS = 'Y';
+					}				
+
+					if(oProjectMessageWrapper.PROJECT_HEADER.ENABLE_TOP_TASK_CUSTOMER == 'Y'){
+						for(OR_ProjectCustomer customer : oProjectMessageWrapper.CUSTOMERS_COLLECTION){
+							customer.CONTRIBUTION = '';
+						}
+					}else if(oProjectMessageWrapper.PROJECT_HEADER.ENABLE_TOP_TASK_CUSTOMER == 'N'){
+						for(OR_ProjectCustomer customer : oProjectMessageWrapper.CUSTOMERS_COLLECTION){
+							customer.DEFAULT_TOP_TASK_CUSTOMER = 'N';
+						}
+					}		
 				}
-				if(customerUpdates){
-					oProjectMessageWrapper.PROJECT_HEADER.UPDATES_TO_CUSTOMERS = 'Y';
-				}				
-
-				if(oProjectMessageWrapper.PROJECT_HEADER.ENABLE_TOP_TASK_CUSTOMER == 'Y'){
-					for(OR_ProjectCustomer customer : oProjectMessageWrapper.CUSTOMERS_COLLECTION){
-						customer.CONTRIBUTION = '';
-					}
-				}else if(oProjectMessageWrapper.PROJECT_HEADER.ENABLE_TOP_TASK_CUSTOMER == 'N'){
-					for(OR_ProjectCustomer customer : oProjectMessageWrapper.CUSTOMERS_COLLECTION){
-						customer.DEFAULT_TOP_TASK_CUSTOMER = 'N';
-					}
-				}
-			
 			}
-
 		}		
 
 		return oProjectMessageWrapper;
 	}
 
+	public static string SendProjectOnlyData(Id sProjectId, Id messageQueueId)
+	{
+		ProjectMessageWrapper oProjectNumberWrapper = createProjectMessageWrapper(sProjectId, false, false);
+		oProjectNumberWrapper.PROJECT_HEADER.JOB_ID = messageQueueId;
+		string json_ProjectMessageWrapper = JSON.serializePretty(oProjectNumberWrapper);
+		return json_ProjectMessageWrapper;
+	}
+
 	public static string SendProjectNumberData(Id sProjectId, Id messageQueueId){
-		ProjectMessageWrapper oProjectNumberWrapper = createProjectMessageWrapper(sProjectId, true);
+		ProjectMessageWrapper oProjectNumberWrapper = createProjectMessageWrapper(sProjectId, true, false);
 		oProjectNumberWrapper.PROJECT_HEADER.JOB_ID = messageQueueId;
 		string json_ProjectMessageWrapper = JSON.serializePretty(oProjectNumberWrapper);
 		return json_ProjectMessageWrapper;
@@ -243,13 +256,19 @@ public without sharing class ECO_Service_ProjectSync{
 	
 
 	
-	public static string TestProxy(string url){
+	public static string TestProxy(string url, string body){
 		Http h = new Http();
 
 	    // Instantiate a new HTTP request, specify the method (GET) as well as the endpoint
 	    HttpRequest req = new HttpRequest();
 	    req.setEndpoint(url);
 	    req.setMethod('GET');
+        
+        req.setCompressed(true);
+        req.setTimeout(30000);
+        req.setClientCertificateName('ECOProjService');
+        
+        req.setBody(body);
 
 	    // Send the request, and return a response
 	    HttpResponse res = h.send(req);
@@ -696,6 +715,7 @@ public without sharing class ECO_Service_ProjectSync{
 																		WHERE Project__c = :sProjectId
 																		AND IsCustomer__c = true
 																		AND LastModifiedDate >= :dateFilterVal
+																		AND Is_Billing__c = true
 																		]);
 		return lSites;
 	}
@@ -1456,6 +1476,39 @@ public without sharing class ECO_Service_ProjectSync{
 		return msgQueue;
 	}
 
+	public Static String syncProjectOnlyWithOracle(Id sProjectId, String url, Id sMessageQueueId){
+		String result = '';
+
+		IntegrationMessageQueue__c messageQueue = getMessageQueue(sMessageQueueId);
+		if(messageQueue == null){
+			throw new EcoServiceException('Cannot find message queue with Id = ' + sMessageQueueId);
+		}
+		
+		try{
+
+			String jsonPayload = SendProjectOnlyData(sProjectId, sMessageQueueId);
+			result = sendRequest(url, jsonPayload);
+
+			if(!String.isEmpty(result)){
+				messageQueue.Status__c = STATUS_SENT;
+				//messageQueue.SuccessMessage__c = result;
+				update messageQueue;
+			}else{
+				throw new EcoServiceException('No request returned no response!');
+			}
+					    
+			
+		}catch(Exception e){
+			
+			result = e.getMessage();
+			messageQueue.ErrorMessage__c = result;
+			messageQueue.Status__c = STATUS_ATTEMPTED;
+			update messageQueue;
+		}
+		
+	    return result;
+	}
+
 
 
 	public Static String syncProjectWithOracle(Id sProjectId, String url, Id sMessageQueueId){
@@ -1866,9 +1919,11 @@ public without sharing class ECO_Service_ProjectSync{
 
 				system.debug('task sync only json = ' + json_ProjectMessageWrapper);
 
-				String endPointUrl = 'https://ecodev.aecom.com/OA_HTML/jsp/fnd/xxpic/apps/PicDisconn.jsp?PICAction=SalesIntegration&ebizId=X123456&MESSAGE_TYPE=UPDATE_PROJECT';
+				//String endPointUrl = 'https://ecodev.aecom.com/OA_HTML/jsp/fnd/xxpic/apps/PicDisconn.jsp?PICAction=SalesIntegration&ebizId=X123456&MESSAGE_TYPE=UPDATE_PROJECT';
 
 
+                String endPointUrl = 'https://ecodev.aecom.com/OA_HTML/jsp/fnd/PicDisconnSF.jsp?PICAction=SalesIntegration&ebizId=';
+                
 				if(Test.isRunningtest()){
 					response = '<?xml version="1.0" encoding="UTF-8"?><PICRequestStatus><Status>SUCCESS</Status><Message></Message><Details></Details></PICRequestStatus>';
 				}else{
@@ -2011,7 +2066,6 @@ public without sharing class ECO_Service_ProjectSync{
 		SetupTasksForSync(taskIds, 'Task Sync Later');
 		//tasks will be processed via scheduled apex
 	}
-
 	
 	public static Map<String, String> getTaskBurdenSchedule(String orgId){
 		Map<String, String> results = new Map<String, String>();
@@ -2030,4 +2084,27 @@ public without sharing class ECO_Service_ProjectSync{
 		}
 		return results;
 	}
+
+	public static void validateProject()
+	{
+
+	}
+
+	public static void validateProjectTasks()
+	{
+
+	}
+
+	public static void validateProjectKeyMembersData()
+	{
+
+	}
+
+	public static void validateProjectCustomerData()
+	{
+		
+	}
+
+
+
 }

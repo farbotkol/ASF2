@@ -97,7 +97,30 @@
 		
   		.attachNewFile{
   			visibility: hidden;
-  		}		
+  		}	
+        
+        .customHelpText{
+            padding:7px;
+            border:1px solid #85B3CE;
+            min-height:30px;
+            display:block;
+            width:auto;
+            margin:0;
+        //  background-color:#C6E4EE;
+            background-color:#A2D3F1;
+            background-repeat:no-repeat;
+            border-radius:4px;
+        }
+        
+        .customHelpBody{
+            display:block;
+            color:#;
+            max-width:95%;
+        }
+        
+        .mouseOverInfoOuter{
+        	text-align:left;
+        }
 	</style>
 	
 	<apex:sectionHeader title="{!theProject.Name}" subtitle="Budget Setup Questionnaire" id="sectionHeader" />
@@ -110,13 +133,50 @@
 				<apex:commandButton action="{!saveAndReturn}" value="Save" />
 				<apex:commandButton action="{!cancelAndReturn}" value="Return to Budget" immediate="true" />
 			</apex:pageBlockButtons>
-			
+			<div class="customHelpText">
+                <div class="customHelpBody">
+                    The first step to setting up the project budget is completing a questionnaire to define the parameters and defaults for calculating cost and revenue.  This questionnaire also sets the basis for the cash flow analysis and captures relevant information on project team relocations to inform budget costs.
+                </div>
+            </div>
+            <br/>
 			<apex:pageBlockSection id="projectInfo" title="Project Info" columns="1" collapsible="false">
-				<apex:pageBlockSectionItem >
-					<apex:outputPanel layout="inline">
-						<apex:outputLabel value="Budget Strategy" />
-						<apex:inputField value="{!theProject.BudgetStrategy__c}" required="true" />
-					</apex:outputPanel>
+                <apex:pageBlockSection columns="1">
+                	<div class="customHelpText">
+                        <div class="customHelpBody">
+                            Select the desired budget level for project cost and revenue (top task, bottom task or project level).  These setting will control at which level of the WBS you be entering budget details.   Refer to the help text for each budget type for further guidance.
+                            <br/><br/>
+                        	Check “This project is offline” if an estimate was created outside of ePM (e.g., AECOM Bid Model, Excel) and attach the estimate in the Attachments section.  External cost estimating tools cannot be imported into ePM.
+                        </div>
+                    </div>
+                    <br/>
+                </apex:pageBlockSection>
+                <apex:pageBlockSection columns="2">
+                <apex:pageBlockSectionItem >					
+                    <apex:outputPanel >
+                    	<apex:outputLabel value="Budget Levels - Cost" />                    
+                        <c:ECO_HelpIcon helpText="<b>Budget Levels – Cost</b><br/>
+                                                  Select here the level at which financial costs will be budgeted on the project, the options available are:<br/>
+                                                  <ul>
+                                                  	<li>Project Level</li>
+                                                  	<li>Top Task</li>
+                                                  	<li>Lowest Task</li>
+                                                  </ul>" />
+                    </apex:outputPanel>
+                    <apex:inputField value="{!theProject.BudgetStrategy__c}" required="true" />
+				</apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+					<apex:outputPanel >
+                        <apex:outputLabel value="Budget Levels - Revenue" />
+                        <c:ECO_HelpIcon helpText="<b>Budget Levels – Revenue</b><br/>
+                                                  The level at which revenue is budgeted.  Options are either Project (typical projects are at the project level) or Top Task<br/><br/>
+ 
+                                                  At Project level, the Revenue Budget is only entered as one amount for the entire project. At Top Task level, revenue may be budgeted among the parent (top) tasks. These totals will then be rolled up to create the total Revenue Budget for the project.<br/><br/>
+                                                  
+                                                  If Funding for the project is/was at the Top Task level, then the Revenue Budget must also be at the Top Task level. If Funding is/was at the Project level, then the Revenue Budget can be either at the Project Level or the Top Task level.<br/><br/>
+                                                  
+                                                  In all cases, the Revenue Budget amount on the Budget Maintenance worksheet needs to equal the amount of the Agreement functional funding amount on the Clients and Agreement worksheet." />
+                        </apex:outputPanel>
+					<apex:inputField value="{!theProject.BudgetStrategyRevenue__c}" required="true" />
 				</apex:pageBlockSectionItem>
 				<apex:pageBlockSectionItem >
 					<apex:outputPanel layout="inline">
@@ -124,207 +184,267 @@
 						<apex:outputLabel value="This project is offline." />
 					</apex:outputPanel>
 				</apex:pageBlockSectionItem>
+                </apex:pageBlockSection>
 			</apex:pageBlockSection>
 			
-			<apex:pageBlockSection id="theSection" columns="2">
-				<apex:actionRegion >
-					
-					<apex:actionFunction name="toggleEscalationSectionApex" action="{!toggleEscalationSection}" rerender="escalationSection, pageMessages" />
-					
-					<apex:pageBlockSection title="Fee Basis" collapsible="false" columns="1" id="escalationSection">
-						<apex:pageBlockSectionItem >
-							<apex:outputLabel value="Comm Structure" />
-							<apex:inputField value="{!theProject.DefaultMarginType__c}" onChange="toggleEscalationSectionApex();" required="true" />
-						</apex:pageBlockSectionItem>
-						<apex:pageBlockSectionItem rendered="{!theProject.DefaultMarginType__c == 'Amount'}">
-							<apex:outputLabel value="Default Bill Rate" />
-							<apex:inputField value="{!theProject.DefaultBillRate__c}" styleClass="defaultBillRate" />
-						</apex:pageBlockSectionItem>
-						<apex:pageBlockSectionItem rendered="{!theProject.DefaultMarginType__c == 'Percent'}">
-							<apex:outputLabel value="Default Mark Up Labor" />
-							<apex:outputPanel >
-								<apex:inputField value="{!theProject.DefaultUpliftLabor__c}" styleClass="upliftField smallInput" />
-								<div class="percentInput">%</div>
-							</apex:outputPanel>
-						</apex:pageBlockSectionItem>
-						<apex:pageBlockSectionItem rendered="{!theProject.DefaultMarginType__c == 'Percent'}">
-							<apex:outputLabel value="Default Mark Up Subs" />
-							<apex:outputPanel >
-								<apex:inputField value="{!theProject.DefaultUpliftSubs__c}" styleClass="upliftField smallInput" />
-								<div class="percentInput">%</div>
-							</apex:outputPanel>
-						</apex:pageBlockSectionItem>
-						<apex:pageBlockSectionItem rendered="{!theProject.DefaultMarginType__c == 'Percent'}">
-							<apex:outputLabel value="Default Mark Up ODCs" />
-							<apex:outputPanel >
-								<apex:inputField value="{!theProject.DefaultUpliftODCs__c}" styleClass="upliftField smallInput" />
-								<div class="percentInput">%</div>
-							</apex:outputPanel>
-						</apex:pageBlockSectionItem>
-						<apex:pageBlockSectionItem >
-							<apex:outputLabel value="Escalation Applies" />
-							<apex:inputField value="{!theProject.EscalationApplies__c}" onChange="toggleEscalationSectionApex();" />
-						</apex:pageBlockSectionItem>
-						<apex:pageBlockSectionItem id="escalationSection1" rendered="{!theProject.EscalationApplies__c}">
-							<apex:outputLabel value="Next Escalation Date" />
-							<apex:inputField value="{!theProject.EscalationDate__c}" />
-						</apex:pageBlockSectionItem>
-						<apex:pageBlockSectionItem id="escalationSection2" rendered="{!theProject.EscalationApplies__c}">
-							<apex:outputPanel layout="inline">
-								<apex:outputLabel value="Escalation Description" />
-								<br/>
-								<apex:inputField value="{!theProject.EscalationDescription__c}" styleClass="largerTextBox" />
-							</apex:outputPanel>
-						</apex:pageBlockSectionItem>
-					</apex:pageBlockSection>
-				</apex:actionRegion>
+            <apex:actionRegion >
+                <apex:actionFunction name="toggleEscalationSectionApex" action="{!toggleEscalationSection}" rerender="escalationSection, pageMessages, taskSection" />
+                
+                <apex:pageBlockSection title="Fee Basis" collapsible="false" columns="1" id="escalationSection">
+                    <div class="customHelpText">
+                        <div class="customHelpBody">
+                            Select the project fee basis to inform the budget tool on how revenue/bill rates will be calculated (e.g., multiplier, lump sum, bill rate).  The values entered here will be the default settings on the budget and can be modified later on a person-by-person basis (as needed).
+						</div>
+                    </div>
+                    <br/>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputPanel >
+                        	<apex:outputLabel value="Commercial Structure" />
+                            <c:ECO_HelpIcon helpText="<b>Commercial Structure</b><br/>
+                                                  Select the commercial structure/fee basis for the project.  This will  inform the budget  on how revenue/bill rates will be calculated (e.g., multiplier, lump sum, percent markup and bill rate).  The values entered here will be the default settings on the budget which  can then be modified later on a person-by-person basis (as needed)." />
+                        </apex:outputPanel>
+                        <apex:inputField value="{!theProject.DefaultMarginType__c}" onChange="toggleEscalationSectionApex();" required="true" />
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem rendered="{!theProject.DefaultMarginType__c == 'T&M Bill Rate'}">
+                        <apex:outputLabel value="Default Bill Rate" />
+                        <apex:inputField value="{!theProject.DefaultBillRate__c}"/>
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem rendered="{!theProject.DefaultMarginType__c == 'T&M FBLR Markup'}">
+                        <apex:outputLabel value="Default Labour %age" />
+                        <apex:inputField value="{!theProject.DefaultUpliftLabor__c}" />
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem rendered="{!theProject.DefaultMarginType__c == 'T&M FBLR Markup'}">
+                        <apex:outputLabel value="Default subs %age" />
+                        <apex:inputField value="{!theProject.DefaultUpliftSubs__c}" />
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem rendered="{!theProject.DefaultMarginType__c == 'T&M FBLR Markup'}">
+                        <apex:outputLabel value="Default ODC %age" />
+                        <apex:inputField value="{!theProject.DefaultUpliftODCs__c}" />
+                    </apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputPanel >
+                            <apex:outputLabel value="Escalation Applies" />
+                            <c:ECO_HelpIcon helpText="<b>Escalation</b><br/>
+                                                      Check the “Escalation  Applies” box to enter the effective date and description of the anticipated escalation rate.  The owner assigned to the item will receive a reminder before the effective date so any necessary actions can be taken (i.e., adjust EAC, negotiate with client, etc.). <br/><br/>
+                                                      It will not automatically apply escalation to the project.  If there is significant escalation this can be dealt with by either:<br/>
+													  <ul>
+                                                      	<li type='A'>Adding resources to the project multiple times (once for each cost escalation period) and updating the cost /revenue rates for each entry, then allocating hours appropriately.</li>
+                                                      	<li type='A'>Over-riding the raw cost of any given individual with a higher rate which approximates the value of escalation which may apply.</li>            
+                                                      </ul>" />
+                        </apex:outputPanel>
+                        <apex:inputField value="{!theProject.EscalationApplies__c}" onChange="toggleEscalationSectionApex();" />
+                    </apex:pageBlockSectionItem>                        
+                </apex:pageBlockSection>
+            </apex:actionRegion>
+            <apex:pageBlockSection id="taskSection" columns="1">
+                <apex:actionRegion >
+                    <apex:pageBlockSectionItem rendered="{!theProject.EscalationApplies__c}" >
+                        <apex:pageBlockTable value="{!tasks}" var="taskNumber" id="taskTable">
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:commandbutton action="{!addTask}" rerender="pageMessages, taskTable" value="ADD" immediate="true"/>
+                                </apex:facet>
+                                <apex:commandButton action="{!removeTask}" value="DEL" rerender="pageMessages, taskTable" immediate="true" >
+                                    <apex:param name="selectedTaskNumber" assignTo="{!selectedTaskNumber}" value="{!taskNumber}"/>
+                                </apex:commandButton>
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    Date Effective
+                                </apex:facet>
+                                <apex:inputField value="{!tasks[taskNumber].ActivityDate}"  />
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    Description
+                                </apex:facet>
+                                <apex:inputField value="{!tasks[taskNumber].Description}" />
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    Assigned To
+                                </apex:facet>
+                                <apex:inputField value="{!tasks[taskNumber].OwnerId}" required="false" />
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:pageBlockSectionItem>
+                </apex:actionRegion>            		
+            </apex:pageBlockSection>
 				
-				<!-- <apex:pageBlockSection title="Project Offline" collapsible="false" columns="1">
-					<apex:pageBlockSectionItem >
-						<apex:outputPanel layout="inline">
-							<apex:inputField value="{!theProject.BudgetOffline__c}" />
-							<apex:outputLabel value="This project is offline." />
-						</apex:outputPanel>
-					</apex:pageBlockSectionItem>
-				</apex:pageBlockSection> -->
+            <apex:pageBlockSection title="Billing Schedule" collapsible="false" columns="1" id="milestoneSection" >
+                <div class="customHelpText">
+                    <div class="customHelpBody">
+                        Select the project payment terms and billing structure (e.g., milestone or progress) to calculate the anticipated billing schedule.  This information is used to assess cash flow for the project.  
+                        <br/><br/>
+						Click the Cash Flow flyout tab on the main budget screen to view the cash flow graph for the project.</div>
+                </div>
+                <apex:actionRegion >
+                    <apex:pageBlockSection columns="1">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputPanel >
+                                <apex:outputLabel value="Payment Terms" for="paymentTerms" />
+                                <c:ECO_HelpIcon helpText="<b>Payment Terms</b><br/>
+                                                      Select the agreed/anticipated payment terms  for the contract.  This will determine the default timing of “cash in” for the project cashflow." />
+                        	</apex:outputPanel>
+                            <apex:inputField value="{!theProject.PaymentTerms__c}" required="true" id="paymentTerms"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputPanel >
+                                <apex:outputLabel value="Billing Structure" />
+                                <c:ECO_HelpIcon helpText="<b>Billing Structure</b><br/>
+                                                      Select the agreed/anticipated structure of billing for the project:<br/>
+													  <ul>
+                                                      	<li>Progress – regular invoicing at set intervals billing for cost/work done to date.  When selecting this option, you will be prompted to provide the invoicing frequency (days) and the date of the first invoice.  The system will then be able to calculate the billing dates fo r you.  Once your budget is completed, the system can then provide estimated billing  values for each progress claim based on the plan spend.</li>
+                                                      	<li>Milestone – invoicing at pre-determined milestone intervals, not based upon a recurring or regular schedule.  When selecting this option, you can manually enter the dates and values of each anticipated milestone invoice.</li>            
+                                                      </ul>" />
+                        	</apex:outputPanel>
+                            <apex:inputField value="{!theProject.BillingStructure__c}" onChange="toggleMilestoneSectionApex();" required="true" />
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                    
+                    <apex:pageBlockSection columns="1" rendered="{!theProject.BillingStructure__c == 'Progress'}">
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Frequency" />
+                            <apex:inputField value="{!theProject.MilestoneFrequency__c}"/>
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Project Start Date" />
+                            <apex:outputField value="{!theProject.pse__Start_Date__c}" />
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="Project End Date" />
+                            <apex:outputField value="{!theProject.pse__End_Date__c}" />
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:outputLabel value="First Invoice date" />
+                            <apex:inputField value="{!theProject.DateOfFirstInvoice__c}" />
+                        </apex:pageBlockSectionItem>
+                        <apex:pageBlockSectionItem >
+                            <apex:commandButton action="{!calculateMilestones}" value="Calculate Milestones" rerender="pageMessages, milestoneSection" />
+                        </apex:pageBlockSectionItem>
+                    </apex:pageBlockSection>
+                    <apex:actionFunction name="toggleMilestoneSectionApex" action="{!toggleMilestoneSection}" rerender="milestoneSection, pageMessages" immediate="false" />
+                    
+                </apex:actionRegion>
+                <apex:pageBlockSectionItem >
+                    <apex:actionRegion >
+                        <apex:pageBlockTable value="{!milestones}" var="milestoneNumber" id="milestoneTable">
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:commandbutton action="{!addMilestone}" rerender="pageMessages, milestoneTable" value="ADD" immediate="true"/>
+                                </apex:facet>
+                                <apex:commandButton action="{!removeMilestone}" value="DEL" rerender="pageMessages, milestoneTable" immediate="true" >
+                                    <apex:param name="selectedRecordNumber" assignTo="{!selectedRecordNumber}" value="{!milestoneNumber}"/>
+                                </apex:commandButton>
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    Expected Date
+                                </apex:facet>
+                                <apex:inputField value="{!milestones[milestoneNumber].ExDate__c}"  />
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    Description
+                                </apex:facet>
+                                <apex:inputField value="{!milestones[milestoneNumber].Description__c}"  />
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    Amount
+                                </apex:facet>
+                                <apex:inputField value="{!milestones[milestoneNumber].Amount__c}"  />
+                            </apex:column>
+                        </apex:pageBlockTable>
+                    </apex:actionRegion>
+                    
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
 				
-				<apex:pageBlockSection title="Segmentation" collapsible="false" columns="1">
+				<!--apex:pageBlockSection title="Forex" collapsible="false" columns="1">
 					Coming Soon!
-				</apex:pageBlockSection>
-				
-				<apex:pageBlockSection title="Billing Setup" collapsible="false" columns="1" id="milestoneSection" >
-					<apex:pageBlockSectionItem >
-						<apex:outputLabel value="Payment Terms" for="paymentTerms" />
-						<apex:inputField value="{!theProject.PaymentTerms__c}" required="true" id="paymentTerms"/>
-					</apex:pageBlockSectionItem>
-					<apex:pageBlockSectionItem >
-						<apex:outputLabel value="Billing Structure" />
-						<apex:actionRegion >
-							<apex:actionFunction name="toggleMilestoneSectionApex" action="{!toggleMilestoneSection}" rerender="milestoneSection, pageMessages" immediate="false" />
-							<apex:inputField value="{!theProject.BillingStructure__c}" onChange="toggleMilestoneSectionApex();" required="true" />
-						</apex:actionRegion>
-					</apex:pageBlockSectionItem>
-					<apex:pageBlockSectionItem >
-						<apex:pageBlockTable value="{!milestones}" var="milestoneNumber" id="milestoneTable">
-							<apex:column >
-								<apex:facet name="header">
-									<apex:commandbutton action="{!addMilestone}" rerender="pageMessages, milestoneTable" value="ADD" immediate="true"/>
-								</apex:facet>
-								<apex:commandButton action="{!removeMilestone}" value="DEL" rerender="pageMessages, milestoneTable" immediate="true" >
-									<apex:param name="selectedRecordNumber" assignTo="{!selectedRecordNumber}" value="{!milestoneNumber}"/>
-								</apex:commandButton>
-							</apex:column>
-							<apex:column >
-								<apex:facet name="header">
-									Ex. Date
-								</apex:facet>
-								<apex:inputField value="{!milestones[milestoneNumber].ExDate__c}"  />
-							</apex:column>
-							<apex:column >
-								<apex:facet name="header">
-									Description
-								</apex:facet>
-								<apex:inputField value="{!milestones[milestoneNumber].Description__c}"  />
-							</apex:column>
-							<apex:column >
-								<apex:facet name="header">
-									Amount
-								</apex:facet>
-								<apex:inputField value="{!milestones[milestoneNumber].Amount__c}"  />
-							</apex:column>
-						</apex:pageBlockTable>
-					</apex:pageBlockSectionItem>
-					
-					<apex:actionRegion >
-						<apex:pageBlockSectionItem rendered="{!theProject.BillingStructure__c == 'Progress'}">
-							<apex:outputPanel layout="block">
-								<apex:outputLabel value="Frequency" />
-								<apex:inputField value="{!theProject.MilestoneFrequency__c}" />
-							</apex:outputPanel>
-						</apex:pageBlockSectionItem>
-						<apex:pageBlockSectionItem rendered="{!theProject.BillingStructure__c == 'Progress'}">
-							<apex:outputPanel layout="block">
-								<apex:outputLabel value="Project Start Date" />
-								<apex:outputField value="{!theProject.pse__Start_Date__c}" />
-							</apex:outputPanel>
-						</apex:pageBlockSectionItem>
-						<apex:pageBlockSectionItem >
-							<apex:outputPanel layout="block">
-								<apex:outputLabel value="Project End Date" />
-								<apex:outputField value="{!theProject.pse__End_Date__c}" />
-							</apex:outputPanel>
-						</apex:pageBlockSectionItem>
-						<apex:pageBlockSectionItem rendered="{!theProject.BillingStructure__c == 'Progress'}">
-							<apex:outputPanel layout="block">
-								<apex:commandButton action="{!calculateMilestones}" value="Calculate Milestones" rerender="pageMessages, milestoneSection" />
-							</apex:outputPanel>
-						</apex:pageBlockSectionItem>
-					</apex:actionRegion>
-				</apex:pageBlockSection>
-				
-				<apex:pageBlockSection title="Forex" collapsible="false" columns="1">
-					Coming Soon!
-				</apex:pageBlockSection>
+				</apex:pageBlockSection-->
 				
 				<apex:pageBlockSection title="Relocations / Secondments" collapsible="false" columns="1">
-					<apex:pageBlockSectionItem id="relocSection">
-						<apex:pageBlockTable value="{!relocs}" var="relocNumber" id="relocTable">
-							<apex:column >
-								<apex:facet name="header">
-									<apex:commandbutton action="{!addReloc}" rerender="pageMessages, relocTable" value="ADD" immediate="true"/>
-								</apex:facet>
-								<apex:commandButton action="{!removeReloc}" value="DEL" rerender="pageMessages, relocTable" immediate="true" >
-									<apex:param name="selectedRecordNumber" assignTo="{!selectedRecordNumber}" value="{!relocNumber}" />
-								</apex:commandButton>
-							</apex:column>
-							<apex:column >
-								<apex:facet name="header">
-									Name
-								</apex:facet>
-								<apex:inputField value="{!relocs[relocNumber].Name__c}"  />
-							</apex:column>
-							<apex:column >
-								<apex:facet name="header">
-									Home Loc.
-								</apex:facet>
-								<apex:inputField value="{!relocs[relocNumber].HomeLocation__c}"  />
-							</apex:column>
-							<apex:column >
-								<apex:facet name="header">
-									Secondment Loc.
-								</apex:facet>
-								<apex:inputField value="{!relocs[relocNumber].SecondmentLocation__c}"  />
-							</apex:column>
-							<apex:column >
-								<apex:facet name="header">
-									Est. Costs
-								</apex:facet>
-								<apex:inputField value="{!relocs[relocNumber].EstimatedCost__c}"  />
-							</apex:column>
-							<apex:column >
-								<apex:facet name="header">
-									Attachments
-								</apex:facet>
-								<apex:repeat value="{!relocs[relocNumber].Attachments}" var="attach">
-									<a href="/servlet/servlet.FileDownload?file={!attach.Id}" title="{!attach.Name}">
-										<img src="PaperClip Icon" />
-									</a>
-								</apex:repeat>
-								<apex:commandButton action="{!goToAttachmentPage}" value="+" rerender="pageMessages">
-									<apex:param name="relocNumber" value="{!relocNumber}" assignTo="{!selectedRecordNumber}"/>
-								</apex:commandButton>
-							</apex:column>
-						</apex:pageBlockTable>
+					<div class="customHelpText">
+                        <div class="customHelpBody">
+                            For projects that require relocation or secondment of staff from another AECOM office use this section to capture the staff details and estimated costs to inform your budget (e.g., visa fees, relocation costs, lodging).  Contact the Global Mobility team for assistance and guidance on estimating the costs of relocation.  Cost estimates can be uploaded against each seconded resource.
+                        </div>
+                    </div>
+                    <apex:pageBlockSectionItem id="relocSection">
+                        <apex:actionRegion >
+                        	<apex:pageBlockTable value="{!relocs}" var="relocNumber" id="relocTable">
+                                <apex:column >
+                                    <apex:facet name="header">
+                                        <apex:commandbutton action="{!addReloc}" rerender="pageMessages, relocTable" value="ADD" immediate="true"/>
+                                    </apex:facet>
+                                    <apex:commandButton action="{!removeReloc}" value="DEL" rerender="pageMessages, relocTable" immediate="true" >
+                                        <apex:param name="selectedRecordNumber" assignTo="{!selectedRecordNumber}" value="{!relocNumber}" />
+                                    </apex:commandButton>
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">
+                                        Name
+                                    </apex:facet>
+                                    <apex:inputField value="{!relocs[relocNumber].Name__c}"  />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">
+                                        Home Location
+                                    </apex:facet>
+                                    <apex:inputField value="{!relocs[relocNumber].HomeLocation__c}"  />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">
+                                        Secondment Location
+                                    </apex:facet>
+                                    <apex:inputField value="{!relocs[relocNumber].SecondmentLocation__c}"  />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">
+                                        Estimated Costs
+                                    </apex:facet>
+                                    <apex:inputField value="{!relocs[relocNumber].EstimatedCost__c}"  />
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">
+                                        Attachments
+                                    </apex:facet>
+                                    <apex:repeat value="{!relocs[relocNumber].Attachments}" var="attach">
+                                        <a href="/servlet/servlet.FileDownload?file={!attach.Id}" title="{!attach.Name}">
+                                            <img src="PaperClip Icon" />
+                                        </a>
+                                    </apex:repeat>
+                                    <apex:actionRegion >
+                                        <apex:commandButton action="{!goToAttachmentPage}" value="+" rerender="pageMessages">
+                                            <apex:param name="relocNumber" value="{!relocNumber}" assignTo="{!selectedRecordNumber}"/>
+                                        </apex:commandButton>
+                                    </apex:actionRegion>								
+                                </apex:column>
+                            </apex:pageBlockTable>
+                        </apex:actionRegion>
+						
 					</apex:pageBlockSectionItem>
+                    <apex:pageBlockSectionItem >
+                        <apex:outputLabel value="Total Relocation/Secondment Costs to be included" />
+                        <apex:inputField value="{!theProject.TotalEstSecondmentCost__c}"/>
+                    </apex:pageBlockSectionItem>
 				</apex:pageBlockSection>
 				
-				<apex:pageBlockSection title="Custom Multiplier" collapsible="false" columns="1">
+				<!--apex:pageBlockSection title="Custom Multiplier" collapsible="false" columns="1">
 					Coming Soon!
-				</apex:pageBlockSection>
-			</apex:pageBlockSection>
+				</apex:pageBlockSection-->
+			<!--/apex:pageBlockSection-->
 			
-			<apex:pageBlockSection title="Budget Questionnaire Attachments">
-				<div class="fileList">
+			<apex:pageBlockSection title="Budget Questionnaire Attachments" collapsible="false" columns="1" >
+				<div class="customHelpText">
+                    <div class="customHelpBody">
+                        Attach any supporting documents (e.g., external cost estimates, escalation rate tables, client bill rates).  If the details of the budget are calculated outside of this budget tool, then supporting detailed documentation MUST be provided here.
+					</div>
+                </div>
+                <div class="fileList">
 				<apex:pageBlockTable value="{!AttachedBudgetQuestionnaireFiles}" var="attachedBudgetQuestionnaireFile" style="width: 825px;" rendered="{!theProject.BudgetQuestionnaireAttachments__c != null}">
 					<apex:column headerValue="File Name">
 						<apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachedBudgetQuestionnaireFile.Id)}" target="_blank">

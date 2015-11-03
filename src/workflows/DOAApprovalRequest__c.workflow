@@ -3,6 +3,7 @@
     <alerts>
         <fullName>DOA_ApprovalRequestRecalled</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>DOA Approval Request Recalled</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -11,30 +12,53 @@
     <alerts>
         <fullName>EcoDoAAECOMHubApprovalComplete</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoAAECOMHubApprovalComplete</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
-        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedAECOMHub</template>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedAECOMHubEcosystem</template>
+    </alerts>
+    <alerts>
+        <fullName>EcoDoAAECOMHubApprovalComplete_Non_Ecosystem</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <description>EcoDoAAECOMHubApprovalComplete(Non-Ecosystem)</description>
+        <protected>false</protected>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedAECOMHubNonEcosystem</template>
     </alerts>
     <alerts>
         <fullName>EcoDoADCSHubApprovalComplete</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoADCSHubApprovalComplete</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
-        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedDCSHub</template>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedDCSHubEcosystem</template>
     </alerts>
     <alerts>
         <fullName>EcoDoAEnterpriseApprovalComplete</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoAEnterpriseApprovalComplete</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
-        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedEnteprise</template>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedEntepriseEcosystem</template>
+    </alerts>
+    <alerts>
+        <fullName>EcoDoAEnterpriseApprovalComplete_Non_Ecosystem</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <description>EcoDoAEnterpriseApprovalComplete (Non-Ecosystem)</description>
+        <protected>false</protected>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedEntepriseNonEcosystem</template>
     </alerts>
     <alerts>
         <fullName>EcoDoAForAECOMHubApproval</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <ccEmails>CHRISTINA.BICKSLER@aecom.com</ccEmails>
         <description>EcoDoAForAECOMHubApproval</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -43,6 +67,8 @@
     <alerts>
         <fullName>EcoDoAForDCSHubApproval</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <ccEmails>CHRISTINA.BICKSLER@aecom.com</ccEmails>
         <description>EcoDoAForDCSHubApproval</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -51,6 +77,8 @@
     <alerts>
         <fullName>EcoDoAForEnterpriseApproval</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <ccEmails>CHRISTINA.BICKSLER@aecom.com</ccEmails>
         <description>EcoDoAForEnterpriseApproval</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -59,7 +87,9 @@
     <alerts>
         <fullName>EcoDoAForGeoApproval</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
-        <description>EcoDoAForGeoApproval</description>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <ccEmails>CHRISTINA.BICKSLER@aecom.com</ccEmails>
+        <description>EcoDoAForGeoApproval(Ecosystem)</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProject</template>
@@ -67,6 +97,8 @@
     <alerts>
         <fullName>EcoDoAForGroupApproval</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <ccEmails>CHRISTINA.BICKSLER@aecom.com</ccEmails>
         <description>EcoDoAForGroupApproval</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
@@ -75,32 +107,71 @@
     <alerts>
         <fullName>EcoDoAGeoApprovalComplete</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoAGeoApprovalComplete</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
-        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedGeo</template>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedGeoEcosystem</template>
+    </alerts>
+    <alerts>
+        <fullName>EcoDoAGeoApprovalComplete_Non_Ecosystem</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <description>EcoDoAGeoApprovalComplete(Non-Ecosystem)</description>
+        <protected>false</protected>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedGeoNonEcosystem</template>
     </alerts>
     <alerts>
         <fullName>EcoDoAGroupApprovalComplete</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoAGroupApprovalComplete</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
-        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedGroup</template>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedGroupEcosystem</template>
+    </alerts>
+    <alerts>
+        <fullName>EcoDoAGroupApprovalComplete_Non_Ecosystem</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <description>EcoDoAGroupApprovalComplete (Non-Ecosystem)</description>
+        <protected>false</protected>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedGroupNonEcosystem</template>
+    </alerts>
+    <alerts>
+        <fullName>EcoDoaForGeoApproval_Non_Ecosystem</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <description>EcoDoaForApproval(Non-Ecosystem)</description>
+        <protected>false</protected>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectNonEcosystem</template>
+    </alerts>
+    <alerts>
+        <fullName>Eco_DCS_Hub_Approval_Complete_Non_Ecosystem</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <description>Eco DCS Hub Approval Complete (Non-Ecosystem)</description>
+        <protected>false</protected>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedDCSHubNonEcosystem</template>
     </alerts>
     <alerts>
         <fullName>Eco_DOA_ApprovalApprovedorRejected</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>Eco DOA Approval Approved or Rejected</description>
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
-        <template>EcoSystem_Templates/EcoDOAApprovalRequestApprovedRejected</template>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestCompletedEcosystem</template>
     </alerts>
     <fieldUpdates>
         <fullName>EcoDCSApprovalStatusApproved</fullName>
         <field>DCSHubApprovalStatus__c</field>
-        <literalValue>Approved</literalValue>
-        <name>EcoDCSApprovalStatusApproved</name>
+        <literalValue>Completed</literalValue>
+        <name>EcoDCSApprovalStatusCompleted</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
@@ -108,8 +179,8 @@
     <fieldUpdates>
         <fullName>EcoGeoSetApprovalToApproved</fullName>
         <field>GeographyApprovalStatus__c</field>
-        <literalValue>Approved</literalValue>
-        <name>EcoGeoSetApprovalToApproved</name>
+        <literalValue>Completed</literalValue>
+        <name>EcoGeoSetApprovalToCompleted</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
@@ -126,8 +197,8 @@
     <fieldUpdates>
         <fullName>EcoSetAECOMHubApprovalStatusApproved</fullName>
         <field>AECOMApprovalStatus__c</field>
-        <literalValue>Approved</literalValue>
-        <name>EcoSetAECOMHubApprovalStatusApproved</name>
+        <literalValue>Completed</literalValue>
+        <name>EcoSetAECOMHubApprovalStatusCompleted</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
@@ -187,16 +258,6 @@
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
-        <fullName>EcoSetDOAJointVentureRecord_Type</fullName>
-        <field>RecordTypeId</field>
-        <lookupValue>DOAJointVentureApproval</lookupValue>
-        <lookupValueType>RecordType</lookupValueType>
-        <name>EcoSet DOA Joint Venture Record Type</name>
-        <notifyAssignee>false</notifyAssignee>
-        <operation>LookupValue</operation>
-        <protected>false</protected>
-    </fieldUpdates>
-    <fieldUpdates>
         <fullName>EcoSetDOAOverallApprovalStatus</fullName>
         <description>Set status to submitted on approval submit</description>
         <field>ApprovalStatus__c</field>
@@ -207,10 +268,20 @@
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>EcoSetDoaRecordTypeSubmittedNonEcosystem</fullName>
+        <field>RecordTypeId</field>
+        <lookupValue>NonProject</lookupValue>
+        <lookupValueType>RecordType</lookupValueType>
+        <name>EcoSetDoaRecordTypeSubmittedNonEcosystem</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>LookupValue</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>EcoSetEnterpriseApprovalStatusApproved</fullName>
         <field>EnterpriseApprovalStatus__c</field>
-        <literalValue>Approved</literalValue>
-        <name>EcoSetEnterpriseApprovalStatusApproved</name>
+        <literalValue>Completed</literalValue>
+        <name>EcoSetEnterpriseApprovalStatusCompleted</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
@@ -272,8 +343,8 @@
     <fieldUpdates>
         <fullName>EcoSetGrouPApprovalStatusToApproved</fullName>
         <field>GroupApprovalStatus__c</field>
-        <literalValue>Approved</literalValue>
-        <name>EcoSetGrouPApprovalStatusToApproved</name>
+        <literalValue>Completed</literalValue>
+        <name>EcoSetGrouPApprovalStatusToCompleted</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
@@ -311,27 +382,6 @@
         <lookupValue>DOAApprovalQueue</lookupValue>
         <lookupValueType>Queue</lookupValueType>
         <name>EcoSet Assign to DoA Approval Queue</name>
-        <notifyAssignee>false</notifyAssignee>
-        <operation>LookupValue</operation>
-        <protected>false</protected>
-    </fieldUpdates>
-    <fieldUpdates>
-        <fullName>EcoSet_DOA_Approval_Record_Type</fullName>
-        <description>Sets the DOA Approval Record type</description>
-        <field>RecordTypeId</field>
-        <lookupValue>DOAQueueEntry</lookupValue>
-        <lookupValueType>RecordType</lookupValueType>
-        <name>EcoSet DOA Approval Record Type</name>
-        <notifyAssignee>false</notifyAssignee>
-        <operation>LookupValue</operation>
-        <protected>false</protected>
-    </fieldUpdates>
-    <fieldUpdates>
-        <fullName>EcoSet_DOA_Approval_Record_to_Non_Projec</fullName>
-        <field>RecordTypeId</field>
-        <lookupValue>DOANonProjectApproval</lookupValue>
-        <lookupValueType>RecordType</lookupValueType>
-        <name>EcoSet DOA Approval Record to Non-Projec</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>LookupValue</operation>
         <protected>false</protected>
@@ -392,7 +442,7 @@
         <protected>false</protected>
     </fieldUpdates>
     <rules>
-        <fullName>Eco AECOM Hub Approval Complete</fullName>
+        <fullName>Eco AECOM Hub Approval Complete %28Ecosystem%29</fullName>
         <actions>
             <name>EcoDoAAECOMHubApprovalComplete</name>
             <type>Alert</type>
@@ -406,11 +456,33 @@
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
-        <formula>AND(ISPICKVAL( AECOMApprovalStatus__c ,&quot;Submitted&quot;),  AECOMHubCountofApprovers__c ==  AECOMHubCountofApproved__c)</formula>
+        <formula>AND(ISPICKVAL( AECOMApprovalStatus__c ,&quot;Submitted&quot;),  
+        AECOMHubCountofApprovers__c ==  AECOMHubCountofApproved__c,
+        RecordType.DeveloperName = &apos;DOAQueueEntry&apos;)</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
-        <fullName>Eco AECOM Hub DOA Approval Submission</fullName>
+        <fullName>Eco AECOM Hub Approval Complete %28Non-Ecosystem%29</fullName>
+        <actions>
+            <name>EcoDoAAECOMHubApprovalComplete_Non_Ecosystem</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>EcoSetAECOMHubApprovalStatusApproved</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSetAECOMHubTimeApproved2</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <formula>AND(ISPICKVAL( AECOMApprovalStatus__c ,&quot;Submitted&quot;),  
+        AECOMHubCountofApprovers__c ==  AECOMHubCountofApproved__c,
+        RecordType.DeveloperName = &apos;NonProject&apos;)</formula>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Eco AECOM Hub DOA Approval Submission %28Ecosystem%29</fullName>
         <actions>
             <name>EcoDoAForAECOMHubApproval</name>
             <type>Alert</type>
@@ -442,10 +514,55 @@
             <operation>equals</operation>
             <value>True</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Ecosystem (Submitted)</value>
+        </criteriaItems>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
-        <fullName>Eco DCS Hub Approval Complete</fullName>
+        <fullName>Eco AECOM Hub DOA Approval Submission %28Non-Ecosystem%29</fullName>
+        <actions>
+            <name>EcoDoaForGeoApproval_Non_Ecosystem</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>EcoSetAECOMHubApprovalStatus</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSetAECOMHubTimeSubmitted</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSetDOAOverallApprovalStatus</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.AECOMApprovalStatus__c</field>
+            <operation>equals</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.AECOMHubApprovalsRequired__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.SubmitAECOMHubForApproval__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Non-Ecosystem (Submitted)</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Eco DCS Hub Approval Complete %28Ecosystem%29</fullName>
         <actions>
             <name>EcoDoADCSHubApprovalComplete</name>
             <type>Alert</type>
@@ -459,11 +576,33 @@
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
-        <formula>AND(ISPICKVAL(DCSHubApprovalStatus__c,&quot;Submitted&quot;),  DCSHubCountofApprovers__c ==  DCSHubCountOfApproved__c)</formula>
+        <formula>AND(ISPICKVAL(DCSHubApprovalStatus__c,&quot;Submitted&quot;),  
+        DCSHubCountofApprovers__c ==  DCSHubCountOfApproved__c,
+        RecordType.DeveloperName = &apos;DOAQueueEntry&apos;)</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
-        <fullName>Eco DCS Hub DOA Approval Submission</fullName>
+        <fullName>Eco DCS Hub Approval Complete %28Non-Ecosystem%29</fullName>
+        <actions>
+            <name>Eco_DCS_Hub_Approval_Complete_Non_Ecosystem</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>EcoDCSApprovalStatusApproved</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSetDCSHubTimeApproved2</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <formula>AND(ISPICKVAL(DCSHubApprovalStatus__c,&quot;Submitted&quot;),  
+        DCSHubCountofApprovers__c ==  DCSHubCountOfApproved__c,
+        RecordType.DeveloperName = &apos;NonProject&apos;)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Eco DCS Hub DOA Approval Submission %28Ecosystem%29</fullName>
         <actions>
             <name>EcoDoAForDCSHubApproval</name>
             <type>Alert</type>
@@ -495,10 +634,55 @@
             <operation>equals</operation>
             <value>True</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Ecosystem (Submitted)</value>
+        </criteriaItems>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
-        <fullName>Eco Enterprise Approval Complete</fullName>
+        <fullName>Eco DCS Hub DOA Approval Submission %28Non-Ecosystem%29</fullName>
+        <actions>
+            <name>EcoDoaForGeoApproval_Non_Ecosystem</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>EcoSetAECOMHubTimeSubmitted</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSetDCSHubApprovalStatus</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSetDOAOverallApprovalStatus</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.DCSHubApprovalStatus__c</field>
+            <operation>equals</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.DCSHubApprovalsRequired__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.SubmitDCSHubforApproval__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Non-Ecosystem (Submitted)</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Eco Enterprise Approval Complete %28Ecosystem%29</fullName>
         <actions>
             <name>EcoDoAEnterpriseApprovalComplete</name>
             <type>Alert</type>
@@ -512,11 +696,33 @@
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
-        <formula>AND(ISPICKVAL(EnterpriseApprovalStatus__c,&quot;Submitted&quot;),  EnterpriseCountofApprovers__c ==  EnterpriseCountofApproved__c)</formula>
+        <formula>AND(ISPICKVAL(EnterpriseApprovalStatus__c,&quot;Submitted&quot;),
+EnterpriseCountofApprovers__c ==  EnterpriseCountofApproved__c,
+RecordType.DeveloperName = &apos;DOAQueueEntry&apos;)</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
-        <fullName>Eco Enterprise DOA Approval Submission</fullName>
+        <fullName>Eco Enterprise Approval Complete %28Non-Ecosystem%29</fullName>
+        <actions>
+            <name>EcoDoAEnterpriseApprovalComplete_Non_Ecosystem</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>EcoSetEnterpriseApprovalStatusApproved</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSetEnterpriseTimeApproved</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <formula>AND(ISPICKVAL(EnterpriseApprovalStatus__c,&quot;Submitted&quot;),
+EnterpriseCountofApprovers__c ==  EnterpriseCountofApproved__c,
+RecordType.DeveloperName = &apos;NonProject&apos;)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Eco Enterprise DOA Approval Submission %28Ecosystem%29</fullName>
         <actions>
             <name>EcoDoAForEnterpriseApproval</name>
             <type>Alert</type>
@@ -548,10 +754,55 @@
             <operation>equals</operation>
             <value>True</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Ecosystem (Submitted)</value>
+        </criteriaItems>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
-        <fullName>Eco Geography Approval Complete</fullName>
+        <fullName>Eco Enterprise DOA Approval Submission %28Non-Ecosystem%29</fullName>
+        <actions>
+            <name>EcoDoaForGeoApproval_Non_Ecosystem</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>EcoSetDOAOverallApprovalStatus</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSetEnterpriseApproval_Status</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSetEnterpriseApproval_Time_Submitt</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.EnterpriseApprovalStatus__c</field>
+            <operation>equals</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.EnterpriseApprovalsRequired__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.SubmitEnterpriseforApproval__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Non-Ecosystem (Submitted)</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Eco Geography Approval Complete %28Ecosystem%29</fullName>
         <actions>
             <name>EcoDoAGeoApprovalComplete</name>
             <type>Alert</type>
@@ -565,11 +816,33 @@
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
-        <formula>AND(ISPICKVAL(GeographyApprovalStatus__c,&quot;Submitted&quot;),  GeoCountOfApprovers__c ==  GeoCountofApproved__c)</formula>
+        <formula>AND(ISPICKVAL(GeographyApprovalStatus__c,&quot;Submitted&quot;),  
+GeoCountOfApprovers__c ==  GeoCountofApproved__c,
+RecordType.DeveloperName = &apos;DOAQueueEntry&apos;)</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
-        <fullName>Eco Geography DOA Approval Submission</fullName>
+        <fullName>Eco Geography Approval Complete %28Non-Ecosystem%29</fullName>
+        <actions>
+            <name>EcoDoAGeoApprovalComplete_Non_Ecosystem</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>EcoGeoSetApprovalToApproved</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSetGeoTimeApproved</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <formula>AND(ISPICKVAL(GeographyApprovalStatus__c,&quot;Submitted&quot;),  
+GeoCountOfApprovers__c ==  GeoCountofApproved__c,
+RecordType.DeveloperName = &apos;NonProject&apos;)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Eco Geography DOA Approval Submission %28Ecosystem%29</fullName>
         <actions>
             <name>EcoDoAForGeoApproval</name>
             <type>Alert</type>
@@ -601,10 +874,55 @@
             <operation>equals</operation>
             <value>True</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Ecosystem (Submitted)</value>
+        </criteriaItems>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
-        <fullName>Eco Group Approval Complete</fullName>
+        <fullName>Eco Geography DOA Approval Submission %28Non-Ecosystem%29</fullName>
+        <actions>
+            <name>EcoDoaForGeoApproval_Non_Ecosystem</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>EcoSetDOAOverallApprovalStatus</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSetGeoApprovalStatus</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSetGeoDoAApprovalTimeSubmitted</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.GeographyApprovalStatus__c</field>
+            <operation>equals</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.GeographyApprovalsRequired__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.SubmitGeographyforApproval__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Non-Ecosystem (Submitted)</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Eco Group Approval Complete %28Ecosystem%29</fullName>
         <actions>
             <name>EcoDoAGroupApprovalComplete</name>
             <type>Alert</type>
@@ -618,11 +936,33 @@
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
-        <formula>AND(ISPICKVAL(GroupApprovalStatus__c,&quot;Submitted&quot;),  GroupCountofApprovers__c ==  GroupCountofApproved__c)</formula>
+        <formula>AND(ISPICKVAL(GroupApprovalStatus__c,&quot;Submitted&quot;),  
+GroupCountofApprovers__c ==  GroupCountofApproved__c,
+RecordType.DeveloperName = &apos;DOAQueueEntry&apos;)</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
-        <fullName>Eco Group DOA Approval Submission</fullName>
+        <fullName>Eco Group Approval Complete %28Non-Ecosystem%29</fullName>
+        <actions>
+            <name>EcoDoAGroupApprovalComplete_Non_Ecosystem</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>EcoSetGrouPApprovalStatusToApproved</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSetGroupDoATimeApproved</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <formula>AND(ISPICKVAL(GroupApprovalStatus__c,&quot;Submitted&quot;),  
+GroupCountofApprovers__c ==  GroupCountofApproved__c,
+RecordType.DeveloperName = &apos;NonProject&apos;)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Eco Group DOA Approval Submission %28Ecosystem%29</fullName>
         <actions>
             <name>EcoDoAForGroupApproval</name>
             <type>Alert</type>
@@ -654,52 +994,55 @@
             <operation>equals</operation>
             <value>True</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Ecosystem (Submitted)</value>
+        </criteriaItems>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
-        <fullName>EcoSet DOA Approval Record to Joint Venture</fullName>
+        <fullName>Eco Group DOA Approval Submission %28Non-Ecosystem%29</fullName>
         <actions>
-            <name>EcoSetDOAJointVentureRecord_Type</name>
+            <name>EcoDoaForGeoApproval_Non_Ecosystem</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>EcoSetDOAOverallApprovalStatus</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>false</active>
-        <criteriaItems>
-            <field>DOAApprovalRequest__c.RequestType__c</field>
-            <operation>equals</operation>
-            <value>Joint Venture</value>
-        </criteriaItems>
-        <triggerType>onAllChanges</triggerType>
-    </rules>
-    <rules>
-        <fullName>EcoSet DOA Approval Record to Non-Project</fullName>
         <actions>
-            <name>EcoSet_DOA_Approval_Record_to_Non_Projec</name>
+            <name>EcoSetGroupApprovalStatus</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>false</active>
-        <criteriaItems>
-            <field>DOAApprovalRequest__c.RequestType__c</field>
-            <operation>equals</operation>
-            <value>Non-Project</value>
-        </criteriaItems>
-        <triggerType>onAllChanges</triggerType>
-    </rules>
-    <rules>
-        <fullName>EcoSet DOA Approval Record to Project</fullName>
         <actions>
-            <name>EcoSet_DOA_Approval_Record_Type</name>
+            <name>EcoSetGroupDoATimeSubmitted</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>false</active>
+        <active>true</active>
         <criteriaItems>
-            <field>DOAApprovalRequest__c.RequestType__c</field>
+            <field>DOAApprovalRequest__c.GroupApprovalStatus__c</field>
             <operation>equals</operation>
-            <value>Project (Eco) - Work at Risk,Project (Eco) - Approval,Project (Eco) - Revenue at Risk,Project (Non-Eco) - Work at Risk,Project (Non-Eco) - Approval,Project (Non-Eco) - Revenue at Risk</value>
         </criteriaItems>
-        <triggerType>onAllChanges</triggerType>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.GroupApprovalsRequired__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.SubmitGroupforApproval__c</field>
+            <operation>equals</operation>
+            <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Non-Ecosystem (Submitted)</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
-        <fullName>EcoSet DOA Assign to Approval Queue</fullName>
+        <fullName>EcoSet DOA Assign to Approval Queue %28Ecosystem%29</fullName>
         <actions>
             <name>EcoSet_Assign_to_DoA_Approval_Queue</name>
             <type>FieldUpdate</type>
@@ -709,7 +1052,23 @@
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
-        <formula>AND(ISCHANGED( AssigntoDoAApprovalQueue__c ), AssigntoDoAApprovalQueue__c = True)</formula>
+        <formula>AND(ISCHANGED( AssigntoDoAApprovalQueue__c ), AssigntoDoAApprovalQueue__c = True,
+RecordType.DeveloperName = &apos;DOACreate&apos;)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>EcoSet DOA Assign to Approval Queue %28Non-Ecosystem%29</fullName>
+        <actions>
+            <name>EcoSetDoaRecordTypeSubmittedNonEcosystem</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>EcoSet_Assign_to_DoA_Approval_Queue</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <formula>AND(ISCHANGED( AssigntoDoAApprovalQueue__c ), AssigntoDoAApprovalQueue__c = True,
+RecordType.DeveloperName = &apos;NonEcosystemCreate&apos;)</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
@@ -718,7 +1077,7 @@
             <name>EcoUnset_AssigntoDoAApprovalQueue</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <formula>ISBLANK(Owner:Queue.Id)</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
