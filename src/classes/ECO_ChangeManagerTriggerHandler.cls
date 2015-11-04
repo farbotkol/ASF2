@@ -40,7 +40,6 @@ public class ECO_ChangeManagerTriggerHandler {
 				changeManager.SubmittedIdsForApproval__c = idUpdateString;
 				idUpdateString = '';
 			}
-			system.debug('Brent' + idUpdateString);
 		}	
 
 		for(ChangeManager__c changeManager:changeManagersToApproveForOracleSynch)
@@ -687,16 +686,7 @@ public class ECO_ChangeManagerTriggerHandler {
    												, LongDescriptionMaxLength__c = 'This Project has been Approved for closure on ' + project.ClosureDate__c
    												, Subject__c = project.Name
    												, LinkToRecord__c = '/' + project.Id
-   												));
-
-		 			//email = new Messaging.SingleEmailMessage(); 
-            		//email.setToAddresses(new String[] {projectTeamMember.contact__r.pse__Salesforce_User__r.Email});   
-                	//email.setSubject('ACTION: ' + ' Scheduled Hold Status');
-                	//String textBody = '';
-                	//textBody +='The subject project is closed.  Please archive the network project folder and send notification to the Project Manager when completed.\n\n';
-                	//email.setPlainTextBody('Closure date has been set to ' + project.ClosureDate__c.format());
-                	//email.setSaveAsActivity(false);
-                	//emailList.add(email);    
+   												));  
 				}	
 				if(alerts.size() >0 )
 					insert alerts;
