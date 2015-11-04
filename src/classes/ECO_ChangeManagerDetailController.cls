@@ -236,6 +236,9 @@ public class ECO_ChangeManagerDetailController {
         		update changeManager;
         	}  		   		       
 
+            if(changeManager.OutgoingPM__c == null)
+                changeManager.OutgoingPM__c = changeManager.ProjectManagerId__c;
+
             project = [select Id, Name, EcoSystemReferenceNumber__c, OracleProjectnumber__c  from pse__Proj__c where Id = :changeManager.Project__c limit 1];            
     		ApexPages.currentPage().getParameters().put('projectId', changeManager.Project__c);
             listOfVendorSites = [select Id, Name, AccountName__c, Site__r.Account__c from VendorSite__c where Project__c = :changeManager.Project__c];           
