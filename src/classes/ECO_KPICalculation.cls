@@ -268,7 +268,66 @@ public without sharing class ECO_KPICalculation {
 
 	private static Decimal calculateETCRunRate(pse__Proj__c project, Date asOfDate, Decimal costSoFar)
 	{
+		List<String> periodNames = new List<String>();
+		periodNames.add(ECO_Utils_Date.getPeriodNameFromDate(asOfDate.addMonths(-1))); // Last Month
+		periodNames.add(ECO_Utils_Date.getPeriodNameFromDate(asOfDate.addMonths(-2))); // Month before Last
+
+		List<AggregateResult> laborAmountsPerPeriod = [SELECT GLPeriodName__c
+															, SUM(AcctBurdCostTimesQuantity__c) totalAmount
+														FROM CostDistributionLine__c
+														WHERE GLDate__c <= :asOfDate
+															AND ProjectNumber__c = :project.Id
+															AND ExpenditureItemID__r.ExpenditureType__c LIKE 'LAB%'
+															AND GLPeriodName__c IN :periodNames
+														GROUP BY GLPeriodName__c
+														ORDER BY GLPeriodName__c];
+		
+		Decimal thisPeriodLaborAmount;
+		Decimal lastPeriodLaborAmount;
+		for (AggregateResult ar : laborAmountsPerPeriod) {
+			if (periodNames[0].equalsIgnoreCase((String)ar.get('GLPeriodName__c'))) {
+				thisPeriodLaborAmount = (Decimal)ar.get('totalAmount');
+			}
+			
+			if (periodNames[1].equalsIgnoreCase((String)ar.get('GLPeriodName__c'))) {
+				thisPeriodLaborAmount = (Decimal)ar.get('totalAmount');
+			}
+		}
+		
 		return 0;
+	}
+
+	private static Boolean calculateUnbilledLabor(pse__Proj__c project, Date asOfDate)
+	{
+
+		List<String> periodNames = new List<String>();
+		periodNames.add(ECO_Utils_Date.getPeriodNameFromDate(asOfDate.addMonths(-1))); // Last Month
+		periodNames.add(ECO_Utils_Date.getPeriodNameFromDate(asOfDate.addMonths(-2))); // Month before Last
+
+		List<AggregateResult> laborAmountsPerPeriod = [SELECT GLPeriodName__c
+															, SUM(AcctBurdCostTimesQuantity__c) totalAmount
+														FROM CostDistributionLine__c
+														WHERE GLDate__c <= :asOfDate
+															AND ProjectNumber__c = :project.Id
+															AND ExpenditureItemID__r.ExpenditureType__c LIKE 'LAB%'
+															AND GLPeriodName__c IN :periodNames
+														GROUP BY GLPeriodName__c
+														ORDER BY GLPeriodName__c];
+		
+		Decimal thisPeriodLaborAmount;
+		Decimal lastPeriodLaborAmount;
+		for (AggregateResult ar : laborAmountsPerPeriod) {
+			if (periodNames[0].equalsIgnoreCase((String)ar.get('GLPeriodName__c'))) {
+				thisPeriodLaborAmount = (Decimal)ar.get('totalAmount');
+			}
+			
+			if (periodNames[1].equalsIgnoreCase((String)ar.get('GLPeriodName__c'))) {
+				thisPeriodLaborAmount = (Decimal)ar.get('totalAmount');
+			}
+		}
+
+		return true;
+
 	}
 
 	private static Boolean calculateLaborIncreaseOverPriorMonthMoreThan30Percent(pse__Proj__c project, Date asOfDate)
