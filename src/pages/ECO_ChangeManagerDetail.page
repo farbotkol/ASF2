@@ -180,7 +180,7 @@
                 <apex:commandButton value="Return to Project" action="{!returnToProject}" rendered="{!mode == ''}" />
                 <apex:commandButton value="Return to Project Changes" action="{!returnToProjectChanges}" rendered="{!mode == ''}" />
                 <apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" rendered="{!needOracleLogin}"/>
-                 <apex:commandButton value="Submit for Approval" action="{!SubmitForApproval}" id="Submit_for_Approval" rendered="{!changeManager.ApprovalStatus__c == null && changeManager.ApprovalStatus__c == '' && projectSynchMessages == ''}"/>
+                 <apex:commandButton value="Submit for Approval" action="{!SubmitForApproval}" id="Submit_for_Approval" rendered="{!(changeManager.ApprovalStatus__c == null || changeManager.ApprovalStatus__c == '' || changeManager.ApprovalStatus__c == 'Rejected') && projectSynchMessages == ''}"/>
                  <apex:commandButton value="Synchronize Project" rendered="{!changeManager.OracleApprovalSyncStatus__c == 'Failed'}" action="{!SynchronizeProject}" />
             </apex:pageBlockButtons>
             <div class="customHelpText">
@@ -813,7 +813,7 @@
             		<apex:commandButton value="Save" action="{!saveChangeManager}"/>
                 	<apex:commandButton value="Return to Project" action="{!returnToProject}" immediate="true"/>
                     <apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" rendered="{!needOracleLogin}"/>
-                    <apex:commandButton value="Submit for Approval" action="{!SubmitForApproval}" id="Submit_for_Approval" rendered="{!changeManager.ApprovalStatus__c == null && changeManager.ApprovalStatus__c == '' && projectSynchMessages == ''}"/>
+                    <apex:commandButton value="Submit for Approval" action="{!SubmitForApproval}" id="Submit_for_Approval" rendered="{!(changeManager.ApprovalStatus__c == null || changeManager.ApprovalStatus__c == '' || changeManager.ApprovalStatus__c == 'Rejected') && projectSynchMessages == ''}"/>
                     <apex:commandButton value="Synchronize Project" rendered="{!changeManager.OracleApprovalSyncStatus__c == 'Failed'}" action="{!SynchronizeProject}" id="SynchronizeProjectButton"/>                  
                     <!--<apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" />-->
             	</apex:pageBlockButtons>  
@@ -1098,11 +1098,15 @@
         </apex:outputPanel>
         <c:ECO_ModalDialog width="350" padding="0px 0px 0px 0px" name="modalDialogOracleLogin">
             <apex:pageBlock title="Oracle Authentication">
+            <div>
+                <apex:outputText >Your Oracle security token has expired - please enter your Oracle credentials below to renew the token</apex:outputText>
+            <br/><br/>
+            </div>
             <div align="center">
-            <apex:outputText style="font-weight:bold" value="Username:"/>
+            <apex:outputText style="font-weight:bold" value="Oracle Username:"/>
             <apex:inputText label="Username:" value="{!OracleUserName}" id="username"/><br/>
 
-            <apex:outputText style="font-weight:bold" value="Password:"/>
+            <apex:outputText style="font-weight:bold" value="Oracle Password:"/>
             <apex:inputSecret label="Password" value="{!OraclePassword}" id="password"/><br/><br/>
             </div>
 
@@ -1177,154 +1181,211 @@
             <apex:pageBlockSection title="Handover Summary" columns="1" id="pbstest">
 <apex:outputlabel style="font-weight: bold;" value="Answer all the questions below with the incoming Project Manager"/>
 
-
 <apex:outputPanel >
-<apex:outputText style="font-weight: bold;">1. Have all the contractual documents, including scope changes or variations been signed by the Project Approver or Project Manager and the client?</apex:outputText>           
+<table><tr><td>
 <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverContractualDocuments__c}" >
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
-</apex:outputPanel>
+</td>
+<td><br/><apex:outputText style="font-weight: bold;">1. Have all the contractual documents, including existing scope changes or variations been signed by the Project Approver or Project Manager and the client?</apex:outputText>           
+
+</td></tr></table></apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverContractualDocuments__c == 'No'}" >
 Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainContractualDocuments__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 
 
 <apex:outputPanel >
-<apex:outputText style="font-weight: bold;">2. Have all of the contractual obligations been met?</apex:outputText>          
+<table><tr><td>
 <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverContractualObligations__c}" >
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
+</td><td>
+<br/><apex:outputText style="font-weight: bold;">2. Have all of the contractual obligations been met?</apex:outputText>          
+</td></tr></table>
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverContractualObligations__c == 'No'}" >
-Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainContractObligations__c}" style="width: 825px; height: 40px"/>
+Provide a Summary of what is remaining:<br/><apex:inputField value="{!changeManager.HandoverExplainContractObligations__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 
 
 <apex:outputPanel >
-<apex:outputText style="font-weight: bold;">3. Are there subs on the project?</apex:outputText>         
+<table><tr><td>
 <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverSubsonProject__c}" >
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
-</apex:outputPanel>
+</td><td>
+<br/><apex:outputText style="font-weight: bold;">3. Are there subs on the project?</apex:outputText> 
+</td></tr>        
+<!--</apex:outputPanel>-->
+<tr><td></td>
+<td>
+<apex:outputLabel value="Project Subs and Vendors" style="font-weight:bold"/>
 <apex:outputPanel rendered="{!listOfVendorSites.size > 0}">
-<apex:outputLabel value="List of Subs" style="font-weight:bold"/><br/>
     <apex:repeat value="{!listOfVendorSites}" var="site">
         <apex:commandLink action="{!URLFOR($Action.Account.view, site.Site__r.Account__c)}"><apex:outputField value="{!site.AccountName__c}"/></apex:commandLink><br/><br/>
     </apex:repeat>
 </apex:outputPanel>
+<apex:outputPanel rendered="{!listOfVendorSites.size == 0}">
+<br/><apex:outputLabel value="No records found"/>
+</apex:outputPanel>
+</td></tr></table>
+</apex:outputPanel>
+
 <apex:outputPanel rendered="{!changeManager.HandoverSubsonProject__c == 'Yes'}" >
 State the current status of payment, scope completion and performance:<br/><apex:inputField value="{!changeManager.HandoverExplainSubsonProject__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
-<apex:outputText style="font-weight: bold;">4. Have the mandatory project approvals been achieved, such as any DOA matters, and relevant conditions of approval actioned?</apex:outputText>         
+<table><tr><td>
 <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverMandatoryProjectApprovals__c}" >
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
+</td><td>
+<br/><apex:outputText style="font-weight: bold;">4. Have the mandatory project approvals been achieved, such as any DOA matters, and relevant conditions of approval actioned?</apex:outputText> 
+</td></tr></table>          
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverMandatoryProjectApprovals__c == 'No'}" >
 Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainMandatoryProjectApprovals__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
-<apex:outputText style="font-weight: bold;">5. Have all project team members been informed of the handover?</apex:outputText>           
+<table><tr><td>
 <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverProjectTeamInform__c}" >
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
+</td><td>
+<br/><apex:outputText style="font-weight: bold;">5. Have all project team members been informed of the handover?</apex:outputText>   
+</td></tr></table>         
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverProjectTeamInform__c == 'No'}" >
 Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainProjectTeamInform__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
-<apex:outputText style="font-weight: bold;">6. Have all known risks been identified?</apex:outputText>          
+<table><tr><td>
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverClientInformed__c}" >
+    <apex:selectOptions value="{!YesNoOptions}"/>
+    <apex:actionSupport event="onchange" rerender="pbstest"/>
+</apex:selectRadio>
+</td><td>
+<br/><apex:outputText style="font-weight: bold;">6. Has the client been informed of the handover?</apex:outputText>   
+</td></tr></table>        
+</apex:outputPanel>
+<!--<apex:outputPanel rendered="{!changeManager.HandoverKnownRisks__c == 'No'}" >
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainKnownRisks__c}" style="width: 825px; height: 40px"/>
+</apex:outputPanel>-->
+
+<apex:outputPanel >
+<table><tr><td>
 <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverKnownRisks__c}" >
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
+</td><td>
+<br/><apex:outputText style="font-weight: bold;">7. Have all known risks been identified and captured on the project risk register?</apex:outputText>   
+</td></tr></table>        
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverKnownRisks__c == 'No'}" >
 Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainKnownRisks__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
-<apex:outputText style="font-weight: bold;">7. Has the budget been updated?</apex:outputText>           
+<table><tr><td>
 <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverBudgetUpdated__c}" >
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
+</td><td>
+<br/><apex:outputText style="font-weight: bold;">8. Has the budget been updated?</apex:outputText>   
+</td></tr></table>         
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverBudgetUpdated__c == 'No'}" >
 Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainBudgetUpdated__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
-<apex:outputText style="font-weight: bold;">8. Have all actions raised on the project been closed or in the process of being rectified?</apex:outputText>           
+<table><tr><td>
 <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverActionsRaised__c}" >
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
+</td><td>
+<br/><apex:outputText style="font-weight: bold;">9. Have actions raised on the project been closed or in the process of being rectified?</apex:outputText> </td></tr></table>          
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverActionsRaised__c == 'No'}" >
 Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainActionsRaised__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 <apex:outputPanel >
-<apex:outputText style="font-weight: bold;">9. Is all critical project paperwork on file and clearly identified?</apex:outputText>          
+<table><tr><td>
 <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverCriticalProjectPaperwork__c}" >
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
+</td><td>
+<br/><apex:outputText style="font-weight: bold;">10. Is critical project paperwork on file and clearly identified?</apex:outputText>  
+</td></tr></table>         
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverCriticalProjectPaperwork__c == 'No'}" >
 Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainProjectPaperwork__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
-<apex:outputText style="font-weight: bold;">10. Are signed copies of all deliverables on file, with transmittals and evidence of verification and approvals?</apex:outputText>          
+<table><tr><td>
 <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverSignedCopies__c}" >
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
+</td><td>
+<br/><apex:outputText style="font-weight: bold;">11. Are signed copies of deliverables on file, with transmittals and evidence of verification and approvals?</apex:outputText>          
+</td></tr></table> 
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverSignedCopies__c == 'No'}">
     Please Explain:<br/><apex:inputField value="{!changeManager.ExplainHandoverSignedCopies__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
+
 <apex:outputPanel >
-    <apex:outputText style="font-weight: bold;">11. Has access to relevant project files (electronic and hardcopy) for project staff been confirmed?</apex:outputText>          
+<table><tr><td>
     <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverRelevantProjectFiles__c}" >
         <apex:selectOptions value="{!YesNoOptions}"/>
         <apex:actionSupport event="onchange" rerender="pbstest"/>
     </apex:selectRadio>
+</td><td>
+    <br/><apex:outputText style="font-weight: bold;">12. Has access to relevant project files (electronic and hardcopy) for project staff been confirmed?</apex:outputText>          
+</td></tr></table> 
     </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverRelevantProjectFiles__c == 'No'}">
     Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainRelevantProjectFiles__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
-<apex:outputText style="font-weight: bold;">12. Is communication and reporting process with the client healthy?</apex:outputText>           
+<table><tr><td>
 <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverCommReporting__c}" >
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
+</td><td>
+<br/><apex:outputText style="font-weight: bold;">13. Is communication and reporting process with the client healthy?</apex:outputText>           
+</td></tr></table> 
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverCommReporting__c == 'No'}">
 Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainCommReporting__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 <apex:outputPanel >
-    <apex:outputText style="font-weight: bold;">13. What is going well with the project?</apex:outputText><br/>
+    <apex:outputText style="font-weight: bold;">14. What is going well with the project?</apex:outputText><br/>
     <apex:inputField value="{!changeManager.HandoverGoingWell__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 <apex:outputPanel >
-    <apex:outputText style="font-weight: bold;">14. What is not going well with the project?</apex:outputText><br/>
+    <apex:outputText style="font-weight: bold;">15. What is not going well with the project?</apex:outputText><br/>
     <apex:inputField value="{!changeManager.HandoverNotGoingWell__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 <apex:outputPanel >
-    <apex:outputText style="font-weight: bold;">15. State current financial status of project, including any outstanding invoices.</apex:outputText><br/>
+    <apex:outputText style="font-weight: bold;">16. State current financial status of project, including any outstanding invoices.</apex:outputText><br/>
     <apex:inputField value="{!changeManager.HandoverCurrentFinancialStatus__c}" style="width: 825px; height: 40px"/>
 </apex:outputPanel>
 </apex:pageBlockSection>
