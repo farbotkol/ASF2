@@ -4,6 +4,7 @@ trigger ECO_ProjectTask_AllEvents on pse__Project_Task__c (before insert, before
             //ECO_ProjectTaskTriggers.copyCarryingOutToTask(trigger.new);
 
             ECO_ProjectTaskTriggers.applyLookups(trigger.new);
+            ECO_ProjectTaskTriggers.calculateFiscalMonths(trigger.new); 
         }
     }
 

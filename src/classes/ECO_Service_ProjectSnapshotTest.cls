@@ -393,6 +393,40 @@ private class ECO_Service_ProjectSnapshotTest {
 			SnapshotPreviousFiscalMonth__c=''+(i-1) ));
 		}
 		insert psList;
+		
+		pse__Time_Period__c timePeriod = new pse__Time_Period__c();
+		timePeriod.pse__Start_Date__c = Date.Today();
+		timePeriod.pse__End_Date__c = Date.Today().addDays(7);
+		timePeriod.TimePeriodCode__c = 'FY2015-02';
+		timePeriod.pse__Type__c = 'Month';
+		insert timePeriod;
+		
+		
+		timePeriod = new pse__Time_Period__c();
+		timePeriod.pse__Start_Date__c = Date.Today().AddDays(-8);
+		timePeriod.pse__End_Date__c = Date.Today().addDays(-1);
+		timePeriod.TimePeriodCode__c = 'FY2015-01';
+		timePeriod.pse__Type__c = 'Month';
+		insert timePeriod;
+    }
+    
+    static testMethod void testGetFiscalMonth() {
+    	/*
+    	pse__Proj__c project1 = [SELECT Id FROM pse__Proj__c LIMIT 1];
+    	
+    	test.startTest();
+		ECO_Service_ProjectSnapshots psService = new ECO_Service_ProjectSnapshots(project1.Id);
+		ProjectSnapshot__c ps = psService.getProjectSnapShot();
+		test.stopTest();
+		
+		System.Debug('SnapshotFiscalMonth__c' + ps.SnapshotFiscalMonth__c);
+		System.Debug('SnapshotPreviousFiscalMonth__c' + ps.SnapshotPreviousFiscalMonth__c);
+		
+		
+		System.AssertEquals(ps.SnapshotFiscalMonth__c, 'FY2015-02');
+		System.AssertEquals(ps.SnapshotPreviousFiscalMonth__c, 'FY2015-01');
+		*/
+    	
     }
 
     static testMethod void testGetPreviousFMForecastInformation() {

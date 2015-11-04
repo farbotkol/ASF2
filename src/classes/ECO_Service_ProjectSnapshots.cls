@@ -70,15 +70,20 @@ public class ECO_Service_ProjectSnapshots {
 	{
 		public Decimal Unbilled0to30 {get; set;}
 		public Decimal Unbilled31to60 {get; set;}
-		public Decimal Unbilled60Plus {get; set;}
+		public Decimal Unbilled61to90 {get; set;}
+		public Decimal Unbilled91to180 {get; set;}
+		public Decimal Unbilled181Plus {get; set;}
 		public Decimal BilledITD {get; set;}
 		public Decimal TotalUnbilled {get; set;}
 		public Decimal BIEE {get; set;}
 
 		public Decimal Billed0to30 {get; set;}
 		public Decimal Billed31to60 {get; set;}
-		public Decimal Billed60Plus {get; set;}
-		public Decimal Billed90Plus {get; set;}
+		public Decimal Billed61to90 {get; set;}
+		public Decimal Billed91to180 {get; set;}
+		public Decimal Billed61Plus {get; set;}
+		public Decimal Billed91Plus {get; set;}
+		public Decimal Billed181Plus {get; set;}
 		public Decimal BilledAR {get; set;}
 		public Decimal Retention {get; set;}
 		
@@ -86,14 +91,19 @@ public class ECO_Service_ProjectSnapshots {
 		{
 			Unbilled0to30 = 0;
 			Unbilled31to60 = 0;
-			Unbilled60Plus = 0;
+			Unbilled61to90 = 0;
+			Unbilled91to180 = 0;
+			Unbilled181Plus = 0;
 			BilledITD = 0;
 			TotalUnbilled = 0;
 			BIEE = 0;
 			Billed0to30 = 0;
 			Billed31to60 = 0;
-			Billed60Plus = 0;
-			Billed90Plus = 0;
+			Billed61to90 = 0;
+			Billed91to180 = 0;
+			Billed61Plus = 0;
+			Billed91Plus = 0;
+			Billed181Plus = 0;
 			BilledAR = 0;
 			Retention = 0;
 		}	
@@ -157,284 +167,295 @@ public class ECO_Service_ProjectSnapshots {
 		
 		ProjectSnapshot__c snapshot = new ProjectSnapshot__c();
 		snapshot.SnapshotDate__c = DateTime.now();
-		Id changeOrderRecordTypeId = ECO_Utils_Meta.getRecordTypeId(BudgetHeader__c.sObjectType, 'Change Order');
 
-		if(projectIds.size() == 1)
-		{
-			//project information
-			pse__Proj__c project = [SELECT Id, Name, ProjectReviewCategory__c, PrimaryEndClientName__c
-								, pse__Account__r.Name
-								, pse__Project_Manager__c
-								, OracleProjectnumber__c
-								, pse__End_Date__c
-								, pse__Start_Date__c
-								FROM pse__Proj__c WHERE Id IN :projectIds];				
-					
-			snapshot.ProjectName__c = project.Name;
-			snapshot.ProjectRating__c = project.ProjectReviewCategory__c;
-			snapshot.ClientName__c = project.pse__Account__r.Name;
-			snapshot.ProjectManager__c = project.pse__Project_Manager__c;
-			snapshot.ProjectDirector__c = ECO_Service_ProjectTeam.getActiveProjectApproverId(project.Id);
-			snapshot.ProjectNumber__c = project.OracleProjectNumber__c;
-			snapshot.ProjectStartDate__c = project.pse__Start_Date__c;
-			snapshot.ProjectEndDate__c = project.pse__End_Date__c;
-			snapshot.Project__c = project.Id;
-			
-			//Change Orders	
-			snapshot.ChangeOrdersPending__c = getPendingChangeOrders(projectIds, changeOrderRecordTypeId);
-			snapshot.ChangeOrdersDraft__c = getDraftChangedOrders(projectIds, changeOrderRecordTypeId);
-			
-			//Primary Organization
-			snapshot.PrimaryOrganization__c = organizationNameMap.get(primaryOrganizationId);//getPrimaryOrganization(projectId);
+		try {
+			Id changeOrderRecordTypeId = ECO_Utils_Meta.getRecordTypeId(BudgetHeader__c.sObjectType, 'Change Order');
 
-			//Agreements
-			snapshot.RelatedAgreements__c = getRelatedAgreements(projectIds);
-			
-			//Project Tasks
-			snapshot.ProjectTasks__c = getRelatedProjectTasks(projectIds);
-			
-			//Organizations
-			for(Id organizationId:organizationNameMap.keyset()){
-				if(organizationId != primaryOrganizationId)
-				{
-					if(snapshot.SecondaryOrganizations__c == '' || snapshot.SecondaryOrganizations__c == null)
-						snapshot.SecondaryOrganizations__c = organizationNameMap.get(organizationId);	
-					else
-						snapshot.SecondaryOrganizations__c += '::' + organizationNameMap.get(organizationId);
-				}	
-			}	
-			
-			//Earned Value
-			//map<Date, Decimal> mapTest = earnedValueController.mapDateCPI;
-			if(EarnedValueSnapshotDate != null)
+			if(projectIds.size() == 1)
 			{
+				//project information
+				pse__Proj__c project = [SELECT Id, Name, ProjectReviewCategory__c, PrimaryEndClientName__c
+									, pse__Account__r.Name
+									, pse__Project_Manager__c
+									, OracleProjectnumber__c
+									, pse__End_Date__c
+									, pse__Start_Date__c
+									FROM pse__Proj__c WHERE Id IN :projectIds];				
+						
+				snapshot.ProjectName__c = project.Name;
+				snapshot.ProjectRating__c = project.ProjectReviewCategory__c;
+				snapshot.ClientName__c = project.pse__Account__r.Name;
+				snapshot.ProjectManager__c = project.pse__Project_Manager__c;
+				snapshot.ProjectDirector__c = ECO_Service_ProjectTeam.getActiveProjectApproverId(project.Id);
+				snapshot.ProjectNumber__c = project.OracleProjectNumber__c;
+				snapshot.ProjectStartDate__c = project.pse__Start_Date__c;
+				snapshot.ProjectEndDate__c = project.pse__End_Date__c;
+				snapshot.Project__c = project.Id;
 				
-				snapshot.EarnedValueCPI__c = earnedValueController.mapDateCPI.get(EarnedValueSnapshotDate);
-				snapshot.EarnedValueSPI__c = earnedValueController.mapDateSPI.get(EarnedValueSnapshotDate);
-				snapshot.EarnedValuePlannedValue__c = earnedValueController.mapDatePlannedValues.get(EarnedValueSnapshotDate);
-				snapshot.EarnedValue__c = earnedValueController.mapDateEarnedValues.get(EarnedValueSnapshotDate);
-				snapshot.EarnedValueActualSpend__c = earnedValueController.mapDateActualCosts.get(EarnedValueSnapshotDate);
-				snapshot.EarnedValueLastUpdated__c = EarnedValueLastModifiedDate;
-				snapshot.EarnedValueOverallProgress__c = 0;
-				snapshot.EarnedValuePercentBudgetSpent__c = 0;
-			}					
-		}
+				//Change Orders	
+				snapshot.ChangeOrdersPending__c = getPendingChangeOrders(projectIds, changeOrderRecordTypeId);
+				snapshot.ChangeOrdersDraft__c = getDraftChangedOrders(projectIds, changeOrderRecordTypeId);
+				
+				//Primary Organization
+				snapshot.PrimaryOrganization__c = organizationNameMap.get(primaryOrganizationId);//getPrimaryOrganization(projectId);
 
-		// Original Budget
-		FinancialMetrics originalBudgetFinancialMetrics = getOriginalBudgetHeaderInformation(projectIds, false);
-		snapshot.GrossRevenueBudgetOriginal__c = originalBudgetFinancialMetrics.TotalRevenue;
-		snapshot.LaborBudgetOriginal__c = originalBudgetFinancialMetrics.TotalLabor;
-		snapshot.ContingencyBudgetOriginal__c = originalBudgetFinancialMetrics.TotalContingency;
-		
-		//Approved
-		FinancialMetrics approvedBudgetFinancialMetrics = getApprovedBudgetHeaderInformation(projectIds, 'Approved', false);
-		snapshot.GrossRevenueBudget__c = approvedBudgetFinancialMetrics.TotalRevenue;
-		snapshot.CostBudget__c = approvedBudgetFinancialMetrics.TotalCost;
-		snapshot.NetMarginBudget__c = approvedBudgetFinancialMetrics.NetMargin;
-		snapshot.NetServiceBudget__c = approvedBudgetFinancialMetrics.NetServiceRevenue;
-		snapshot.NMNSRBudget__c = approvedBudgetFinancialMetrics.NMNSR;
-		snapshot.NMGRBudget__c = approvedBudgetFinancialMetrics.NMGR;
-		snapshot.LaborMultBudget__c = approvedBudgetFinancialMetrics.LaborMult;
-		snapshot.ContingencyBudget__c = approvedBudgetFinancialMetrics.TotalContingency;
-		snapshot.LastUpdatedBudget__c = getLastUpdatedBudgetDate(projectIds);
-
-		//Forecast
-		FinancialMetrics forecastBudgetFinancialMetrics = getForecastBudgetHeaderInformation(projectIds);
-		snapshot.GrossRevenueForecast__c = forecastBudgetFinancialMetrics.TotalRevenue + snapshot.GrossRevenueBudget__c;
-		snapshot.CostForecast__c = forecastBudgetFinancialMetrics.TotalCost + snapshot.CostBudget__c;
-		snapshot.NetMarginForecast__c = forecastBudgetFinancialMetrics.NetMargin + snapshot.NetMarginBudget__c;	
-		snapshot.NetServiceForecast__c = forecastBudgetFinancialMetrics.NetServiceRevenue + snapshot.NetServiceBudget__c;
-		snapshot.NMNSRForecast__c = forecastBudgetFinancialMetrics.NMNSR + snapshot.NMNSRBudget__c;
-		snapshot.NMGRForecast__c = forecastBudgetFinancialMetrics.NMGR + snapshot.NMGRBudget__c;
-		snapshot.LaborMultForecast__c = forecastBudgetFinancialMetrics.LaborMult + snapshot.LaborMultBudget__c;
-		snapshot.ContingencyForecast__c = forecastBudgetFinancialMetrics.TotalContingency + snapshot.ContingencyBudget__c;
-		
-		// Costs Forecast EAC
-		try {
-			snapshot = getForecastBudgetCostsInformation(snapshot);
-		}
-		catch (Exception e) {
-			System.debug(e.getStackTraceString());
-		}
-
-		// Hours Forecast EAC
-		try {
-			snapshot = getForecastBudgetHoursInformation(snapshot, projectIds);
-		}
-		catch (Exception e) {
-			System.debug(e.getStackTraceString());
-		}
-
-		//Previous Forecast
-		try {
-			snapshot = getPreviousFMForecastInformation(snapshot);
-		}
-		catch (Exception e) {
-			System.debug(e.getStackTraceString());
-		}
-		
-		//Draft
-		//FinancialMetrics draftBudgetFinancialMetrics = getDraftBudgetHeaderInformation(projectIds, changeOrderRecordTypeId);
-		FinancialMetrics draftBudgetFinancialMetrics = getDraftBudgetHeaderInformation(projectIds);		
-		snapshot.GrossRevenueDraft__c = draftBudgetFinancialMetrics.TotalRevenue;
-		snapshot.CostDraft__c = draftBudgetFinancialMetrics.TotalCost;
-		snapshot.NetMarginDraft__c = draftBudgetFinancialMetrics.NetMargin;	
-		snapshot.NetServiceDraft__c = draftBudgetFinancialMetrics.NetServiceRevenue;
-		snapshot.NMNSRDraft__c = draftBudgetFinancialMetrics.NMNSR;
-		snapshot.NMGRDraft__c = draftBudgetFinancialMetrics.NMGR;
-		snapshot.LaborMultDraft__c = draftBudgetFinancialMetrics.LaborMult;
-		snapshot.ContingencyDraft__c = draftBudgetFinancialMetrics.TotalContingency;
-		
-		//Unapproved
-		FinancialMetrics unapprovedBudgetFinancialMetrics = getBudgetHeaderInformation(projectIds, 'Approved', true);
-		snapshot.GrossRevenueUnapproved__c = unapprovedBudgetFinancialMetrics.TotalRevenue;
-		snapshot.CostUnapproved__c = unapprovedBudgetFinancialMetrics.TotalCost;
-		snapshot.NetMarginUnapproved__c = unapprovedBudgetFinancialMetrics.NetMargin;	
-		snapshot.NetServiceUnapproved__c = unapprovedBudgetFinancialMetrics.NetServiceRevenue;
-		snapshot.NMNSRUnapproved__c = unapprovedBudgetFinancialMetrics.NMNSR;
-		snapshot.NMGRUnapproved__c = unapprovedBudgetFinancialMetrics.NMGR;
-		snapshot.LaborMultUnapproved__c = unapprovedBudgetFinancialMetrics.LaborMult;
-		snapshot.ContingencyUnapproved__c = unapprovedBudgetFinancialMetrics.TotalContingency;		
-		
-		// StartDate of FiscalMonth AND FiscalYear
-		Map<String, pse__Time_Period__c> timePeriodMap = new Map<String, pse__Time_Period__c>();
-		List<pse__Time_Period__c> timePeriodList = 
-			[SELECT pse__Type__c, pse__Start_Date__c, pse__End_Date__c FROM pse__Time_Period__c 
-			 WHERE pse__Start_Date__c <= TODAY AND pse__End_Date__c >= TODAY 
-			 AND (pse__Type__c='Month' OR pse__Type__c='Year')];
-
-		for (pse__Time_Period__c tp : timePeriodList) {
-			timePeriodMap.put(tp.pse__Type__c, tp);
-		}
-
-		//MTD
-		//WRONG: FinancialMetrics mtdActualFinancialMetrics = getProjectActualFinancials(projectIds, Date.today().addMonths(-1));
-		FinancialMetrics mtdActualFinancialMetrics = 
-			getProjectActualFinancials(projectIds, timePeriodMap.get('Month').pse__Start_Date__c);
-		snapshot.GrossRevenueMonthToDate__c = mtdActualFinancialMetrics.TotalRevenue;
-		snapshot.CostsODCEXPSMonthToDate__c = mtdActualFinancialMetrics.CostsODCEXPS;
-		snapshot.CostsODCSUBSMonthToDate__c = mtdActualFinancialMetrics.CostsODCSUBS;
-		snapshot.LaborMonthToDate__c = mtdActualFinancialMetrics.Labor;
-		snapshot.FringeMonthToDate__c = mtdActualFinancialMetrics.Fringe;
-		snapshot.OverheadMonthToDate__c = mtdActualFinancialMetrics.Overhead;
-		snapshot.HoursMonthToDate__c = mtdActualFinancialMetrics.Hours;
-		snapshot.CostMonthToDate__c = mtdActualFinancialMetrics.TotalCost;
-		snapshot.NetMarginMonthToDate__c = mtdActualFinancialMetrics.NetMargin;
-		snapshot.NetServiceMonthToDate__c = mtdActualFinancialMetrics.NetServiceRevenue;
-		snapshot.NMNSRMonthToDate__c = mtdActualFinancialMetrics.NMNSR;
-		snapshot.NMGRMonthToDate__c = mtdActualFinancialMetrics.NMGR;
-		snapshot.LaborMultMonthToDate__c = mtdActualFinancialMetrics.LaborMult;
-		snapshot.ContingencyMonthToDate__c = mtdActualFinancialMetrics.TotalContingency;
-		
-		snapshot.SurMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
-		snapshot.LostMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
-		
-		
-		//ITD
-		FinancialMetrics itdActualFinancialMetrics = getProjectActualFinancials(projectIds, null);
-		snapshot.GrossRevenueITD__c = itdActualFinancialMetrics.TotalRevenue;
-		snapshot.CostsODCEXPSITD__c = itdActualFinancialMetrics.CostsODCEXPS;
-		snapshot.CostsODCSUBSITD__c = itdActualFinancialMetrics.CostsODCSUBS;
-		snapshot.LaborITD__c = itdActualFinancialMetrics.Labor;
-		snapshot.FringeITD__c = itdActualFinancialMetrics.Fringe;
-		snapshot.OverheadITD__c = itdActualFinancialMetrics.Overhead;
-		snapshot.HoursITD__c = itdActualFinancialMetrics.Hours;
-		snapshot.CostITD__c = itdActualFinancialMetrics.TotalCost;
-		snapshot.NetMarginITD__c = itdActualFinancialMetrics.NetMargin;	
-		snapshot.NetServiceITD__c = itdActualFinancialMetrics.NetServiceRevenue;
-		snapshot.NMNSRITD__c = itdActualFinancialMetrics.NMNSR;
-		snapshot.NMGRITD__c = itdActualFinancialMetrics.NMGR;
-		snapshot.LaborMultITD__c = itdActualFinancialMetrics.LaborMult;	
-		snapshot.ContingencyITD__c = itdActualFinancialMetrics.TotalContingency;
-		
-		snapshot.SurMarginITD__c = ((snapshot.NMNSRITD__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceITD__c)/100;
-		snapshot.LostMarginITD__c = ((snapshot.NMNSRITD__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceITD__c)/100;
-
-
-		//YTD			
-		//WRONG: FinancialMetrics ytdActualFinancialMetrics = getProjectActualFinancials(projectIds, Date.today().addYears(-1));
-		FinancialMetrics ytdActualFinancialMetrics = 
-			getProjectActualFinancials(projectIds, timePeriodMap.get('Year').pse__Start_Date__c);
-		snapshot.GrossRevenueYearToDate__c = ytdActualFinancialMetrics.TotalRevenue;
-		snapshot.CostsODCEXPSYearToDate__c = ytdActualFinancialMetrics.CostsODCEXPS;
-		snapshot.CostsODCSUBSYearToDate__c = ytdActualFinancialMetrics.CostsODCSUBS;
-		snapshot.LaborYearToDate__c = ytdActualFinancialMetrics.Labor;
-		snapshot.FringeYearToDate__c = ytdActualFinancialMetrics.Fringe;
-		snapshot.OverheadYearToDate__c = ytdActualFinancialMetrics.Overhead;
-		snapshot.HoursYearToDate__c = ytdActualFinancialMetrics.Hours;
-		snapshot.CostYearToDate__c = ytdActualFinancialMetrics.TotalCost;
-		snapshot.NetMarginYearToDate__c = ytdActualFinancialMetrics.NetMargin;	
-		snapshot.NetServiceYearToDate__c = ytdActualFinancialMetrics.NetServiceRevenue;
-		snapshot.NMNSRYearToDate__c = ytdActualFinancialMetrics.NMNSR;
-		snapshot.NMGRYearToDate__c = ytdActualFinancialMetrics.NMGR;
-		snapshot.LaborMultYearToDate__c = ytdActualFinancialMetrics.LaborMult;
-		snapshot.ContingencyYearToDate__c = ytdActualFinancialMetrics.TotalContingency;
-		
-		snapshot.SurMarginYearToDate__c = ((snapshot.NMNSRYearToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceYearToDate__c)/100;
-		snapshot.LostMarginYearToDate__c = ((snapshot.NMNSRYearToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceYearToDate__c)/100;
-		
-		//Billing Metrics		
-		BillingMetrics billingMetrics = getBillingARMetrics(projectIds, itdActualFinancialMetrics.TotalRevenue);
-		snapshot.CashPerfBilled0__c = billingMetrics.Billed0to30;
-		snapshot.CashPerfBilled31__c = billingMetrics.Billed31to60;
-		snapshot.CashPerfBilled60__c = billingMetrics.Billed60Plus;
-		snapshot.CashPerfBilled90__c = billingMetrics.Billed90Plus;
-		snapshot.CashPerfBilledAR__c = billingMetrics.BilledAR;
-		snapshot.CashPerfRetention__c = billingMetrics.Retention;
-		
-		snapshot.CashPerfUnbilled60__c = billingMetrics.UnBilled60Plus;
-		snapshot.CashPerfUnbilled30__c = billingMetrics.Unbilled31to60;
-		snapshot.CashPerfUnbilled0__c = billingMetrics.Unbilled0to30;
-		snapshot.CashPerfBIEE__c = billingMetrics.BIEE;
-		snapshot.CashPerfTotalUnbilled__c = billingMetrics.TotalUnbilled;
-							
-		//Future Spend
-		projectMonth1FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today(), Date.today().addMonths(1));
-		projectMonth2FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(1), Date.today().addMonths(2));		
-		projectMonth3FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(2), Date.today().addMonths(3));		
-		projectMonth4FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(3), Date.today().addMonths(4));		
-		projectMonth5FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(4), Date.today().addMonths(5));		
-		projectMonth6FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(5), Date.today().addMonths(6));		
-
-		Decimal projectPercent;
-		Decimal month1Spend = 0;
-		Decimal month2Spend = 0;
-		Decimal month3Spend = 0;
-		Decimal month4Spend = 0;
-		Decimal month5Spend = 0;
-		Decimal month6Spend = 0;
-		
-		for(Id organizationId:organizationNameMap.keyset())
-		{
-			for(Id projId:organizationProjectsMap.get(organizationId))
-			{
-				projectPercent = organizationProjectPercentage.get(organizationId + '-' + projId);	
-				month1Spend += projectPercent/100 * returnMapDecimalValue(projectMonth1FutureSpend.get(projId));
-				month2Spend += projectPercent/100 * returnMapDecimalValue(projectMonth2FutureSpend.get(projId));
-				month3Spend += projectPercent/100 * returnMapDecimalValue(projectMonth3FutureSpend.get(projId));
-				month4Spend += projectPercent/100 * returnMapDecimalValue(projectMonth4FutureSpend.get(projId));
-				month5Spend += projectPercent/100 * returnMapDecimalValue(projectMonth5FutureSpend.get(projId));
-				month6Spend += projectPercent/100 * returnMapDecimalValue(projectMonth6FutureSpend.get(projId));
+				//Agreements
+				snapshot.RelatedAgreements__c = getRelatedAgreements(projectIds);
+				
+				//Project Tasks
+				snapshot.ProjectTasks__c = getRelatedProjectTasks(projectIds);
+				
+				//Organizations
+				for(Id organizationId:organizationNameMap.keyset()){
+					if(organizationId != primaryOrganizationId)
+					{
+						if(snapshot.SecondaryOrganizations__c == '' || snapshot.SecondaryOrganizations__c == null)
+							snapshot.SecondaryOrganizations__c = organizationNameMap.get(organizationId);	
+						else
+							snapshot.SecondaryOrganizations__c += '::' + organizationNameMap.get(organizationId);
+					}	
+				}	
+				
+				//Earned Value
+				//map<Date, Decimal> mapTest = earnedValueController.mapDateCPI;
+				if(EarnedValueSnapshotDate != null)
+				{
+					
+					snapshot.EarnedValueCPI__c = earnedValueController.mapDateCPI.get(EarnedValueSnapshotDate);
+					snapshot.EarnedValueSPI__c = earnedValueController.mapDateSPI.get(EarnedValueSnapshotDate);
+					snapshot.EarnedValuePlannedValue__c = earnedValueController.mapDatePlannedValues.get(EarnedValueSnapshotDate);
+					snapshot.EarnedValue__c = earnedValueController.mapDateEarnedValues.get(EarnedValueSnapshotDate);
+					snapshot.EarnedValueActualSpend__c = earnedValueController.mapDateActualCosts.get(EarnedValueSnapshotDate);
+					snapshot.EarnedValueLastUpdated__c = EarnedValueLastModifiedDate;
+					snapshot.EarnedValueOverallProgress__c = 0;
+					snapshot.EarnedValuePercentBudgetSpent__c = 0;
+				}					
 			}
-			if(snapshot.PrimaryFutureSpend__c == '' || snapshot.PrimaryFutureSpend__c == null)
-				snapshot.PrimaryFutureSpend__c = organizationNameMap.get(organizationId);
-			else
-				snapshot.PrimaryFutureSpend__c += ';;' + organizationNameMap.get(organizationId);
-			snapshot.PrimaryFutureSpend__c += '::' + month1Spend;
-			snapshot.PrimaryFutureSpend__c += '::' + month2Spend;
-			snapshot.PrimaryFutureSpend__c += '::' + month3Spend;
-			snapshot.PrimaryFutureSpend__c += '::' + month4Spend;
-			snapshot.PrimaryFutureSpend__c += '::' + month5Spend;
-			snapshot.PrimaryFutureSpend__c += '::' + month6Spend;				
+
+			// Original Budget
+			FinancialMetrics originalBudgetFinancialMetrics = getOriginalBudgetHeaderInformation(projectIds, false);
+			snapshot.GrossRevenueBudgetOriginal__c = originalBudgetFinancialMetrics.TotalRevenue;
+			snapshot.LaborBudgetOriginal__c = originalBudgetFinancialMetrics.TotalLabor;
+			snapshot.ContingencyBudgetOriginal__c = originalBudgetFinancialMetrics.TotalContingency;
+			
+			//Approved
+			FinancialMetrics approvedBudgetFinancialMetrics = getApprovedBudgetHeaderInformation(projectIds, 'Approved', false);
+			snapshot.GrossRevenueBudget__c = approvedBudgetFinancialMetrics.TotalRevenue;
+			snapshot.CostBudget__c = approvedBudgetFinancialMetrics.TotalCost;
+			snapshot.NetMarginBudget__c = approvedBudgetFinancialMetrics.NetMargin;
+			snapshot.NetServiceBudget__c = approvedBudgetFinancialMetrics.NetServiceRevenue;
+			snapshot.NMNSRBudget__c = approvedBudgetFinancialMetrics.NMNSR;
+			snapshot.NMGRBudget__c = approvedBudgetFinancialMetrics.NMGR;
+			snapshot.LaborMultBudget__c = approvedBudgetFinancialMetrics.LaborMult;
+			snapshot.ContingencyBudget__c = approvedBudgetFinancialMetrics.TotalContingency;
+			snapshot.LastUpdatedBudget__c = getLastUpdatedBudgetDate(projectIds);
+
+			//Forecast
+			FinancialMetrics forecastBudgetFinancialMetrics = getForecastBudgetHeaderInformation(projectIds);
+			snapshot.GrossRevenueForecast__c = forecastBudgetFinancialMetrics.TotalRevenue + snapshot.GrossRevenueBudget__c;
+			snapshot.CostForecast__c = forecastBudgetFinancialMetrics.TotalCost + snapshot.CostBudget__c;
+			snapshot.NetMarginForecast__c = forecastBudgetFinancialMetrics.NetMargin + snapshot.NetMarginBudget__c;	
+			snapshot.NetServiceForecast__c = forecastBudgetFinancialMetrics.NetServiceRevenue + snapshot.NetServiceBudget__c;
+			snapshot.NMNSRForecast__c = forecastBudgetFinancialMetrics.NMNSR + snapshot.NMNSRBudget__c;
+			snapshot.NMGRForecast__c = forecastBudgetFinancialMetrics.NMGR + snapshot.NMGRBudget__c;
+			snapshot.LaborMultForecast__c = forecastBudgetFinancialMetrics.LaborMult + snapshot.LaborMultBudget__c;
+			snapshot.ContingencyForecast__c = forecastBudgetFinancialMetrics.TotalContingency + snapshot.ContingencyBudget__c;
+			snapshot.LostMarginForecast__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
+			
+			// Costs Forecast EAC
+			try {
+				snapshot = getOriginalOrForecastBudgetCostsInformation(snapshot);
+			}
+			catch (Exception e) {
+				System.debug(e.getStackTraceString());
+			}
+
+			// Hours Forecast EAC
+			try {
+				snapshot = getOriginalOrForecastBudgetHoursInformation(snapshot, projectIds);
+			}
+			catch (Exception e) {
+				System.debug(e.getStackTraceString());
+			}
+
+			//Previous Forecast
+			try {
+				snapshot = getPreviousFMForecastInformation(snapshot);
+			}
+			catch (Exception e) {
+				System.debug(e.getStackTraceString());
+			}
+			
+			//Draft
+			//FinancialMetrics draftBudgetFinancialMetrics = getDraftBudgetHeaderInformation(projectIds, changeOrderRecordTypeId);
+			FinancialMetrics draftBudgetFinancialMetrics = getDraftBudgetHeaderInformation(projectIds);		
+			snapshot.GrossRevenueDraft__c = draftBudgetFinancialMetrics.TotalRevenue;
+			snapshot.CostDraft__c = draftBudgetFinancialMetrics.TotalCost;
+			snapshot.NetMarginDraft__c = draftBudgetFinancialMetrics.NetMargin;	
+			snapshot.NetServiceDraft__c = draftBudgetFinancialMetrics.NetServiceRevenue;
+			snapshot.NMNSRDraft__c = draftBudgetFinancialMetrics.NMNSR;
+			snapshot.NMGRDraft__c = draftBudgetFinancialMetrics.NMGR;
+			snapshot.LaborMultDraft__c = draftBudgetFinancialMetrics.LaborMult;
+			snapshot.ContingencyDraft__c = draftBudgetFinancialMetrics.TotalContingency;
+			
+			//Unapproved
+			FinancialMetrics unapprovedBudgetFinancialMetrics = getBudgetHeaderInformation(projectIds, 'Approved', true);
+			snapshot.GrossRevenueUnapproved__c = unapprovedBudgetFinancialMetrics.TotalRevenue;
+			snapshot.CostUnapproved__c = unapprovedBudgetFinancialMetrics.TotalCost;
+			snapshot.NetMarginUnapproved__c = unapprovedBudgetFinancialMetrics.NetMargin;	
+			snapshot.NetServiceUnapproved__c = unapprovedBudgetFinancialMetrics.NetServiceRevenue;
+			snapshot.NMNSRUnapproved__c = unapprovedBudgetFinancialMetrics.NMNSR;
+			snapshot.NMGRUnapproved__c = unapprovedBudgetFinancialMetrics.NMGR;
+			snapshot.LaborMultUnapproved__c = unapprovedBudgetFinancialMetrics.LaborMult;
+			snapshot.ContingencyUnapproved__c = unapprovedBudgetFinancialMetrics.TotalContingency;		
+			
+			// StartDate of FiscalMonth AND FiscalYear
+			Map<String, pse__Time_Period__c> timePeriodMap = new Map<String, pse__Time_Period__c>();
+			List<pse__Time_Period__c> timePeriodList = 
+				[SELECT pse__Type__c, pse__Start_Date__c, pse__End_Date__c FROM pse__Time_Period__c 
+				 WHERE pse__Start_Date__c <= TODAY AND pse__End_Date__c >= TODAY 
+				 AND (pse__Type__c='Month' OR pse__Type__c='Year')];
+
+			for (pse__Time_Period__c tp : timePeriodList) {
+				timePeriodMap.put(tp.pse__Type__c, tp);
+			}
+
+			//MTD
+			//WRONG: FinancialMetrics mtdActualFinancialMetrics = getProjectActualFinancials(projectIds, Date.today().addMonths(-1));
+			FinancialMetrics mtdActualFinancialMetrics = 
+				getProjectActualFinancials(projectIds, timePeriodMap.get('Month').pse__Start_Date__c);
+			snapshot.GrossRevenueMonthToDate__c = mtdActualFinancialMetrics.TotalRevenue;
+			snapshot.CostsODCEXPSMonthToDate__c = mtdActualFinancialMetrics.CostsODCEXPS;
+			snapshot.CostsODCSUBSMonthToDate__c = mtdActualFinancialMetrics.CostsODCSUBS;
+			snapshot.LaborMonthToDate__c = mtdActualFinancialMetrics.Labor;
+			snapshot.FringeMonthToDate__c = mtdActualFinancialMetrics.Fringe;
+			snapshot.OverheadMonthToDate__c = mtdActualFinancialMetrics.Overhead;
+			snapshot.HoursMonthToDate__c = mtdActualFinancialMetrics.Hours;
+			snapshot.CostMonthToDate__c = mtdActualFinancialMetrics.TotalCost;
+			snapshot.NetMarginMonthToDate__c = mtdActualFinancialMetrics.NetMargin;
+			snapshot.NetServiceMonthToDate__c = mtdActualFinancialMetrics.NetServiceRevenue;
+			snapshot.NMNSRMonthToDate__c = mtdActualFinancialMetrics.NMNSR;
+			snapshot.NMGRMonthToDate__c = mtdActualFinancialMetrics.NMGR;
+			snapshot.LaborMultMonthToDate__c = mtdActualFinancialMetrics.LaborMult;
+			snapshot.ContingencyMonthToDate__c = mtdActualFinancialMetrics.TotalContingency;
+			
+			snapshot.SurMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
+			snapshot.LostMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
+			
+			
+			//ITD
+			FinancialMetrics itdActualFinancialMetrics = getProjectActualFinancials(projectIds, null);
+			snapshot.GrossRevenueITD__c = itdActualFinancialMetrics.TotalRevenue;
+			snapshot.CostsODCEXPSITD__c = itdActualFinancialMetrics.CostsODCEXPS;
+			snapshot.CostsODCSUBSITD__c = itdActualFinancialMetrics.CostsODCSUBS;
+			snapshot.LaborITD__c = itdActualFinancialMetrics.Labor;
+			snapshot.FringeITD__c = itdActualFinancialMetrics.Fringe;
+			snapshot.OverheadITD__c = itdActualFinancialMetrics.Overhead;
+			snapshot.HoursITD__c = itdActualFinancialMetrics.Hours;
+			snapshot.CostITD__c = itdActualFinancialMetrics.TotalCost;
+			snapshot.NetMarginITD__c = itdActualFinancialMetrics.NetMargin;	
+			snapshot.NetServiceITD__c = itdActualFinancialMetrics.NetServiceRevenue;
+			snapshot.NMNSRITD__c = itdActualFinancialMetrics.NMNSR;
+			snapshot.NMGRITD__c = itdActualFinancialMetrics.NMGR;
+			snapshot.LaborMultITD__c = itdActualFinancialMetrics.LaborMult;	
+			snapshot.ContingencyITD__c = itdActualFinancialMetrics.TotalContingency;
+			
+			snapshot.SurMarginITD__c = ((snapshot.NMNSRITD__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceITD__c)/100;
+			snapshot.LostMarginITD__c = ((snapshot.NMNSRITD__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceITD__c)/100;
+
+
+			//YTD			
+			//WRONG: FinancialMetrics ytdActualFinancialMetrics = getProjectActualFinancials(projectIds, Date.today().addYears(-1));
+			FinancialMetrics ytdActualFinancialMetrics = 
+				getProjectActualFinancials(projectIds, timePeriodMap.get('Year').pse__Start_Date__c);
+			snapshot.GrossRevenueYearToDate__c = ytdActualFinancialMetrics.TotalRevenue;
+			snapshot.CostsODCEXPSYearToDate__c = ytdActualFinancialMetrics.CostsODCEXPS;
+			snapshot.CostsODCSUBSYearToDate__c = ytdActualFinancialMetrics.CostsODCSUBS;
+			snapshot.LaborYearToDate__c = ytdActualFinancialMetrics.Labor;
+			snapshot.FringeYearToDate__c = ytdActualFinancialMetrics.Fringe;
+			snapshot.OverheadYearToDate__c = ytdActualFinancialMetrics.Overhead;
+			snapshot.HoursYearToDate__c = ytdActualFinancialMetrics.Hours;
+			snapshot.CostYearToDate__c = ytdActualFinancialMetrics.TotalCost;
+			snapshot.NetMarginYearToDate__c = ytdActualFinancialMetrics.NetMargin;	
+			snapshot.NetServiceYearToDate__c = ytdActualFinancialMetrics.NetServiceRevenue;
+			snapshot.NMNSRYearToDate__c = ytdActualFinancialMetrics.NMNSR;
+			snapshot.NMGRYearToDate__c = ytdActualFinancialMetrics.NMGR;
+			snapshot.LaborMultYearToDate__c = ytdActualFinancialMetrics.LaborMult;
+			snapshot.ContingencyYearToDate__c = ytdActualFinancialMetrics.TotalContingency;
+			
+			snapshot.SurMarginYearToDate__c = ((snapshot.NMNSRYearToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceYearToDate__c)/100;
+			snapshot.LostMarginYearToDate__c = ((snapshot.NMNSRYearToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceYearToDate__c)/100;
+			
+			//Billing Metrics		
+			BillingMetrics billingMetrics = getBillingARMetrics(projectIds, itdActualFinancialMetrics.TotalRevenue);
+			snapshot.AR0to30__c = billingMetrics.Billed0to30;
+			snapshot.AR31to60__c = billingMetrics.Billed31to60;
+			snapshot.AR61to90__c = billingMetrics.Billed61to90;
+			snapshot.AR91to180__c = billingMetrics.Billed91to180;
+			snapshot.AR181Plus__c = billingMetrics.Billed181Plus;
+
+			snapshot.ARTotal__c = billingMetrics.BilledAR;
+			snapshot.ARRetention__c = billingMetrics.Retention;
+			
+			snapshot.Unbilled0to30__c = billingMetrics.Unbilled0to30;
+			snapshot.Unbilled31to60__c = billingMetrics.Unbilled31to60;
+			snapshot.Unbilled61to90__c = billingMetrics.Unbilled61to90;
+			snapshot.Unbilled91to180__c = billingMetrics.Unbilled91to180;
+			snapshot.Unbilled181Plus__c = billingMetrics.Unbilled181Plus;
+			
+			snapshot.ARBIEE__c = billingMetrics.BIEE;
+			snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
+							
+			//Future Spend
+			projectMonth1FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today(), Date.today().addMonths(1));
+			projectMonth2FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(1), Date.today().addMonths(2));		
+			projectMonth3FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(2), Date.today().addMonths(3));		
+			projectMonth4FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(3), Date.today().addMonths(4));		
+			projectMonth5FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(4), Date.today().addMonths(5));		
+			projectMonth6FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(5), Date.today().addMonths(6));		
+
+			Decimal projectPercent;
+			Decimal month1Spend = 0;
+			Decimal month2Spend = 0;
+			Decimal month3Spend = 0;
+			Decimal month4Spend = 0;
+			Decimal month5Spend = 0;
+			Decimal month6Spend = 0;
+			
+			for(Id organizationId:organizationNameMap.keyset())
+			{
+				for(Id projId:organizationProjectsMap.get(organizationId))
+				{
+					projectPercent = organizationProjectPercentage.get(organizationId + '-' + projId);	
+					month1Spend += projectPercent/100 * returnMapDecimalValue(projectMonth1FutureSpend.get(projId));
+					month2Spend += projectPercent/100 * returnMapDecimalValue(projectMonth2FutureSpend.get(projId));
+					month3Spend += projectPercent/100 * returnMapDecimalValue(projectMonth3FutureSpend.get(projId));
+					month4Spend += projectPercent/100 * returnMapDecimalValue(projectMonth4FutureSpend.get(projId));
+					month5Spend += projectPercent/100 * returnMapDecimalValue(projectMonth5FutureSpend.get(projId));
+					month6Spend += projectPercent/100 * returnMapDecimalValue(projectMonth6FutureSpend.get(projId));
+				}
+				if(snapshot.PrimaryFutureSpend__c == '' || snapshot.PrimaryFutureSpend__c == null)
+					snapshot.PrimaryFutureSpend__c = organizationNameMap.get(organizationId);
+				else
+					snapshot.PrimaryFutureSpend__c += ';;' + organizationNameMap.get(organizationId);
+				snapshot.PrimaryFutureSpend__c += '::' + month1Spend;
+				snapshot.PrimaryFutureSpend__c += '::' + month2Spend;
+				snapshot.PrimaryFutureSpend__c += '::' + month3Spend;
+				snapshot.PrimaryFutureSpend__c += '::' + month4Spend;
+				snapshot.PrimaryFutureSpend__c += '::' + month5Spend;
+				snapshot.PrimaryFutureSpend__c += '::' + month6Spend;				
+			}
+			
+			snapshot.FutureSpendMonth1__c = getTotalFutureSpendForPeriod(projectMonth1FutureSpend.values());
+			snapshot.FutureSpendMonth2__c = getTotalFutureSpendForPeriod(projectMonth2FutureSpend.values());
+			snapshot.FutureSpendMonth3__c = getTotalFutureSpendForPeriod(projectMonth3FutureSpend.values());
+			snapshot.FutureSpendMonth4__c = getTotalFutureSpendForPeriod(projectMonth4FutureSpend.values());
+			snapshot.FutureSpendMonth5__c = getTotalFutureSpendForPeriod(projectMonth5FutureSpend.values());
+			snapshot.FutureSpendMonth6__c = getTotalFutureSpendForPeriod(projectMonth6FutureSpend.values());
 		}
-		
-		snapshot.FutureSpendMonth1__c = getTotalFutureSpendForPeriod(projectMonth1FutureSpend.values());
-		snapshot.FutureSpendMonth2__c = getTotalFutureSpendForPeriod(projectMonth2FutureSpend.values());
-		snapshot.FutureSpendMonth3__c = getTotalFutureSpendForPeriod(projectMonth3FutureSpend.values());
-		snapshot.FutureSpendMonth4__c = getTotalFutureSpendForPeriod(projectMonth4FutureSpend.values());
-		snapshot.FutureSpendMonth5__c = getTotalFutureSpendForPeriod(projectMonth5FutureSpend.values());
-		snapshot.FutureSpendMonth6__c = getTotalFutureSpendForPeriod(projectMonth6FutureSpend.values());
-		
+		catch (Exception e) {
+			System.debug(e.getStackTraceString());
+		}
 		return snapshot;
 	}
 	
@@ -644,96 +665,6 @@ public class ECO_Service_ProjectSnapshots {
 		return metrics;
 	}
 
-	@TestVisible private ProjectSnapshot__c getOriginalBudgetCostsInformation(ProjectSnapshot__c snapshot) {
-
-		Set<String> plReportCategorySet = getPLReportCategories();
-		Map<String, BudgetAssignment__c> budgetAssignmentMap = new Map<String, BudgetAssignment__c>();
-
-		try {
-			List<BudgetAssignment__c> budgetAssignments = 
-				[SELECT OverrideTotalCost__c, TotalComputedCost__c, BudgetResource__r.PLReportCategory__c
-				 FROM BudgetAssignment__c 
-				 WHERE BudgetResource__r.PLReportCategory__c IN :plReportCategorySet
-				 AND (BudgetResource__r.BudgetHeader__r.Status__c = 'Forecast'
-				 OR BudgetResource__r.BudgetHeader__r.Status__c = 'Approved')
-				 AND ProjectTask__r.pse__Project__r.Id =: snapshot.Project__c];
-
-			for (BudgetAssignment__c ba : budgetAssignments) {
-				budgetAssignmentMap.put(ba.BudgetResource__r.PLReportCategory__c, ba);
-			}
-
-			for (String PLReportCategory : budgetAssignmentMap.keySet()) {
-				BudgetAssignment__c ba = (BudgetAssignment__c) budgetAssignmentMap.get(PLReportCategory);
-				if (ba.BudgetResource__r.BudgetHeader__r.Status__c == 'Forecast') {
-					if (ba.OverrideTotalCost__c > 0) {
-						if (PLReportCategory == 'ODC - Exps') {
-							snapshot.CostsODCEXPSForecast__c = ba.OverrideTotalCost__c;
-						}
-						else if (PLReportCategory == 'ODC - Subs') {
-							snapshot.CostsODCSUBSForecast__c = ba.OverrideTotalCost__c;
-						}
-						else if (PLReportCategory == 'ODC - Contingency') {
-							snapshot.ContingencyForecast__c = ba.OverrideTotalCost__c;
-						}
-						else if (PLReportCategory == 'Labor') {
-							snapshot.LaborForecast__c = ba.OverrideTotalCost__c;
-						}
-						else if (PLReportCategory == 'Fringe') {
-							snapshot.FringeForecast__c = ba.OverrideTotalCost__c;
-						}
-						else if (PLReportCategory == 'Overhead') {
-							snapshot.OverheadForecast__c = ba.OverrideTotalCost__c;
-						}
-					}
-					else {
-						if (PLReportCategory == 'ODC - Exps') {
-							snapshot.CostsODCEXPSForecast__c = ba.TotalComputedCost__c;
-						}
-						else if (PLReportCategory == 'ODC - Subs') {
-							snapshot.CostsODCSUBSForecast__c = ba.TotalComputedCost__c;
-						}
-						else if (PLReportCategory == 'ODC - Contingency') {
-							snapshot.ContingencyForecast__c = ba.TotalComputedCost__c;
-						}
-						else if (PLReportCategory == 'Labor') {
-							snapshot.LaborForecast__c = ba.TotalComputedCost__c;
-						}
-						else if (PLReportCategory == 'Fringe') {
-							snapshot.FringeForecast__c = ba.TotalComputedCost__c;
-						}
-						else if (PLReportCategory == 'Overhead') {
-							snapshot.OverheadForecast__c = ba.TotalComputedCost__c;
-						}
-					}
-				}
-				else {
-					if (PLReportCategory == 'ODC - Exps') {
-						snapshot.CostsODCEXPSBudget__c = ba.TotalComputedCost__c;
-					}
-					else if (PLReportCategory == 'ODC - Subs') {
-						snapshot.CostsODCSUBSBudget__c = ba.TotalComputedCost__c;
-					}
-					else if (PLReportCategory == 'ODC - Contingency') {
-						snapshot.ContingencyBudget__c = ba.TotalComputedCost__c;
-					}
-					else if (PLReportCategory == 'Labor') {
-						snapshot.LaborBudget__c = ba.TotalComputedCost__c;
-					}
-					else if (PLReportCategory == 'Fringe') {
-						snapshot.FringeBudget__c = ba.TotalComputedCost__c;
-					}
-					else if (PLReportCategory == 'Overhead') {
-						snapshot.OverheadBudget__c = ba.TotalComputedCost__c;
-					}
-				}
-			}
-		}
-		catch(Exception e) {
-			System.Debug(e.getStackTraceString());
-		}
-		return snapshot;
-	}
-
 	private FinancialMetrics getUnapprovedBudgetHeaderInformation(list<Id> projectIds, String status, boolean showUnsynchedBudgets)
 	{
 		FinancialMetrics metrics = new FinancialMetrics();
@@ -867,7 +798,7 @@ public class ECO_Service_ProjectSnapshots {
 		b) Filter by category: BudgetAssignment__r.BudgetResource.PLReportCategory = (whatever category is)
 		c) Filter by status: BudgetAssignment__r.BudgetResource__r.Budgetheader.Status = 'Forecast'
 	*/
-	@TestVisible private ProjectSnapshot__c getForecastBudgetCostsInformation(ProjectSnapshot__c snapshot) {
+	@TestVisible private ProjectSnapshot__c getOriginalOrForecastBudgetCostsInformation(ProjectSnapshot__c snapshot) {
 
 		Set<String> plReportCategorySet = getPLReportCategories();
 		Map<String, BudgetAssignment__c> budgetAssignmentMap = new Map<String, BudgetAssignment__c>();
@@ -877,7 +808,8 @@ public class ECO_Service_ProjectSnapshots {
 				[SELECT OverrideTotalCost__c, TotalComputedCost__c, BudgetResource__r.PLReportCategory__c
 				 FROM BudgetAssignment__c 
 				 WHERE BudgetResource__r.PLReportCategory__c IN :plReportCategorySet
-				 AND (BudgetResource__r.BudgetHeader__r.Status__c = 'Forecast'
+				 AND (BudgetResource__r.BudgetHeader__r.OriginalBudget__c=true
+				 OR BudgetResource__r.BudgetHeader__r.Status__c = 'Forecast'
 				 OR BudgetResource__r.BudgetHeader__r.Status__c = 'Approved')
 				 AND ProjectTask__r.pse__Project__r.Id =: snapshot.Project__c];
 
@@ -931,22 +863,28 @@ public class ECO_Service_ProjectSnapshots {
 				}
 				else {
 					if (PLReportCategory == 'ODC - Exps') {
-						snapshot.CostsODCEXPSBudget__c = ba.TotalComputedCost__c;
+						snapshot.CostsODCEXPSBudgetOriginal__c = ba.TotalComputedCost__c;
+						snapshot.CostsODCEXPSForecast__c = ba.TotalComputedCost__c;
 					}
 					else if (PLReportCategory == 'ODC - Subs') {
-						snapshot.CostsODCSUBSBudget__c = ba.TotalComputedCost__c;
+						snapshot.CostsODCSUBSBudgetOriginal__c = ba.TotalComputedCost__c;
+						snapshot.CostsODCSUBSForecast__c = ba.TotalComputedCost__c;
 					}
 					else if (PLReportCategory == 'ODC - Contingency') {
-						snapshot.ContingencyBudget__c = ba.TotalComputedCost__c;
+						snapshot.ContingencyBudgetOriginal__c = ba.TotalComputedCost__c;
+						snapshot.ContingencyForecast__c = ba.TotalComputedCost__c;
 					}
 					else if (PLReportCategory == 'Labor') {
-						snapshot.LaborBudget__c = ba.TotalComputedCost__c;
+						snapshot.LaborBudgetOriginal__c = ba.TotalComputedCost__c;
+						snapshot.LaborForecast__c = ba.TotalComputedCost__c;
 					}
 					else if (PLReportCategory == 'Fringe') {
-						snapshot.FringeBudget__c = ba.TotalComputedCost__c;
+						snapshot.FringeBudgetOriginal__c = ba.TotalComputedCost__c;
+						snapshot.FringeForecast__c = ba.TotalComputedCost__c;
 					}
 					else if (PLReportCategory == 'Overhead') {
-						snapshot.OverheadBudget__c = ba.TotalComputedCost__c;
+						snapshot.OverheadBudgetOriginal__c = ba.TotalComputedCost__c;
+						snapshot.OverheadForecast__c = ba.TotalComputedCost__c;
 					}
 				}
 			}
@@ -960,22 +898,26 @@ public class ECO_Service_ProjectSnapshots {
 	/* Total number of hours in current forecast budget (by Budget Assignment: ExpenditureResourceType=Lab; 
 	   use Quantity; filter where Budget Header: Status  = Forecast)
 	*/
-	@TestVisible private ProjectSnapshot__c getForecastBudgetHoursInformation(ProjectSnapshot__c snapshot, 
+	@TestVisible private ProjectSnapshot__c getOriginalOrForecastBudgetHoursInformation(ProjectSnapshot__c snapshot, 
 		List<Id> projectIds) {
 		try {
 			List<AggregateResult> results = 
 				[SELECT SUM(Quantity__c) Hours 
 				 FROM BudgetAssignment__c
 				 WHERE BudgetResource__r.ExpenditureResourceType__c = 'LAB'
-				 AND (BudgetResource__r.BudgetHeader__r.Status__c = 'Forecast' 
+				 AND (BudgetResource__r.BudgetHeader__r.OriginalBudget__c=true
+				 OR BudgetResource__r.BudgetHeader__r.Status__c = 'Forecast' 
 				 OR BudgetResource__r.BudgetHeader__r.Status__c = 'Approved') 
 				 AND ProjectTask__r.pse__Project__r.Id IN : projectIds];
 
 			for(AggregateResult ar: results)
 			{
-				if(ar.get('Hours') != null)
-					snapshot.HoursForecast__c = (Decimal)ar.get('Hours');
-					snapshot.HoursBudget__c = (Decimal)ar.get('Hours');
+				Decimal hours = (Decimal)ar.get('Hours');
+				if(hours != null) {
+					snapshot.HoursBudgetOriginal__c = hours;
+					snapshot.HoursForecast__c = hours;
+					snapshot.HoursBudget__c = hours;
+				}
 			}
 		}
 		catch(Exception e) {
@@ -998,6 +940,7 @@ public class ECO_Service_ProjectSnapshots {
 			snapshot.FringeForecastPrevME__c = snapshotPrevFM.FringeForecast__c;
 			snapshot.OverheadForecastPrevME__c = snapshotPrevFM.OverheadForecast__c;
 			snapshot.HoursForecastPrevME__c = snapshotPrevFM.HoursForecast__c;
+			snapshot.LostMarginForecast__c = snapshotPrevFM.LostMarginForecast__c;
 			snapshot.ProjectEndDatePrevME__c = snapshotPrevFM.ProjectEndDate__c;
 		}
 		return snapshot;
@@ -1010,7 +953,7 @@ public class ECO_Service_ProjectSnapshots {
 			projSnapshots = [SELECT Id, GrossRevenueForecast__c, 
 				CostsODCEXPSForecast__c, CostsODCSUBSForecast__c, ContingencyForecast__c,
 				LaborForecast__c, FringeForecast__c, OverheadForecast__c, HoursForecast__c, 
-				ProjectEndDate__c
+				LostMarginForecast__c, ProjectEndDate__c
 				FROM ProjectSnapshot__c 
 				WHERE SnapshotType__c = 'Auto' 
 				AND SnapshotFiscalMonth__c =: prevFiscalMonth
@@ -1291,52 +1234,85 @@ public class ECO_Service_ProjectSnapshots {
 					billingMetrics.Billed31to60 = (Decimal)ar.get('totalBilled31to60');
 			}
 
-			startDate = Date.today().addDays(-60);
-			for(AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled60plus 
+			startDate = Date.today().addDays(-61);
+			endDate = Date.today().addDays(-90);
+			for(AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled61to90 
 							FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
-							InvoiceDate__c <= :startDate])
+							InvoiceDate__c <= :startDate AND InvoiceDate__c >= :endDate])
 			{
-				if(ar.get('totalBilled60plus') != null)
-					billingMetrics.Billed60Plus = (Decimal)ar.get('totalBilled60plus');
+				if(ar.get('totalBilled61to90') != null)
+					billingMetrics.Billed61to90 = (Decimal)ar.get('totalBilled61to90');
 			}
-			
-			startDate = Date.today().addDays(-90);
-			for(AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled90plus 
+
+			startDate = Date.today().addDays(-91);
+			endDate = Date.today().addDays(-180);
+			for(AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled91to180 
+							FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
+							InvoiceDate__c <= :startDate AND InvoiceDate__c >= :endDate])
+			{
+				if(ar.get('totalBilled91to180') != null)
+					billingMetrics.Billed91to180 = (Decimal)ar.get('totalBilled91to180');
+			}
+	
+			startDate = Date.today().addDays(-181);
+			for(AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled181Plus 
 							FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
 							InvoiceDate__c <= :startDate])
 			{
-				if(ar.get('totalBilled90plus') != null)
-					billingMetrics.Billed90Plus = (Decimal)ar.get('totalBilled90plus');
+				if(ar.get('totalBilled181Plus') != null)
+					billingMetrics.Billed181Plus = (Decimal)ar.get('totalBilled181Plus');
 			}		
-				
-			startDate = Date.today().addDays(-60);
+			
+
+			// Unbilled
+			startDate = Date.today().addDays(-180);
 			for(AggregateResult ar:[SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds 
 													AND GLDate__c < :startDate])
 			{
 				if((Decimal)ar.get('totalRevenue') != null)
-					billingMetrics.Unbilled60Plus = (Decimal)ar.get('totalRevenue') - billingMetrics.BilledAR;
+					billingMetrics.Unbilled181Plus = (Decimal)ar.get('totalRevenue') - billingMetrics.BilledAR;
 				else
-					billingMetrics.Unbilled60Plus = 0 - billingMetrics.BilledAR;
+					billingMetrics.Unbilled181Plus = 0 - billingMetrics.BilledAR;
 			}					
+
+			startDate = Date.today().addDays(-90);
+			for(AggregateResult ar:[SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds 
+													AND GLDate__c < :startDate])
+			{
+				if((Decimal)ar.get('totalRevenue') != null)
+					billingMetrics.Unbilled91to180 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus);
+				else
+					billingMetrics.Unbilled91to180 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus);
+			}
+
+			startDate = Date.today().addDays(-60);
+			for(AggregateResult ar:[SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds 
+													AND GLDate__c < :startDate])
+			{
+				if((Decimal)ar.get('totalRevenue') != null)	
+					billingMetrics.Unbilled61to90 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus + billingMetrics.Unbilled91to180);
+				else
+					billingMetrics.Unbilled61to90 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus + billingMetrics.Unbilled91to180);
+			}
 
 			startDate = Date.today().addDays(-30);
 			for(AggregateResult ar:[SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds 
 													AND GLDate__c < :startDate])
 			{
-				if((Decimal)ar.get('totalRevenue') != null)
-					billingMetrics.Unbilled31to60 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled60Plus);
+				if((Decimal)ar.get('totalRevenue') != null)	
+					billingMetrics.Unbilled31to60 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus + billingMetrics.Unbilled91to180 + billingMetrics.Unbilled61to90);
 				else
-					billingMetrics.Unbilled31to60 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled60Plus);
-			}	
+					billingMetrics.Unbilled31to60 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus + billingMetrics.Unbilled91to180 + billingMetrics.Unbilled61to90);
+			}		
 			
 			startDate = Date.today().addDays(0);
 			for(AggregateResult ar:[SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds 
 													AND GLDate__c < :startDate])
 			{
 				if((Decimal)ar.get('totalRevenue') != null)	
-					billingMetrics.Unbilled0to30 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled60Plus + billingMetrics.Unbilled31to60);
+					billingMetrics.Unbilled0to30 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus + billingMetrics.Unbilled91to180 + billingMetrics.Unbilled61to90 + billingMetrics.Unbilled31to60);
 				else
-					billingMetrics.Unbilled0to30 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled60Plus + billingMetrics.Unbilled31to60);
+					billingMetrics.Unbilled0to30 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus + billingMetrics.Unbilled91to180 + billingMetrics.Unbilled61to90 + billingMetrics.Unbilled31to60);
 			}
 		}
 		catch(Exception e) {

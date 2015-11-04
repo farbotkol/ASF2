@@ -374,5 +374,90 @@ private class ECO_ProjectTaskValidatorTest {
 	  	system.assertNotEquals(ECO_Service_ProjectSync.STATUS_INITIATED, task1MsgQueue.Status__c);
 		*/
    }
+   
+   private static testMethod void testCalculateFiscalMonths(){		
+
+		
+		pse__Time_Period__c timePeriod = new pse__Time_Period__c();
+		timePeriod.pse__Start_Date__c = Date.Today();
+		timePeriod.pse__End_Date__c = Date.Today().addDays(7);
+		timePeriod.TimePeriodCode__c = 'FY2015-02';
+		timePeriod.pse__Type__c = 'Month';
+		insert timePeriod;
+		
+		
+		timePeriod = new pse__Time_Period__c();
+		timePeriod.pse__Start_Date__c = Date.Today().AddDays(-8);
+		timePeriod.pse__End_Date__c = Date.Today().addDays(-1);
+		timePeriod.TimePeriodCode__c = 'FY2015-01';
+		timePeriod.pse__Type__c = 'Month';
+		insert timePeriod;
+		
+        Account testAccount = new Account();
+        testAccount.Name = 'test account';
+        insert testAccount;
+
+        User testUser = ECO_Utils_Testing.createTestUser('Standard User');
+        insert testUser;
+
+        //project sites
+        Site__c testSite = new Site__c();
+        testSite.Account__c = testAccount.Id;
+        testSite.CurrencyIsoCode = 'USD';
+        testSite.City__c = 'Winnipeg';      
+        testSite.VendorSiteID__c = '654321';
+        testSite.CustomerAccountSiteID__c = '666666';
+        insert testSite;
+
+	 	String recordTypeId = ECO_Utils_sObject.getRecordTypeId(Contact.sObjectType, 'PSA Resource');
+	 	
+        Contact testContact = new Contact();
+        testContact.Email = testUser.Email;
+        testContact.FirstName = testUser.FirstName;
+        testContact.LastName =  testUser.LastName;
+        testContact.Phone = '55555555555';
+        testContact.pse__Salesforce_User__c = testUser.Id;
+        testContact.RecordTypeId = recordTypeId;
+        testContact.User__c = testUser.Id;
+        testContact.OwnerId = testUser.Id;
+        testContact.Site__c = testSite.Id;
+        testContact.AccountId = testAccount.Id;
+        testContact.pse__Is_Resource_Active__c = true;
+        testContact.pse__Is_Resource__c = true;
+        insert testContact;
+
+        OrganizationString__c organizationString = new OrganizationString__c(Name = 'Test Organization', ProjectAccountant2__c = testContact.Id, PLManagerContact__c = testContact.Id);
+        insert organizationString;
+
+	 	List<ProjectRole__c> projectRoles = new List<ProjectRole__c>();
+        projectRoles.add(new ProjectRole__c(Name = 'Project Manager', Type__c = 'Key Member', Active__c = true));
+        projectRoles.add(new ProjectRole__c(Name = 'Project Approver 2', Type__c = 'Key Member', Active__c = true));
+        projectRoles.add(new ProjectRole__c(Name = 'Project Approver', Type__c = 'Key Member', Active__c = true));
+        projectRoles.add(new ProjectRole__c(Name = 'Resilience Director', Type__c = 'Key Member', Active__c = true));
+        projectRoles.add(new ProjectRole__c(Name = 'Project Worker', Active__c = true));
+        insert projectRoles;
+
+        pse__Proj__c project = new pse__Proj__c(CarryingOutOrganization__c = organizationString.Id, 
+            pse__Account__c = testAccount.Id, pse__Start_Date__c = Date.today().addDays(30), 
+            pse__End_Date__c = Date.today().addDays(60));
+        insert project;
+        
+        Test.startTest();
+		pse__Project_Task__c task = new pse__Project_Task__c();
+		task.Name = 'top task';
+		task.pse__Project__c = project.Id;
+		task.pse__Start_Date_Time__c = DateTime.now().addDays(-1);
+		task.pse__End_Date_Time__c = DateTime.now();
+		task.pse__Status__c = 'Draft';
+		task.FinancialTask__c = false;
+		
+		insert task;
+		Test.stopTest();
+		
+		pse__Project_Task__c pt = [select EndDateFiscalMonth__c, EndDatePreviousFiscalMonth__c from pse__Project_Task__c where Id = : task.Id];
+		
+		System.AssertEquals(pt.EndDateFiscalMonth__c, 'FY2015-02');
+		System.AssertEquals(pt.EndDatePreviousFiscalMonth__c, 'FY2015-01');
+   }
 
 }
