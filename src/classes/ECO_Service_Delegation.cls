@@ -2,9 +2,6 @@ public with sharing class ECO_Service_Delegation {
 
     static map<id, contact> contactMap;
 
-    public ECO_Service_Delegation() {
-        
-    }
 
     private class change{
         public SObject oSObject {get;set;}
@@ -22,7 +19,7 @@ public with sharing class ECO_Service_Delegation {
             this.userDelegate = userDelegate;
             this.relProj = relProj;
 
-            this.userChange = (string)this.oSObject.get(oAD.Field_API_Name__c);
+            this.userChange = (id)this.oSObject.get(oAD.Field_API_Name__c);
             this.limitChangeReason = '';
             this.oBudget = null;
             this.sobjectIndex = index;
@@ -209,6 +206,14 @@ public with sharing class ECO_Service_Delegation {
         return mapProjectMapToDelegate;
     }
 
+    private static string addcomma(string slimit){
+        if(slimit.length() > 0){
+            return ',';
+        }
+
+        return '';
+    }
+
     private static list<change> checkLimits(list<change> lstChanges){
 
         ECO_Delegate_Limits__c delLimits = ECO_Delegate_Limits__c.getOrgDefaults();
@@ -308,49 +313,45 @@ public with sharing class ECO_Service_Delegation {
 
         for(change c: lstCheckableChanges){
 
-            boolean needEscalation = false;
-
-
             // check Agreement Amount
             if(mProjToAgreementAmount.containskey(c.relProj.id) && mProjToAgreementAmount.get(c.relProj.id) > c.userDelegate.Agreement_Amount_estimated__c && c.userDelegate.Agreement_Amount_estimated_Bypass__c){
-                c.limitChangeReason += ' Agreement Amount: ' + mProjToAgreementAmount.get(c.relProj.id) + ' > than limit ' + c.userDelegate.Agreement_Amount_estimated__c;
-                needEscalation = true;
+                c.limitChangeReason +=  addcomma(c.limitChangeReason) + 'Agreement Amount: ' + mProjToAgreementAmount.get(c.relProj.id) + ' > than limit ' + c.userDelegate.Agreement_Amount_estimated__c;
             }
 
             // check Revenue Budget >
             if(c.relProj.CurrentApprovedRevenueBudget__c > c.userDelegate.Project_Revenue_Budget__c & c.userDelegate.Project_Revenue_Budget_Bypass__c ){
-                c.limitChangeReason += ' Project Revenue Budget: ' + c.relProj.CurrentApprovedRevenueBudget__c + ' > than limit ' + c.userDelegate.Project_Revenue_Budget__c;
-                needEscalation = true;                
+                            
+                c.limitChangeReason += addcomma(c.limitChangeReason) + 'Project Revenue Budget: ' + c.relProj.CurrentApprovedRevenueBudget__c + ' > than limit ' + c.userDelegate.Project_Revenue_Budget__c;
             }
 
             // check Revenue Budget <
             if(c.relProj.CurrentApprovedRevenueBudget__c < c.userDelegate.Project_Revenue_Budget_lt__c & c.userDelegate.Project_Revenue_Budget_Bypass_lt__c ){
-                c.limitChangeReason += ' Project Revenue Budget: ' + c.relProj.CurrentApprovedRevenueBudget__c + ' < than limit ' + c.userDelegate.Project_Revenue_Budget_lt__c;
-                needEscalation = true;                
+                
+                c.limitChangeReason += addcomma(c.limitChangeReason) + 'Project Revenue Budget: ' + c.relProj.CurrentApprovedRevenueBudget__c + ' < than limit ' + c.userDelegate.Project_Revenue_Budget_lt__c;
             }
 
             // check net margin limit >
             if(mProjToBudgetNM.containskey(c.relProj.id) && mProjToBudgetNM.get(c.relProj.id) > c.userDelegate.Project_Net_Margin_Value__c && c.userDelegate.Project_Net_Margin_Value_Bypass__c){
-                c.limitChangeReason += ' Project Net Margin: ' + mProjToBudgetNM.get(c.relProj.id) + ' > than limit ' + c.userDelegate.Project_Net_Margin_Value__c;
-                needEscalation = true;                
+                
+                c.limitChangeReason += addcomma(c.limitChangeReason) + 'Project Net Margin: ' + mProjToBudgetNM.get(c.relProj.id) + ' > than limit ' + c.userDelegate.Project_Net_Margin_Value__c;             
             }          
 
             // check net margin limit <
             if(mProjToBudgetNM.containskey(c.relProj.id) && mProjToBudgetNM.get(c.relProj.id) < c.userDelegate.Project_Net_Margin_Value_lt__c && c.userDelegate.Project_Net_Margin_Value_Bypass_lt__c){
-                c.limitChangeReason += ' Project Net Margin: ' + mProjToBudgetNM.get(c.relProj.id) + ' < than limit ' + c.userDelegate.Project_Net_Margin_Value_lt__c;
-                needEscalation = true;                
+                
+                c.limitChangeReason += addcomma(c.limitChangeReason) + 'Project Net Margin: ' + mProjToBudgetNM.get(c.relProj.id) + ' < than limit ' + c.userDelegate.Project_Net_Margin_Value_lt__c;
             } 
 
             // check net margin NSR % >
             if(mProjToBudgetNSR.containskey(c.relProj.id) && mProjToBudgetNSR.get(c.relProj.id) > c.userDelegate.Project_Net_Margin_age_of_NSR__c && c.userDelegate.Project_Net_Margin_age_of_NSR_Bypass__c){
-                c.limitChangeReason += ' Project Net Margin: ' + mProjToBudgetNSR.get(c.relProj.id) + ' > than limit ' + c.userDelegate.Project_Net_Margin_age_of_NSR__c;
-                needEscalation = true;                
+                
+                c.limitChangeReason += addcomma(c.limitChangeReason) + 'Project Net Margin: ' + mProjToBudgetNSR.get(c.relProj.id) + ' > than limit ' + c.userDelegate.Project_Net_Margin_age_of_NSR__c;
             }         
 
             // check net margin NSR % <
             if(mProjToBudgetNSR.containskey(c.relProj.id) && mProjToBudgetNSR.get(c.relProj.id) > c.userDelegate.Project_Net_Margin_age_of_NSR_lt__c && c.userDelegate.Project_Net_Margin_of_NSR_Bypass_lt__c){
-                c.limitChangeReason += ' Project Net Margin: ' + mProjToBudgetNSR.get(c.relProj.id) + ' > than limit ' + c.userDelegate.Project_Net_Margin_age_of_NSR_lt__c;
-                needEscalation = true;                
+                
+                c.limitChangeReason += addcomma(c.limitChangeReason) + 'Project Net Margin: ' + mProjToBudgetNSR.get(c.relProj.id) + ' > than limit ' + c.userDelegate.Project_Net_Margin_age_of_NSR_lt__c;
             }         
 
             if(isChangeManager){
@@ -370,26 +371,26 @@ public with sharing class ECO_Service_Delegation {
 
                     // check % change in Forecast Net Margin >
                     if(changeInForecastNM > c.userDelegate.age_Change_in_Forecast_Net_Margin__c && c.userDelegate.age_Change_in_Forecast_Net_Margin_Bypass__c){
-                        c.limitChangeReason += ' Project % Change in Forecast Net Margin: ' + changeInForecastNM + ' > than limit ' + c.userDelegate.age_Change_in_Forecast_Net_Margin__c;
-                        needEscalation = true;                
+                        
+                        c.limitChangeReason += addcomma(c.limitChangeReason) + 'Project % Change in Forecast Net Margin: ' + changeInForecastNM + ' > than limit ' + c.userDelegate.age_Change_in_Forecast_Net_Margin__c;           
                     }                  
 
                     // check % change in Forecast Net Margin <
                     if(changeInForecastNM < c.userDelegate.age_Change_in_Forecast_Net_Margin_lt__c  && c.userDelegate.age_Change_in_Forecast_Net_Margin_Byp_lt__c){
-                        c.limitChangeReason += ' Project % Change in Forecast Net Margin: ' + changeInForecastNM + ' < than limit ' + c.userDelegate.age_Change_in_Forecast_Net_Margin_lt__c;
-                        needEscalation = true;                
+                        
+                        c.limitChangeReason += addcomma(c.limitChangeReason) + 'Project % Change in Forecast Net Margin: ' + changeInForecastNM + ' < than limit ' + c.userDelegate.age_Change_in_Forecast_Net_Margin_lt__c;
                     }    
 
                     // check value change in Forecast Net Margin >=
                     if(mProjToCMtoForecastBudgetNM.containskey((id)c.oSObject.get('BudgetHeader__c')) && mProjToCMtoForecastBudgetNM.get((id)c.oSObject.get('BudgetHeader__c')) > c.userDelegate.Value_change_in_Forecast_Net_Margin__c && c.userDelegate.Value_change_in_Forecast_Net_Margin_Byps__c){
-                        c.limitChangeReason += ' Project Value Change in Forecast Net Margin: ' + mProjToCMtoForecastBudgetNM.get((id)c.oSObject.get('BudgetHeader__c')) + ' > than limit ' + c.userDelegate.Value_change_in_Forecast_Net_Margin__c;
-                        needEscalation = true;                
+                        
+                        c.limitChangeReason += addcomma(c.limitChangeReason) + 'Project Value Change in Forecast Net Margin: ' + mProjToCMtoForecastBudgetNM.get((id)c.oSObject.get('BudgetHeader__c')) + ' > than limit ' + c.userDelegate.Value_change_in_Forecast_Net_Margin__c;
                     }    
 
                     // check value change in Forecast Net Margin <=
                     if(mProjToCMtoForecastBudgetNM.containskey((id)c.oSObject.get('BudgetHeader__c')) && mProjToCMtoForecastBudgetNM.get((id)c.oSObject.get('BudgetHeader__c')) < c.userDelegate.Value_change_in_Forecast_Net_Margin_lt__c && c.userDelegate.Value_change_Forecast_Nt_Margn_Byps_lt__c){
-                        c.limitChangeReason += ' Project Value Change in Forecast Net Margin: ' + mProjToCMtoForecastBudgetNM.get((id)c.oSObject.get('BudgetHeader__c')) + ' < than limit ' + c.userDelegate.Value_change_in_Forecast_Net_Margin_lt__c;
-                        needEscalation = true;                
+                        
+                        c.limitChangeReason += addcomma(c.limitChangeReason) + 'Project Value Change in Forecast Net Margin: ' + mProjToCMtoForecastBudgetNM.get((id)c.oSObject.get('BudgetHeader__c')) + ' < than limit ' + c.userDelegate.Value_change_in_Forecast_Net_Margin_lt__c;
                     }     
                 }
 
@@ -397,20 +398,22 @@ public with sharing class ECO_Service_Delegation {
 
             // Check Project Review Category
             if(c.relProj.clAECOMProjectReviewCategory__c == 'C-0' && !c.userDelegate.Project_Review_Category_C_0__c && c.userDelegate.Project_Review_Category_C_0_Bypass__c){
-                c.limitChangeReason += ' Review Category C-0 is not allowed for delegate ';
-                needEscalation = true;   
+                
+                c.limitChangeReason += addcomma(c.limitChangeReason) + 'Review Category C-0 is not allowed for delegate ';
             } else if (c.relProj.clAECOMProjectReviewCategory__c == 'C-1'  && !c.userDelegate.Project_Review_Category_C_1__c && c.userDelegate.Project_Review_Category_C_1_Bypass__c){
-                c.limitChangeReason += ' Review Category C-1 is not allowed for delegate ';
-                needEscalation = true;   
+                
+                c.limitChangeReason += addcomma(c.limitChangeReason) + 'Review Category C-1 is not allowed for delegate ';
             } else if (c.relProj.clAECOMProjectReviewCategory__c == 'C-2'  && !c.userDelegate.Project_Review_Category_C_2__c && c.userDelegate.Project_Review_Category_C_2_Bypass__c){
-                c.limitChangeReason += ' Review Category C-2 is not allowed for delegate ';
-                needEscalation = true;   
+                
+                c.limitChangeReason += addcomma(c.limitChangeReason) + 'Review Category C-2 is not allowed for delegate ';
+
             } else if (c.relProj.clAECOMProjectReviewCategory__c == 'C-3'  && !c.userDelegate.Project_Review_Category_C_3__c && c.userDelegate.Project_Review_Category_C_3_Bypass__c){
-                c.limitChangeReason += ' Review Category C-3 is not allowed for delegate ';
-                needEscalation = true;   
+                
+                c.limitChangeReason += addcomma(c.limitChangeReason) + 'Review Category C-3 is not allowed for delegate ';
+
             } else if (c.relProj.clAECOMProjectReviewCategory__c == 'C-4'  && !c.userDelegate.Project_Review_Category_C_4__c && c.userDelegate.Project_Review_Category_C_4_Bypass__c){
-                c.limitChangeReason += ' Review Category C-4 is not allowed for delegate ';
-                needEscalation = true;   
+                
+                c.limitChangeReason += addcomma(c.limitChangeReason) + 'Review Category C-4 is not allowed for delegate ';
             }
 
             // Check Backlog Value
@@ -419,19 +422,19 @@ public with sharing class ECO_Service_Delegation {
                 decimal backlog = mProjToAgreementAmount.get(c.relProj.id) - mProjToITD.get(c.relProj.id);
 
                 if(backlog > c.userDelegate.Backlog_Value__c && c.userDelegate.Backlog_Value_Bypass__c){
+                    
                     c.limitChangeReason += ' Backlog Amount: ' + backlog + ' > than limit ' + c.userDelegate.Backlog_Value__c;
-                    needEscalation = true;
                 }
 
                 if(backlog < c.userDelegate.Backlog_Value_lt__c && c.userDelegate.Backlog_Value_Bypass_lt__c){
+                    
                     c.limitChangeReason += ' Backlog Amount: ' + backlog + ' < than limit ' + c.userDelegate.Backlog_Value_lt__c;
-                    needEscalation = true;
                 }
 
             }
 
 
-            if(needEscalation){
+            if(c.limitChangeReason.length() > 0){
                 lstNeedsEscalaction.add(c);
             }
 
@@ -486,6 +489,7 @@ public with sharing class ECO_Service_Delegation {
                                                                 , Object_Name__c = objectLabel
                                                                 , Delegation_Reason__c = 'Limit Escalation: ' + c.limitChangeReason
                                                                 , Delegate__c = null
+                                                                , Project__c = (id)c.oSObject.get('delegateProject__c')
                                                                 );
 
                     lstDelegationToRecord1.add(oDelegation);
@@ -507,6 +511,7 @@ public with sharing class ECO_Service_Delegation {
                                                                 , Object_Name__c = objectLabel
                                                                 , Delegation_Reason__c = 'Limit Escalation: ' + c.limitChangeReason
                                                                 , Delegate__c = null
+                                                                , Project__c = (id)c.oSObject.get('delegateProject__c')
                                                                 );
 
                     lstDelegationToRecord1.add(oDelegation);
@@ -518,49 +523,6 @@ public with sharing class ECO_Service_Delegation {
 
     }     
 
-    public static list<Delegation__c> recordDelegation(list<SObject> lstTargets){
-        
-
-        //list<AECOM_Delegation__c> lstAD = getCustomSettings(lstTargets[0]);
-        //list<Delegation__c> lstDelegationToRecord = new list<Delegation__c>();
-        /*string objectLabel = getObjectLabel(lstTargets[0]);
-        
-        map<id, pse__Proj__c> projectMap = getProjectMap(lstTargets);
-        map<string, Delegate__c> delegateMap = getDelegates(lstTargets, projectMap);
-
-        for(SObject s: lstTargets){
-            for(AECOM_Delegation__c ad: lstAD){
-                if(s.get(ad.Field_API_Name__c) !=null){
-
-                    Delegate__c dDelegate = null;
-                    string searchKey = projectMap.get((id)s.get('delegateProject__c')).PnLManager__r.pse__Salesforce_User__c + (string)s.get(ad.Field_API_Name__c);
-
-                    system.debug('DEBUG****: KEY : ' + searchKey);
-
-                    if(delegateMap.containskey(searchKey)){
-                        dDelegate = delegateMap.get(searchKey);
-                        system.debug('DEBUG****: FOUND : ' + searchKey);
-                    }
-
-                    id iDelegate = null;
-                    if(dDelegate != null){
-                        iDelegate = dDelegate.id;
-                    }
-
-                    lstDelegationToRecord.add(new Delegation__c(DelegateUser__c = (id)s.get(ad.Field_API_Name__c)
-                                                                , Record__c = (id)s.get('id')
-                                                                , Process__c = ad.Process__c
-                                                                , Object_Name__c = objectLabel
-                                                                , Delegation_Reason__c = 'Record Creation'
-                                                                , Delegate__c = iDelegate
-                                                                ));
-                }
-            }
-        } 
-        insert lstDelegationToRecord;*/
-        return new list<Delegation__c>();
-        
-    }   
 
     public static list<Delegation__c> delegateReplace(list<change> lstChanges, map<id, Delegate__c> mapDelegates, string sReason){
 
@@ -569,8 +531,8 @@ public with sharing class ECO_Service_Delegation {
         list<Delegation__c> lstDelegationToRecord1 = new list<Delegation__c>();
 
         for(change c: lstChanges){
-            if(mapDelegates.containskey(c.userChange)){
-                id changeUser = mapDelegates.get(c.userChange).Delegate__r.pse__Salesforce_User__c;
+            if(mapDelegates.containskey((id)c.userChange)){
+                id changeUser = mapDelegates.get((id)c.userChange).Delegate__r.pse__Salesforce_User__c;
                 c.oSObject.put(c.oAD.Field_API_Name__c, changeUser);
 
                 string reason = sReason;
@@ -580,7 +542,8 @@ public with sharing class ECO_Service_Delegation {
                                                             , Process__c = c.oAD.Process__c
                                                             , Object_Name__c = objectLabel
                                                             , Delegation_Reason__c = reason
-                                                            , Delegate__c = mapDelegates.get(c.userChange).id
+                                                            , Delegate__c = mapDelegates.get((id)c.userChange).id
+                                                            , Project__c = (id)c.oSObject.get('delegateProject__c')
                                                             );
 
                 lstDelegationToRecord1.add(oDelegation);
@@ -632,7 +595,7 @@ public with sharing class ECO_Service_Delegation {
                 if(s.get(ad.Field_API_Name__c) != null && (oldMap==null || (s.get(ad.Field_API_Name__c) !=  oldMap.get((id)s.get('id')).get(ad.Field_API_Name__c)))){
 
 
-                    setUsers.add((id)s.get(ad.Field_API_Name__c));  
+                    //setUsers.add((id)s.get(ad.Field_API_Name__c));  
 
                     string reason = 'User Changed';
 
@@ -671,6 +634,7 @@ public with sharing class ECO_Service_Delegation {
                                                                 , Object_Name__c = objectLabel
                                                                 , Delegation_Reason__c = reason
                                                                 , Delegate__c = iDelegate
+                                                                , Project__c = (id)s.get('delegateProject__c')
                                                                 );
 
 
@@ -691,7 +655,7 @@ public with sharing class ECO_Service_Delegation {
         //}
 
         for(change c:lstChanges){
-            setUsers.add(c.userChange);
+            setUsers.add((id)c.userChange);
         }
 
 
