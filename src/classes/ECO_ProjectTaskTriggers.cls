@@ -542,4 +542,27 @@ public with sharing class ECO_ProjectTaskTriggers {
 			insert lBudgetTasksToInsert;
 		}
 	}
+	
+	public static void calculateFiscalMonths(list<pse__Project_Task__c> projectTasks)
+	{
+		// Time period
+		List<pse__Time_Period__c> timePeriods = [select Id, pse__Start_Date__c, pse__End_Date__c, TimePeriodCode__c 
+													from pse__Time_Period__c 
+													where pse__Type__c = 'Month'
+													order by pse__End_Date__c asc];
+		for (pse__Project_Task__c pt : projectTasks){	
+			if (pt.pse__End_Date__c != null){									
+				for (Integer i = 0; i < timePeriods.size(); i++){
+					if (pt.pse__End_Date__c <= timePeriods[i].pse__End_Date__c  &&
+						pt.pse__End_Date__c >= timePeriods[i].pse__Start_Date__c){
+						pt.EndDateFiscalMonth__c = timePeriods[i].TimePeriodCode__c;
+						if (i > 0){
+							pt.EndDatePreviousFiscalMonth__c = timePeriods[i-1].TimePeriodCode__c;
+						}
+					}
+				}
+			}
+		}
+	}
+	
 }
