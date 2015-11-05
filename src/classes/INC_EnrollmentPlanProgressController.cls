@@ -98,6 +98,9 @@ public with sharing class INC_EnrollmentPlanProgressController {
         ProgressToolTip = oEnrollmentPlan.WorkflowProcess__c;
         if(ProgressToolTip != null)
             ProgressToolTip = ProgressToolTip.replace('<br>', '\r\n');
+       /* 
+         HEC 11/4 - commenting this out because we never set the tooltips and would rather
+         let me show nothing then the defaults below.
         if(oEnrollmentPlan.StatusNumber__c ==1){
             oneTooltip = 'One Tooltip';
         }
@@ -117,17 +120,27 @@ public with sharing class INC_EnrollmentPlanProgressController {
             sixTooltip = '6 Tooltip';
         }
         if(oEnrollmentPlan.StatusNumber__c ==7){
-            sixTooltip = '7 Tooltip';
+            severTooltip = '7 Tooltip';
         }
         if(oEnrollmentPlan.StatusNumber__c ==8){
-            sixTooltip = '8 Tooltip';
+            eigthTooltip = '8 Tooltip';
         }
         if(oEnrollmentPlan.StatusNumber__c ==9){
-            sixTooltip = '9 Tooltip';
+            nineTooltip = '9 Tooltip';
         }
         if(oEnrollmentPlan.StatusNumber__c ==10){
-            sixTooltip = '10 Tooltip';
-        }
+            tenTooltip = '10 Tooltip';
+        } */
+        oneTooltip = '';
+        twoTooltip = '';
+        threeTooltip = '';
+        fourTooltip = '';
+        fiveTooltip = '';
+        sixTooltip = '';
+        sevenTooltip = '';
+        eightTooltip = '';
+        nineTooltip = '';
+        tenTooltip = '';
     }
   //stuff for comment load section
    public pageReference onLoad(){

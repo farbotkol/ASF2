@@ -48,14 +48,14 @@
 	</apex:actionFunction>
 
 	<apex:pageMessages />
-	<apex:sectionHeader title="Incentive Plan Questionnairre" subtitle="Enrollment Application" rendered="{!NOT(fromWizard='Yes')}" help="http://my.aecomnet.com/portal/site/Intranet/menuitem.4bb5ad8d27dddb3d13bd6e20c43611ca/?vgnextoid=4699bc2ceae8e410VgnVCM100000089e1bacRCRD&vgnextchannel=c7e1b267a0f9c410VgnVCM100000089e1bacRCRD&vgnextfmt=default"/>
+	<apex:sectionHeader title="Incentive Plan Questionnaire" subtitle="Enrollment Application" rendered="{!NOT(fromWizard='Yes')}" help="http://my.aecomnet.com/portal/site/Intranet/menuitem.4bb5ad8d27dddb3d13bd6e20c43611ca/?vgnextoid=4699bc2ceae8e410VgnVCM100000089e1bacRCRD&vgnextchannel=c7e1b267a0f9c410VgnVCM100000089e1bacRCRD&vgnextfmt=default"/>
 	<apex:outputPanel rendered="{!fromWizard='Yes'}">
-		<div class="pbSubheader tertiaryPalette"><h3>Incentive Plan Questionnairre</h3></div>
+		<div class="pbSubheader tertiaryPalette"><h3>Incentive Plan Questionnaire</h3></div>
 	</apex:outputPanel>
 	<apex:inputHidden value="{!EnrollmentPlan.ProjectGeography__c}"/>
 	<apex:inputHidden value="{!EnrollmentPlan.FPPOverallEligibility_c__c}"/>	
 	<apex:inputHidden value="{!EnrollmentPlan.TMPlanOverallEligibility__c}"/>
-	<apex:pageBlock title="Incentive Plan Questionnairre">
+	<apex:pageBlock title="Incentive Plan Questionnaire">
 	<apex:pageBlockButtons >
 	<apex:outputPanel id="thepage">
 	<apex:commandButton value="Search Plans" action="{!submitQuestionnairre}" />
@@ -88,7 +88,20 @@
 				<apex:selectRadio layout="lineDirection" value="{!question3Answer}" label="Question 3">
 		    		<apex:selectOptions value="{!YesNoOptions}"/>
 				</apex:selectRadio>
-				Do contract provisions allow for the ability to manage costs and risks in a way that provides opportunity to improve margin as a percent of revenue (i.e. GM % of NSR, NM % of NSR)? <!-- (if no, go to T&M plan form). --> 
+				Do contract provisions allow for the ability to manage costs and risks in a way that provides opportunity to improve margin as a percent of revenue (i.e. GM % of NSR, NM % of NSR)?
+				<br/>
+				<ul>
+				   <li>Generally, if billing is done in a Lump Sum, Milestone or % complete manner, select "Yes".
+				Generally, if this is a true T&amp;M project, or a T&amp;M w/ cap project where staff are billed using a flat multiplier (e.g. all staff are billed at raw cost multiplied by 2.85), select "No".
+				</li>
+				<li>
+				A T&amp;M w/ cap project with billing based on varied labor overrides and rate schedules may have opportunity to use labor mix to improve margin percentage performance.
+				</li>
+				<li> 
+				  If you are unsure how to respond to this question, consult with your Finance Manager or P&amp;L Manager. 
+				</li>
+				</ul>
+ <!-- (if no, go to T&M plan form). --> 
 				<apex:selectRadio layout="lineDirection" value="{!question4Answer}" label="Question 4">
 		    		<apex:selectOptions value="{!YesNoOptions}"/>
 				</apex:selectRadio>

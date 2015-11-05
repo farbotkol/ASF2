@@ -104,7 +104,7 @@ public without sharing class INC_Utils_Testing {
     public static IncentiveProject__c createIncentiveProject_TownAndCountry(){
         IncentiveProject__c oIncentiveProject = new IncentiveProject__c();
         
-        //oIncentiveProject.NoofParticipants__c = 1;
+        //oIncent60329917iveProject.NoofParticipants__c = 1;
         //oIncentiveProject.X60DaysClosed__c = 'No';
         //oIncentiveProject.ActualContingencyBudgetITD__c = 0; Null
         oIncentiveProject.ActualPercentProjectCompleteITD__c = 62.74;
@@ -135,7 +135,7 @@ public without sharing class INC_Utils_Testing {
         oIncentiveProject.ApprovedFringeBudget__c = 219254;
         //oIncentiveProject.ApprovedGrossMarginofNSR__c = 69.68;
         oIncentiveProject.ApprovedGrossMarginBudget__c = 1703310;
-        oIncentiveProject.ApprovedGrossRevenueBudget__c = 2596401;
+        oIncentiveProject.ApprovedGrossRevenueBudget__c = 2496401;
         oIncentiveProject.ApprovedNetMarginBudget__c = 112476;
         //oIncentiveProject.ApprovedNMofNSR__c = 4.6;
         //oIncentiveProject.ApprovedNSRBacklog__c = 1544799;
@@ -240,7 +240,46 @@ public without sharing class INC_Utils_Testing {
         oIncentiveProject.TMPlanOverallEligibility__c = 'Yes';
         oIncentiveProject.TMPProjectSizeEligibility__c = 'Yes';
         //oIncentiveProject.TotalUnbilled__c = 0; Null
-		
+		oIncentiveProject.ACTUALGROSSREVENUEITD__C=1200000;
+        oIncentiveProject.FORECASTREVENUEBUDGET__C=1596401;
+        oIncentiveProject.APPROVEDGROSSREVENUEBUDGET__C=2496401;
+        oIncentiveProject.ACTUALSUBSBUDGETITD__C=95741;
+        oIncentiveProject.ACTUALODCBUDGETITD__C=5969;
+        oIncentiveProject.ACTUALNSRITD__C=899797;
+        oIncentiveProject.FORECASTNSRBUDGET__C=1374014;
+        oIncentiveProject.APPROVEDNSRBUDGET__C=2543596;
+        oIncentiveProject.ACTUALGROSSMARGINITD__C=447833;
+        oIncentiveProject.FORECASTGROSSMARGINBUDGET__C=678637;
+        oIncentiveProject.APPROVEDGROSSMARGINBUDGET__C=1703310;
+        oIncentiveProject.ACTUALTOTALCOSTSITD__C=910708;
+        oIncentiveProject.FORECASTCOSTBUDGET__C=1451668;
+        oIncentiveProject.APPROVEDCOSTBUDGET__C=1483925;
+        oIncentiveProject.ACTUALNETMARGINITD__C=90799;
+        oIncentiveProject.FORECASTNETMARGINBUDGET__C=144733;
+        oIncentiveProject.APPROVEDNETMARGINBUDGET__C=111476;
+        oIncentiveProject.ACUTALDIRECTLABORITD__C=321092;
+        oIncentiveProject.FORECASTDIRECTLABOR__C=492384;
+        oIncentiveProject.APPROVEDDIRECTLABORBUDGET__C=522033;
+        oIncentiveProject.FORECASTDIRECTLABORMULTIPLIER__C=2.79;
+        oIncentiveProject.APPROVEDDIRECTLABORMULTIPLIER__C=2.77;
+        oIncentiveProject.ACTUALFRINGEBUDGETITD__C=130872;
+        oIncentiveProject.FORECASTFRINGEBUDGET__C=202993;
+        oIncentiveProject.APPROVEDFRINGEBUDGET__C=219254;
+        oIncentiveProject.FORECASTCONTINGENCYBUDGET__C=0;
+        oIncentiveProject.TOTALUNBILLED__C=0;
+        oIncentiveProject.BIEE__C=66544;
+        oIncentiveProject.APPROVEDCONTINGENCYBUDGET__C=1000;
+        oIncentiveProject.FORECASTODCBUDGET__C=71632;
+        oIncentiveProject.FORECASTSUBSBUDGET__C=150755;
+        oIncentiveProject.FORECASTDPEBUDGET__C=695378;
+        oIncentiveProject.FORECASTOVERHEADBUDGET__C=533903;
+        oIncentiveProject.APPROVEDODCBUDGET__C=85105;
+        oIncentiveProject.APPROVEDSUBSBUDGET__C=97000;
+        oIncentiveProject.APPROVEDDPEBUDGET__C=740286;
+        oIncentiveProject.APPROVEDOVERHEADBUDGET__C=590833;
+        oIncentiveProject.ACTUALOVERHEADITD__C=357034;
+        oIncentiveProject.ACTUALLABORCOSTMULTIPLIER__C=2.8;
+        oIncentiveProject.ITDDSO__C=41;
         return oIncentiveProject;
     }
     
@@ -314,6 +353,7 @@ public without sharing class INC_Utils_Testing {
         oIncentivePlan.MaxPoolOperator__c = '>';
         oIncentivePlan.MaxPoolOperator2__c = '>';
         oIncentivePlan.MinAllocationAmount__c = 500;
+        oIncentivePlan.MaxPoolCap__c = 200000;
         //oIncentivePlan.MinAllocationPer__c = 0 NULL
         oIncentivePlan.MinNSRBudget__c = 500000;
         //oIncentivePlan.OrgString__c = 0 NULL

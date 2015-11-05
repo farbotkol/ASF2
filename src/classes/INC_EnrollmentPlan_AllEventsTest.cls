@@ -2,13 +2,63 @@
 private class INC_EnrollmentPlan_AllEventsTest {
     
     static testMethod void testCreateParticipantAcknowledgement() {
-        IncentiveProject__c incentiveProject = INC_Utils_Testing.createIncentiveProject();
-        insert incentiveProject;
-        System.assertNotEquals(incentiveProject.Id, Null);
+         User oUser = INC_Utils_Testing.createUser();
+
+        insert oUser;
         
-        EnrollmentPlan__c ePlan = INC_Utils_Testing.createEnrollmentApplication(incentiveProject);
-        insert ePlan;
-        System.assertNotEquals(ePlan.Id, Null);
+        map<string, User> mUsers = new map<string, User>();
+        
+        mUsers.put('Approver1', oUser);
+        mUsers.put('Approver2', oUser);
+        mUsers.put('Approver3', oUser);
+        mUsers.put('DTW Admin', oUser);
+        
+        //Inser routing rules master data
+        map<string, RoutingMember__c> mRoutingMember = INC_Utils_Testing.createRoutingMemberRules(mUsers);
+        
+        insert mRoutingMember.values();
+        
+        list<IncentivePlanTemplate__c> lPlanTemplates = INC_Utils_Testing.createIncentivePlan();
+        
+        insert lPlanTemplates;
+        
+        IncentivePlanTemplate__c oIncentivePlanTemplate = lPlanTemplates[0];
+
+        //END: Setup Master Data
+        
+        //Initialize starting position
+        IncentiveProject__c oIncentiveProject = INC_Utils_Testing.createIncentiveProject_TownAndCountry();
+        
+        //To Do: Implement RunAs for integration administrator user
+        insert oIncentiveProject;
+        
+        //Find and Assign DTW Admin (Assume Batch Job is Run)
+        INC_Service_Matching Inc_Match = new INC_Service_Matching();
+        list<IncentiveProject__c> lIncentiveProjectsToInsert = Inc_Match.FindDTWAdmin(new list<IncentiveProject__c>{oIncentiveProject});
+        
+        update lIncentiveProjectsToInsert;
+        
+        //Check if DTW Admin was assigned
+        list<IncentiveProject__c> lAssertCheck = new list<IncentiveProject__c>([SELECT Id, DTWAdmin__c FROM IncentiveProject__c WHERE Id = :oIncentiveProject.Id]);
+        System.AssertEquals(lAssertCheck.get(0).DTWAdmin__c, oUser.Id);
+        
+        //User interacts with page and assigns project manager
+        oIncentiveProject.ProjectManager__c = oUser.Id;
+        
+        //User hits save button
+        update oIncentiveProject;
+        
+        //User interacts with button on incentive project to generate enrollment app
+        INC_IncentiveProjectCreateEnrollment.createEnrollmentForm(oIncentiveProject.Id);
+
+        //Check if Enrollment Plan was created
+        list<EnrollmentPlan__c> lAssertCheckEnrollment = new list<EnrollmentPlan__c>([SELECT Id
+                                                                                      FROM EnrollmentPlan__c WHERE IncentiveProject__c = :oIncentiveProject.Id]);
+        System.Assert(lAssertCheckEnrollment.size() > 0);
+
+        EnrollmentPlan__c ePlan;
+        ePlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{lAssertCheckEnrollment[0].Id})[0];
+
         
         Contact employee = INC_Utils_Testing.createEmployee();
         insert employee;

@@ -22,6 +22,7 @@ public INC_ObjectFieldHistory_Controller(){
 public List<objectHistoryLine> getObjectHistory(){
     System.debug(logginglevel.error,'recordlimit ' + recordlimit);
     Id myObjectId = String.valueOf(myObject.get('Id'));
+    System.Debug(logginglevel.error,'My object id: ' + myObjectId);
     Schema.DescribeSObjectResult objectDescription = myObject.getSObjectType().getDescribe();
 
     myObjectFieldMap = objectDescription.fields.getMap();
@@ -59,6 +60,8 @@ public List<objectHistoryLine> getObjectHistory(){
     'LIMIT ' + String.valueOf(recordLimit + 1));
 
     AllowShowMore = (historyList.size() == recordlimit + 1);
+
+    System.Debug(logginglevel.error,'History list: ' + historyList);
 
     for(Integer i = 0; i < historyList.size(); i++){
         sObject historyLine = historyList.get(i);

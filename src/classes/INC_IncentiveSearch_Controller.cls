@@ -46,7 +46,7 @@ public without sharing class INC_IncentiveSearch_Controller {
 
 			if((searchCriteria[searchCriteria.size() -1].value != null && searchCriteria[searchCriteria.size() -1].value !='') ||
 				searchCriteria[searchCriteria.size() -1].IncProj.ProjectManager__c != null){
-			  	if(searchCriteria.size() <4){
+			  	if(searchCriteria.size() <5){
 			  		ocriteriaRow = new criteriaRow(searchCriteria[searchCriteria.size() -1]);
 					searchCriteria.add(oCriteriaRow);
 				}
@@ -283,7 +283,6 @@ public without sharing class INC_IncentiveSearch_Controller {
 				criteriaRowlist.add(new SelectOption('PM','Project Manager'));
 				criteriaRowlist.add(new SelectOption('PN','Project Name'));
 				criteriaRowlist.add(new SelectOption('PNUM','Project Number'));
-				criteriaRowlist.add(new SelectOption('CN','Customer Name'));
 				criteriaRowlist.add(new SelectOption('CN','Customer Name'));
 				criteriaRowlist.add(new SelectOption('OW','Owner'));
 		}

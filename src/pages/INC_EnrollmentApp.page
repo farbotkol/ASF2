@@ -230,9 +230,6 @@
 		}
 		//document.querySelector('[id*="rejectReason"]').disabled = true;
 	});
-    
-    
-
 </script>
 <apex:sectionHeader title="Enrollment Application" subtitle="{!EnrollmentPlan__c.Name}" id="sectionheader" help="http://my.aecomnet.com/portal/site/Intranet/menuitem.4bb5ad8d27dddb3d13bd6e20c43611ca/?vgnextoid=4699bc2ceae8e410VgnVCM100000089e1bacRCRD&vgnextchannel=c7e1b267a0f9c410VgnVCM100000089e1bacRCRD&vgnextfmt=default"/>
 <apex:actionFunction name="checkappstatus" action="{!checkStatus}" rerender="step3buttons, step3buttonsccr" />
@@ -253,16 +250,16 @@
 	        			<p>
 	        				As the project manager you are best suited to initiate the Deliver to Win application.  This wizard will assist you in preparing the the application for approval.  Visit the Approver Resources on the DTW webpage for more information.
 	        				<ul class="instructionlist" >
-							<li>Step 1- Review Master Data, ensuring the correct contract type is identified, and that the geo and department info look correct.
+							<li>Step 1 - Review Master Data, ensuring the correct contract type is identified, and that the geo and department info look correct.  Data is retrieved from AECOM Insight and is reflective of the prior weekend's data load.  Click "Propose Enrollment" to continue with the application, or click "Not Suitable for Enrollment if you do not wish to enroll this project in the Deliver to Win incentive plan.
 							</li>
 							<li>  
 							Step 2- Choose an incentive plan.  If you are familiar with the options, you can select manually.  If unsure, the guided option will  help with  just a few basic questions.
 							</li>
 							<li>
-							Step 3- Propose key project personnel for participation and propose target incentive pool allocations.  
+							Step 3 - Propose key project personnel for participation and propose target incentive pool allocations.  Click "Save and Recalculate" to see sample payouts and ensure your changes are being reflected correctly.   
 							</li>
 							<li>
-							Step 4- Click "Propose Enrollment" to submit application or click "Not Suitable for Enrollment" if you do not wish to enroll this project in the Deliver to Win incentive plan
+							Step 4 - Once participant selections and allocations are completed, click "Submit for Approval".  An email will be sent to the P&amp;L manager / Approver 1 for their review and action.
 							</li>
 							</ul>
 	        			</p>
@@ -300,8 +297,11 @@
 	        <apex:tab label="Step 2 - Choose Incentive Plan" name="step2" id="tabTwo" rendered="{!EnrollmentPlan__c.ApplicationType__c='ENR'}">
 	        <div class="buttonwrapper">
 	        	<apex:commandButton styleclass="nextbtn" action="{!stepone}" value="Back" reRender="tabs" />
-	        	<apex:commandButton styleclass="nextbtn" action="{!stepthree}" value="Next" reRender="tabs" />
+	        	<apex:commandButton styleclass="nextbtn" action="{!stepthree}" value="Next"  />
 	        </div>
+	        <p class="projmessage">
+	        When using "Guided "selection, answer the questionnaire and click "Search Plans" to display the most suitable Incentive Plan(s).  Alternatively, select "Manual" to display all available plans.  Place a check in the box next to the desired Incentive Plan, and click "Save".  Your browser page will refresh.  Then click "Next" to move to the 3rd step.
+			</p>
 	        	<apex:outputPanel rendered="{!activeTab = 'step2'}" >
 	        	<c:INC_ChoseIncentivePlanComponent fromWizardVal="Yes"/>
 	        	</apex:outputPanel>
@@ -313,7 +313,7 @@
 	         <div class="buttonwrapper">
 	         <apex:outputpanel id="step3buttons">
 	        	<apex:commandButton styleclass="nextbtn" action="{!steptwo}" value="Back" reRender="tabs" />
-	        	<apex:commandButton styleclass="nextbtn" action="{!finishwizard}" value="Finish and Review App" reRender="tabs" oncomplete="return finishWizardMsg();"/>
+	        	<!--<apex:commandButton styleclass="nextbtn" action="{!finishwizard}" value="Finish and Review App" reRender="tabs" oncomplete="return finishWizardMsg();"/> -->
 	        	<apex:commandButton styleclass="nextbtn" value="Submit for Approval" action="{!submitfromwizard}"  oncomplete="return submitMessage();" reRender="tabs, script" rendered="{!bShowWizardSubmit}"/> 
 	         </apex:outputPanel>
 	        </div>
@@ -327,7 +327,7 @@
 	        </div>
 	         <div class="buttonwrapper">
 	         <apex:outputpanel id="step3buttonsccr">
-	        	<apex:commandButton styleclass="nextbtn" action="{!finishwizard}" value="Finish and Review App" reRender="tabs" oncomplete="return finishWizardMsg();"/>
+	        	<!--<apex:commandButton styleclass="nextbtn" action="{!finishwizard}" value="Finish and Review App" reRender="tabs" oncomplete="return finishWizardMsg();"/> -->
 	        	<apex:commandButton styleclass="nextbtn" value="Submit for Approval" action="{!submitfromwizard}"  oncomplete="return submitMessage();" reRender="tabs, script" rendered="{!bShowWizardSubmit}"/> 
 	         </apex:outputPanel>
 	        </div>
@@ -383,7 +383,7 @@
 		  <apex:outputField value="{!EnrollmentPlan__c.RecordType.Name}"/>
 		  <apex:inputField value="{!EnrollmentPlan__c.EnrollmentMetrics__c}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.WorkflowOwner__c}"/>
-		  <apex:inputField value="{!EnrollmentPlan__c.EnrollmentStatus__c}"/>
+		  <apex:outputField value="{!EnrollmentPlan__c.EnrollmentStatus__c}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.SubmitStatus__c}"/>
 		  <apex:outputField value="{!EnrollmentPlan__c.FormStatusAge__c}"/>
 		  <apex:outputLabel />
@@ -578,7 +578,7 @@
 					</td>
 					<apex:outputPanel rendered="{!bTandM}">
 					<td>
-					    <apex:outputField value="{!EnrollmentPlan__c.ApprovedSubsBudgetatSnapshot__c}" />
+					    <apex:outputField value="{!EnrollmentPlan__c.ApprovedSubsODCatSnapshot__c}" />
 					</td>
 					</apex:outputPanel>
 					<apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">

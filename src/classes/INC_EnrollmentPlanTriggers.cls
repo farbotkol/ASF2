@@ -259,43 +259,147 @@ public with sharing class INC_EnrollmentPlanTriggers {
 
         List<ParticipantAcknowledgement__c> participantAcknowledgementsToCreate = new List<ParticipantAcknowledgement__c>();
         
+        //IF ccr Get a list of participants from parent apps
+        list<id> listParentIDForCCR = new list<id>();
+        for(EnrollmentPlan__c ep: newMap.Values()){
+        	System.Debug(LoggingLevel.error,'ep check for ccr: ' + ep.ApplicationType__c);
+        	if(EP.ApplicationType__c == 'CCR'){
+        		listParentIDForCCR.add(EP.ParentApplication__c);
+        	}
+        }
+
+        System.debug(logginglevel.error,'listParentIDForCCR: ' + listParentIDForCCR);
+
+        map<String,EnrollmentParticipant__c> mapCurrentParticipantsByEmail = new map<String,EnrollmentParticipant__c>();
+        if(listParentIDForCCR != null && listParentIDForCCR.size() > 0){
+        	for(EnrollmentParticipant__c oEnrollmentParticipant: [Select ID
+        																	, EmployeeName__r.Email
+        																	, EmployeeName__r.pse__Salesforce_User__c
+        																	, EmployeeName__r.pse__Salesforce_User__r.ManagerId
+        																	, EmployeeStatus__c
+        																	, TargetIncentivePoolAllocated__c
+        																	, CurrencyISOCode
+        																	, StartDateonProject__c
+        																	, EndDateonProject__c
+        																	, EnrollmentPlan__c
+        																	From EnrollmentParticipant__c 
+        																	where EnrollmentPlan__c =: listParentIDForCCR]){
+
+        		mapCurrentParticipantsByEmail.put(oEnrollmentParticipant.EmployeeName__r.Email,oEnrollmentParticipant);
+        																		
+        	}
+        }
+
+        System.Debug(logginglevel.error,'mapCurrentParticipantsByEmail ' + mapCurrentParticipantsByEmail);
         // Retrieve all Enrollment Participants for the Enrolled Enrollments which has a Status of Active and Target Allocation > 0
         // Then prepare Participant Acknowledgement records that needs to be inserted
+        map<Id,Id> mapAckKnowledgementToMoveByOriginalPartID = new map<Id,Id>();
+
         for(EnrollmentParticipant__c ePar : [SELECT Id
         											, EmployeeName__r.Email
         											, EmployeeName__r.pse__Salesforce_User__c 
         											, EmployeeName__r.pse__Salesforce_User__r.ManagerId
         											, EmployeeStatus__c
         											, TargetIncentivePoolAllocated__c
-        											, EnrollmentPlan__c 
         											, CurrencyISOCode
-                                             FROM EnrollmentParticipant__c 
+        											, StartDateonProject__c
+        											, EndDateonProject__c
+        											, EnrollmentPlan__c
+        											, ProjectEndDate__c
+        									 FROM EnrollmentParticipant__c 
                                              WHERE EnrollmentPlan__c in : ePlanIdsEnrolled AND EmployeeStatus__c = 'Active' AND TargetIncentivePoolAllocated__c > 0]) {
-        	System.Debug(logginglevel.error,'Found participant ' + ePar.EmployeeName__r.pse__Salesforce_User__r.ManagerId);
+        	System.Debug(logginglevel.error,'Found participant ' + ePar.EmployeeName__r.Email);
             ParticipantAcknowledgement__c pA = new ParticipantAcknowledgement__c();
-			pA.RecordTypeId = Schema.SObjectType.ParticipantAcknowledgement__c.getRecordTypeInfosByName().get('Sent').getRecordTypeId();
-			pA.OwnerId = ePar.EmployeeName__r.pse__Salesforce_User__c;
-			pA.Manager__c = ePar.EmployeeName__r.pse__Salesforce_User__r.ManagerId;
-			pA.ParticipantID__c = ePar.Id;
-			pA.CurrencyISOCode = ePar.CurrencyISOCode;
-                                                 
-			participantAcknowledgementsToCreate.add(pA);
+			
+            if(mapCurrentParticipantsByEmail != null && mapCurrentParticipantsByEmail.size() > 0){
+            	if(mapCurrentParticipantsByEmail.containsKey(ePar.EmployeeName__r.Email)){
+
+            		if(mapCurrentParticipantsByEmail.get(ePar.EmployeeName__r.Email).TargetIncentivePoolAllocated__c !=
+            			ePar.TargetIncentivePoolAllocated__c){
+            			System.Debug(logginglevel.error,'Part target not = old target: ' + epar.EmployeeName__r.Email);
+            			pA.RecordTypeId = Schema.SObjectType.ParticipantAcknowledgement__c.getRecordTypeInfosByName().get('Sent').getRecordTypeId();
+						pA.OwnerId = ePar.EmployeeName__r.pse__Salesforce_User__c;
+						pA.Manager__c = ePar.EmployeeName__r.pse__Salesforce_User__r.ManagerId;
+						pA.ParticipantID__c = ePar.Id;
+						pA.CurrencyISOCode = ePar.CurrencyISOCode;
+						pA.NotificationFlag__c = 'Change';	
+						//pA.Approver1Email__c = ePar.Approver1__c;
+						//pA.Enrollment_Application__c = ePar.EnrollmentPlan__c;
+						/*pA.EnrollmentAppNameatSnapshot__c = ePar.EnrollmentAppName__c;
+						pA.ProjectStartDateatSnapshot__c = ProjectStartDate__c;
+						pA.ProjectEndDateatSnapshot__c = ePar.ProjectEndDate__c;
+						pA.PotentialPayoutatSnapshot__c = ePar.PotentialPayout__c;
+						pA.TargetAtSnapshot__c = ePar.Target__c;
+						pA.ParticipantProjectEndDateSnapshot__c = ePar.
+						pA.ParticipantProjectStartDateSnapshot__c
+						*/
+					}else{
+            			System.Debug(logginglevel.error,'No change move acknowledgements: ' + epar.EmployeeName__r.Email);
+            			mapAckKnowledgementToMoveByOriginalPartID.put(mapCurrentParticipantsByEmail.get(ePar.EmployeeName__r.Email).ID,ePar.ID);
+            		}
+
+            	}else{//new participant
+            		pa.NotificationFlag__c = 'New';
+            		pA.RecordTypeId = Schema.SObjectType.ParticipantAcknowledgement__c.getRecordTypeInfosByName().get('Sent').getRecordTypeId();
+					pA.OwnerId = ePar.EmployeeName__r.pse__Salesforce_User__c;
+					pA.Manager__c = ePar.EmployeeName__r.pse__Salesforce_User__r.ManagerId;
+					pA.ParticipantID__c = ePar.Id;
+					pA.CurrencyISOCode = ePar.CurrencyISOCode;	
+            	}
+            }else{
+            	//new
+            	pa.NotificationFlag__c = 'New';
+            	pA.RecordTypeId = Schema.SObjectType.ParticipantAcknowledgement__c.getRecordTypeInfosByName().get('Sent').getRecordTypeId();
+				pA.OwnerId = ePar.EmployeeName__r.pse__Salesforce_User__c;
+				pA.Manager__c = ePar.EmployeeName__r.pse__Salesforce_User__r.ManagerId;
+				pA.ParticipantID__c = ePar.Id;
+				pA.CurrencyISOCode = ePar.CurrencyISOCode;
+			}
+
+            if(pa != null && pa.ParticipantID__c != null){    
+            	System.Debug(logginglevel.error,'adding pa to list to create: ' + pa);                               
+				participantAcknowledgementsToCreate.add(pA);
+			}
         }
         
+        List<ParticipantAcknowledgement__c> participantAcknowledgementsToUpdate = new list<ParticipantAcknowledgement__c>();
+        System.Debug(logginglevel.error,'mapAckKnowledgementToMoveByOriginalPartID: ' + mapAckKnowledgementToMoveByOriginalPartID);
+        if(mapAckKnowledgementToMoveByOriginalPartID != null && mapAckKnowledgementToMoveByOriginalPartID.size() > 0){
+        	for(ParticipantAcknowledgement__c oAcknowledge : [Select Id
+        															   ,EnrollmentApplicationID__c
+        															   ,ParticipantID__c
+        															from ParticipantAcknowledgement__c 
+        															where ParticipantID__c =: mapAckKnowledgementToMoveByOriginalPartID.KeySet()]){
+        		System.Debug(logginglevel.error,'oAcknowledge ' + oAcknowledge);
+        		oAcknowledge.ParticipantID__c = mapAckKnowledgementToMoveByOriginalPartID.get(oAcknowledge.ParticipantID__c);
+        		oAcknowledge.NotificationFlag__c = 'None';
+        		participantAcknowledgementsToUpdate.add(oAcknowledge);
+        		System.debug(logginglevel.error,'oAcknowledge after changes ' + oAcknowledge.ParticipantID__c);
+        	}
+        }
+
         // Create the Participant Acknowledgements
         System.debug(logginglevel.error,'participantAcknowledgementsToCreate ' + participantAcknowledgementsToCreate.size());
+        System.debug(logginglevel.error,'participantAcknowledgementsToUpdate: ' + participantAcknowledgementsToUpdate);
         if(participantAcknowledgementsToCreate != null && participantAcknowledgementsToCreate.size() > 0){
             System.Debug(logginglevel.error,'Creating participant acknowledgements' + participantAcknowledgementsToCreate.size());
             System.savePoint sp = Database.setSavePoint();
             
             try{
+            	System.Debug(logginglevel.error,'Inserting acknowledgements');
+                
                 Insert participantAcknowledgementsToCreate;
-
+                
+                System.debug(logginglevel.error,'Updating acknowledgements');
+                
+                if(participantAcknowledgementsToUpdate != null && participantAcknowledgementsToUpdate.size() > 0){
+                	update participantAcknowledgementsToUpdate;
+                }
  				set<string> sPAid = new set<string>();
 
  				for(ParticipantAcknowledgement__c p: participantAcknowledgementsToCreate){
  					if(p.id != null){
- 						sPAid.add(p.id);
+ 							sPAid.add(p.id);
  					}
             	}
 
@@ -358,7 +462,8 @@ public with sharing class INC_EnrollmentPlanTriggers {
     										From EnrollmentPlan__c where id =: setReQueryPlans]){
 
 				mapNew.get(EP.ID).ApprovedRevenueBudgetatSnapshot__c = EP.IncentiveProject__r.ApprovedGrossRevenueBudget__c;
-    			mapNew.get(EP.ID).ApprovedSubsBudgetatSnapshot__c = EP.ApprovedSubsODC__c;
+    			mapNew.get(EP.ID).ApprovedSubsBudgetatSnapshot__c = EP.IncentiveProject__r.ApprovedSubsBudget__c;
+    			mapNew.get(EP.ID).ApprovedODCBudgetatSnapshot__c = EP.IncentiveProject__r.ApprovedODCBudget__c;
     			mapNew.get(EP.ID).ApprovedContingencyBudgetatsnapshot__c = EP.IncentiveProject__r.ApprovedContingencyBudget__c;
 				mapNew.get(EP.ID).ApprovedNSRBudgetatSnapshot__c = EP.IncentiveProject__r.ApprovedNSRBudget__c;
     			mapNew.get(EP.ID).ApprovedDPEBudgetatSnapshot__c = EP.IncentiveProject__r.ApprovedDPEBudget__c;

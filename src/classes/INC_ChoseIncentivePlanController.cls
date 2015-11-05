@@ -254,6 +254,8 @@ public class INC_ChoseIncentivePlanController {
 		}
 		//enrollmentPlan.IncentivePlan__c = Apexpages.currentPage().getParameters().get('planId');
 		//selectedPlan = enrollmentPlan.IncentivePlan__c;
+		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM,'Saved'));
+            
 		update enrollmentPlan;
 		if(fromWizard == null || fromWizard == 'No'){
 			return new PageReference('/' + enrollmentPlan.Id );

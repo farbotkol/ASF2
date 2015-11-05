@@ -1,6 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
     <alerts>
+        <fullName>FP_Participant_Change_Notification</fullName>
+        <description>Fixed Price Participant Change Notification</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <recipients>
+            <field>Manager__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>DTW_Project_Incentives/Enrollment_Change_Letter_FP</template>
+    </alerts>
+    <alerts>
         <fullName>FP_Participant_Notification</fullName>
         <description>Fixed Price Participant Notification</description>
         <protected>false</protected>
@@ -30,6 +45,21 @@
         <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
         <template>DTW_Project_Incentives/Participant_Declines_Participation_In_Plan</template>
+    </alerts>
+    <alerts>
+        <fullName>TM_Participant_Change_Notification</fullName>
+        <description>Time and Materials Participant Change Notification</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <recipients>
+            <field>Manager__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>DTW_Project_Incentives/Enrollment_Change_Letter_TM</template>
     </alerts>
     <alerts>
         <fullName>TM_Participant_Notification</fullName>
@@ -286,6 +316,29 @@
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
+        <fullName>FP Participant Change Notification</fullName>
+        <actions>
+            <name>FP_Participant_Change_Notification</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>ParticipantAcknowledgement__c.OwnerId</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>ParticipantAcknowledgement__c.PlanType__c</field>
+            <operation>equals</operation>
+            <value>Fixed Price</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>ParticipantAcknowledgement__c.NotificationFlag__c</field>
+            <operation>equals</operation>
+            <value>Change</value>
+        </criteriaItems>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
         <fullName>FP Participant Notification</fullName>
         <actions>
             <name>FP_Participant_Notification</name>
@@ -300,6 +353,11 @@
             <field>ParticipantAcknowledgement__c.PlanType__c</field>
             <operation>equals</operation>
             <value>Fixed Price</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>ParticipantAcknowledgement__c.NotificationFlag__c</field>
+            <operation>equals</operation>
+            <value>New</value>
         </criteriaItems>
         <triggerType>onCreateOnly</triggerType>
     </rules>
@@ -334,6 +392,30 @@
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
+        <fullName>TM Participant Change Notification</fullName>
+        <actions>
+            <name>TM_Participant_Change_Notification</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>ParticipantAcknowledgement__c.OwnerId</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>ParticipantAcknowledgement__c.PlanType__c</field>
+            <operation>equals</operation>
+            <value>Time &amp; Material</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>ParticipantAcknowledgement__c.NotificationFlag__c</field>
+            <operation>equals</operation>
+            <value>Change</value>
+        </criteriaItems>
+        <description>Sends notification to the Enrollment Participant owner when the Enrollment Participant has been created by the trigger.</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
         <fullName>TM Participant Notification</fullName>
         <actions>
             <name>TM_Participant_Notification</name>
@@ -348,6 +430,11 @@
             <field>ParticipantAcknowledgement__c.PlanType__c</field>
             <operation>equals</operation>
             <value>Time &amp; Material</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>ParticipantAcknowledgement__c.NotificationFlag__c</field>
+            <operation>equals</operation>
+            <value>New</value>
         </criteriaItems>
         <description>Sends notification to the Enrollment Participant owner when the Enrollment Participant has been created by the trigger.</description>
         <triggerType>onCreateOnly</triggerType>

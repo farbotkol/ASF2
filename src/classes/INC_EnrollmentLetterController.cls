@@ -51,15 +51,16 @@ public with sharing class INC_EnrollmentLetterController {
 			fixedAF = (EP.EnrollmentPlan__r.BaselineGMofNSR__C/100 + 0.05)*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
 			fixedAO = (EP.EnrollmentPlan__r.BaselineGMofNSR__C/100 + 0.06)*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
 
-			fixedAC = fixedAB - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
-			fixedAG = fixedAF - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
-			fixedAP = fixedAO - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
+			fixedAC = fixedAB - EP.EnrollmentPlan__r.BaselineGMofNSR__C/100*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
+			fixedAG = fixedAF - EP.EnrollmentPlan__r.BaselineGMofNSR__C/100*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
+			fixedAP = fixedAO - EP.EnrollmentPlan__r.BaselineGMofNSR__C/100*EP.EnrollmentPlan__r.ForecastNSRBudget__c;
 
 			fixedZ = 1 - EP.EnrollmentPlan__r.DTWComplete__c/100;
 
 			fixedAD = fixedZ*fixedAC*0.5;
 			fixedAH = fixedZ*fixedAG*0.5;
-			fixedAI = EP.EnrollmentPlan__r.MaxIncentivePool__c;
+			fixedAI = fixedZ*fixedAP*0.5;
+
 
 			if(EP.TargetIncentivePoolAllocated__c != null){
 				fixedAK = fixedAD*EP.TargetIncentivePoolAllocated__c/100;

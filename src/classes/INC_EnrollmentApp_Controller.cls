@@ -104,8 +104,8 @@ public with sharing class INC_EnrollmentApp_Controller {
            
             bRenderInputFinFields = RenderInputFinFields();
 
-            if((oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c == '' &&
-               (oEnrollmentApp.ApplicationIssues2__c == null || oEnrollmentApp.ApplicationIssues2__c == ''))&&
+            if((oEnrollmentApp.AppIicationIssues__c == null || oEnrollmentApp.AppIicationIssues__c == '') &&
+               (oEnrollmentApp.ApplicationIssues2__c == null || oEnrollmentApp.ApplicationIssues2__c == '')&&
                (oEnrollmentApp.ApplicationIssuesPay__c == null || oEnrollmentApp.ApplicationIssuesPay__c =='')){
               bShowApprovalHistory = true;
             }else{
@@ -266,7 +266,9 @@ public with sharing class INC_EnrollmentApp_Controller {
     public pageReference stepone(){
       System.Debug(logginglevel.error,'stepOne');
       activeTab='step1';
-      stdController.reset();
+      if(!test.isRunningTest()){
+        stdController.reset();
+      }
       oEnrollmentApp = (EnrollmentPlan__c)stdController.getRecord();
       oEnrollmentApp.WizardStatus__c = 'Step 1';
       disableStep2 = false;
@@ -427,7 +429,8 @@ public with sharing class INC_EnrollmentApp_Controller {
           req1.setObjectId(oEnrollmentApp.ID);
           req1.setSubmitterID(UserInfo.getUserId());
           try{
-              Approval.ProcessResult result = Approval.process(req1); 
+              Approval.ProcessResult result = Approval.process(req1);
+              System.Debug('submit for approval worked'); 
               }catch(Exception e){
                   bSubmitWorked = false;
                   System.Debug(logginglevel.error,'Exception from Submit: ' + e.getMessage());
@@ -508,6 +511,19 @@ public with sharing class INC_EnrollmentApp_Controller {
       oEnrollmentAppToUpdate.EnrollmentStatus__c = 'Closed - No Award';
 
       update oEnrollmentAppToUpdate;
+
+       ID workItem = getWorkItemId(oEnrollmentApp.ID);
+       System.debug('workItemid ' + workItem);
+       Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
+       req.setComments('Closed No Award.');
+       req.setAction('Reject');
+       req.setWorkitemId(workItem);
+       Approval.ProcessResult result =  Approval.process(req);
+       if(!result.isSuccess()){
+           ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'Error Rejecting Application.'));
+       }
+       
+       System.Debug(logginglevel.error,'finalRejectButton clicked');
 
       return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.id);
     }

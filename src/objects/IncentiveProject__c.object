@@ -869,6 +869,18 @@ CASE(  TMPlanOverallEligibility__c, &quot;Yes&quot;,&quot;Time &amp; Material&qu
         <type>Summary</type>
     </fields>
     <fields>
+        <fullName>CurrencyISOCodeFormula__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(CurrencyIsoCode)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Currency</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>CustomerName__c</fullName>
         <externalId>false</externalId>
         <label>Customer Name</label>
@@ -2119,6 +2131,32 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>AllClosedProjects</fullName>
+        <columns>ProjectID__c</columns>
+        <columns>NAME</columns>
+        <columns>ProjectStatus__c</columns>
+        <columns>CustomerName__c</columns>
+        <columns>ContractType__c</columns>
+        <columns>ProjectStartDate__c</columns>
+        <columns>ScheduledFinishDate__c</columns>
+        <columns>EnrollmentStatus__c</columns>
+        <columns>GRBacklog__c</columns>
+        <columns>RegionDescription__c</columns>
+        <columns>GeographyDescription__c</columns>
+        <columns>SuperGeography__c</columns>
+        <columns>ProjectManager__c</columns>
+        <columns>FPPOverallEligibility__c</columns>
+        <columns>TMPlanOverallEligibility__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ProjectStatus__c</field>
+            <operation>contains</operation>
+            <value>Closed</value>
+        </filters>
+        <label>AllClosedProjects</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>All_CPFF_Projects</fullName>
         <columns>ProjectID__c</columns>
         <columns>NAME</columns>
@@ -2282,17 +2320,17 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
         <columns>NAME</columns>
         <columns>ActualGrossRevenueITD__c</columns>
         <columns>DTW_Admin_Status__c</columns>
-        <columns>OrgCarryingOutProject__c</columns>
         <columns>CustomerName__c</columns>
         <columns>ContractType__c</columns>
         <columns>ProjectStartDate__c</columns>
         <columns>GRBacklog__c</columns>
-        <columns>CURRENCY_ISO_CODE</columns>
         <columns>GeographyDescription__c</columns>
-        <columns>DTWAdminInitiated__c</columns>
+        <columns>DistrictDescription__c</columns>
         <columns>ProjectManager__c</columns>
         <columns>FPPOverallEligibility__c</columns>
         <columns>EnrollmentPlan__c</columns>
+        <columns>OrgCarryingOutProject__c</columns>
+        <columns>CURRENCY_ISO_CODE</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>EnrollmentStatus__c</field>
@@ -2384,7 +2422,8 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
         <columns>CountEnrollmentPlan__c</columns>
         <columns>CountofParticipants__c</columns>
         <columns>EACasofDate__c</columns>
-        <columns>LAST_UPDATE</columns>
+        <columns>OWNER.FIRST_NAME</columns>
+        <columns>OWNER.LAST_NAME</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>FPPOverallEligibility__c</field>
@@ -2800,6 +2839,21 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
             <value>Yes</value>
         </filters>
         <label>Projects without Enrollment Plans</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>With_Routing_Members_Assigned</fullName>
+        <columns>NAME</columns>
+        <columns>EnrollmentStatus__c</columns>
+        <columns>EnrollmentPlan__c</columns>
+        <columns>RoutingMemberRule__c</columns>
+        <columns>WorkflowOwner__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RoutingMemberRule__c</field>
+            <operation>notEqual</operation>
+        </filters>
+        <label>With Routing Members Assigned</label>
         <language>en_US</language>
     </listViews>
     <nameField>
@@ -3388,15 +3442,49 @@ document.location = &apos;/{!IncentiveProject__c.Id}&apos;;</url>
 {!REQUIRESCRIPT(&quot;/soap/ajax/10.0/apex.js&quot;)} 
 this.disabled = true; 
 var className = this.classname; 
-this.className = &quot;btnDisabled&quot; 
+this.className = &quot;btnDisabled&quot;; 
 
+var enrollmentCheckArray = sforce.connection.query(&quot;SELECT EnrollmentPlan__r.EnrollmentStatus__c, ChangeRequest__r.EnrollmentStatus__c  FROM IncentiveProject__c WHERE Id = &apos;{!IncentiveProject__c.Id}&apos;&quot;);
+
+enrollmentCheck = enrollmentCheckArray.getArray(&quot;records&quot;)[0];
+
+var enrollmentPlanStatus = &apos;None&apos;;
+var enrollmentPlan = enrollmentCheck.EnrollmentPlan__r;
+var changeRequestStatus = &apos;None&apos;;
+var changeRequest = enrollmentCheck.ChangeRequest__r;
+var runRevive = true;
+console.log(enrollmentPlan);
+console.log(enrollmentCheck);
+if(enrollmentPlan != null){
+  enrollmentPlanStatus = enrollmentCheck.EnrollmentPlan__r.EnrollmentStatus__c;
+console.log(&apos;assigned status&apos;);
+console.log(enrollmentPlanStatus);
+}
+if(changeRequest  != null){
+  changeRequestStatus = enrollmentCheck.ChangeRequest__r.EnrollmentStatus__c;
+}
+
+if(enrollmentPlanStatus == &apos;None&apos;|| enrollmentPlanStatus != &apos;Archived&apos; &amp;&amp; enrollmentPlanStatus != &apos;Rejected&apos; &amp;&amp; enrollmentPlanStatus != &apos;Closed&apos; &amp;&amp; enrollmentPlanStatus != &apos;Closed - No Award&apos;){
+console.log(&apos;An enrollment application is in progress or does not exist&apos;);
+console.log(changeRequestStatus);
+console.log(enrollmentPlanStatus);
+  if(changeRequestStatus = &apos;None&apos;|| changeRequestStatus != &apos;Archived&apos; &amp;&amp; changeRequestStatus != &apos;Rejected&apos; &amp;&amp; changeRequestStatus != &apos;Closed&apos; &amp;&amp; changeRequestStatus != &apos;Closed - No Award&apos;){
+    console.log(&apos;A Change Request is in progress or does not exist&apos;);
+    alert(&apos;This application cannot be revived because there is already an application in progress or one has not been created yet!&apos;);
+    runRevive = false;
+  }
+}
+
+if(runRevive){
 if({!NOT(ISNULL( IncentiveProject__c.ProjectManager__c))}){ 
  
 var retStr; 
 retStr = sforce.apex.execute(&quot;INC_IncentiveProjectCreateEnrollment&quot;, &quot;reviveEnrollmentForm&quot;, {sIncentiveID:&apos;{!IncentiveProject__c.Id}&apos;}); 
 }else{ 
 alert(&apos;A Project Manager needs to be assigned to start the enrollment process.&apos;); 
-} 
+}
+}
+
 
 document.location = &apos;/{!IncentiveProject__c.Id}&apos;;</url>
     </webLinks>

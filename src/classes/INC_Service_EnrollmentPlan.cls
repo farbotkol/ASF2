@@ -28,7 +28,8 @@ public without sharing class INC_Service_EnrollmentPlan {
                                                          , ParticipantType__c
                                                          , HRJobTitle__c
                                                          , ExistedAtEnrollment__c
-                                                         ,Baseline_Margin_Change__c
+                                                         , Baseline_Margin_Change__c
+                                                         , CurrencyIsoCode
                                                   From EnrollmentParticipant__c
                                                   Where EnrollmentPlan__c =: EnrollmentPlans]){
 
@@ -134,6 +135,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                           , IPFreqofPayment__c   
                           , IPNumberofPayments__c
                           , IPYearsRemaining__c
+                          , GMofNSRAdjustment__c
                           , IPComment__c
                           , IncentivePlan__c
                           , IncentivePlan__r.ContractType__c
@@ -170,6 +172,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                           , ApplicationExceptionsPay__c
                           , IncentiveProject__r.DTWAdmin__c
                           , ForecastSubsandODCBudget__c
+                          ,IncentiveProject__r.RecordTypeId
                      , ApplicationType__c
                 From EnrollmentPlan__c
                 where id =: EnrollmentPlans]);
@@ -195,7 +198,7 @@ public without sharing class INC_Service_EnrollmentPlan {
       for(FieldSetMember fsm: listFields){
         sQuery += ',' + fsm.getFieldPath();
       }
-      sQuery += ',IncentiveProject__r.CurrencyIsoCode From EnrollmentPlan__c where ID =: EnrollmentPlan';
+      sQuery += ',IncentiveProject__r.RoutingMemberRule__c,IncentiveProject__r.CurrencyIsoCode From EnrollmentPlan__c where ID =: EnrollmentPlan';
 
       EnrollmentPlan__c currentPlan = (EnrollmentPlan__c)database.Query(sQuery)[0];
 
@@ -259,6 +262,28 @@ public without sharing class INC_Service_EnrollmentPlan {
         }
       }
 
+      if(RT == requestType.Change || RT == requestType.PAYMENT){
+        //go get new Approvers from routing members 
+        ID RoutingMemberID = currentPlan.IncentiveProject__r.RoutingMemberRule__c;
+        List<RoutingMember__c> lMembers = [Select Id
+                        , Name
+                        , BusinessLineDescription__c
+                        , GeographyDescription__c
+                        , LegalEntityDescription__c
+                        , RegionDescription__c
+                        , DistrictDescription__c
+                        , DTWAdmin__c
+                        , Approver1__c
+                        , Approver2__c
+                        , Approver3__c
+                        , GlobalDefault__c
+                        , OwnerID
+                    From RoutingMember__c where id =: RoutingMemberID];
+        oEnroll.Approver1__c = lMembers[0].Approver1__c;
+        oEnroll.Approver2__c = lMembers[0].Approver2__c;
+        oEnroll.Approver3__c = lMembers[0].Approver3__c;
+        oEnroll.DTWAdmin__c = lMembers[0].DTWAdmin__c;
+      }
       /*if(RT == requestType.CHANGE && oEnroll.IncentivePlan__r.ContractType__c == 'Time & Material'){
         oEnroll.GrossRevenueAdjustment__c = null;
         oEnroll.GrossRevenueScopeChange__c = null;
@@ -312,7 +337,8 @@ public without sharing class INC_Service_EnrollmentPlan {
                                                                , ParticipantCategory__c = currentEP.ParticipantCategory__c
                                                                , RoleTitle__c = currentEP.RoleTitle__c
                                                                , StartDateonProject__c = currentEP.StartDateonProject__c
-                                                               , TargetIncentivePoolAllocated__c = currentEP.TargetIncentivePoolAllocated__c);
+                                                               , TargetIncentivePoolAllocated__c = currentEP.TargetIncentivePoolAllocated__c
+                                                               , CurrencyIsoCode = currentEP.CurrencyIsoCode);
             ListAddPart.add(ep);
           }
         }
@@ -777,6 +803,18 @@ public without sharing class INC_Service_EnrollmentPlan {
 
     }
 
+    public static list<IncentiveProject__c> assignIneligibleQueue(list<IncentiveProject__c>lProjects){
+      Group Ineligible  = [select Id from Group where Name = 'DTW Ineligible Queue' and Type = 'Queue'];
+
+      for(IncentiveProject__c oIP: lProjects){
+        if((oIP.FPPOverallEligibility__c == Null || oIP.FPPOverallEligibility__c == 'No') &&
+           (oIP.TMPlanOverallEligibility__c == Null || oIP.TMPlanOverallEligibility__c == 'No')){
+            oIp.OwnerID = Ineligible.Id;
+          }
+      }
+
+      return lProjects;
+    }
     public static map<id,List<Enrollment_Comments__c>> getCommentsbyEnrollmentPlan(set<id> enrollmentPlans){
       map<id,list<Enrollment_Comments__c>> mapReturn = new map<id,list<Enrollment_Comments__c>>();
       list<Enrollment_Comments__c> listTemp;

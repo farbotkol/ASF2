@@ -173,6 +173,17 @@
         <template>DTW_Project_Incentives/Project_Budget_Exceed_Incentive_Plan_Alert_Threshold</template>
     </alerts>
     <alerts>
+        <fullName>Notify_PM_of_CCR_to_review</fullName>
+        <description>Notify PM of CCR to review</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>DTW_Project_Incentives/Notify_PM_of_CCRProject_to_review</template>
+    </alerts>
+    <alerts>
         <fullName>Notify_PM_of_project_to_review</fullName>
         <description>3Notify PM of project to review</description>
         <protected>false</protected>
@@ -206,21 +217,50 @@
         <template>DTW_Project_Incentives/Notify_of_Interim_Payment_Requested</template>
     </alerts>
     <alerts>
-        <fullName>Participant_Change</fullName>
-        <description>Participant Change</description>
+        <fullName>Participant_Change_Notify_Approver_1</fullName>
+        <description>Participant Change  - Notify Approver 1</description>
         <protected>false</protected>
-        <recipients>
-            <type>owner</type>
-        </recipients>
         <recipients>
             <field>Approver1__c</field>
             <type>userLookup</type>
         </recipients>
+        <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>DTW_Project_Incentives/Participant_Change</template>
+    </alerts>
+    <alerts>
+        <fullName>Participant_Change_Notify_Approver_2</fullName>
+        <description>Participant Change  - Notify Approver 2</description>
+        <protected>false</protected>
         <recipients>
             <field>Approver2__c</field>
             <type>userLookup</type>
         </recipients>
-        <senderType>CurrentUser</senderType>
+        <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>DTW_Project_Incentives/Participant_Change</template>
+    </alerts>
+    <alerts>
+        <fullName>Participant_Change_Notify_Approver_3</fullName>
+        <description>Participant Change  - Notify Approver 3</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Approver3__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>DTW_Project_Incentives/Participant_Change</template>
+    </alerts>
+    <alerts>
+        <fullName>Participant_Change_Notify_PM</fullName>
+        <description>Participant Change  - Notify PM</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
         <template>DTW_Project_Incentives/Participant_Change</template>
     </alerts>
     <alerts>
@@ -237,14 +277,6 @@
         <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
         <template>DTW_Project_Incentives/Prepayment_Alert_to_PM_and_AP1</template>
-    </alerts>
-    <alerts>
-        <fullName>RLK_Test</fullName>
-        <ccEmails>rlkwow@aol.com</ccEmails>
-        <description>RLK Test</description>
-        <protected>false</protected>
-        <senderType>CurrentUser</senderType>
-        <template>DTW_Project_Incentives/RLK_Test</template>
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_Approver_1_when_assigned_to_EA</fullName>
@@ -796,9 +828,10 @@
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Capture_Approved_Subs</fullName>
-        <description>This is actually subs and odc combined in the snap shot per Chris 10/29</description>
+        <description>This is actually subs and odc combined in the snap shot per Chris 10/29
+Removed the + IncentiveProject__r.ApprovedODCBudget__c</description>
         <field>ApprovedSubsBudgetatSnapshot__c</field>
-        <formula>IncentiveProject__r.ApprovedSubsBudget__c + IncentiveProject__r.ApprovedODCBudget__c</formula>
+        <formula>IncentiveProject__r.ApprovedSubsBudget__c</formula>
         <name>Capture Approved Subs</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
@@ -1118,10 +1151,10 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator1__c) = &quot;/&quot;, ROUND((ForecastNS
         <fullName>EA_Max_Pool_Expression_2</fullName>
         <field>EAMaxPExp2__c</field>
         <formula>IF( TEXT(IncentivePlan__r.MaxPoolField22__c) = &quot;Adjusted % Complete&quot;, 
-IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;+&quot;, (IncentivePlan__r.MaxPoolField2__c + AdjustedComplete__c), 
-IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;-&quot;, (IncentivePlan__r.MaxPoolField2__c - AdjustedComplete__c), 
-IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;x&quot;, ROUND((IncentivePlan__r.MaxPoolField2__c * AdjustedComplete__c),1), 
-IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentivePlan__r.MaxPoolField2__c / AdjustedComplete__c),1),Null) 
+IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;+&quot;, (IncentivePlan__r.MaxPoolField2__c + ROUND(AdjustedComplete__c,2)), 
+IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;-&quot;, (IncentivePlan__r.MaxPoolField2__c - ROUND(AdjustedComplete__c,2)), 
+IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;x&quot;, ROUND((IncentivePlan__r.MaxPoolField2__c * ROUND(AdjustedComplete__c,2)),1), 
+IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentivePlan__r.MaxPoolField2__c / ROUND(AdjustedComplete__c,2)),1),Null) 
 ))),NULL)</formula>
         <name>EA.Max Pool Expression 2</name>
         <notifyAssignee>false</notifyAssignee>
@@ -1228,6 +1261,42 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <name>Rejection Date</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_App_1_Processed</fullName>
+        <field>App_1_Processed__c</field>
+        <literalValue>1</literalValue>
+        <name>Set App 1 Processed</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_App_2_Processed</fullName>
+        <field>App_2_Processed__c</field>
+        <literalValue>1</literalValue>
+        <name>Set App 2 Processed</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_App_3_Processed</fullName>
+        <field>App_3_Processed__c</field>
+        <literalValue>1</literalValue>
+        <name>Set App 3 Processed</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_App_Admin_Processed</fullName>
+        <field>App_Admin_Processed__c</field>
+        <literalValue>1</literalValue>
+        <name>Set App Admin Processed</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
@@ -1557,7 +1626,7 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
             <name>Notify_AP1_of_budget_change_significantly_impacting_baseline_FP_plan_only</name>
             <type>Alert</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <description>16Notify Approver 1 of budget change significantly impacting baseline (Fixed Price plan only)</description>
         <formula>AND(PlanType__c = &quot;Fixed Price&quot;,
 PRIORVALUE(IncentivePlan__c) &lt;&gt;&quot;&quot;,
@@ -2398,6 +2467,26 @@ DPEAdjustment__c &lt;&gt; DPEBudget</description>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
+        <fullName>Notify PM of CCR to review</fullName>
+        <actions>
+            <name>Notify_PM_of_CCR_to_review</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
+            <operation>equals</operation>
+            <value>Pending PM Action</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.ApplicationType__c</field>
+            <operation>equals</operation>
+            <value>CCR</value>
+        </criteriaItems>
+        <description>Notify PM of CCR to review, NOT on Payment Type Record ID</description>
+        <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
         <fullName>Notify PM of any approver edits to BL Metrics or Participants after approver 2 has approved</fullName>
         <actions>
             <name>Send_Notification_to_EA_PM_of_BL_or_Participant_Edits_if_Approver2_Approved</name>
@@ -2462,9 +2551,9 @@ AND(
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
-        <fullName>Notify of Participant Change 3</fullName>
+        <fullName>Notify of Participant Change - App1</fullName>
         <actions>
-            <name>Participant_Change</name>
+            <name>Participant_Change_Notify_Approver_1</name>
             <type>Alert</type>
         </actions>
         <actions>
@@ -2472,13 +2561,45 @@ AND(
             <type>FieldUpdate</type>
         </actions>
         <active>false</active>
-        <description>If approver 3 changes participant(s) notify PM, approver 1 &amp; 2 and set EPChanged to no.
+        <description>Notify Approver 1 if Participant Count Changes.</description>
+        <formula>and(or(ischanged(NumberofParticipants__c),ischanged( TotalAllocationParticipants__c)),
+App_1_Processed__c)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Notify of Participant Change - App2</fullName>
+        <actions>
+            <name>Participant_Change_Notify_Approver_2</name>
+            <type>Alert</type>
+        </actions>
+        <active>false</active>
+        <description>Notify Approver 2 if Participant Count Changes.</description>
+        <formula>and(or(ischanged(NumberofParticipants__c),ischanged( TotalAllocationParticipants__c)),
+App_2_Processed__c)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Notify of Participant Change - App3</fullName>
+        <actions>
+            <name>Participant_Change_Notify_Approver_3</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <description>Notify Approver 3 if Participant Count Changes.</description>
+        <formula>and(or(ischanged(NumberofParticipants__c),ischanged( TotalAllocationParticipants__c)),
+App_3_Processed__c)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Notify of Participant Change - PM</fullName>
+        <active>false</active>
+        <description>Notify PM if Participant Count Changes.</description>
+        <formula>and(or(ischanged(NumberofParticipants__c),ischanged( TotalAllocationParticipants__c)),
 
-EPChanged field = yes
-Last Modified = Approver3</description>
-        <formula>AND(ISPICKVAL(EPChanged__c, &quot;Yes&quot;),
- LastModifiedID__c =  Approver3__r.Id)</formula>
-        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+or(LastModifiedById = Approver1ID__c,
+ LastModifiedById = Approver2_ID__c, 
+ LastModifiedById = Approver3ID__c))</formula>
+        <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
         <fullName>On Create Populate PM E-Mail</fullName>
