@@ -14,6 +14,8 @@ global class INC_FindDTWAdminForNewIncentiveProjects implements Database.Batchab
 		System.Debug(logginglevel.error,'Starting execute of batch process');
 		INC_Service_Matching Inc_Match = new INC_Service_Matching();
 		list<IncentiveProject__c> lNew = Inc_Match.FindDTWAdmin(scope);
+		lNew = INC_Service_EnrollmentPlan.assignIneligibleQueue(lNew);
+
 		update lNew;
 	}
 	
@@ -24,7 +26,7 @@ global class INC_FindDTWAdminForNewIncentiveProjects implements Database.Batchab
 	private String getQuery(){
 		INC_Service_Matching serviceMatch = new INC_Service_Matching();
 		list<Schema.FieldSetMember> DTWAdmin = serviceMatch.getFieldSet(true);
-		String sReturn = 'Select ID';
+		String sReturn = 'Select ID, RoutingMemberRule__c,FPPOverallEligibility__c,TMPlanOverallEligibility__c';
 		for(Schema.FieldSetMember FSM: DTWAdmin){
 			sReturn += ',' + (String) FSM.getFieldPath();
 		}

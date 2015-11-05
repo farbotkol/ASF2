@@ -50,11 +50,12 @@
   }
 
 </style>
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
-        <script type="text/javascript">
-        $jq(document).ready(function(){
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+      <script type="text/javascript">
+        $j = jQuery.noConflict();
+        $j(document).ready(function(){
         var currentTime = new Date();
-        var year = currentTime.getFullYear()
+        var year = currentTime.getFullYear();
         var startYear=(year - 10); //replace 1982 with whatever year you want to start with;
         var endYear=(year + 10); //replace 2034 with whatever year you want to end with;
             //-----EDIT BELLOW HERE AT YOUR OWN RISK-----
@@ -66,11 +67,12 @@
                     optionsString += "<option value=\""+i+"\">"+i+"</option>";
                 }
                 //Replace the innerHTML of the calendar picker year select tag with the Optionsstring we constructed.
-                $('#calYearPicker').html(optionsString);
+                $j('#calYearPicker').html(optionsString);
             }
           });
-          </script>
-<!--<apex:form > -->
+      </script>
+
+  <!--<apex:form > -->
     <apex:SectionHeader title="Enrollment Information"  rendered="{!NOT(fromWizard='Yes')}" />
     <apex:outputPanel rendered="{!fromWizard='Yes'}">
       <div class="pbSubheader tertiaryPalette"><h3>Enrollment Information</h3></div>
@@ -145,8 +147,12 @@ Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.h
     <apex:outputPanel id="epList">
     <apex:sectionHeader title="Add Enrollment Participants"  rendered="{!NOT(fromWizard='Yes')}"/>
     <apex:outputPanel rendered="{!fromWizard='Yes'}">
+
+
       <div class="pbSubheader tertiaryPalette"><h3>Add Enrollment Participants</h3></div>
     </apex:outputPanel>
+
+    
 
     <apex:pageBlock Title="Participants" id="Participants">
    

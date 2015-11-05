@@ -361,7 +361,7 @@ ISPICKVAL(PRIORVALUE(TMPlanOverallEligibility__c),&apos;No&apos;)
         <active>true</active>
         <description>Sets the Is Closed to &quot;Yes&quot; when the the Incentive Project Status changes from Insight</description>
         <formula>OR (
-    ProjectStatus__c = &quot;CLOSED - Closed&quot;,
+    BEGINS(ProjectStatus__c,&quot;CLOSED&quot;),
     ProjectStatus__c =  &quot;PENDING CLOSE - Closed in Current Year&quot;
    )</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>

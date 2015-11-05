@@ -31,7 +31,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
             bEnableCCR = true;
         }
 
-        if(oEnrollmentPlan.ContractType__c == 'AMPS - Fixed Price'  || 
+        /*if(oEnrollmentPlan.ContractType__c == 'AMPS - Fixed Price'  || 
             oEnrollmentPlan.ContractType__c == 'CPFF - Hard Bid' || 
             oEnrollmentPlan.ContractType__c == 'CPFF - Negotiated' || 
             oEnrollmentPlan.ContractType__c == 'Unassigned'
@@ -39,13 +39,16 @@ public with sharing class INC_EnrollmentParticipantEntryController {
             bTMorFixed = false;
         } else {
             bTMorFixed = true;
+        }*/
 
-            if(oEnrollmentPlan.IncentivePlan__r.ContractType__c == 'Fixed Price'){
-                bFixed = true;
-            } else if (oEnrollmentPlan.IncentivePlan__r.ContractType__c == 'Time & Material'){
-                bTM = true;
-            }            
-        }
+        bTMorFixed = true;
+        
+        if(oEnrollmentPlan.IncentivePlan__r.ContractType__c == 'Fixed Price'){
+            bFixed = true;
+        } else if (oEnrollmentPlan.IncentivePlan__r.ContractType__c == 'Time & Material'){
+            bTM = true;
+        }            
+        
 
         
     }
@@ -278,6 +281,8 @@ public with sharing class INC_EnrollmentParticipantEntryController {
 
             if(bTM || bFixed){
                 if(oEnrollmentPlan.ApplicationType__c != 'Pay'){
+                    System.Debug(logginglevel.error,'Pool: ' + pool + ' ' + oEnrollmentParticipant.TargetIncentivePoolAllocated__c);
+                    System.Debug(logginglevel.error, 'value: ' + (oEnrollmentParticipant.TargetIncentivePoolAllocated__c * pool/100));
                     if((((oEnrollmentParticipant.TargetIncentivePoolAllocated__c * pool/100) < oEnrollmentPlan.MinParticipantPayout__c)) && oEnrollmentPlan.ApplicationType__c == 'ENR'){
                         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants estimated payout must be >= $' + oEnrollmentPlan.MinParticipantPayout__c + ', Currently: $' + oEnrollmentParticipant.TargetIncentivePoolAllocated__c * pool/100));
                         return false;
@@ -371,6 +376,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
 
         public CommentWrapper(EnrollmentParticipant__c oParticipant,EnrollmentPlan__c oEnrollmentPlan){
             participant = oParticipant;
+            participant.CurrencyIsoCode = oEnrollmentPlan.CurrencyIsoCode;
             setfieldEnabled(oEnrollmentPlan);
         }
 
@@ -427,10 +433,11 @@ public with sharing class INC_EnrollmentParticipantEntryController {
                     bEnableEmpName = false;
                     bCCREnabledField = true;
                     bPaymentEnabledField = true;
+                    bEndDateEnabled = true;
                 }else{
                     bStartDateEnabled = true;
                     bPaymentDateEnabled = true;
-                    bEndDateEnabled = true;
+                    bEndDateEnabled = false;
                 }
             }
 

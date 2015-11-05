@@ -1,0 +1,50 @@
+<messaging:emailTemplate subject="DTW Action Required: Your Deliver to Win incentive target has changed" recipientType="User" relatedToType="ParticipantAcknowledgement__c">
+<messaging:htmlEmailBody >
+    <apex:outputpanel >
+        <p>Thank you for your participation in the Deliver to Win incentive plan for project {!relatedTo.ParticipantID__r.EnrollmentPlan__r.ReplyTo__c}.
+        Your target DTW incentive for this project has changed.</p>
+        
+        <p>Project Number: {!relatedTo.ProjectNumber__c} </p>
+        <p>Project Name: {!relatedTo.ProjectName__c}</p>
+        <p>Customer Name: {!relatedTo.ClientName__c}</p>
+        
+        <p>Your new personalized enrollment letter is attached,which includes project specific metrics and an overview of the plan is available by clicking here.  
+        Please review this enrollment letter, and click the &nbsp;<apex:outputtext escape="false" value="{!relatedTo.AcknowledgementURL__c}" />   
+        within 7 days to indicate your receipt and participation in the plan.</p>
+        
+        <p>Please review the &nbsp;<apex:outputtext escape="false" value="{!relatedTo.DTWFixedPricePlanEmployeeGuide__c}" /> and complete the Overview and Participant modules of our DTW Fixed Price Training to learn more about the incentive plan, 
+        and how you can earn a cash reward.  Training should take roughly 45 minutes to complete.  In addition to the web-based training, more information and other resources can be found on the 
+         &nbsp;<apex:outputtext escape="false" value="{!relatedTo.DTWWebpage__c}" /> webpage.</p>
+        
+        <p>Thank you, </p>
+        
+        <p>DTW Administrator</p>
+        <p>{!relatedTo.ParticipantID__r.EnrollmentPlan__r.ReplyTo__c}</p>
+    </apex:outputpanel>
+</messaging:htmlEmailBody>
+    
+    <messaging:plainTextEmailBody >
+        Thank you for your participation in the Deliver to Win incentive plan for project {!relatedTo.ParticipantID__r.EnrollmentPlan__r.ReplyTo__c}.
+        Your target DTW incentive for this project has changed.
+        
+        Project Number: {!relatedTo.ProjectNumber__c} 
+        
+        Project Name: {!relatedTo.ProjectName__c} 
+        
+        Customer Name: {!relatedTo.ClientName__c} 
+        
+        Your new personalized enrollment letter is attached,which includes project specific metrics and an overview of the plan is available by clicking here. Please review this enrollment letter, and click the Participant Acknowledgement within 7 days to indicate your receipt and participation in the plan. 
+        
+        Please review {!relatedTo.DTWFixedPricePlanEmployeeGuideURL__c} and complete the Overview and Participant modules of our DTW Fixed Price Training to learn more about the incentive plan, and how you can earn a cash reward. Training should take roughly 45 minutes to complete. In addition to the web-based training, more information and other resources can be found at {!relatedTo.DTWWebpageURL__c}.         
+        
+        Thank you, 
+        
+        DTW Administrator    
+        
+        {!relatedTo.ParticipantID__r.EnrollmentPlan__r.ReplyTo__c}
+    </messaging:plainTextEmailBody>      
+
+<messaging:attachment renderAs="PDF" filename="{!relatedTo.ProjectNumber__c}-{!relatedTo.ParticipantID__r.EmployeeName__r.name}-DTWLetter-{!YEAR(TODAY())}{!RIGHT(TEXT(MONTH(TODAY())+100),2)}{!RIGHT(TEXT(DAY(TODAY())+100),2)}.pdf">
+    <c:INC_EnrollmentLetterComponent EP="{!relatedTo.ParticipantID__c}" pa="{!relatedTo}" />
+</messaging:attachment>
+</messaging:emailTemplate>

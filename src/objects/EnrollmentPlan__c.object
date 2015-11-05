@@ -42,9 +42,7 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <content>INC_EnrollmentApp</content>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Visualforce</type>
+        <type>Default</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <customHelpPage>INC_HelpRedirect</customHelpPage>
@@ -976,22 +974,7 @@
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
-            <field>Approver2__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
             <field>IncentivePlan__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
-            <field>Approver1__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
-            <field>Approver3__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
@@ -2601,18 +2584,55 @@ CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>App_1_Processed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>App 1 Processed</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>App_2_Processed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>App 2 Processed</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>App_3_Processed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>App 3 Processed</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>App_Admin_Processed__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>App Admin Processed</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>ApplicationExceptionsFP__c</fullName>
         <externalId>false</externalId>
         <formula>CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null, &quot;Closed&quot;, Null,
 CASE(ApplicationType__c,&quot;OPT&quot;,NULL, &quot;Pay&quot;, NULL,
 
-IF(AND(TEXT(IncentivePlan__r.ContractType__c) = &quot;Fixed Price&quot;, TEXT( ApplicationType__c ) &lt;&gt; &quot;Pay&quot;,TEXT( ApplicationType__c ) &lt;&gt; &quot;CCR&quot;),
-     IF(AND(TotalAllocationParticipants__c &gt; IncentivePlan__r.MaxAllocationPool__c,  ScheduledFinishDate__c &lt; TODAY()+ 120), 
-        IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Total Participant Allocations Of &quot;&amp; TEXT(TotalAllocationParticipants__c*100) &amp; &quot;% Exceeds Plan Guidelines Of &quot; &amp;  TEXT(IncentivePlan__r.MaxAllocationPool__c*100) &amp; &quot;%&quot; &amp; BR(),
+IF(AND(TEXT(IncentivePlan__r.ContractType__c) = &quot;Fixed Price&quot;, TEXT( ApplicationType__c ) &lt;&gt; &quot;Pay&quot;),
+
+   IF(AND(TotalAllocationParticipants__c &gt; IncentivePlan__r.MaxAllocationPool__c,  ScheduledFinishDate__c &lt; TODAY()+ 120), 
+   IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Total Participant Allocations Of &quot;&amp; TEXT(TotalAllocationParticipants__c*100) &amp; &quot;% Exceeds Plan Guidelines Of &quot; &amp;  TEXT(IncentivePlan__r.MaxAllocationPool__c*100) &amp; &quot;%&quot; &amp; BR(),
 NULL) &amp;
 
-     IF(OR(ABS(NSRAdjustment__c) &gt; 0,  ABS(DPEAdjustment__c) &gt; 0), 
-        IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Management Adjustments Have Been Added&quot; &amp; BR(), NULL),Null
+IF(OR(ABS(NSRAdjustment__c) &gt; 0,  ABS(DPEAdjustment__c) &gt; 0), 
+   IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Management Adjustments Have Been Added&quot; &amp; BR(), NULL),Null
 )
 ))</formula>
         <inlineHelpText>If exceptions are requested, enrollment will require 3rd level approval (typically Region Executive)</inlineHelpText>
@@ -2671,12 +2691,10 @@ IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;,
 CASE(ApplicationType__c,&quot;OPT&quot;,NULL, &quot;Pay&quot;, NULL, 
 
 IF(AND(TEXT(IncentivePlan__r.ContractType__c) = &quot;Time &amp; Material&quot;, NOT(ISPICKVAL( ApplicationType__c, &quot;Pay&quot;))), 
-
-
-IF(Round(BaselineGMofNSR__c,2) &lt;&gt;(CASE(IncentivePlan__r.ContractSubType__c, &quot;Gross Margin&quot;, 
-Round(IncentiveProject__r.ApprovedGrossMarginofNSR__c,2) ,Round(IncentiveProject__r.ApprovedNetMarginBudget__c,2))), 
-IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Baseline Margin% is not equal to Budget Margin%&quot; &amp; 
-BR(), NULL)&amp; 
+    IF(ABS(Round(BaselineGMofNSR__c,2) -(CASE(IncentivePlan__r.ContractSubType__c, &quot;Gross Margin&quot;, 
+    Round(IncentiveProject__r.ApprovedGrossMarginofNSR__c,2), Round(IncentiveProject__r.ApprovedNetMarginBudget__c,2)))) &gt; 0.0002, 
+    IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Baseline Margin% is not equal to Budget Margin%&quot; &amp; 
+    BR(), NULL)&amp; 
 
 IF(Round(BaselineGrossMargin__c,0) &lt; (CASE(IncentivePlan__r.ContractSubType__c, &quot;Gross Margin&quot;, 
 Round(IncentiveProject__r.ForecastGrossMarginBudget__c,0), 
@@ -3481,6 +3499,31 @@ TEXT(IncentivePlan__r.MaxAllocationPool__c*100) &amp; &quot;%&quot; &amp; BR(), 
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>ApprovedSubsODCatSnapshot__c</fullName>
+        <externalId>false</externalId>
+        <formula>ApprovedSubsBudgetatSnapshot__c + ApprovedODCBudgetatSnapshot__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Approved Subs/ODC at Snapshot</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Approver1ID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Approver1__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Approver1ID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Approver1Manager__c</fullName>
         <externalId>false</externalId>
         <formula>Approver1__r.Manager.Id</formula>
@@ -3935,7 +3978,7 @@ IncentiveProject__r.ApprovedDPEBudget__c,IF(OR(NOT(ISPICKVAL(ApplicationType__c,
         <fullName>BaselineSubsODC__c</fullName>
         <externalId>false</externalId>
         <formula>CASE(IncentivePlan__r.ContractType__c, &quot;Fixed Price&quot;, IncentiveProject__r.ApprovedODCBudget__c + IncentiveProject__r.ApprovedSubsBudget__c, &quot;Time &amp; Material&quot;, IF(
-OR(ISPICKVAL(EnrollmentStatus__c,&apos;Enrolled&apos;),NOT(ISPICKVAL(ApplicationType__c,&apos;ENR&apos;))),ApprovedSubsBudgetatSnapshot__c,IncentiveProject__r.ApprovedODCBudget__c + IncentiveProject__r.ApprovedSubsBudget__c) ,0) 
+OR(ISPICKVAL(EnrollmentStatus__c,&apos;Enrolled&apos;),NOT(ISPICKVAL(ApplicationType__c,&apos;ENR&apos;))),ApprovedSubsODCatSnapshot__c,IncentiveProject__r.ApprovedODCBudget__c + IncentiveProject__r.ApprovedSubsBudget__c) ,0) 
 
 + SubsODCsScopeChange__c + SubsODCsAdjustment__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -4282,6 +4325,18 @@ OR(ISPICKVAL(EnrollmentStatus__c,&apos;Enrolled&apos;),NOT(ISPICKVAL(Application
         <trackHistory>true</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>DTWAdminID__c</fullName>
+        <externalId>false</externalId>
+        <formula>DTWAdmin__r.Id</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>DTWAdminID</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -4854,7 +4909,7 @@ MAX(0,(0.03*BaselineNSR__c*(1-PercentCompleteCostITD__c)))
         <fullName>EstimatedPoolBaseline10__c</fullName>
         <externalId>false</externalId>
         <formula>MAX(
- IF( (BaselineGrossMargin__c * 0.10) * (IncentivePlan__r.ProfitSharingPercent__c) &gt; 200000, 20000,
+ IF( (BaselineGrossMargin__c * 0.10) * (IncentivePlan__r.ProfitSharingPercent__c) &gt; IncentivePlan__r.MaxPoolCap__c, IncentivePlan__r.MaxPoolCap__c,
 (BaselineGrossMargin__c * 0.10) * (IncentivePlan__r.ProfitSharingPercent__c)),0)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Estimated Pool @ Baseline + 10%</label>
@@ -6316,10 +6371,10 @@ The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An i
         <formula>MAX(
 CASE(IncentivePlan__r.ContractType__c ,
 &quot;Fixed Price&quot;, 
- (  IncentivePlan__r.MaxPoolPercent__c  *  IncentiveProject__r.ForecastNSRBudget__c ) * (1 -  AdjustedComplete__c )
+ (  IncentivePlan__r.MaxPoolPercent__c  *  IncentiveProject__r.ForecastNSRBudget__c ) * (1 -  ROUND(AdjustedComplete__c,4) )
 ,
 &quot;Time &amp; Material&quot;,
-  IF( (0.02 * IncentiveProject__r.ForecastNSRBudget__c) &gt; 200000, 200000, (0.02 * IncentiveProject__r.ForecastNSRBudget__c))
+  IF( (0.02 * IncentiveProject__r.ForecastNSRBudget__c) &gt; IncentivePlan__r.MaxPoolCap__c, IncentivePlan__r.MaxPoolCap__c, (0.02 * IncentiveProject__r.ForecastNSRBudget__c))
 ,0
 ),0)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -6354,10 +6409,10 @@ CASE(IncentivePlan__r.ContractType__c ,
         <externalId>false</externalId>
         <formula>CASE(IncentivePlan__r.ContractType__c ,
 &quot;Fixed Price&quot;, 
- ( EAMaxPF12__c * IncentiveProject__r.ActualNSRITD__c ) * (1 -  AdjustedComplete__c )
+ ( EAMaxPF12__c * IncentiveProject__r.ActualNSRITD__c ) * (1 -  ROUND(AdjustedComplete__c,4) )
 ,
 &quot;Time &amp; Material&quot;,
-  IF( (0.02 * (IncentiveProject__r.ActualNSRITD__c)) &gt; 200000, 200000, (0.02 * (IncentiveProject__r.ActualNSRITD__c )))
+  IF( (0.02 * (IncentiveProject__r.ActualNSRITD__c)) &gt; IncentivePlan__r.MaxPoolCap__c, IncentivePlan__r.MaxPoolCap__c, (0.02 * (IncentiveProject__r.ActualNSRITD__c )))
 ,0
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -6987,6 +7042,21 @@ IF
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Submittal_Template_Text__c</fullName>
+        <description>Field for use in Approval Submittal Template</description>
+        <externalId>false</externalId>
+        <formula>if(not(contains(Text(EnrollmentStatus__c),&quot;Rejected&quot;)),&quot;Submitted For Your Approval&quot;,
+
+&quot;RETURNED FOR CORRECTION OR REJECTED&quot;)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Submittal Template Text</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>SubsODCsAdjustment__c</fullName>
         <description>Management Adjustments based on Expected Scope Changes to Subs &amp; ODC&apos;s</description>
         <externalId>false</externalId>
@@ -7517,6 +7587,10 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <columns>EnrollmentStatus__c</columns>
         <columns>WorkflowOwner__c</columns>
         <columns>FormStatusAge__c</columns>
+        <columns>EstimatedIncentivePoolEAC__c</columns>
+        <columns>EstimatedIncentivePoolITD__c</columns>
+        <columns>MaxIncentivePool__c</columns>
+        <columns>MaximumIncentivePoolITD__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>EnrollmentStatus__c</field>
@@ -7577,22 +7651,25 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
     </listViews>
     <listViews>
         <fullName>RLK</fullName>
+        <columns>DTWAdmin__c</columns>
+        <columns>IPDTWAdmin__c</columns>
+        <columns>App_1_Processed__c</columns>
+        <columns>App_2_Processed__c</columns>
+        <columns>App_3_Processed__c</columns>
+        <columns>WorkflowOwner__c</columns>
         <columns>NAME</columns>
         <columns>ContractType__c</columns>
-        <columns>IncrementalGMvsBaseline__c</columns>
-        <columns>WorkflowOwner__c</columns>
-        <columns>CurrentApprovalOwner__c</columns>
         <columns>EnrollmentStatus__c</columns>
-        <columns>EEACGMPerformance__c</columns>
-        <columns>EstimatedIncentivePoolEAC__c</columns>
-        <columns>BaselineGrossMargin__c</columns>
-        <columns>BudgetVariance__c</columns>
-        <columns>Region__c</columns>
         <columns>ApplicationType__c</columns>
         <columns>PlanType__c</columns>
         <columns>SubmitStatus__c</columns>
         <columns>NumberofParticipants__c</columns>
         <filterScope>Everything</filterScope>
+        <filters>
+            <field>NAME</field>
+            <operation>contains</operation>
+            <value>Kona-Landfill</value>
+        </filters>
         <label>RLK</label>
         <language>en_US</language>
     </listViews>

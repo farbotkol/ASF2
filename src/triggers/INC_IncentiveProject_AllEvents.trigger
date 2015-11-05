@@ -30,8 +30,9 @@ trigger INC_IncentiveProject_AllEvents on IncentiveProject__c (before insert,bef
             set<Id> lIncentiveProjectIds = new set<Id>();
             
             for(IncentiveProject__c oIncentiveProject : trigger.new){
-                if((oIncentiveProject.EnrollmentPlan__c != trigger.oldMap.get(oIncentiveProject.Id).EnrollmentPlan__c)||
-                   (oIncentiveProject.ChangeRequest__c != trigger.oldMap.get(oIncentiveProject.id).ChangeRequest__c)){
+                if((oIncentiveProject.EnrollmentPlan__c == trigger.oldMap.get(oIncentiveProject.Id).EnrollmentPlan__c)&&
+                   (oIncentiveProject.ChangeRequest__c == trigger.oldMap.get(oIncentiveProject.id).ChangeRequest__c)&&
+                   (oIncentiveProject.PaymentRequest__c == trigger.oldMap.get(oIncentiveProject.id).PaymentRequest__c)){
                          lIncentiveProjectIds.add(oIncentiveProject.Id);
                 }
             }

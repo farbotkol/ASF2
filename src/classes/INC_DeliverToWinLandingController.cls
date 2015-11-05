@@ -135,7 +135,7 @@ public with sharing class INC_DeliverToWinLandingController {
 
     	//strSOQL += 'ID, EnrollmentPlan__c FROM IncentiveProject__c WHERE EnrollmentPlan__c !=null and OwnerId=:struserid and X60DaysClosed__c != \'Yes\' ORDER BY EnrollmentPlan__r.FormEnrollmentDate__c  DESC limit 500';
 
-        strSOQL += 'ID, EnrollmentPlan__c,ChangeRequest__c FROM IncentiveProject__c WHERE EnrollmentPlan__c !=null and X60DaysClosed__c != \'Yes\' and EnrollmentPlan__c IN:sIncP  ORDER BY EnrollmentPlan__r.FormEnrollmentDate__c  DESC limit 500';
+        strSOQL += 'ID, EnrollmentPlan__c,ChangeRequest__c, ChangeRequest__r.EnrollmentStatus__c FROM IncentiveProject__c WHERE EnrollmentPlan__c !=null and X60DaysClosed__c != \'Yes\' and EnrollmentPlan__c IN:sIncP  ORDER BY EnrollmentPlan__r.FormEnrollmentDate__c  DESC limit 500';
 
     	lstIP = (list<IncentiveProject__c>)Database.query(strSOQL);   	
     }

@@ -168,7 +168,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         strSOQL += ',IncentivePlan__r.ProfitSharingPercent__c, IncentiveProject__r.ProjectId__c';
         strSOQL += ',DSOTarget__c, FinalITDDSO__c ,ClientSatisfactionCurrent__c, ScoreOnSafetyforLifeMetrics__c, ClientSatisfactionNPS__c, ScoreOnSafetyforLifeMetricsCurrent__c';
         strSOQL += ',ApplicationType__c, DTWCompleteVariance__c, DTWComplete__c ,DTWCompleteSnapshot__c, BaselineNMofNSR__c';
-        strSOQL += ',IncentivePlan__r.PlanCriteria__c, Name From EnrollmentPlan__c where Id =: sID';
+        strSOQL += ',IncentivePlan__r.PlanCriteria__c,BaselineMarginofNSRatSnapshot__c, Name From EnrollmentPlan__c where Id =: sID';
         
         list<EnrollmentPlan__c> lstEnrollSearchResults = (list<EnrollmentPlan__c>)Database.query(strSOQL);
 
@@ -429,9 +429,9 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         if(!bNMPlan){
             mtw = new metricTableRowWrapper();
             mtw.label = 'Baseline Margin% NSR';
-            mtw.column1Val = (oEnrollmentPlan.BaselineGMofNSRatSnapshot__c != null ? oEnrollmentPlan.BaselineGMofNSRatSnapshot__c.format() : '');
+            mtw.column1Val = (oEnrollmentPlan.BaselineMarginofNSRatSnapshot__c != null ? oEnrollmentPlan.BaselineMarginofNSRatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.BaselineGMofNSR__c != null ? oEnrollmentPlan.BaselineGMofNSR__c.format():'');
-            mtw.Variance = (oEnrollmentPlan.BaselineGMofNSRVariance__c != null ? oEnrollmentPlan.ForecastNSRBudgetVariance__c.format(): '');
+            mtw.Variance = (oEnrollmentPlan.BaselineGMofNSRVariance__c != null ? oEnrollmentPlan.BaselineGMofNSRVariance__c.format(): '');
             mtw.labelClass = 'aslabel';
             mtw.tdclass='precent';
             mtw.imageCol2 = oEnrollmentPlan.AlertBaselineGMNSR__c;
@@ -440,7 +440,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         if(bNMPlan){
             mtw = new metricTableRowWrapper();
             mtw.label = 'Baseline Margin% NSR';
-            mtw.column1Val = (oEnrollmentPlan.BaselineNMofNSRatSnapshot__c != null ? oEnrollmentPlan.BaselineNMofNSRatSnapshot__c.format() : '');
+            mtw.column1Val = (oEnrollmentPlan.BaselineMarginofNSRatSnapshot__c != null ? oEnrollmentPlan.BaselineMarginofNSRatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.BaselineNMofNSR__c != null ? oEnrollmentPlan.BaselineNMofNSR__c.format():'');
             mtw.Variance = (oEnrollmentPlan.BaselineNMofNSRVariance__c != null ? oEnrollmentPlan.BaselineNMofNSRVariance__c.format(): '');
             mtw.labelClass = 'aslabel';

@@ -24,10 +24,12 @@ trigger INC_EnrollmentPlan_AllEvents on EnrollmentPlan__c (
 	    		}
 
 	 		}else{//end is before
+                System.Debug(logginglevel.error,'After Update enrollment' + INC_EnrollmentPlanTriggers.afterRun);
 	 			if(Trigger.isUpdate && INC_EnrollmentPlanTriggers.afterRunOnce()){
 	 				System.debug(logginglevel.error,'After update trigger EnrollmentPlan__c.');
 	 				handler.updateParticipants(Trigger.newMap, Trigger.oldMap);
               		
+                    System.Debug(logginglevel.error,'createing createParticipantAcknowledgement');
                     handler.createParticipantAcknowledgement(Trigger.NewMap, Trigger.OldMap);
                     
                     //Move Into Handler ~ML
