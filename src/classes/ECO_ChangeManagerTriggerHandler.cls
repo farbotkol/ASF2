@@ -736,7 +736,7 @@ public class ECO_ChangeManagerTriggerHandler {
 				project.CMProjectOnHoldIsChanged__c = false;	
 
 				//if(project.ScheduledOnHoldDate__c <= Date.today())
-				project.pse__Stage__c = 'Approved';	
+				project.pse__Stage__c = 'Execution';	
 			}
 				
 			update project;		

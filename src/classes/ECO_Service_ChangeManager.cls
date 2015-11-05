@@ -396,6 +396,7 @@ public class ECO_Service_ChangeManager {
         return database.query(query);            	
     }   
 
+    @future(callout=true)
     public static void synchronizeProject(String messageQueueId, Id projectId)
     {
         //Id messageQueueId = ECO_Service_ProjectSync.createMessageQueueForRequest(projectId, ECO_Service_ProjectSync.JOBNAME_PROJECT_SYNC);
