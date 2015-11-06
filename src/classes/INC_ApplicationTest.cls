@@ -4,13 +4,26 @@ public class INC_ApplicationTest {
     testMethod static void PP_TandMEnrollmentProcess(){
         //START: Setup master data
         //Create running users
+       
+        ECO_TriggerSettings__c setting = new ECO_TriggerSettings__c();
+        setting.Name = 'INC_IncentiveProject_AllEvents';
+        setting.isEnabled__c = true;
+        insert setting;
+
+        ECO_TriggerSettings__c setting2 = new ECO_TriggerSettings__c();
+        setting2.Name = 'INC_EnrollmentPlan_AllEvents';
+        setting2.isEnabled__c = true;
+        insert setting2;
+
         User oUser = INC_Utils_Testing.createUser();
 
         insert oUser;
         
+
         //Group dtwGroup = INC_Utils_Testing.createPublicGroup('DTW Admins');
         //insert dtwGroup;
-        Group dtwGroup = [Select ID from Group where Name = 'DTW Admins'][0];
+        System.runAs(oUser){
+             Group dtwGroup = [Select ID from Group where Name = 'DTW Admins'][0];
         
         GroupMember gm = new GroupMember(UserOrGroupId = oUser.ID
                                          ,GroupID = dtwGroup.id);
@@ -24,8 +37,7 @@ public class INC_ApplicationTest {
         mUsers.put('DTW Admin', oUser);
         
         //Inser routing rules master data
-        System.runAs(oUser){
-
+       
         map<string, RoutingMember__c> mRoutingMember = INC_Utils_Testing.createRoutingMemberRules(mUsers);
         
         insert mRoutingMember.values();
@@ -316,13 +328,25 @@ public class INC_ApplicationTest {
         oEnrollmentApplicationController.submitFromWizard(); */
     }
     testMethod static void PP_TandMEnrollmentProcess2(){
+        ECO_TriggerSettings__c setting = new ECO_TriggerSettings__c();
+        setting.Name = 'INC_IncentiveProject_AllEvents';
+        setting.isEnabled__c = true;
+        insert setting;
+
+        ECO_TriggerSettings__c setting2 = new ECO_TriggerSettings__c();
+        setting2.Name = 'INC_EnrollmentPlan_AllEvents';
+        setting2.isEnabled__c = true;
+        insert setting2;
+
         User oUser = INC_Utils_Testing.createUser();
 
         insert oUser;
         
         //Group dtwGroup = INC_Utils_Testing.createPublicGroup('DTW Admins');
         //insert dtwGroup;
-        Group dtwGroup = [Select ID from Group where Name = 'DTW Admins'][0];
+        System.runAs(oUser){
+       
+         Group dtwGroup = [Select ID from Group where Name = 'DTW Admins'][0];
         
         GroupMember gm = new GroupMember(UserOrGroupId = oUser.ID
                                          ,GroupID = dtwGroup.id);
@@ -337,8 +361,7 @@ public class INC_ApplicationTest {
         
         //Inser routing rules master data
         map<string, RoutingMember__c> mRoutingMember = INC_Utils_Testing.createRoutingMemberRules(mUsers);
-        System.runAs(oUser){
-            insert mRoutingMember.values();
+           insert mRoutingMember.values();
             
             list<IncentivePlanTemplate__c> lPlanTemplates = INC_Utils_Testing.createIncentivePlan();
             
@@ -442,6 +465,16 @@ public class INC_ApplicationTest {
     }
 
     testMethod static void PP_TandMEnrollmentProcess3(){
+        ECO_TriggerSettings__c setting = new ECO_TriggerSettings__c();
+        setting.Name = 'INC_IncentiveProject_AllEvents';
+        setting.isEnabled__c = true;
+        insert setting;
+
+        ECO_TriggerSettings__c setting2 = new ECO_TriggerSettings__c();
+        setting2.Name = 'INC_EnrollmentPlan_AllEvents';
+        setting2.isEnabled__c = true;
+        insert setting2;
+
         User oUser = INC_Utils_Testing.createUser();
         User oUser2 = INC_Utils_Testing.createUser();
         oUser2.UserName = oUser2.UserName + '2';
@@ -456,6 +489,7 @@ public class INC_ApplicationTest {
        
         //Group dtwGroup = INC_Utils_Testing.createPublicGroup('DTW Admins');
         //insert dtwGroup;
+        System.runAs(oUser){
         Group dtwGroup = [Select ID from Group where Name = 'DTW Admins'][0];
         
         GroupMember gm = new GroupMember(UserOrGroupId = oUser.ID
@@ -471,7 +505,6 @@ public class INC_ApplicationTest {
         
         //Inser routing rules master data
        //Inser routing rules master data
-        System.runAs(oUser){
             map<string, RoutingMember__c> mRoutingMember = INC_Utils_Testing.createRoutingMemberRules(mUsers);
             
             list<RoutingMember__c> lRoutingMembers = mRoutingMember.Values();
@@ -687,6 +720,16 @@ public class INC_ApplicationTest {
    public static String CRON_EXP = '0 0 0 15 3 ? 2022';
 
    static testmethod void dtwAdminSchedule() {
+        ECO_TriggerSettings__c setting = new ECO_TriggerSettings__c();
+        setting.Name = 'INC_IncentiveProject_AllEvents';
+        setting.isEnabled__c = true;
+        insert setting;
+
+        ECO_TriggerSettings__c setting2 = new ECO_TriggerSettings__c();
+        setting2.Name = 'INC_EnrollmentPlan_AllEvents';
+        setting2.isEnabled__c = true;
+        insert setting2;
+
       Test.startTest();
       // Schedule the test job
       String jobId = System.schedule('ScheduleApexClassTest',

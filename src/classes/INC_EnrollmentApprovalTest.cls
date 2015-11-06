@@ -3,6 +3,18 @@ private class INC_EnrollmentApprovalTest
 {
 	@isTest
 	public static void PP_TandMEnrollmentProcess4(){
+
+		ECO_TriggerSettings__c setting = new ECO_TriggerSettings__c();
+		setting.Name = 'INC_IncentiveProject_AllEvents';
+		setting.isEnabled__c = true;
+		insert setting;
+
+		ECO_TriggerSettings__c setting2 = new ECO_TriggerSettings__c();
+		setting2.Name = 'INC_EnrollmentPlan_AllEvents';
+		setting2.isEnabled__c = true;
+		insert setting2;
+
+
         User oUser = INC_Utils_Testing.createUser();
         User oUser2 = INC_Utils_Testing.createUser();
         oUser2.UserName = oUser2.UserName + '2';
@@ -17,6 +29,7 @@ private class INC_EnrollmentApprovalTest
        
         //Group dtwGroup = INC_Utils_Testing.createPublicGroup('DTW Admins');
         //insert dtwGroup;
+        System.runAs(oUser){
         Group dtwGroup = [Select ID from Group where Name = 'DTW Admins'][0];
         
         GroupMember gm = new GroupMember(UserOrGroupId = oUser.ID
@@ -46,7 +59,6 @@ private class INC_EnrollmentApprovalTest
         rm.districtDescription__c = null;
         rm.GlobalDefault__c = true;
         lRoutingMembers.add(rm);
-        System.runAs(oUser){
             insert lRoutingMembers;
             
 
@@ -181,12 +193,16 @@ private class INC_EnrollmentApprovalTest
 
     	      	oEnrollmentPlan.ActualContingencyBudgetatSnapshot__c = 100;
     	      	update oEnrollmentPlan; //create some history
+            	oEnrollmentPlan.ActualFringeBudgetatSnapshot__c = 2000;
+            	oEnrollmentPlan.ActualNSRBudgetatSnapshot__c = 10000;
+            	update oEnrollmentPlan;
     	      	PageReference pageRef = new PageReference('/apex/Inc_EnrollmentAp?id=' + oEnrollmentPlan.ID);
             	Test.setCurrentPage(pageRef);
             	ApexPages.currentPage().getParameters().put('id', oEnrollmentPlan.ID);
 
             	INC_ObjectFieldHistory_Controller objHistory = new INC_ObjectFieldHistory_Controller();
             	objHistory.myObject = oEnrollmentPlan;
+            	System.debug(logginglevel.error,'oenrollmenPlan before get history ' + oEnrollmentPlan.ID);
             	objHistory.getObjectHistory();
             	objHistory.showmorenumber = 15;
             	objHistory.recordLimit = null;
