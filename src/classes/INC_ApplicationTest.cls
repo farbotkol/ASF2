@@ -253,18 +253,18 @@ public class INC_ApplicationTest {
              oEnrollmentApplicationController = new INC_EnrollmentApp_Controller(new ApexPages.StandardController(oEnrollmentPlan));
              oEnrollmentApplicationController.checkStatus();
              oEnrollmentApplicationController.getUserType();
-             oEnrollmentApplicationController.proposeOptOut();
+            // oEnrollmentApplicationController.proposeOptOut();
              oEnrollmentApplicationController.enableNextButton();
              oEnrollmentApplicationController.stepOne();
              oEnrollmentApplicationController.save();
-             oEnrollmentApplicationController.submit();
-             oEnrollmentApplicationController.finalRejectButton();
+            // oEnrollmentApplicationController.submit();
+             //oEnrollmentApplicationController.finalRejectButton();
              oEnrollmentApplicationController.saveAndReturnToBudget();
              oEnrollmentApplicationController.chooseplan();
              oEnrollmentApplicationController.showAppMetrics();
              oEnrollmentApplicationController.reassignApprovers();
              oEnrollmentApplicationController.closeApplication();
-             oEnrollmentApplicationController.updateCommentsfromApprovals();
+             //oEnrollmentApplicationController.updateCommentsfromApprovals();
              oEnrollmentPlan.IncentivePlan__c = null;
              oEnrollmentApplicationController.oEnrollmentApp = oEnrollmentPlan;
              oEnrollmentApplicationController.stepThree();
@@ -273,7 +273,7 @@ public class INC_ApplicationTest {
              oEnrollmentApplicationController.createChangeRequest();
              oEnrollmentPlan.EnrollmentStatus__c = 'Enrolled';
              oEnrollmentApplicationController.oEnrollmentApp = oEnrollmentPlan;
-             oEnrollmentApplicationController.createPaymentRequest();
+             //oEnrollmentApplicationController.createPaymentRequest();
            
              oEnrollmentPlan = [Select id from EnrollmentPlan__c where ApplicationType__c = 'PAY'][0];
              oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentPlan.id})[0];
@@ -281,7 +281,7 @@ public class INC_ApplicationTest {
              System.debug(logginglevel.error,'oEnrollmentPlan in Test: ' + oEnrollmentPlan.ApplicationType__c);
              oEnrollmentApplicationController = new INC_EnrollmentApp_Controller(new ApexPages.StandardController(oEnrollmentPlan));
            //  oEnrollmentApplicationController.submit();
-             oEnrollmentApplicationController.closeNoAwardApplication();
+             //oEnrollmentApplicationController.closeNoAwardApplication();
              INC_AssignApproversController assignController = new INC_AssignApproversController(new ApexPages.StandardController(oEnrollmentPlan));
              assignController.selectedID = oUser.Id;
              //assignController.AssignApprover1();
