@@ -18,7 +18,7 @@ private class INC_EnrollmentApprovalTest
         User oUser = INC_Utils_Testing.createUser();
         User oUser2 = INC_Utils_Testing.createUser();
         oUser2.UserName = oUser2.UserName + '2';
-        oUser2.Email = oUser2.Email + '2';
+        oUser2.Email = '2' + oUser2.Email;
         oUser2.CommunityNickname = oUser2.CommunityNickname + '2';
         oUser2.FederationIdentifier = oUser2.FederationIdentifier + '2';
         oUser2.OracleEmployeeId__c = oUser2.OracleEmployeeId__c + '2';
@@ -220,7 +220,7 @@ private class INC_EnrollmentApprovalTest
         User oUser = INC_Utils_Testing.createUser();
         User oUser2 = INC_Utils_Testing.createUser();
         oUser2.UserName = oUser2.UserName + '2';
-        oUser2.Email = oUser2.Email + '2';
+        oUser2.Email = '2' + oUser2.Email;
         oUser2.CommunityNickname = oUser2.CommunityNickname + '2';
         oUser2.FederationIdentifier = oUser2.FederationIdentifier + '2';
         oUser2.OracleEmployeeId__c = oUser2.OracleEmployeeId__c + '2';
