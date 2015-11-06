@@ -24,6 +24,8 @@ public class INC_ApplicationTest {
         mUsers.put('DTW Admin', oUser);
         
         //Inser routing rules master data
+        System.runAs(oUser){
+
         map<string, RoutingMember__c> mRoutingMember = INC_Utils_Testing.createRoutingMemberRules(mUsers);
         
         insert mRoutingMember.values();
@@ -222,7 +224,6 @@ public class INC_ApplicationTest {
         //
 
         //test starting wizard.
-        System.runAs(oUser){
              oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentPlan.id})[0];
              oEnrollmentPlan.EnrollmentStatus__c = 'Pending PM Action';
              oEnrollmentApplicationController = new INC_EnrollmentApp_Controller(new ApexPages.StandardController(oEnrollmentPlan));
@@ -336,105 +337,106 @@ public class INC_ApplicationTest {
         
         //Inser routing rules master data
         map<string, RoutingMember__c> mRoutingMember = INC_Utils_Testing.createRoutingMemberRules(mUsers);
-        
-        insert mRoutingMember.values();
-        
-        list<IncentivePlanTemplate__c> lPlanTemplates = INC_Utils_Testing.createIncentivePlan();
-        
-        insert lPlanTemplates;
-        
-        IncentivePlanTemplate__c oIncentivePlanTemplate = lPlanTemplates[0];
+        System.runAs(oUser){
+            insert mRoutingMember.values();
+            
+            list<IncentivePlanTemplate__c> lPlanTemplates = INC_Utils_Testing.createIncentivePlan();
+            
+            insert lPlanTemplates;
+            
+            IncentivePlanTemplate__c oIncentivePlanTemplate = lPlanTemplates[0];
 
-        //END: Setup Master Data
-        
-        //Initialize starting position
-        IncentiveProject__c oIncentiveProject = INC_Utils_Testing.createIncentiveProject_TownAndCountry();
-        
-        //To Do: Implement RunAs for integration administrator user
-        insert oIncentiveProject;
-        
-        //Find and Assign DTW Admin (Assume Batch Job is Run)
-        INC_Service_Matching Inc_Match = new INC_Service_Matching();
-        list<IncentiveProject__c> lIncentiveProjectsToInsert = Inc_Match.FindDTWAdmin(new list<IncentiveProject__c>{oIncentiveProject});
-        lIncentiveProjectsToInsert[0].ProjectManager__c = oUser.ID;
-        update lIncentiveProjectsToInsert;
-        
-        //Check if DTW Admin was assigned
-        list<IncentiveProject__c> lAssertCheck = new list<IncentiveProject__c>([SELECT Id, DTWAdmin__c FROM IncentiveProject__c WHERE Id = :oIncentiveProject.Id]);
-        System.AssertEquals(lAssertCheck.get(0).DTWAdmin__c, oUser.Id);
-        
-        //User interacts with page and assigns project manager
-        oIncentiveProject.ProjectManager__c = oUser.Id;
-        
-        //User hits save button
-        update oIncentiveProject;
-        
-        //User interacts with button on incentive project to generate enrollment app
-        INC_IncentiveProjectCreateEnrollment.createEnrollmentForm(oIncentiveProject.Id);
-         INC_IncentiveProjectCreateEnrollment.reviveEnrollmentForm(oIncentiveProject.Id);
+            //END: Setup Master Data
+            
+            //Initialize starting position
+            IncentiveProject__c oIncentiveProject = INC_Utils_Testing.createIncentiveProject_TownAndCountry();
+            
+            //To Do: Implement RunAs for integration administrator user
+            insert oIncentiveProject;
+            
+            //Find and Assign DTW Admin (Assume Batch Job is Run)
+            INC_Service_Matching Inc_Match = new INC_Service_Matching();
+            list<IncentiveProject__c> lIncentiveProjectsToInsert = Inc_Match.FindDTWAdmin(new list<IncentiveProject__c>{oIncentiveProject});
+            lIncentiveProjectsToInsert[0].ProjectManager__c = oUser.ID;
+            update lIncentiveProjectsToInsert;
+            
+            //Check if DTW Admin was assigned
+            list<IncentiveProject__c> lAssertCheck = new list<IncentiveProject__c>([SELECT Id, DTWAdmin__c FROM IncentiveProject__c WHERE Id = :oIncentiveProject.Id]);
+            System.AssertEquals(lAssertCheck.get(0).DTWAdmin__c, oUser.Id);
+            
+            //User interacts with page and assigns project manager
+            oIncentiveProject.ProjectManager__c = oUser.Id;
+            
+            //User hits save button
+            update oIncentiveProject;
+            
+            //User interacts with button on incentive project to generate enrollment app
+            INC_IncentiveProjectCreateEnrollment.createEnrollmentForm(oIncentiveProject.Id);
+             INC_IncentiveProjectCreateEnrollment.reviveEnrollmentForm(oIncentiveProject.Id);
 
-        //Check if Enrollment Plan was created
-        list<EnrollmentPlan__c> lAssertCheckEnrollment = new list<EnrollmentPlan__c>([SELECT Id
-                                                                                      FROM EnrollmentPlan__c WHERE IncentiveProject__c = :oIncentiveProject.Id]);
-        System.Assert(lAssertCheckEnrollment.size() > 0);
+            //Check if Enrollment Plan was created
+            list<EnrollmentPlan__c> lAssertCheckEnrollment = new list<EnrollmentPlan__c>([SELECT Id
+                                                                                          FROM EnrollmentPlan__c WHERE IncentiveProject__c = :oIncentiveProject.Id]);
+            System.Assert(lAssertCheckEnrollment.size() > 0);
 
-        EnrollmentPlan__c oEnrollmentPlan;
-        oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{lAssertCheckEnrollment[0].Id})[0];
+            EnrollmentPlan__c oEnrollmentPlan;
+            oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{lAssertCheckEnrollment[0].Id})[0];
 
-        PageReference pageRef = Page.INC_Chose;
-        Test.setCurrentPage(pageRef);
-        ApexPages.currentPage().getParameters().put('id', oEnrollmentPlan.ID);
-        ID currentPageID = oEnrollmentPlan.id;
-        INC_EnrollmentCommentController oCommentController = new INC_EnrollmentCommentController();
-        
-        ID rejectedRecTypeID = Schema.SObjectType.EnrollmentPlan__c.getRecordTypeInfosByName().get('Rejected Application').getRecordTypeId();
-        oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{currentPageID})[0];
-        oEnrollmentPlan.recordTypeID = rejectedRecTypeID;
-        update oEnrollmentPlan;
-        oCommentController = new INC_EnrollmentCommentController();
-        oCommentController.saveComments();
-        oCommentController.sMessage = 'message';     
-        oCommentController.oEnrollComment.Reason_Codes__c = 'Other';
-        oCommentController.saveComments();
-        oCommentController.oEnrollComment.Comments__c = 'Test Comments';
-        oCommentController.saveComments();
-        oCommentController.oEnrollComment.Reason_Codes__c = 'Project in Litigation';
-        oCommentController.saveComments();
-        oEnrollmentPlan.ApplicationType__c = 'Pay';
-        update oEnrollmentPlan;
-        oCommentController = new INC_EnrollmentCommentController();
-        oCommentController.oEnrollComment.Reason_Codes__c = 'Other';
-        oCommentController.oEnrollComment.Comments__c = 'Test Comments';
-        oCommentController.oEnrollComment.Reason_Codes__c = 'Project in Litigation';
-        oCommentController.saveComments();
+            PageReference pageRef = Page.INC_Chose;
+            Test.setCurrentPage(pageRef);
+            ApexPages.currentPage().getParameters().put('id', oEnrollmentPlan.ID);
+            ID currentPageID = oEnrollmentPlan.id;
+            INC_EnrollmentCommentController oCommentController = new INC_EnrollmentCommentController();
+            
+            ID rejectedRecTypeID = Schema.SObjectType.EnrollmentPlan__c.getRecordTypeInfosByName().get('Rejected Application').getRecordTypeId();
+            oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{currentPageID})[0];
+            oEnrollmentPlan.recordTypeID = rejectedRecTypeID;
+            update oEnrollmentPlan;
+            oCommentController = new INC_EnrollmentCommentController();
+            oCommentController.saveComments();
+            oCommentController.sMessage = 'message';     
+            oCommentController.oEnrollComment.Reason_Codes__c = 'Other';
+            oCommentController.saveComments();
+            oCommentController.oEnrollComment.Comments__c = 'Test Comments';
+            oCommentController.saveComments();
+            oCommentController.oEnrollComment.Reason_Codes__c = 'Project in Litigation';
+            oCommentController.saveComments();
+            oEnrollmentPlan.ApplicationType__c = 'Pay';
+            update oEnrollmentPlan;
+            oCommentController = new INC_EnrollmentCommentController();
+            oCommentController.oEnrollComment.Reason_Codes__c = 'Other';
+            oCommentController.oEnrollComment.Comments__c = 'Test Comments';
+            oCommentController.oEnrollComment.Reason_Codes__c = 'Project in Litigation';
+            oCommentController.saveComments();
 
-        INC_EnrollmentPlanProgressController oProgressController = new INC_EnrollmentPlanProgressController();
-        oProgressController = new INC_EnrollmentPlanProgressController(new ApexPages.StandardController(oEnrollmentPlan));
-        oProgressController.onLoad();
-        oProgressController.updateCommentsfromApprovals();
+            INC_EnrollmentPlanProgressController oProgressController = new INC_EnrollmentPlanProgressController();
+            oProgressController = new INC_EnrollmentPlanProgressController(new ApexPages.StandardController(oEnrollmentPlan));
+            oProgressController.onLoad();
+            oProgressController.updateCommentsfromApprovals();
 
-        oEnrollmentPlan.EnrollmentStatus__c = 'Pending Approver 1 Action';
-        oProgressController.oEnrollmentPlan = oEnrollmentPlan;
-        oProgressController.setToolTips();
-        oProgressController.getAggregatedProject();
-        oProgressController.sProgressMessage = 'Message';
+            oEnrollmentPlan.EnrollmentStatus__c = 'Pending Approver 1 Action';
+            oProgressController.oEnrollmentPlan = oEnrollmentPlan;
+            oProgressController.setToolTips();
+            oProgressController.getAggregatedProject();
+            oProgressController.sProgressMessage = 'Message';
 
-        //interim payment controller
-        INC_EnrollPlanInterimPay_Controller oInterimPayController = new INC_EnrollPlanInterimPay_Controller(new ApexPages.StandardController(oEnrollmentPlan));
-        oInterimPayController.addBlankRow();
-        oInterimPayController.addPaymentLine();
-        oInterimPayController.Cancel();
-        Interim_Payment_Schedule__c payLine = oInterimPayController.listPayments[0];
-        payLine.MileStone__c = '10%';
-        payLine.PaymentDate__c = Date.newInstance(2015, 10, 24);
-        oInterimPayController.listPayments[0] = payLine;
-        oInterimPayController.save();
-        payLine.Description__c = 'Description';
-        oInterimPayController.partComments = 'Comments';
-        oInterimPayController.SaveAndContinue();
-        oInterimPayController = new INC_EnrollPlanInterimPay_Controller(new ApexPages.StandardController(oEnrollmentPlan));
-        oInterimPayController.listPayments = null;
-        oInterimPayController.addBlankRow();
+            //interim payment controller
+            INC_EnrollPlanInterimPay_Controller oInterimPayController = new INC_EnrollPlanInterimPay_Controller(new ApexPages.StandardController(oEnrollmentPlan));
+            oInterimPayController.addBlankRow();
+            oInterimPayController.addPaymentLine();
+            oInterimPayController.Cancel();
+            Interim_Payment_Schedule__c payLine = oInterimPayController.listPayments[0];
+            payLine.MileStone__c = '10%';
+            payLine.PaymentDate__c = Date.newInstance(2015, 10, 24);
+            oInterimPayController.listPayments[0] = payLine;
+            oInterimPayController.save();
+            payLine.Description__c = 'Description';
+            oInterimPayController.partComments = 'Comments';
+            oInterimPayController.SaveAndContinue();
+            oInterimPayController = new INC_EnrollPlanInterimPay_Controller(new ApexPages.StandardController(oEnrollmentPlan));
+            oInterimPayController.listPayments = null;
+            oInterimPayController.addBlankRow();
+        }
         
 
     }
@@ -469,211 +471,212 @@ public class INC_ApplicationTest {
         
         //Inser routing rules master data
        //Inser routing rules master data
-        map<string, RoutingMember__c> mRoutingMember = INC_Utils_Testing.createRoutingMemberRules(mUsers);
-        list<RoutingMember__c> lRoutingMembers = mRoutingMember.Values();
+        System.runAs(oUser){
+            map<string, RoutingMember__c> mRoutingMember = INC_Utils_Testing.createRoutingMemberRules(mUsers);
+            
+            list<RoutingMember__c> lRoutingMembers = mRoutingMember.Values();
 
-        mUsers.put('Approver1',oUser2);
-        mUsers.put('Approver2',oUser2);
-        mUsers.put('Approver3',oUser2);
-        mUsers.put('DTW Admin',oUser2);
+            mUsers.put('Approver1',oUser2);
+            mUsers.put('Approver2',oUser2);
+            mUsers.put('Approver3',oUser2);
+            mUsers.put('DTW Admin',oUser2);
 
-        map<String,RoutingMember__c> mRoutingMember2 = INC_Utils_Testing.createRoutingMemberRules(mUsers);
+            map<String,RoutingMember__c> mRoutingMember2 = INC_Utils_Testing.createRoutingMemberRules(mUsers);
 
-        RoutingMember__c rm = mRoutingMember2.get('LA Metro');
-        rm.districtDescription__c = null;
-        rm.GlobalDefault__c = true;
-        lRoutingMembers.add(rm);
-        insert lRoutingMembers;
-        
+            RoutingMember__c rm = mRoutingMember2.get('LA Metro');
+            rm.districtDescription__c = null;
+            rm.GlobalDefault__c = true;
+            lRoutingMembers.add(rm);
+            insert lRoutingMembers;
+            
 
 
-        list<IncentivePlanTemplate__c> lPlanTemplates = INC_Utils_Testing.createIncentivePlan();
-        
-        insert lPlanTemplates;
-        
-        IncentivePlanTemplate__c oIncentivePlanTemplate = lPlanTemplates[0];
+            list<IncentivePlanTemplate__c> lPlanTemplates = INC_Utils_Testing.createIncentivePlan();
+            
+            insert lPlanTemplates;
+            
+            IncentivePlanTemplate__c oIncentivePlanTemplate = lPlanTemplates[0];
 
-        //END: Setup Master Data
-        
-        //Initialize starting position
-        IncentiveProject__c oIncentiveProject = INC_Utils_Testing.createIncentiveProject_TownAndCountry();
-        
-        //To Do: Implement RunAs for integration administrator user
-        insert oIncentiveProject;
-        
-        //Find and Assign DTW Admin (Assume Batch Job is Run)
-        INC_Service_Matching Inc_Match = new INC_Service_Matching();
-        list<IncentiveProject__c> lIncentiveProjectsToInsert = Inc_Match.FindDTWAdmin(new list<IncentiveProject__c>{oIncentiveProject});
-        lIncentiveProjectsToInsert[0].ProjectManager__c = oUser.ID;
-        update lIncentiveProjectsToInsert;
-        
-        Inc_Match.FindApprover1(lIncentiveProjectsToInsert);
+            //END: Setup Master Data
+            
+            //Initialize starting position
+            IncentiveProject__c oIncentiveProject = INC_Utils_Testing.createIncentiveProject_TownAndCountry();
+            
+            //To Do: Implement RunAs for integration administrator user
+            insert oIncentiveProject;
+            
+            //Find and Assign DTW Admin (Assume Batch Job is Run)
+            INC_Service_Matching Inc_Match = new INC_Service_Matching();
+            list<IncentiveProject__c> lIncentiveProjectsToInsert = Inc_Match.FindDTWAdmin(new list<IncentiveProject__c>{oIncentiveProject});
+            lIncentiveProjectsToInsert[0].ProjectManager__c = oUser.ID;
+            update lIncentiveProjectsToInsert;
+            
+            Inc_Match.FindApprover1(lIncentiveProjectsToInsert);
 
-        //Check if DTW Admin was assigned
-        list<IncentiveProject__c> lAssertCheck = new list<IncentiveProject__c>([SELECT Id, DTWAdmin__c FROM IncentiveProject__c WHERE Id = :oIncentiveProject.Id]);
-        System.AssertEquals(lAssertCheck.get(0).DTWAdmin__c, oUser.Id);
-        
-        //User interacts with page and assigns project manager
-        oIncentiveProject.ProjectManager__c = oUser.Id;
-        
-        //User hits save button
-        update oIncentiveProject;
-        
-        //User interacts with button on incentive project to generate enrollment app
-        INC_IncentiveProjectCreateEnrollment.createEnrollmentForm(oIncentiveProject.Id);
+            //Check if DTW Admin was assigned
+            list<IncentiveProject__c> lAssertCheck = new list<IncentiveProject__c>([SELECT Id, DTWAdmin__c FROM IncentiveProject__c WHERE Id = :oIncentiveProject.Id]);
+            System.AssertEquals(lAssertCheck.get(0).DTWAdmin__c, oUser.Id);
+            
+            //User interacts with page and assigns project manager
+            oIncentiveProject.ProjectManager__c = oUser.Id;
+            
+            //User hits save button
+            update oIncentiveProject;
+            
+            //User interacts with button on incentive project to generate enrollment app
+            INC_IncentiveProjectCreateEnrollment.createEnrollmentForm(oIncentiveProject.Id);
 
-        //Check if Enrollment Plan was created
-        list<EnrollmentPlan__c> lAssertCheckEnrollment = new list<EnrollmentPlan__c>([SELECT Id
-                                                                                      FROM EnrollmentPlan__c WHERE IncentiveProject__c = :oIncentiveProject.Id]);
-        System.Assert(lAssertCheckEnrollment.size() > 0);
+            //Check if Enrollment Plan was created
+            list<EnrollmentPlan__c> lAssertCheckEnrollment = new list<EnrollmentPlan__c>([SELECT Id
+                                                                                          FROM EnrollmentPlan__c WHERE IncentiveProject__c = :oIncentiveProject.Id]);
+            System.Assert(lAssertCheckEnrollment.size() > 0);
 
-        EnrollmentPlan__c oEnrollmentPlan;
-        oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{lAssertCheckEnrollment[0].Id})[0];
+            EnrollmentPlan__c oEnrollmentPlan;
+            oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{lAssertCheckEnrollment[0].Id})[0];
 
-        PageReference pageRef = Page.INC_Chose;
-        Test.setCurrentPage(pageRef);
-        ApexPages.currentPage().getParameters().put('id', oEnrollmentPlan.ID);
-        ID currentPageID = oEnrollmentPlan.id;
-        INC_EnrollmentCommentController oCommentController = new INC_EnrollmentCommentController();
-        id ineligibleQueue;
-        List<Group> lGroups = [Select Id from Group where name='DTW Ineligible Queue' and Type = 'Queue'];
-        if(lGroups != null && lGroups.size() > 0){
-            ineligibleQueue = lGroups[0].id;
+            PageReference pageRef = Page.INC_Chose;
+            Test.setCurrentPage(pageRef);
+            ApexPages.currentPage().getParameters().put('id', oEnrollmentPlan.ID);
+            ID currentPageID = oEnrollmentPlan.id;
+            INC_EnrollmentCommentController oCommentController = new INC_EnrollmentCommentController();
+            id ineligibleQueue;
+            List<Group> lGroups = [Select Id from Group where name='DTW Ineligible Queue' and Type = 'Queue'];
+            if(lGroups != null && lGroups.size() > 0){
+                ineligibleQueue = lGroups[0].id;
+            }
+            lIncentiveProjectsToInsert[0].OwnerID = ineligibleQueue;
+            lIncentiveProjectsToInsert[0].ProjectManager__c = oUser.id;
+            update lIncentiveProjectsToInsert;
+
+            INC_IncentiveSearch_Controller oSearchController = new INC_IncentiveSearch_Controller();
+            oSearchController.search();
+            oSearchController.searchCriteria[0].Criteria = 'PM';
+            oSearchController.searchCriteria[0].IncProj.ProjectManager__c = oUser.id;
+            oSearchController.addRow();
+            oSearchController.searchCriteria[1].Criteria = 'CN';
+            oSearchController.searchCriteria[1].Value='HOTEL CIRCLE';
+            oSearchController.addRow();
+            oSearchController.searchCriteria[2].Criteria = 'PN';
+            oSearchController.searchCriteria[2].Value='TOWN & COUNTRY RESORT';
+            oSearchController.addRow();
+            oSearchController.searchCriteria[3].Criteria = 'PNUM';
+            oSearchController.searchCriteria[3].Value='60329917';
+            oSearchController.addRow();
+            System.Debug(logginglevel.error,'search criteria: ' + oSearchController.searchCriteria);
+            oSearchController.searchCriteria[4].Criteria = 'OW';
+            oSearchController.searchCriteria[4].Value = String.ValueOf(ineligibleQueue);
+            oSearchController.search();
+            System.Debug(logginglevel.error,'results: ' + oSearchController.lResults);
+            //oSearchController.lResults[0].newOwner = oUser.id;
+            //oSearchController.changeOwner();
+            oSearchController.removeRow = 5;
+            oSearchController.removeRow();
+            oSearchController.removeRow = 4;
+            oSearchController.removeRow();
+            oSearchController.removeRow = 3;
+            oSearchController.removeRow();
+            oSearchController.removeRow = 2;
+            oSearchController.removeRow();
+            oSearchController.search();
+            System.Debug(logginglevel.error,'results: ' + oSearchController.lResults);
+            
+            pageRef = Page.INC_EnrollmentApp;
+            Test.setCurrentPage(pageRef);
+            ApexPages.currentPage().getParameters().put('id', oEnrollmentPlan.ID);
+            INC_ObjectFieldHistory_Controller oFieldHistory = new INC_ObjectFieldHistory_Controller();
+            oEnrollmentPlan.ActualContingencyBudgetatSnapshot__c = 100;
+            update oEnrollmentPlan;
+            oEnrollmentPlan.ActualContingencyBudgetatSnapshot__c = 300;
+            oEnrollmentPlan.ActualFringeBudgetatSnapshot__c = 800;
+            oEnrollmentPlan.IncentivePlan__c = oIncentivePlanTemplate.ID;
+            update oEnrollmentPlan;
+            
+            System.Debug(logginglevel.error, 'Enrollment plan Id: ' + oEnrollmentPlan.ID);
+          
+            oFieldHistory.myObject = (sObject)oEnrollmentPlan;
+            oFieldHistory.recordLimit = null;
+            oFieldHistory.Showmorenumber = 5;
+            oFieldHistory.getobjectHistory();
+            
+            INC_ShowEnrollmentMetricsController oShowMetricsCotroller = new INC_ShowEnrollmentMetricsController();
+            oShowMetricsCotroller.getPanelToRender();
+            oShowMetricsCotroller.getEACvsBaseline();
+            oShowMetricsCotroller.close();
+            oShowMetricsCotroller.updateFlag();
+            lIncentiveProjectsToInsert[0].ContractType__c = 'AMPS - Fixed Price';
+            update lIncentiveProjectsToInsert;
+
+            oShowMetricsCotroller = new INC_ShowEnrollmentMetricsController();
+            System.Debug(logginglevel.error,'oUser id: ' + oUser.id);
+            oEnrollmentPlan.Approver1__c = oUser.id;
+            oEnrollmentPlan.Approver2__c = oUser.id;
+            oEnrollmentPlan.Approver3__c = oUser.id;
+            oEnrollmentPlan.isInWorkFlow__c = 'Yes';
+            update oEnrollmentPlan;
+            list<Contact> lContacts = INC_Utils_Testing.createContactRecords(new list<User>{oUser});
+            insert lContacts;
+            EnrollmentParticipant__c ep = new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.id,EmployeeName__c = lContacts[0].id);
+            ep.targetIncentivePoolAllocated__c = 25;
+            ep.ParticipantCategory__c = 'Dave';
+            insert ep;
+        
+            INC_EnrollmentLetterController oEnrollmentLetterController = new INC_EnrollmentLetterController();
+            oEnrollmentLetterController.epID = ep.id;
+            System.debug(logginglevel.error,'oEnrollmentLetterController.oEp: ' + oEnrollmentLetterController.epID);
+            System.Debug(logginglevel.error,'ep: ' + ep);
+            oEnrollmentLetterController.getoCH();
+
+            System.debug(logginglevel.error,'Updateing routing member in App Test');
+            for(RoutingMember__c rt: mRoutingMember.Values()){
+                rt.Approver1__c = oUser2.id;
+                rt.Approver2__c = oUser2.id;
+                rt.Approver3__c = oUser2.id;
+                rt.DtwAdmin__c = oUser2.id;
+            SYSTEM.debug(LoggingLevel.ERROR,'Routing Member: ' + rt);
+            }
+            System.debug(logginglevel.error,'ouser2: ' + oUser2.id);
+            update mRoutingMember.Values();
+
+            for(RoutingMember__c rt: mRoutingMember.Values()){
+                rt.DTW_Approver_Group__c = 'DTW Southeast Approvers';
+            SYSTEM.debug(LoggingLevel.ERROR,'Routing Member: ' + rt);
+            }
+            
+            update mRoutingMember.values();
+
+
+            oEnrollmentPlan.ExceptionComments__c = 'Comments';
+            oEnrollmentPlan.Ma_Comments__c = 'Ma Comments';
+            //update oEnrollmentPlan;
+
+            //create a comment
+            Enrollment_Comments__c ec = new Enrollment_Comments__c(Comments__c = 'Comment', EnrollmentApplication__c= oEnrollmentPlan.ID,Type__c='Management Adjustment',ApplicationType__c = oEnrollmentPlan.ApplicationType__c);
+            insert ec;
+
+            Interim_Payment_Schedule__c ip = new Interim_Payment_Schedule__c(EnrollmentApplication__c = oEnrollmentPlan.ID);
+            insert ip;
+
+            test.startTest();
+            INC_Service_EnrollmentPlan.assignIneligibleQueue(lIncentiveProjectsToInsert);
+            INC_Service_EnrollmentPlan.createEnrollmentComment(new list<EnrollmentPlan__c>{oEnrollmentPlan});
+            map<id,IncentiveProject__c> mapProjects = new map<id,IncentiveProject__c>();
+            mapProjects.put(lIncentiveProjectsToInsert[0].id,lIncentiveProjectsToInsert[0]);
+            INC_Service_EnrollmentPlan.FindApprover1(mapProjects);
+            INC_Service_EnrollmentPlan.updateBaselineChangedFlagforParticipants(new set<id>{oEnrollmentPlan.Id});
+            INC_Service_EnrollmentPlan.CloneEnrollment(oEnrollmentPlan.ID,INC_Service_EnrollmentPlan.RequestType.Change);
+            EnrollmentPlan__c oChangePlan = [Select id, ApplicationType__c from EnrollmentPlan__c where ApplicationType__c = 'CCR'][0];
+            INC_Service_EnrollmentPlan.CloneEnrollment(oChangePlan.ID,INC_Service_EnrollmentPlan.RequestType.Change);
+            oChangePlan.EnrollmentStatus__c = 'Enrolled';
+            update oChangePlan;
+            INC_Service_EnrollmentPlan.CloneEnrollment(oChangePlan.ID,INC_Service_EnrollmentPlan.RequestType.Payment);
+            EnrollmentPlan__c oPayPlan = [Select id, ApplicationType__c from EnrollmentPlan__c where ApplicationType__c = 'PAY'][0];
+            INC_Service_EnrollmentPlan.CloneEnrollment(oPayPlan.ID,INC_Service_EnrollmentPlan.RequestType.Payment);
+            lPlanTemplates[0].ContractType__c = 'Fixed Price';
+            update lPlanTemplates;
+            update oEnrollmentPlan;
+            test.stopTest();
         }
-        lIncentiveProjectsToInsert[0].OwnerID = ineligibleQueue;
-        lIncentiveProjectsToInsert[0].ProjectManager__c = oUser.id;
-        update lIncentiveProjectsToInsert;
 
-        INC_IncentiveSearch_Controller oSearchController = new INC_IncentiveSearch_Controller();
-        oSearchController.search();
-        oSearchController.searchCriteria[0].Criteria = 'PM';
-        oSearchController.searchCriteria[0].IncProj.ProjectManager__c = oUser.id;
-        oSearchController.addRow();
-        oSearchController.searchCriteria[1].Criteria = 'CN';
-        oSearchController.searchCriteria[1].Value='HOTEL CIRCLE';
-        oSearchController.addRow();
-        oSearchController.searchCriteria[2].Criteria = 'PN';
-        oSearchController.searchCriteria[2].Value='TOWN & COUNTRY RESORT';
-        oSearchController.addRow();
-        oSearchController.searchCriteria[3].Criteria = 'PNUM';
-        oSearchController.searchCriteria[3].Value='60329917';
-        oSearchController.addRow();
-        System.Debug(logginglevel.error,'search criteria: ' + oSearchController.searchCriteria);
-        oSearchController.searchCriteria[4].Criteria = 'OW';
-        oSearchController.searchCriteria[4].Value = String.ValueOf(ineligibleQueue);
-        oSearchController.search();
-        System.Debug(logginglevel.error,'results: ' + oSearchController.lResults);
-        //oSearchController.lResults[0].newOwner = oUser.id;
-        //oSearchController.changeOwner();
-        oSearchController.removeRow = 5;
-        oSearchController.removeRow();
-        oSearchController.removeRow = 4;
-        oSearchController.removeRow();
-        oSearchController.removeRow = 3;
-        oSearchController.removeRow();
-        oSearchController.removeRow = 2;
-        oSearchController.removeRow();
-        oSearchController.search();
-        System.Debug(logginglevel.error,'results: ' + oSearchController.lResults);
-        
-        pageRef = Page.INC_EnrollmentApp;
-        Test.setCurrentPage(pageRef);
-        ApexPages.currentPage().getParameters().put('id', oEnrollmentPlan.ID);
-        INC_ObjectFieldHistory_Controller oFieldHistory = new INC_ObjectFieldHistory_Controller();
-        oEnrollmentPlan.ActualContingencyBudgetatSnapshot__c = 100;
-        update oEnrollmentPlan;
-        oEnrollmentPlan.ActualContingencyBudgetatSnapshot__c = 300;
-        oEnrollmentPlan.ActualFringeBudgetatSnapshot__c = 800;
-        oEnrollmentPlan.IncentivePlan__c = oIncentivePlanTemplate.ID;
-        update oEnrollmentPlan;
-        
-        System.Debug(logginglevel.error, 'Enrollment plan Id: ' + oEnrollmentPlan.ID);
-      
-        oFieldHistory.myObject = (sObject)oEnrollmentPlan;
-        oFieldHistory.recordLimit = null;
-        oFieldHistory.Showmorenumber = 5;
-        oFieldHistory.getobjectHistory();
-        
-        INC_ShowEnrollmentMetricsController oShowMetricsCotroller = new INC_ShowEnrollmentMetricsController();
-        oShowMetricsCotroller.getPanelToRender();
-        oShowMetricsCotroller.getEACvsBaseline();
-        oShowMetricsCotroller.close();
-        oShowMetricsCotroller.updateFlag();
-        lIncentiveProjectsToInsert[0].ContractType__c = 'AMPS - Fixed Price';
-        update lIncentiveProjectsToInsert;
-
-        oShowMetricsCotroller = new INC_ShowEnrollmentMetricsController();
-        System.Debug(logginglevel.error,'oUser id: ' + oUser.id);
-        oEnrollmentPlan.Approver1__c = oUser.id;
-        oEnrollmentPlan.Approver2__c = oUser.id;
-        oEnrollmentPlan.Approver3__c = oUser.id;
-        oEnrollmentPlan.isInWorkFlow__c = 'Yes';
-        update oEnrollmentPlan;
-        oUser.isActive = false;
-        update oUser;  
-        list<Contact> lContacts = INC_Utils_Testing.createContactRecords(new list<User>{oUser});
-        insert lContacts;
-        EnrollmentParticipant__c ep = new EnrollmentParticipant__c(EnrollmentPlan__c = oEnrollmentPlan.id,EmployeeName__c = lContacts[0].id);
-        ep.targetIncentivePoolAllocated__c = 25;
-        ep.ParticipantCategory__c = 'Dave';
-        insert ep;
-    
-        INC_EnrollmentLetterController oEnrollmentLetterController = new INC_EnrollmentLetterController();
-        oEnrollmentLetterController.epID = ep.id;
-        System.debug(logginglevel.error,'oEnrollmentLetterController.oEp: ' + oEnrollmentLetterController.epID);
-        System.Debug(logginglevel.error,'ep: ' + ep);
-        oEnrollmentLetterController.getoCH();
-
-        System.debug(logginglevel.error,'Updateing routing member in App Test');
-        for(RoutingMember__c rt: mRoutingMember.Values()){
-            rt.Approver1__c = oUser2.id;
-            rt.Approver2__c = oUser2.id;
-            rt.Approver3__c = oUser2.id;
-            rt.DtwAdmin__c = oUser2.id;
-        SYSTEM.debug(LoggingLevel.ERROR,'Routing Member: ' + rt);
-        }
-        System.debug(logginglevel.error,'ouser2: ' + oUser2.id);
-        update mRoutingMember.Values();
-
-        for(RoutingMember__c rt: mRoutingMember.Values()){
-            rt.DTW_Approver_Group__c = 'DTW Southeast Approvers';
-        SYSTEM.debug(LoggingLevel.ERROR,'Routing Member: ' + rt);
-        }
-        
-        update mRoutingMember.values();
-
-
-        oEnrollmentPlan.ExceptionComments__c = 'Comments';
-        oEnrollmentPlan.Ma_Comments__c = 'Ma Comments';
-        //update oEnrollmentPlan;
-
-        //create a comment
-        Enrollment_Comments__c ec = new Enrollment_Comments__c(Comments__c = 'Comment', EnrollmentApplication__c= oEnrollmentPlan.ID,Type__c='Management Adjustment',ApplicationType__c = oEnrollmentPlan.ApplicationType__c);
-        insert ec;
-
-        Interim_Payment_Schedule__c ip = new Interim_Payment_Schedule__c(EnrollmentApplication__c = oEnrollmentPlan.ID);
-        insert ip;
-
-        test.startTest();
-        INC_Service_EnrollmentPlan.assignIneligibleQueue(lIncentiveProjectsToInsert);
-        INC_Service_EnrollmentPlan.createEnrollmentComment(new list<EnrollmentPlan__c>{oEnrollmentPlan});
-        map<id,IncentiveProject__c> mapProjects = new map<id,IncentiveProject__c>();
-        mapProjects.put(lIncentiveProjectsToInsert[0].id,lIncentiveProjectsToInsert[0]);
-        INC_Service_EnrollmentPlan.FindApprover1(mapProjects);
-        INC_Service_EnrollmentPlan.updateBaselineChangedFlagforParticipants(new set<id>{oEnrollmentPlan.Id});
-        INC_Service_EnrollmentPlan.CloneEnrollment(oEnrollmentPlan.ID,INC_Service_EnrollmentPlan.RequestType.Change);
-        EnrollmentPlan__c oChangePlan = [Select id, ApplicationType__c from EnrollmentPlan__c where ApplicationType__c = 'CCR'][0];
-        INC_Service_EnrollmentPlan.CloneEnrollment(oChangePlan.ID,INC_Service_EnrollmentPlan.RequestType.Change);
-        oChangePlan.EnrollmentStatus__c = 'Enrolled';
-        update oChangePlan;
-        INC_Service_EnrollmentPlan.CloneEnrollment(oChangePlan.ID,INC_Service_EnrollmentPlan.RequestType.Payment);
-        EnrollmentPlan__c oPayPlan = [Select id, ApplicationType__c from EnrollmentPlan__c where ApplicationType__c = 'PAY'][0];
-        INC_Service_EnrollmentPlan.CloneEnrollment(oPayPlan.ID,INC_Service_EnrollmentPlan.RequestType.Payment);
-        lPlanTemplates[0].ContractType__c = 'Fixed Price';
-        update lPlanTemplates;
-        test.stopTest();
-
-      
     }
 
 
