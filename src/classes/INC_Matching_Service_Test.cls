@@ -5,6 +5,16 @@ private class INC_Matching_Service_Test
 	@isTest
 	static void TestSingleAssignment()
 	{
+		ECO_TriggerSettings__c setting = new ECO_TriggerSettings__c();
+        setting.Name = 'INC_IncentiveProject_AllEvents';
+        setting.isEnabled__c = true;
+        insert setting;
+
+        ECO_TriggerSettings__c setting2 = new ECO_TriggerSettings__c();
+        setting2.Name = 'INC_EnrollmentPlan_AllEvents';
+        setting2.isEnabled__c = true;
+        insert setting2;
+
 		list<User> lusers = new list<User>();
 		User runningUser = INC_Utils_Testing.createTestUser('Standard User');
 		User DTWAdminWater = INC_Utils_Testing.createTestUser('Standard User');
@@ -104,6 +114,16 @@ private class INC_Matching_Service_Test
 
 	@isTest
 	static void testPointMatching(){
+		ECO_TriggerSettings__c setting = new ECO_TriggerSettings__c();
+        setting.Name = 'INC_IncentiveProject_AllEvents';
+        setting.isEnabled__c = true;
+        insert setting;
+
+        ECO_TriggerSettings__c setting2 = new ECO_TriggerSettings__c();
+        setting2.Name = 'INC_EnrollmentPlan_AllEvents';
+        setting2.isEnabled__c = true;
+        insert setting2;
+
 		list<User> lusers = new list<User>();
 		User runningUser = INC_Utils_Testing.createTestUser('Standard User');
 		User DTWAdminWater = INC_Utils_Testing.createTestUser('Standard User');
@@ -203,6 +223,16 @@ private class INC_Matching_Service_Test
 
 	@isTest
 	static void testBulkInsert(){
+		ECO_TriggerSettings__c setting = new ECO_TriggerSettings__c();
+        setting.Name = 'INC_IncentiveProject_AllEvents';
+        setting.isEnabled__c = true;
+        insert setting;
+
+        ECO_TriggerSettings__c setting2 = new ECO_TriggerSettings__c();
+        setting2.Name = 'INC_EnrollmentPlan_AllEvents';
+        setting2.isEnabled__c = true;
+        insert setting2;
+
 		list<User> lusers = new list<User>();
 		User runningUser = INC_Utils_Testing.createTestUser('Standard User');
 		User DTWAdminWater = INC_Utils_Testing.createTestUser('Standard User');
@@ -331,6 +361,16 @@ private class INC_Matching_Service_Test
 
 	@isTest
 	static void testNoRoutingMemeber(){
+		ECO_TriggerSettings__c setting = new ECO_TriggerSettings__c();
+        setting.Name = 'INC_IncentiveProject_AllEvents';
+        setting.isEnabled__c = true;
+        insert setting;
+
+        ECO_TriggerSettings__c setting2 = new ECO_TriggerSettings__c();
+        setting2.Name = 'INC_EnrollmentPlan_AllEvents';
+        setting2.isEnabled__c = true;
+        insert setting2;
+        
 		list<User> lusers = new list<User>();
 		User runningUser = INC_Utils_Testing.createTestUser('Standard User');
 		User DTWAdminWater = INC_Utils_Testing.createTestUser('Standard User');

@@ -2,6 +2,17 @@
 private class INC_EnrollmentPlan_AllEventsTest {
     
     static testMethod void testCreateParticipantAcknowledgement() {
+         
+        ECO_TriggerSettings__c setting = new ECO_TriggerSettings__c();
+        setting.Name = 'INC_IncentiveProject_AllEvents';
+        setting.isEnabled__c = true;
+        insert setting;
+
+        ECO_TriggerSettings__c setting2 = new ECO_TriggerSettings__c();
+        setting2.Name = 'INC_EnrollmentPlan_AllEvents';
+        setting2.isEnabled__c = true;
+        insert setting2;
+        
          User oUser = INC_Utils_Testing.createUser();
 
         insert oUser;
