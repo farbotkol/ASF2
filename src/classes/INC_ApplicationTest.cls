@@ -236,13 +236,14 @@ public class INC_ApplicationTest {
         //
 
         //test starting wizard.
+               update oEnrollmentPlan;
+        Test.startTest();
+
              oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentPlan.id})[0];
              oEnrollmentPlan.EnrollmentStatus__c = 'Pending PM Action';
              oEnrollmentApplicationController = new INC_EnrollmentApp_Controller(new ApexPages.StandardController(oEnrollmentPlan));
              oEnrollmentPlan.WizardStatus__c = 'Step 1';
-        //     update oEnrollmentPlan;
-        Test.startTest();
-
+        // 
              oEnrollmentApplicationController = new INC_EnrollmentApp_Controller(new ApexPages.StandardController(oEnrollmentPlan));
              oEnrollmentPlan.WizardStatus__c = 'Step 2';
           //   update oEnrollmentPlan;
@@ -478,7 +479,7 @@ public class INC_ApplicationTest {
         User oUser = INC_Utils_Testing.createUser();
         User oUser2 = INC_Utils_Testing.createUser();
         oUser2.UserName = oUser2.UserName + '2';
-        oUser2.Email = oUser2.Email + '2';
+        oUser2.Email = '2' + oUser2.Email;
         oUser2.CommunityNickname = oUser2.CommunityNickname + '2';
         oUser2.FederationIdentifier = oUser2.FederationIdentifier + '2';
         oUser2.OracleEmployeeId__c = oUser2.OracleEmployeeId__c + '2';
