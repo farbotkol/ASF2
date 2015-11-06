@@ -411,7 +411,7 @@ private class ECO_Service_ProjectSnapshotTest {
     }
     
     static testMethod void testGetFiscalMonth() {
-    	/*
+    	
     	pse__Proj__c project1 = [SELECT Id FROM pse__Proj__c LIMIT 1];
     	
     	test.startTest();
@@ -419,13 +419,13 @@ private class ECO_Service_ProjectSnapshotTest {
 		ProjectSnapshot__c ps = psService.getProjectSnapShot();
 		test.stopTest();
 		
-		System.Debug('SnapshotFiscalMonth__c' + ps.SnapshotFiscalMonth__c);
-		System.Debug('SnapshotPreviousFiscalMonth__c' + ps.SnapshotPreviousFiscalMonth__c);
+		//System.Debug('SnapshotFiscalMonth__c' + ps.SnapshotFiscalMonth__c);
+		//System.Debug('SnapshotPreviousFiscalMonth__c' + ps.SnapshotPreviousFiscalMonth__c); 
 		
 		
-		System.AssertEquals(ps.SnapshotFiscalMonth__c, 'FY2015-02');
+		System.AssertEquals(ps.SnapshotFiscalMonth__c, 'FY2015-02'); 
 		System.AssertEquals(ps.SnapshotPreviousFiscalMonth__c, 'FY2015-01');
-		*/
+		
     	
     }
 
@@ -456,10 +456,22 @@ private class ECO_Service_ProjectSnapshotTest {
 		System.assertEquals(1, ps2.HoursForecastPrevME__c);
     }
 
-    /* select SUM(ProjectFunctionalBurdenedCost__c) CostsODCEXPS FROM CostDistLine__c'+
-			' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id in :projectIds AND'+
-			' ExpenditureItem__r.ExpenditureTypeGroup__c = \'ODCs\' AND'+
-			' ExpenditureItem__r.ExpenditureResourceType__c = \'EXPS\' */
-
+    static testMethod void testGetCostsODCEXPS() {
+    	/* //CostsODCEXPS
+			query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) CostsODCEXPS FROM CostDistLine__c'+
+				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
+				' ExpenditureItem__r.PLReportCategory__c = \'ODC - Exps\' ';																						
+			if(asOfDate != null)
+				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
+					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar: results)
+			{
+				if(ar.get('CostsODCEXPS') != null)
+					metrics.CostsODCEXPS = (Decimal)ar.get('CostsODCEXPS');
+			}
+		*/
+		
+    }
 
 }

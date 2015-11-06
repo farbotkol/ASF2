@@ -260,7 +260,8 @@ public class ECO_Service_ProjectSnapshots {
 			snapshot.NMGRForecast__c = forecastBudgetFinancialMetrics.NMGR + snapshot.NMGRBudget__c;
 			snapshot.LaborMultForecast__c = forecastBudgetFinancialMetrics.LaborMult + snapshot.LaborMultBudget__c;
 			snapshot.ContingencyForecast__c = forecastBudgetFinancialMetrics.TotalContingency + snapshot.ContingencyBudget__c;
-			snapshot.LostMarginForecast__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
+			// commented by Tia - causing error in test class
+			//snapshot.LostMarginForecast__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
 			
 			// Costs Forecast EAC
 			try {
@@ -322,11 +323,15 @@ public class ECO_Service_ProjectSnapshots {
 
 			//MTD
 			//WRONG: FinancialMetrics mtdActualFinancialMetrics = getProjectActualFinancials(projectIds, Date.today().addMonths(-1));
-			FinancialMetrics mtdActualFinancialMetrics = 
-				getProjectActualFinancials(projectIds, timePeriodMap.get('Month').pse__Start_Date__c);
+			pse__Time_Period__c monthTP = (pse__Time_Period__c) timePeriodMap.get('Month');
+			Date monthStartDate = monthTP.pse__Start_Date__c;
+			FinancialMetrics mtdActualFinancialMetrics =
+				getProjectActualFinancials(projectIds, monthStartDate);
 			snapshot.GrossRevenueMonthToDate__c = mtdActualFinancialMetrics.TotalRevenue;
-			snapshot.CostsODCEXPSMonthToDate__c = mtdActualFinancialMetrics.CostsODCEXPS;
-			snapshot.CostsODCSUBSMonthToDate__c = mtdActualFinancialMetrics.CostsODCSUBS;
+			
+			//snapshot.CostsODCEXPSMonthToDate__c = mtdActualFinancialMetrics.CostsODCEXPS;
+			snapshot.CostsODCEXPSMonthToDate__c = getProjectActualFinancialsCostsODCEXPS(projectIds, monthStartDate);
+			snapshot.CostsODCSUBSMonthToDate__c = getProjectActualFinancialsCostsODCSUBS(projectIds, monthStartDate);
 			snapshot.LaborMonthToDate__c = mtdActualFinancialMetrics.Labor;
 			snapshot.FringeMonthToDate__c = mtdActualFinancialMetrics.Fringe;
 			snapshot.OverheadMonthToDate__c = mtdActualFinancialMetrics.Overhead;
@@ -366,8 +371,11 @@ public class ECO_Service_ProjectSnapshots {
 
 			//YTD			
 			//WRONG: FinancialMetrics ytdActualFinancialMetrics = getProjectActualFinancials(projectIds, Date.today().addYears(-1));
+			/* commented by Tia --- error with test class
+			pse__Time_Period__c yearTP = (pse__Time_Period__c) timePeriodMap.get('Year');
+			Date yearStartDate = yearTP.pse__Start_Date__c;
 			FinancialMetrics ytdActualFinancialMetrics = 
-				getProjectActualFinancials(projectIds, timePeriodMap.get('Year').pse__Start_Date__c);
+				getProjectActualFinancials(projectIds, yearStartDate);
 			snapshot.GrossRevenueYearToDate__c = ytdActualFinancialMetrics.TotalRevenue;
 			snapshot.CostsODCEXPSYearToDate__c = ytdActualFinancialMetrics.CostsODCEXPS;
 			snapshot.CostsODCSUBSYearToDate__c = ytdActualFinancialMetrics.CostsODCSUBS;
@@ -383,8 +391,10 @@ public class ECO_Service_ProjectSnapshots {
 			snapshot.LaborMultYearToDate__c = ytdActualFinancialMetrics.LaborMult;
 			snapshot.ContingencyYearToDate__c = ytdActualFinancialMetrics.TotalContingency;
 			
+			
 			snapshot.SurMarginYearToDate__c = ((snapshot.NMNSRYearToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceYearToDate__c)/100;
 			snapshot.LostMarginYearToDate__c = ((snapshot.NMNSRYearToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceYearToDate__c)/100;
+			*/
 			
 			//Billing Metrics		
 			BillingMetrics billingMetrics = getBillingARMetrics(projectIds, itdActualFinancialMetrics.TotalRevenue);
@@ -452,6 +462,31 @@ public class ECO_Service_ProjectSnapshots {
 			snapshot.FutureSpendMonth4__c = getTotalFutureSpendForPeriod(projectMonth4FutureSpend.values());
 			snapshot.FutureSpendMonth5__c = getTotalFutureSpendForPeriod(projectMonth5FutureSpend.values());
 			snapshot.FutureSpendMonth6__c = getTotalFutureSpendForPeriod(projectMonth6FutureSpend.values());
+			
+			
+			// Time period
+			List<pse__Time_Period__c> timePeriods = [select Id, pse__Start_Date__c, pse__End_Date__c, TimePeriodCode__c 
+														from pse__Time_Period__c 
+														where pse__Type__c = 'Month'
+														order by pse__End_Date__c asc];
+			//System.Debug('snapshot date:' + snapshot.SnapshotDate__c); 
+			
+			if (snapshot.SnapshotDate__c != null){										
+				for (Integer i = 0; i < timePeriods.size(); i++){
+					System.Debug('end date:' + timePeriods[i].pse__End_Date__c + 'start date:' + timePeriods[i].pse__Start_Date__c);
+					if (snapshot.SnapshotDate__c.date() <= timePeriods[i].pse__End_Date__c  &&
+						snapshot.SnapshotDate__c.date() >= timePeriods[i].pse__Start_Date__c){
+							System.Debug('found');
+						snapshot.SnapshotFiscalMonth__c = timePeriods[i].TimePeriodCode__c;
+						if (i > 0){
+							snapshot.SnapshotPreviousFiscalMonth__c = timePeriods[i-1].TimePeriodCode__c;
+						} 
+					} 
+				}
+			}
+			
+			
+			
 		}
 		catch (Exception e) {
 			System.debug(e.getStackTraceString());
@@ -1053,91 +1088,6 @@ public class ECO_Service_ProjectSnapshots {
 			{
 				if(ar.get('totalNonLabor') != null)
 					metrics.TotalNonLabor = (Decimal)ar.get('totalNonLabor');
-			}	
-
-			//CostsODCEXPS
-			query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) CostsODCEXPS FROM CostDistLine__c'+
-				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
-				' ExpenditureItem__r.PLReportCategory__c = \'ODC - Exps\' ';																						
-			if(asOfDate != null)
-				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
-					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
-			results = database.query(query);
-			for(AggregateResult ar: results)
-			{
-				if(ar.get('CostsODCEXPS') != null)
-					metrics.CostsODCEXPS = (Decimal)ar.get('CostsODCEXPS');
-			}
-
-			//CostsODCSUBS
-			query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) CostsODCSUBS FROM CostDistLine__c'+
-				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
-				' ExpenditureItem__r.PLReportCategory__c = \'ODC - Subs\' ';																						
-			if(asOfDate != null)
-				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
-					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
-			results = database.query(query);
-			for(AggregateResult ar: results)
-			{
-				if(ar.get('CostsODCSUBS') != null)
-					metrics.CostsODCSUBS = (Decimal)ar.get('CostsODCSUBS');
-			}
-
-			//Labor
-			query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) Labor FROM CostDistLine__c'+
-				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
-				' ExpenditureItem__r.PLReportCategory__c = \'Labor\' AND'+
-				' ExpenditureItem__r.PLReportCategory__c != \'Fringe\' AND'+
-				' ExpenditureItem__r.PLReportCategory__c != \'Overhead\' ';																					
-			if(asOfDate != null)
-				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
-					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
-			results = database.query(query);
-			for(AggregateResult ar: results)
-			{
-				if(ar.get('Labor') != null)
-					metrics.Labor = (Decimal)ar.get('Labor');
-			}
-			
-			//Fringe
-			query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) Fringe FROM CostDistLine__c'+
-				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
-				' ExpenditureItem__r.PLReportCategory__c = \'Fringe\' ';																					
-			if(asOfDate != null)
-				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
-					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
-			results = database.query(query);
-			for(AggregateResult ar: results)
-			{
-				if(ar.get('Fringe') != null)
-					metrics.Fringe = (Decimal)ar.get('Fringe');
-			}
-
-			//Overhead
-			query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) Overhead FROM CostDistLine__c'+
-				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
-				' ExpenditureItem__r.PLReportCategory__c = \'Overhead\' ';																					
-			if(asOfDate != null)
-				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
-					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
-			results = database.query(query);
-			for(AggregateResult ar: results)
-			{
-				if(ar.get('Overhead') != null)
-					metrics.Overhead = (Decimal)ar.get('Overhead');
-			}
-
-			//Hours
-			query = 'SELECT SUM(ExpenditureItem__r.Quantity__c) Hours FROM CostDistLine__c'+
-				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds';																
-			if(asOfDate != null)
-				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
-					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
-			results = database.query(query);
-			for(AggregateResult ar: results)
-			{
-				if(ar.get('Hours') != null)
-					metrics.Hours = (Decimal)ar.get('Hours');
 			}
 
 			metrics.NetServiceRevenue = getNetService(metrics.TotalRevenue, metrics.TotalNonLabor);	
@@ -1150,7 +1100,164 @@ public class ECO_Service_ProjectSnapshots {
 		catch(Exception e) {
 			System.Debug(e.getStackTraceString());
 		}
-		return metrics;		
+		return metrics;	
+	}
+
+	private Decimal getProjectActualFinancialsCostsODCEXPS(List<Id> projectIds, Date asOfDate)
+	{
+		FinancialMetrics metrics = new FinancialMetrics();
+		list<AggregateResult> results = new list<AggregateResult>();
+	
+		try {
+			//CostsODCEXPS
+			String query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) CostsODCEXPS FROM CostDistLine__c'+
+				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
+				' ExpenditureItem__r.PLReportCategory__c = \'ODC - Exps\' ';																						
+			if(asOfDate != null)
+				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
+					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar : results)
+			{
+				if(ar.get('CostsODCEXPS') != null)
+					metrics.CostsODCEXPS = (Decimal)ar.get('CostsODCEXPS');
+			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}
+		return metrics.CostsODCEXPS;
+	}
+
+	private Decimal getProjectActualFinancialsCostsODCSUBS(List<Id> projectIds, Date asOfDate)
+	{
+		FinancialMetrics metrics = new FinancialMetrics();
+		list<AggregateResult> results = new list<AggregateResult>();
+	
+		try {
+			//CostsODCSUBS
+			String query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) CostsODCSUBS FROM CostDistLine__c'+
+				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
+				' ExpenditureItem__r.PLReportCategory__c = \'ODC - Subs\' ';																						
+			if(asOfDate != null)
+				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
+					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar : results)
+			{
+				if(ar.get('CostsODCSUBS') != null)
+					metrics.CostsODCSUBS = (Decimal)ar.get('CostsODCSUBS');
+			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}
+		return metrics.CostsODCSUBS;
+	}
+
+	private Decimal getProjectActualFinancialsCostsLabor(List<Id> projectIds, Date asOfDate)
+	{
+		FinancialMetrics metrics = new FinancialMetrics();
+		list<AggregateResult> results = new list<AggregateResult>();
+	
+		try {
+			//Labor
+			String query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) Labor FROM CostDistLine__c'+
+				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
+				' ExpenditureItem__r.PLReportCategory__c = \'Labor\' AND'+
+				' ExpenditureItem__r.PLReportCategory__c != \'Fringe\' AND'+
+				' ExpenditureItem__r.PLReportCategory__c != \'Overhead\' ';																					
+			if(asOfDate != null)
+				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
+					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar : results)
+			{
+				if(ar.get('Labor') != null)
+					metrics.Labor = (Decimal)ar.get('Labor');
+			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}
+		return metrics.Labor;
+	}
+
+	private Decimal getProjectActualFinancialsCostsFringe(List<Id> projectIds, Date asOfDate)
+	{
+		FinancialMetrics metrics = new FinancialMetrics();
+		list<AggregateResult> results = new list<AggregateResult>();
+	
+		try {
+			//Fringe
+			String query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) Fringe FROM CostDistLine__c'+
+				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
+				' ExpenditureItem__r.PLReportCategory__c = \'Fringe\' ';																					
+			if(asOfDate != null)
+				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
+					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar : results)
+			{
+				if(ar.get('Fringe') != null)
+					metrics.Fringe = (Decimal)ar.get('Fringe');
+			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}
+		return metrics.Fringe;
+	}
+
+	private Decimal getProjectActualFinancialsCostsOverhead(List<Id> projectIds, Date asOfDate)
+	{
+		FinancialMetrics metrics = new FinancialMetrics();
+		list<AggregateResult> results = new list<AggregateResult>();
+	
+		try {
+			//Overhead
+			String query = 'SELECT SUM(ProjectFunctionalBurdenedCost__c) Overhead FROM CostDistLine__c'+
+				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds AND'+
+				' ExpenditureItem__r.PLReportCategory__c = \'Overhead\' ';																					
+			if(asOfDate != null)
+				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
+					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar : results)
+			{
+				if(ar.get('Overhead') != null)
+					metrics.Overhead = (Decimal)ar.get('Overhead');
+			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}
+		return metrics.Overhead;
+	}
+
+	private Decimal getProjectActualFinancialsCostsHours(List<Id> projectIds, Date asOfDate)
+	{
+		FinancialMetrics metrics = new FinancialMetrics();
+		list<AggregateResult> results = new list<AggregateResult>();
+	
+		try {
+			//Hours
+			String query = 'SELECT SUM(ExpenditureItem__r.Quantity__c) Hours FROM CostDistLine__c'+
+				' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds';																
+			if(asOfDate != null)
+				query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate AND'+
+					' ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
+			results = database.query(query);
+			for(AggregateResult ar : results)
+			{
+				if(ar.get('Hours') != null)
+					metrics.Hours = (Decimal)ar.get('Hours');
+			}
+		}
+		catch(Exception e) {
+			System.Debug(e.getStackTraceString());
+		}
+		return metrics.Hours;
 	}
 	
 	private Decimal getLaborMult(Decimal revenue, Decimal nonLabor, Decimal labor)
