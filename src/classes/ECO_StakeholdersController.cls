@@ -32,17 +32,13 @@ public with sharing class ECO_StakeholdersController
     public String userSelectQueryType{get; set;}
     public List<Contact> queryDelegates{get; set;}
     public Boolean saveError{get; set;}
-    public Boolean isFinance{get; set;}
-    public Boolean isPNL{get; set;}
-    private Id pAndLTeamMember;
-    private Id financeTeamMember;
+    public Contact pAndLTeamMember{get; set;}
+    public Contact financeTeamMember{get; set;}
     private static Set<String> financeRoles = new Set<String>{'Project Accountant', 'Project Accountant 2', 'Finance Lead', 'Finance Lead 2'};
 
     //constructor
 	public ECO_StakeholdersController(ApexPages.StandardController oStandardController) 
 	{
-		isFinance = false;
-		isPNL = false;
 		this.oStandardController = oStandardController;
 		oProject = (pse__Proj__c)oStandardController.getRecord();
 		initStakeHolders(oProject);
@@ -123,20 +119,14 @@ public with sharing class ECO_StakeholdersController
 					if(lProjectKeyMembers.containsKey(projectTeamMember.ProjectRole__c)){
 						projectMembers = lProjectKeyMembers.get(projectTeamMember.ProjectRole__c);
 					}
-					if(projectTeamMember.ProjectRole__r.Name == 'Finance Lead' && projectTeamMember.Contact__r.pse__Salesforce_User__c == UserInfo.getUserId()){
-						isFinance = true;		
-					}
-					if(projectTeamMember.ProjectRole__r.Name == 'Project Approver 2' && projectTeamMember.Contact__r.pse__Salesforce_User__c == UserInfo.getUserId()){
-						isPNL = true;	
-					}
-					if(projectTeamMember.ProjectRole__r.Name == 'Project Approver 2' && pAndLTeamMember == null){
-						pAndLTeamMember = projectTeamMember.Contact__c;
-					}
-					if(projectTeamMember.ProjectRole__r.Name == 'Finance Lead' && financeTeamMember == null){
-						financeTeamMember = projectTeamMember.Contact__c;
-					}
 					projectMembers.add(projectTeamMember);
 					lProjectKeyMembers.put(projectTeamMember.ProjectRole__c, projectMembers);
+					if(projectTeamMember.ProjectRole__r.Name == 'Project Approver 2' && pAndLTeamMember == null){
+						pAndLTeamMember = projectTeamMember.Contact__r;
+					}
+					if(projectTeamMember.ProjectRole__r.Name == 'Finance Lead' && financeTeamMember == null){
+						financeTeamMember = projectTeamMember.Contact__r;
+					}
 				}
 				else{
 					lProjectTeamMembers.add(projectTeamMember);
@@ -159,9 +149,11 @@ public with sharing class ECO_StakeholdersController
 				Map<Id, Account> accountIdMap = new Map<Id, Account>([Select Id, (Select Id, Name, AccountId from Contacts order by Name) from Account where Id IN: accountIds]);
 
 				for(SurveySchedule__c ss: lSurveySchedules){
-					List<Contact> contacts = accountIdMap.get(siteMap.get(ss.Client__c).Account__c).Contacts;
-					lstSSW.add(new ScheduleWrapper(ss, surveyCounter, contacts));
-					++surveyCounter;
+					if(accountIdMap != null && siteMap != null && siteMap.containsKey(ss.Client__c) && accountIdMap.containsKey(siteMap.get(ss.Client__c).Account__c) && accountIdMap.get(siteMap.get(ss.Client__c).Account__c).Contacts != null ){
+						List<Contact> contacts = accountIdMap.get(siteMap.get(ss.Client__c).Account__c).Contacts;
+						lstSSW.add(new ScheduleWrapper(ss, surveyCounter, contacts));
+						++surveyCounter;
+					}
 				}
 			}
 
@@ -212,9 +204,6 @@ public with sharing class ECO_StakeholdersController
 								}
 								else
 								{
-									if((financeRoles.contains(pkm.ProjectRole__r.Name) && isFinance) || (!financeRoles.contains(pkm.ProjectRole__r.Name) && isPNL)){
-										teamMember.canEdit = true;
-									}
 									teamMember.oPTM = pkm;
 									lActiveMembersKey.add(teamMember);
 								}
@@ -472,11 +461,26 @@ public with sharing class ECO_StakeholdersController
 		String selectedRole = ApexPages.currentPage().getParameters().get('selectedRole');
 		String startDate = ApexPages.currentPage().getParameters().get('startDate');
 		String contactQuery = 'Select Id, Name, Title, Email, Phone, ReportsTo.Name from Contact Where pse__Is_Resource__c = true and pse__Is_Resource_Active__c = true and pse__Salesforce_User__r.isActive = true';
+		String firstName;
+		String lastName;
 
+		if(queryContactName != null && queryContactName != ''){
+			if(queryContactName.trim().contains(' ')){
+				List<String> nameSplit = queryContactName.trim().split(' ');
+				firstName = nameSplit[0];
+				lastName = nameSplit[nameSplit.size() - 1];
+			}
+			else{
+				firstName = queryContactName;
+			}
+		}
 		if(queryType == 'Delegate'){
 			String delegateQuery = 'Select Delegate__c, Allowed_Organizations__c From Delegate__c';
-			if(queryContactName != null && queryContactName != 'undefined' && queryContactName != ''){
-				delegateQuery += ' Where Delegate__r.Name Like \'' + queryContactName + '%\'';
+			if(queryContactName != null && queryContactName != ''){
+				delegateQuery += ' Where Delegate__r.FirstName Like \'' + firstName + '%\'';
+				if(lastName != null){
+					delegateQuery += ' AND Delegate__r.LastName Like \'' + lastName + '%\'';
+				}
 			}
 			if(selectedRole != null && selectedRole != 'undefined' && selectedRole != ''){
 				if(delegateQuery.contains('Where')){
@@ -504,10 +508,10 @@ public with sharing class ECO_StakeholdersController
 					delegateQuery += ' Where';
 				}
 				if(financeRoles.contains(selectedRole)){
-					delegateQuery += ' Delegator__c = \'' + financeTeamMember + '\'';
+					delegateQuery += ' Delegator__c = \'' + financeTeamMember.Id + '\'';
 				}
 				else{
-					delegateQuery += ' Delegator__c = \'' + pAndLTeamMember + '\'';
+					delegateQuery += ' Delegator__c = \'' + pAndLTeamMember.Id + '\'';
 				}
 			}
 			if(startDate != null && startDate != ''){
@@ -517,7 +521,8 @@ public with sharing class ECO_StakeholdersController
 				else{
 					delegateQuery += ' Where';
 				}
-				delegateQuery += ' Start_Date__c >= ' + convertStringSOQLString(startDate);
+				delegateQuery += ' (Start_Date__c <= ' + convertStringSOQLString(startDate);
+				delegateQuery += ' AND(End_Date__c = NULL OR End_Date__c >= ' + convertStringSOQLString(startDate) + '))';
 			}
 			
 			List<Delegate__c> delegates = Database.query(delegateQuery);
@@ -546,8 +551,11 @@ public with sharing class ECO_StakeholdersController
 			contactQuery += ' AND Id IN: delegateIds';
 		}
 		else{
-			if(queryContactName != null && queryContactName != 'undefined' && queryContactName != ''){
-				contactQuery += ' And Name Like \'' + queryContactName + '%\'';
+			if(queryContactName != null && queryContactName != ''){
+				contactQuery += ' And FirstName Like \'' + firstName + '%\'';
+			}
+			if(lastName != null){
+				contactQuery += ' AND LastName Like \'' + lastName + '%\'';
 			}
 		}
 		contactQuery += ' LIMIT 50';
@@ -580,7 +588,21 @@ public with sharing class ECO_StakeholdersController
 
 			try{
 				List<ProjectTeamMember__c> projectTeamMembers = new List<ProjectTeamMember__c>();
-				ProjectTeamMember__c projectTeamMember = new ProjectTeamMember__c(Project__c = oProject.Id, Status__c = 'Pending', Contact__c = selectedContactId, RecordTypeId = keyRecordType.Id, ProjectRole__c = projectRole.Id, Is_Active__c = true, StartDate__c = convertStringToDate(startDate));
+				ProjectTeamMember__c projectTeamMember = new ProjectTeamMember__c(Project__c = oProject.Id, Contact__c = selectedContactId, RecordTypeId = keyRecordType.Id, ProjectRole__c = projectRole.Id, Is_Active__c = true, StartDate__c = convertStringToDate(startDate));
+				
+				if(queryType == 'Delegate'){
+					projectTeamMember.Status__c = 'Approved';
+				}
+				else{
+					projectTeamMember.Status__c = 'Pending';
+					if(financeRoles.contains(selectedRoleName)){
+						projectTeamMember.Unfiltered_Delegate_Approver__c = financeTeamMember.pse__Salesforce_User__c;
+					}
+					else{
+						projectTeamMember.Unfiltered_Delegate_Approver__c = pAndLTeamMember.pse__Salesforce_User__c;
+					}
+				}
+
 				projectTeamMembers.add(projectTeamMember);
 
 				if(existingId != null && existingId != ''){
@@ -589,7 +611,9 @@ public with sharing class ECO_StakeholdersController
 				
 				upsert projectTeamMembers; 
 				saveError = false;
-				sendApprovalProcess(projectTeamMember, selectedRoleName, queryType);
+				if(projectTeamMember.Status__c == 'Pending'){
+					sendApprovalProcess(projectTeamMember, selectedRoleName);
+				}
 	        }
 	        catch(Exception ex){
 	        	saveError = true;
@@ -605,7 +629,7 @@ public with sharing class ECO_StakeholdersController
 
 	//starts the aproval process for a requested delegate is they have a pending status
 	@TestVisible 
-	private void sendApprovalProcess(ProjectTeamMember__c projectTeamMember, String roleName, String queryType){
+	private void sendApprovalProcess(ProjectTeamMember__c projectTeamMember, String roleName){
 		Contact contact;
 
 		//find the contact from the loaded list already in viewstate
@@ -618,12 +642,7 @@ public with sharing class ECO_StakeholdersController
 		Approval.ProcessSubmitRequest newPendingRequest = new Approval.ProcessSubmitRequest();
         newPendingRequest.setComments('Submitting request for ' + contact.Name + ' to be in the role of ' + roleName + ' for Project ' + oProject.Name);
 		newPendingRequest.setObjectId(projectTeamMember.Id);
-		if(queryType == 'Delegate'){
-        	newPendingRequest.setProcessDefinitionNameOrId('ECO_Delegate_Delegation_Approval');
-        }
-        else{
-        	newPendingRequest.setProcessDefinitionNameOrId('ECO_Delegation_Unfiltered');
-        }
+        newPendingRequest.setProcessDefinitionNameOrId('Project_Team_Member_Approve_Team_Member');
         newPendingRequest.setSkipEntryCriteria(true);
         Approval.ProcessResult processResult = Approval.process(newPendingRequest);
 	}
@@ -644,12 +663,14 @@ public with sharing class ECO_StakeholdersController
 		}
 
 		//find the latest end date for the role to compare against start date of new role assignment
-		if(existingId == null && lProjectKeyMembers.containsKey(selectedRole.Id) && selectedRole.Name != 'Deputy Project Manager'){
+		if(existingId != null && lProjectKeyMembers.containsKey(selectedRole.Id) && selectedRole.Name != 'Deputy Project Manager'){
 			List<ProjectTeamMember__c> teamMembersInRole = lProjectKeyMembers.get(selectedRole.Id);
-
 			for(ProjectTeamMember__c teamMemberInRole : teamMembersInRole){
-				if(endDte == null || teamMemberInRole.EndDate__c > endDte){
+				if((endDte == null || teamMemberInRole.EndDate__c > endDte) && teamMemberInRole.EndDate__c != null){
 					endDte = teamMemberInRole.EndDate__c;
+				}
+				else if(endDte == null){
+					endDte = teamMemberInRole.StartDate__c;
 				}
 			}
 		}
@@ -675,23 +696,37 @@ public with sharing class ECO_StakeholdersController
 		return isValid;
 	}
 
-	//converts a string in the format of mm/dd/yyyy to a date type
+	//converts a string in the format of mm/dd/yyyy, yyyy.mm.dd, yyyy-mm-dd to a date type
 	private Date convertStringToDate(String inputDate){
-		List<String> dateString = inputDate.split('/');
-		return date.newInstance(Integer.valueOf(dateString[2]), Integer.valueOf(dateString[0]), Integer.valueOf(dateString[1]));
+		List<String> dateString = new List<String>();
+		if(inputDate.contains('/')){
+			dateString = inputDate.split('/');
+			return date.newInstance(Integer.valueOf(dateString[2]), Integer.valueOf(dateString[0]), Integer.valueOf(dateString[1]));
+		}
+		else if(inputDate.contains('.')){
+			return Date.valueOf(inputDate.replace('.', '-'));
+		}
+		return Date.valueOf(inputDate);
 	}
 
-	//converts a string in the format of mm/dd/yyyy to a string in the format of yyyy-mm-dd
+	//converts a string in the format of mm/dd/yyyy, yyyy.mm.dd, yyyy-mm-dd to a string in the format of yyyy-mm-dd
 	@TestVisible 
 	private String convertStringSOQLString(String inputDate){
-		List<String> dateString = inputDate.split('/');
-		if(dateString[1].length() < 2){
-			dateString[1] = 0 + dateString[1];
+		List<String> dateString = new List<String>();
+		if(inputDate.contains('/')){
+			dateString = inputDate.split('/');
+			if(dateString[1].length() < 2){
+				dateString[1] = 0 + dateString[1];
+			}
+			if(dateString[0].length() < 2){
+				dateString[0] = 0 + dateString[0];
+			}
+			return dateString[2] + '-' + dateString[0] + '-' + dateString[1];
 		}
-		if(dateString[0].length() < 2){
-			dateString[0] = 0 + dateString[0];
-		}
-		return dateString[2] + '-' + dateString[0] + '-' + dateString[1];
+		else if(inputDate.contains('.')){
+			return inputDate.replace('.', '-');
+		} 
+		return inputDate;
 	}
 	
 	public void addRecord()
@@ -761,8 +796,14 @@ public with sharing class ECO_StakeholdersController
 			}
 			for(Integer i=0; i<lMembersTeam.size(); i++)
 			{
-				if(lMembersTeam[i].oPTM.Id == recordObjectId)
-					lMembersTeam.remove(i);
+				try{
+					if(lMembersTeam[i].oPTM.Id == recordObjectId){
+						lMembersTeam.remove(i);
+					}
+				}
+				catch(Exception ex){
+					system.debug('***invalid Id ' + recordObjectId + '  ' + lMembersTeam[i].oPTM.Id);
+				}
 			}
 		}
 		else if(recordObjectType == 'Stakeholder__c')
