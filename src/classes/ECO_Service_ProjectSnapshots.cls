@@ -328,14 +328,6 @@ public class ECO_Service_ProjectSnapshots {
 			FinancialMetrics mtdActualFinancialMetrics =
 				getProjectActualFinancials(projectIds, monthStartDate);
 			snapshot.GrossRevenueMonthToDate__c = mtdActualFinancialMetrics.TotalRevenue;
-			
-			//snapshot.CostsODCEXPSMonthToDate__c = mtdActualFinancialMetrics.CostsODCEXPS;
-			snapshot.CostsODCEXPSMonthToDate__c = getProjectActualFinancialsCostsODCEXPS(projectIds, monthStartDate);
-			snapshot.CostsODCSUBSMonthToDate__c = getProjectActualFinancialsCostsODCSUBS(projectIds, monthStartDate);
-			snapshot.LaborMonthToDate__c = mtdActualFinancialMetrics.Labor;
-			snapshot.FringeMonthToDate__c = mtdActualFinancialMetrics.Fringe;
-			snapshot.OverheadMonthToDate__c = mtdActualFinancialMetrics.Overhead;
-			snapshot.HoursMonthToDate__c = mtdActualFinancialMetrics.Hours;
 			snapshot.CostMonthToDate__c = mtdActualFinancialMetrics.TotalCost;
 			snapshot.NetMarginMonthToDate__c = mtdActualFinancialMetrics.NetMargin;
 			snapshot.NetServiceMonthToDate__c = mtdActualFinancialMetrics.NetServiceRevenue;
@@ -347,6 +339,13 @@ public class ECO_Service_ProjectSnapshots {
 			snapshot.SurMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
 			snapshot.LostMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
 			
+			snapshot.CostsODCEXPSMonthToDate__c = getProjectActualFinancialsCostsODCEXPS(projectIds, monthStartDate);
+			snapshot.CostsODCSUBSMonthToDate__c = getProjectActualFinancialsCostsODCSUBS(projectIds, monthStartDate);
+			snapshot.LaborMonthToDate__c = getProjectActualFinancialsCostsLabor(projectIds, monthStartDate);
+			snapshot.FringeMonthToDate__c = getProjectActualFinancialsCostsFringe(projectIds, monthStartDate);
+			snapshot.OverheadMonthToDate__c = getProjectActualFinancialsCostsOverhead(projectIds, monthStartDate);
+			snapshot.HoursMonthToDate__c = getProjectActualFinancialsCostsHours(projectIds, monthStartDate);
+
 			
 			//ITD
 			FinancialMetrics itdActualFinancialMetrics = getProjectActualFinancials(projectIds, null);
