@@ -275,7 +275,7 @@ public class INC_ApplicationTest {
              oEnrollmentApplicationController.oEnrollmentApp = oEnrollmentPlan;
              //oEnrollmentApplicationController.createPaymentRequest();
            
-             oEnrollmentPlan = [Select id from EnrollmentPlan__c where ApplicationType__c = 'PAY'][0];
+             //oEnrollmentPlan = [Select id from EnrollmentPlan__c where ApplicationType__c = 'PAY'][0];
              oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentPlan.id})[0];
              
              System.debug(logginglevel.error,'oEnrollmentPlan in Test: ' + oEnrollmentPlan.ApplicationType__c);
