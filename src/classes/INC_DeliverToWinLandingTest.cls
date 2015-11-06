@@ -57,6 +57,29 @@ private class INC_DeliverToWinLandingTest {
 
         EnrollmentPlan__c oEnrollmentPlan;
         oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{lAssertCheckEnrollment[0].Id})[0];
+        oEnrollmentPlan.ConfirmBaseline__c = 'Yes';
+        oEnrollmentPlan.DSOTarget__c = 61;
+        update oEnrollmentPlan;
+
+         // Create an approval request for the account
+        Approval.ProcessSubmitRequest req1 = 
+            new Approval.ProcessSubmitRequest();
+        req1.setComments('Submitting request for approval.');
+        req1.setObjectId(oEnrollmentPlan.ID);
+        
+        // Submit on behalf of a specific submitter
+        req1.setSubmitterId(oUser.Id); 
+        
+        // Submit the record to specific process and skip the criteria evaluation
+        req1.setProcessDefinitionNameOrId('DTW_Incentives_App_Approval_Process');
+        req1.setSkipEntryCriteria(true);
+        
+        // Submit the approval request for the account
+        Approval.ProcessResult result = Approval.process(req1);
+        
+        // Verify the result
+        System.assert(result.isSuccess());
+
         list<IncentiveProject__c> lstIP = new list<IncentiveProject__c>();
         //lstIP.add(INC_Utils_Testing.createIncentiveProject());
         //lstIP.add(INC_Utils_Testing.createIncentiveProject());
@@ -89,29 +112,30 @@ private class INC_DeliverToWinLandingTest {
 
 		insert(lpa);
 
+        System.runAs(oUser){
+    		INC_DeliverToWinLandingController ctr = new INC_DeliverToWinLandingController();
 
-		INC_DeliverToWinLandingController ctr = new INC_DeliverToWinLandingController();
+    		//system.assertEquals(ctr.lstApprovalItemShortPA.size(), 5);
+    		//system.assertEquals(ctr.lstIPShort.size(), 5);
 
-		//system.assertEquals(ctr.lstApprovalItemShortPA.size(), 5);
-		//system.assertEquals(ctr.lstIPShort.size(), 5);
+    		ctr.more();
+    		//system.assertEquals(ctr.bMore, true);
 
-		ctr.more();
-		//system.assertEquals(ctr.bMore, true);
+    		ctr.less();
+    		//system.assertEquals(ctr.bMore, false);
 
-		ctr.less();
-		//system.assertEquals(ctr.bMore, false);
+    		ctr.moreAck();
+    		//system.assertEquals(ctr.bMoreAck, true);
 
-		ctr.moreAck();
-		//system.assertEquals(ctr.bMoreAck, true);
+    		ctr.lessAck();
+    		//system.assertEquals(ctr.bMoreAck, false);
 
-		ctr.lessAck();
-		//system.assertEquals(ctr.bMoreAck, false);
+    		ctr.moreProj();
+    		//system.assertEquals(ctr.bMoreProj, true);
 
-		ctr.moreProj();
-		//system.assertEquals(ctr.bMoreProj, true);
-
-		ctr.lessProj();
-		//system.assertEquals(ctr.bMoreProj, false);
+    		ctr.lessProj();
+    		//system.assertEquals(ctr.bMoreProj, false);
+        }
 	}
 
 	

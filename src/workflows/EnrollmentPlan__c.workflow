@@ -5,8 +5,12 @@
         <description>2Approver employment status has changed</description>
         <protected>false</protected>
         <recipients>
-            <recipient>tchiang@centerstance.com</recipient>
-            <type>user</type>
+            <field>Approver1__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>DTWAdmin__c</field>
+            <type>userLookup</type>
         </recipients>
         <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
@@ -1491,73 +1495,10 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
-        <fullName>Set_WorkflowStep_to_Not_in_Workflow</fullName>
-        <field>WorkflowStep__c</field>
-        <literalValue>Not In Workflow</literalValue>
-        <name>Set WorkflowStep to Not in Workflow</name>
-        <notifyAssignee>false</notifyAssignee>
-        <operation>Literal</operation>
-        <protected>false</protected>
-    </fieldUpdates>
-    <fieldUpdates>
         <fullName>Set_WorkflowStep_to_Pending_PM_Action</fullName>
         <field>WorkflowStep__c</field>
         <literalValue>Pending PM Action</literalValue>
         <name>Set WorkflowStep to Pending PM Action</name>
-        <notifyAssignee>false</notifyAssignee>
-        <operation>Literal</operation>
-        <protected>false</protected>
-    </fieldUpdates>
-    <fieldUpdates>
-        <fullName>Set_WorkflowStep_to_Step2</fullName>
-        <field>WorkflowStep__c</field>
-        <literalValue>Step2</literalValue>
-        <name>Set WorkflowStep to Step2</name>
-        <notifyAssignee>false</notifyAssignee>
-        <operation>Literal</operation>
-        <protected>false</protected>
-    </fieldUpdates>
-    <fieldUpdates>
-        <fullName>Set_WorkflowStep_to_Step3</fullName>
-        <field>WorkflowStep__c</field>
-        <literalValue>Step3</literalValue>
-        <name>Set WorkflowStep to Step3</name>
-        <notifyAssignee>false</notifyAssignee>
-        <operation>Literal</operation>
-        <protected>false</protected>
-    </fieldUpdates>
-    <fieldUpdates>
-        <fullName>Set_WorkflowStep_to_Step4</fullName>
-        <field>WorkflowStep__c</field>
-        <literalValue>Step4</literalValue>
-        <name>Set WorkflowStep to Step4</name>
-        <notifyAssignee>false</notifyAssignee>
-        <operation>Literal</operation>
-        <protected>false</protected>
-    </fieldUpdates>
-    <fieldUpdates>
-        <fullName>Set_WorkflowStep_to_Step5</fullName>
-        <field>WorkflowStep__c</field>
-        <literalValue>Step5</literalValue>
-        <name>Set WorkflowStep to Step5</name>
-        <notifyAssignee>false</notifyAssignee>
-        <operation>Literal</operation>
-        <protected>false</protected>
-    </fieldUpdates>
-    <fieldUpdates>
-        <fullName>Set_WorkflowStep_to_Step6</fullName>
-        <field>WorkflowStep__c</field>
-        <literalValue>Step6</literalValue>
-        <name>Set WorkflowStep to Step6</name>
-        <notifyAssignee>false</notifyAssignee>
-        <operation>Literal</operation>
-        <protected>false</protected>
-    </fieldUpdates>
-    <fieldUpdates>
-        <fullName>Set_WorkflowStep_to_Stet1</fullName>
-        <field>WorkflowStep__c</field>
-        <literalValue>Step1</literalValue>
-        <name>Set WorkflowStep to Stet1</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
