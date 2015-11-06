@@ -428,7 +428,7 @@ public without sharing class INC_Utils_Testing {
     public static User createUser(){
         User oUser = new User();
 
-        Id sProfileId = INC_Utils_Testing.getProfileId('AECOM Standard User - Americas');
+        Id sProfileId = INC_Utils_Testing.getProfileId('System Administrator');
         
         //oUser.IsActive = TRUE;
         oUser.ReceivesAdminInfoEmails = FALSE;
