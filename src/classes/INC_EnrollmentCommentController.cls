@@ -141,7 +141,7 @@ public without sharing class INC_EnrollmentCommentController {
         return null;
     }
 
-    private Id getWorkItemId(Id targetObjectId)
+    public static Id getWorkItemId(Id targetObjectId)
     {
       Id retVal = null;
       for(ProcessInstanceWorkitem workItem  : [Select p.Id from ProcessInstanceWorkitem p

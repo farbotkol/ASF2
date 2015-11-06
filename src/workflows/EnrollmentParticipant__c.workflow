@@ -59,10 +59,6 @@
             <field>EmployeeName__c</field>
             <type>contactLookup</type>
         </recipients>
-        <recipients>
-            <recipient>drichardson@aecom.com</recipient>
-            <type>user</type>
-        </recipients>
         <senderType>CurrentUser</senderType>
         <template>DTW_Project_Incentives/Fixed_Price_Participant_Enrollment_Notification</template>
     </alerts>
@@ -73,10 +69,6 @@
         <recipients>
             <field>EmployeeName__c</field>
             <type>contactLookup</type>
-        </recipients>
-        <recipients>
-            <recipient>drichardson@aecom.com</recipient>
-            <type>user</type>
         </recipients>
         <senderType>CurrentUser</senderType>
         <template>DTW_Project_Incentives/Time_and_Materials_Particpant_Enrollment_Notification</template>

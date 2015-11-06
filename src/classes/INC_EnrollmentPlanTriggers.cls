@@ -29,6 +29,7 @@ public with sharing class INC_EnrollmentPlanTriggers {
 
 	public void setIDOnStatusChange(map<id,EnrollmentPlan__c>mapNew, map<id,EnrollmentPlan__c>mapOld){
 		set<id> setEP = new set<id>();
+		System.Debug(logginglevel.error,'setIDOnStatusChange ' + mapnew + ' ' + mapold);
 		for(EnrollmentPlan__c ep: mapNew.Values()){
 			if(ep.EnrollmentStatus__c != mapOld.get(ep.id).EnrollmentStatus__c &&
 				(ep.EnrollmentStatus__c == 'Rejected' || ep.EnrollmentStatus__c == 'Rejected for Correction')){
@@ -60,7 +61,7 @@ public with sharing class INC_EnrollmentPlanTriggers {
 			ep.MA_Comments__c = null;
 		}
 	}
-
+/*
 	public void createApprovalComments(map<id,EnrollmentPlan__c> mapNew, map<id,EnrollmentPlan__c> mapOld){
 	
 		set<id> setChangedEnrollmentPlans = new set<id>();
@@ -88,7 +89,7 @@ public with sharing class INC_EnrollmentPlanTriggers {
 			INC_Service_EnrollmentPlan.createEnrollmentCommentsFromApproval(setChangedEnrollmentPlans);
 		}
 	} 
-
+*/
 
 	public void updateParticipants(map<id,EnrollmentPlan__c> mapNew, map<id,EnrollmentPlan__c> mapOld){
 		set<id> enrollmentPlans = new set<id>();
@@ -97,6 +98,7 @@ public with sharing class INC_EnrollmentPlanTriggers {
 
 		set<id> allPlans = new set<id>();
 		for(EnrollmentPlan__c EnrollPlan: mapNew.Values()){
+			System.debug(logginglevel.error,'Update Participants: ' + EnrollPlan.EnrollmentStatus__c);
 			if(EnrollPlan.EnrollmentStatus__c == 'Enrolled' && 
 				(EnrollPlan.EnrollmentStatus__c != mapOld.get(EnrollPlan.ID).EnrollmentStatus__c)){
 				enrollmentPlans.add(EnrollPlan.ID);

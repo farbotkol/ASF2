@@ -16,18 +16,22 @@ public without sharing class INC_RoutingMemberTriggers {
 			if(mapOld != null){
 				if(NewMember.Approver1__c != mapOld.get(NewMember.ID).Approver1__c){
 					setTemp.add(NewMember.Approver1__c);
+						System.Debug(logginglevel.error,'setTemp1: ' + setTemp);
+		
 					if(mapOld.get(NewMember.id).Approver1__c != null){
 						setTempRem.add(mapOld.get(NewMember.ID).Approver1__c);
 					}
 				} 
 				if(NewMember.Approver2__c != mapOld.get(NewMember.ID).Approver2__c){
 					setTemp.add(NewMember.Approver2__c);
+			System.Debug(logginglevel.error,'setTemp2: ' + setTemp);
 					if(mapOld.get(NewMember.id).Approver2__c != null){
 						setTempRem.add(mapOld.get(NewMember.ID).Approver2__c);
 					}
 				}
 				if(NewMember.Approver3__c != mapOld.get(NewMember.ID).Approver3__c){
 					setTemp.add(NewMember.Approver3__c);
+			System.Debug(logginglevel.error,'setTemp2: ' + setTemp);
 					if(mapOld.get(NewMember.id).Approver3__c != null){
 						setTempRem.add(mapOld.get(NewMember.ID).Approver3__c);
 					}
@@ -35,11 +39,15 @@ public without sharing class INC_RoutingMemberTriggers {
 			
 				if(NewMember.FinanceManager__c != mapOld.get(NewMember.ID).FinanceManager__c){
 					setTemp.add(NewMember.FinanceManager__c);
+			System.Debug(logginglevel.error,'setTemp2: ' + setTemp);
 					if(mapOld.get(NewMember.id).FinanceManager__c != null){
 						setTempRem.add(mapOld.get(NewMember.ID).FinanceManager__c);
 					}
 				}
 			
+			System.Debug(logginglevel.error,'setTemp3: ' + setTemp);
+			System.Debug(logginglevel.error,'setTempRem: ' + setTempRem);
+
 				if(NewMember.DTW_Approver_Group__c != mapOld.get(NewMember.ID).DTW_Approver_Group__c){
 					//if group has changed, need to put all approvers from new into the add
 					if(NewMember.Approver1__c != null){
@@ -155,7 +163,8 @@ public without sharing class INC_RoutingMemberTriggers {
 		//need to convert the maps to a primitive data type
 		List<String> lAdd = new list<String>();
 		list<String> lRemove = new list<String>();
-
+		System.debug(LoggingLevel.error,'mapAdd: ' + mapAdd);
+		System.debug(LoggingLevel.error,'mapRemove: ' + mapRemove);
 		for(String sGroupID: mapAdd.keyset()){
 			Set<id> listUsers = mapAdd.get(sGroupID);
 			for(ID UserID: listUsers){
@@ -169,7 +178,7 @@ public without sharing class INC_RoutingMemberTriggers {
 				lRemove.add(sGroupID + ',' + UserID);
 			}
 		}
-
+		System.Debug(logginglevel.error,'ladd: ' + lAdd);
 		updateGroups(lAdd,lRemove);
 	}
 	@future 

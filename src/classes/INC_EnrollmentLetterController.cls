@@ -74,6 +74,7 @@ public with sharing class INC_EnrollmentLetterController {
 			AF = AE - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
 			W = V - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
 			Z = Y - EP.EnrollmentPlan__r.BaselineGrossMargin__c;
+			System.debug(logginglevel.error,'EP.EnrollmentPlan__r.IncentivePlan__r' + EP.EnrollmentPlan__r.IncentivePlan__r.ProfitSharingPercent__c + ' af: ' + AF);
 			AG = AF * EP.EnrollmentPlan__r.IncentivePlan__r.ProfitSharingPercent__c/100;
 			X =  W * EP.EnrollmentPlan__r.IncentivePlan__r.ProfitSharingPercent__c/100;
 			AA = Z * EP.EnrollmentPlan__r.IncentivePlan__r.ProfitSharingPercent__c/100;

@@ -136,6 +136,8 @@ public without sharing class INC_Service_EnrollmentPlan {
                           , IPNumberofPayments__c
                           , IPYearsRemaining__c
                           , GMofNSRAdjustment__c
+                          , GrossMarginAmountScopeChange__c
+                          , GrossMarginAmountAdjustment__c
                           , IPComment__c
                           , IncentivePlan__c
                           , IncentivePlan__r.ContractType__c
@@ -771,7 +773,7 @@ public without sharing class INC_Service_EnrollmentPlan {
           }
 
         }
-
+ 
     }
 
     public static map<id,List<Enrollment_Comments__c>> getCommentsForClone(set<id> enrollmentPlans){
