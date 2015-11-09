@@ -81,6 +81,9 @@
             margin-left:12px;
 
         }
+        .message{
+            background-color: #A2D3F1;
+        }
     </style>
 
 
@@ -128,12 +131,8 @@
         <apex:inputField value="{!oProjectPackage.Scope__c}" style="visibility: hidden;" />
         </div>
 
-        <div class="customHelpText">
-            <div class="customHelpBody">
-                Provide a brief summary of the overall scope of work and proposed approach for the project.  Detailed scope packages may be added if additional detail or delineation of AECOMs services is required.  Scope packages may include specific project activities or tasks, phases of work, interdisciplinary deliverables, change orders or variations, or packages “owned” by another organization to support an intercompany agreement.  Enough detail should be provided to support development of the schedule, required resources and cost estimate.   It is best practice to also capture any risks or assumptions identified during development of the project scope and approach.
-            </div>
-        </div>  
-
+       <apex:pageMessage id="headerSummaryMessage" severity="info"  escape="false"  summary="
+                Provide a brief summary of the overall scope of work and proposed approach for the project.  Detailed scope packages may be added if additional detail or delineation of AECOMs services is required.  Scope packages may include specific project activities or tasks, phases of work, interdisciplinary deliverables, change orders or variations, or packages “owned” by another organization to support an intercompany agreement.  Enough detail should be provided to support development of the schedule, required resources and cost estimate.   It is best practice to also capture any risks or assumptions identified during development of the project scope and approach." />
 
         <apex:pageBlock title="Project Scope" mode="edit">
 
@@ -186,7 +185,7 @@
                    <br/>
                    <apex:outputPanel id="Panel" >
                        <apex:outputPanel id="YesMessage" rendered="{!if(oProjectPackage.Utilize_BMI_Technology__c, true, false)}" >
-                           <apex:pageMessage severity="info" summary="Projects utilizing BIM will need to provide additional data to determine if a BIM Health Start Review is required. Compelte the BIM intake form for review by your Geography Director." />
+                           <apex:pageMessage severity="info" summary="Projects utilizing BIM will need to provide additional data to determine if a BIM Health Start Review is required. Complete the BIM intake form for review by your Geography Director." />
                        </apex:outputPanel>
                    </apex:outputPanel>
                    
@@ -210,14 +209,13 @@
                         <apex:selectOptions value="{!yesNo}"/>
                         <apex:actionSupport event="onchange" reRender="Panel2"/>
                      </apex:selectRadio>
-                    <!--<apex:inputCheckbox value="{!oProjectPackage.SafetyInDesign__c}" label="" />-->
                     </apex:panelgrid>
                 </div>
                 <div style="padding:10px">
                     <br />
                     <apex:outputPanel id="Panel2">
                         <apex:outputPanel id="YesMessage2" rendered="{!if(oProjectPackage.SafetyInDesign__c, true, false)}">
-                                <apex:pageMessage severity="info" summary="Please provide details of relevant SiD requirements. Ensure relevant legislative requirements are incorporated." />
+                             <apex:inputField style="width:50%; height:50px;" value="{!oProjectPackage.Safety_In_Design_Description__c}" html-placeholder="Please provide details of relevant SiD requirements. Ensure relevant legislative requirements are incorporated." />
                         </apex:outputPanel>
                     </apex:outputPanel>
                 </div>   
