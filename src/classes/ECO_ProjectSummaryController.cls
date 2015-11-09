@@ -273,20 +273,20 @@ public with sharing class ECO_ProjectSummaryController {
 
 	    generateSyncHistory();	
 
-     	needOracleLogin = !ECO_Service_Authentication.authenticateOracleToken(UserInfo.getUserId());
-     	if(needOracleLogin)
-        {
-        	if(isProjectNumber)
-        	{
-        		ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING, 'Your Oracle Token has expired and you are required to login to Oracle before Requesting a Project Number.  Please click the Login button and enter your Oracle credentials.');
-            	ApexPages.addMessage(oPageMessage);
-            }
-            else
-            {
-        		ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING, 'Your Oracle Token has expired and you are required to login to Oracle before Syncronizing the Project.  Please click the Login button and enter your Oracle credentials.');
-            	ApexPages.addMessage(oPageMessage);            	
-            }
-        }
+//     	needOracleLogin = !ECO_Service_Authentication.authenticateOracleToken(UserInfo.getUserId());
+//     	if(needOracleLogin)
+ //       {
+//        	if(isProjectNumber)
+//        	{
+//        		ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING, 'Your Oracle Token has expired and you are required to login to Oracle before Requesting a Project Number.  Please click the Login button and enter your Oracle credentials.');
+//            	ApexPages.addMessage(oPageMessage);
+//            }
+//            else
+//            {
+//        		ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING, 'Your Oracle Token has expired and you are required to login to Oracle before Syncronizing the Project.  Please click the Login button and enter your Oracle credentials.');
+//            	ApexPages.addMessage(oPageMessage);            	
+//            }
+ //       }
 
 	}
 
