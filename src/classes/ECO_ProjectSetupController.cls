@@ -28,6 +28,7 @@ public with sharing class ECO_ProjectSetupController {
 
     public pse__Proj__c oProject {get;set;} 
     public Site__c oSite {get;set;}
+    public siteSearchWrapper oSiteSearch {get;set;}
     public ProjectOrganization__c oProjectOrganization {get; set;}
     public OrganizationString__c oPrimaryOrganization {get; set;}
 
@@ -191,10 +192,27 @@ public with sharing class ECO_ProjectSetupController {
         }
     }
 
+    public class siteSearchWrapper{
+        public string name {get;set;}
+        public string city {get;set;}
+        public string country {get;set;}
+        public string province {get;set;}
+
+        public siteSearchWrapper(){
+            name = null;
+            city = null;
+            country = null;
+            province = null;
+        }
+
+    }
+
     /* Constructor */
     public ECO_ProjectSetupController(ApexPages.StandardController oStandardController) {
         oSite = new Site__c();
         oSite.account__r = new account();
+        oSiteSearch = new siteSearchWrapper();
+
 
         oProjectOrganization = new ProjectOrganization__c();
 
@@ -280,7 +298,10 @@ public with sharing class ECO_ProjectSetupController {
             return null;
         }
 
-        
+        oSite.Account__r.name = oSiteSearch.name; 
+        oSite.City__c = oSiteSearch.city;
+        oSite.Country__c = oSiteSearch.country;       
+        oSite.State__c = oSiteSearch.province;
 
         string strSOQL = 'SELECT ';
         string strWhereClause = ' WHERE '; 
@@ -571,6 +592,14 @@ public with sharing class ECO_ProjectSetupController {
 
             }
 
+            list<pse__Proj__c> lstExactMatch = [select id from pse__Proj__c where name =: oProject.name];
+
+            if(lstExactMatch.size() > 0){
+                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.INFO,'Attention: The project name you specified already exists! please update the project name.');
+                ApexPages.addMessage(oMsg);   
+                return null;                        
+            }
+
 
             Savepoint oSavePoint = Database.setSavepoint();
 
@@ -586,6 +615,7 @@ public with sharing class ECO_ProjectSetupController {
                 ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to create an Opportunity. Please contact your administrator with the following error: ' + e);
                 ApexPages.addMessage(oMsg);
                 Database.rollback(oSavePoint);
+                oProject.pse__Opportunity__c = null;
                 return null;
             }
 
@@ -609,6 +639,7 @@ public with sharing class ECO_ProjectSetupController {
                 ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to create a Project. Please contact your administrator with the following error: ' + e);
                 ApexPages.addMessage(oMsg);
                 Database.rollback(oSavePoint);
+                oProject.pse__Opportunity__c = null;
                 return null;
             }
             
@@ -619,6 +650,7 @@ public with sharing class ECO_ProjectSetupController {
                 ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to creating project sites. Please contact your administrator with the following error: ' + e);
                 ApexPages.addMessage(oMsg);
                 Database.rollback(oSavePoint);
+                oProject.pse__Opportunity__c = null;
                 return null;
             }
 
@@ -629,6 +661,7 @@ public with sharing class ECO_ProjectSetupController {
                 ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to creating project organizations. Please contact your administrator with the following error: ' + e);
                 ApexPages.addMessage(oMsg);
                 Database.rollback(oSavePoint);
+                oProject.pse__Opportunity__c = null;
                 return null;
             }
 
@@ -640,11 +673,12 @@ public with sharing class ECO_ProjectSetupController {
                 ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to update Project. Please contact your administrator with the following error: ' + e);
                 ApexPages.addMessage(oMsg);
                 Database.rollback(oSavePoint);
+                oProject.pse__Opportunity__c = null;
                 return null;
-            }            
+            }           
 
             // redirect the user to the project detail page if successful
-            PageReference pageRef = new PageReference('/' + oProject.id);
+            PageReference pageRef = new PageReference('/' + oProject.id + '/e?retURL=/' + oProject.id);
             return pageRef;
         } else {
             return null;
@@ -1159,6 +1193,7 @@ public with sharing class ECO_ProjectSetupController {
         oOpportunityToInsert.probability = 100;
         oOpportunityToInsert.accountid = oPrimaryEnd.osite.Account__c;
         oOpportunityToInsert.TO_Procurement_Method__c = 'Competitive Task Orders';
+        oOpportunityToInsert.Capture_Manager_User__c = oProject.ownerid;
 
         insert oOpportunityToInsert;
 

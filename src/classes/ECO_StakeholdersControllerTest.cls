@@ -132,7 +132,7 @@ private class ECO_StakeholdersControllerTest {
 		ECO_StakeholdersController stakeHolderController = new ECO_StakeholdersController(standardController);
 		stakeHolderController.queryDelegates = new List<Contact>();
 		stakeHolderController.queryDelegates.add(testContact);
-		stakeHolderController.sendApprovalProcess(projectMembers[0], 'Project Manager', 'Delegate');
+		stakeHolderController.sendApprovalProcess(projectMembers[0], 'Project Manager');
 		stakeHolderController.defaultDates();
 		system.assertEquals('2015-09-05', stakeHolderController.convertStringSOQLString('9/5/2015'));
 	}

@@ -49,6 +49,22 @@ public without sharing class ECO_Utils_Testing {
 		//pm.RecordTypeId = recordTypeId;
 		insert pm;	
 	
+		//team members
+		ProjectRole__c projectRole = new ProjectRole__c();
+		projectRole.Name = 'Project Manager';
+		projectRole.Type__c = 'Key Member';
+		projectRole.Active__c = true;
+
+		ProjectRole__c projectRole1 = new ProjectRole__c();
+		projectRole1.Name = 'Resilience Director';
+		projectRole1.Type__c = 'Key Member';
+		projectRole1.Active__c = true;
+
+		list<ProjectRole__c> lstpr = new list<ProjectRole__c>();
+		lstpr.add(projectRole);
+		lstpr.add(projectRole1);
+		insert lstpr;
+	
 
 		//create create source project 		
 		pse__Proj__c testProject = createTestProject('test project 1');
@@ -82,12 +98,7 @@ public without sharing class ECO_Utils_Testing {
 		insert testProjectTasks;
 
 		
-		//team members
-		ProjectRole__c projectRole = new ProjectRole__c();
-		projectRole.Name = 'Project Manager';
-		projectRole.Type__c = 'Key Member';
-		projectRole.Active__c = true;
-		insert projectRole;
+
 
 		Profile p = [SELECT Id FROM Profile WHERE Name='Standard User']; 
 
