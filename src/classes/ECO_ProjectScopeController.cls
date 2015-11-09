@@ -45,6 +45,7 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
                                                     ,  Scope_Owner__c
                                                     , Utilize_BMI_Technology__c
                                                     , SafetyInDesign__c
+                                                    , Safety_In_Design_Description__c
                                                     , Status__c
                                                     , CancelledReason__c
                                                     , (SELECT Id, Name, ContentType FROM Attachments) 
@@ -291,6 +292,8 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
         Packages__c oNewPackage = new Packages__c();
         oNewPackage.Type__c = 'Package';
         oNewPackage.Scope__c = sProjectId;
+        oNewPackage.Name = 'New Package';
+        oNewPackage.PackageTitle__c = 'New Package';
 
         lstPackages.add(oNewPackage);
 
@@ -298,6 +301,8 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
         booNewProjectInPlay = true;
 
         selectedTab = lstPackages.size();
+        
+        SavePackages() ;
 
         return null;
     }

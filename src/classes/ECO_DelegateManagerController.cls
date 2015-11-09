@@ -196,7 +196,7 @@ public class ECO_DelegateManagerController {
 				}
 				if(anyOrgChecked){
 					insert delegate;
-					if(currentRecordType == 'Alternate' && attachment.body != null){
+					if(currentRecordType == 'Administrator Override' && attachment.body != null){
 						attachment.OwnerId = UserInfo.getUserId();
     					attachment.ParentId = delegate.Id;
     					attachment.IsPrivate = true;

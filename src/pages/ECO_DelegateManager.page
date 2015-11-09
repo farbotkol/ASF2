@@ -61,6 +61,9 @@
 
 		<!-- contact details pb -->
 		<apex:pageBlock title="Contact Details">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton action="{!backToContact}" value="Return To Contact" immediate="true" />
+			</apex:pageBlockButtons>
 			<apex:pageBlockSection showHeader="false">
 				<apex:repeat value="{!$ObjectType.Contact.Fieldsets.DelegationModuleContactDetails}" var="contactField">
 					<apex:outputField value="{!contact[contactField]}" />
@@ -71,18 +74,18 @@
 
 		<!-- add new delegate -->
 		<apex:pageBlock title="Add Delegate" id="pbAddDelegate">
-			<apex:pageBlockButtons location="top">
-				<apex:commandButton rendered="{!canEdit}" value="Add Delegate" action="{!addNewDelegate}" status="addStatus" reRender="pbDelegateList, pageMessages, pbsAddDelegate, pbAddDelegate" oncomplete="checkSelectAll();resetLimitLabels();"  />
+			<apex:pageBlockButtons location="top" id="pbButtons">
+				<apex:commandButton rendered="{!canEdit}" value="Add Delegate" action="{!addNewDelegate}"  />
 			</apex:pageBlockButtons>
-			<apex:tabPanel rendered="{!canEdit}" switchType="client" value="{!currentRecordType}" id="delegateTabs">
-				<apex:tab id="activeKeyRoles" label="Key Roles" name="Key Roles" ontabenter="updateRecordTypeId('{!delegateRecordTypeMap['Key Roles']}'); checkSelectAll();">
-					<apex:pageBlockSection showHeader="false" rendered="{!currentRecordType == 'Key Roles'}">
+			<apex:tabPanel value="{!currentRecordType}" id="delegateTabs" immediate="true">
+				<apex:tab id="activeKeyRoles" label="Key Roles" name="Key Roles" ontabenter="checkSelectAll();">
+					<apex:pageBlockSection showHeader="false" rendered="{!AND(canEdit, currentRecordType == 'Key Roles')}">
 						<apex:inputField value="{!delegate.Delegate__c}" required="true"  />
 						<apex:inputField value="{!delegate.Key_Member_Role__c}" required="true" />
 						<apex:inputField value="{!delegate.Start_Date__c}" required="true" />
 						<apex:inputField value="{!delegate.End_Date__c}" />
 					</apex:pageBlockSection>
-					<apex:outputPanel rendered="{!currentRecordType == 'Key Roles'}">
+					<apex:outputPanel rendered="{!AND(canEdit, currentRecordType == 'Key Roles')}">
 						<fieldset>
 						<legend>Delegation Limits</legend>
 							<table class="limitTable">
@@ -365,7 +368,13 @@
 							</table>
 						</fieldset>
 					</apex:outputPanel>
-					<apex:outputPanel rendered="{!AND(AND(owningOrganizations != NULL, owningOrganizations.SIZE > 0), currentRecordType == 'Key Roles')}">
+					<apex:outputPanel rendered="{!canEdit}">
+						<fieldset>
+							<legend>Notes</legend>
+							<apex:inputField value="{!delegate.Notes__c}"  style="width:100%; height:45px;" />
+						</fieldset>
+					</apex:outputPanel>
+					<apex:outputPanel rendered="{!AND(AND(AND(owningOrganizations != NULL, owningOrganizations.SIZE > 0), currentRecordType == 'Key Roles'), canEdit)}">
 						<fieldset>
 							<legend>Allowed Organizations</legend>
 							<apex:pageBlockTable value="{!owningOrganizations}" var="owningOrganization">
@@ -378,28 +387,34 @@
 								<apex:repeat value="{!$ObjectType.OrganizationString__c.Fieldsets.Delegate_Owning_Organization_Table}" var="orgField" >
 									<apex:column value="{!owningOrganization.organization[orgField]}" />               
 								</apex:repeat>
+								<apex:column headerValue="Office" value="{!owningOrganization.organization.LocationName__c}"/>
 							</apex:pageBlockTable>
 						</fieldset>
 					</apex:outputPanel>
 				</apex:tab>
-				<apex:tab id="activeVacation" label="Vacation" name="Vacation" ontabenter="updateRecordTypeId('{!delegateRecordTypeMap['Vacation']}')">
-					<apex:pageBlockSection showHeader="false" rendered="{!currentRecordType == 'Vacation'}">
+				<apex:tab id="activeVacation" label="Vacation" name="Vacation">
+					<apex:pageBlockSection showHeader="false" rendered="{!AND(canEdit, currentRecordType == 'Vacation')}">
 						<apex:inputField value="{!delegate.Delegate__c}" required="true" />
 						<apex:pageBlockSectionItem />
 						<apex:inputField value="{!delegate.Start_Date__c}" required="true" />
 						<apex:inputField value="{!delegate.End_Date__c}" />
+						<apex:outputField value="{!delegate.RecordTypeId}" />
 					</apex:pageBlockSection>
 				</apex:tab>
-				<apex:tab id="activeAdministrator" label="Administrator Override" name="Administrator Override" ontabenter="updateRecordTypeId('{!delegateRecordTypeMap['Administrator Override']}')">
-					<apex:pageBlockSection showHeader="false" rendered="{!currentRecordType == 'Administrator Override'}">
+				<apex:tab id="activeAdministrator" label="Administrator Override" name="Administrator Override">
+					<apex:pageBlockSection showHeader="false" rendered="{!AND(canEdit, currentRecordType == 'Administrator Override')}">
 						<apex:inputField value="{!delegate.Delegate__c}" required="true"  />
-						<apex:pageBlockSectionItem />
+						<apex:pageBlockSectionItem >
+							<apex:outputLabel value="Attachment" />
+							<apex:inputFile value="{!attachment.body}" fileName="{!attachment.Name}" />
+						</apex:pageBlockSectionItem>
 						<apex:inputField value="{!delegate.Start_Date__c}" required="true" />
 						<apex:inputField value="{!delegate.End_Date__c}" />
 					</apex:pageBlockSection>
+
 				</apex:tab>
-				<apex:tab id="activeAlternate" label="Alternate" name="Alternate" ontabenter="updateRecordTypeId('{!delegateRecordTypeMap['Alternate']}')" rendered="{!canCreateAlternate}">
-					<apex:pageBlockSection showHeader="false" rendered="{!currentRecordType == 'Alternate'}">
+				<apex:tab id="activeAlternate" label="Alternate" name="Alternate" rendered="{!canCreateAlternate}">
+					<apex:pageBlockSection showHeader="false" rendered="{!AND(canEdit, currentRecordType == 'Alternate')}">
 						<apex:inputField value="{!delegate.Delegate__c}" required="true"  />
 						<apex:pageBlockSectionItem />
 						<apex:inputField value="{!delegate.Start_Date__c}" required="true" />
@@ -409,6 +424,7 @@
 			</apex:tabPanel>
 			<apex:pageBlockTable value="{!contact.Delegates1__r}" id="delegateTable" var="delegate" rendered="{!AND(NOT(ISNULL(contact.Delegates1__r)), contact.Delegates1__r.size > 0)}">
 				<apex:column headerValue="Action">
+					<apex:outputLink value="/{!delegate.Id}" rendered="{!currentRecordType == 'Alternate'}">View</apex:outputLink>&nbsp;
 					<apex:outputLink value="/{!delegate.Id}/e?retURL=%2Fa{!delegate.Id}">Edit</apex:outputLink>
 				</apex:column>
 				<apex:column value="{!delegate.Delegate__c}" />
