@@ -141,6 +141,11 @@
         return false;
     }
 
+    function cancelModal()
+    {
+        closeModal('modalDialogOracleLogin');  
+    }
+
     function authenticate()
     {
         authenticateCredentials($x('[id$=username]').val(), $x('[id$=password]').val());
@@ -458,7 +463,44 @@
     
         <apex:pageBlockSection columns="1">
                                                                 
-        </apex:pageBlockSection><br/>
+        </apex:pageBlockSection>
+
+<apex:pageBlockSection title="Project Synch " collapsible="false" columns="1">  
+                <apex:outputText style="color: red; font-weight: bold;" escape="false" value="{!projectSynchMessages}" rendered="{!projectSynchMessages != ''}"/>
+                <apex:outputText value="No Project Synch Issues Found" rendered="{!projectSynchMessages == ''}"/>   
+                
+                <apex:outputPanel rendered="{!invalidTasks.size > 0}">
+                    <br/>
+                    <apex:outputLabel value="Tasks" styleclass="dmeOutput" />          
+                    <apex:pageBlockTable value="{!invalidTasks}" var="task">
+                        <apex:column headervalue="Task"><apex:outputText value="{!task.RecordName}"/></apex:column>
+                        <apex:column headervalue="Validation Errors"><apex:outputText value="{!task.validationErrorMessage}"/></apex:column>
+                    </apex:pageBlockTable>
+                 </apex:outputPanel>
+                                
+                <apex:outputPanel rendered="{!invalidCustomers.size > 0}">
+                    <br/>
+                    <apex:outputLabel value="Customers" styleclass="dmeOutput" />
+                    <apex:pageBlockTable value="{!invalidCustomers}" var="customer">
+                       <apex:column headervalue="Customer"><apex:outputText value="{!customer.RecordName}"/></apex:column>
+                       <apex:column headervalue="Validation Errors"><apex:outputText value="{!customer.validationErrorMessage}"/></apex:column>
+                    </apex:pageBlockTable>
+                </apex:outputPanel>
+                
+
+                <apex:outputPanel rendered="{!invalidKeyMembers.size > 0}">
+                    <br/>   
+                    <apex:outputLabel value="Key Members" styleclass="dmeOutput" />         
+                    <apex:pageBlockTable value="{!invalidKeyMembers}" var="keyMember">
+                       <apex:column headervalue="Key Member"><apex:outputText value="{!keyMember.RecordName}"/></apex:column>
+                       <apex:column headervalue="Validation Errors"><apex:outputText value="{!keyMember.validationErrorMessage}"/></apex:column>
+                    </apex:pageBlockTable>  
+                </apex:outputPanel>         
+
+            </apex:pageBlockSection>  
+
+
+        <br/>
             <!-- <apex:pageBlockSection title="Project Contract Change Requirements" collapsible="false" columns="1" rendered="{!changeManager.Project__r.ChangeManagerAECOMRequirements__c != null || changeManager.Project__r.ChangeManagerClientsRequirements__c != null}"> -->
 <!--            <apex:pageBlockSection title="Project Contract Change Requirements" collapsible="false" columns="1"> 
                 <apex:outputPanel >
