@@ -259,7 +259,11 @@
 		<input type="button" value="{!btnValue}" onclick="initiateOracleProjectSyncRequest_JS();"/>
 		-->
 
-<apex:outputPanel id="msgPanel">
+		<apex:outputPanel id="msgPanel">
+ 			<apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before generating a project number. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && isProjectNumber && projectHeader.PROJECT_ID == '' && allowRequestSubmit}"/>
+			
+			<apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Synching the Project. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT(isProjectNumber) && NOT($User.IsValidOracleToken__c) && allowRequestSubmit}"/> 	
+
 			<apex:pageMessages id="msg" escape="false"></apex:pageMessages>
 		</apex:outputPanel>
 
@@ -279,12 +283,15 @@
 			<!--
 			<apex:commandButton value="{!btnValue}" action="{!doRequest}" onclick="initiateOracleProjectSyncRequest_JS();" reRender="opTemp" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber}"/>
 			-->
-			<apex:commandButton value="{!btnValue}" action="{!doRequest}" onclick="numberRequest_Step1_start_JS(); return false;" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber && NOT(needOracleLogin)}"/>
+			<apex:commandButton value="{!btnValue}" action="{!doRequest}" onclick="numberRequest_Step1_start_JS(); return false;" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber && ($User.IsValidOracleToken__c) && allowRequestSubmit}"/>
 
-			<apex:commandButton value="Send Project Sync Request" onclick="doSyncStep(0); return false;"  rendered="{!!isProjectNumber && NOT(needOracleLogin)}" disabled="{!!allowRequestSubmit}"/>
+			<apex:commandButton value="Send Project Sync Request" onclick="doSyncStep(0); return false;"  
+			rendered="{!!isProjectNumber && ($User.IsValidOracleToken__c) && allowRequestSubmit}" disabled="{!!allowRequestSubmit}"/>
 			<apex:commandButton value="Save" action="{!updateProject}" status="statusBar"/>
 			<apex:commandButton value="Return to Project" action="{!returnToProject}" />
-			<apex:commandButton value="Login to Oracle" rendered="{!needOracleLogin}" onclick="openModal('modalDialogOracleLogin');return false;"/>
+			<apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;"
+			rendered="{!(NOT($User.IsValidOracleToken__c) && isProjectNumber && projectHeader.PROJECT_ID == '' && allowRequestSubmit) || 
+			          (NOT(isProjectNumber) && NOT($User.IsValidOracleToken__c) && allowRequestSubmit)}"/>
 		
 		</apex:pageBlockButtons>
 
@@ -1163,10 +1170,6 @@
 						</apex:pageBlockSectionItem>
 					</apex:pageBlockSection>
 
-
-					
-
-
 				</apex:pageBlock>
 			</apex:tab>
 			<apex:tab label="Request JSON" id="tabJSON">
@@ -1290,12 +1293,16 @@
 
         <c:ECO_ModalDialog width="350" padding="0px 0px 0px 0px" name="modalDialogOracleLogin">
             <apex:pageBlock title="Oracle Authentication">
+            <div>
+                <apex:outputText >Your Oracle security token has expired - please enter your Oracle credentials below to renew the token</apex:outputText>
+            </div>
+            <br/><br/>
             <div align="center">
             <apex:outputText style="font-weight:bold" value="Username:"/>
-            <apex:inputText label="Username:" value="{!OracleUserName}" id="username"/><br/>
+            <apex:inputText label="Oracle Username:" value="{!OracleUserName}" id="username"/><br/>
 
             <apex:outputText style="font-weight:bold" value="Password:"/>
-            <apex:inputSecret label="Password" value="{!OraclePassword}" id="password"/><br/><br/>
+            <apex:inputSecret label="Oracle Password" value="{!OraclePassword}" id="password"/><br/><br/>
             </div>
 
             <apex:outputPanel id="btn1">

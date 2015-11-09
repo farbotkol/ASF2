@@ -115,9 +115,9 @@ public with sharing class ECO_ProjectSetupController {
 
             oidmap = new map<string, string>();
 
-            for(contact c:[select id, lastname, firstname, OracleContactID__c from contact where site__c =: oTargetSite.id]){
-                contacts.add(new SelectOption(c.OracleContactID__c, c.lastname + ', ' + c.firstname));
-                oidmap.put(c.OracleContactID__c, c.id);
+            for(contact c:[select id, lastname, firstname, Oracle_ID__c from contact where site__c =: oTargetSite.id]){
+                contacts.add(new SelectOption(c.Oracle_ID__c, c.lastname + ', ' + c.firstname));
+                oidmap.put(c.Oracle_ID__c, c.id);
             }
 
             contributions = 0;

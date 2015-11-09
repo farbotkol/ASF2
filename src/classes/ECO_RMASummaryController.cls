@@ -216,12 +216,13 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 	
 	public PageReference submitForApproval()
 	{
-		//if(!allRMAQuestionsHaveBeenAnswered()){
-		//	ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Completion off all R&M assessment questions are required prior to submitting for approval!');
-        //    ApexPages.addMessage(oPageMessage);
+		if(!allRMAQuestionsHaveBeenAnswered())
+		{
+			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Completion off all R&M assessment questions are required prior to submitting for approval!');
+        	ApexPages.addMessage(oPageMessage);
 			
-		//	return null;
-		//}
+			return null;
+		}
 		//
 		/*system.debug( 'Approval submitted user = ' + theProject.ProjectApprover__r.pse__Salesforce_User__c );
         
@@ -261,7 +262,10 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
         
         return null;
 	}
-	
+    public PageReference enableSubmitApex(){
+        System.debug('oQuestionnaireSet go no go:'+oQuestionnaireSet.GoNoGoRecommendation__c);
+        return null;
+    }
 	public PageReference goToSpecificQuestionnaire () {
     	
     	PageReference oPageReference = Page.ECO_RMAQuestionnaire;

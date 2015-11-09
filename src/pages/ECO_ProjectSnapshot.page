@@ -1,83 +1,83 @@
 <apex:page standardController="ProjectSnapshot__c" extensions="ECO_ProjectSnapshotController" showHeader="false" sidebar="false">
 <apex:form >
-	<style>
-		.infoTable {
-			background: #f5f5f5;
-			border-collapse: separate;
-			font-size: 12px;
-			line-height: 24px;
-			text-align: center;
-			margin:5px 14px 0 14px;
-		}	
-		.infoTable table{
-			width:100%;
-		}
-		.infoTable th {
-			background-color: #a6afa2 !important;
-			color: #fff;
-	  		font-weight: bold;
-			padding: 3px 9px;
-			position: relative;
-			border:none !important;
-			align: center;
-			text-align: center;
-		}
-		.infoTable th:first-child{
-			border-right:1px solid #fff !important;
-		}
+    <style>
+        .infoTable {
+            background: #f5f5f5;
+            border-collapse: separate;
+            font-size: 12px;
+            line-height: 24px;
+            text-align: center;
+            margin:5px 14px 0 14px;
+        }   
+        .infoTable table{
+            width:100%;
+        }
+        .infoTable th {
+            background-color: #a6afa2 !important;
+            color: #fff;
+            font-weight: bold;
+            padding: 3px 9px;
+            position: relative;
+            border:none !important;
+            align: center;
+            text-align: center;
+        }
+        .infoTable th:first-child{
+            border-right:1px solid #fff !important;
+        }
 
-		.infoTable th:after {
-			content: '';
-			display: block;
-			height: 25%;
-			left: 0;
-			margin: 1px 0 0 0;
-			position: absolute;
-			top: 25%;
-			width: 100%;
-		}
-		.infoTable td {
-			border-right: 1px solid #fff;
-			border-left: 1px solid #e8e8e8;
-			border-top: 1px solid #fff;
-			border-bottom: 1px solid #e8e8e8;
-			padding: 3px 9px;
-			position: relative;
-			transition: all 300ms;
-			min-width: 90px;
-		}
+        .infoTable th:after {
+            content: '';
+            display: block;
+            height: 25%;
+            left: 0;
+            margin: 1px 0 0 0;
+            position: absolute;
+            top: 25%;
+            width: 100%;
+        }
+        .infoTable td {
+            border-right: 1px solid #fff;
+            border-left: 1px solid #e8e8e8;
+            border-top: 1px solid #fff;
+            border-bottom: 1px solid #e8e8e8;
+            padding: 3px 9px;
+            position: relative;
+            transition: all 300ms;
+            min-width: 90px;
+        }
 
-		.recordTypeTable{
-			border-collapse:collapse;			
-		}
+        .recordTypeTable{
+            border-collapse:collapse;           
+        }
 
-		.recordTypeTable table{
-			width:100%;
-		}
-		
-		.recordTypeTable th, .recordTypeTable td {
-		  padding: 4px 2px 4px 5px;
-		  border: 1px solid #dbdbdb;;
-		  border-collapse: collapse;
-		}
-		
-		.recordTypeTable tr {
-		  border: 1px solid #dbdbdb;;
-		  border-collapse: collapse;
-		}
-		
-		.recordTypeTable td {
-			background-color: white;
-			min-width: 90px;			
-		}
-				
-	</style>
+        .recordTypeTable table{
+            width:100%;
+        }
+        
+        .recordTypeTable th, .recordTypeTable td {
+          padding: 4px 2px 4px 5px;
+          border: 1px solid #dbdbdb;;
+          border-collapse: collapse;
+        }
+        
+        .recordTypeTable tr {
+          border: 1px solid #dbdbdb;;
+          border-collapse: collapse;
+        }
+        
+        .recordTypeTable td {
+            background-color: white;
+            min-width: 90px;            
+        }
+                
+    </style>
 <apex:sectionHeader title="Project Snapshot" subtitle="{!ProjectSnapshot__c.ProjectName__c}"/>
 
 <apex:pageBlock title="Project Snapshot">
 <apex:pageBlockButtons >
-	<apex:commandButton value="Save Summary" action="{!save}" rendered="{!projectReviewStatus != 'Approved'}"/>
-	<!--<apex:commandButton value="Return to Project" action="{!ReturnToProject}"/>-->
+    <apex:commandButton value="Save Summary" action="{!save}" rendered="{!projectReviewStatus != 'Approved'}"/>
+    <!--<apex:commandButton value="Return to Project" action="{!ReturnToProject}"/>-->
 </apex:pageBlockButtons>
 <!--<apex:pageBlockSection title="Meeting Participants" collapsible="false">
 <apex:outputField value="{!ProjectSnapshot__c.ProjectManager__c}"/>
@@ -105,43 +105,43 @@
 <apex:inputHidden value="{!ProjectSnapshot__c.ProjectTasks__c}"/>
 <apex:pageBlockSection columns="1">
 <apex:pageBlockSectionItem >
-	<apex:outputLabel value="Managing Department"/>
-	<apex:outputText value="{!ProjectSnapshot__c.PrimaryOrganization__c}"/>
+    <apex:outputLabel value="Managing Department"/>
+    <apex:outputText value="{!ProjectSnapshot__c.PrimaryOrganization__c}"/>
 </apex:pageBlockSectionItem>
 <apex:repeat value="{!SecondaryOrganizations}" var="org">
-	<apex:pageBlockSectionItem >
-		<apex:outputLabel value="Supporting Department"/>
-		<apex:outputText value="{!org}"/>
-	</apex:pageBlockSectionItem>
+    <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Supporting Department"/>
+        <apex:outputText value="{!org}"/>
+    </apex:pageBlockSectionItem>
 </apex:repeat>
 </apex:pageBlockSection>
 
 
 <apex:pageBlockSection title="Project Tasks" collapsible="false" columns="1">
 <apex:outputPanel >
-	<div class="recordTypeTable">
-	<table>
-		<tr>
-			<th>Task Name</th>
-			<th>Task Number</th>
-			<th>Forecast Start Date</th>
-			<th>Forecast End Date</th>
-			<th>Actual Start Date</th>
-			<th>Actual End Date</th>
-		</tr>
-		<apex:repeat value="{!ProjectTasks}" var="projectTask">
-		<tr>
-			<td><apex:outputText value="{!projectTask.TaskName}"/></td>
-			<td><apex:outputText value="{!projectTask.TaskNumber}"/></td>
-			<td><apex:outputText value="{!projectTask.StartDate}"/></td>
-			<td><apex:outputText value="{!projectTask.EndDate}"/></td>
-			<td><apex:outputText value="{!projectTask.ActualStartDate}"/></td>
-			<td><apex:outputText value="{!projectTask.ActualEndDate}"/></td>
+    <div class="recordTypeTable">
+    <table>
+        <tr>
+            <th>Task Name</th>
+            <th>Task Number</th>
+            <th>Forecast Start Date</th>
+            <th>Forecast End Date</th>
+            <th>Actual Start Date</th>
+            <th>Actual End Date</th>
+        </tr>
+        <apex:repeat value="{!ProjectTasks}" var="projectTask">
+        <tr>
+            <td><apex:outputText value="{!projectTask.TaskName}"/></td>
+            <td><apex:outputText value="{!projectTask.TaskNumber}"/></td>
+            <td><apex:outputText value="{!projectTask.StartDate}"/></td>
+            <td><apex:outputText value="{!projectTask.EndDate}"/></td>
+            <td><apex:outputText value="{!projectTask.ActualStartDate}"/></td>
+            <td><apex:outputText value="{!projectTask.ActualEndDate}"/></td>
 
-		</tr>
-		</apex:repeat>
-	</table>
-	</div>
+        </tr>
+        </apex:repeat>
+    </table>
+    </div>
 </apex:outputPanel>
 
 </apex:pageBlockSection>
@@ -152,22 +152,22 @@
 <apex:inputHidden value="{!ProjectSnapshot__c.RelatedAgreements__c}"/>
 <apex:inputHidden value="{!ProjectSnapshot__c.SecondaryOrganizations__c }" />
 <apex:inputHidden value="{!ProjectSnapshot__c.PrimaryFutureSpend__c}" /> 
-	<div class="recordTypeTable">
-	<table>
-		<tr>
-			<th>Record Type</th>
-			<th>Contract Type</th>
-			<th>Contract Value</th>
-		</tr>
-	<apex:repeat value="{!Agreements}" var="agreement">
-		<tr>
-			<td><apex:outputText value="{!agreement.RecordType}"/></td>
-			<td><apex:outputText value="{!agreement.ContractType}"/></td>
-			<td align="right"><apex:outputText value="{!agreement.Amount}"/></td>
-		</tr>
-	</apex:repeat>
-	</table>
-	</div>
+    <div class="recordTypeTable">
+    <table>
+        <tr>
+            <th>Record Type</th>
+            <th>Contract Type</th>
+            <th>Contract Value</th>
+        </tr>
+    <apex:repeat value="{!Agreements}" var="agreement">
+        <tr>
+            <td><apex:outputText value="{!agreement.RecordType}"/></td>
+            <td><apex:outputText value="{!agreement.ContractType}"/></td>
+            <td align="right"><apex:outputText value="{!agreement.Amount}"/></td>
+        </tr>
+    </apex:repeat>
+    </table>
+    </div>
 </apex:outputPanel>
 </apex:pageBlockSection>
 
@@ -176,205 +176,205 @@
 <apex:inputHidden value="{!ProjectSnapshot__c.ChangeOrdersPending__c}"/>
 <apex:inputHidden value="{!ProjectSnapshot__c.ChangeOrdersDraft__c}"/>
 <apex:outputPanel >
-	<div class="recordTypeTable">
-	<table>
-		<tr>
-			<th>Pending Change Order</th>
-			<th>Cost Impact</th>
-			<th>Revenue Impact</th>
-		</tr>
-	<apex:repeat value="{!PendingChangeOrders}" var="changeOrder">
-		<tr>
-			<td><apex:outputText value="{!changeOrder.BudgetName}"/></td>
-			<td align="right">
-				<apex:outputText value="{0, number, ###,###,###,##0.00}">
-					<apex:param value="{!changeOrder.TotalCost}"/>
-				</apex:outputText>
-			</td>					
-			<td align="right">
-				<apex:outputText value="{0, number, ###,###,###,##0.00}">
-                	<apex:param value="{!changeOrder.TotalRevenue}" />
-                </apex:outputText>  			
-			</td>
-		</tr>
-	</apex:repeat>
-	<apex:outputPanel rendered="{!PendingChangeOrders.size == 0}">
-		<tr><td colspan="3">No records to display</td></tr>
-	</apex:outputPanel>	
-	</table>
-	</div>
+    <div class="recordTypeTable">
+    <table>
+        <tr>
+            <th>Pending Change Order</th>
+            <th>Cost Impact</th>
+            <th>Revenue Impact</th>
+        </tr>
+    <apex:repeat value="{!PendingChangeOrders}" var="changeOrder">
+        <tr>
+            <td><apex:outputText value="{!changeOrder.BudgetName}"/></td>
+            <td align="right">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!changeOrder.TotalCost}"/>
+                </apex:outputText>
+            </td>                   
+            <td align="right">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!changeOrder.TotalRevenue}" />
+                </apex:outputText>              
+            </td>
+        </tr>
+    </apex:repeat>
+    <apex:outputPanel rendered="{!PendingChangeOrders.size == 0}">
+        <tr><td colspan="3">No records to display</td></tr>
+    </apex:outputPanel> 
+    </table>
+    </div>
 </apex:outputPanel>
 
 <apex:outputPanel >
-	<div class="recordTypeTable">
-	<table>
-		<tr>
-			<th>Draft Change Order</th>
-			<th>Cost Impact</th>
-			<th>Revenue Impact</th>
-		</tr>
-	<apex:repeat value="{!DraftChangeOrders}" var="changeOrder">
-		<tr>
-			<td><apex:outputText value="{!changeOrder.BudgetName}"/></td>
-			<td align="right">
-				<apex:outputText value="{0, number, ###,###,###,##0.00}">
-					<apex:param value="{!changeOrder.TotalCost}"/>
-				</apex:outputText>
-			</td>
-			<td align="right">
-				<apex:outputText value="{0, number, ###,###,###,##0.00}">
-					<apex:param value="{!changeOrder.TotalRevenue}"/>
-				</apex:outputText>
-			</td>
-		</tr>
-	</apex:repeat>
-	<apex:outputPanel rendered="{!DraftChangeOrders.size == 0}">
-		<tr><td colspan="3">No records to display</td></tr>
-	</apex:outputPanel>
-	</table>
-	</div>
+    <div class="recordTypeTable">
+    <table>
+        <tr>
+            <th>Draft Change Order</th>
+            <th>Cost Impact</th>
+            <th>Revenue Impact</th>
+        </tr>
+    <apex:repeat value="{!DraftChangeOrders}" var="changeOrder">
+        <tr>
+            <td><apex:outputText value="{!changeOrder.BudgetName}"/></td>
+            <td align="right">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!changeOrder.TotalCost}"/>
+                </apex:outputText>
+            </td>
+            <td align="right">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!changeOrder.TotalRevenue}"/>
+                </apex:outputText>
+            </td>
+        </tr>
+    </apex:repeat>
+    <apex:outputPanel rendered="{!DraftChangeOrders.size == 0}">
+        <tr><td colspan="3">No records to display</td></tr>
+    </apex:outputPanel>
+    </table>
+    </div>
 </apex:outputPanel>
 
 </apex:pageBlockSection>
 
 <apex:pageBlockSection title="Financial Information(all numbers in functional/operational currency)" collapsible="false">
 <apex:outputPanel >
-	<div class="recordTypeTable">
-	<table>
-		<tr>
-			<th>Metric</th>
-			<th>Budget</th>
-			<th>MTD</th>
-			<th>YTD</th>
-			<th>ITD</th>
-			<th>Pending Changes</th>
-			<th>Forecast</th>
-			<th>Draft Changes</th>
-		</tr>
-			
-		<tr>
-			<td>Gross Revenue</td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueBudget__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueMonthToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueYearToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueITD__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueUnapproved__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueForecast__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueDraft__c}"/></td>												
-		</tr>
-		<tr>
-			<td>Cost</td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostBudget__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostMonthToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostYearToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostITD__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostUnapproved__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostForecast__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostDraft__c}"/></td>					
-		</tr>
-		<tr><td>Net Margin</td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginBudget__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginMonthToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginYearToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginITD__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginUnapproved__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginForecast__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginDraft__c}"/></td>			
-		</tr>
-		<tr><td>Net Service Revenue</td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceBudget__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceMonthToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceYearToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceITD__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceUnapproved__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceForecast__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceDraft__c}"/></td>			
-		</tr>
-		<tr><td>NM/NSR</td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRBudget__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRMonthToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRYearToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRITD__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRUnapproved__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRForecast__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRDraft__c}"/></td>			
-		</tr>
-		<tr><td>NM/GR</td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRBudget__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRMonthToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRYearToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRITD__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRUnapproved__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRForecast__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRDraft__c}"/></td>			
-		</tr>
-		<tr><td>Labor Mult</td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultBudget__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultMonthToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultYearToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultITD__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultUnapproved__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultForecast__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultDraft__c}"/></td>					
-		</tr>
-		<tr><td>Lost Margin</td>
-			<!-- <td><apex:outputField value="{!ProjectSnapshot__c.LostMarginBudget__c}"/></td> -->
-			<td align="center">---</td>
-			<td align="right">
-				<apex:outputField value="{!ProjectSnapshot__c.LostMarginMonthToDate__c}" rendered="{!ProjectSnapshot__c.LostMarginMonthToDate__c < 0}"/>
-				<apex:outputText value="---" rendered="{!ProjectSnapshot__c.LostMarginMonthToDate__c >= 0}"/>
-				
-			</td>
-			<td align="right">
-				<apex:outputField value="{!ProjectSnapshot__c.LostMarginYearToDate__c}" rendered="{!ProjectSnapshot__c.LostMarginYearToDate__c < 0}"/>
-				<apex:outputText value="---" rendered="{!ProjectSnapshot__c.LostMarginYearToDate__c >= 0}"/>
-			</td>
-			<td align="right">
-				<apex:outputField value="{!ProjectSnapshot__c.LostMarginITD__c}" rendered="{!ProjectSnapshot__c.LostMarginITD__c < 0}"/>
-				<apex:outputText value="---" rendered="{!ProjectSnapshot__c.LostMarginITD__c >= 0}"/>
-			</td>
-			<!-- <td><apex:outputField value="{!ProjectSnapshot__c.LostMarginUnapproved__c}"/></td> -->
-			<td align="center">---</td>
-			<!-- <td><apex:outputField value="{!ProjectSnapshot__c.LostMarginForecast__c}"/></td> -->
-			<td align="center">---</td>
-			<!--<td><apex:outputField value="{!ProjectSnapshot__c.LostMarginDraft__c}"/></td> -->
-			<td align="center">---</td>			
-		
-		</tr>
-		<tr><td>Surplus Margin</td>
-			<!-- <td><apex:outputField value="{!ProjectSnapshot__c.SurMarginBudget__c}"/></td> -->
-			<td align="center">---</td>	
-			<td align="right">
-				<apex:outputField value="{!ProjectSnapshot__c.SurMarginMonthToDate__c}" rendered="{!ProjectSnapshot__c.SurMarginMonthToDate__c > 0}"/>
-				<apex:outputText value="---" rendered="{!ProjectSnapshot__c.SurMarginMonthToDate__c <= 0}"/>
-			</td>
-			<td align="right">
-				<apex:outputField value="{!ProjectSnapshot__c.SurMarginYearToDate__c}" rendered="{!ProjectSnapshot__c.SurMarginYearToDate__c > 0}"/>
-				<apex:outputText value="---" rendered="{!ProjectSnapshot__c.SurMarginYearToDate__c <= 0}"/>
-			</td>
-			<td align="right">
-				<apex:outputField value="{!ProjectSnapshot__c.SurMarginITD__c}" rendered="{!ProjectSnapshot__c.SurMarginITD__c > 0}"/>
-				<apex:outputText value="---" rendered="{!ProjectSnapshot__c.SurMarginITD__c <= 0}"/>			
-			</td>
-			<!-- <td><apex:outputField value="{!ProjectSnapshot__c.SurMarginUnapproved__c}"/></td> -->
-			<td align="center">---</td>	
-			<!-- <td><apex:outputField value="{!ProjectSnapshot__c.SurMarginForecast__c}"/></td>  -->
-			<td align="center">---</td>	
-			<!-- <td><apex:outputField value="{!ProjectSnapshot__c.SurMarginDraft__c}"/></td>  -->
-			<td align="center">---</td>						
-		</tr>
-		<tr><td>Contingency</td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyBudget__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyMonthToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyYearToDate__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyITD__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyUnapproved__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyForecast__c}"/></td>
-			<td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyDraft__c}"/></td>							
-		</tr>
-		<tr><td>Last Budget Update</td><td colspan="7"><apex:outputText value="{!ProjectSnapshot__c.LastUpdatedBudget__c}"/></td></tr>
-	</table>
-	</div>
+    <div class="recordTypeTable">
+    <table>
+        <tr>
+            <th>Metric</th>
+            <th>Budget</th>
+            <th>MTD</th>
+            <th>YTD</th>
+            <th>ITD</th>
+            <th>Pending Changes</th>
+            <th>Forecast</th>
+            <th>Draft Changes</th>
+        </tr>
+            
+        <tr>
+            <td>Gross Revenue</td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueBudget__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueMonthToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueYearToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueITD__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueUnapproved__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueForecast__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.GrossRevenueDraft__c}"/></td>                                               
+        </tr>
+        <tr>
+            <td>Cost</td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostBudget__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostMonthToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostYearToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostITD__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostUnapproved__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostForecast__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.CostDraft__c}"/></td>                   
+        </tr>
+        <tr><td>Net Margin</td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginBudget__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginMonthToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginYearToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginITD__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginUnapproved__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginForecast__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetMarginDraft__c}"/></td>          
+        </tr>
+        <tr><td>Net Service Revenue</td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceBudget__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceMonthToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceYearToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceITD__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceUnapproved__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceForecast__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NetServiceDraft__c}"/></td>         
+        </tr>
+        <tr><td>NM/NSR</td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRBudget__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRMonthToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRYearToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRITD__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRUnapproved__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRForecast__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMNSRDraft__c}"/></td>          
+        </tr>
+        <tr><td>NM/GR</td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRBudget__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRMonthToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRYearToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRITD__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRUnapproved__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRForecast__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.NMGRDraft__c}"/></td>           
+        </tr>
+        <tr><td>Labor Mult</td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultBudget__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultMonthToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultYearToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultITD__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultUnapproved__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultForecast__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.LaborMultDraft__c}"/></td>                  
+        </tr>
+        <tr><td>Lost Margin</td>
+            <!-- <td><apex:outputField value="{!ProjectSnapshot__c.LostMarginBudget__c}"/></td> -->
+            <td align="center">---</td>
+            <td align="right">
+                <apex:outputField value="{!ProjectSnapshot__c.LostMarginMonthToDate__c}" rendered="{!ProjectSnapshot__c.LostMarginMonthToDate__c < 0}"/>
+                <apex:outputText value="---" rendered="{!ProjectSnapshot__c.LostMarginMonthToDate__c >= 0}"/>
+                
+            </td>
+            <td align="right">
+                <apex:outputField value="{!ProjectSnapshot__c.LostMarginYearToDate__c}" rendered="{!ProjectSnapshot__c.LostMarginYearToDate__c < 0}"/>
+                <apex:outputText value="---" rendered="{!ProjectSnapshot__c.LostMarginYearToDate__c >= 0}"/>
+            </td>
+            <td align="right">
+                <apex:outputField value="{!ProjectSnapshot__c.LostMarginITD__c}" rendered="{!ProjectSnapshot__c.LostMarginITD__c < 0}"/>
+                <apex:outputText value="---" rendered="{!ProjectSnapshot__c.LostMarginITD__c >= 0}"/>
+            </td>
+            <!-- <td><apex:outputField value="{!ProjectSnapshot__c.LostMarginUnapproved__c}"/></td> -->
+            <td align="center">---</td>
+            <!-- <td><apex:outputField value="{!ProjectSnapshot__c.LostMarginForecast__c}"/></td> -->
+            <td align="center">---</td>
+            <!--<td><apex:outputField value="{!ProjectSnapshot__c.LostMarginDraft__c}"/></td> -->
+            <td align="center">---</td>         
+        
+        </tr>
+        <tr><td>Surplus Margin</td>
+            <!-- <td><apex:outputField value="{!ProjectSnapshot__c.SurMarginBudget__c}"/></td> -->
+            <td align="center">---</td> 
+            <td align="right">
+                <apex:outputField value="{!ProjectSnapshot__c.SurMarginMonthToDate__c}" rendered="{!ProjectSnapshot__c.SurMarginMonthToDate__c > 0}"/>
+                <apex:outputText value="---" rendered="{!ProjectSnapshot__c.SurMarginMonthToDate__c <= 0}"/>
+            </td>
+            <td align="right">
+                <apex:outputField value="{!ProjectSnapshot__c.SurMarginYearToDate__c}" rendered="{!ProjectSnapshot__c.SurMarginYearToDate__c > 0}"/>
+                <apex:outputText value="---" rendered="{!ProjectSnapshot__c.SurMarginYearToDate__c <= 0}"/>
+            </td>
+            <td align="right">
+                <apex:outputField value="{!ProjectSnapshot__c.SurMarginITD__c}" rendered="{!ProjectSnapshot__c.SurMarginITD__c > 0}"/>
+                <apex:outputText value="---" rendered="{!ProjectSnapshot__c.SurMarginITD__c <= 0}"/>            
+            </td>
+            <!-- <td><apex:outputField value="{!ProjectSnapshot__c.SurMarginUnapproved__c}"/></td> -->
+            <td align="center">---</td> 
+            <!-- <td><apex:outputField value="{!ProjectSnapshot__c.SurMarginForecast__c}"/></td>  -->
+            <td align="center">---</td> 
+            <!-- <td><apex:outputField value="{!ProjectSnapshot__c.SurMarginDraft__c}"/></td>  -->
+            <td align="center">---</td>                     
+        </tr>
+        <tr><td>Contingency</td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyBudget__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyMonthToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyYearToDate__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyITD__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyUnapproved__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyForecast__c}"/></td>
+            <td align="right"><apex:outputField value="{!ProjectSnapshot__c.ContingencyDraft__c}"/></td>                            
+        </tr>
+        <tr><td>Last Budget Update</td><td colspan="7"><apex:outputText value="{!ProjectSnapshot__c.LastUpdatedBudget__c}"/></td></tr>
+    </table>
+    </div>
 </apex:outputPanel>
 </apex:pageBlockSection>
 
@@ -382,7 +382,7 @@
 <apex:outputField value="{!ProjectSnapshot__c.EarnedValueOverallProgress__c}"/>
 <apex:outputField value="{!ProjectSnapshot__c.EarnedValueActualSpend__c}"/>
 <apex:outputField value="{!ProjectSnapshot__c.EarnedValuePlannedValue__c}"/>
-	<apex:outputField value="{!ProjectSnapshot__c.EarnedValueCPI__c}"/>
+    <apex:outputField value="{!ProjectSnapshot__c.EarnedValueCPI__c}"/>
 <apex:outputField value="{!ProjectSnapshot__c.EarnedValueLastUpdated__c}"/>
 <apex:outputField value="{!ProjectSnapshot__c.BudgetSpentCost__c}"/>
 <apex:outputField value="{!ProjectSnapshot__c.EarnedValue__c}"/>
@@ -392,105 +392,105 @@
 <apex:pageBlockSection title="Cash Performance" collapsible="false">
 <apex:outputPanel >
 <div class="recordTypeTable">
-	<table>
-	<tr>
-		<th colspan="2">Unbilled A/R</th>
-		<th>Comments</th>
-	</tr>	
-	<tr><td>Unbilled 0-30</td>
-		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfUnbilled0__c}" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c >= 0}"/>
-			<apex:outputText value="---" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c < 0}"/>
-		</td>
-		<td>
-			<apex:inputField value="{!ProjectSnapshot__c.CashPerfUnbilled0Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
-			<apex:outputField value="{!ProjectSnapshot__c.CashPerfUnbilled0Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
-		</td>
-	</tr>
-	<tr><td>Unbilled 31-60</td>
-		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfUnbilled30__c}" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c >= 0}"/>
-			<apex:outputText value="---" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c < 0}"/>
-		</td>
-		<td>
-			<apex:inputField value="{!ProjectSnapshot__c.CashPerfUnbilled30Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
-			<apex:outputField value="{!ProjectSnapshot__c.CashPerfUnbilled30Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
-		</td>
-	</tr>
-	<tr><td>Unbilled > 60</td>
-		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfUnbilled60__c}" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c >= 0}"/>
-			<apex:outputText value="---" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c < 0}"/>
-		</td>
-		<td>
-			<apex:inputField value="{!ProjectSnapshot__c.CashPerfUnbilled60Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
-			<apex:outputField value="{!ProjectSnapshot__c.CashPerfUnbilled60Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
-		</td>
-	</tr>
-	<tr><td>Total Unbilled</td>
-		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c}" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c >= 0}"/>
-			<apex:outputText value="---" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c < 0}"/>
-		</td>
-		<td>
-			<apex:inputField value="{!ProjectSnapshot__c.CashPerfTotalUnbilledComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
-			<apex:outputField value="{!ProjectSnapshot__c.CashPerfTotalUnbilledComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
-		</td>
-	</tr>
-	<tr><td>BIEE</td>
-		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfBIEE__c}" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c < 0}"/>
-			<apex:outputText value="---" rendered="{!ProjectSnapshot__c.CashPerfTotalUnbilled__c >= 0}"/>
-		</td>
-		<td>
-			<apex:inputField value="{!ProjectSnapshot__c.CashPerfBIEEComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
-			<apex:outputField value="{!ProjectSnapshot__c.CashPerfBIEEComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
-		</td>
-	</tr>
+    <table>
+    <tr>
+        <th colspan="2">Unbilled A/R</th>
+        <th>Comments</th>
+    </tr>   
+    <tr><td>Unbilled 0-30</td>
+        <td align="right"><apex:outputField value="{!ProjectSnapshot__c.Unbilled0to30__c}" rendered="{!ProjectSnapshot__c.UnbilledTotal__c >= 0}"/>
+            <apex:outputText value="---" rendered="{!ProjectSnapshot__c.UnbilledTotal__c < 0}"/>
+        </td>
+        <td>
+            <apex:inputField value="{!ProjectSnapshot__c.Unbilled0to30Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+            <apex:outputField value="{!ProjectSnapshot__c.Unbilled0to30Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+        </td>
+    </tr>
+    <tr><td>Unbilled 31-60</td>
+        <td align="right"><apex:outputField value="{!ProjectSnapshot__c.Unbilled31to60__c}" rendered="{!ProjectSnapshot__c.UnbilledTotal__c >= 0}"/>
+            <apex:outputText value="---" rendered="{!ProjectSnapshot__c.UnbilledTotal__c < 0}"/>
+        </td>
+        <td>
+            <apex:inputField value="{!ProjectSnapshot__c.Unbilled31to60Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+            <apex:outputField value="{!ProjectSnapshot__c.Unbilled31to60Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+        </td>
+    </tr>
+    <tr><td>Unbilled > 60</td>
+        <td align="right"><apex:outputField value="{!ProjectSnapshot__c.Unbilled61to90__c}" rendered="{!ProjectSnapshot__c.UnbilledTotal__c >= 0}"/>
+            <apex:outputText value="---" rendered="{!ProjectSnapshot__c.UnbilledTotal__c < 0}"/>
+        </td>
+        <td>
+            <apex:inputField value="{!ProjectSnapshot__c.Unbilled61to90Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+            <apex:outputField value="{!ProjectSnapshot__c.Unbilled61to90Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+        </td>
+    </tr>
+    <tr><td>Total Unbilled</td>
+        <td align="right"><apex:outputField value="{!ProjectSnapshot__c.UnbilledTotal__c}" rendered="{!ProjectSnapshot__c.UnbilledTotal__c >= 0}"/>
+            <apex:outputText value="---" rendered="{!ProjectSnapshot__c.UnbilledTotal__c < 0}"/>
+        </td>
+        <td>
+            <apex:inputField value="{!ProjectSnapshot__c.UnbilledTotalComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+            <apex:outputField value="{!ProjectSnapshot__c.UnbilledTotalComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+        </td>
+    </tr>
+    <tr><td>BIEE</td>
+        <td align="right"><apex:outputField value="{!ProjectSnapshot__c.ARBIEE__c}" rendered="{!ProjectSnapshot__c.UnbilledTotal__c < 0}"/>
+            <apex:outputText value="---" rendered="{!ProjectSnapshot__c.UnbilledTotal__c >= 0}"/>
+        </td>
+        <td>
+            <apex:inputField value="{!ProjectSnapshot__c.ARBIEEComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+            <apex:outputField value="{!ProjectSnapshot__c.ARBIEEComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+        </td>
+    </tr>
 
 
-	<tr>
-		<th colspan="2">Billed A/R</th>
-		<th>Comments</th>
-	</tr>
-	<tr><td>Billed 0-30</td>
-		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled0__c}"/></td>
-		<td>
-			<apex:inputField value="{!ProjectSnapshot__c.CashPerfBilled0Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
-			<apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled0Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
-		</td>
-	</tr>
-	<tr><td>Billed 31-60</td>
-		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled31__c}"/></td>
-		<td>
-			<apex:inputField value="{!ProjectSnapshot__c.CashPerfBilled31Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
-			<apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled31Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
-		</td>
-	</tr>
-	<tr><td>Billed > 60</td>
-		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled60__c}"/></td>
-		<td>
-			<apex:inputField value="{!ProjectSnapshot__c.CashPerfBilled60Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
-			<apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled60Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
-		</td>
-	</tr>
-	<tr><td>Billed > 90</td>
-		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled90__c}"/></td>
-		<td>
-			<apex:inputField value="{!ProjectSnapshot__c.CashPerfBilled90Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
-			<apex:outputField value="{!ProjectSnapshot__c.CashPerfBilled90Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
-		</td>
-	</tr>
-	<tr><td>Billed A/R</td>
-		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfBilledAR__c}"/></td>
-		<td>
-			<apex:inputField value="{!ProjectSnapshot__c.CashPerfBilledARComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
-			<apex:outputField value="{!ProjectSnapshot__c.CashPerfBilledARComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
-		</td>
-	</tr>
-	<tr><td>Retention</td>
-		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.CashPerfRetention__c}"/></td>
-		<td>
-			<apex:inputField value="{!ProjectSnapshot__c.CashPerfRetentionComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
-			<apex:outputField value="{!ProjectSnapshot__c.CashPerfRetentionComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
-		</td>
-	</tr>
-	</table>
+    <tr>
+        <th colspan="2">Billed A/R</th>
+        <th>Comments</th>
+    </tr>
+    <tr><td>Billed 0-30</td>
+        <td align="right"><apex:outputField value="{!ProjectSnapshot__c.AR0to30__c}"/></td>
+        <td>
+            <apex:inputField value="{!ProjectSnapshot__c.AR0to30Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+            <apex:outputField value="{!ProjectSnapshot__c.AR0to30Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+        </td>
+    </tr>
+    <tr><td>Billed 31-60</td>
+        <td align="right"><apex:outputField value="{!ProjectSnapshot__c.AR31to60__c}"/></td>
+        <td>
+            <apex:inputField value="{!ProjectSnapshot__c.AR31to60Comments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+            <apex:outputField value="{!ProjectSnapshot__c.AR31to60Comments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+        </td>
+    </tr>
+    <tr><td>Billed > 60</td>
+        <td align="right"><apex:outputField value="{!ProjectSnapshot__c.AR61Plus__c}"/></td>
+        <td>
+            <apex:inputField value="{!ProjectSnapshot__c.AR61PlusComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+            <apex:outputField value="{!ProjectSnapshot__c.AR61PlusComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+        </td>
+    </tr>
+    <tr><td>Billed > 90</td>
+        <td align="right"><apex:outputField value="{!ProjectSnapshot__c.AR91Plus__c}"/></td>
+        <td>
+            <apex:inputField value="{!ProjectSnapshot__c.AR91PlusComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+            <apex:outputField value="{!ProjectSnapshot__c.AR91PlusComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+        </td>
+    </tr>
+    <tr><td>Billed A/R</td>
+        <td align="right"><apex:outputField value="{!ProjectSnapshot__c.AR__c}"/></td>
+        <td>
+            <apex:inputField value="{!ProjectSnapshot__c.ARComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+            <apex:outputField value="{!ProjectSnapshot__c.ARComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+        </td>
+    </tr>
+    <tr><td>Retention</td>
+        <td align="right"><apex:outputField value="{!ProjectSnapshot__c.ARRetention__c}"/></td>
+        <td>
+            <apex:inputField value="{!ProjectSnapshot__c.ARRetentionComments__c}" rendered="{!projectReviewStatus != 'Approved'}" style="width:400px"/>
+            <apex:outputField value="{!ProjectSnapshot__c.ARRetentionComments__c}" rendered="{!projectReviewStatus == 'Approved'}" style="width:400px"/>
+        </td>
+    </tr>
+    </table>
 </div>
 </apex:outputPanel>
 </apex:pageBlockSection>
@@ -498,84 +498,84 @@
 <apex:pageBlockSection title="Future Spend(Backlog)" collapsible="false" columns="1">
 <apex:outputPanel >
 <div class="recordTypeTable">
-	<table>
-	<tr>
-		<th></th>
-		<th>Month 1</th>
-		<th>Month 2</th>
-		<th>Month 3</th>
-		<th>Month 4</th>
-		<th>Month 5</th>
-		<th>Month 6</th>
-<!-- 		<th>Month 7</th>
-		<th>Month 8</th>
-		<th>Month 9</th>
-		<th>Month 10</th>
-		<th>Month 11</th>
-		<th>Month 12</th> -->
+    <table>
+    <tr>
+        <th></th>
+        <th>Month 1</th>
+        <th>Month 2</th>
+        <th>Month 3</th>
+        <th>Month 4</th>
+        <th>Month 5</th>
+        <th>Month 6</th>
+<!--        <th>Month 7</th>
+        <th>Month 8</th>
+        <th>Month 9</th>
+        <th>Month 10</th>
+        <th>Month 11</th>
+        <th>Month 12</th> -->
 
-	</tr>	
-	<tr><td>Total Spend(EV)</td>
-		<td align="right">
-			<apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth1__c}"/>
-		</td>
-		<td align="right">
-			<apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth2__c}"/>
-		</td>
-		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth3__c}"/>
-		
-		</td>
-		<td align="right"><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth4__c}"/>
-		
-		</td>
-		<td align="right">
-			<apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth5__c}"/>
-		</td>
-		<td align="right">
-			<apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth6__c}"/>
-		</td>
-<!-- 		<td><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth7__c}"/></td>
-		<td><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth8__c}"/></td>
-		<td><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth9__c}"/></td>
-		<td><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth10__c}"/></td>
-		<td><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth11__c}"/></td>
-		<td><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth12__c}"/></td> -->
-	</tr>
-	<apex:repeat value="{!FutureSpendByOrg}" var="spendByOrg">
-	<tr><td><apex:outputText value="{!spendByOrg.orgName}"/></td>
-		<td align="right">
-			<apex:outputText value="{0, number, ###,###,###,##0.00}">	
-				<apex:param value="{!spendByOrg.month1}"/>
-			</apex:outputText>
-		</td>
-		<td align="right">
-			<apex:outputText value="{0, number, ###,###,###,##0.00}">
-				<apex:param value="{!spendByOrg.month2}"/>
-			</apex:outputText>
-		</td>
-		<td align="right">
-			<apex:outputText value="{0, number, ###,###,###,##0.00}">
-				<apex:param value="{!spendByOrg.month3}"/>
-			</apex:outputText>
-		</td>
-		<td align="right">
-			<apex:outputText value="{0, number, ###,###,###,##0.00}">
-				<apex:param value="{!spendByOrg.month4}"/>
-			</apex:outputText>
-		</td>
-		<td align="right">
-			<apex:outputText value="{0, number, ###,###,###,##0.00}">
-				<apex:param value="{!spendByOrg.month5}"/>
-			</apex:outputText>
-		</td>
-		<td align="right">
-			<apex:outputText value="{0, number, ###,###,###,##0.00}">
-				<apex:param value="{!spendByOrg.month6}"/>
-			</apex:outputText>
-		</td>
-	</tr>
-	</apex:repeat>
-	</table>
+    </tr>   
+    <tr><td>Total Spend(EV)</td>
+        <td align="right">
+            <apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth1__c}"/>
+        </td>
+        <td align="right">
+            <apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth2__c}"/>
+        </td>
+        <td align="right"><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth3__c}"/>
+        
+        </td>
+        <td align="right"><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth4__c}"/>
+        
+        </td>
+        <td align="right">
+            <apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth5__c}"/>
+        </td>
+        <td align="right">
+            <apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth6__c}"/>
+        </td>
+<!--        <td><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth7__c}"/></td>
+        <td><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth8__c}"/></td>
+        <td><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth9__c}"/></td>
+        <td><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth10__c}"/></td>
+        <td><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth11__c}"/></td>
+        <td><apex:outputField value="{!ProjectSnapshot__c.FutureSpendMonth12__c}"/></td> -->
+    </tr>
+    <apex:repeat value="{!FutureSpendByOrg}" var="spendByOrg">
+    <tr><td><apex:outputText value="{!spendByOrg.orgName}"/></td>
+        <td align="right">
+            <apex:outputText value="{0, number, ###,###,###,##0.00}">   
+                <apex:param value="{!spendByOrg.month1}"/>
+            </apex:outputText>
+        </td>
+        <td align="right">
+            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                <apex:param value="{!spendByOrg.month2}"/>
+            </apex:outputText>
+        </td>
+        <td align="right">
+            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                <apex:param value="{!spendByOrg.month3}"/>
+            </apex:outputText>
+        </td>
+        <td align="right">
+            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                <apex:param value="{!spendByOrg.month4}"/>
+            </apex:outputText>
+        </td>
+        <td align="right">
+            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                <apex:param value="{!spendByOrg.month5}"/>
+            </apex:outputText>
+        </td>
+        <td align="right">
+            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                <apex:param value="{!spendByOrg.month6}"/>
+            </apex:outputText>
+        </td>
+    </tr>
+    </apex:repeat>
+    </table>
 </div>
 </apex:outputPanel>
 </apex:pageBlockSection>

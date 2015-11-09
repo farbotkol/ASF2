@@ -220,7 +220,7 @@ public class ECO_Service_ChangeManager {
     
     public static list<Agreement__c> getChangedAgreements(Id projectId, list<String> submittedIds, boolean showOnlySubmitted)
     {   
-    	String query =  'select Id, Name, ChangeManagerIsNew__c, TotalContractValue__c, RecordType.Name, Amount__c, ';
+    	String query =  'select Id, Name, ChangeManagerIsNew__c, TotalContractValue__c, RecordType.Name, Amount__c, TotalApprovedRevenueLimit__c, ';
     	query += ' AgreementType__c, LastModifiedById, LastModifiedDate, CreatedDate, CreatedById ';
         query += ' from Agreement__c where project__c = :projectId ';
         query += ' and ChangeManagerIsChanged__c = true ';
@@ -396,7 +396,7 @@ public class ECO_Service_ChangeManager {
         return database.query(query);            	
     }   
 
-    @future(callout=true)
+    //@future(callout=true)
     public static void synchronizeProject(String messageQueueId, Id projectId)
     {
         //Id messageQueueId = ECO_Service_ProjectSync.createMessageQueueForRequest(projectId, ECO_Service_ProjectSync.JOBNAME_PROJECT_SYNC);

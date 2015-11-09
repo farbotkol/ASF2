@@ -27,6 +27,7 @@ public class ECO_ChangeManagerDetailController {
     public Boolean showPollingMsg {get; set;}
     public String pollingMessageQueueMsg {get; set;}
     public String pollingMessageQueueMsgBottom {get; set;}
+    public String changeManagerAgreementValidationMessages {get; set;}
     
     //    	public Id recordId {get;set;}
     //		public String recordName {get;set;}
@@ -104,6 +105,12 @@ public class ECO_ChangeManagerDetailController {
         }
     }    
 
+    private void validateChangeManager()
+    {
+
+
+    }
+
     public PageReference returnToProjectChanges()
     {
         PageReference pageRef = new PageReference('/apex/ECO_ProjectChangeManager?Id=' + changeManager.Project__c);
@@ -112,27 +119,27 @@ public class ECO_ChangeManagerDetailController {
     
     public PageReference closeAuthenticationWindow()
     {
-        PageReference editAgreement = new PageReference('/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id);        
-        editAgreement.getParameters().put('mode', mode);
-        editAgreement.getParameters().put('retURL', '/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id); 
-        return editAgreement;          
+        PageReference editChangeManager = new PageReference('/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id);        
+        editChangeManager.getParameters().put('mode', mode);
+        editChangeManager.getParameters().put('retURL', '/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id); 
+        return editChangeManager;          
     }
 
     public PageReference initEdit()
     {
-    	PageReference editAgreement = new PageReference('/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id);        
+    	PageReference editChangeManager = new PageReference('/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id);        
         //editAgreement.getParameters().put('nooverride', '1');
-        editAgreement.getParameters().put('mode', 'Edit');
-        editAgreement.getParameters().put('retURL', '/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id); 
-        return editAgreement; 
+        editChangeManager.getParameters().put('mode', 'Edit');
+        editChangeManager.getParameters().put('retURL', '/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id); 
+        return editChangeManager; 
     }
     
     public PageReference returnToChangeManager()
     {
-        PageReference editAgreement = new PageReference('/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id);        
-        editAgreement.getParameters().put('mode', '');
-        editAgreement.getParameters().put('retURL', '/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id); 
-        return editAgreement;   	
+        PageReference editChangeManager = new PageReference('/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id);        
+        editChangeManager.getParameters().put('mode', '');
+        editChangeManager.getParameters().put('retURL', '/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id); 
+        return editChangeManager;   	
     }
     
     //public PageReference synchronizeProject()
@@ -196,15 +203,17 @@ public class ECO_ChangeManagerDetailController {
     		
         changeManager = getChangeChangeManager();
         
-        if((changeManager.IsExecutionApprovalChange__c || changeManager.IsExternalChange__c || changeManager.IsInternalChange__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed'))
-        {
-            needOracleLogin = !ECO_Service_Authentication.authenticateOracleToken(UserInfo.getUserId());
-            if(needOracleLogin)
-            {
-                ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING, 'Your Oracle Token has expired and you are required to login to Oracle before Approving the Approval Process.  Please click the Login button and enter your Oracle credentials.');
-                ApexPages.addMessage(oPageMessage);
-            }
-        }
+        if((changeManager.IsExecutionApprovalChange__c || changeManager.IsExternalChange__c || changeManager.IsInternalChange__c) 
+                  && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed'))
+            needOracleLogin = true;    
+//        {
+//            needOracleLogin = !ECO_Service_Authentication.authenticateOracleToken(UserInfo.getUserId());
+//            if(needOracleLogin)
+//            {
+//                ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING, 'Your Oracle Token has expired and you are required to login to Oracle before Approving the Approval Process.  Please click the Login button and enter your Oracle credentials.');
+//                ApexPages.addMessage(oPageMessage);
+//            }
+//        }
 
         project = [select Id, Name, EcoSystemReferenceNumber__c, OracleProjectnumber__c  from pse__Proj__c where Id = :changeManager.Project__c limit 1];            
 
@@ -263,6 +272,7 @@ public class ECO_ChangeManagerDetailController {
         	projectSynchMessages += projectSummaryController2.taskMsg;
         	projectSynchMessages += projectSummaryController2.keyMemberMsg;
         	projectSynchMessages += projectSummaryController2.customersMsg;  
+            projectSynchMessages += validateAgreements();
 
             if(projectSynchMessages != '' && projectSynchMessages != null)
                projectSynchMessages = '<ol>' + projectSynchMessages + '</ol>';
@@ -273,10 +283,36 @@ public class ECO_ChangeManagerDetailController {
         //}
     }    
 
+    private String validateAgreements()
+    {
+        list<Agreement__c> agreements = getChangedAgreements();
+        if(agreements == null)
+            return '';
+
+        for(Agreement__c agreement:agreements)
+        {
+            if(agreement.TotalApprovedRevenueLimit__c == null && agreement.RecordType.Name == 'Prime')
+                return '<li>Total Approved Revenue Limit needs to be populated for Agreements before you can submit this change for Approval</li>';
+        }
+        return '';
+    }
+
     public void RefreshChangeManager()
     {
         changeManager = getChangeChangeManager();
     }
+
+    public boolean getShowApprovalProcessList()
+    {
+        List<ProcessInstance> processInstanceList = [SELECT Id
+                                                    FROM ProcessInstance 
+                                                    WHERE TargetObjectId = :changeManager.Id];
+
+        if(processInstanceList.isEmpty())
+            return false;
+
+        return true;
+    }    
     
     private ChangeManager__c getChangeChangeManager()
     {
@@ -441,6 +477,7 @@ public class ECO_ChangeManagerDetailController {
         
         if(agreements.isEmpty())
             return null;
+
         return agreements;   
     }
     

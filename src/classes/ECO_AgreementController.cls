@@ -249,10 +249,10 @@ global virtual class ECO_AgreementController {
 
     public PageReference returnToProjectAgreements()
     {
-        list<ProjectAgreement__c> projectAgreements = [select Id from ProjectAgreement__c where Agreement__c = :agreement.Id];
+        list<ProjectAgreement__c> projectAgreements = [select Id, Project__c from ProjectAgreement__c where Agreement__c = :agreement.Id];
 
         if(!projectAgreements.isEmpty())
-            return new PageReference('/apex/ECO_ProjectAgreement?Id=' + projectAgreements[0].Id);
+            return new PageReference('/apex/ECO_ProjectAgreement?ProjectId=' + projectAgreements[0].Project__c);
         return new PageReference('/');
     }
 
@@ -831,9 +831,10 @@ global virtual class ECO_AgreementController {
     public PageReference editAgreement()
     {        
         PageReference editAgreement = new PageReference('/apex/ECO_AgreementView?Id='+agreement.Id);        
-        editAgreement.getParameters().put('nooverride', '1');
+        editAgreement.getParameters().put('nooverride', '0');
         editAgreement.getParameters().put('retURL', '/apex/ECO_AgreementView?Id='+agreement.Id); 
         editAgreement.getParameters().put('mode', 'Edit');
+        editAgreement.setRedirect(true);
         
         return editAgreement;   
     }    

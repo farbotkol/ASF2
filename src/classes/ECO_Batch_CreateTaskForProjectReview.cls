@@ -13,6 +13,7 @@ global class ECO_Batch_CreateTaskForProjectReview implements Database.Batchable<
     }
     global void execute(Database.BatchableContext oBC, List<sObject> scope)
     {
+        Id taskRecordTypeId = ECO_Utils_Meta.getRecordTypeId(Task.sObjectType, 'ECO Tasks');
         List<Task> newTasks = new List<Task>();
         List<pse__Proj__c> updatedProjects = new List<pse__Proj__c>();
         for(sObject sObj : scope)
@@ -26,6 +27,7 @@ global class ECO_Batch_CreateTaskForProjectReview implements Database.Batchable<
             t.ReminderDateTime = Datetime.now().addDays(6);
             t.IsReminderSet = true;
             t.OwnerId = oProj.OwnerId;
+            t.RecordTypeId = taskRecordTypeId;
             newTasks.add(t);
         }
 

@@ -113,6 +113,19 @@ public with sharing virtual class ECO_ProjectReviewsController
 		loadConditions();					
 	}
 
+	public boolean getShowApprovalProcessList()
+	{
+		List<ProcessInstance> processInstanceList = [SELECT Id
+													FROM ProcessInstance 
+													WHERE TargetObjectId = :oProjectReview.Id];
+
+		if(processInstanceList.isEmpty())
+			return false;
+
+		return true;
+	}
+
+
 	public List<Schema.FieldSetMember> getCustomProjFields()
 	{
 		if(theProject.pse__Stage__c == 'Planning')	
@@ -331,7 +344,9 @@ public with sharing virtual class ECO_ProjectReviewsController
 				oKPI.OverrideRegion__c = resp.regionOverride;
 				lKPI_Results.add(oKPI);
 			}
+			insert lKPI_Results;
 		}
+		lKPI_Results = [Select Id, Trigger_Name__c, Evaluation_Result__c, Alert_Message__c, Explanation__c, KPI_Result__c.ThresholdDescription__c From KPI_Result__c Where Project_Review__c = :oProjectReview.Id Order By Trigger_Name__c];
 	}
 
 	public PageReference SaveHealthCheck()

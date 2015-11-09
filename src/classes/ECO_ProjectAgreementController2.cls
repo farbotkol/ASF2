@@ -13,6 +13,9 @@ public with sharing class ECO_ProjectAgreementController2 {
 	public ECO_ProjectAgreementController2(ApexPages.StandardController controller)
 	{
 		projectAgreement = (ProjectAgreement__c)controller.getRecord();
+		if(projectAgreement.Project__c == null){
+			projectAgreement.Project__c = ApexPages.currentPage().getParameters().get('ProjectId');
+		}
 	}
 	
 	public PageReference recordTypeSelected()
@@ -50,7 +53,7 @@ public with sharing class ECO_ProjectAgreementController2 {
 		newAgreementRef.getParameters().put('Mode', 'New');
 		newAgreementRef.getParameters().put('ProjectId', projectId);
 		newAgreementRef.getParameters().put('saveURL', '/' + newAgreement.Id + '?ProjectId='+ projectInfo.Id);
-    	newAgreementRef.getParameters().put('retURL', '/apex/ECO_ProjectAgreementpage?ProjectId=' + projectInfo.Id + '&RecordToDelete='+ newAgreement.Id);
+    	newAgreementRef.getParameters().put('retURL', '/apex/ECO_ProjectAgreement?ProjectId=' + projectInfo.Id + '&RecordToDelete='+ newAgreement.Id);
 			
 		return 	newAgreementRef;				
 	}
@@ -63,8 +66,7 @@ public with sharing class ECO_ProjectAgreementController2 {
 		recordToDelete = ApexPages.currentPage().getParameters().get('RecordToDelete');
 		projectId = projectAgreement.Project__c;
 
-		
-		
+			
 		//first time you come to the project agreement, redirect to the recordtype selector page
 		if(recordToDelete == null || recordToDelete == '')
 		{  

@@ -221,6 +221,21 @@
             document.getElementById(comments).style.visibility = 'hidden';                   
         }       
     }   
+
+    function scopeChanged(scopeField, editField)
+    {
+        if(scopeField.value == '')
+        {
+            alert('Empty');
+            document.getElementById(editField).style.visibility= 'hidden';
+        }
+        else
+        {
+            alert('Not Empty');
+            document.getElementById(editField).style.visibility = 'visible';
+        }
+    }
+
     
     function primeScopeChanged()
     {
@@ -335,7 +350,7 @@
 
     <apex:outputPanel rendered="{!agreementRecordType =='Prime'}">
     <apex:form > 
-        <apex:actionFunction id="primeScopeChanged" name="primeScopeChanged" action="{!primeScopeChangedApex}"/>
+        <apex:actionFunction id="primeScopeChanged" name="primeScopeChanged" action="{!primeScopeChangedApex}" immediate="true"/>
         <apex:pageBlock mode="{!pageBlockMode}" title="{!'Prime Agreement ' + mode}">
         <apex:pageBlockButtons >
             <apex:commandLink value="Print Agreement" action="{!printPdf}" styleClass="btn printAgreement" immediate="true" target="_blank" style="text-decoration:none" />
@@ -361,7 +376,7 @@
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementNumber__c.inlineHelpText}">
                 <apex:outputText value="Oracle Agreement No"/>
                  <apex:outputPanel >
-               <apex:inputField value="{!agreement.AgreementNumber__c}" rendered="{!mode != ''}"/>
+               <apex:outputField value="{!agreement.AgreementNumber__c}" rendered="{!mode != ''}"/>
                 <apex:outputField value="{!agreement.AgreementNumber__c}" rendered="{!mode == ''}"/>
                 </apex:outputPanel>
             </apex:pageBlockSectionItem> 
@@ -383,13 +398,21 @@
                 </apex:outputPanel>         
             </apex:pageBlockSectionItem>             
 
-            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ParentAgreement__c.inlineHelpText}">
+            <!--<apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ParentAgreement__c.inlineHelpText}">
                 <apex:outputText value="Parent Agreement"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.ParentAgreement__c}" rendered="{!mode != ''}"/>
                     <apex:outputField value="{!agreement.ParentAgreement__c}" rendered="{!mode == ''}"/>        
                 </apex:outputPanel>     
-            </apex:pageBlockSectionItem> 
+            </apex:pageBlockSectionItem> -->
+
+            <apex:pageBlockSectionItem >
+                <apex:outputText value="Billing Client"/>
+                <apex:outputPanel >
+                    <apex:inputField value="{!agreement.Account__c}" rendered="{!mode != ''}" required="true"/>
+                    <apex:outputField value="{!agreement.Account__c}" rendered="{!mode == ''}"/>    
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>               
 
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Ecosystem Project Reference ID"/>
@@ -399,14 +422,21 @@
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>
 
-            <apex:pageBlockSectionItem >
+            <!--<apex:pageBlockSectionItem >
                 <apex:outputText value="Billing Client"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Account__c}" rendered="{!mode != ''}" required="true"/>
                     <apex:outputField value="{!agreement.Account__c}" rendered="{!mode == ''}"/>    
                 </apex:outputPanel>         
-            </apex:pageBlockSectionItem>        
+            </apex:pageBlockSectionItem>     -->   
           
+            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProjectTeamMember__c.inlineHelpText}">
+                <apex:outputText value="Agreement Owner"/>
+                <apex:outputPanel >
+                    <apex:inputField value="{!agreement.ProjectTeamMember__c}" rendered="{!mode != ''}" required="true"/>
+                    <apex:outputField value="{!agreement.ProjectTeamMember__c}" rendered="{!mode == ''}"/>  
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>          
        
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Oracle Project No"/>
@@ -416,14 +446,6 @@
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>        
            
-            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProjectTeamMember__c.inlineHelpText}">
-                <apex:outputText value="Agreement Owner"/>
-                <apex:outputPanel >
-                    <apex:inputField value="{!agreement.ProjectTeamMember__c}" rendered="{!mode != ''}" required="true"/>
-                    <apex:outputField value="{!agreement.ProjectTeamMember__c}" rendered="{!mode == ''}"/>  
-                </apex:outputPanel>         
-            </apex:pageBlockSectionItem>
-
             </apex:pageBlockSection>    
  
 <!--             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.InvoicingClient__c.inlineHelpText}">
@@ -538,7 +560,7 @@
         <apex:pageBlockSectionItem >
             <apex:outputText value="Total Approved Revenue Limit"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.TotalApprovedRevenueLimit__c}" rendered="{!mode != ''}" required="true"/>
+                <apex:inputField value="{!agreement.TotalApprovedRevenueLimit__c}" rendered="{!mode != ''}" />
                 <apex:outputField value="{!agreement.TotalApprovedRevenueLimit__c}" rendered="{!mode == ''}"/>                        
             </apex:outputPanel>
         </apex:pageBlockSectionItem>

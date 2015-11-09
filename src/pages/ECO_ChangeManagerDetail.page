@@ -153,8 +153,16 @@
 
      <apex:actionFunction name="refreshChangeManager_JS" action="{!RefreshChangeManager}" reRender="executionApproval2,executionApproval,pb1"/>
 
+    <apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Approving the Approval Process. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && projectSynchMessages == '' && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Submitted') && changeManager.IsExecutionApprovalChange__c}"/>
+
+    <apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Approving the Approval Process. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed') && 
+                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c) && NOT(changeManager.IsExecutionApprovalChange__c)}"/>
+
+    
+
     <apex:pageMessages rendered="{!changeManager.ApprovalStatus__c != null && changeManager.IsExecutionApprovalChange__c}"/>
     <apex:pageMessages rendered="{!NOT(changeManager.IsExecutionApprovalChange__c) && changeManager.ApprovalStatus__c != null}"/>
+
     <apex:outputPanel id="msgPollingTop" >
         <script type="text/javascript">
             var pollMessageQueue = "{!pollMessageQueue}";
@@ -179,7 +187,8 @@
                 <apex:commandButton value="Return to Change Manager" action="{!returnToChangeManager}" rendered="{!mode != ''}" />
                 <apex:commandButton value="Return to Project" action="{!returnToProject}" rendered="{!mode == ''}" />
                 <apex:commandButton value="Return to Project Changes" action="{!returnToProjectChanges}" rendered="{!mode == ''}" />
-                <apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" rendered="{!needOracleLogin}"/>
+                <apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" rendered="{!NOT($User.IsValidOracleToken__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed') && 
+                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c)}"/>
                  <apex:commandButton value="Submit for Approval" action="{!SubmitForApproval}" id="Submit_for_Approval" rendered="{!(changeManager.ApprovalStatus__c == null || changeManager.ApprovalStatus__c == '' || changeManager.ApprovalStatus__c == 'Rejected') && projectSynchMessages == ''}"/>
                  <apex:commandButton value="Synchronize Project" rendered="{!changeManager.OracleApprovalSyncStatus__c == 'Failed'}" action="{!SynchronizeProject}" />
             </apex:pageBlockButtons>
@@ -578,6 +587,7 @@
                     </apex:column> 
                     <apex:column headervalue="Name"><apex:outputlink value="{!URLFOR($Action.Agreement__c.View, contractManagement.Id)}"><apex:outputField value="{!contractManagement.Name}"/></apex:outputlink></apex:column>
                     <apex:column headervalue="Record Type"><apex:outputField value="{!contractManagement.RecordType.Name}"/></apex:column>
+                    <apex:column headervalue="Total Approved Revenue Limit"><apex:outputField value="{!contractManagement.TotalApprovedRevenueLimit__c}"/></apex:column>
                     <apex:column headervalue="Value"><apex:outputField value="{!contractManagement.TotalContractValue__c}"/></apex:column>
                     <apex:column headervalue="Last Modified By"><apex:outputField value="{!contractManagement.LastModifiedById}"/></apex:column>
                     <apex:column headervalue="Last Modified Date"><apex:outputField value="{!contractManagement.LastModifiedDate}"/></apex:column>              
@@ -625,7 +635,7 @@
             <apex:inputHidden value="{!changeManager.BudgetHeader__c}"/>
             <apex:pageBlockSection title="Budget" collapsible="false" rendered="{!changeManager.IntExtBudget__c}" columns="1">
                 <apex:pageBlockTable value="{!ChangedBudget}" var="budget" rendered="{!ChangedBudget != null}">
-                    <apex:column headervalue="Budget Name"><apex:outputlink value="{!URLFOR('/apex/ECO_BudgetGrid2?Id=' + budget.Project__c, null)}"><apex:outputField value="{!budget.BudgetName__c}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Budget Name"><apex:outputlink value="{!URLFOR('/apex/ECO_BudgetGrid?Id=' + budget.Project__c, null)}"><apex:outputField value="{!budget.BudgetName__c}"/></apex:outputlink></apex:column>
                     <apex:column headervalue="Cost Charge"><apex:outputField value="{!budget.TotalCost__c}"/></apex:column>
                     <apex:column headervalue="Revenue Charge"><apex:outputField value="{!budget.TotalRevenue__c}"/></apex:column>
                     <apex:column headervalue="Status"><apex:outputField value="{!budget.Status__c}"/></apex:column>                 
@@ -951,6 +961,7 @@
                     </apex:column> 
                     <apex:column headervalue="Name"><apex:outputlink value="{!URLFOR($Action.Agreement__c.View, contractManagement.Id)}"><apex:outputField value="{!contractManagement.Name}"/></apex:outputlink></apex:column>
                     <apex:column headervalue="Record Type"><apex:outputField value="{!contractManagement.RecordType.Name}"/></apex:column>
+                    <apex:column headervalue="Total Approved Revenue Limit"><apex:outputField value="{!contractManagement.TotalApprovedRevenueLimit__c}"/></apex:column>
                     <apex:column headervalue="Value"><apex:outputField value="{!contractManagement.Amount__c}"/></apex:column>
                     <apex:column headervalue="Last Modified By"><apex:outputField value="{!contractManagement.LastModifiedById}"/></apex:column>
                     <apex:column headervalue="Last Modified Date"><apex:outputField value="{!contractManagement.LastModifiedDate}"/></apex:column>              
@@ -1088,6 +1099,8 @@
                     <apex:column headervalue="Budget Name" >
                         <apex:outputText value="{!budgetwrapper.budgetHeader.BudgetName__c}"/>
                     </apex:column>
+                    <apex:column headervalue="Cost Charge"><apex:outputField value="{!budgetwrapper.budgetHeader.TotalCost__c}"/></apex:column>
+                    <apex:column headervalue="Revenue Charge"><apex:outputField value="{!budgetwrapper.budgetHeader.TotalRevenue__c}"/></apex:column>
                     <apex:column headervalue="Last Modified By"><apex:outputField value="{!budgetwrapper.budgetHeader.LastModifiedById}"/></apex:column>
                     <apex:column headervalue="Last Modified Date"><apex:outputField value="{!budgetwrapper.budgetHeader.LastModifiedDate}"/></apex:column>
 
@@ -1398,6 +1411,6 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainCommR
 </apex:pageBlock>
 </apex:outputPanel>
 </apex:form>
-<apex:relatedList list="ProcessSteps" rendered="{!(mode == '' && NOT(changeManager.IsExecutionApprovalChange__c) && NOT(needOracleLogin) && (changeManager.ApprovalStatus__c != null && changeManager.ApprovalStatus__c != '')) || (changeManager.IsExecutionApprovalChange__c && projectSynchMessages == '' && NOT(needOracleLogin) && (changeManager.ApprovalStatus__c != null && changeManager.ApprovalStatus__c != ''))}" id="approval"></apex:relatedList>
+<apex:relatedList list="ProcessSteps"  id="approval" rendered="{!ShowApprovalProcessList}"></apex:relatedList>
 <apex:relatedList list="CombinedAttachments" rendered="{!changeManager.RecordType.Name == 'PM Handover'}"/>
 </apex:page>

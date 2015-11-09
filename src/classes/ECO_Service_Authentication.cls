@@ -45,6 +45,7 @@ public class ECO_Service_Authentication {
 	    try{
 	    	HttpResponse res = h.send(req);
 			result = res.getBody();
+			System.Debug('BrentBrentBrentResult' + result);
 			if(!String.isEmpty(result)){
 		    	result = result.trim();
 		    	
@@ -53,7 +54,11 @@ public class ECO_Service_Authentication {
 
 				requestStatus = parseXMLResponse(result);
 				returnResult = requestStatus.Status + requestStatus.Message;
+
+				System.Debug(requestStatus + returnResult);
 			}
+			else
+				return 'ERROR: Body of the response from ORACLE is empty';
 	    }
 	    catch(Exception e)
 	    {
@@ -108,7 +113,9 @@ public class ECO_Service_Authentication {
             {
             	dom.xmlNode node1 = node.getChildElement('NormalTrans', null);
             	//requestStatus.NormalTrans = DateTime.parse(node1.getText());
+            	System.Debug('BrentBrentBrent' + node1.getText());
             	requestStatus.NormalTrans = ECO_Utils_Date.getDateTimeFromPICRequestStatusString(node1.getText());
+            	System.Debug('BrentBrentBrent' + requestStatus.NormalTrans);
             	dom.xmlNode node2 = node.getChildElement('ShaKey', null);
             	requestStatus.ShaKey = node2.getText();
 

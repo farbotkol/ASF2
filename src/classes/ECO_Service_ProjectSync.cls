@@ -1411,26 +1411,37 @@ public without sharing class ECO_Service_ProjectSync{
 				if(oProject.get(fieldApiName) != null){
 					String classCategory = fieldMap.get(fieldApiName).getDescribe().getLabel();
 					String classCode = '';
-					if(fieldMap.get(fieldApiName).getDescribe().getType() == Schema.DisplayType.Boolean){
-						if(fieldApiName.equalsIgnoreCase('clMiningProject__c')){
-							classCode = 'Yes';
-						}else{
-							if((Boolean)oProject.get(fieldApiName) == true){
-								if(classifications_Y_OR_N.contains(fieldApiName)){
-									classCode = 'Y';
-								}else{
-									classCode = 'Yes';
-								}							
-							}else{
-								if(classifications_Y_OR_N.contains(fieldApiName)){
-									classCode = 'N';
-								}else{
-									classCode = 'No';
-								}
+					if(fieldMap.get(fieldApiName).getDescribe().getType() == Schema.DisplayType.Boolean)
+					{
+						//if(fieldApiName.equalsIgnoreCase('clMiningProject__c')){
+						//	classCode = 'Yes';
+						//}
+						//else{
+						if((Boolean)oProject.get(fieldApiName) == true)
+						{
+							if(classifications_Y_OR_N.contains(fieldApiName))
+							{
+								classCode = 'Y';
 							}
+							else
+							{
+								classCode = 'Yes';
+							}							
 						}
-						
-					}else if(fieldMap.get(fieldApiName).getDescribe().getType() == Schema.DisplayType.String || fieldMap.get(fieldApiName).getDescribe().getType() == Schema.DisplayType.Picklist){
+						else
+						{
+							if(classifications_Y_OR_N.contains(fieldApiName))
+							{
+								classCode = 'N';
+							}
+							else
+							{
+								classCode = 'No';
+							}
+						}	
+					}
+					else if(fieldMap.get(fieldApiName).getDescribe().getType() == Schema.DisplayType.String || fieldMap.get(fieldApiName).getDescribe().getType() == Schema.DisplayType.Picklist)
+					{
 						classCode = (String)oProject.get(fieldApiName);
 					}					
 					OR_Classification oracleClassification = new OR_Classification(projectNumber, projectId, classCategory, classCode);

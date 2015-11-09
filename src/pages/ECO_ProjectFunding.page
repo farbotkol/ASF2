@@ -200,8 +200,9 @@
     <!-- FUNDING RECORD HISTORY -->
     <apex:repeat value="{!projectTasksFundedMap[projectTask.Id]}" var="tasksFunding" >
     <tr>        
-        <apex:outputText escape="false" value="<td></td><td></td><td></td><td></td>" rendered="{!project.EnableTopTaskCustomerFlag__c}" />
-        <apex:outputText escape="false" value="<td></td><td></td><td></td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c)}" />
+        <td><apex:commandLink onclick="deleteFunding('{!tasksFunding.funding.Id}');">Del</apex:commandLink></td>
+        <apex:outputText escape="false" value="<td></td><td></td><td></td>" rendered="{!project.EnableTopTaskCustomerFlag__c}" />
+        <apex:outputText escape="false" value="<td></td><td></td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c)}" />
             
         <td>
             <apex:inputField value="{!tasksFunding.funding.FundingClassification__c}" rendered="{!tasksFunding.newFunding}" required="true"/>           
@@ -271,12 +272,14 @@
 <apex:outputPanel id="projectLevel" rendered="{!project.ProjectLevelFundingFlag__c}">
 <table class="table">
     <tr>
-        <apex:outputText escape="false" value="<th>Classification</th>
+        <apex:outputText escape="false" value="<th width=35px></th>
+                                               <th>Classification</th>
                                                <th>Allocation Amount</th>
                                                <th>Allocation Date</th>"
                                                rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}"/>
 
-        <apex:outputText escape="false" value="<th>Classification</th>
+        <apex:outputText escape="false" value="<th width=35px></th>
+                                               <th>Classification</th>
                                                <th>Allocation Amount</th>
                                                <th>Allocation Date</th>
                                                <th>Rate Type</th>
@@ -287,6 +290,7 @@
     </tr>   
     <apex:repeat value="{!projectLevelFunding}" var="fundingItem" id="projectLevelRepeat">
     <tr>
+        <td><apex:commandLink onclick="deleteFunding('{!fundingItem.funding.Id}');">Del</apex:commandLink></td>
         <td>
         	<apex:inputField value="{!fundingItem.funding.FundingClassification__c}" rendered="{!fundingItem.newFunding}" required="true"/>
         	<apex:outputField value="{!fundingItem.funding.FundingClassification__c}" rendered="{!NOT(fundingItem.newFunding)}"/>
@@ -320,8 +324,8 @@
     </apex:repeat>
 
    	<tr>
-        <apex:outputText escape="false" value="<td colspan=2 align=right><b>Grand Total</b></td>" rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}" />             
-        <apex:outputText escape="false" value="<td colspan=5 align=right><b>Grand Total</b></td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />      
+        <apex:outputText escape="false" value="<td colspan=3 align=right><b>Grand Total</b></td>" rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}" />             
+        <apex:outputText escape="false" value="<td colspan=6 align=right><b>Grand Total</b></td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />      
         <td><apex:outputField value="{!agreement.TotalFundingAmount__c}"/></td>
    	</tr>
     
