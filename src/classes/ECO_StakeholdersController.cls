@@ -514,7 +514,17 @@ public with sharing class ECO_StakeholdersController
 					delegateQuery += ' Delegator__c = \'' + pAndLTeamMember.Id + '\'';
 				}
 			}
-			if(startDate != null && startDate != ''){
+			if(insertReplaceProjectTeamMember.StartDate__c != null){
+				if(delegateQuery.contains('Where')){
+					delegateQuery += ' AND';
+				}
+				else{
+					delegateQuery += ' Where';
+				}
+				delegateQuery += ' (Start_Date__c <= ' + convertDateToSoqlDateString(insertReplaceProjectTeamMember.StartDate__c);
+				delegateQuery += ' AND(End_Date__c = NULL OR End_Date__c >= ' + convertDateToSoqlDateString(insertReplaceProjectTeamMember.StartDate__c) + '))';
+			}
+			else if(startDate != null && startDate != ''){
 				if(delegateQuery.contains('Where')){
 					delegateQuery += ' AND';
 				}
@@ -524,7 +534,7 @@ public with sharing class ECO_StakeholdersController
 				delegateQuery += ' (Start_Date__c <= ' + convertStringSOQLString(startDate);
 				delegateQuery += ' AND(End_Date__c = NULL OR End_Date__c >= ' + convertStringSOQLString(startDate) + '))';
 			}
-			
+			system.debug('***delgateQuery ' + delegateQuery);
 			List<Delegate__c> delegates = Database.query(delegateQuery);
 			Set<Id> delegateIds = new Set<Id>();
 			pse__proj__c project = [Select Id, PnLManager__r.pse__Salesforce_User__c, CarryingOutOrganization__r.FAManager__r.pse__Salesforce_User__c, CarryingOutOrganization__c from pse__Proj__c where Id =: oProject.Id];
@@ -588,7 +598,7 @@ public with sharing class ECO_StakeholdersController
 
 			try{
 				List<ProjectTeamMember__c> projectTeamMembers = new List<ProjectTeamMember__c>();
-				ProjectTeamMember__c projectTeamMember = new ProjectTeamMember__c(Project__c = oProject.Id, Contact__c = selectedContactId, RecordTypeId = keyRecordType.Id, ProjectRole__c = projectRole.Id, Is_Active__c = true, StartDate__c = convertStringToDate(startDate));
+				ProjectTeamMember__c projectTeamMember = new ProjectTeamMember__c(Project__c = oProject.Id, Contact__c = selectedContactId, RecordTypeId = keyRecordType.Id, ProjectRole__c = projectRole.Id, Is_Active__c = true, StartDate__c = insertReplaceProjectTeamMember.StartDate__c);
 				
 				if(queryType == 'Delegate'){
 					projectTeamMember.Status__c = 'Approved';
@@ -654,12 +664,17 @@ public with sharing class ECO_StakeholdersController
 		Date endDte;
 
 		//Start Date cannot be null
-		if(startDate == null || startDate == ''){
-			insertReplaceProjectTeamMember.StartDate__c.addError('Start Date is Required');
-			isValid = false;
+		if(insertReplaceProjectTeamMember.StartDate__c != null){
+			startDte = insertReplaceProjectTeamMember.StartDate__c;
 		}
 		else{
-			startDte =  convertStringToDate(startDate);
+			if(startDate == null || startDate == ''){
+				insertReplaceProjectTeamMember.StartDate__c.addError('Start Date is Required');
+				isValid = false;
+			}
+			else{
+				startDte =  convertStringToDate(startDate);
+			}
 		}
 
 		//find the latest end date for the role to compare against start date of new role assignment
@@ -694,6 +709,22 @@ public with sharing class ECO_StakeholdersController
 		}
 
 		return isValid;
+	}
+
+	//converts a date value into a string in the format of yyyy-mm-dd
+	private String convertDateToSoqlDateString(Date inputDate){
+		String month = String.valueof(inputDate.month());
+		String day = String.valueOf(inputDate.day());
+
+		if(month.length() < 2){
+			month = '0' + month;
+		}
+
+		if(day.length() < 2){
+			day = '0' + day;
+		}
+
+		return inputDate.year() + '-' + month + '-' + day;
 	}
 
 	//converts a string in the format of mm/dd/yyyy, yyyy.mm.dd, yyyy-mm-dd to a date type

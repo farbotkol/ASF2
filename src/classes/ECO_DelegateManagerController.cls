@@ -44,6 +44,7 @@ public class ECO_DelegateManagerController {
 	public ECO_DelegateManagerController(){
 		isError = false;
 		canEdit = false;
+		recordTypes = [Select Id, Name from RecordType where SobjectType = 'Delegate__c'];
 		currentRecordType = 'Key Roles';
 
 		if(ApexPages.currentPage().getParameters().get('retUrl') != null){
@@ -56,12 +57,9 @@ public class ECO_DelegateManagerController {
 
 		//retrieve the record types for the tab panel
 		delegateRecordTypeMap = new Map<String, Id>();
-		recordTypes = [Select Id, Name from RecordType where SobjectType = 'Delegate__c'];
+		
 		for(RecordType recordType : recordTypes){
 			delegateRecordTypeMap.put(recordType.Name, recordType.Id);
-			if(recordType.Name == 'Key Roles'){
-				keyRolesRecordType = recordType.Id;
-			}
 		}
 
 
@@ -102,6 +100,7 @@ public class ECO_DelegateManagerController {
 		}
 	}
 
+	//the current record type selected on the tab
 	public String currentRecordType {
 		get;
 		set{
@@ -119,7 +118,7 @@ public class ECO_DelegateManagerController {
 			}
 			queryContact(recordTypeId);
 		}
-	}//the current record type selected on the tab
+	}
 
 
 	//returns the current user's currency format
@@ -175,7 +174,7 @@ public class ECO_DelegateManagerController {
 	//adds a new delegate entry for the contact
 	public PageReference addNewDelegate(){
 		Savepoint savePoint = Database.setSavepoint();
-		try{
+		//try{
 			setYesNoFieldValues();
 			delegate.recordTypeId = delegateRecordTypeMap.get(currentRecordType);
 			if(isValid()){
@@ -209,14 +208,14 @@ public class ECO_DelegateManagerController {
 					ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Please select at least one organization for the key member'));
 				}
 			}
-		}
-		catch(Exception ex){
+		//}
+		/*catch(Exception ex){
 			//we don't want to have duplicate error messages on the page
 			if(!ex.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION')){
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Error Inserting Delegate: ' + ex.getMessage()));
 			}
 			Database.rollback(savePoint);
-		}
+		}*/
 		return null;
 	}
 
@@ -251,63 +250,122 @@ public class ECO_DelegateManagerController {
 	private Boolean isValid(){
 		Boolean valid = true;
 		if(currentRecordType == 'Key Roles'){
-			if(delegate.Agreement_Amount_estimated__c.longValue() > delegateLimitSettings.Agreement_Amount__c.longValue()){
+			if(delegate.Agreement_Amount_estimated__c == null){
+				delegate.Agreement_Amount_estimated__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.Agreement_Amount_estimated__c.longValue() > delegateLimitSettings.Agreement_Amount__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Agreement Amount is greater than allowed Maximum'));
 			}
-			if(delegate.Project_Revenue_Budget__c.longValue() > delegateLimitSettings.Project_Revenue_Budget__c.longValue()){
+			if(delegate.Project_Revenue_Budget__c == null){
+				delegate.Project_Revenue_Budget__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.Project_Revenue_Budget__c.longValue() > delegateLimitSettings.Project_Revenue_Budget__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Project Revenue Budget is greater than allowed Maximum'));
 			}
-			if(delegate.Project_Revenue_Budget_lt__c.longValue() < delegateLimitSettings.Project_Revenue_Budget_lt__c.longValue()){
+			if(delegate.Project_Revenue_Budget_lt__c == null){
+				delegate.Project_Revenue_Budget_lt__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.Project_Revenue_Budget_lt__c.longValue() < delegateLimitSettings.Project_Revenue_Budget_lt__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Project Revenue Budget is less than allowed Minimum'));
 			}
-			if(delegate.Backlog_Value__c.longValue() > delegateLimitSettings.Backlog_Value__c.longValue()){
+			if(delegate.Backlog_Value__c == null){
+				delegate.Backlog_Value__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.Backlog_Value__c.longValue() > delegateLimitSettings.Backlog_Value__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Backlog Value is greater than allowed Maximum'));
 			}
-			if(delegate.Backlog_Value_lt__c.longValue() < delegateLimitSettings.Backlog_Value_lt__c.longValue()){
+			if(delegate.Backlog_Value_lt__c == null){
+				delegate.Backlog_Value_lt__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.Backlog_Value_lt__c.longValue() < delegateLimitSettings.Backlog_Value_lt__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Backlog Value is less than allowed Minimum'));
 			}
-			if(delegate.Project_Net_Margin_Value__c.longValue() > delegateLimitSettings.Project_Net_Margin_Value__c.longValue()){
+			if(delegate.Project_Net_Margin_Value__c == null){
+				delegate.Project_Net_Margin_Value__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.Project_Net_Margin_Value__c.longValue() > delegateLimitSettings.Project_Net_Margin_Value__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Project Net Margin Value is greater than allowed Maximum'));
 			}
-			if(delegate.Project_Net_Margin_Value_lt__c.longValue() < delegateLimitSettings.Project_Net_Margin_Value_lt__c.longValue()){
+			if(delegate.Project_Net_Margin_Value_lt__c == null){
+				delegate.Project_Net_Margin_Value_lt__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.Project_Net_Margin_Value_lt__c.longValue() < delegateLimitSettings.Project_Net_Margin_Value_lt__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Project Net Margin Value is less than allowed Minimum'));
 			}
-			if(delegate.Project_Net_Margin_age_of_NSR__c > delegateLimitSettings.Project_Net_Margin_age_of_NSR__c){
+			if(delegate.Project_Net_Margin_age_of_NSR__c == null){
+				delegate.Project_Net_Margin_age_of_NSR__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.Project_Net_Margin_age_of_NSR__c > delegateLimitSettings.Project_Net_Margin_age_of_NSR__c){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Project Net Margin Percentage of NSR is greater than allowed Maximum'));
 			}
-			if(delegate.Project_Net_Margin_age_of_NSR_lt__c < delegateLimitSettings.Project_Net_Margin_age_of_NSR_lt__c){
+			if(delegate.Project_Net_Margin_age_of_NSR_lt__c == null){
+				delegate.Project_Net_Margin_age_of_NSR_lt__c.addError('Required');
+			}
+			else if(delegate.Project_Net_Margin_age_of_NSR_lt__c < delegateLimitSettings.Project_Net_Margin_age_of_NSR_lt__c){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Project Net Margin Percentage of NSR is less than allowed Minimum'));
 			}
-			if(delegate.age_Change_in_Forecast_Net_Margin__c.longValue() > delegateLimitSettings.age_Change_in_Forecast_Net_Margin__c.longValue()){
+			if(delegate.age_Change_in_Forecast_Net_Margin__c == null){
+				delegate.age_Change_in_Forecast_Net_Margin__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.age_Change_in_Forecast_Net_Margin__c.longValue() > delegateLimitSettings.age_Change_in_Forecast_Net_Margin__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Percentage Change in Forecast Net Margin is greater than allowed Maximum'));
 			}
-			if(delegate.age_Change_in_Forecast_Net_Margin_lt__c.longValue() < delegateLimitSettings.age_Change_in_Forecast_Net_Margin_lt__c.longValue()){
+			if(delegate.age_Change_in_Forecast_Net_Margin_lt__c == null){
+				delegate.age_Change_in_Forecast_Net_Margin_lt__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.age_Change_in_Forecast_Net_Margin_lt__c.longValue() < delegateLimitSettings.age_Change_in_Forecast_Net_Margin_lt__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Percentage Change in Forecast Net Margin is less than allowed Minimum'));
 			}
-			if(delegate.Value_change_in_Forecast_Net_Margin__c.longValue() > delegateLimitSettings.Value_change_in_Forecast_Net_Margin__c.longValue()){
+			if(delegate.Value_change_in_Forecast_Net_Margin__c == null){
+				delegate.Value_change_in_Forecast_Net_Margin__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.Value_change_in_Forecast_Net_Margin__c.longValue() > delegateLimitSettings.Value_change_in_Forecast_Net_Margin__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Value Change in Forecast Net Margin is greater than allowed Maximum'));
 			}
-			if(delegate.Value_change_in_Forecast_Net_Margin_lt__c.longValue() < delegateLimitSettings.Value_change_in_Forecast_Net_Margin_lt__c.longValue()){
+			if(delegate.Value_change_in_Forecast_Net_Margin_lt__c == null){
+				delegate.Value_change_in_Forecast_Net_Margin_lt__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.Value_change_in_Forecast_Net_Margin_lt__c.longValue() < delegateLimitSettings.Value_change_in_Forecast_Net_Margin_lt__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Value Change in Forecast Net Margin is less than allowed Minimum'));
 			}
-			if(delegate.Value_change_in_Forecast_Net_Margin__c.longValue() > delegateLimitSettings.Value_change_in_Forecast_Net_Margin__c.longValue()){
+			if(delegate.Value_change_in_Forecast_Net_Margin__c == null){
+				delegate.Value_change_in_Forecast_Net_Margin__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.Value_change_in_Forecast_Net_Margin__c.longValue() > delegateLimitSettings.Value_change_in_Forecast_Net_Margin__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Value Change in Forecast Net Margin is greater than allowed Maximum'));
 			}
-			if(delegate.Value_change_in_Forecast_Net_Margin_lt__c.longValue() < delegateLimitSettings.Value_change_in_Forecast_Net_Margin_lt__c.longValue()){
+			if(delegate.Value_change_in_Forecast_Net_Margin_lt__c == null){
+				delegate.Value_change_in_Forecast_Net_Margin_lt__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.Value_change_in_Forecast_Net_Margin_lt__c.longValue() < delegateLimitSettings.Value_change_in_Forecast_Net_Margin_lt__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Value Change in Forecast Net Margin is less than allowed Minimum'));
 			}
@@ -450,11 +508,18 @@ public class ECO_DelegateManagerController {
 
 	//runs the query for the contact and delegates.  Initializes the delegate so a new one can be added
 	private void queryContact(String recordTypeId){
-		system.debug('***recordTypeId ' + recordTypeId);
 		contact = Database.query(buildSOQL(recordTypeId));
 		delegate = new Delegate__c(Delegator__c = contact.Id, 
 									RecordTypeId = recordTypeId);
 		
+		if(keyRolesRecordType == null){
+			for(RecordType recordType : recordTypes){
+				if(recordType.Name == 'Key Roles'){
+					keyRolesRecordType = recordType.Id;
+				}
+			}
+		}
+
 		if(recordTypeId == keyRolesRecordType){
 			delegate.Project_Review_Category_C_0__c = true;
 			delegate.Project_Review_Category_C_1__c = true;
@@ -465,7 +530,6 @@ public class ECO_DelegateManagerController {
 			populateOwningOrganizations();
 		}
 		attachment = new Attachment();
-		system.debug('***delegate ' + delegate);
 	}
 
 	//loads the list owningOrganization wrapper for the owning organization table

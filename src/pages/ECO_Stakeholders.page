@@ -257,13 +257,13 @@
 						        	<apex:facet name="footer">
 										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', addDeputyProjectManager());return false;">Add New Deputy Project Manager</apex:outputLink>
 									</apex:facet>
-									<apex:column rendered="{!OR(isPNL, isFinance)}">
+									<apex:column rendered="{!AND(NOT(ISNULL(pAndLTeamMember)), NOT(ISNULL(financeTeamMember)))}" >
 										<apex:facet name="header">Action</apex:facet>
-										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '', '{!item.previousDate}'));return false;" rendered="{!AND(AND(ISNULL(item.oPTM.Contact__c), AND(AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate')), item.canEdit)}">Select</apex:outputLink>
-										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '{!item.oPTM.Id}', '{!item.oPTM.StartDate__c}'));return false;" rendered="{!AND(ISNULL(item.oPTM.EndDate__c), AND(NOT(ISNULL(item.oPTM.Contact__c)), AND(AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate')), item.canEdit)}">Replace</apex:outputLink>
+										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '', '{!item.previousDate}'));return false;" rendered="{!AND(ISNULL(item.oPTM.Contact__c), AND(AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate'))}">Select</apex:outputLink>
+										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '{!item.oPTM.Id}', '{!item.oPTM.StartDate__c}'));return false;" rendered="{!AND(ISNULL(item.oPTM.EndDate__c), AND(NOT(ISNULL(item.oPTM.Contact__c)), AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate'))}">Replace</apex:outputLink>
 										<apex:outputPanel layout="none" rendered="{!AND(NOT(ISNULL(item.oPTM.Contact__c)), AND(AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate'))}">
 											&nbsp;
-											<apex:outputLink rendered="{!item.canEdit}" value="/{!item.oPTM.Id}/e?retURL={!returnURL}">Edit</apex:outputLink>
+											<apex:outputLink value="/{!item.oPTM.Id}/e?retURL={!returnURL}">Edit</apex:outputLink>
 										</apex:outputPanel>
 									</apex:column>
 						        	<apex:column id="roleColumn" >
@@ -745,14 +745,14 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 		</c:ECO_ModalDialog>
 		<!-- end modal window -->
 
-		<apex:actionFunction action="{!searchForKeyMembers}" name="searchForKeyMembers" rerender="pbsQueryTable" status="queryStatus" immediate="true" >
+		<apex:actionFunction action="{!searchForKeyMembers}" name="searchForKeyMembers" rerender="pbsQueryTable" status="queryStatus" >
 			<apex:param name="contactName" value=""/>
 			<apex:param name="queryType" value=""/>
 			<apex:param name="selectedRole" value=""/>
 			<apex:param name="startDate" value=""/>
 		</apex:actionFunction>
 
-		<apex:actionFunction action="{!selectReplaceKeyMember}" name="selectReplaceKeyMember" rerender="saveError, modalMessages" status="saveStatus" oncomplete="checkForError()" immediate="true">
+		<apex:actionFunction action="{!selectReplaceKeyMember}" name="selectReplaceKeyMember" rerender="saveError, modalMessages" status="saveStatus" oncomplete="checkForError()">
 			<apex:param name="selectedContactId" value=""/>
 			<apex:param name="selectedRole" value=""/>
 			<apex:param name="startDate" value=""/>
