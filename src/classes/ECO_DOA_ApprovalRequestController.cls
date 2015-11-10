@@ -3,10 +3,14 @@ public with sharing class ECO_DOA_ApprovalRequestController {
     public list<DOA_TriggerWrapper> lstDOATriggers {get; set;}
     public list<DOAApprovalRequest__c> lstDOARequests {get; set;}
     public list<TemplateQuestion__c> lstTemplateQues {get;set;}
+    public list<TemplateQuestion__c> lstTemplateQuestions {get;set;}
+    public set<Id> setTemplateQuesIds {get;set;}
+    //public list<TemplateQuestion__c> lstTemplateQuestions {get;set;}
     public set<id> setRequestIds {get;set;}
     public id idQuestionID {get;set;}
     public id deleteId {get;set;}
     public list<DOAConditions__c> lstDOAConditions {get; set;}
+    public list<DOARegister__c> lstRiskSearch {get;set;}
     public set<Id> setDOARegister {get;set;}
     public list<DOARegister__c> lstDOARegister {get;set;}
     
@@ -39,6 +43,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
     }
     
     public void init(String projID) {
+        lstRiskSearch = new list<DOARegister__c>();
         lstDOATriggers = new list<DOA_TriggerWrapper>();
         lstDOARequests = new list<DOAApprovalRequest__c>();
         lstDOAConditions = new list<DOAConditions__c>();
@@ -56,10 +61,10 @@ public with sharing class ECO_DOA_ApprovalRequestController {
             }
             System.debug('setDOARegister size: '+setDOARegister.size());
             
-            loadTriggers();
+            //loadTriggers();
             loadApprovalRequest();
             loadConditions();
-            loadDOAList();
+            //loadDOAList();
         }
         loadTriggers();
 		loadDOAList();
@@ -75,20 +80,23 @@ public with sharing class ECO_DOA_ApprovalRequestController {
     private void loadTriggers(){
 
         string strSOQL = 'SELECT ';
-            
+        setTemplateQuesIds = new Set<Id>();
         for (Schema.FieldSetMember fsmField: SObjectType.DOARegister__c.FieldSets.DOA_TriggerView.getFields()) {
             strSOQL += fsmField.getFieldPath() + ', ';
         }
         
         if(projectID != null)
-        	strSOQL += 'ID, DOAApprovalRequest__c FROM DOARegister__c WHERE Project__c = \'' + projectID + '\' order by DOAApprovalRequest__c ASC';
+        	strSOQL += 'ID, DOAApprovalRequest__c, TemplateQuestion__c FROM DOARegister__c WHERE Project__c = \'' + projectID + '\' order by DOAApprovalRequest__c ASC';
 		else
-            strSOQL += 'ID, DOAApprovalRequest__c FROM DOARegister__c WHERE Project__c = null order by DOAApprovalRequest__c ASC';
-        list<DOARegister__c> lstRiskSearch = (list<DOARegister__c>)Database.query(strSOQL);
-
+            strSOQL += 'ID, DOAApprovalRequest__c, TemplateQuestion__c FROM DOARegister__c WHERE Project__c = null order by DOAApprovalRequest__c ASC';
+        //list<DOARegister__c> lstRiskSearch = (list<DOARegister__c>)Database.query(strSOQL);
+		lstRiskSearch = (list<DOARegister__c>)Database.query(strSOQL);
+        System.debug('lstRiskSearch size: '+lstRiskSearch.size());
         for(DOARegister__c DOAR: lstRiskSearch){
             lstDOATriggers.add(new DOA_TriggerWrapper(DOAR));
+            setTemplateQuesIds.add(doar.TemplateQuestion__c);
         }
+        
     }
 
     private void loadApprovalRequest(){
@@ -116,6 +124,8 @@ public with sharing class ECO_DOA_ApprovalRequestController {
     private void loadDOAList(){
         string strSOQL = 'SELECT ';
         string strSOQLsort;
+        lstTemplateQues = new List<TemplateQuestion__c>();
+        lstTemplateQuestions = new List<TemplateQuestion__c>();
         System.debug('selectBusiness : '+selectBusiness);
         System.debug('selectGeography : '+selectGeography);
         System.debug('selectQuestionnaire : '+selectQuestionnaire);
@@ -124,6 +134,8 @@ public with sharing class ECO_DOA_ApprovalRequestController {
         if(selectGeography == null)
             selectGeography = 'ALL';
         List<TemplateQuestion__c> lstTQ = new List<TemplateQuestion__c>();
+        System.debug('lstRiskSearch size in loadDOAList::::'+lstRiskSearch.size());
+        
         
         for (Schema.FieldSetMember fsmField: SObjectType.TemplateQuestion__c.FieldSets.DOA_Register_Fields.getFields()) {
             strSOQL += fsmField.getFieldPath() + ', ';
@@ -146,8 +158,15 @@ public with sharing class ECO_DOA_ApprovalRequestController {
     	}
         
         lstTemplateQues = (list<TemplateQuestion__c>)Database.query(strSOQL);
+        lstTQ = (list<TemplateQuestion__c>)Database.query(strSOQLsort);
         totalRecs = lstTQ.size();
         System.debug('lstTemplateQues.size:  '+lstTemplateQues.size());
+        System.debug('totalRecs:  '+totalRecs);
+        for(TemplateQuestion__c tq: lstTemplateQues){
+        	if(!setTemplateQuesIds.contains(tq.Id)){
+                lstTemplateQuestions.add(tq);
+            }
+        }
     }
     
     private void loadConditions(){
@@ -195,7 +214,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
             
             lstDOATriggers = new list<DOA_TriggerWrapper>();
             loadTriggers();
-            
+            loadDOAList();
             return null;
             
         } catch (Exception e) {
@@ -276,8 +295,9 @@ public with sharing class ECO_DOA_ApprovalRequestController {
             newTrigger = new DOARegister__c();
             
             lstDOATriggers = new list<DOA_TriggerWrapper>();
+            lstTemplateQues = new List<TemplateQuestion__c>();
             loadTriggers();
-            
+            loadDOAList();
         	return null;
             
         }catch (Exception e) {
@@ -401,8 +421,8 @@ public with sharing class ECO_DOA_ApprovalRequestController {
         } else if (questionThree == 'Yes'){
             //newForm.recordtypeid = mapRecType.get('RCST');
             //lstFormsToInsert.add(newForm);
-            newForm2.recordtypeid = mapRecType.get('ORM Memo');
-            lstFormsToInsert.add(newForm2);
+            //newForm2.recordtypeid = mapRecType.get('ORM Memo');
+            //lstFormsToInsert.add(newForm2);
             oNewDOA.Enable_RCST_Button__c = true;
         } else if (questionThree == 'No'){
             newForm.recordtypeid = mapRecType.get('RFA');
