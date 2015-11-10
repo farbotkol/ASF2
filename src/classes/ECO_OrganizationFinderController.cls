@@ -40,6 +40,8 @@ public with sharing class ECO_OrganizationFinderController {
 
     private boolean bOrgMore;
 
+    public site__c primarySite {get;set;}
+
     public boolean bShowMoreButtonOrg {get;set;}
     public string showMoreOrgText {get;set;}
     private static integer orgLessLIMIT = 20;
@@ -86,6 +88,8 @@ public with sharing class ECO_OrganizationFinderController {
         isValid(false);
 
         lUserOrganizations = new list<OrganizationString__c>();
+
+        primarySite = [select id, OUID__c from site__c where id =: oProject.PrimarySite__c];
 
         SearchOrganizations();
         SearchUserOrganization();

@@ -59,6 +59,10 @@
                     <apex:facet name="stop">
                         <apex:outputPanel >
 
+
+                            <apex:pageMessage title="Warning" severity="WARNING" strength="3" rendered="{!AND(IF(primarySite.OUID__c == oProject.CarryingOutOrganization__r.OUID__c, false, true), if(oProject.CarryingOutOrganization__r.OUID__c == null, false, true))}" summary="A client record has been selected that is not associated with the project owning organization. Contact Shared Services to create a client record within the owning organization to avoid a future Oracle syncing error when booking the project."></apex:pageMessage> 
+
+
                             <apex:outputPanel rendered="{!if(lSelectedOrganizations.size > 0, false, true)}">
                                 <p style="padding-bottom:20px;">No Organizations have been selected</p>
                             </apex:outputPanel>

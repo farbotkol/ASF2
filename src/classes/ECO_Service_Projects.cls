@@ -98,6 +98,8 @@ public without sharing class ECO_Service_Projects {
                                                                			, CurrentForecastCostBudget__c
                                                                			, CurrentForecastRevenueBudget__c
                                                                			, ProgBarPrelimPlanApproval__c
+                                                               			, PrimarySite__c
+                                                               			, CarryingOutOrganization__r.OUID__c
 																		, (SELECT Id
 																					, Type__c
 																					, OrganizationString__r.OrganizationName__c
