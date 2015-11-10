@@ -14,6 +14,7 @@ public class ECO_DelegateManagerController {
 	public ECO_Delegate_Limits__c delegateLimitSettings{get; set;}//the delegate limit setting amounts for the current contact
 	public List<RecordType> recordTypes{get; set;}//the list of recordTypes for the Delegate object
 	public String agreementAmountBypass{get; set;}
+	public String agreementAmountBypassLT{get; set;}
 	public String projectRevenueBudgetBypass{get; set;}
 	public String projectRevenueBudgetBypassLT{get; set;}
 	public String backlogValueBypass{get; set;}
@@ -34,6 +35,7 @@ public class ECO_DelegateManagerController {
 	public String c4Bypass{get; set;}
 	public Boolean canEdit{get; set;}
 	public Attachment attachment{get; set;}
+	private ApexPages.StandardController controller;
 	private Id keyRolesRecordType;
 	private String redirectUrl;  //stores the url of the page to return to
 	private String contactId; //stores the contactId from the query parameter
@@ -41,9 +43,10 @@ public class ECO_DelegateManagerController {
 	private List<PermissionSetAssignment> currentUserPermissionSets = new List<PermissionSetAssignment>(); //a list of the current logged in user permission sets
 
 	//constructor
-	public ECO_DelegateManagerController(){
+	public ECO_DelegateManagerController(ApexPages.StandardController standardController){
 		isError = false;
 		canEdit = false;
+		this.controller = standardController;  
 		recordTypes = [Select Id, Name from RecordType where SobjectType = 'Delegate__c'];
 		currentRecordType = 'Key Roles';
 
@@ -96,7 +99,6 @@ public class ECO_DelegateManagerController {
 			isError = true;
 			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'The contact Id is either null or invalid. ' + ex.getMessage()));
 			system.debug(ex.getMessage());
-
 		}
 	}
 
@@ -174,7 +176,7 @@ public class ECO_DelegateManagerController {
 	//adds a new delegate entry for the contact
 	public PageReference addNewDelegate(){
 		Savepoint savePoint = Database.setSavepoint();
-		//try{
+		try{
 			setYesNoFieldValues();
 			delegate.recordTypeId = delegateRecordTypeMap.get(currentRecordType);
 			if(isValid()){
@@ -208,14 +210,14 @@ public class ECO_DelegateManagerController {
 					ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Please select at least one organization for the key member'));
 				}
 			}
-		//}
-		/*catch(Exception ex){
+		}
+		catch(Exception ex){
 			//we don't want to have duplicate error messages on the page
 			if(!ex.getMessage().contains('FIELD_CUSTOM_VALIDATION_EXCEPTION')){
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Error Inserting Delegate: ' + ex.getMessage()));
 			}
 			Database.rollback(savePoint);
-		}*/
+		}
 		return null;
 	}
 
@@ -223,7 +225,7 @@ public class ECO_DelegateManagerController {
 	@TestVisible
 	private void checkIfAlternate(){
 		try{
-			List<Delegate__c> delegates = [Select Id, Delegate__c, Delegate__r.pse__Salesforce_User__c from Delegate__c where Delegator__c =: contactId AND RecordType.Name = 'Alternate'];
+			List<Delegate__c> delegates = [Select Id, Delegate__c, Delegate__r.pse__Salesforce_User__c from Delegate__c where Delegator__c =: contactId AND RecordType.Name = 'Administrator Override'];
 			for(Delegate__c delegate : delegates){
 				if(delegate.Delegate__r.pse__Salesforce_User__c == UserInfo.getUserId()){
 					canEdit = true;
@@ -257,6 +259,14 @@ public class ECO_DelegateManagerController {
 			else if(delegate.Agreement_Amount_estimated__c.longValue() > delegateLimitSettings.Agreement_Amount__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Agreement Amount is greater than allowed Maximum'));
+			}
+			if(delegate.Agreement_Amount_estimated_lt__c == null){
+				delegate.Agreement_Amount_estimated_lt__c.addError('Required');
+				valid = false;
+			}
+			else if(delegate.Agreement_Amount_estimated_lt__c.longValue() < delegateLimitSettings.Agreement_Amount_lt__c.longValue()){
+				valid = false;
+				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Agreement Amount is less than allowed Minimum'));
 			}
 			if(delegate.Project_Revenue_Budget__c == null){
 				delegate.Project_Revenue_Budget__c.addError('Required');
@@ -380,6 +390,13 @@ public class ECO_DelegateManagerController {
 		}
 		else{
 			delegate.Agreement_Amount_estimated_Bypass__c = false;
+		}
+
+		if(agreementAmountBypassLT == 'Yes'){
+			delegate.Agreement_Amount_estimated_Bypass_lt__c = true;
+		}
+		else{
+			delegate.Agreement_Amount_estimated_Bypass_lt__c = false;
 		}
 
 		if(projectRevenueBudgetBypass == 'Yes'){
@@ -508,28 +525,33 @@ public class ECO_DelegateManagerController {
 
 	//runs the query for the contact and delegates.  Initializes the delegate so a new one can be added
 	private void queryContact(String recordTypeId){
-		contact = Database.query(buildSOQL(recordTypeId));
-		delegate = new Delegate__c(Delegator__c = contact.Id, 
-									RecordTypeId = recordTypeId);
-		
-		if(keyRolesRecordType == null){
-			for(RecordType recordType : recordTypes){
-				if(recordType.Name == 'Key Roles'){
-					keyRolesRecordType = recordType.Id;
+		try{
+			contact = Database.query(buildSOQL(recordTypeId));
+			delegate = new Delegate__c(Delegator__c = contact.Id, 
+										RecordTypeId = recordTypeId);
+			
+			if(keyRolesRecordType == null){
+				for(RecordType recordType : recordTypes){
+					if(recordType.Name == 'Key Roles'){
+						keyRolesRecordType = recordType.Id;
+					}
 				}
 			}
-		}
 
-		if(recordTypeId == keyRolesRecordType){
-			delegate.Project_Review_Category_C_0__c = true;
-			delegate.Project_Review_Category_C_1__c = true;
-			delegate.Project_Review_Category_C_2__c = true;
-			delegate.Project_Review_Category_C_3__c = true;
-			delegate.Project_Review_Category_C_4__c = true;
-			resetBypassYesNoFields();
-			populateOwningOrganizations();
+			if(recordTypeId == keyRolesRecordType){
+				delegate.Project_Review_Category_C_0__c = true;
+				delegate.Project_Review_Category_C_1__c = true;
+				delegate.Project_Review_Category_C_2__c = true;
+				delegate.Project_Review_Category_C_3__c = true;
+				delegate.Project_Review_Category_C_4__c = true;
+				resetBypassYesNoFields();
+				populateOwningOrganizations();
+			}
+			attachment = new Attachment();
 		}
-		attachment = new Attachment();
+		catch(Exception ex){
+			//no contact record found
+		}
 	}
 
 	//loads the list owningOrganization wrapper for the owning organization table
@@ -577,6 +599,7 @@ public class ECO_DelegateManagerController {
 	//resets all of the yes/no bypass delegate fields to yes
 	private void resetBypassYesNoFields(){
 		agreementAmountBypass = 'Yes';
+		agreementAmountBypassLT = 'Yes';
 		projectRevenueBudgetBypass = 'Yes';
 		projectRevenueBudgetBypassLT = 'Yes';
 		backlogValueBypass = 'Yes';
@@ -636,7 +659,6 @@ public class ECO_DelegateManagerController {
 		else{
 			query += 'pse__Salesforce_User__c = \'' + UserInfo.getUserId() + '\'';
 		}
-		system.debug('***query ' + query);
 		return query;
 	}
 

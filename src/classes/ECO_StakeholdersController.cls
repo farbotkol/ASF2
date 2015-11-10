@@ -561,11 +561,13 @@ public with sharing class ECO_StakeholdersController
 			contactQuery += ' AND Id IN: delegateIds';
 		}
 		else{
-			if(queryContactName != null && queryContactName != ''){
-				contactQuery += ' And FirstName Like \'' + firstName + '%\'';
-			}
-			if(lastName != null){
-				contactQuery += ' AND LastName Like \'' + lastName + '%\'';
+			if(firstName != null){
+				if(lastName == null){
+					contactQuery += ' And (FirstName Like \'' + firstName + '%\' OR LastName Like \'' + firstName + '%\')';
+				}
+				else{
+					contactQuery += ' And (FirstName Like \'' + firstName + '%\' AND LastName Like \'' + lastName + '%\')';
+				}
 			}
 		}
 		contactQuery += ' LIMIT 50';
