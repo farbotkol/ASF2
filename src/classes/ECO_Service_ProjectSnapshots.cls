@@ -337,7 +337,7 @@ public class ECO_Service_ProjectSnapshots {
 			snapshot.ContingencyMonthToDate__c = mtdActualFinancialMetrics.TotalContingency;
 			
 			snapshot.SurMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
-			snapshot.LostMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
+			//FORMULA FIELD: snapshot.LostMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
 			
 			snapshot.CostsODCEXPSMonthToDate__c = getProjectActualFinancialsCostsODCEXPS(projectIds, monthStartDate);
 			snapshot.CostsODCSUBSMonthToDate__c = getProjectActualFinancialsCostsODCSUBS(projectIds, monthStartDate);
@@ -365,7 +365,7 @@ public class ECO_Service_ProjectSnapshots {
 			snapshot.ContingencyITD__c = itdActualFinancialMetrics.TotalContingency;
 			
 			snapshot.SurMarginITD__c = ((snapshot.NMNSRITD__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceITD__c)/100;
-			snapshot.LostMarginITD__c = ((snapshot.NMNSRITD__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceITD__c)/100;
+			//FORMULA FIELD: snapshot.LostMarginITD__c = ((snapshot.NMNSRITD__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceITD__c)/100;
 
 
 			//YTD			
@@ -392,7 +392,7 @@ public class ECO_Service_ProjectSnapshots {
 			
 			
 			snapshot.SurMarginYearToDate__c = ((snapshot.NMNSRYearToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceYearToDate__c)/100;
-			snapshot.LostMarginYearToDate__c = ((snapshot.NMNSRYearToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceYearToDate__c)/100;
+			//FORMULA FIELD: snapshot.LostMarginYearToDate__c = ((snapshot.NMNSRYearToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceYearToDate__c)/100;
 			*/
 			
 			//Billing Metrics		
@@ -494,7 +494,7 @@ public class ECO_Service_ProjectSnapshots {
 	}
 	
 		
-	private String getRelatedProjectTasks(list<Id> projectIds)
+	private String getRelatedProjectTasks(List<Id> projectIds)
 	{
 		String returnString = '';
 		list<pse__Project_Task__c> projectTasks = [SELECT Id, Name, pse__Actual_End_Date__c, pse__Actual_Start_Date__c, pse__End_Date__c, pse__Start_Date__c, ProjectTaskNumber__c FROM pse__Project_Task__c WHERE pse__Project__c IN :projectIds];
@@ -999,7 +999,7 @@ public class ECO_Service_ProjectSnapshots {
 		return projSnapshots;
 	}
 	
-	private FinancialMetrics getDraftBudgetHeaderInformation(list<Id> projectIds)
+	@TestVisible private FinancialMetrics getDraftBudgetHeaderInformation(list<Id> projectIds)
 	{
 		FinancialMetrics metrics = new FinancialMetrics();
 		try {
@@ -1041,7 +1041,7 @@ public class ECO_Service_ProjectSnapshots {
 		Take the Start Date FROM those records to become start date for current month or year, respectively.
 		These become your time period start date for data calculations."
 	*/
-	private FinancialMetrics getProjectActualFinancials(list<Id> projectIds, Date asOfDate)
+	@TestVisible private FinancialMetrics getProjectActualFinancials(List<Id> projectIds, Date asOfDate)
 	{
 		FinancialMetrics metrics = new FinancialMetrics();
 		list<AggregateResult> results = new list<AggregateResult>();
@@ -1102,7 +1102,7 @@ public class ECO_Service_ProjectSnapshots {
 		return metrics;	
 	}
 
-	private Decimal getProjectActualFinancialsCostsODCEXPS(List<Id> projectIds, Date asOfDate)
+	@TestVisible private Decimal getProjectActualFinancialsCostsODCEXPS(List<Id> projectIds, Date asOfDate)
 	{
 		FinancialMetrics metrics = new FinancialMetrics();
 		list<AggregateResult> results = new list<AggregateResult>();
@@ -1128,7 +1128,7 @@ public class ECO_Service_ProjectSnapshots {
 		return metrics.CostsODCEXPS;
 	}
 
-	private Decimal getProjectActualFinancialsCostsODCSUBS(List<Id> projectIds, Date asOfDate)
+	@TestVisible private Decimal getProjectActualFinancialsCostsODCSUBS(List<Id> projectIds, Date asOfDate)
 	{
 		FinancialMetrics metrics = new FinancialMetrics();
 		list<AggregateResult> results = new list<AggregateResult>();
@@ -1154,7 +1154,7 @@ public class ECO_Service_ProjectSnapshots {
 		return metrics.CostsODCSUBS;
 	}
 
-	private Decimal getProjectActualFinancialsCostsLabor(List<Id> projectIds, Date asOfDate)
+	@TestVisible private Decimal getProjectActualFinancialsCostsLabor(List<Id> projectIds, Date asOfDate)
 	{
 		FinancialMetrics metrics = new FinancialMetrics();
 		list<AggregateResult> results = new list<AggregateResult>();
@@ -1182,7 +1182,7 @@ public class ECO_Service_ProjectSnapshots {
 		return metrics.Labor;
 	}
 
-	private Decimal getProjectActualFinancialsCostsFringe(List<Id> projectIds, Date asOfDate)
+	@TestVisible private Decimal getProjectActualFinancialsCostsFringe(List<Id> projectIds, Date asOfDate)
 	{
 		FinancialMetrics metrics = new FinancialMetrics();
 		list<AggregateResult> results = new list<AggregateResult>();
@@ -1208,7 +1208,7 @@ public class ECO_Service_ProjectSnapshots {
 		return metrics.Fringe;
 	}
 
-	private Decimal getProjectActualFinancialsCostsOverhead(List<Id> projectIds, Date asOfDate)
+	@TestVisible private Decimal getProjectActualFinancialsCostsOverhead(List<Id> projectIds, Date asOfDate)
 	{
 		FinancialMetrics metrics = new FinancialMetrics();
 		list<AggregateResult> results = new list<AggregateResult>();
@@ -1234,7 +1234,7 @@ public class ECO_Service_ProjectSnapshots {
 		return metrics.Overhead;
 	}
 
-	private Decimal getProjectActualFinancialsCostsHours(List<Id> projectIds, Date asOfDate)
+	@TestVisible private Decimal getProjectActualFinancialsCostsHours(List<Id> projectIds, Date asOfDate)
 	{
 		FinancialMetrics metrics = new FinancialMetrics();
 		list<AggregateResult> results = new list<AggregateResult>();
