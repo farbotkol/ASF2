@@ -9,18 +9,21 @@ public with sharing class ECO_RFAController {
 	public list<DOARegister__c> NonProjectRelatedMatters {get;set;}
     public list<DOA_TriggerWrapper> lstDOATriggers {get; set;}
     public list<TemplateQuestion__c> lstTemplateQues {get;set;}
+    public set<Id> setTemplateQuesIds {get;set;}
+    public list<TemplateQuestion__c> lstTemplateQuestions {get;set;}
     
     public pse__Proj__c proj {get;set;}
     public DOARegister__c newTrigger {get;set;}
     public TemplateQuestion__c tQuestions {get;set;}
-	
+    
+    public id doaRegisterId {get;set;}
     public id idQuestionID {get;set;}
 	public integer selectedIndex {get;set;}
     
     public String selectBusiness {get;set;}
     public String selectGeography {get;set;}
     public String selectQuestionnaire {get;set;}
-    
+    public String doaRecordType {get;set;}
     public String projName {get;set;}
     public String opptyId {get;set;}
     public String ecosystem {get;set;}
@@ -30,6 +33,7 @@ public with sharing class ECO_RFAController {
 	public Integer LimitSize {get;set;}
     public String fromVisualforce {get;set;}
     public Boolean isNonProjectRelated {get;set;}
+    public Boolean isDeleteRendered{get;set;}
 	private integer index;
 
 	public ECO_RFAController(ApexPages.StandardController stdController) {
@@ -50,14 +54,15 @@ public with sharing class ECO_RFAController {
             strSOQL += fsmField.getFieldPath() + ', ';
         }
         
-        strSOQL += 'ID, DOAApprovalRequest__c, ReasonForRequest__c, ProposedReviewCategoryChange__c, JustificationReviewCategoryChange__c, NonProjectRelatedMatters__c, Projid__c, Business_Group__c, OwningOrganization__c, ProjectNameSubject__c, OpportunityNumber__c, OracleProjectNumber__c FROM Form__c WHERE id=: formid';
+        strSOQL += 'ID, DOAApprovalRequest__c, ReasonForRequest__c, ProposedReviewCategoryChange__c, DOAApprovalRequest__r.RecordType.DeveloperName, JustificationReviewCategoryChange__c, NonProjectRelatedMatters__c, Projid__c, Business_Group__c, OwningOrganization__c, ProjectNameSubject__c, OpportunityNumber__c, OracleProjectNumber__c FROM Form__c WHERE id=: formid';
 
         list<Form__c> lstform = (list<Form__c>)Database.query(strSOQL);
 		oForm = lstform[0];
 		
         proj = new pse__Proj__c();
         loadDoaMatters();
-		
+        doaRecordType = oForm.DOAApprovalRequest__r.RecordType.DeveloperName;
+		System.debug('doa recordtype id:'+oForm.DOAApprovalRequest__r.RecordTypeId);
 
 	}
     public Boolean getisNonProjectRelated(){
@@ -68,7 +73,14 @@ public with sharing class ECO_RFAController {
         System.debug('isNonProjectRelated   :'+isNonProjectRelated);
         return isNonProjectRelated;
     }
-    
+    public Boolean getisDeleteRendered(){
+        RecordType rt = [Select Id, DeveloperName From RecordType Where Id = :oForm.DOAApprovalRequest__r.RecordTypeId];
+        System.debug('rt.DeveloperName:  '+rt.DeveloperName);
+        if(rt.DeveloperName == 'DOAQueueEntry' || rt.DeveloperName == 'NonProject')
+        	return false;
+        else
+            return true;
+    }
     public void loadDoaMatters(){
         this.DOARegisters = [select id, name, EnterpriseDOA__c, DCSsubDOA__c, DOATrigger__c, RiskTitle__c, TemplateQuestion__c, TemplateQuestion__r.Question__c from DOARegister__c where DOAApprovalRequest__c =: oForm.DOAApprovalRequest__c];
 
@@ -105,7 +117,22 @@ public with sharing class ECO_RFAController {
 		NonProjectRelatedMatters.add(new DOARegister__c(IndexNumber__c = index));
 		return null;
 	}
-
+	
+    public PageReference deleteDOARegister(){
+        DOARegister__c doaReg = [Select Id From DOARegister__c Where Id =: doaRegisterId];
+        try{
+            delete doaReg;
+            loadDoaMatters();
+            loadDOAList();
+        	return null;
+        }catch(Exception e){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to delete DOA Register. Please contact your administrator with the following error: ' + e);
+            ApexPages.addMessage(oMsg);
+            return null;
+        }
+        
+    }
+    
 	public pagereference RemoveNonProjectRelatedMatter(){
 
 		list<DOARegister__c> newlist = new list<DOARegister__c>();
@@ -198,7 +225,6 @@ public with sharing class ECO_RFAController {
 	private void loadTriggers(){
 
         string strSOQL = 'SELECT ';
-            
         for (Schema.FieldSetMember fsmField: SObjectType.DOARegister__c.FieldSets.DOA_TriggerView.getFields()) {
             strSOQL += fsmField.getFieldPath() + ', ';
         }
@@ -248,6 +274,7 @@ public with sharing class ECO_RFAController {
             lstDOATriggers = new list<DOA_TriggerWrapper>();
             loadTriggers();
             loadDoaMatters();
+            loadDOAList();
             return null;
             
         } catch (Exception e) {
@@ -280,10 +307,22 @@ public with sharing class ECO_RFAController {
         else
             strSOQL += 'ID FROM TemplateQuestion__c WHERE IsNonProjectRelated__c = TRUE AND BusinessLinesAvailableTo__c = :selectBusiness AND GeographiesAvailableTo__c = :selectGeography AND QuestionnaireTemplate__r.Name = :selectQuestionnaire ORDER BY QuestionnaireTemplate__c ASC LIMIT :LimitSize OFFSET :OffsetSize'; 
     	
+        
+        setTemplateQuesIds = new Set<Id>();
+        lstTemplateQuestions = new List<TemplateQuestion__c>();
         lstTemplateQues = new List<TemplateQuestion__c>();
         lstTemplateQues = (list<TemplateQuestion__c>)Database.query(strSOQL);
-        //totalRecs = lstTQ.size();
-        System.debug('lstTemplateQues.size:  '+lstTemplateQues.size());
+        
+        for(DOARegister__c doar : DOARegisters){
+            setTemplateQuesIds.add(doar.TemplateQuestion__c);
+        }
+        
+        for(TemplateQuestion__c tq: lstTemplateQues){
+        	if(!setTemplateQuesIds.contains(tq.Id)){
+                lstTemplateQuestions.add(tq);
+            }
+        }
+        System.debug('lstTemplateQuestions size::::'+lstTemplateQuestions.size());
     }
     public List<selectOption> getBusinessLines()
     {
