@@ -634,16 +634,19 @@
                                                             <apex:outputLabel value="Project Name" />
                                                             <apex:inputField value="{!oProject.name}" required="true" />
                                                         </apex:pageBlockSectionItem>
-                                                        <apex:pageBlockSectionItem helpText="Name the current owner of this Project - may be bid/capture manager, project manager or another person.">
+                                                        <apex:pageBlockSectionItem rendered="{!oppName !=null}">
+                                                            <apex:outputLabel value="Opportunity Name" />
+                                                            <apex:outputText value="{!oppName}" />
+                                                        </apex:pageBlockSectionItem>
+                                                        <!--<apex:pageBlockSectionItem helpText="Name the current owner of this Project - may be bid/capture manager, project manager or another person.">
                                                             <apex:outputLabel value="Owner" />
                                                             <apex:inputField styleClass="hideDropdown" value="{!oProject.ownerid}" required="true" />
-                                                        </apex:pageBlockSectionItem>
+                                                        </apex:pageBlockSectionItem>-->
 
                                                         <apex:repeat value="{!$ObjectType.pse__Proj__c.FieldSets.pse_ProjectFieldsforCustomProjectSetup}" var="Field1">
 
-                                                            <apex:inputField value="{!oProject[Field1]}" required="true" rendered="{!AND(Field1.required, Field1.Label!='Project Name', Field1!='OwnerId')}"/>
-                                                            <apex:inputField value="{!oProject[Field1]}" rendered="{!AND(NOT(Field1.required), Field1.Label!='Opportunity Name', Field1!='OwnerId')}"/>
-                                                            <apex:outputField id="oppName" value="{!oProject[Field1]}" rendered="{!AND(NOT(Field1.required), Field1.Label=='Opportunity Name')}"/>
+                                                            <apex:inputField value="{!oProject[Field1]}" required="true" rendered="{!AND(Field1.required, Field1.Label!='Project Name')}"/>
+                                                            <apex:inputField value="{!oProject[Field1]}" rendered="{!AND(NOT(Field1.required), Field1.Label!='Opportunity')}"/>
                                                         </apex:repeat>
 
                                                     </apex:pageBlockSection>
