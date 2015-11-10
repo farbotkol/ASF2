@@ -1,0 +1,485 @@
+<apex:page standardController="pse__Proj__c" showHeader="false"
+           extensions="ECO_ProjectStatusController" sidebar="false" standardStylesheets="false">
+    <style>
+        body{
+            font-family:arial, helvetica, sans-serif;
+            padding:0;
+            width:100%;
+            height:100%;
+            line-height:100%:;
+            padding-left:12px;
+        }
+
+       /* STATUS BAR BUTTON GROUP */
+        body span ul, body div ul{
+            margin:0;
+            padding:0;
+        }
+        body span ul.progress{
+            margin:0 0 8px 0 !important;
+        }
+        ul.progress li{
+            display:inline-block;
+            width:9%;
+            height:45px;
+            vertical-align:top;
+            position: relative;
+            background-color:#727272;
+            border-radius:3px;
+            padding:0 10px 0 0;
+            min-width:100px;
+        	cursor:pointer;
+        	font-family: arial;
+        	background-image: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(255,255,255,0.09) 57%, rgba(0,0,0,0.15) 100%); /* FF3.6+ */
+            background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(57%,rgba(255,255,255,0.09)), color-stop(100%,rgba(0,0,0,0.15))); /* Chrome,Safari4+ */
+            background-image: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.09) 57%,rgba(0,0,0,0.15) 100%); /* Chrome10+,Safari5.1+ */
+            background-image: -o-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.09) 57%,rgba(0,0,0,0.15) 100%); /* Opera 11.10+ */
+            background-image: -ms-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.09) 57%,rgba(0,0,0,0.15) 100%); /* IE10+ */
+            background-image: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.09) 57%,rgba(0,0,0,0.15) 100%); /* W3C */
+        }
+        ul.progress li a{
+            position: absolute;
+            left: 7px; 
+            top: 3%; 
+            width: 90%; 
+            height: 45px; 
+            display: table; 
+            font-size:10px;
+        	font-family: arial;
+            text-decoration:none;
+            font-weight:bold;
+            color:#fff;
+        }
+        ul.progress li div{ 
+            display: table-cell; 
+            vertical-align: middle; 
+        	text-align: center; 
+        }
+        ul.progress li:before{
+            width: 0; 
+            height: 0; 
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 15px solid #727272;
+        }
+        .container{
+            width:100%;
+            height:100%;
+        }
+        .boxed{
+            max-width:1200px;
+            min-width:800px;
+            margin:0 auto;
+        }
+        .activeButtons{
+            box-shadow:inset 0 0 25px #333;
+            opacity:0.75;
+        }
+        .activeButtons:after{
+            content: "";
+            width: 0;
+            height: 0;
+            border-left: 45px solid transparent;
+            border-right: 45px solid transparent;
+            border-top: 15px solid #fff;
+            bottom: -15px;
+            position: absolute;
+            left: 3%;
+            width: 2px;
+            border-radius: 4px;
+        }
+        .rowOne .activeButtons:after{
+            border-left: 45px solid transparent;
+            border-right: 45px solid transparent;
+            border-top: 70px solid #fff;
+            bottom: -70px;
+            z-index: 99999;
+            left: 3%;
+        }
+        .rowOne .activeButtons{
+            z-index:99999;
+        }
+        .decission.activeButtons:after{
+            left: 13%;
+            border-left: 35px solid transparent;
+            border-right: 35px solid transparent;
+
+        }
+
+        /* working on idea to keep the active/hover state of the steps 
+        .stayActiveButtons{
+            opacity:0.55;
+            box-shadow:inset 0 0 25px #333;
+        }
+        .stayActiveButtons a{
+            text-shadow:0 2px 3px #000;
+        }
+        */
+		.critcalStep{
+        	border: 2px solid #234;
+        }
+        .normalStep{
+        	border: 2px solid #EBEBEB;
+        }
+        
+        /* conditional colors */
+        /* not started, default gray, defined above in anchor #404040 */
+        ul.progress li.Ready{
+            background-color:#0099FF;
+            border-color:#0099FF !important;
+        }
+        ul.progress li.Started{
+            background-color:#daca2e;
+            border-color:#daca2e !important;
+        }
+        /*ul.progress li.Started.decission{
+            background:#4058e0;
+            border-color:#4058e0 !important;
+        }*/
+        ul.progress li.Complete{
+            background-color:#52c934;
+            border-color:#52c934 !important;
+        }
+        /*ul.progress li.Complete2{
+            background:#54A340;
+            border-color:#54A340 !important;
+        }*/
+        /*ul.progress li.Complete.decission{
+            background-color:#52c934;
+            border-color:#52c934 !important;
+        }*/
+        ul.progress li.Rejected{
+            background-color:#e53d2d;
+            border-color:#e53d2d !important;
+        }
+        ul.progress li.decission{
+            border-radius:50px;
+        }
+        ul.progress li.decission2{
+            border-radius:50px;
+        }
+
+
+
+        /* DROPDOWN / HOVER BUTTONS */
+        .buttonGroup{
+            padding:8px 15px;
+            background-color:#EBEBEB;
+            margin-right:6.5%;
+            border-radius:4px;
+            box-shadow: 0 0 8px #333;
+            margin-top:10px;
+        }
+        .buttonGroup ul li{
+            display:inline-block;
+            font-size:11px;
+            background:#727272;
+            padding:3px 7px;
+            border-radius:3px;
+            width:12.3%;
+            margin:0 0 4px 0;
+            text-align:center;
+            min-width:125px;
+        	cursor:pointer;
+        	background-image: -moz-linear-gradient(top,  rgba(255,255,255,0) 0%, rgba(255,255,255,0.09) 57%, rgba(0,0,0,0.15) 100%); /* FF3.6+ */
+            background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,0)), color-stop(57%,rgba(255,255,255,0.09)), color-stop(100%,rgba(0,0,0,0.15))); /* Chrome,Safari4+ */
+            background-image: -webkit-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.09) 57%,rgba(0,0,0,0.15) 100%); /* Chrome10+,Safari5.1+ */
+            background-image: -o-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.09) 57%,rgba(0,0,0,0.15) 100%); /* Opera 11.10+ */
+            background-image: -ms-linear-gradient(top,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.09) 57%,rgba(0,0,0,0.15) 100%); /* IE10+ */
+            background-image: linear-gradient(to bottom,  rgba(255,255,255,0) 0%,rgba(255,255,255,0.09) 57%,rgba(0,0,0,0.15) 100%); /* W3C */
+        }
+        .buttonGroup ul li a{
+            color:#fff;
+            text-decoration:none;
+        }
+        .buttonGroup ul li:hover{
+        	//opacity:0.75;
+        	opacity:0.85;
+        }
+        .buttonGroup ul li:hover a{
+        	//text-shadow:0 1px 2px #000;
+            //text-shadow: 0px 0px 3px rgba(150, 150, 150, 0.7);
+        	text-shadow: 0px 0px 3px rgba(60, 60, 60, 0.7)
+
+
+        }
+        .buttonGroup ul li.Started{
+            background:#daca2e;
+        }
+        .buttonGroup ul li.Started.decission{
+            background:#4058e0;
+        }
+        .buttonGroup ul li.Started2{
+            background:#9C8F17;
+        }
+        .buttonGroup ul li.Started2.decission{
+            background:#4058e0;
+        }
+        .buttonGroup ul li.Complete{
+            background:#52c934;
+        }
+        .buttonGroup ul li.Complete2{
+        	background:#629654;
+        }
+        .buttonGroup ul li.Complete.decission{
+            background:#52c934;
+        }
+        .buttonGroup ul li.Complete2.decission{
+            background:#629654;
+        	
+        }
+        .buttonGroup ul li.Rejected{
+            background:#e53d2d;
+        }
+        .buttonGroup ul li.decission{
+            border-radius:50px;
+        }
+        
+    </style>
+    <script>
+    	function onClickApproval(){
+            //if(approvalStatus == 'Submitted')
+            alert('Plan Already Submitted for Approval');
+            //alert(approvalStatus);
+        }
+    	function onclickfunc(retFunction){
+            if(retFunction == 'NotStarted'){
+                {!rmAssessStatus} = 'Rejected';
+                retFunction = 'Rejected';
+            }
+            return retFunction;
+        }
+        function GNGdisp(buttonsToShow){
+            $('.buttonGroup').hide();
+            $('#'+buttonsToShow).show();
+        }
+        function clickFunction(liClass){
+            alert('Inside Javascript') ;
+
+        }
+        $( document ).ready(function() {
+             $('.activeHover').hover(function() {
+              $( this ).addClass("activeButtons");
+            });
+            $('.activeHover').hover(function() {
+                $( '.activeHover' ).removeClass("activeButtons");
+                $( '.decission' ).removeClass("activeButtons");
+                $( this ).addClass("activeButtons");
+            });
+            $('.decission').hover(function() {
+                $( this ).addClass("activeButtons");
+            });
+            $('.decission').hover(function() {
+                $( '.activeHover' ).removeClass("activeButtons");
+                $( '.decission' ).removeClass("activeButtons");
+                $( this ).addClass("activeButtons");
+            });
+            //$('.activeHover').click(function() {
+            //    $( this ).addClass("stayActiveButtons");
+            //});
+            //$('.activeHover').click(function() {
+            //    $( '.activeHover' ).removeClass("stayActiveButtons");
+            //    $( this ).addClass("stayActiveButtons");
+            //});
+
+        });
+    </script>
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+
+    <apex:outputText value="{!pse__Proj__c.DelegateProject__c}" rendered="false" />
+    <apex:outputText value="{!pse__Proj__c.ProjectApproverUser__c}" rendered="false" />
+
+    
+
+    <apex:form >
+    <apex:outputPanel rendered="{!pse__Proj__c.recordType.name =='Customer Project (Unapproved)' 
+                                || pse__Proj__c.recordType.name =='Customer Project (Planning)'}">
+    <ul class="breadcrumb progress">
+        <li class="Complete">
+            <a href="#" title="Create the project within the Ecosystem & link to opportunity in Salesforce" 
+               target="_parent"><div>Create<br/>Project</div></a>
+        </li>
+        <li class="{!goNoGoStatus} activeHover" >
+            <a href="#" onmouseover="GNGdisp('GoNoGoButtons')"><div>R&amp;M<br/>Assessment<br/>for Go / No Go</div></a>
+        </li>
+        <li class="{!rmAssessDecisionStatus} decission2">
+            <a href="#" title="Approval of the Go/No Go recommendation to proceed  with incurring overhead costs (e.g., business development) to prepare a bid  document in reponse to a client's arequest for proposal or brief.  Several iterations of the Go/No Go process may occur at this stage.">
+                <div>Go/No Go</div></a>
+        </li>
+        <li class="{!preliminaryProjectPlan} activeHover">
+            <a href="#" onmouseover="GNGdisp('ReviseProjButtons')"><div>Prepare Project<br/>Plan &amp; Bid</div></a>
+        </li> 
+        <li class="{!planApprovalStatus} decission">
+            <a href="#" title="Approval of the Preliminary Project Plan incorporates and constitutes formal approval to submit the bid document and requires upload of the  signed proposal and/or any relevant supporting approval or review documents." 
+               onmouseover="GNGdisp('PlanApprovalButtons')"><div>Plan<br/> Approval</div></a>
+        </li>
+        <!--<li class="{!pse__Proj__c.ProgBarBidSubmission__c} activeHover">-->
+        <li class="{!submitBidStatus} ">
+            <a href="#" title="This step is not covered within the Ecosystem project management tool, however the Project Plan should be revised to incorporate any negotiated changes, and the R&M Assessment and Go/No Go repeated for any significant changes.">
+                <div>Submit Bid &amp;<br/>Negotiate</div></a>
+        </li>
+        <li class="{!contractReviewStatus} activeHover">
+            <a href="#" title="Finalize any outstanding contract review and approval actions or seek approval to work at risk per relevant delegations of authority.  Allocate the approved project funding to the  prime agreement record and upload the executed agreement or documentation for approval to work at risk." 
+               onmouseover="GNGdisp('ContractReviewButtons')"><div>Contract Review &amp; Approval OR Work At Risk</div></a>
+        </li>
+        <li class="{!negotiationProjectPlan} activeHover">
+            <a href="#" class="projectPlanUpdate1" title = "Update the Project Plan to reflect any changes resulting from bid negotiation, as needed, as the baseline into the project Execution phase." 
+               onmouseover="GNGdisp('ReviseProjButtons')"><div>Revise Project <br/>Plan</div></a>
+        </li>
+        <li class="{!executeApprovalStatus} decission">
+            <a href="#" title="This step is the formal approval of the Project Plan as the baseline into Execution phase.  This step will also create the project in Oracle.  As part of this process, the associated Opportunity status may be updated, if appropriate."  
+               onmouseover="GNGdisp('ApprovalButtons')"><div>Approval<br/>To Execute</div></a>
+        </li>
+    </ul>
+    </apex:outputPanel>
+    <apex:outputPanel rendered="{!pse__Proj__c.recordType.name=='Customer Project (Closed)' 
+                                || pse__Proj__c.recordType.name=='Customer Project (Approved)'}">
+    <ul class="breadcrumb progress">
+        <li class="{!contractReviewStatus}">
+            <a href="#" ><div>Contract Review &amp; Approval OR Work At Risk</div></a>
+        </li>
+        <li class="{!executeApprovalStatus} decission2">
+            <a href="#" ><div>Approval to<br/>Execute</div></a>
+        </li>
+         <li class="{!projInitiationStatus} activeHover">
+            <a href="#" title="Commence execution of the approved Project Plan and enroll the project in the Deliver to Win program, if applicable." 
+            onmouseover="GNGdisp('ProjInitiationButtons')"><div>Project Initiation</div></a>
+        </li>
+        <li class="{!projExecMonitorStatus} activeHover">
+            <a href="#" class="projectPlanUpdate2" title="Execute the project in accordance with the Project Plan, monitor and control project performance and financial health, and update the Project Plan, including budget, in response to internal and external changes." 
+               onmouseover="GNGdisp('PProjPlanButtons')">
+                <div>Project Execution,<br/>Monitoring &amp;<br/>Control</div>
+            </a>
+        </li>
+        <li class="{!monthlyReviewStatus} activeHover">
+            <a href="#" title="PMs monthly review of the project's financial health given a prescribed set of KPIs, including earned value (EV), and confirmation that the project Estimate at Completion (EAC) is current and accurate" onmouseover="GNGdisp('PReviewButtons')">
+                <div>Monthly PM<br/>Project Review</div>
+            </a>
+        </li>
+        <li class="{!monthlyReviewStatus} decission2">
+            <a href="#" title="Approval of the project's current financial performance  and overall health, in accordance with the project category review.">
+                <div>Monthly<br/> Review<br/> Approval</div>
+            </a>
+        </li>
+        <li class="{!projectCloseHoldStatus}">
+            <a href="#" title='Click on the "Change Project Status" button above to request the project to be put on hold or closed.' >
+                <div>Project<br/>Close</div>
+            </a>
+        </li>
+    </ul>
+    </apex:outputPanel>
+        <div id= "GoNoGoButtons" class="GoNoGo buttonGroup" style="display: none;">
+            <ul>
+                <li class="{!locationsResilienceStatus}"><a href="/apex/ECO_Resilience?id={!pse__Proj__c.id}" target="_parent"><span>Locations &amp; Resilience</span></a></li>
+                <li class="{!rmAssessStatus}"><a href="/apex/ECO_RMAChooser?id={!pse__Proj__c.id}" target="_parent" ><span>R &amp; M Assessment</span></a></li>
+                <li class="{!doaManagerStatus}"><a href="/apex/ECO_DOA_ApprovalRequest?projectID={!pse__Proj__c.Id }" target="_parent"><span>DoA Manager</span></a></li>
+                <li class="{!agreementStatus}"><a href="/apex/ECO_ProjectAgreement?CF00Ne0000001Hha5={!pse__Proj__c.Name}&CF00Ne0000001Hha5_lkid={!pse__Proj__c.Id}&saveURL=%2F{!pse__Proj__c.Id}&scontrolCaching=1&retURL=%2F{!pse__Proj__c.Id}&sfdc.override=1" target="_parent"><span>Agreements</span></a></li>
+            </ul>
+        </div>
+        <div id="ReviseProjButtons" class="buttonGroup" style="display: none;">
+            <ul>
+                <li class="{!scopeApproachStatus}"><a href="/apex/ECO_ProjectScope?projectId={!pse__Proj__c.id}" target="_parent"><span>Scope &amp; Approach</span></a></li>
+                <li class="{!deliverableStatus}">
+                    <!--<a href="/a4d/e?CF00Ne00000016aWE={!pse__Proj__c.Name}&CF00Ne00000016aWE_lkid={!pse__Proj__c.id}&retURL=%2F{!pse__Proj__c.id}" target="_parent" ><span>Deliverables</span></a>-->
+                    <a href="/apex/ECO_DeliverableList?id={!pse__Proj__c.id}" target="_parent" ><span>Deliverables</span></a>
+                </li>
+                <li class="{!riskRegisterStatus}"><a href="/apex/ECO_RiskRegisterList?id={!pse__Proj__c.id}" target="_parent"><span>Risk Register</span></a></li>
+                <li class="{!classificationStatus}"><a href="/apex/ECO_ClassificationEditor?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Classifications</span></a></li>
+                <li class="{!scheduleWBSStatus}"><a href="/apex/pse__ProjectTaskGantt?id={!pse__Proj__c.id}" target="_parent" ><span>Schedule &amp; WBS</span></a></li>
+                <li class="{!documentMgmtStatus}"><a href="/apex/ECO_DocumentManagement?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Document Mgmt</span></a></li>
+                <li class="{!doaManagerStatus}"><a href="/apex/ECO_DOA_ApprovalRequest?projectID={!pse__Proj__c.Id }" target="_parent"><span>DoA Manager</span></a></li>
+                <li class="{!safeHealthEnvStatus}"><a href="/apex/ECO_SafetyHealthEnvironment?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Safety, Health &amp; Env</span></a></li>
+                <li class="{!budgetStatus}"><a href="/apex/ECO_BudgetHeaderSummary?id={!pse__Proj__c.id}" target="_parent" ><span>Budget &amp; EAC</span></a></li>
+				<li class="{!projTeamStakeStatus}"><a href="/apex/ECO_Stakeholders?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Project Team &amp; Stake</span></a></li>
+				<li class="{!rmAssessStatus}" ><a href="/apex/ECO_RMAChooser?id={!pse__Proj__c.id}" target="_parent"><span>R &amp; M Assessment</span></a></li>
+                <li class="{!locationsResilienceStatus}"><a href="/apex/ECO_Resilience?id={!pse__Proj__c.id}" target="_parent" ><span>Locations &amp; Resilience</span></a></li>
+                <li class="{!agreementStatus}"><a href="/apex/ECO_ProjectAgreement?CF00Ne0000001Hha5={!pse__Proj__c.Name}&CF00Ne0000001Hha5_lkid={!pse__Proj__c.Id}&saveURL=%2F{!pse__Proj__c.Id}&scontrolCaching=1&retURL=%2F{!pse__Proj__c.Id}&sfdc.override=1" target="_parent"><span>Agreements</span></a></li>
+                <li class="{!subsVendorStatus}"><a href="/apex/ECO_SubsVendors?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Subs/Vendors</span></a></li>
+                <li class="{!reviewMeetingStatus}"><a href="/apex/ECO_ProjectReviewRecordType?Id={!pse__Proj__c.id}" target="_parent"><span>Reviews/Meetings</span></a></li>
+                <li class="{!assumptionStatus}"><a href="/apex/ECO_AssumptionRegister?projectId={!pse__Proj__c.id}" target="_parent"><span>Assumptions</span></a></li>
+            </ul>        
+        </div>
+        <div id= "PlanApprovalButtons" class="buttonGroup" style="display: none;">
+            <ul>
+                <li class="{!planApprovalStatus}">
+                    <apex:commandlink action="{!submitPlanApproval}" value="Submit Plan for Approval" target="_blank" rendered="{!IF(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'NotStarted',true,false)}"/>
+                    <apex:commandlink action="{!submitPlanApprovalDummy}" value="Submit Plan for Approval" onclick="return confirm('Plan already submitted for approval');" rendered="{!NOT(IF(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'NotStarted',true,false))}"/>
+                </li>
+                <li class="{!doaManagerStatus}"><a href="/apex/ECO_DOA_ApprovalRequest?projectID={!pse__Proj__c.Id }" target="_parent"><span>DoA Manager</span></a></li>
+                <li class="{!healthyStartStatus}"><apex:commandLink action="{!healthyStartClicked}" target="_parent" value="Healthy Start" /></li>
+            </ul>
+        </div>
+        <div id= "ApprovalButtons" class="buttonGroup" style="display: none;">
+            <ul>
+                <li class="{!submitExecutionButtonStatus}"><a href="/apex/ECO_ProjectChangeManager?Id={!pse__Proj__c.Id}&mode=ExecutionApproval" target="_parent"><span>Submit Plan for Execution</span></a></li>
+                <!-- <li ><a href="#" value="Submit" target="_self"><span>Submit Project Plan for Approval</span></a></li>-->
+            </ul>
+        </div>
+        <div id= "ContractReviewButtons" class="buttonGroup" style="display: none;">
+            <ul>
+                <li class="{!agreementStatus}"><a href="/apex/ECO_ProjectAgreement?CF00Ne0000001Hha5={!pse__Proj__c.Name}&CF00Ne0000001Hha5_lkid={!pse__Proj__c.Id}&saveURL=%2F{!pse__Proj__c.Id}&scontrolCaching=1&retURL=%2F{!pse__Proj__c.Id}&sfdc.override=1" target="_parent"><span>Agreements</span></a></li>
+                <li class="{!doaManagerStatus}"><a href="/apex/ECO_DOA_ApprovalRequest?projectID={!pse__Proj__c.Id }" target="_parent"><span>DoA Manager</span></a></li>
+            </ul>
+        </div>
+        <div id= "CMgmtButtons" class="buttonGroup " style="display: none;">
+            <ul>
+                <li class="{!changeMgmtStatus}"><a href="/apex/ECO_ProjectChangeManager?id={!pse__Proj__c.id}" target="_parent"> <span>Change Management</span></a></li>
+            </ul>
+        </div>
+        <div id= "EValButtons" class="buttonGroup " style="display: none;">
+            <ul>
+                <li class="{!earnedValueStatus}"><a href="/apex/ECO_EarnedValueReport2?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Earned Value</span></a></li>
+                <li class="{!budgetStatus}"><a href="/apex/ECO_BudgetHeaderSummary?id={!pse__Proj__c.id}" target="_parent" ><span>Budget</span></a></li>
+            </ul>
+        </div>
+        <div id= "ProjInitiationButtons" class="buttonGroup " style="display: none;">
+            <ul>
+                <li class="{!projectKickOffStatus}"><apex:commandLink action="{!projectKickOffClicked}" target="_parent" value="Project Kickoff" /></li>
+                <li ><a href="#" target="_parent" ><span>Deliver to Win</span></a></li>
+            </ul>
+        </div>
+        <div id="PProjPlanButtons" class="buttonGroup" style="display: none;">
+            <ul>
+                <li ><a href="/apex/eco_pmd_projectdashboard?id={!pse__Proj__c.id}" target="_parent" ><span>Project Dashboard</span></a></li>
+                <!--<li class="{!earnedValueStatus}"><a href="/apex/ECO_EarnedValueReport2?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent" style="border-color:#9ecaed; box-shadow:0 0 10px #9ecaed;"><span>Earned Value</span></a></li>-->
+                <li class="{!earnedValueStatus} "><a href="/apex/ECO_EarnedValueReport2?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent" ><span>*Earned Value*</span></a></li>
+                <li class="{!changeMgmtStatus} " ><a href="/apex/ECO_ProjectChangeManager?id={!pse__Proj__c.id}" target="_parent" > <span>*Change Management*</span></a></li>
+                <li ><a href="#" target="_parent" ><span>Deliver to Win</span></a></li>
+                <li class="{!scopeApproachStatus} "><a href="/apex/ECO_ProjectScope?projectId={!pse__Proj__c.id}" target="_parent"><span>Scope &amp; Approach</span></a></li>
+                <li class="{!deliverableStatus}"><!--<a href="/a4d/e?CF00Ne00000016aWE={!pse__Proj__c.Name}&CF00Ne00000016aWE_lkid={!pse__Proj__c.id}&retURL=%2F{!pse__Proj__c.id}" target="_parent">-->
+                	<a href="/apex/ECO_DeliverableList?id={!pse__Proj__c.id}" target="_parent" ><span>Deliverables</span></a>
+                </li>
+                <li class="{!riskRegisterStatus}"><a href="/apex/ECO_RiskRegisterList?id={!pse__Proj__c.id}" target="_parent"><span>Risk Register</span></a></li>
+                <li class="{!classificationStatus}"><a href="/apex/ECO_ClassificationEditor?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Classifications</span></a></li>
+                <li class="{!scheduleWBSStatus}"><a href="/apex/pse__ProjectTaskGantt?id={!pse__Proj__c.id}" target="_parent" ><span>Schedule &amp; WBS</span></a></li>
+                <li class="{!documentMgmtStatus}"><a href="/apex/ECO_DocumentManagement?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Document Mgmt</span></a></li>
+                <li class="{!doaManagerStatus}"><a href="/apex/ECO_DOA_ApprovalRequest?projectID={!pse__Proj__c.Id }" target="_parent"><span>DoA Manager</span></a></li>
+                <li class="{!safeHealthEnvStatus}"><a href="/apex/ECO_SafetyHealthEnvironment?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Safety, Health &amp; Env</span></a></li>
+                <li class="{!budgetStatus}"><a href="/apex/ECO_BudgetHeaderSummary?id={!pse__Proj__c.id}" target="_parent" ><span>*Budget &amp; EAC*</span></a></li>
+				<li class="{!projTeamStakeStatus}"><a href="/apex/ECO_Stakeholders?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Project Team &amp; Stake</span></a></li>
+				<li class="{!rmAssessStatus}" ><a href="/apex/ECO_RMAChooser?id={!pse__Proj__c.id}" target="_parent"><span>R &amp; M Assessment</span></a></li>
+                <li class="{!locationsResilienceStatus}"><a href="/apex/ECO_Resilience?id={!pse__Proj__c.id}" target="_parent" ><span>Locations &amp; Resilience</span></a></li>
+                <li class="{!agreementStatus}"><a href="/apex/ECO_ProjectAgreement?CF00Ne0000001Hha5={!pse__Proj__c.Name}&CF00Ne0000001Hha5_lkid={!pse__Proj__c.Id}&saveURL=%2F{!pse__Proj__c.Id}&scontrolCaching=1&retURL=%2F{!pse__Proj__c.Id}&sfdc.override=1" target="_parent"><span>Agreements</span></a></li>
+                <li class="{!subsVendorStatus}"><a href="/apex/ECO_SubsVendors?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Subs/Vendors</span></a></li>
+                <li class="{!reviewMeetingStatus}"><a href="/apex/ECO_ProjectReviewRecordType?Id={!pse__Proj__c.id}" target="_parent" ><span>*Reviews/Meetings*</span></a></li>
+                <li class="{!assumptionStatus}"><a href="/apex/ECO_AssumptionRegister?projectId={!pse__Proj__c.id}" target="_parent"><span>Assumptions</span></a></li>
+            </ul>        
+        </div>
+        
+        <div id= "PReviewButtons" class="buttonGroup " style="display: none;">
+            <ul>
+                <li><a href="#" ><span>ProjectDash(ComingSoon)</span></a></li>
+                <li class="{!earnedValueStatus}"><a href="/apex/ECO_EarnedValueReport2?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Earned Value</span></a></li>
+                <li class="{!changeMgmtStatus}"><a href="/apex/ECO_ProjectChangeManager?id={!pse__Proj__c.id}" target="_parent"> <span>Change Management</span></a></li>
+                <li class="{!reviewMeetingStatus}" ><a href="/apex/ECO_ProjectReviewRecordType?Id={!pse__Proj__c.id}" target="_parent"><span>Reviews/Meetings</span></a></li>
+                <li class="{!budgetStatus}"><a href="/apex/ECO_BudgetHeaderSummary?id={!pse__Proj__c.id}" target="_parent" ><span>Budget &amp; EAC</span></a></li>
+            </ul>
+        </div>
+        <div id= "PCloseButtons" class="buttonGroup " style="display: none;">
+            <ul>
+                <li  class="{!projectCloseButtonStatus}"><a href="/apex/ECO_CloseoutProjectApprovalPhase?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Project Close/Hold</span></a></li>
+            </ul>
+        </div>
+
+    </apex:form>
+</apex:page>

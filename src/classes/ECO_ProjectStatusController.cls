@@ -49,12 +49,11 @@ public with sharing class ECO_ProjectStatusController {
                         allStatus = allStatus + 'N';
                     }
                     else */if(oRMA.ApprovalStatus__c == 'Submitted'
-                             || oRMA.ApprovalStatus__c == 'Pending Approval'
-                             || oRMA.ApprovalStatus__c == 'Rejected'){
+                             || oRMA.ApprovalStatus__c == 'Pending Approval'){
                         retStatus = 'Started';
                         allStatus = allStatus + 'S';
                     }
-                    else if(oRMA.ApprovalStatus__c == 'Approved'){
+                    else if(oRMA.ApprovalStatus__c == 'Approved' || oRMA.ApprovalStatus__c == 'Rejected'){
                         retStatus = 'Complete';
                         allStatus = allStatus + 'C';
                     }
@@ -84,10 +83,17 @@ public with sharing class ECO_ProjectStatusController {
                     }
                     else
                         retStatus = 'Started';*/
-                    if(!(allStatus.contains('C')))
+                    
+                    /*if(!(allStatus.contains('C')))
                        return 'Started';
                     else
-                       return 'Complete';
+                       return 'Complete';*/
+                    System.debug('allStatus::::::'+allStatus);
+                    if(allStatus.containsOnly('C'))
+                        return 'Complete';
+                    else
+                        return 'Started';
+                    
                 }
 				//return retStatus;
             }
@@ -147,7 +153,7 @@ public with sharing class ECO_ProjectStatusController {
             	String singleRecStatus = '';
             	String retStatus = '';
             	String statusString = '';
-                list<QuestionnaireSet__c> lRMAs = new list<QuestionnaireSet__c>([SELECT id, GoNoGoRecommendation__c, ApprovalStatus__c FROM QuestionnaireSet__c WHERE Project__c = :currentRecordId ORDER BY GoNoGoDate__c DESC, LastModifiedDate DESC]);
+                list<QuestionnaireSet__c> lRMAs = new list<QuestionnaireSet__c>([SELECT id, GoNoGoRecommendation__c, ApprovalStatus__c FROM QuestionnaireSet__c WHERE Project__c = :currentRecordId ORDER BY  LastModifiedDate DESC]);
                 //if(goNoGoStatus == 'Complete'){
                     if(lRMAs.size() == 0)
                         //return 'NotStarted';
@@ -178,16 +184,23 @@ public with sharing class ECO_ProjectStatusController {
                         }
                         
                     }
+            		System.debug('singleRecStatus:::::'+singleRecStatus);
+            		System.debug('statusString:::::::'+statusString);
             		if(lRMAs.size() == 1)
                         return singleRecStatus;
                     else{
-                        if(statusString.contains('R'))
+                        /*if(statusString.contains('R'))
                             retStatus = 'Rejected';
                         else if(statusString.contains('C'))
                             retStatus = 'Complete';
                         else
+                            retStatus = 'Started';*/
+                        if(statusString.startsWith('R'))
+                            retStatus = 'Rejected';
+                        else if(statusString.startsWith('C'))
+                            retStatus = 'Complete';
+                        else
                             retStatus = 'Started';
-                        
                         System.debug('retStatus ::::'+retStatus);
                         return retStatus;
                     }
@@ -311,10 +324,14 @@ public with sharing class ECO_ProjectStatusController {
             String retStatus = '';
             if(rmAssessDecisionStatus == 'Complete'){
                 retStatus = currentProject.ProgBarPrelimPlanApproval__c;
-                if(retStatus == 'NotStarted')
+                /*if(retStatus == 'NotStarted')
                     return 'Ready';
                 else
-                    return retStatus;
+                    return retStatus;*/
+                if(retStatus == 'Submitted')
+                    return 'Started';
+                else
+                    return 'NotStarted';
             }
             else
                 return 'NotStarted';
@@ -524,7 +541,9 @@ public with sharing class ECO_ProjectStatusController {
             List<Deliverable__c> lDeliverables = new List<Deliverable__c>([Select id, Status__c From Deliverable__c where Project__c = :currentRecordId]);
             if(lDeliverables.size()==0)
                 return 'NotStarted';
-            for(Deliverable__c oDelivs : lDeliverables){
+            else
+                return 'Complete';
+            /*for(Deliverable__c oDelivs : lDeliverables){
                 if(oDelivs.Status__c == 'Rejected')
                     allStatus = allStatus + 'R';
                 else if(oDelivs.Status__c == 'Review Complete')
@@ -539,7 +558,7 @@ public with sharing class ECO_ProjectStatusController {
                 retStatus = 'Complete';
             else
                 retStatus = 'Started';
-            return retStatus;
+            return retStatus;*/
         }
         set;
     } 
@@ -579,10 +598,31 @@ public with sharing class ECO_ProjectStatusController {
     public String documentMgmtStatus { 
 
         get {
-            List<pse__Proj__c> lProjects = new List<pse__Proj__c>([Select id, DocManagementCompleted__c From pse__Proj__c Where id = :currentRecordId]);
+            List<pse__Proj__c> lProjects = new List<pse__Proj__c>([Select id, DocManagementCompleted__c, DocumentControlSystemType__c,
+                                                                   DocumentControlSystem__c, DocumentNamingConventionsType__c, DocumentNamingConventions__c,
+                                                                   FileManagementStructureType__c, FileManagementStructure__c,
+                                                                   DocumentTransmittalsType__c, DocumentTransmittals__c, DocumentRecordsArchivingType__c, DocumentRecordsArchiving__c,
+                                                                   DocumentOtherCommentsNotesType__c, DocumentOtherCommentsNotes__c
+                                                                   From pse__Proj__c Where id = :currentRecordId]);
             String retStatus;
             for(pse__Proj__c oProj :lProjects){
-                retStatus = oProj.DocManagementCompleted__c;
+                //retStatus = oProj.DocManagementCompleted__c;
+                if(!(string.isBlank(oProj.DocumentControlSystemType__c))
+                      	|| !(string.isBlank(oProj.DocumentControlSystem__c))
+                   		|| !(string.isBlank(oProj.DocumentNamingConventionsType__c))
+                   		|| !(string.isBlank(oProj.DocumentNamingConventions__c))
+                   		|| !(string.isBlank(oProj.FileManagementStructureType__c))
+                       || !(string.isBlank(oProj.FileManagementStructure__c))
+                       || !(string.isBlank(oProj.DocumentTransmittalsType__c))
+                       || !(string.isBlank(oProj.DocumentTransmittals__c))
+                       || !(string.ISBLANK(oProj.DocumentRecordsArchivingType__c))
+                       || !(string.ISBLANK(oProj.DocumentRecordsArchiving__c))
+                       || !(string.ISBLANK(oProj.DocumentOtherCommentsNotesType__c))
+                       || !(string.ISBLANK(oProj.DocumentOtherCommentsNotes__c))
+                  )
+                    retStatus = 'Complete';
+                else
+                    retStatus = 'NotStarted';
             }
             return retStatus;
         }
@@ -941,18 +981,21 @@ public with sharing class ECO_ProjectStatusController {
             Boolean recFound = false;
             List<ChangeManager__c> lchanges = new List<ChangeManager__c> ([Select id, IntExtProjectOnHold__c, IntExtProjectClosure__c, ApprovalStatus__c from ChangeManager__c where Project__c = :currentRecordId AND (IntExtProjectClosure__c = True OR IntExtProjectOnHold__c = True)]);
             for(ChangeManager__c oChangeMgr : lchanges){
-                if(oChangeMgr.ApprovalStatus__c == 'Submitted')
+                if(oChangeMgr.ApprovalStatus__c == 'Submitted')	
                         allStatus = allStatus + 'S';
                 if(oChangeMgr.ApprovalStatus__c == 'Approved' || oChangeMgr.ApprovalStatus__c == 'Auto Approved')
                         allStatus = allStatus + 'C';
             }
             System.debug('lchanges.size():  '+lchanges.size()+'   allStatus:'+allStatus);
             if(executeApprovalStatus == 'Complete'){
-                if( lchanges.size()>0 && allStatus != '' && allStatus.containsOnly('C'))
+            //if(1==1){
+                if(currentProject.pse__Stage__c == 'Closed' || currentProject.pse__Stage__c == 'On Hold')
                     return 'Complete';
+                //if( lchanges.size()>0 && allStatus != '' && allStatus.containsOnly('C'))
+                    //return 'Complete';
 				else if(lchanges.size()>0 && allStatus != '' && allStatus.contains('S'))
                     return 'Started';
-                else if(lchanges.size()>0 && allStatus == '')
+                else if(lchanges.size()>0 )
                     return 'Ready';
                 /*else if(currentProject.pse__Stage__c == 'Closed' )
                     return 'Complete';
@@ -1077,6 +1120,9 @@ public with sharing class ECO_ProjectStatusController {
         System.debug('Result:  '+result);
         projPage.setRedirect(true);
         return projPage;
+    }
+    public PageReference submitPlanApprovalDummy(){
+        return null;
     }
     /*public PageReference locationClicked() 
     {
