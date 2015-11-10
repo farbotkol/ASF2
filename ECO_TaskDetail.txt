@@ -1,0 +1,298 @@
+<apex:page standardController="pse__Proj__c" extensions="ECO_TaskDetailController" showHeader="false" id="idpage">
+    <apex:composition template="ECO_BudgetFrame">
+    <apex:define name="budgetScreen">
+
+    <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
+    
+    <script type="text/javascript">
+        $b = jQuery.noConflict();
+
+        function showHide(elem, elemid) {
+            current = $b(elem).html();
+
+            if (current == '-') {  // currently open, close
+                $b(elem).html('+');
+
+                $b('.' + elemid).hide(250);
+            } else if (current == '+') {  // currently closed, open
+                $b(elem).html('-');
+
+                $b('.' + elemid).show(250);
+            } else {  // ALERT - oops
+                //alert('hello');
+            }
+        }
+        
+        $b(document).ready(function() {
+            $b('.dateFormat').css('display','none');
+        });
+    </script>
+    <style>
+        th, td {
+            border-top: 1px solid black;
+            border-bottom: 1px solid black;
+            border-left: 1px solid black;
+            border-right: 1px solid black;
+            border-collapse: collapse;        
+            padding: 5px;
+            text-align: left;
+        }
+        table {
+            border: none;
+            border-collapse: collapse;
+        }
+        
+        .dollarAmount {
+            text-align:right;
+        }
+        
+        .percentAmount {
+            text-align:center;
+        }
+        
+        .rightBlue {
+            background-color:#0070C0;color:white;text-align:right
+        }
+        
+        .centerBlue {
+            background-color:#0070C0;color:white;text-align:center
+        }
+        
+        .rightGreen {
+            background-color:#76933C;color:white;text-align:right
+        }
+        
+        .centerGreen {
+            background-color:#76933C;color:white;text-align:center
+        }
+        
+        .rightPurple {
+            background-color:#60497A;color:white;text-align:right
+        }
+        
+        .centerPurple {
+            background-color:#60497A;color:white;text-align:center
+        }
+        
+        .rightOrange {
+            background-color:#FF9900;color:white;text-align:right
+        }
+        
+        .centerOrange {
+            background-color:#FF9900;color:white;text-align:center
+        }
+        
+        .lightBlue {
+            background-color:#DCE6F1;
+        }
+        
+        .lightGreen {
+            background-color:#EBF1DE;
+        }
+        
+        .lightPurple {
+            background-color:#E4DFEC;
+        }
+        
+        .lightOrange {
+            background-color:#FDE9D9;
+        }
+        
+        .bold {
+            font-weight:bold;
+        }
+        
+        .Processing
+        {
+            position: fixed;
+            background-color: white;
+            background: url('/img/loading32.gif');
+            background-repeat: no-repeat !important;
+            background-position: center;
+            z-index: 1000;
+            width: 100%;
+            height: 100%;
+            z-index: 1004;
+            opacity: 0.7;
+            left: 0%;
+            top: 0%;
+        }
+        .headerth{
+        background-color:#ACACA8;
+        }
+        .openClose {
+            text-align: center;
+            font-size: 12pt;
+            background-color: white;
+            min-width: 13px;
+        }
+    </style>
+   <script type="text/javascript">
+        function manageRows(b)
+        {
+            //alert('Function Called');
+            //idpage:j_id0:idfrm:j_id39:0:selectId
+             var e = document.getElementById('idpage:j_id0:idfrm:j_id27:'+ b +':selectId');
+             var str = e.options[e.selectedIndex].text;
+             if(str == 'Delete Task')
+             {
+                 if(confirm('Are you sure?'))
+                 {
+                     document.getElementById('idpage:j_id0:idfrm:hdnINPUT').value = b;
+                     manageRowsJS();
+                 }
+             }
+             else
+             {
+                 document.getElementById('idpage:j_id0:idfrm:hdnINPUT').value = b;
+                 manageRowsJS();
+             }
+        }
+        
+    </script>
+   
+<apex:form id="idfrm">
+    <apex:inputHidden value="{!intRowNo}" id="hdnINPUT"/>
+    <apex:actionStatus id="idStatus" startStyleClass="Processing"/>
+    <apex:actionFunction action="{!manageRows}" name="manageRowsJS" reRender="pnl" status="idStatus"/>
+    <apex:outputPanel id="pnl">
+    <script type="text/javascript">
+        function manageRows(b)
+        {
+            //idpage:j_id0:idfrm:j_id39:0:selectId
+             var e = document.getElementById('idpage:j_id0:idfrm:j_id27:'+ b +':selectId');
+             var str = e.options[e.selectedIndex].text;
+             
+             document.getElementById('idpage:j_id0:idfrm:hdnINPUT').value = b;
+             //alert(document.getElementById('idpage:j_id0:idfrm:hdnINPUT'));
+             if(str == 'Delete Task')
+             {
+                 if(confirm('Are you sure?'))
+                 {
+                     manageRowsJS();
+                 }
+             }
+             else
+             {
+                 manageRowsJS();
+             }
+        }
+                
+        $b(document).ready(function() {
+            $b('.dateFormat').css('display','none');
+        });
+    </script>
+    
+    <apex:sectionHeader title="Task Detail"/>
+    <!--<apex:pageMessages ></apex:pageMessages> -->
+    
+    <table width="100%" border="1px solid black">
+        <tr>
+            <td colspan="14">
+                <apex:commandButton value="New Task" action="{!addNewRowTask}" rendered="{!boolShowNewBtn}" status="idStatus" reRender="pnl"/>
+                <apex:commandButton value="Save" action="{!mySave}"  status="idStatus" reRender="pnl"/>
+            </td>
+        </tr>
+        <tr>
+            <th class="headerth">&nbsp;</th>
+            <th class="headerth">Task#</th>
+            <th class="headerth">Task Name</th>
+            <th class="headerth">Action</th>
+            <th class="headerth">Generate <br/>Charge Code</th>
+            <th class="headerth">Available for<br/> Cost Charging</th>
+            <th class="headerth">Billable to <br/>Client</th>
+            <th class="headerth">Planned Start <br/>Date &amp; Time</th>
+            <th class="headerth">Planned Finish <br/>Date &amp; Time</th>
+            <th class="headerth">Duration<br/>(days)</th>
+            <th class="headerth">Forecast <br/> Start Date</th>
+            <th class="headerth">Forecast <br/> Finished Date</th>
+            <th class="headerth">Work Type <br/>Name</th>
+            <th class="headerth">Cost Spread</th>
+        </tr>
+        <apex:variable var="b" value="{!0}"/>
+        
+        <apex:repeat value="{!lstTaskDetailWrapper}" var="task">
+            <tr style="{!IF(task.isErrorRow = true,"display:table-row !important;","display:none !important;")}"><td colspan="14">{!task.strErrorMsg}</td></tr>
+            <tr class="{!task.objEPT.parentClasses}" style="{!IF(task.isErrorRow = true,"background-color:red !important;","")}">
+                <td class="openClose">
+                    <apex:outputPanel rendered="{!task.objEPT.children.size > 0}" onclick="showHide(this, '{!task.objEPT.id}');">-</apex:outputPanel>
+                </td>
+                <td style="color:red;">
+                    <div style="margin-left: {!task.objEPT.indentLevel * 13}px;">
+                        <!--{!task.objEPT.taskNumber} (level {!task.objEPT.indentLevel}) style="{!IF(task.isErrorRow,"background-color:red;","")}"-->
+                        
+                    </div>
+                    <apex:inputField value="{!task.objEPT.oprojectTask.ProjectTaskNumber__c}" style="width:35px;"/>
+                </td>
+                <td>
+                    <div style="margin-left: {!task.objEPT.indentLevel * 13}px;">
+                        <apex:outputText value="{!task.objEPT.Name}" rendered="{!NOT(task.boolShowInput)}"></apex:outputText>
+                        <apex:inputField value="{!task.objEPT.oprojectTask.Name}" rendered="{!task.boolShowInput}"/>
+                    </div>
+                </td>
+                <td>
+                    <apex:outputText value="{!task.strSub_PeerTask}" rendered="{!task.boolShowInput}"></apex:outputText>
+                    <apex:selectList value="{!task.strSelectedAction}" size="1" onchange="manageRows({!b});" id="selectId" rendered="{!NOT(task.boolShowInput)}">
+                        <apex:selectOptions value="{!task.lstAction}" ></apex:selectOptions>
+                    </apex:selectList>
+                </td>
+                <td>
+                    <apex:inputField value="{!task.objEPT.oprojectTask.FinancialTask__c}" rendered="{!IF(task.strSub_PeerTask="Sub Task",false,true)}"/>
+                </td>
+                <td>
+                    <apex:inputField value="{!task.objEPT.oprojectTask.IsChargeable__c}" rendered="{!IF(task.strSub_PeerTask="Sub Task",false,true)}"/>
+                </td>
+                <td>
+                    <apex:inputField value="{!task.objEPT.oprojectTask.IsBillable__c}"/>
+                </td>
+                <td>
+                    <!--<apex:outputText value="{0, date, MMM d','  yyyy}">
+                        <apex:param value="{!task.oprojectTask.pse__Start_Date_Time__c}"/>
+                    </apex:outputText>-->
+                    <apex:inputField value="{!task.objEPT.oprojectTask.pse__Start_Date_Time__c}"/> 
+                </td>
+                <td>
+                    <!--<apex:outputText value="{0, date, MMM d','  yyyy}">
+                        <apex:param value="{!task.oprojectTask.pse__End_Date_Time__c}"/>
+                    </apex:outputText>--> 
+                    <apex:inputField value="{!task.objEPT.oprojectTask.pse__End_Date_Time__c}"/>
+                </td>
+                <td>{!task.objEPT.oprojectTask.Duration__c}</td>
+                <td>
+                   <!-- <apex:outputText value="{0, date, MMM d','  yyyy}">
+                        <apex:param value="{!task.oprojectTask.ForecastStartDate__c}"/>
+                    </apex:outputText>-->
+               <apex:inputField value="{!task.objEPT.oprojectTask.ForecastStartDate__c}"/>
+                </td>
+                <td>
+                   <!-- <apex:outputText value="{0, date, MMM d','  yyyy}">
+                        <apex:param value="{!task.oprojectTask.ForecastEndDate__c}"/>
+                                      </apex:outputText>-->
+                   <apex:inputField value="{!task.objEPT.oprojectTask.ForecastEndDate__c}"/>         
+                </td>
+               <td>
+                   <!--<apex:inputField value="{!task.objEPT.oprojectTask.WorkTypeName__c}"/>-->
+                   
+                   <apex:selectList value="{!task.strSelectedWorkTypeName}" size="1">
+                        <apex:selectOptions value="{!task.lstWorkTypeName}" ></apex:selectOptions>
+                   </apex:selectList>
+               </td>
+               
+                <td>
+                    <apex:inputField value="{!task.objEPT.oprojectTask.EarnedValueCurve__c}"/>
+                </td>
+            </tr>
+            <apex:variable var="b" value="{!b+1}"/>
+        </apex:repeat>
+        
+        
+    </table> 
+    </apex:outputPanel>
+    </apex:form> 
+
+    </apex:define>
+    </apex:composition>
+    
+</apex:page>
+                                        
