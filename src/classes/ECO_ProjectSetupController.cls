@@ -58,7 +58,8 @@ public with sharing class ECO_ProjectSetupController {
     public boolean bOppSelected {get; set;}
     public boolean bSearchOutsideUserOrg {get;set;}
 
-    
+    public string oppName {get;set;}
+
     public Integer intNumIsBilling;
     public Integer intNumIsEnd;
 
@@ -266,6 +267,8 @@ public with sharing class ECO_ProjectSetupController {
 
         showMoreSiteText = 'Show More';
         showMoreOrgText = 'Show More';
+
+        oppName = null;
 
         SearchOrganizations();
         SearchUserOrganization();
@@ -522,6 +525,7 @@ public with sharing class ECO_ProjectSetupController {
         booShowProjectInput = true;
         oProject.pse__Opportunity__c = sSelectedOpportunityId;
         oProject.name = mapOpportunitySearch.get(sSelectedOpportunityId).name;
+        oppName = mapOpportunitySearch.get(sSelectedOpportunityId).name;
         lastSaveAttemptName = null;
         boolNameAttempted = false;
         tabState = 'name3';
@@ -532,6 +536,7 @@ public with sharing class ECO_ProjectSetupController {
     public PageReference SkipOpportunity(){
         oProject.pse__Opportunity__c = null;
         oProject.name = null;
+        oppName = null;
         tabState = 'name3';
         bOppSelected = true;    
         return null;    
@@ -1039,7 +1044,7 @@ public with sharing class ECO_ProjectSetupController {
         }
 
         
-        list<contact> lstSearchContact = [select id, pse__Salesforce_User__c from contact where pse__Salesforce_User__c  =: oProject.ownerid];
+        list<contact> lstSearchContact = [select id, pse__Salesforce_User__c from contact where pse__Salesforce_User__c  =: UserInfo.getUserId()];
         if(mapProjectRole.containskey('Project Manager') && lstSearchContact.size() > 0){
             id auth2IDa = mapProjectRole.get('Project Manager').id;
             id contactIDa = lstSearchContact[0].id;
@@ -1193,7 +1198,7 @@ public with sharing class ECO_ProjectSetupController {
         oOpportunityToInsert.probability = 100;
         oOpportunityToInsert.accountid = oPrimaryEnd.osite.Account__c;
         oOpportunityToInsert.TO_Procurement_Method__c = 'Competitive Task Orders';
-        oOpportunityToInsert.Capture_Manager_User__c = oProject.ownerid;
+        oOpportunityToInsert.Capture_Manager_User__c = UserInfo.getUserId();
 
         insert oOpportunityToInsert;
 
