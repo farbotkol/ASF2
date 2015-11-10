@@ -208,7 +208,7 @@ public with sharing class ECO_Service_Delegation {
 
     private static string addcomma(string slimit){
         if(slimit.length() > 0){
-            return ',';
+            return ', ';
         }
 
         return '';
@@ -484,6 +484,7 @@ public with sharing class ECO_Service_Delegation {
 
 
                     Delegation__c oDelegation = new Delegation__c(DelegateUser__c = contactMap.get(c.relProj.PnLManager__c).pse__Salesforce_User__c
+                                                                , Delegate_Swapped__c = contactMap.get(c.relProj.PnLManager__c).id
                                                                 , Record__c = (id)c.oSObject.get('id')
                                                                 , Process__c = c.oAD.Process__c
                                                                 , Object_Name__c = objectLabel
@@ -506,6 +507,7 @@ public with sharing class ECO_Service_Delegation {
 
 
                     Delegation__c oDelegation = new Delegation__c(DelegateUser__c = contactMap.get(c.relProj.FAManager__c).pse__Salesforce_User__c
+                                                                , Delegate_Swapped__c = contactMap.get(c.relProj.FAManager__c).id
                                                                 , Record__c = (id)c.oSObject.get('id')
                                                                 , Process__c = c.oAD.Process__c
                                                                 , Object_Name__c = objectLabel
@@ -538,6 +540,7 @@ public with sharing class ECO_Service_Delegation {
                 string reason = sReason;
 
                 Delegation__c oDelegation = new Delegation__c(DelegateUser__c = changeUser
+                                                            , Delegate_Swapped__c = mapDelegates.get((id)c.userChange).Delegate__c
                                                             , Record__c = (id)c.oSObject.get('id')
                                                             , Process__c = c.oAD.Process__c
                                                             , Object_Name__c = objectLabel
@@ -624,11 +627,14 @@ public with sharing class ECO_Service_Delegation {
                     lstChanges.add(new change(s, ad, dDelegate, proj, index));
 
                     id iDelegate = null;
+                    id icontact = null;
                     if(dDelegate != null){
                         iDelegate = dDelegate.id;
+                        icontact = dDelegate.Delegate__c;
                     }
 
                     Delegation__c oDelegation = new Delegation__c(DelegateUser__c = (id)s.get(ad.Field_API_Name__c)
+                                                                , Delegate_Swapped__c = icontact
                                                                 , Record__c = (id)s.get('id')
                                                                 , Process__c = ad.Process__c
                                                                 , Object_Name__c = objectLabel

@@ -4,6 +4,29 @@ private class ECO_ProjectSetupControllerTest
 
 	static void initializeSites(){
 
+		OrganizationString__c testOrg =  ECO_Utils_Testing.createTestOrg();
+		insert testOrg;
+
+		Profile p = [SELECT Id FROM Profile WHERE Name='System Administrator']; 
+
+		User testUser = new User();
+		testUser.Alias = 'myuser';
+		testUser.Email ='mytestuser@example.com';
+		testUser.EmailEncodingKey ='UTF-8';
+
+		testUser.FirstName = 'test';
+		testUser.LastName ='Testing';
+		testUser.LanguageLocaleKey ='en_US';
+		testUser.LocaleSidKey ='en_US';
+		testUser.ProfileId = p.Id;
+        testUSer.TimeZoneSidKey ='America/Los_Angeles';
+        testUser.UserName ='mytestuser@example.com';
+        testUser.EmployeeNumber = '123';
+        testUser.PersonId__c = '123';
+        testUser.ECO_OrganizationName__c = testOrg.name;
+        insert testUser;
+
+
 		list<account> testAccounts = new list<account>();
 
 		// Insert Test Account
@@ -38,6 +61,7 @@ private class ECO_ProjectSetupControllerTest
 		s1.Country__c = 'Canada';
 		s1.State__c = 'Ontario';
 		s1.CustomerSiteUseCode__c = 'BILL_TO';
+		s1.OUID__c = testOrg.OUID__c;
 
 		testSites.add(s1);
 
@@ -47,6 +71,7 @@ private class ECO_ProjectSetupControllerTest
 		s2.Country__c = 'Canada2';
 		s2.State__c = 'Ontario2';
 		s2.CustomerSiteUseCode__c = 'SHIP_TO';
+		s1.OUID__c = testOrg.OUID__c;
 
 		testSites.add(s2);
 
@@ -56,6 +81,7 @@ private class ECO_ProjectSetupControllerTest
 		s3.Country__c = 'Canada3';
 		s3.State__c = 'Ontario3';
 		s3.CustomerSiteUseCode__c = 'SHIP_TO';
+		s1.OUID__c = testOrg.OUID__c;
 
 		testSites.add(s3);		
 
@@ -65,15 +91,32 @@ private class ECO_ProjectSetupControllerTest
 		s4.Country__c = 'Canada';
 		s4.State__c = 'BC';
 		s4.CustomerSiteUseCode__c = 'BILL_TO';
+		s1.OUID__c = testOrg.OUID__c;
 
 		testSites.add(s4);	
 
 
 		insert testSites;
 
-		/*
+
 		List<OrganizationString__c> lOrgStrings = new List<OrganizationString__c>();
 		OrganizationString__c Org1 = INC_Utils_Testing.createTestOrg();
+		Org1.OrganizationName__c = 'Test Organization';
+		Org1.Name = 'Test Organization';
+		Org1.BusinessLineName__c = 'test';
+		Org1.Department__c = 'test Department';
+		Org1.District__c = 'tet District';
+		Org1.Description__c = 'test org string';
+		Org1.GeographyName__c = 'test Geo';
+		Org1.Region__c = 'test Region';
+		Org1.OrgID__c = '111';
+		Org1.OUID__c = '111';
+		Org1.InactiveDate__c = null;
+		Org1.ProjectOwning__c = true;
+
+		lOrgStrings.add(Org1);
+
+
 		OrganizationString__c Org2 = INC_Utils_Testing.createTestOrg();
 
 		Org2.OrganizationName__c = 'Water Organization';
@@ -87,10 +130,26 @@ private class ECO_ProjectSetupControllerTest
 		Org2.OrgID__c = '227';
 		Org2.OUID__c = '999';
 		org2.InactiveDate__c = null;
+		org2.ProjectOwning__c = true;
 
 		lOrgStrings.add(Org2);
 		insert lOrgStrings;		
-		*/
+
+		//team members
+		ProjectRole__c projectRole = new ProjectRole__c();
+		projectRole.Name = 'Project Manager';
+		projectRole.Type__c = 'Key Member';
+		projectRole.Active__c = true;
+
+		ProjectRole__c projectRole1 = new ProjectRole__c();
+		projectRole1.Name = 'Resilience Director';
+		projectRole1.Type__c = 'Key Member';
+		projectRole1.Active__c = true;
+
+		list<ProjectRole__c> lstpr = new list<ProjectRole__c>();
+		lstpr.add(projectRole);
+		lstpr.add(projectRole1);
+		insert lstpr;
 	}
 
 
@@ -98,16 +157,19 @@ private class ECO_ProjectSetupControllerTest
 	@isTest
 	static void DupeTest()
 	{
-
 		initializeSites();
+		user u = [select id from user where Alias = 'myuser'];
 
+		System.runAs(u) {
 
-		// Create standard controller for a new project and pass to the ext. Start the real test.
-		ApexPages.StandardController sc = new ApexPages.StandardController(new pse__Proj__c());
-		ECO_ProjectSetupController ext = new ECO_ProjectSetupController(sc);
+			// Create standard controller for a new project and pass to the ext. Start the real test.
+			ApexPages.StandardController sc = new ApexPages.StandardController(new pse__Proj__c());
+			ECO_ProjectSetupController ext = new ECO_ProjectSetupController(sc);
+			ext.bSearchOutsideUserOrg = true;
 
-		ext.SearchSites();
-		system.assertEquals(ext.lstSitesSearchResults.size(), 2); 
+			ext.SearchSites();
+			system.assertEquals(ext.lstSitesSearchResults.size(), 2); 
+		}
 	}
 
 	// Test No Results for Sites
@@ -121,8 +183,9 @@ private class ECO_ProjectSetupControllerTest
 		// Create standard controller for a new project and pass to the ext. Start the real test.
 		ApexPages.StandardController sc = new ApexPages.StandardController(new pse__Proj__c());
 		ECO_ProjectSetupController ext = new ECO_ProjectSetupController(sc);
+		ext.bSearchOutsideUserOrg = true;
 
-		ext.oSite.Account__r.name = 'BLAHBLAHBLAH';
+		ext.oSiteSearch.name = 'BLAHBLAHBLAH';
 		ext.SearchSites();
 		system.assertEquals(ext.lstSitesSearchResults.size(), 0); 
 	}
@@ -137,16 +200,24 @@ private class ECO_ProjectSetupControllerTest
 		// Create standard controller for a new project and pass to the ext. Start the real test.
 		ApexPages.StandardController sc = new ApexPages.StandardController(new pse__Proj__c());
 		ECO_ProjectSetupController ext = new ECO_ProjectSetupController(sc);
+		ext.bSearchOutsideUserOrg = true;
 
-		ext.oSite.Account__r.name = 'test';
-		ext.oSite.City__c = 'Toronto2';
-		ext.oSite.Country__c = 'Canada';
-		ext.oSite.State__c = 'Ontario';
+		ext.oSiteSearch.name = 'test';
+		ext.oSiteSearch.city = 'Toronto2';
+		ext.oSiteSearch.country = 'Canada';
+		ext.oSiteSearch.province = 'Ontario';
 		ext.SearchSites();
 		system.assertEquals(ext.lstSitesSearchResults.size(), 1); 
-		system.assertEquals(ext.lstSitesSearchResults[0].City__c, 'Toronto2'); 
-		system.assertEquals(ext.lstSitesSearchResults[0].Country__c, 'Canada2'); 
-		system.assertEquals(ext.lstSitesSearchResults[0].State__c, 'Ontario2'); 
+
+		// Select Target Site
+		ext.idSiteID = ext.lstSitesSearchResults[0].id;
+		ext.SelectSite();
+
+		ext.BillingSelect();
+		ext.EndSelect();
+		ext.DefaultTopSelect();
+		ext.PrimaryEndSelect();
+
 	}
 
 	// Test the selection of a searched Site with no opp + creation of project
@@ -155,15 +226,18 @@ private class ECO_ProjectSetupControllerTest
 	{
 
 		initializeSites();
-
+		user u = [select id from user where Alias = 'myuser'];
 
 		// Create standard controller for a new project and pass to the ext. Start the real test.
 		ApexPages.StandardController sc = new ApexPages.StandardController(new pse__Proj__c());
 		ECO_ProjectSetupController ext = new ECO_ProjectSetupController(sc);
+		ext.bSearchOutsideUserOrg = true;
 
 		ext.oSite.Account__r.name = 'another';
 		ext.SearchSites();
-		system.assertEquals(ext.lstSitesSearchResults.size(), 1); 
+		ext.toggleSiteShow();
+		ext.toggleSiteShow();
+		system.assertEquals(ext.lstSitesSearchResults.size(), 2); 
 
 		// Select Target Site
 		ext.idSiteID = ext.lstSitesSearchResults[0].id;
@@ -174,24 +248,29 @@ private class ECO_ProjectSetupControllerTest
 		system.assertEquals(ext.lstSites[0].booIsBilling, true); 
 		system.assertEquals(ext.lstSites[0].booIsEnd, true); 		
 		system.assertEquals(ext.lstSites[0].booIsDefaultTopTask, true);
-		system.assertEquals(ext.lstSites[0].oSite.City__c, 'Vanc');
-		system.assertEquals(ext.lstSites[0].oSite.Country__c, 'Canada');
-		system.assertEquals(ext.lstSites[0].oSite.State__c, 'BC');
 
 
-		system.assertEquals(ext.lstSearchOpportunities.size(), 0); 
+		system.assertEquals(ext.lstSearchOpportunities.size(), 1); 
 
-		ext.oProject.name = 'test project';
+		ext.SkipOpportunity();
+
+		ext.oProject.name = 'test project5555555';
 		ext.oProject.EstimatedContractValue__c = 1;
-		ext.oProject.ownerid = UserInfo.getUserId();
+		ext.oProject.ownerid = u.id;
 		ext.oproject.EstimatedStartDate__c = date.today();
 
+		//
 		ext.ProjectDetailNext();
 
 		ext.sOrganizationName = 'Water Organization';
 		ext.SearchOrganizations();
+		ext.toggleOrgShow();
+		ext.toggleOrgShow();
+
 		ext.sSelectedOrganizationId = ext.lOrganizations[0].id;
 		ext.SelectPrimary();
+
+		system.assertEquals(ext.isValid(), true);
 
 		ext.CreateProject();
 
@@ -199,7 +278,7 @@ private class ECO_ProjectSetupControllerTest
 
 		system.assertNotEquals(oProject.pse__Opportunity__c, null);		
 
-		opportunity checkOpp = [select id, name from opportunity];
+		opportunity checkOpp = [select id, name from opportunity where id =: oProject.pse__Opportunity__c];
 
 		system.assertEquals(checkOpp.name, ext.oProject.name);	
 
@@ -216,10 +295,11 @@ private class ECO_ProjectSetupControllerTest
 		// Create standard controller for a new project and pass to the ext. Start the real test.
 		ApexPages.StandardController sc = new ApexPages.StandardController(new pse__Proj__c());
 		ECO_ProjectSetupController ext = new ECO_ProjectSetupController(sc);
+		ext.bSearchOutsideUserOrg = true;
 
 		ext.oSite.Account__r.name = 'test';
 		ext.SearchSites();
-		system.assertEquals(ext.lstSitesSearchResults.size(), 1); 
+		system.assertEquals(ext.lstSitesSearchResults.size(), 2); 
 
 		// Select Target Site
 		ext.idSiteID = ext.lstSitesSearchResults[0].id;
@@ -230,9 +310,6 @@ private class ECO_ProjectSetupControllerTest
 		system.assertEquals(ext.lstSites[0].booIsBilling, true); 
 		system.assertEquals(ext.lstSites[0].booIsEnd, true); 		
 		system.assertEquals(ext.lstSites[0].booIsDefaultTopTask, true);
-		system.assertEquals(ext.lstSites[0].oSite.City__c, 'Toronto');
-		system.assertEquals(ext.lstSites[0].oSite.Country__c, 'Canada');
-		system.assertEquals(ext.lstSites[0].oSite.State__c, 'Ontario');
 
 		system.assertEquals(ext.lstSearchOpportunities.size(), 1); 
 
@@ -243,7 +320,7 @@ private class ECO_ProjectSetupControllerTest
 		ext.SelectOpportunity();
 		system.assertEquals(ext.oProject.pse__Opportunity__c, ext.lstSearchOpportunities[0].id);
 
-		ext.oProject.name = 'test project';
+		ext.oProject.name = 'test projectqweq';
 		ext.oProject.EstimatedContractValue__c = 1;
 		ext.oProject.ownerid = UserInfo.getUserId();
 		ext.oproject.EstimatedStartDate__c = date.today();
@@ -254,6 +331,11 @@ private class ECO_ProjectSetupControllerTest
 		ext.SearchOrganizations();
 		ext.sSelectedOrganizationId = ext.lOrganizations[0].id;
 		ext.SelectPrimary();
+
+		ext.sOrganizationName = 'Test Organization';
+		ext.SearchOrganizations();
+		ext.sSelectedOrganizationId = ext.lOrganizations[0].id;
+		ext.SelectSecondary();
 
 		ext.CreateProject();
 

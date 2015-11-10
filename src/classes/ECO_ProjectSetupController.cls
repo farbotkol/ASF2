@@ -846,7 +846,7 @@ public with sharing class ECO_ProjectSetupController {
         return null;
     }
 
-    public PageReference Reset(){
+    /*public PageReference Reset(){
         sOrganizationName = '';
         sGeographyName = '';
         sRegion = '';
@@ -860,7 +860,7 @@ public with sharing class ECO_ProjectSetupController {
         SearchUserOrganization();
 
         return null;
-    }
+    }*/
 
     public boolean isValid()
     {

@@ -40,7 +40,11 @@ public with sharing class ECO_ProjectTeamFlyoutController {
             //}
 
             sSOQL += ' Id, Name, Contact__c, ProjectRoleTitle__c, Email__c, Phone__c, ProjectRole__c, ProjectRole__r.Type__c FROM ProjectTeamMember__c WHERE Project__c =\'' + sProjectId + '\'';
-            sSOQL += ' and ProjectRole__r.Type__c = \'' + 'Team Member' + '\'';
+//            sSOQL += ' and ProjectRole__r.Type__c = \'' + 'Team Member' + '\'';
+            sSOQL += ' and (ProjectRole__r.Type__c = \'' + 'Team Member' + '\' or  (ProjectRole__r.Type__c = \'' + 'Key Member' + '\' AND Active__c = true))';
+
+
+            
 //            if(ECO_Utils_String.NullCheck(sFilterCriteria) != ''){
 //                sSOQL += ' and PlanElement__c = \'' + sFilterCriteria + '\'';
 //            }
@@ -53,6 +57,8 @@ public with sharing class ECO_ProjectTeamFlyoutController {
         set;
 	}
 	
+
+
 	public PageReference saveTeamMember()
 	{
         try {
