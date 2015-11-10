@@ -192,10 +192,9 @@ public with sharing class ECO_StakeholdersController
 						{
 							ProjectTeamMember__c pkm = lProjectKeyMembers.get(pr.Id)[i];
 							TeamMember teamMember = createNewTeamMember(thisProject, pr);
-
+							
 							if(pkm.Contact__c != null)
 							{
-
 								if(!pkm.Active__c)
 								{
 									TeamMember inactiveTM = createNewTeamMember(thisProject, pr);
@@ -204,6 +203,7 @@ public with sharing class ECO_StakeholdersController
 								}
 								else
 								{
+									teamMember.canEdit = canEditKeyMember(pkm.ProjectRole__r.Name);
 									teamMember.oPTM = pkm;
 									lActiveMembersKey.add(teamMember);
 								}
@@ -211,7 +211,9 @@ public with sharing class ECO_StakeholdersController
 						}
 					}
 					else{
-						lActiveMembersKey.add(createNewTeamMember(thisProject, pr));
+						TeamMember teamMember = createNewTeamMember(thisProject, pr);
+						teamMember.canEdit = canEditKeyMember(pr.Name);
+						lActiveMembersKey.add(teamMember);
 					}
 				}
 			}
@@ -264,6 +266,17 @@ public with sharing class ECO_StakeholdersController
 			lDelete_CommPlans = new List<CommunicationPlan__c>();
 			lDelete_SurveySchedules = new list<SurveySchedule__c>();
 		}
+	}
+
+	//does the current project have all of the necessary default team members assigned to allow editing?
+	private Boolean canEditKeyMember(String projectRoleName){
+		if(financeRoles.contains(projectRoleName) && financeTeamMember != null){
+			return true;
+		}
+		else if(pAndLTeamMember != null && !financeRoles.contains(projectRoleName)){
+			return true;
+		}
+		return false;
 	}
 
 	//creates a new TeamMember wrapper object
@@ -925,6 +938,7 @@ public with sharing class ECO_StakeholdersController
 					lTeamRoleTypes.add(new SelectOption(pr.Id, pr.Name));
 				}
 			}
+
 		}
 	}
 
