@@ -112,7 +112,7 @@ public class ECO_ProjectFundingController {
     {
         //projectLevelFunding = new list<Funding__c>();
         projectLevelFunding = new list<Funding>();
-        for(Funding__c funding:[select Id, ChangeManagerIsNew__c, ProjectTask__c, Agreement__r.Name, Agreement__r.Account__c, Agreement__c, AllocatedAmount__c, DateAllocatedDate__c, FundingClassification__c, ProjFuncRateType__c, ProjFuncRateExchangeRate__c, ProjFuncRateDate__c, TotalBaselinedAmount__c, CreatedDate, ChangeManagerIsChanged__c, ChangeManagerApprovedForSynch__c from Funding__c where Agreement__c = :agreementId and Project__c = :projectId])
+        for(Funding__c funding:[select Id, ChangeManagerIsNew__c, ProjectTask__c, Notes__c, Agreement__r.Name, Agreement__r.Account__c, Agreement__c, AllocatedAmount__c, DateAllocatedDate__c, FundingClassification__c, ProjFuncRateType__c, ProjFuncRateExchangeRate__c, ProjFuncRateDate__c, TotalBaselinedAmount__c, CreatedDate, ChangeManagerIsChanged__c, ChangeManagerApprovedForSynch__c from Funding__c where Agreement__c = :agreementId and Project__c = :projectId])
         {
             projectLevelFunding.add(new Funding(false, funding, true));
         }
@@ -142,7 +142,7 @@ public class ECO_ProjectFundingController {
     
     private void initializeProjectTaskLevelFundingLines()    
     {
-        for(Funding__c funding:[select Id, ProjectTask__c, ChangeManagerIsNew__c, Agreement__r.Name, Agreement__r.Account__c, Agreement__c, AllocatedAmount__c, DateAllocatedDate__c, FundingClassification__c, ProjFuncRateType__c, ProjFuncRateExchangeRate__c, ProjFuncRateDate__c, TotalBaselinedAmount__c, CreatedDate, ChangeManagerApprovedForSynch__c, ChangeManagerIsChanged__c  from Funding__c where ProjectTask__c in :projectTasks])
+        for(Funding__c funding:[select Id, ProjectTask__c, ChangeManagerIsNew__c, Notes__c, Agreement__r.Name, Agreement__r.Account__c, Agreement__c, AllocatedAmount__c, DateAllocatedDate__c, FundingClassification__c, ProjFuncRateType__c, ProjFuncRateExchangeRate__c, ProjFuncRateDate__c, TotalBaselinedAmount__c, CreatedDate, ChangeManagerApprovedForSynch__c, ChangeManagerIsChanged__c  from Funding__c where ProjectTask__c in :projectTasks])
         {
         	if(funding.Agreement__c == agreement.Id)
         	{
@@ -326,7 +326,7 @@ public class ECO_ProjectFundingController {
         }
 
 
-		agreement = [select Id, Name, Amount__c, Account__c, Description__c, FundingCurrencyCode__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
+		agreement = [select Id, Name, Amount__c, Account__c, Description__c, TotalApprovedRevenueLimit__c, FundingCurrencyCode__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
                 
         creatingNewFunding = false;                 
     }

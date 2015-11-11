@@ -120,13 +120,14 @@
 
     </script>
 
+    <apex:pageMessages/>
 	<apex:sectionHeader title="{!oProjectReview.RecordType.Name}" subtitle="{!theProject.Name}({!theProject.ProjectNumber__c})" />
 	<apex:form >	
 	<apex:pageBlock mode="edit">
 
 		<apex:pageBlockButtons >
 			<apex:commandButton action="{!SaveHealthCheck}" value="Take Project Snapshot" rendered="{!NOT(perfActiveStatus) && isPerfReview && oProjectReview.Snapshot_Date__c == null}" />
-			<apex:commandButton action="{!saveAll}" value="Save" rendered="{!oProjectReview.Status__c != 'Approved'}"/> 
+			<apex:commandButton action="{!saveAll}" value="Save" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/> 
 			<apex:commandButton action="{!returnToProjectFromReview}" value="Return to Project" immediate="true" />
 			<apex:commandButton action="{!returnToAllReviews}" value="Return to All Project Reviews" immediate="true"/>
 			
@@ -180,27 +181,27 @@
 					<apex:inputHidden value="{!ProjectReview__c.MeetingMinutes__c}"/>
 					           	
 				<apex:pageBlockSection id="ReviewDetails" title="Review Details" columns="2" collapsible="false">			
-					<apex:inputField value="{!oProjectReview.Name}" required="true" style="width: 250px" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-					<apex:outputField value="{!oProjectReview.Name}" style="width: 250px" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+					<apex:inputField value="{!oProjectReview.Name}" required="true" style="width: 250px" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+					<apex:outputField value="{!oProjectReview.Name}" style="width: 250px" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
 					
 					<apex:pageBlockSectionItem >
 						<apex:outputText value="Review Status"/>
 						<apex:outputField value="{!oProjectReview.Status__c}" />
 					</apex:pageBlockSectionItem>
 					<apex:outputField label="Record Type" value="{!oProjectReview.RecordType.Name}" />
-					<apex:inputField value="{!oProjectReview.Responsible_Person__c}" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-					<apex:inputField value="{!oProjectReview.OtherPart1__c}" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-					<apex:inputField value="{!oProjectReview.OperationsParticipant__c}" rendered="{!oProjectReview.Status__c != 'Approved'}"/>					
-					<apex:inputField value="{!oProjectReview.OtherPart2__c}" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-					<apex:inputField value="{!oProjectReview.FAParticipant__c}" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-					<apex:inputField value="{!oProjectReview.OtherPart3__c}" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
+					<apex:inputField value="{!oProjectReview.Responsible_Person__c}" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+					<apex:inputField value="{!oProjectReview.OtherPart1__c}" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+					<apex:inputField value="{!oProjectReview.OperationsParticipant__c}" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>					
+					<apex:inputField value="{!oProjectReview.OtherPart2__c}" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+					<apex:inputField value="{!oProjectReview.FAParticipant__c}" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+					<apex:inputField value="{!oProjectReview.OtherPart3__c}" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
 
-					<apex:outputField value="{!oProjectReview.Responsible_Person__c}" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
-					<apex:outputField value="{!oProjectReview.OtherPart1__c}" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
-					<apex:outputField value="{!oProjectReview.OperationsParticipant__c}" rendered="{!oProjectReview.Status__c == 'Approved'}"/>					
-					<apex:outputField value="{!oProjectReview.OtherPart2__c}" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
-					<apex:outputField value="{!oProjectReview.FAParticipant__c}" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
-					<apex:outputField value="{!oProjectReview.OtherPart3__c}" rendered="{!oProjectReview.Status__c == 'Approved'}"/>					
+					<apex:outputField value="{!oProjectReview.Responsible_Person__c}" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
+					<apex:outputField value="{!oProjectReview.OtherPart1__c}" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
+					<apex:outputField value="{!oProjectReview.OperationsParticipant__c}" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>					
+					<apex:outputField value="{!oProjectReview.OtherPart2__c}" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
+					<apex:outputField value="{!oProjectReview.FAParticipant__c}" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
+					<apex:outputField value="{!oProjectReview.OtherPart3__c}" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>					
 					<!--<apex:outputField value="{!oProjectReview.Snapshot_Date__c}" rendered="{!IsPerfReview}"/>-->
 					<!--<apex:inputField value="{!oProjectReview.ScheduledDate__c}" />
 					<apex:inputField value="{!oProjectReview.CompletedDate__c}" />-->
@@ -230,8 +231,8 @@
 								</apex:column>
 								<apex:column >
 									<apex:facet name="header">Explanation</apex:facet>
-									<apex:inputField value="{!item.Explanation__c}" style="width:80%" rendered="{!oProjectReview.Snapshot_Date__c != null && item.Evaluation_Result__c && oProjectReview.Status__c !='Approved'}" required="true"/>
-									<apex:outputField value="{!item.Explanation__c}" style="width:80%" rendered="{!oProjectReview.Snapshot_Date__c == null || NOT(item.Evaluation_Result__c) || oProjectReview.Status__c == 'Approved'}"/>
+									<apex:inputField value="{!item.Explanation__c}" style="width:80%" rendered="{!oProjectReview.Snapshot_Date__c != null && item.Evaluation_Result__c && oProjectReview.Status__c !='Approved' && oProjectReview.Status__c != 'Submitted'}" required="true"/>
+									<apex:outputField value="{!item.Explanation__c}" style="width:80%" rendered="{!oProjectReview.Snapshot_Date__c == null || NOT(item.Evaluation_Result__c) || oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
 								</apex:column>
 							</apex:pageBlockTable>
 						</apex:pageBlockSection>
@@ -269,10 +270,10 @@
 				</div>
 
 				<apex:pageBlockSection columns="1" title="General Comments" collapsible="false">
-					<apex:commandButton value="Copy Comments from Previous Review" action="{!copyComments}" rendered="{!lastProjectReview != null && NOT(oProjectReview.CommentsCopiedFromPreviousReview__c) && oProjectReview.Status__c != 'Approved'}"/>
-					<apex:inputField label="" value="{!oProjectReview.MeetingMinutes__c}" rendered="{!oProjectReview.Status__c != 'Approved'}" />
-					<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
-						<apex:outputText label="" value="{!oProjectReview.MeetingMinutes__c}" rendered="{!oProjectReview.Status__c == 'Approved'}" />
+					<apex:commandButton value="Copy Comments from Previous Review" action="{!copyComments}" rendered="{!lastProjectReview != null && NOT(oProjectReview.CommentsCopiedFromPreviousReview__c) && oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+					<apex:inputField label="" value="{!oProjectReview.MeetingMinutes__c}" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}" />
+					<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}">
+						<apex:outputText label="" value="{!oProjectReview.MeetingMinutes__c}" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}" />
 						<apex:outputText value="No Comments" rendered="{!oProjectReview.MeetingMinutes__c == null || oProjectReview.MeetingMinutes__c = ''}"/>
 					</apex:outputPanel>
 				</apex:pageBlockSection>
@@ -281,81 +282,81 @@
 				<apex:pageBlockSection title="Exception Report" collapsible="false" rendered="{!isProjectPerfReview && oProjectReview.Status__c != 'Not Started'}" columns="1">
 					<apex:outputPanel >
 						<apex:outputlabel value="Safety" styleclass="dmeOutput"/><br/>
-						<apex:inputField style="width:100%;" value="{!oProjectReview.SafetyExceptionReport__c}" html-placeholder="Note any issues, incidents or near misses in the period and whether these have been reported" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
-							<apex:outputField style="width:100%;" value="{!oProjectReview.SafetyExceptionReport__c}" html-placeholder="Note any issues, incidents or near misses in the period and whether these have been reported" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.SafetyExceptionReport__c}" html-placeholder="Note any issues, incidents or near misses in the period and whether these have been reported" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.SafetyExceptionReport__c}" html-placeholder="Note any issues, incidents or near misses in the period and whether these have been reported" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
 							<apex:outputText value="No Comments" rendered="{!oProjectReview.SafetyExceptionReport__c == null || oProjectReview.SafetyExceptionReport__c = ''}"/>
 							<br/><br/>
 						</apex:outputPanel>
 					</apex:outputPanel>
 					<apex:outputPanel >
 						<apex:outputlabel value="Client Relations" styleclass="dmeOutput"/><br/>
-						<apex:inputField style="width:100%;" value="{!oProjectReview.ClientRelations__c}" html-placeholder="Note any client feedback in the period" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
-							<apex:outputField style="width:100%;" value="{!oProjectReview.ClientRelations__c}" html-placeholder="Note any client feedback in the period" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.ClientRelations__c}" html-placeholder="Note any client feedback in the period" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.ClientRelations__c}" html-placeholder="Note any client feedback in the period" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
 							<apex:outputText value="No Comments" rendered="{!oProjectReview.ClientRelations__c == null || oProjectReview.ClientRelations__c = ''}"/>
 							<br/><br/>
 						</apex:outputPanel>
 					</apex:outputPanel>
 					<apex:outputPanel >
 						<apex:outputlabel value="Change Management" styleclass="dmeOutput"/><br/>
-						<apex:inputField style="width:100%;" value="{!oProjectReview.ChangeManagementExceptionReport__c}" html-placeholder="Note any outstanding change issues (Scope, budget/funding, schedule, quality, other)" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
-							<apex:outputField style="width:100%;" value="{!oProjectReview.ChangeManagementExceptionReport__c}" html-placeholder="Note any outstanding change issues (Scope, budget/funding, schedule, quality, other)" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.ChangeManagementExceptionReport__c}" html-placeholder="Note any outstanding change issues (Scope, budget/funding, schedule, quality, other)" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.ChangeManagementExceptionReport__c}" html-placeholder="Note any outstanding change issues (Scope, budget/funding, schedule, quality, other)" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
 							<apex:outputText value="No Comments" rendered="{!oProjectReview.ChangeManagementExceptionReport__c == null || oProjectReview.ChangeManagementExceptionReport__c = ''}"/>
 							<br/><br/>
 						</apex:outputPanel>
 					</apex:outputPanel>
 					<apex:outputPanel >
 						<apex:outputlabel value="Financial Performance" styleclass="dmeOutput"/><br/>
-						<apex:inputField style="width:100%;" value="{!oProjectReview.FinancialPerformanceExceptionReport__c}" html-placeholder="Note any financial issues (EAC changes (cost & Rev), EAC - budget differences, margin changes, aged unbilled / AR, LDs)" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
-							<apex:outputField style="width:100%;" value="{!oProjectReview.FinancialPerformanceExceptionReport__c}" html-placeholder="Note any financial issues (EAC changes (cost & Rev), EAC - budget differences, margin changes, aged unbilled / AR, LDs)" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.FinancialPerformanceExceptionReport__c}" html-placeholder="Note any financial issues (EAC changes (cost & Rev), EAC - budget differences, margin changes, aged unbilled / AR, LDs)" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.FinancialPerformanceExceptionReport__c}" html-placeholder="Note any financial issues (EAC changes (cost & Rev), EAC - budget differences, margin changes, aged unbilled / AR, LDs)" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
 							<apex:outputText value="No Comments" rendered="{!oProjectReview.FinancialPerformanceExceptionReport__c == null || oProjectReview.FinancialPerformanceExceptionReport__c = ''}"/>
 							<br/><br/>
 						</apex:outputPanel>
 					</apex:outputPanel>
 					<apex:outputPanel >
 						<apex:outputlabel value="Schedule" styleclass="dmeOutput"/><br/>
-						<apex:inputField style="width:100%;" value="{!oProjectReview.SheduleExceptionReport__c}" html-placeholder="Note any threats to approved schedule (is client aware, is action being taken?)" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
-							<apex:outputField style="width:100%;" value="{!oProjectReview.SheduleExceptionReport__c}" html-placeholder="Note any threats to approved schedule (is client aware, is action being taken?)" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.SheduleExceptionReport__c}" html-placeholder="Note any threats to approved schedule (is client aware, is action being taken?)" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.SheduleExceptionReport__c}" html-placeholder="Note any threats to approved schedule (is client aware, is action being taken?)" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
 							<apex:outputText value="No Comments" rendered="{!oProjectReview.SheduleExceptionReport__c == null || oProjectReview.SheduleExceptionReport__c = ''}"/>
 							<br/><br/>
 						</apex:outputPanel>
 					</apex:outputPanel>
 					<apex:outputPanel >
 						<apex:outputlabel value="Quality" styleclass="dmeOutput" /><br/>
-						<apex:inputField style="width:100%;" value="{!oProjectReview.QualityException__c}" html-placeholder="Note any quality issues including any unresolved audit findings" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
-							<apex:outputField style="width:100%;" value="{!oProjectReview.QualityException__c}" html-placeholder="Note any quality issues including any unresolved audit findings" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.QualityException__c}" html-placeholder="Note any quality issues including any unresolved audit findings" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.QualityException__c}" html-placeholder="Note any quality issues including any unresolved audit findings" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
 							<apex:outputText value="No Comments" rendered="{!oProjectReview.QualityException__c == null || oProjectReview.QualityException__c = ''}"/>
 							<br/><br/>
 						</apex:outputPanel>
 					</apex:outputPanel>
 					<apex:outputPanel >
 						<apex:outputlabel value="Risk Management" styleclass="dmeOutput" html-placeholder=""/><br/>
-						<apex:inputField style="width:100%;" value="{!oProjectReview.RiskManagement__c}" html-placeholder="Note any emerging risks and opportunites.  Excluding any threatened claims by clients or others, which should be notified to legal" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
-							<apex:outputField style="width:100%;" value="{!oProjectReview.RiskManagement__c}" html-placeholder="Note any emerging risks and opportunites.  Excluding any threatened claims by clients or others, which should be notified to legal" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.RiskManagement__c}" html-placeholder="Note any emerging risks and opportunites.  Excluding any threatened claims by clients or others, which should be notified to legal" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.RiskManagement__c}" html-placeholder="Note any emerging risks and opportunites.  Excluding any threatened claims by clients or others, which should be notified to legal" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
 							<apex:outputText value="No Comments" rendered="{!oProjectReview.RiskManagement__c == null || oProjectReview.RiskManagement__c = ''}"/>
 							<br/><br/>
 						</apex:outputPanel>
 					</apex:outputPanel>
 					<apex:outputPanel >
 						<apex:outputlabel value="Staff Resources" styleclass="dmeOutput" /><br/>
-						<apex:inputField style="width:100%;" value="{!oProjectReview.StaffResourcesExceptionReport__c}" html-placeholder="Note any staff resourcing issues" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
-							<apex:outputField style="width:100%;" value="{!oProjectReview.StaffResourcesExceptionReport__c}" html-placeholder="Note any staff resourcing issues" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.StaffResourcesExceptionReport__c}" html-placeholder="Note any staff resourcing issues" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.StaffResourcesExceptionReport__c}" html-placeholder="Note any staff resourcing issues" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
 							<apex:outputText value="No Comments" rendered="{!oProjectReview.StaffResourcesExceptionReport__c == null || oProjectReview.StaffResourcesExceptionReport__c = ''}"/>
 							<br/><br/>				
 						</apex:outputPanel>
 					</apex:outputPanel>
 					<apex:outputPanel >
 						<apex:outputlabel value="Subs" styleclass="dmeOutput"/><br/>
-						<apex:inputField style="width:100%;" value="{!oProjectReview.SubsExceptionReport__c}" html-placeholder="Note any issues (contractual, performance)" rendered="{!oProjectReview.Status__c != 'Approved'}"/>
-						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved'}">
-							<apex:outputField style="width:100%;" value="{!oProjectReview.SubsExceptionReport__c}" html-placeholder="Note any issues (contractual, performance)" rendered="{!oProjectReview.Status__c == 'Approved'}"/>
+						<apex:inputField style="width:100%;" value="{!oProjectReview.SubsExceptionReport__c}" html-placeholder="Note any issues (contractual, performance)" rendered="{!oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted'}"/>
+						<apex:outputPanel rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}">
+							<apex:outputField style="width:100%;" value="{!oProjectReview.SubsExceptionReport__c}" html-placeholder="Note any issues (contractual, performance)" rendered="{!oProjectReview.Status__c == 'Approved' || oProjectReview.Status__c == 'Submitted'}"/>
 							<apex:outputText value="No Comments" rendered="{!oProjectReview.SubsExceptionReport__c == null || oProjectReview.SubsExceptionReport__c = ''}"/>
 							<br/>
 						</apex:outputPanel>
