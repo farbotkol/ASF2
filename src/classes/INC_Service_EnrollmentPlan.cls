@@ -253,6 +253,8 @@ public without sharing class INC_Service_EnrollmentPlan {
       oEnroll.ParentApplication__c = currentPlan.ID;
       oEnroll.ApplicationType__c = RT == requestType.CHANGE?'CCR':'PAY';
       oEnroll.CurrencyIsoCode = currentPlan.IncentiveProject__r.CurrencyIsoCode;
+
+
       oEnroll.DTWAdmin__c = mapProjects.get(currentPlan.IncentiveProject__c).DTWAdmin__c;
       if(RT == requestType.Change){
         oEnroll.WizardStatus__c = 'Step 3';
@@ -507,8 +509,9 @@ public without sharing class INC_Service_EnrollmentPlan {
               oEnroll.Approver1__c = mapFoundApprovers.get(oIncent.ID).get(1).oRoutingMember.Approver1__c;
               oEnroll.Approver2__c = mapFoundApprovers.get(oIncent.ID).get(2).oRoutingMember.Approver2__c;
               oEnroll.Approver3__c = mapFoundApprovers.get(oIncent.ID).get(3).oRoutingMember.Approver3__c;
+              oEnroll.DTWAdmin__c = mapFoundApprovers.get(oIncent.ID).get(1).oRoutingMember.DtwAdmin__c;
             }
-              oEnroll.DTWAdmin__c = mapProjects.get(oIncent.ID).DTWAdmin__c;
+             // oEnroll.DTWAdmin__c = mapProjects.get(oIncent.ID).DTWAdmin__c;
             System.Debug(logginglevel.error,'oEnroll from create by project: ' + oEnroll.CurrencyIsoCode);
             System.Debug(logginglevel.error,'IncentiveProject__c CurrencyIsoCode' + oIncent.CurrencyIsoCode);
             lPlans.add(oEnroll);

@@ -67,10 +67,11 @@ public without sharing class INC_Utils_Testing {
     }
     
     public static Contact createEmployee() {
-        User managerUser = INC_Utils_Testing.createTestUser('System Administrator');
+        User managerUser = INC_Utils_Testing.createUser();
         insert managerUser;
         
-        User EmployeeUser = INC_Utils_Testing.createTestUser('System Administrator');
+        User EmployeeUser = INC_Utils_Testing.createUser();
+        EmployeeUser.Email = '2' + EmployeeUser.email;
         EmployeeUser.ManagerId = managerUser.Id;
         insert EmployeeUser;
         

@@ -50,6 +50,7 @@ public with sharing class INC_Service_Matching {
 		
 		listRoutingMembers = getRoutingMembers(false);
 		System.Debug(logginglevel.error,'listRoutingMembers: ' + listRoutingMembers);
+		System.Debug(logginglevel.error,'listIncentiveProjects: ' + listIncentiveProjects);
 		//first loop through the Incentive Projects
 		for(IncentiveProject__c IncProj : listIncentiveProjects){
 			
@@ -61,6 +62,8 @@ public with sharing class INC_Service_Matching {
 					for(RoutingMember_Wrapper RW: listRoutingMemberFound){
 						if(rw.iTotalPoints <= iPoints) continue;
 						System.Debug(logginglevel.error,'Finding Routing Member ' + current1);
+						System.Debug(logginglevel.error,RW.oRoutingMember.DTWAdmin__c + ' ' + RW.oRoutingMember.ID);
+					
 						if(current1 == null){
 							current1 = RW.oRoutingMember.Approver1__c;
 							current2 = RW.oRoutingMember.Approver2__c;
@@ -101,6 +104,7 @@ public with sharing class INC_Service_Matching {
 					    
 					}
 				}else{
+					System.Debug(logginglevel.error,'Routing Member found only 1: ' + listRoutingMemberFound[0].oRoutingMember.ID);
 					mapTemp.put(1,listRoutingMemberFound[0]);
 					mapTemp.put(2,listRoutingMemberFound[0]);
 					mapTemp.put(3,listRoutingMemberFound[0]);

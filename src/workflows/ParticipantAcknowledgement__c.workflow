@@ -206,6 +206,15 @@
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>INC_Add_Geography_to_Participant_Acknowl</fullName>
+        <field>Geography__c</field>
+        <formula>IncentiveProject__r.GeographyDescription__c</formula>
+        <name>INC_Add Geography to Participant Acknowl</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Set_Acknowledgement_Status_Accepted</fullName>
         <field>Status__c</field>
         <literalValue>Accepted</literalValue>
@@ -360,6 +369,19 @@
             <value>New</value>
         </criteriaItems>
         <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>INC_Add Geography to Participant Acknowledgement</fullName>
+        <actions>
+            <name>INC_Add_Geography_to_Participant_Acknowl</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>ParticipantAcknowledgement__c.Geography__c</field>
+            <operation>equals</operation>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>Participant Accepts</fullName>
