@@ -18,7 +18,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>Edit</actionName>
-        <type>Default</type>
+        <content>ECO_DelegateManagerEdit</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>Follow</actionName>
@@ -30,7 +32,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>New</actionName>
-        <type>Default</type>
+        <content>ECO_DelegateManager</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <actionOverrides>
         <actionName>SaveEdit</actionName>
@@ -42,7 +46,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <type>Default</type>
+        <content>ECO_DelegateManagerEdit</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
@@ -77,9 +83,29 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Agreement_Amount_estimated_Bypass_lt__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Agreement Amount (estimated) Bypass &lt;</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>Agreement_Amount_estimated__c</fullName>
         <externalId>false</externalId>
-        <label>Agreement Amount (estimated)</label>
+        <label>Agreement Amount (estimated) &gt;</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Agreement_Amount_estimated_lt__c</fullName>
+        <externalId>false</externalId>
+        <label>Agreement Amount (estimated) &lt;</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -204,7 +230,7 @@
         <externalId>false</externalId>
         <label>Delegate</label>
         <lookupFilter>
-            <active>true</active>
+            <active>false</active>
             <filterItems>
                 <field>Contact.Status__c</field>
                 <operation>equals</operation>
@@ -778,11 +804,11 @@
         <errorMessage>Cannot be Null</errorMessage>
     </validationRules>
     <validationRules>
-        <fullName>Agreement_Amount_less_than_0</fullName>
+        <fullName>Agreement_Amount_lt_Cannot_Be_Null</fullName>
         <active>true</active>
-        <errorConditionFormula>Agreement_Amount_estimated__c &lt; 0</errorConditionFormula>
-        <errorDisplayField>Agreement_Amount_estimated__c</errorDisplayField>
-        <errorMessage>Cannot be less than 0</errorMessage>
+        <errorConditionFormula>AND(RecordType.Name == &apos;Key Roles&apos;,  ISNULL(Agreement_Amount_estimated_lt__c))</errorConditionFormula>
+        <errorDisplayField>Agreement_Amount_estimated_lt__c</errorDisplayField>
+        <errorMessage>Cannot be Null</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>Backlog_Value_Not_Null</fullName>
@@ -792,13 +818,6 @@
         <errorMessage>Cannot Be Null</errorMessage>
     </validationRules>
     <validationRules>
-        <fullName>Backlog_Value_less_than_0</fullName>
-        <active>true</active>
-        <errorConditionFormula>Backlog_Value__c &lt; 0</errorConditionFormula>
-        <errorDisplayField>Backlog_Value__c</errorDisplayField>
-        <errorMessage>Cannot be less than 0</errorMessage>
-    </validationRules>
-    <validationRules>
         <fullName>Backlog_Value_lt_Not_Null</fullName>
         <active>true</active>
         <errorConditionFormula>AND(RecordType.Name == &apos;Key Roles&apos;,  ISNULL(Backlog_Value_lt__c))</errorConditionFormula>
@@ -806,25 +825,11 @@
         <errorMessage>Cannot Be Null</errorMessage>
     </validationRules>
     <validationRules>
-        <fullName>Backlog_Value_lt_less_than_0</fullName>
-        <active>true</active>
-        <errorConditionFormula>Backlog_Value_lt__c &lt; 0</errorConditionFormula>
-        <errorDisplayField>Backlog_Value_lt__c</errorDisplayField>
-        <errorMessage>Cannot be less than 0</errorMessage>
-    </validationRules>
-    <validationRules>
         <fullName>Project_Net_Margin_Value_Not_Null</fullName>
         <active>true</active>
         <errorConditionFormula>AND(RecordType.Name == &apos;Key Roles&apos;,  ISNULL(Project_Net_Margin_Value__c))</errorConditionFormula>
         <errorDisplayField>Project_Net_Margin_Value__c</errorDisplayField>
         <errorMessage>Cannot Be Null</errorMessage>
-    </validationRules>
-    <validationRules>
-        <fullName>Project_Net_Margin_Value_less_than_0</fullName>
-        <active>true</active>
-        <errorConditionFormula>Project_Net_Margin_Value__c &lt; 0</errorConditionFormula>
-        <errorDisplayField>Project_Net_Margin_Value__c</errorDisplayField>
-        <errorMessage>Cannot be less than 0</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>Project_Net_Margin_Value_lt_Not_Null</fullName>
@@ -855,25 +860,11 @@
         <errorMessage>Cannot Be Null</errorMessage>
     </validationRules>
     <validationRules>
-        <fullName>Project_Revenue_Budget_less_than_0</fullName>
-        <active>true</active>
-        <errorConditionFormula>Project_Revenue_Budget__c &lt; 0</errorConditionFormula>
-        <errorDisplayField>Project_Revenue_Budget__c</errorDisplayField>
-        <errorMessage>Cannot be less than 0</errorMessage>
-    </validationRules>
-    <validationRules>
         <fullName>Project_Revenue_Budget_lt_Null</fullName>
         <active>true</active>
         <errorConditionFormula>AND(RecordType.Name == &apos;Key Roles&apos;,  ISNULL(Project_Revenue_Budget_lt__c))</errorConditionFormula>
         <errorDisplayField>Project_Revenue_Budget_lt__c</errorDisplayField>
         <errorMessage>Cannot Be Null</errorMessage>
-    </validationRules>
-    <validationRules>
-        <fullName>Project_Revenue_Budget_lt_less_than_0</fullName>
-        <active>true</active>
-        <errorConditionFormula>Project_Revenue_Budget_lt__c  &lt; 0</errorConditionFormula>
-        <errorDisplayField>Project_Revenue_Budget_lt__c</errorDisplayField>
-        <errorMessage>Cannot be less than 0</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>Start_Date_Before_End_Date</fullName>
@@ -898,20 +889,6 @@
         <errorMessage>Cannot Be Null</errorMessage>
     </validationRules>
     <validationRules>
-        <fullName>Value_change_in_Forecast_Net_less_0</fullName>
-        <active>true</active>
-        <errorConditionFormula>Value_change_in_Forecast_Net_Margin__c  &lt; 0</errorConditionFormula>
-        <errorDisplayField>Value_change_in_Forecast_Net_Margin__c</errorDisplayField>
-        <errorMessage>Cannot be less than 0</errorMessage>
-    </validationRules>
-    <validationRules>
-        <fullName>Value_change_in_Forecast_Net_less_lt_0</fullName>
-        <active>true</active>
-        <errorConditionFormula>Value_change_in_Forecast_Net_Margin_lt__c  &lt; 0</errorConditionFormula>
-        <errorDisplayField>Value_change_in_Forecast_Net_Margin_lt__c</errorDisplayField>
-        <errorMessage>Cannot be less than 0</errorMessage>
-    </validationRules>
-    <validationRules>
         <fullName>age_Change_in_Forecast_Net_Margin_null</fullName>
         <active>true</active>
         <errorConditionFormula>AND(RecordType.Name == &apos;Key Roles&apos;,  ISNULL( age_Change_in_Forecast_Net_Margin__c ))</errorConditionFormula>
@@ -924,12 +901,5 @@
         <errorConditionFormula>AND(RecordType.Name == &apos;Key Roles&apos;,  ISNULL( age_Change_in_Forecast_Net_Margin_lt__c ))</errorConditionFormula>
         <errorDisplayField>age_Change_in_Forecast_Net_Margin_lt__c</errorDisplayField>
         <errorMessage>Cannot Be Null</errorMessage>
-    </validationRules>
-    <validationRules>
-        <fullName>roject_Net_Margin_Value_lt_less_than_0</fullName>
-        <active>true</active>
-        <errorConditionFormula>Project_Net_Margin_Value_lt__c  &lt; 0</errorConditionFormula>
-        <errorDisplayField>Project_Net_Margin_of_NSR_Bypass_lt__c</errorDisplayField>
-        <errorMessage>Cannot be less than 0</errorMessage>
     </validationRules>
 </CustomObject>
