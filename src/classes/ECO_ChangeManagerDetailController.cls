@@ -265,23 +265,40 @@ public class ECO_ChangeManagerDetailController {
         		changeManagerSubmittedIds = ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id);	
         	}
         	
-        	ECO_ProjectSummaryController projectSummaryController2 = new ECO_ProjectSummaryController();
-	
-            projectSynchMessages = '';
-        	projectSynchMessages += projectSummaryController2.projectMsg;
-        	projectSynchMessages += projectSummaryController2.taskMsg;
-        	projectSynchMessages += projectSummaryController2.keyMemberMsg;
-        	projectSynchMessages += projectSummaryController2.customersMsg;  
+            //performValidations();
+
+        ECO_ProjectSummaryController projectSummaryController2 = new ECO_ProjectSummaryController();
+    
+        projectSynchMessages = '';
+        projectSynchMessages += projectSummaryController2.projectMsg;
+        //if(changeManager.IntExtSchedule__c)
+        //{
+            projectSynchMessages += projectSummaryController2.taskMsg;
+            invalidTasks = projectSummaryController2.invalidTasks;
+        //}
+        //if(changeManager.IntExtKeyMembers__c)
+        //{
+            projectSynchMessages += projectSummaryController2.keyMemberMsg;
+            invalidKeyMembers = projectSummaryController2.invalidKeyMembers;
+        //}
+        //if(changeManager.IntExtCustomers__c)
+        //{
+            projectSynchMessages += projectSummaryController2.customersMsg; 
+            invalidCustomers = projectSummaryController2.invalidCustomers; 
+        //}
+
+        if(changeManager.IntExtContractManagement__c)
             projectSynchMessages += validateAgreements();
 
-            if(projectSynchMessages != '' && projectSynchMessages != null)
-               projectSynchMessages = '<ol>' + projectSynchMessages + '</ol>';
+        if(projectSynchMessages != '' && projectSynchMessages != null)
+            projectSynchMessages = '<ol>' + projectSynchMessages + '</ol>';
 
-        	invalidTasks = projectSummaryController2.invalidTasks;
-       		invalidCustomers = projectSummaryController2.invalidCustomers;
-       		invalidKeyMembers = projectSummaryController2.invalidKeyMembers;
-        //}
     }    
+
+    private void performValidations()
+    {
+
+    }   
 
     private String validateAgreements()
     {
@@ -562,7 +579,7 @@ public class ECO_ChangeManagerDetailController {
         if(changeManager.BudgetIdsSelectedForExecution__c == null)
             changeManager.BudgetIdsSelectedForExecution__c = '';
             
-        for(BudgetHeader__c budget:[select Id, Name, BudgetName__c, LastModifiedById, LastModifiedDate from BudgetHeader__c where Project__c = :changeManager.Project__c])
+        for(BudgetHeader__c budget:[select Id, Name, BudgetName__c, TotalCost__c, TotalRevenue__c, LastModifiedById, LastModifiedDate from BudgetHeader__c where Project__c = :changeManager.Project__c])
         {
             if(changeManager.BudgetIdsSelectedForExecution__c == null || changeManager.BudgetIdsSelectedForExecution__c == '')
                 initialBudgetsForExecution.add(new BudgetHeaderWrapper(true, budget)); 
@@ -710,6 +727,34 @@ public class ECO_ChangeManagerDetailController {
         //}
 
    		mode = '';
+
+       /* ECO_ProjectSummaryController projectSummaryController2 = new ECO_ProjectSummaryController();
+    
+        projectSynchMessages = '';
+        projectSynchMessages += projectSummaryController2.projectMsg;
+        if(changeManager.IntExtSchedule__c)
+        {
+            projectSynchMessages += projectSummaryController2.taskMsg;
+            invalidTasks = projectSummaryController2.invalidTasks;
+        }
+        if(changeManager.IntExtKeyMembers__c)
+        {
+            projectSynchMessages += projectSummaryController2.keyMemberMsg;
+            invalidKeyMembers = projectSummaryController2.invalidKeyMembers;
+        }
+        if(changeManager.IntExtCustomers__c)
+        {
+            projectSynchMessages += projectSummaryController2.customersMsg; 
+            invalidCustomers = projectSummaryController2.invalidCustomers; 
+        }
+
+        if(changeManager.IntExtContractManagement__c)
+            projectSynchMessages += validateAgreements();
+
+        if(projectSynchMessages != '' && projectSynchMessages != null)
+            projectSynchMessages = '<ol>' + projectSynchMessages + '</ol>';*/   
+
+
    		return null;
     }
 

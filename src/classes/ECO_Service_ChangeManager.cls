@@ -221,7 +221,7 @@ public class ECO_Service_ChangeManager {
     public static list<Agreement__c> getChangedAgreements(Id projectId, list<String> submittedIds, boolean showOnlySubmitted)
     {   
     	String query =  'select Id, Name, ChangeManagerIsNew__c, TotalContractValue__c, RecordType.Name, Amount__c, TotalApprovedRevenueLimit__c, ';
-    	query += ' AgreementType__c, LastModifiedById, LastModifiedDate, CreatedDate, CreatedById ';
+    	query += ' AgreementType__c, LastModifiedById, LastModifiedDate, CreatedDate, CreatedById, OracleSynchAgreementType__c ';
         query += ' from Agreement__c where project__c = :projectId ';
         query += ' and ChangeManagerIsChanged__c = true ';
         query += ' and ChangeManagerApprovedForSynch__c = false ';       

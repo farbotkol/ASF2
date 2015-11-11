@@ -38,7 +38,9 @@ public class ECO_ProjectAgreementController {
 													AgreementNumber__c = projectAgreementNumber,
 													ProjectAgreementRecordCount__c = projectAgreementCount,
 													AgreementAmountEstimated__c = projectInfo.EstimatedContractValue__c,
-													ProjectTeamMember__c = projectManagerId);													
+													ProjectTeamMember__c = projectManagerId,
+													FundingCurrencyCode__c = projectInfo.ProjectCurrencyCode__c,
+													CurrencyIsoCode = projectInfo.ProjectCurrencyCode__c);													
 		insert newAgreement;
 			
 		if(recordType.Name != 'Prime (MSA)'){

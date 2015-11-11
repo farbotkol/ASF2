@@ -348,9 +348,9 @@
     
     </apex:outputPanel>
 
-    <apex:outputPanel rendered="{!agreementRecordType =='Prime'}">
+    <apex:outputPanel rendered="{!agreementRecordType =='Prime'}" id="primeSection">
     <apex:form > 
-        <apex:actionFunction id="primeScopeChanged" name="primeScopeChanged" action="{!primeScopeChangedApex}" immediate="true"/>
+        <apex:actionFunction id="primeScopeChanged" name="primeScopeChanged" action="{!primeScopeChangedApex}" onComplete="window.location.reload();"/>
         <apex:pageBlock mode="{!pageBlockMode}" title="{!'Prime Agreement ' + mode}">
         <apex:pageBlockButtons >
             <apex:commandLink value="Print Agreement" action="{!printPdf}" styleClass="btn printAgreement" immediate="true" target="_blank" style="text-decoration:none" />
@@ -532,7 +532,7 @@
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ScopePackage__c.inlineHelpText}">
                 <apex:outputText value="Scope Package"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.ScopePackage__c}" onchange="primeScopeChanged();" rendered="{!mode != ''}"/>
+                        <apex:inputField value="{!agreement.ScopePackage__c}" rendered="{!mode != ''}" onchange="primeScopeChanged(); return true;"/>
                     <apex:outputField value="{!agreement.ScopePackage__c}" rendered="{!mode == ''}"/>
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>    

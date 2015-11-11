@@ -84,6 +84,19 @@ global virtual class ECO_AgreementController {
         MSAChanged = false;              
         primeScopeText = '';    
     }
+
+    public PageReference initAgreementScopeChanged()
+    {
+        PageReference editAgreement = new PageReference('/apex/ECO_AgreementView?Id='+agreement.Id);        
+        editAgreement.getParameters().put('nooverride', '1');
+        editAgreement.getParameters().put('ProjectId', agreement.Project__c);
+        editAgreement.getParameters().put('retURL', '/apex/ECO_AgreementView?Id='+agreement.Id); 
+        editAgreement.getParameters().put('mode', 'Edit');
+        //editAgreement.setRedirect(true);
+        
+        return editAgreement;
+        //init();
+    }
     
     public void handleDeletingCancelledChildObject()
     {
@@ -171,7 +184,7 @@ global virtual class ECO_AgreementController {
 
         getPrimeScopeText();
 
-        editAgreement();
+       // return null;
     }
     
     private void populateRelatedAgreementObjects()

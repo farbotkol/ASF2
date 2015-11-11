@@ -91,7 +91,8 @@
 
 </apex:pageBlockButtons>
 
-<apex:actionFunction name="createNewFunding" action="{!createFunding}"  rerender="pageMessages,pb,taskLevelExchange,taskLevelNoExchange, projectLevelNoExchange, projectLevelExchange, repeat">     
+<!--<apex:actionFunction name="createNewFunding" action="{!createFunding}"  rerender="pageMessages,pb,taskLevelExchange,taskLevelNoExchange, projectLevelNoExchange, projectLevelExchange, repeat">     -->
+<apex:actionFunction name="createNewFunding" action="{!createFunding}"  rerender="pb" immediate="true">
     <apex:param id="tId" name="taskId" value="" />
 </apex:actionFunction>
 
@@ -100,6 +101,13 @@
 <apex:actionFunction name="taskChanged" action="{!taskChanged}"  rerender="">     
     <apex:param id="tId2" name="taskId" value="" />
 </apex:actionFunction>
+
+<apex:inputHidden value="{!fundingToDelete}" />
+<apex:actionFunction name="deleteFunding" id="deleteFunding" action="{!deleteFundingApex}" reRender="pb">
+  <apex:param id="fundingId" name="fundingId" value="" assignTo="{!fundingToDelete}"/>
+</apex:actionFunction> 
+
+
 
 <apex:outputText value="{!taskId}" style="visibility: hidden;"/>
 <apex:pageBlockSection columns="2">
@@ -200,7 +208,7 @@
     <!-- FUNDING RECORD HISTORY -->
     <apex:repeat value="{!projectTasksFundedMap[projectTask.Id]}" var="tasksFunding" >
     <tr>        
-        <td><apex:commandLink onclick="deleteFunding('{!tasksFunding.funding.Id}');">Del</apex:commandLink></td>
+        <td><apex:commandLink rendered="{!tasksFunding.funding.ChangeManagerIsNew__c}" onclick="deleteFunding('{!tasksFunding.funding.Id}'); return false;">Del</apex:commandLink></td>
         <apex:outputText escape="false" value="<td></td><td></td><td></td>" rendered="{!project.EnableTopTaskCustomerFlag__c}" />
         <apex:outputText escape="false" value="<td></td><td></td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c)}" />
             
@@ -290,7 +298,7 @@
     </tr>   
     <apex:repeat value="{!projectLevelFunding}" var="fundingItem" id="projectLevelRepeat">
     <tr>
-        <td><apex:commandLink onclick="deleteFunding('{!fundingItem.funding.Id}');">Del</apex:commandLink></td>
+        <td><apex:commandLink rendered="{!fundingItem.funding.ChangeManagerIsNew__c}" onclick="deleteFunding('{!fundingItem.funding.Id}'); return false;">Del</apex:commandLink></td>
         <td>
         	<apex:inputField value="{!fundingItem.funding.FundingClassification__c}" rendered="{!fundingItem.newFunding}" required="true"/>
         	<apex:outputField value="{!fundingItem.funding.FundingClassification__c}" rendered="{!NOT(fundingItem.newFunding)}"/>

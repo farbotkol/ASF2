@@ -12,7 +12,7 @@ public with sharing class ECO_ProjectTaskTriggers {
 
 		List<WeeklyRollupEntry__c> toUpsert = new List<WeeklyRollupEntry__c>();
 		
-		List<pse__Time_Period__c> timePeriods = [select id, TimePeriodCode__c, pse__Start_Date__c, pse__End_Date__c from pse__Time_Period__c where pse__Type__c = 'Month'];
+		List<pse__Time_Period__c> timePeriods = [select id, TimePeriodCode__c, pse__Start_Date__c, pse__End_Date__c from pse__Time_Period__c where pse__Type__c = 'Month' order by pse__Start_Date__c];
 
 		for (pse__Proj__c project : projects) {
 			Date newStartDate = null;
@@ -71,11 +71,10 @@ public with sharing class ECO_ProjectTaskTriggers {
 					
 					// time period
 					for (pse__Time_Period__c tp : timePeriods){
-						if (tp.pse__Start_Date__c >= rollup.PeriodStartDate__c && tp.pse__End_Date__c <= rollup.PeriodStartDate__c){	
+						if (rollup.PeriodStartDate__c >= tp.pse__Start_Date__c  && rollup.PeriodStartDate__c <= tp.pse__End_Date__c ){	
 							rollup.FiscalMonth__c = tp.TimePeriodCode__c;
 						}
 					}
-						
 
 					toUpsert.add(rollup);
 
@@ -541,6 +540,22 @@ public with sharing class ECO_ProjectTaskTriggers {
 		if(lBudgetTasksToInsert.size() > 0){
 			insert lBudgetTasksToInsert;
 		}
+	}
+
+	public static void handleRemovingAssociatedFunding(list<pse__Project_Task__c> projectTasks)
+	{
+		List<Id> projectTaskIds = new List<Id>();
+		for(pse__Project_Task__c projectTask:projectTasks)
+		{
+			if(!projectTask.ChangeManagerIsNew__c)
+				projectTask.addError('This task has been sycned to Oracle.  You are not allowed to delete this task.');
+			projectTaskIds.add(projectTask.Id);
+		}
+
+		list<Funding__c> fundings = [select Id from Funding__c where ProjectTask__c in :projectTaskIds];
+
+		if(!fundings.isEmpty())
+			delete fundings;
 	}
 	
 	public static void calculateFiscalMonths(list<pse__Project_Task__c> projectTasks)

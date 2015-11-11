@@ -374,10 +374,15 @@ public with sharing virtual class ECO_ProjectReviewsController
 
 	public Pagereference newTask(){
  
-    	PageReference pageRef = new PageReference('/00T/e?what_id=' + oProjectReview.Id + '&retURL=' + oProjectReview.Id);
+        Id taskRecordTypeId = ECO_Utils_Meta.getRecordTypeId(Task.sObjectType, 'ECO Tasks');
+       
+        Task t = new Task();
+        t.WhatId = oProjectReview.Id;
+        t.RecordTypeId = taskRecordTypeId;
+        insert t;
 
-    	pageRef.setRedirect(True);
-
+    	PageReference pageRef = new PageReference('/' + t.Id + '/e');
+    	pageRef.getParameters().put('retURL', '/' + oProjectReview.Id);
     	return PageRef;
 
     }

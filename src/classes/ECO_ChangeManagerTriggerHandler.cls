@@ -46,7 +46,7 @@ public class ECO_ChangeManagerTriggerHandler {
 		{
 			if(!ECO_Service_Authentication.authenticateOracleToken(UserInfo.getUserId()))
 			{
-				changeManager.addError('Could not Authenticate your Oracle token, please login to <a href="https://aecom--ecosysdev.cs15.my.salesforce.com/apex/ECO_OracleLogin" >Oracle</a> to refresh your token.',FALSE );
+				changeManager.addError('Could not Authenticate your Oracle token, goto the <a href="https://aecom--ecosysdev.cs15.my.salesforce.com/apex/ECO_ChangeManagerDetail?Id=' + changeManager.Id + '">Change Manager</a> page to refresh your token and approve the request.',FALSE );
 				//PageReference page = new PageReference('/apex/ECO_ChangeManagerDetail?Id=' + changeManager.Id);
 				//return page;
 			}
@@ -261,7 +261,8 @@ public class ECO_ChangeManagerTriggerHandler {
 			for(Agreement__c agreement:agreements)
 			{
 				agreement.ChangeManagerIsChanged__c = false;
-				agreement.ChangeManagerApprovedForSynch__c = true;	
+				if(agreement.OracleSynchAgreementType__c)
+					agreement.ChangeManagerApprovedForSynch__c = true;	
 				agreement.ChangeManagerIsNew__c  = false;				
 			}	
 			

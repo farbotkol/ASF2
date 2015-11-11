@@ -161,7 +161,7 @@
     <apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Approving the Approval Process. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && projectSynchMessages == '' && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Submitted') && changeManager.IsExecutionApprovalChange__c}"/>
 
     <apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Approving the Approval Process. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed') && 
-                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c) && NOT(changeManager.IsExecutionApprovalChange__c)}"/>
+                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c) && NOT(changeManager.IsExecutionApprovalChange__c)}"/>
 
     
 
@@ -677,7 +677,7 @@
             <apex:inputHidden value="{!changeManager.BudgetHeader__c}"/>
             <apex:pageBlockSection title="Budget" collapsible="false" rendered="{!changeManager.IntExtBudget__c}" columns="1">
                 <apex:pageBlockTable value="{!ChangedBudget}" var="budget" rendered="{!ChangedBudget != null}">
-                    <apex:column headervalue="Budget Name"><apex:outputlink value="{!URLFOR('/apex/ECO_BudgetGrid?Id=' + budget.Project__c, null)}"><apex:outputField value="{!budget.BudgetName__c}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Budget Name"><apex:outputlink value="{!URLFOR('/apex/ECO_BudgetHeaderSummary?Id=' + budget.Project__c, null)}"><apex:outputField value="{!budget.BudgetName__c}"/></apex:outputlink></apex:column>
                     <apex:column headervalue="Cost Charge"><apex:outputField value="{!budget.TotalCost__c}"/></apex:column>
                     <apex:column headervalue="Revenue Charge"><apex:outputField value="{!budget.TotalRevenue__c}"/></apex:column>
                     <apex:column headervalue="Status"><apex:outputField value="{!budget.Status__c}"/></apex:column>                 
@@ -1039,7 +1039,7 @@
             <apex:inputHidden value="{!changeManager.BudgetHeader__c}"/>
             <apex:pageBlockSection title="Budget" collapsible="false" rendered="{!ChangedBudget != null}" columns="1">
                 <apex:pageBlockTable value="{!ChangedBudget}" var="budget" rendered="{!ChangedBudget != null}">
-                    <apex:column headervalue="Budget Name"><apex:outputlink value="{!URLFOR('/apex/ECO_BudgetGrid2?Id=' + budget.Project__c, null)}"><apex:outputField value="{!budget.BudgetName__c}"/></apex:outputlink></apex:column>
+                    <apex:column headervalue="Budget Name"><apex:outputlink value="{!URLFOR('/apex/ECO_BudgetHeaderSummary?Id=' + budget.Project__c, null)}"><apex:outputField value="{!budget.BudgetName__c}"/></apex:outputlink></apex:column>
                     <apex:column headervalue="Cost Charge"><apex:outputField value="{!budget.TotalCost__c}"/></apex:column>
                     <apex:column headervalue="Revenue Charge"><apex:outputField value="{!budget.TotalRevenue__c}"/></apex:column>
                     <apex:column headervalue="Status"><apex:outputField value="{!budget.Status__c}"/></apex:column>                 
@@ -1453,6 +1453,6 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainCommR
 </apex:pageBlock>
 </apex:outputPanel>
 </apex:form>
-<apex:relatedList list="ProcessSteps"  id="approval" rendered="{!ShowApprovalProcessList}"></apex:relatedList>
+<apex:relatedList list="ProcessSteps"  id="approval" rendered="{!ShowApprovalProcessList && $User.IsValidOracleToken__c}"></apex:relatedList>
 <apex:relatedList list="CombinedAttachments" rendered="{!changeManager.RecordType.Name == 'PM Handover'}"/>
 </apex:page>

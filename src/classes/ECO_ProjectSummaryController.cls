@@ -554,15 +554,19 @@ public with sharing class ECO_ProjectSummaryController {
 
 
 	    		//if role is Project Approver 2 then validate that user is primary org P&L Manager
-	    		if(primaryOrgPLManagerId != null && member.ProjectRole__r.Name == 'Project Approver 2'){
-	    			system.debug('primaryOrgPLManagerId = ' + primaryOrgPLManagerId);
-	    			system.debug('member.User__c = ' + member.Contact__r.User__c);
-	    			if(primaryOrgPLManagerId != member.Contact__r.User__c){
-	    				validationMsgForKeyMember += primOrgPLManager + ' for the primary organization of the project must match the user selected for Project Approver 2';
-	    			}
+	    		//if(primaryOrgPLManagerId != null && member.ProjectRole__r.Name == 'Project Approver 2'){
+	    		//	system.debug('primaryOrgPLManagerId = ' + primaryOrgPLManagerId);
+	    		//	system.debug('member.User__c = ' + member.Contact__r.User__c);
+	    		//	if(primaryOrgPLManagerId != member.Contact__r.User__c){
+	    		//		validationMsgForKeyMember += primOrgPLManager + ' for the primary organization of the project must match the user selected for Project Approver 2';
+	    		//	}
+	    		//}
+
+	    		if(member.OraclePersonId__c != null)
+	    		{
+	    			if(member.OraclePersonId__c.contains('U'))
+	    				validationMsgForKeyMember += 'The Oracle Person Id for this Key Member contains an invalid character.  Please chose a different team member for that role or update the person id.';
 	    		}
-
-
 
 	    		if(!String.isEmpty(validationMsgForKeyMember)){
   					validationMsgForKeyMember = 'The following fields must be completed to sync: ' + validationMsgForKeyMember.substring(0,validationMsgForKeyMember.length()-2);

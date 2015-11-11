@@ -35,6 +35,9 @@ trigger ECO_ProjectTask_AllEvents on pse__Project_Task__c (before insert, before
         ECO_ProjectTaskTriggers.handleDefaultingTaskOwningCustomer(trigger.new);
     }
 
+    if(trigger.IsBefore && trigger.IsDelete)
+        ECO_ProjectTaskTriggers.handleRemovingAssociatedFunding(trigger.old);
+
     if(trigger.IsAfter && trigger.IsInsert){
         ECO_ProjectTaskTriggers.replicateNewProjectTask(trigger.new);
     }

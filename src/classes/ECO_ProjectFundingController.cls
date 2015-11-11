@@ -5,6 +5,7 @@ public class ECO_ProjectFundingController {
     public Boolean creatingNewFunding {get; set;}
     public Id taskId {get; set;}
     public boolean topTask {get; set;}
+    public Id fundingToDelete {get; set;}
     
     public list<pse__Project_Task__c> projectTasks {get; set;}
     
@@ -74,12 +75,46 @@ public class ECO_ProjectFundingController {
         return null;
         
     }
+
+    public void deleteFundingApex()
+    {
+        list<Funding__c> fundingsToDelete = [select Id from Funding__c where Id = :fundingToDelete];
+        
+        System.Debug('BrentBrentBrentfundingsize' + fundingsToDelete.size());
+        if(!fundingsToDelete.isEmpty())
+        {
+            System.Debug('BrentBrentBrentfundingsize' + fundingsToDelete.size());
+            delete fundingsToDelete;
+        }
+
+        if(!project.ProjectLevelFundingFlag__c)
+        {
+            initializeProjectTaskLevelFundingProjectTasks();
+            initializeProjectTaskLevelFundingLines();            
+        }
+
+        if(project.ProjectLevelFundingFlag__c)
+        {
+            initializeProjectLevelFunding();
+        }
+
+
+
+        agreement = [select Id, Name, Amount__c, Account__c, Description__c, FundingCurrencyCode__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
+        //System.Debug('BrentBrentBrentfundingsize2' + projectLevelFunding.size());
+        //PageReference pageRef = new PageReference('/apex/ECO_ProjectFunding');
+        //pageRef.getParameters().put('AgreementId', agreement.Id);
+        //pageRef.getParameters().put('ProjectId', project.Id);
+        //pageRef.setRedirect(true);
+        //return pageRef;
+        //return null;
+    }    
     
     private void initializeProjectLevelFunding()
     {
         //projectLevelFunding = new list<Funding__c>();
         projectLevelFunding = new list<Funding>();
-        for(Funding__c funding:[select Id, ProjectTask__c, Agreement__r.Name, Agreement__r.Account__c, Agreement__c, AllocatedAmount__c, DateAllocatedDate__c, FundingClassification__c, ProjFuncRateType__c, ProjFuncRateExchangeRate__c, ProjFuncRateDate__c, TotalBaselinedAmount__c, CreatedDate, ChangeManagerIsChanged__c, ChangeManagerApprovedForSynch__c from Funding__c where Agreement__c = :agreementId and Project__c = :projectId])
+        for(Funding__c funding:[select Id, ChangeManagerIsNew__c, ProjectTask__c, Agreement__r.Name, Agreement__r.Account__c, Agreement__c, AllocatedAmount__c, DateAllocatedDate__c, FundingClassification__c, ProjFuncRateType__c, ProjFuncRateExchangeRate__c, ProjFuncRateDate__c, TotalBaselinedAmount__c, CreatedDate, ChangeManagerIsChanged__c, ChangeManagerApprovedForSynch__c from Funding__c where Agreement__c = :agreementId and Project__c = :projectId])
         {
             projectLevelFunding.add(new Funding(false, funding, true));
         }
@@ -109,7 +144,7 @@ public class ECO_ProjectFundingController {
     
     private void initializeProjectTaskLevelFundingLines()    
     {
-        for(Funding__c funding:[select Id, ProjectTask__c, Agreement__r.Name, Agreement__r.Account__c, Agreement__c, AllocatedAmount__c, DateAllocatedDate__c, FundingClassification__c, ProjFuncRateType__c, ProjFuncRateExchangeRate__c, ProjFuncRateDate__c, TotalBaselinedAmount__c, CreatedDate, ChangeManagerApprovedForSynch__c, ChangeManagerIsChanged__c  from Funding__c where ProjectTask__c in :projectTasks])
+        for(Funding__c funding:[select Id, ProjectTask__c, ChangeManagerIsNew__c, Agreement__r.Name, Agreement__r.Account__c, Agreement__c, AllocatedAmount__c, DateAllocatedDate__c, FundingClassification__c, ProjFuncRateType__c, ProjFuncRateExchangeRate__c, ProjFuncRateDate__c, TotalBaselinedAmount__c, CreatedDate, ChangeManagerApprovedForSynch__c, ChangeManagerIsChanged__c  from Funding__c where ProjectTask__c in :projectTasks])
         {
         	if(funding.Agreement__c == agreement.Id)
         	{
@@ -203,6 +238,7 @@ public class ECO_ProjectFundingController {
 						f.funding.CurrencyIsoCode = agreement.FundingCurrencyCode__c;   
                     	f.funding.ProjFuncRateType__c = 'Spot';
                     	f.funding.ProjFuncRateDate__c = f.funding.DateAllocatedDate__c;
+                        f.funding.ChangeManagerIsNew__c = true;
                     	f.funding.ProjFuncRateExchangeRate__c = ECO_Service_ExchangeRate.getExchangeRate(agreement.FundingCurrencyCode__c, project.ProjectFunctionalCurrencyCode__c, f.funding.DateAllocatedDate__c);                	
                     	f.newFunding = false;
                     	fundingRecordsToBeSaved.add(f.funding);
@@ -236,6 +272,7 @@ public class ECO_ProjectFundingController {
                             f.funding.CurrencyIsoCode = agreement.FundingCurrencyCode__c;   
                             f.funding.ProjFuncRateType__c = 'Spot';
                             f.funding.ProjFuncRateDate__c = f.funding.DateAllocatedDate__c;
+                            f.funding.ChangeManagerIsNew__c = true;
                             f.funding.ProjFuncRateExchangeRate__c = ECO_Service_ExchangeRate.getExchangeRate(agreement.FundingCurrencyCode__c, project.ProjectFunctionalCurrencyCode__c, f.funding.DateAllocatedDate__c);
                             fundingRecordsToBeSaved.add(f.funding); 
                             f.newFunding = false;   
