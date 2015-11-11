@@ -64,7 +64,7 @@
 
     <apex:form >
         <apex:pageMessages id="messages" />     
-        <apex:pageblock >
+        <apex:pageblock id="pgBlock">
 
             <apex:pageBlockButtons >
                 <apex:commandButton action="{!saveForm}" value="Save" />
@@ -84,9 +84,7 @@
             <apex:pageBlockSection title="Step 2: Owning Organization" collapsible="false">
                 <apex:inputField value="{!oForm.OwningOrganization__c}"/>
             </apex:pageBlockSection>
-            
             <apex:pageBlockSection title="Step 3: DOA Matters"  collapsible="false" columns="2" id="DOAMatterFields" >
-                
                 	<apex:outputField value="{!proj.Name}" label="Project Name/Subject" rendered="{!if(isNonProjectRelated, false, true)}"/>
                     <apex:outputField value="{!proj.OpportunityID__c}" label="Opportunity #" rendered="{!if(isNonProjectRelated, false, true)}"/>
                 	<apex:outputField value="{!proj.pse__Project_ID__c}" label="Ecosystem #" rendered="{!if(isNonProjectRelated, false, true)}"/>
@@ -101,10 +99,21 @@
                 <!--<apex:pageBlockTable value="{!lstDOATriggers}" var="DOAReg"  rendered="{!if(lstDOATriggers.size > 0, true, false)}" >-->
                     
 					<apex:column headerValue="Action">
+                        <apex:actionRegion >
                         <apex:outputLink value="{!URLFOR($Action.DOARegister__c.View, DOAReg.Id)}" target="_blank">
                             View
-                        </apex:outputLink>
+                        </apex:outputLink>&nbsp;
+                        <apex:commandLink action="{!deleteDOARegister}" rendered="{!IF(OR(doaRecordType = 'DOACreate',doaRecordType = 'NonEcosystemCreate'),true,false)}" rerender="NonProject, DOAMatter">
+                        	Delete
+                            <apex:param assignTo="{!doaRegisterId}" name="doaRegisterId" value="{!DOAReg.id}" />
+                        </apex:commandLink>
+                        <!--<apex:outputLink value="{!URLFOR($Action.DOARegister__c.Delete, DOAReg.Id)}" target="_blank" rendered="{!IF(OR(doaRecordType = 'DOACreate',doaRecordType = 'NonEcosystemCreate'),true,false)}">
+                        <apex:outputLink  value="{!deleteDOARegister}" target="_blank" rendered="{!IF(OR(doaRecordType = 'DOACreate',doaRecordType = 'NonEcosystemCreate'),true,false)}">
+                            Delete
+                            <apex:param assignTo="{!doaRegisterId}" name="doaRegisterId" value="{!DOAReg.id}" />
+                        </apex:outputLink>-->
                         <!--<apex:outputLink value="/{!DOAReg.oTrigger.id}">View</apex:outputLink>-->
+                        </apex:actionRegion>
                     </apex:column>
                     <!--<apex:repeat value="{!$ObjectType.DOARegister__c.FieldSets.DOA_TriggerView}" var="SearchField">
 						<apex:column value="{!DOAReg.oTrigger[SearchField]}" />
@@ -179,14 +188,17 @@
                 </div>
             </apex:pageBlockSection>
             <apex:pageBlockSection collapsible="false" columns="1" rendered="{!isNonProjectRelated}" id="NonProject">
-				<apex:pageMessage severity="INFO" rendered="{!IF(lstTemplateQues.size > 0, false, true)}" summary="No Results Were Found."></apex:pageMessage> 
-                <apex:pageBlockTable value="{!lstTemplateQues}" rendered="{!IF(lstTemplateQues.size > 0, true, false)}" var="Questions" >
+				<apex:pageMessage severity="INFO" rendered="{!IF(lstTemplateQuestions.size > 0, false, true)}" summary="No Results Were Found."></apex:pageMessage> 
+                <apex:pageBlockTable value="{!lstTemplateQuestions}" rendered="{!IF(lstTemplateQuestions.size > 0, true, false)}" var="Questions" >
                     <apex:column width="100px">
+                        <apex:actionRegion >
                         <apex:facet name="header">Select</apex:facet>
-                        <apex:commandLink action="{!addQuestion}" value="Select" rerender="DOAMatter">
+                        <apex:commandLink action="{!addQuestion}" value="Select" rerender="NonProject, DOAMatter">
                             <apex:param assignTo="{!idQuestionID}" name="QuestionId" value="{!Questions.id}" />
                         </apex:commandLink>&nbsp;&nbsp;
+                        </apex:actionRegion>
                     </apex:column>
+                    
                     <apex:repeat value="{!$ObjectType.TemplateQuestion__c.FieldSets.DOA_Register_Fields}" var="SearchField">
                         <apex:column value="{!Questions[SearchField]}"/>
                     </apex:repeat>
@@ -200,6 +212,7 @@
                 	</div>
                 </apex:outputPanel>
             </apex:pageBlockSection>
+            
             <apex:pageBlockSection title="Step 4: Reason for Request" collapsible="false"  columns="1">
                 <div class="customHelpText">
                     <div class="customHelpBody">
