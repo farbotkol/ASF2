@@ -102,7 +102,7 @@ trigger INC_EnrollmentPlan_BIU on EnrollmentPlan__c (before insert, before updat
     
     for(EnrollmentPlan__c oEnrollmentPlan : lEnrollmentPlans){
         decimal dCalculatedEstimatedIncPoolITD = 0;
-        Decimal dProfitSharingPercent = ECO_Utils_String.NullCheck(trigger.newMap.get(oEnrollmentPlan.id).IncentivePlan__r.ProfitSharingPercent__c);
+        Decimal dProfitSharingPercent = (ECO_Utils_String.NullCheck(oEnrollmentPlan.IncentivePlan__r.ProfitSharingPercent__c)/100).setScale(4);
         decimal dMarginToUse = 0;
         
         if(oEnrollmentPlan.IncentivePlan__r.ContractSubType__c == 'Gross Margin'){
@@ -113,8 +113,17 @@ trigger INC_EnrollmentPlan_BIU on EnrollmentPlan__c (before insert, before updat
 
         if(oEnrollmentPlan.IncentivePlan__r.ContractType__c =='Fixed Price'){
             if(oEnrollmentPlan.AcutalGMofNSRITD__c > oEnrollmentPlan.ThresholdGM__c){
-                decimal dAdjustComplete = (1-ECO_Utils_String.NullCheck((trigger.newMap.get(oEnrollmentPlan.id).AdjustedComplete__c).setScale(2))/100);
-                decimal dCalculatedEstimatedPool = ((ECO_Utils_String.NullCheck(oEnrollmentPlan.IncentiveProject__r.ActualNSRITD__c) *((ECO_Utils_String.NullCheck(oEnrollmentPlan.IncentiveProject__r.ActualGrossMarginITD__c)/ECO_Utils_String.NullCheck(trigger.newMap.get(oEnrollmentPlan.id).NSRBudget__c)) - ECO_Utils_String.NullCheck(trigger.newMap.get(oEnrollmentPlan.id).BaselineGMofNSR__c)/100))* dProfitSharingPercent * dAdjustComplete);
+                Decimal dAdjustComplete = (1-((ECO_Utils_String.NullCheck((trigger.newMap.get(oEnrollmentPlan.id).AdjustedComplete__c))/100).setScale(4)));
+                Decimal dIPActualNSRITD = ECO_Utils_String.NullCheck(oEnrollmentPlan.IncentiveProject__r.ActualNSRITD__c); 
+                Decimal dIPActualMarginIDT = (ECO_Utils_String.NullCheck(oEnrollmentPlan.AcutalGMofNSRITD__c)/100).setScale(4);
+
+                Decimal dNSRBudget = ECO_Utils_String.NullCheck(trigger.newMap.get(oEnrollmentPlan.id).NSRBudget__c);
+                Decimal dBaselineGMofNSR = ((ECO_Utils_String.NullCheck(trigger.newMap.get(oEnrollmentPlan.id).BaselineGMofNSR__c))/100).setScale(4);
+                
+                Decimal dCalculatedEstimatedPool = (dIPActualNSRITD * (dIPActualMarginIDT - dBaselineGMofNSR) * (dProfitSharingPercent) * (dAdjustComplete));
+
+                System.Debug(logginglevel.error,' values ' + dAdjustComplete + ' ' + dIPActualNSRITD + ' ' + dIPActualMarginIDT + ' ' + dBaselineGMofNSR + ' ' + dProfitSharingPercent);
+                System.debug(logginglevel.error,'dCalculatedEstimatedPool ' + dCalculatedEstimatedPool);
                 if(dCalculatedEstimatedPool > trigger.newMap.get(oEnrollmentPlan.id).MaximumIncentivePoolITD__c){
                     dCalculatedEstimatedIncPoolITD = ECO_Utils_String.NullCheck(trigger.newMap.get(oEnrollmentPlan.id).MaximumIncentivePoolITD__c);
                 }else{
@@ -132,10 +141,15 @@ trigger INC_EnrollmentPlan_BIU on EnrollmentPlan__c (before insert, before updat
             */
             Decimal dActualMaginITD = ECO_Utils_String.NullCheck(trigger.newMap.get(oEnrollmentPlan.id).ActualMarginITD__c);
             Decimal dBaselineGrossMargin = ECO_Utils_String.NullCheck(trigger.newMap.get(oEnrollmentPlan.id).BaselineGrossMargin__c);
-            dProfitSharingPercent = ECO_Utils_String.NullCheck(trigger.newMap.get(oEnrollmentPlan.id).IncentivePlan__r.ProfitSharingPercent__c);
+            dProfitSharingPercent = ECO_Utils_String.NullCheck(oEnrollmentPlan.IncentivePlan__r.ProfitSharingPercent__c) / 100;
+
+            System.Debug(logginglevel.error,'dActualMaginITD: ' + dActualMaginITD);
+            System.Debug(logginglevel.error,'dBaselineGrossMargin: ' + dBaselineGrossMargin);
+            System.Debug(logginglevel.error,'dProfitSharingPercent: ' + dProfitSharingPercent);            
 
             dCalculatedEstimatedIncPoolITD = (dActualMaginITD - dBaselineGrossMargin) * dProfitSharingPercent;
-
+            System.Debug(logginglevel.error,'dCalculatedEstimatedIncPoolITD: ' + dCalculatedEstimatedIncPoolITD);
+            System.Debug(logginglevel.error,'MaxIncentivePool__c: ' + trigger.newMap.get(oEnrollmentPlan.id).MaximumIncentivePoolITD__c);
             if(dCalculatedEstimatedIncPoolITD > trigger.newMap.get(oEnrollmentPlan.id).MaximumIncentivePoolITD__c){
                 dCalculatedEstimatedIncPoolITD = trigger.newMap.get(oEnrollmentPlan.id).MaximumIncentivePoolITD__c;
             }else{
@@ -144,7 +158,7 @@ trigger INC_EnrollmentPlan_BIU on EnrollmentPlan__c (before insert, before updat
                 }
             }
         }
-        
+        System.Debug(logginglevel.error,'dCalculatedEstimatedIncPoolITD: ' + dCalculatedEstimatedIncPoolITD);
         EnrollmentPlan__c oEnrollmentPlanContext = trigger.newMap.get(oEnrollmentPlan.Id);
             
         oEnrollmentPlanContext.EstimatedIncPoolITD__c = dCalculatedEstimatedIncPoolITD;

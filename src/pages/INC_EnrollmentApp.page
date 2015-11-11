@@ -388,10 +388,14 @@
 		  <apex:outputField value="{!EnrollmentPlan__c.FormStatusAge__c}"/>
 		  <apex:outputLabel />
 		  <apex:outputField value="{!EnrollmentPlan__c.AgeDays__c}"/>
-
-		  <apex:outputText label="Application Issues" escape="false" value="{!sIssues}" rendered="{!EnrollmentPlan__c.ApplicationType__c != 'PAY'}"/>
-		 
+		
+		  <apex:pageBlockSectionItem helpText="{!$ObjectType.EnrollmentPlan__c.fields.AppIicationIssues__c.InlineHelpText}" rendered="{!EnrollmentPlan__c.ApplicationType__c != 'PAY'}">
+		  	<apex:outputLabel value="Application Issues" for="ApplicationExceptions"/>
+		 	<apex:outputText label="Application Issues" escape="false" value="{!sIssues}" />
+		  </apex:pageBlockSectionItem>
+	
 		  <apex:outputField value="{!EnrollmentPlan__c.ApplicationIssuesPay__c}" rendered="{!EnrollmentPlan__c.ApplicationType__c == 'PAY'}"/>
+	
 		  <apex:pageBlockSectionItem helpText="{!$ObjectType.EnrollmentPlan__c.fields.Application_Exceptions__c.InlineHelpText}">
 		 	<apex:outputLabel value="Application Exceptions" for="ApplicationExceptions"/>
 		  	<apex:outputText id="ApplicationExceptions" escape="false" value="{!sExceptions}" />
@@ -422,7 +426,7 @@
 
 		     	 Reference the “Final Pool Adjusted for Ops Metrics” above to allocate award amounts to participants and/or add employees who are recommended for discretionary awards.  Final awards should reflect individual performance and contribution to project success as well as time dedicated to 	the project and previous awards paid for work on the project.  Provide a brief explanation for any adjustment made to a participant’s calculated award, and rationale for discretionary award recommendation.
 			 	<br/><br/>
-				Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.html">How to Pay a DTW Award</a> module posted on the <a href="http://my.aecomnet.com/Intranet/About/Delivery+Excellence/Design+and+Consulting+Services?appInstanceName=intranet&vgnextrefresh=1">DTW webpage</a> for more information about next steps. 
+				<!--Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.html">How to Pay a DTW Award</a> module posted on the <a href="http://my.aecomnet.com/Intranet/About/Delivery+Excellence/Design+and+Consulting+Services?appInstanceName=intranet&vgnextrefresh=1">DTW webpage</a> for more information about next steps. -->
 		      
 
 

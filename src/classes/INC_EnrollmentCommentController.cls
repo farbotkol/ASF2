@@ -35,6 +35,7 @@ public without sharing class INC_EnrollmentCommentController {
                                                           , Approver__c
                                                           , Approver__r.Name
                                                           , IsRejection__c
+                                                          , Final_Rejection__c
                                                  From Enrollment_Comments__c
                                                  Where EnrollmentApplication__c =: oEnrollmentApp.ID
                                                  and (Type__c = 'Rejection' or Type__c ='Rejection for Corrections')
@@ -48,6 +49,7 @@ public without sharing class INC_EnrollmentCommentController {
                                                           , Approver__c
                                                           , Approver__r.Name
                                                           , IsRejection__c
+                                                          , Final_Rejection__c
                                                  From Enrollment_Comments__c
                                                  Where EnrollmentApplication__c =: oEnrollmentApp.ID
                                                  and (Type__c = 'Rejection')
@@ -86,7 +88,7 @@ public without sharing class INC_EnrollmentCommentController {
             System.Debug(logginglevel.error,'Workflowid ' + workFlowID);
             System.Debug(logginglevel.error,'paymentID ' + workFlowID);
             oEnrollmentApp.ApprovalRecentlyProcessed__c = false;
-            
+           // oEnrollmentApp.EnrollmentStatus__c = 'Rejected for Correction';
             if(workFlowID != null && paymentID != null){
 
               if(oEnrollmentApp.ApplicationType__c == 'PAY'){
@@ -117,7 +119,7 @@ public without sharing class INC_EnrollmentCommentController {
 
               String sReason = oEnrollComment.Reason_Codes__c;
 
-              if(sReason == 'Project in Litigation' ||
+              /*if(sReason == 'Project in Litigation' ||
                  sReason.contains('Project is Intercompany') ||
                  sReason == 'Project on Hold' ||
                  sReason == 'Project Nearing Completion' ||
@@ -126,6 +128,10 @@ public without sharing class INC_EnrollmentCommentController {
                   System.Debug(logginglevel.error,'rejecting all');
                   rejectAll();
                 }
+              } */
+              if(oEnrollComment.Final_Rejection__c && oEnrollmentApp.ApplicationType__c != 'OPT'){
+                 System.Debug(logginglevel.error,'rejecting all');
+                  rejectAll();
               }
             }
           }else{
@@ -177,6 +183,7 @@ public without sharing class INC_EnrollmentCommentController {
 
       oEnrollmentApp = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentApp.ID})[0];
       oEnrollmentApp.ApprovalRecentlyProcessed__c = false;
+      //oEnrollmentApp.EnrollmentStatus__c = 'Rejected';
       update oEnrollmentApp;
 
       /*If(workItem != null){

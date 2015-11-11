@@ -168,14 +168,22 @@ public with sharing class INC_Service_Matching {
 	private List<RoutingMember_Wrapper> findRoutingMember(IncentiveProject__c oIncProj,SearchType iSearchType){
 		List<RoutingMember_Wrapper> listRoutingMembersFound = new list<RoutingMember_Wrapper>();
 		list<RoutingMember_Wrapper> listExactMatch = new list<RoutingMember_Wrapper>();
-	
+		Set<id> setAdded = new set<id>();
 		for(RoutingMember_Wrapper oRoutingWrapper : listRoutingMembers){
 			if(oRoutingWrapper.oRoutingMember.GlobalDefault__c){
 				oGlobalDefaultMember = oRoutingWrapper;
 			}
 				if(oIncProj != Null){
-					if(oIncProj.RoutingMemberRule__c != null){
-						listExactMatch.add(mapRoutingMembers.get(oIncProj.RoutingMemberRule__c));
+                    if(oIncProj.RoutingMemberRule__c != null){
+                        if(oIncProj.RoutingMemberRule__c == oRoutingWrapper.oRoutingMember.ID){
+                        	System.debug(logginglevel.error,'oIncProj.Routing:' + oIncProj.RoutingMemberRule__c);
+                        	System.debug(logginglevel.error,'set Add: ' + setAdded);
+							if(!setAdded.contains(oRoutingWrapper.oRoutingMember.ID)){
+								System.Debug(logginglevel.error,'Adding to listExactMatch:' + oIncProj.RoutingMemberRule__c);
+        	                    listExactMatch.add(mapRoutingMembers.get(oIncProj.RoutingMemberRule__c));
+								setAdded.add(oRoutingWrapper.oRoutingMember.ID);
+							}
+                        }
 					}else{
 
 						for(String sFieldName : oRoutingWrapper.setFieldsContained){
@@ -214,8 +222,10 @@ public with sharing class INC_Service_Matching {
 								listRoutingMembersFound.add(oRoutingWrapper);
 							}else if(oRoutingWrapper.setFieldsContained.size() == iFieldsMatched){
 								//if number of fields matched is the same, use Totla points
-								if(listRoutingMembersFound[0].iTotalPoints < oRoutingWrapper.iTotalPoints){
-									listRoutingMembersFound[0] = oRoutingWrapper;
+								if(listRoutingMembers != null && listRoutingMembers.size() > 0){
+									if(listRoutingMembersFound[0].iTotalPoints < oRoutingWrapper.iTotalPoints){
+										listRoutingMembersFound[0] = oRoutingWrapper;
+									}
 								}
 							}
 						}
