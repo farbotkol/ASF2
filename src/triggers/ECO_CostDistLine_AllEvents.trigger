@@ -1,4 +1,4 @@
-trigger ECO_CostDistLine_AllEvents on CostDistLine__c (after delete, after insert, after update, after undelete) {
+trigger ECO_CostDistLine_AllEvents on CostDistLine__c (before insert, before update, after delete, after insert, after update, after undelete) {
 	if (trigger.isAfter) {
 		if (trigger.isInsert) {
 			ECO_CostDistributionLineTriggers.rollUpCosts(trigger.old, trigger.new);
@@ -10,4 +10,8 @@ trigger ECO_CostDistLine_AllEvents on CostDistLine__c (after delete, after inser
 			ECO_CostDistributionLineTriggers.rollUpCosts(trigger.old, trigger.new);
 		}
 	}
+	
+	if (Trigger.isBefore && !Trigger.isDelete){
+		ECOCostDistributionLineTriggers.calculateFiscalMonths(trigger.new);   
+	} 
 }

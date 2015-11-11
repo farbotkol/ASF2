@@ -112,4 +112,32 @@ public without sharing class ECO_CostDistributionLineTriggers {
 			update lEarnedValueSnapshotsToUpdate;
 		}
 	}
+	
+	public static void calculateFiscalMonths(list<CostDistLine__c> costDistLines)
+	{
+		// Time period
+		List<pse__Time_Period__c> timePeriods = [select Id, pse__Start_Date__c, pse__End_Date__c, TimePeriodCode__c 
+													from pse__Time_Period__c 
+													where pse__Type__c = 'Month'
+													order by pse__End_Date__c asc];
+		for (CostDistLine__c cdl : costDistLines){
+												
+			for (Integer i = 0; i < timePeriods.size(); i++){
+				if (cdl.GLDate__c != null){	
+					if (cdl.GLDate__c <= timePeriods[i].pse__End_Date__c  &&
+						cdl.GLDate__c >= timePeriods[i].pse__Start_Date__c){
+						cdl.GLFiscalMonth__c = timePeriods[i].TimePeriodCode__c;
+					}
+				}
+				
+				if (cdl.PADate__c != null){	
+					if (cdl.PADate__c <= timePeriods[i].pse__End_Date__c  &&
+						cdl.PADate__c >= timePeriods[i].pse__Start_Date__c){
+						cdl.PAFiscalMonth__c = timePeriods[i].TimePeriodCode__c;
+					}
+				}
+			}
+			
+		}
+	}
 }
