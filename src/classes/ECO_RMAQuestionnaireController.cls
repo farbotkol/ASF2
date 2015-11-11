@@ -123,6 +123,7 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
                 newDOA.DOATrigger__c = oAnswer.TemplateQuestion__r.Question__c;
                 newDOA.RiskTitle__c = oAnswer.TemplateQuestion__r.RiskTitle__c;
                 newDOA.TemplateQuestion__c = oAnswer.TemplateQuestion__c;
+                
                 //newDOA.MitigationStrategy__c = '';
                 
                 questionToDOAMap.put(oAnswer.TemplateQuestion__c, newDOA);
@@ -243,7 +244,7 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
                 if(a.TemplateQuestion__r.RiskTitle__c == 'Export Controls' && !ExportControlExists && (a.Value__c == 'Yes' || a.Value__c == 'Unknown'))
                 {
                     //create Export Control record
-                    ExportControl__c oEC = new ExportControl__c(Status__c='Open', QuestionnaireSet__c=oQuestionnaire.QuestionnaireSet__c);
+                    ExportControl__c oEC = new ExportControl__c(Status__c='Open', QuestionnaireSet__c=oQuestionnaire.QuestionnaireSet__c, Project__c = oQuestionnaire.QuestionnaireSet__r.Project__c);
                     insert oEC;
                     ExportControlExists = true;
                 }
