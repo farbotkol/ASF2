@@ -26,6 +26,9 @@ public with sharing class ECO_SubsVendorsController
     private static string siteLessLIMIT = '50';
     private static string siteMoreLIMIT = '200';
 
+    public OrganizationString__c userOrg {get;set;}
+    public boolean bSearchOutsideUserOrg {get;set;}
+
 
     public string projectFieldID {get;set;}
     public string vendorFieldID {get;set;}
@@ -46,6 +49,17 @@ public with sharing class ECO_SubsVendorsController
         oSite.account__r = new Account();
         bMore = false;
         sLimit = siteLessLIMIT;
+        bSearchOutsideUserOrg = false;
+
+        list<user> lUser = [SELECT ECO_OrganizationName__c FROM User WHERE ID =:UserInfo.getUserId()];
+
+        list<OrganizationString__c> lUserOrganizations = [SELECT Id, Name, OrganizationName__c, GeographyName__c, Region__c, District__c, Department__c, BusinessLineName__c, LocationName__c, PLManagerContact__c, ProjectOwning__c, FinanceandAccountingManagerContact__c, CFOorDelegateContact__c, OUID__c, CurrencyIsoCode, ProjectApprover__c, ProjectAccountant__c, ProjectAccountant2__c, FinanceLead2__c FROM OrganizationString__c WHERE Name =: lUser[0].ECO_OrganizationName__c and ProjectOwning__c=true];
+
+        if(lUserOrganizations.size() > 0){
+            userOrg = lUserOrganizations[0];
+        } else {
+            userOrg = null;
+        }
 
 		if(oProject != null)
 		{
@@ -246,6 +260,7 @@ public with sharing class ECO_SubsVendorsController
     	
     	strSOQL += 'ID, SITE__c, Site__r.City__c, Site__r.State__c, Site__r.Country__c, Site__r.Account__c, Site__r.AccountName__c, name FROM VendorSite__c WHERE Project__c=\'' + oProject.Id + '\'';
 
+
     	lstVendorSites = (list<VendorSite__c>)Database.query(strSOQL);
 
 
@@ -305,7 +320,13 @@ public with sharing class ECO_SubsVendorsController
         }       
         strSOQL = strSOQL.substring(0,strSOQL.length() - 5);
         
-        strSOQL += ' LIMIT ' + sLimit;
+        if(bSearchOutsideUserOrg){
+            strSOQL += ' LIMIT ' + sLimit;
+        } else {
+
+            string userOrgID = userOrg.OUID__c;
+            strSOQL += ' AND OUID__c =: userOrgID  LIMIT ' + sLimit;
+        }
 
         System.debug('SubsVendors search query: ' + strSOQL);
 

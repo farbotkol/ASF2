@@ -152,7 +152,7 @@ public class ECO_CloseoutOpportunityPhaseController {
         return getAttachmentListFromIdList(attachmentIds);
     }
     
-    public void saveClosureAttachmentAndProject()
+    public pagereference saveClosureAttachmentAndProject()
     {
         if(closureAttachment.Body != null)
         {   
@@ -164,10 +164,12 @@ public class ECO_CloseoutOpportunityPhaseController {
                 oProject.ClosureAttachment__c += closureAttachment.Id + ';';
             else
                 oProject.ClosureAttachment__c = closureAttachment.Id + ';';          
-            update oProject;
+            //update oProject;
             
             attachmentsMap = new Map<Id, Attachment>([select Id, Name, ContentType, LastModifiedDate, LastModifiedById from Attachment where parentId = :oProject.Id]);
             closureAttachment = null;
-        }           
+        }   
+
+        return null;        
     }
 }

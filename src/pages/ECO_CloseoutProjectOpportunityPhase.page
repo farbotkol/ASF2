@@ -79,6 +79,26 @@
 
 	<script>
 
+		var status = false;
+		var statusdate = false;
+		var copyOpp = false;
+
+		function statusclick(field){
+
+			if(field == 'status'){
+				status = true;
+			} else if (field == 'statusdate'){
+				statusdate = true;
+			} else if (field == 'copyOpp') {
+				copyOpp = true;
+			}
+
+			if(status && statusdate && copyOpp){
+				document.getElementById('fileattach').style.display = 'block';
+			}
+
+		} 
+
 	    function openPopup(id)
 	    {
 	        var newWin=window.open('/' + id, 'PopUp',
@@ -152,7 +172,7 @@
 					<apex:outputText value="" />
 					<apex:actionRegion >
 					<apex:inputField value="{!oProject.ProjOpptyClosureStatus__c}" required="true">
-						<apex:actionSupport event="onchange" reRender="projectFields" />
+						<apex:actionSupport event="onchange" onsubmit="statusclick('status');" reRender="projectFields" />
 					</apex:inputField>
 					</apex:actionRegion>
 					<apex:outputText value="" />
@@ -164,7 +184,7 @@
 
 					<apex:outputLabel value="Status Change Date" />
 					<apex:outputText value="" />
-					<apex:inputField value="{!oProject.StatusChangeDate__c}" required="true" />
+					<apex:inputField value="{!oProject.StatusChangeDate__c}" onchange="statusclick('statusdate');"  required="true" />
 					<apex:outputText value="" />
 
 					<apex:outputLabel value="Notes" />
@@ -176,7 +196,7 @@
 					<apex:outputText value="" />
 		            <apex:outputPanel layout="block" styleClass="requiredInput">
 		                    <div class="requiredBlock"></div>
-							<apex:selectRadio value="{!oProject.AlsoCloseRelatedOpportunityList__c}" layout="lineDirection" required="true" >
+							<apex:selectRadio value="{!oProject.AlsoCloseRelatedOpportunityList__c}" onchange="statusclick('copyOpp');"  layout="lineDirection" required="true" >
 			                    <apex:selectOptions value="{!types}"></apex:selectoptions>
 			 				</apex:selectRadio>
 		            </apex:outputPanel>					
@@ -220,8 +240,10 @@
 
 			<br /><br /><br />
 
-		 	<apex:outputPanel >
-				<div class="fileList">
+			
+		 	<apex:outputPanel id="browsefile" >
+		 		
+				<div id="fileattach" style="display: none;" class="fileList">
 					<apex:pageBlockTable value="{!AttachedClosureFiles}" var="file" style="width: 825px;" rendered="{!oProject.ClosureAttachment__c != null}">
 						<apex:column headerValue="File Name">
 							<!-- <apex:outputLink onclick="return openPopup('{!attachedDocumentControlSystemFile.Id}')"> 
@@ -240,6 +262,7 @@
 					<apex:inputText id="overrideControlSysName" value="{!overrideControlSystemName}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
 					<apex:commandButton id="cmdControlSystemAttachment" value="Attach" action="{!saveClosureAttachmentAndProject}" styleclass="attachNewFile"/><br/>
 				</div>
+
 			</apex:outputPanel>
 
 		</apex:pageBlock>
