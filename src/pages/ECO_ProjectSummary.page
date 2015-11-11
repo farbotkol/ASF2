@@ -7,6 +7,25 @@
 		.apexp .bPageBlock.apexDefaultPageBlock .pbBody .pbSubheader{
 		    background: #A6AFA2;
 		}
+
+        .customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 10px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        } 
+
 	</style>
 
 
@@ -193,7 +212,16 @@
 	</script>
 
 	<apex:form >
-	
+
+		<apex:outputPanel rendered="{!isProjectNumber}">
+	        <div class="customHelpText">
+	            <div class="customHelpBody">
+					Once minimum fields are populated, you can request an Oracle project number to be allocated to the project.  Note this will not be a chargeable until you have approval to execute, but will allow you to proceed with creating file structures and document registers etc if required.  It is recommended that a project number is not requested until there is a degree of certainty about awarding the project.<br/><br/>
+					To get a number, click on the "Request Project Number" button.  If you have not yet provided sufficient information you will receive an error message and be able to amend information from this page.  You may be required to log into Oracle if you have not done so recently.
+	            </div>
+	        </div> 	
+		</apex:outputPanel>
+
 		<div id="divSyncProgress"></div>
 
 		<apex:actionFunction action="{!initiateOracleProjectSyncRequest}" name="initiateOracleProjectSyncRequest_JS" status="statusBar" oncomplete="executeOracleProjectSyncRequest_JS();"/>
@@ -1298,10 +1326,10 @@
             </div>
             <br/><br/>
             <div align="center">
-            <apex:outputText style="font-weight:bold" value="Username:"/>
+            <apex:outputText style="font-weight:bold" value="Oracle Username:"/>
             <apex:inputText label="Oracle Username:" value="{!OracleUserName}" id="username"/><br/>
 
-            <apex:outputText style="font-weight:bold" value="Password:"/>
+            <apex:outputText style="font-weight:bold" value="Oracle Password:"/>
             <apex:inputSecret label="Oracle Password" value="{!OraclePassword}" id="password"/><br/><br/>
             </div>
 
