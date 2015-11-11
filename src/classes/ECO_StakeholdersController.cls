@@ -583,6 +583,7 @@ public with sharing class ECO_StakeholdersController
 				}
 			}
 		}
+		contactQuery += ' AND (NOT person_id__c Like \'%U\')';
 		contactQuery += ' LIMIT 50';
 		queryDelegates = Database.query(contactQuery);		
 		return null;

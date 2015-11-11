@@ -218,12 +218,16 @@
         console.log('collapseSection');
         $("div[id$='ProjectSummary']").find("div.pbBody").find("img.hideListButton").click();
     }
+    function enableSubmit()
+    {
+        enableSubmit();
+    }
     sfdcPage.appendToOnloadQueue(collapseSection);
     </script>
     <apex:form id="mainForm">
 
         <apex:outputField value="{!QuestionnaireSet__c.ApprovalStatus__c}" rendered="false" />
-
+		<apex:actionFunction id="enableSubmit" name="enableSubmit" action="{!enableSubmitApex}" reRender="SubmitApproval"/>
         <div style="position:relative">
             <apex:sectionHeader title="Risk and Market Assessment" subtitle="{!QuestionnaireSet__c.Project__r.ProjectNumber__c} {!QuestionnaireSet__c.Project__r.Name}" rendered="{!NOT(ISNULL(sSelectedQuestionnaireSet))}" />
             <apex:sectionHeader title="Risk and Market Assessment" subtitle="New Risk and Market Assessment" rendered="{!ISNULL(sSelectedQuestionnaireSet)}" />
@@ -253,7 +257,7 @@
                     <li>Step 5:  Select “go” or “no go” for approval</li>
                     <li>Step 6:  Submit the completed R&amp;M Assessment and go/no go recommendation for approval </li>
                 </ul>
-                <em>The system will automatically submit the request to the owning organization P&amp;L Manger or delegate.  The approver will review the results of the Risk &amp; Market Assessment and approve/reject the go/no go recommendation.</em>
+                <em>The system will automatically submit the request to the owning organization P&amp;L Manager or delegate.  The approver will review the results of the Risk &amp; Market Assessment and approve/reject the go/no go recommendation.</em>
             </div>
 		</div>
         <br/>
@@ -264,7 +268,7 @@
             <div class="projectSummary">
                 <apex:pageBlock title="Risk and Market Assessment" id="ProjectSummary">
                     <apex:pageBlockButtons location="top">
-                        <apex:commandButton action="{!BeginRiskAssessment}" value="Begin/Edit Risk Asssessment" />
+                        <apex:commandButton action="{!BeginRiskAssessment}" value="Begin/Edit Risk Asssessment"  />
                         <apex:commandLink action="{!generatePdf}" value="Print R&M Assessment" styleClass="btn" immediate="true" target="_blank" style="padding:4px 3px; text-decoration:none;" />  
                         <apex:commandButton action="{!Save}" value="Save" disabled="{!oQuestionnaireSet.ApprovalStatus__c == 'Approved'}" />
                         <apex:commandButton action="{!ReturnToProject}" value="Return to Project" />            
@@ -367,7 +371,7 @@
                                 <a href="/{!ec.Id}">View</a>
                             </apex:column>
                             <apex:column value="{!ec.Name}"/>
-                            <apex:column value="{!ec.Status__c}"/>
+                            <apex:column value="{!ec.SubmittedDate__c}"/>
                         </apex:pageBlockTable>
                     </div>
                     <div id="notifications">
@@ -459,11 +463,11 @@
                 <!-- <apex:pageBlockSection collapsible="false" title="Go / No Go Recommendation" columns="1"></apex:pageBlockSection> -->
                 <div class="goNoGoBox">
                     <h2>Go / No Go Recommendation</h2>
-                    <apex:selectRadio value="{!QuestionnaireSet__c.GoNoGoRecommendation__c}" disabled="{!oQuestionnaireSet.ApprovalStatus__c == 'Approved'}">
+                    <apex:selectRadio value="{!QuestionnaireSet__c.GoNoGoRecommendation__c}" disabled="{!AND(oQuestionnaireSet.ApprovalStatus__c == 'Approved', oQuestionnaireSet.GoNoGoRecommendation__c == '')}" onchange="enableSubmit();">
                         <apex:selectOption itemValue="Go" itemLabel="Go"/>
                         <apex:selectOption id="selectNoGo" itemValue="No Go" itemLabel="No Go"/>
                     </apex:selectRadio>
-                    <apex:commandButton value="Submit for Approval" action="{!submitForApproval}" disabled="{!oQuestionnaireSet.ApprovalStatus__c == 'Approved'}" />
+                    <apex:commandButton id="SubmitApproval" value="Submit for Approval" action="{!submitForApproval}" disabled="{!OR(oQuestionnaireSet.ApprovalStatus__c == 'Approved', oQuestionnaireSet.GoNoGoRecommendation__c = '', oQuestionnaireSet.TotalQuestions__c = 0)}" />
                 </div>
             
             </apex:pageBlock>
