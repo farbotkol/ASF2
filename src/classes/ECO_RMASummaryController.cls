@@ -9,12 +9,14 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 	public list<QuestionnaireSet__c> lQuestionnaireSets {get; set;}
 	public list<SelectOption> loQuestionnaireSets {get; set;}
 	public list<ProjectCountry_Risk__c> lProjectCountryRisks {get; set;}
+    public list<ProjectCity__c> lProjectCityRisks {get;set;}
 	public list<ProjectOrganization__c> lProjectOrganizations {get; set;}
 	public list<Project_Site__c> lProjectSites {get; set;}
 	public list<Notification> lNotifications {get; set;}
 	public pse__Proj__c theProject { get; set; }
 	public string sSelectedQuestionnaireSet {get; set;}
 	public boolean BeginButtonDisabled {get; set;}
+    public boolean isAssessmentStarted {get;set;}
 	public boolean showGoNoGoButton {get; set;}
 	public Id navTargetQuestionnaireId {get;set;}
     public Integer countMA {get;set;}
@@ -25,6 +27,7 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 		this.oStandardController = oStandardController;
 		list<string> lFields = new list<string>();
         lFields.add('Name');
+        lFields.add('TotalQuestions__c');
         oStandardController.addFields(lFields);
 
 		oQuestionnaireSet = (QuestionnaireSet__c)oStandardController.getRecord();
@@ -96,6 +99,7 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 		lExportControls = new list<ExportControl__c>([Select Id
 															, Name
 															, Status__c 
+                                                      		, SubmittedDate__c
 													From ExportControl__c 
 													WHERE QuestionnaireSet__c = :oQuestionnaireSet.Id]);
 		
@@ -325,13 +329,27 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 		}
 		else
 		{
+            Integer count = 0;
 			// System.debug('In validate, iterate over lProjectCountryRisks');	
 			for(ProjectCountry_Risk__c oPCR : lProjectCountryRisks)
 			{
 				if(oPCR.Safety_Rating__c > 2.9)
 				{
-            		Notification oNote = new Notification('An associated country is over the risk threshold (2.9).');
-            		lNotifications.add(oNote);
+                    String notificationString = 'The project has a location with a security risk rating greater than 2.9 ';
+                    loadProjectCityRisks(oQuestionnaireSet.Project__c);
+                    System.debug('lProjectCityRisks size:'+lProjectCityRisks.size());
+                    if(lProjectCityRisks.size()>0){
+                        notificationString = notificationString + '( ';
+                        for(ProjectCity__c pc :lProjectCityRisks){
+                            if(count>0)
+                                notificationString = notificationString + ', ';
+                            notificationString  = notificationString + pc.CityName__c + ' : ' + pc.SafetyRating__c ;
+                            count++;
+                        }
+                        notificationString = notificationString + ' )';
+                    }
+                    Notification oNote = new Notification(notificationString);
+                    lNotifications.add(oNote);
             		break;
 				}
 			}
@@ -379,6 +397,10 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 		}
 	}
 	
+    public void loadProjectCityRisks(Id projectId){
+        lProjectCityRisks = new List<ProjectCity__c>([Select Id, CityName__c, SafetyRating__c From ProjectCity__c Where Project__c= :projectId AND SafetyRating__c > 2.9]);
+    }
+    
     public void marketAssess(){
         countMA = 0;
         System.debug('lMarketAssessments.size():   '+lMarketAssessments.size());
@@ -469,90 +491,94 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 		Questionnaire__c oFirstQuestionnaire = lQuestionnaires.get(0);
 		system.debug('lQuestionnaires:  '+ lQuestionnaires);
 		system.debug('oQuestionnaireSet.Id:  '+ oQuestionnaireSet.Id);
-
-		if(oQuestionnaireSet.Id == null || oFirstQuestionnaire.Id == null)
-		{
-			if(oQuestionnaireSet.Id == null)
-			{
-				if(oQuestionnaireSet.Name == null) 
-				{
-					oQuestionnaireSet.Name = 'Initial Assessment';
-				}
-				insert oQuestionnaireSet;
-			}
-
-			for(Questionnaire__c oQuestionnaire : lQuestionnaires)
-			{
-				oQuestionnaire.QuestionnaireSet__c = oQuestionnaireSet.Id;
-			}
-
-			insert lQuestionnaires;
-			
-			String queryString = 'SELECT Id';
-			queryString += ' , Name';
-			queryString += ' , (SELECT Id';
-				queryString += ' FROM Questions__r';
-				/*queryString += ' WHERE ((Region__c INCLUDES (\''+theProject.CarryingOutOrganization__r.Region__c+'\')';
-					queryString += ' OR Region__c = null';
-					queryString += ' OR Region__c = \'\')';
-					queryString += ' OR Region__c INCLUDES (\'ALL\'))';*/
-				queryString += ' WHERE (GeographiesAvailableTo__c INCLUDES (\''+theProject.CarryingOutOrganization__r.GeographyName__c+'\')';
-					queryString += ' OR GeographiesAvailableTo__c = null';
-					queryString += ' OR GeographiesAvailableTo__c = \'\'';
-					queryString += ' OR GeographiesAvailableTo__c INCLUDES (\'ALL\'))';
-				queryString += ' AND (BusinessLinesAvailableTo__c INCLUDES (\''+theProject.CarryingOutOrganization__r.BusinessLineName__c+'\')';	
-					queryString += ' OR BusinessLinesAvailableTo__c = null';
-					queryString += ' OR BusinessLinesAvailableTo__c = \'\'';
-					queryString += ' OR BusinessLinesAvailableTo__c INCLUDES (\'ALL\'))';					
-				queryString += ' AND IsActive__c = true';
-				queryString += ' )';
-				
-			queryString += ' FROM QuestionnaireTemplate__c';
-
-			map<Id, QuestionnaireTemplate__c> mQuestionnaireTemplates = new map<Id, QuestionnaireTemplate__c>();
-			for (QuestionnaireTemplate__c qt : Database.query(queryString)) {
-				mQuestionnaireTemplates.put(qt.Id, qt);
-			}
-
-			list<Answer__c> lAnswersToInsert = new list<Answer__c>();
-
-			for(Questionnaire__c oQuestionnaire : lQuestionnaires){
-				QuestionnaireTemplate__c oQuestionnaireTemplate = mQuestionnaireTemplates.get(oQuestionnaire.QuestionnaireTemplate__c);
-
-				for(TemplateQuestion__c oTemplateQuestion : oQuestionnaireTemplate.Questions__r){
-					lAnswersToInsert.add(new Answer__c(Questionnaire__c = oQuestionnaire.Id, TemplateQuestion__c = oTemplateQuestion.Id));
-				}
-			}
-
-			system.debug(lAnswersToInsert);
-
-			insert lAnswersToInsert;
-			/*
-			if(lExportControls.size() == 0)
-			{
-				lExportControls = new list<ExportControl__c>();
-				ExportControl__c oEC = new ExportControl__c(Status__c='Open', QuestionnaireSet__c=oQuestionnaireSet.Id);
-				lExportControls.add(oEC);
-				insert oEC;
-			}
-			*/
-			System.debug('# MarketAssessments: ' + lMarketAssessments.size());
-			if(lMarketAssessments.size() == 0)
-			{
-				lMarketAssessments = new list<MarketAssessment__c>();
-				MarketAssessment__c oMA = new MarketAssessment__c(Name='Market Assessment Document', Status__c='Open', QuestionnaireSet__c=oQuestionnaireSet.Id);
-				lMarketAssessments.add(oMA);
-				insert oMA;
-			}
-			
-		}
-
-		System.debug('Questionnaire ID: ' + oFirstQuestionnaire.Id);
-		PageReference oPageReference = Page.ECO_RMAQuestionnaire;
-		oPageReference.setRedirect(true);
-		oPageReference.getParameters().put('Id', oFirstQuestionnaire.Id);
-
-		return oPageReference;
+        try{
+            if(oQuestionnaireSet.Id == null || oFirstQuestionnaire.Id == null)
+            {
+                if(oQuestionnaireSet.Id == null)
+                {
+                    if(oQuestionnaireSet.Name == null) 
+                    {
+                        oQuestionnaireSet.Name = 'Initial Assessment';
+                    }
+                    insert oQuestionnaireSet;
+                }
+    
+                for(Questionnaire__c oQuestionnaire : lQuestionnaires)
+                {
+                    oQuestionnaire.QuestionnaireSet__c = oQuestionnaireSet.Id;
+                }
+    
+                insert lQuestionnaires;
+                
+                String queryString = 'SELECT Id';
+                queryString += ' , Name';
+                queryString += ' , (SELECT Id';
+                    queryString += ' FROM Questions__r';
+                    /*queryString += ' WHERE ((Region__c INCLUDES (\''+theProject.CarryingOutOrganization__r.Region__c+'\')';
+                        queryString += ' OR Region__c = null';
+                        queryString += ' OR Region__c = \'\')';
+                        queryString += ' OR Region__c INCLUDES (\'ALL\'))';*/
+                    queryString += ' WHERE (GeographiesAvailableTo__c INCLUDES (\''+theProject.CarryingOutOrganization__r.GeographyName__c+'\')';
+                        queryString += ' OR GeographiesAvailableTo__c = null';
+                        queryString += ' OR GeographiesAvailableTo__c = \'\'';
+                        queryString += ' OR GeographiesAvailableTo__c INCLUDES (\'ALL\'))';
+                    queryString += ' AND (BusinessLinesAvailableTo__c INCLUDES (\''+theProject.CarryingOutOrganization__r.BusinessLineName__c+'\')';	
+                        queryString += ' OR BusinessLinesAvailableTo__c = null';
+                        queryString += ' OR BusinessLinesAvailableTo__c = \'\'';
+                        queryString += ' OR BusinessLinesAvailableTo__c INCLUDES (\'ALL\'))';					
+                    queryString += ' AND IsActive__c = true';
+                    queryString += ' )';
+                    
+                queryString += ' FROM QuestionnaireTemplate__c';
+    
+                map<Id, QuestionnaireTemplate__c> mQuestionnaireTemplates = new map<Id, QuestionnaireTemplate__c>();
+                for (QuestionnaireTemplate__c qt : Database.query(queryString)) {
+                    mQuestionnaireTemplates.put(qt.Id, qt);
+                }
+    
+                list<Answer__c> lAnswersToInsert = new list<Answer__c>();
+    
+                for(Questionnaire__c oQuestionnaire : lQuestionnaires){
+                    QuestionnaireTemplate__c oQuestionnaireTemplate = mQuestionnaireTemplates.get(oQuestionnaire.QuestionnaireTemplate__c);
+    
+                    for(TemplateQuestion__c oTemplateQuestion : oQuestionnaireTemplate.Questions__r){
+                        lAnswersToInsert.add(new Answer__c(Questionnaire__c = oQuestionnaire.Id, TemplateQuestion__c = oTemplateQuestion.Id));
+                    }
+                }
+    
+                system.debug(lAnswersToInsert);
+    
+                insert lAnswersToInsert;
+                /*
+                if(lExportControls.size() == 0)
+                {
+                    lExportControls = new list<ExportControl__c>();
+                    ExportControl__c oEC = new ExportControl__c(Status__c='Open', QuestionnaireSet__c=oQuestionnaireSet.Id);
+                    lExportControls.add(oEC);
+                    insert oEC;
+                }
+                */
+                System.debug('# MarketAssessments: ' + lMarketAssessments.size());
+                if(lMarketAssessments.size() == 0)
+                {
+                    lMarketAssessments = new list<MarketAssessment__c>();
+                    MarketAssessment__c oMA = new MarketAssessment__c(Name='Market Assessment Document', Status__c='Open', QuestionnaireSet__c=oQuestionnaireSet.Id);
+                    lMarketAssessments.add(oMA);
+                    insert oMA;
+                }
+                
+            }
+    
+            System.debug('Questionnaire ID: ' + oFirstQuestionnaire.Id);
+            PageReference oPageReference = Page.ECO_RMAQuestionnaire;
+            oPageReference.setRedirect(true);
+            oPageReference.getParameters().put('Id', oFirstQuestionnaire.Id);
+    
+            return oPageReference;
+        }catch(Exception e){
+            ApexPages.addMessages(e);
+            return null;
+        }
 	}
 
 	public PageReference AddParticipant(){
