@@ -211,7 +211,7 @@ public with sharing virtual class ECO_ProjectReviewsController
 		}
 		else
 		{
-			if(oProjectReview.Status__c != 'Approved')
+			if(oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted')
 				update oProjectReview;
 		}
 
