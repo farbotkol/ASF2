@@ -169,6 +169,7 @@
                                                <th>Classification</th>
                                                <th>Allocation Amount</th>
                                                <th>Allocation Date</th>
+                                               <th>Note</th>
                                                <th>Total Funded</th>"
                                                rendered="{!project.EnableTopTaskCustomerFlag__c && agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}"/>
                                                
@@ -178,9 +179,10 @@
                                                <th>Classification</th>
                                                <th>Allocation Amount</th>
                                                <th>Allocation Date</th>
+                                               <th>Note</th>
                                                <th>Rate Type</th>
                                                <th>Rate</th>
-                                               <th>Rate Date</th>
+                                               <th>Rate Date</th>                                            
                                                <th>Total Funded</th>"
                                                rendered="{!project.EnableTopTaskCustomerFlag__c && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>
 
@@ -190,6 +192,7 @@
                                                <th>Classification</th>
                                                <th>Allocation Amount</th>
                                                <th>Allocation Date</th>
+                                               <th>Note</th>
                                               <!--  <th width=65px>Changed</th> -->
                                                <th>Total Funded</th>"
                                      rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}"/>                                    
@@ -199,10 +202,11 @@
                                                <th>Classification</th>
                                                <th>Allocation Amount</th>
                                                <th>Allocation Date</th>
+                                               <th>Note</th>
                                                <th>Rate Type</th>
                                                <th>Rate</th>
                                                <th>Rate Date</th>
-                                              <!--  <th width=65px>Changed</th> -->
+                                              <!--  <th width=65px>Changed</th> -->                                         
                                                <th>Total Funded</th>"
                                                rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>
     </tr>   
@@ -216,10 +220,10 @@
         <td><apex:outputField value="{!projectTask.Name}"/></td>
         <td><apex:outputField value="{!projectTask.ProjectTaskNumber__c}"/></td>
         <!-- <apex:outputPanel rendered="{!project.EnableTopTaskCustomerFlag__c}"> -->
-        <apex:outputText escape="false" value="<td colspan=7>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c && project.EnableTopTaskCustomerFlag__c}"/> 
-        <apex:outputText escape="false" value="<td colspan=4>" rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c && project.EnableTopTaskCustomerFlag__c}"/> 
-        <apex:outputText escape="false" value="<td colspan=6>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c && NOT(project.EnableTopTaskCustomerFlag__c)}"/> 
-        <apex:outputText escape="false" value="<td colspan=3>" rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c && NOT(project.EnableTopTaskCustomerFlag__c)}"/> 
+        <apex:outputText escape="false" value="<td colspan=8>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c && project.EnableTopTaskCustomerFlag__c}"/> 
+        <apex:outputText escape="false" value="<td colspan=5>" rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c && project.EnableTopTaskCustomerFlag__c}"/> 
+        <apex:outputText escape="false" value="<td colspan=7>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c && NOT(project.EnableTopTaskCustomerFlag__c)}"/> 
+        <apex:outputText escape="false" value="<td colspan=4>" rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c && NOT(project.EnableTopTaskCustomerFlag__c)}"/> 
 <!-- 			onclick="showGearModal();" oncomplete="hideGearModal();"
  -->
 			<apex:inputField value="{!projectTask.TopTaskOwningCustomer__c}" onchange="taskChanged('{!projectTask.Id}'); return false;" rendered="{!tasklist.size == 0 && project.EnableTopTaskCustomerFlag__c}"/>
@@ -247,6 +251,10 @@
         <td>
             <apex:inputField value="{!tasksFunding.funding.DateAllocatedDate__c}" rendered="{!tasksFunding.newFunding}" required="true"/>
             <apex:outputField value="{!tasksFunding.funding.DateAllocatedDate__c}" rendered="{!NOT(tasksFunding.newFunding)}" />    
+        </td>
+        <td>
+            <apex:inputField value="{!tasksFunding.funding.Notes__c}" rendered="{!tasksFunding.newFunding}"/>
+            <apex:outputField value="{!tasksFunding.funding.Notes__c}" rendered="{!NOT(tasksFunding.newFunding)}" />    
         </td>
   <!--Col-->  
          <apex:outputText escape="false" value="<td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>      
@@ -291,10 +299,10 @@
     </apex:repeat>   
     <!-- GRAND TOTAL LINE -->   
     <tr>
-        <apex:outputText escape="false" value="<td colspan=6 align=right><b>Grand Total</b></td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}" />
-        <apex:outputText escape="false" value="<td colspan=7 align=right><b>Grand Total</b></td>" rendered="{!project.EnableTopTaskCustomerFlag__c && agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}" />
-        <apex:outputText escape="false" value="<td colspan=9 align=right><b>Grand Total</b></td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />
-        <apex:outputText escape="false" value="<td colspan=10 align=right><b>Grand Total</b></td>" rendered="{!project.EnableTopTaskCustomerFlag__c && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />
+        <apex:outputText escape="false" value="<td colspan=7 align=right><b>Grand Total</b></td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}" />
+        <apex:outputText escape="false" value="<td colspan=8 align=right><b>Grand Total</b></td>" rendered="{!project.EnableTopTaskCustomerFlag__c && agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}" />
+        <apex:outputText escape="false" value="<td colspan=10 align=right><b>Grand Total</b></td>" rendered="{!NOT(project.EnableTopTaskCustomerFlag__c) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />
+        <apex:outputText escape="false" value="<td colspan=11 align=right><b>Grand Total</b></td>" rendered="{!project.EnableTopTaskCustomerFlag__c && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />
         <td><apex:outputField value="{!agreement.TotalFundingAmount__c}"/></td>
     </tr>
     </table>
@@ -306,13 +314,15 @@
         <apex:outputText escape="false" value="<th width=35px></th>
                                                <th>Classification</th>
                                                <th>Allocation Amount</th>
-                                               <th>Allocation Date</th>"
+                                               <th>Allocation Date</th>
+                                               <th>Note</th>"
                                                rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}"/>
 
         <apex:outputText escape="false" value="<th width=35px></th>
                                                <th>Classification</th>
                                                <th>Allocation Amount</th>
                                                <th>Allocation Date</th>
+                                               <th>Note</th>
                                                <th>Rate Type</th>
                                                <th>Rate</th>
                                                <th>Rate Date</th>"
@@ -335,6 +345,10 @@
         	<apex:inputField value="{!fundingItem.funding.DateAllocatedDate__c}" rendered="{!fundingItem.newFunding}" required="true"/>
         	<apex:outputField value="{!fundingItem.funding.DateAllocatedDate__c}" rendered="{!NOT(fundingItem.newFunding)}"/>
         </td>
+        <td>
+          <apex:inputField value="{!fundingItem.funding.Notes__c}" rendered="{!fundingItem.newFunding}"/>
+          <apex:outputField value="{!fundingItem.funding.Notes__c}" rendered="{!NOT(fundingItem.newFunding)}"/>
+        </td>       
         <apex:outputText escape="false" value="<td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />      
         	<apex:inputField value="{!fundingItem.funding.ProjFuncRateType__c}" rendered="{!(agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c) && NOT(fundingItem.newFunding) && NOT(fundingItem.rateLocked)}" onChange="functionalRateTypeChange(); return false;" />
             <apex:outputField value="{!fundingItem.funding.ProjFuncRateType__c}" rendered="{!(agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c) && fundingItem.rateLocked}"  /> 
@@ -349,14 +363,12 @@
         	<apex:inputField value="{!fundingItem.funding.ProjFuncRateDate__c}" rendered="{!(fundingItem.funding.ProjFuncRateType__c == 'User' && NOT(fundingItem.rateLocked)) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" style="width: 85px" required="true"/>                   
             <apex:outputField value="{!fundingItem.funding.ProjFuncRateDate__c}" rendered="{!(fundingItem.funding.ProjFuncRateType__c == 'Spot' || (fundingItem.funding.ProjFuncRateType__c == 'User' && fundingItem.rateLocked)) && agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}"/>
         <apex:outputText escape="false" value="</td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />   
-           
- 
     </tr>
     </apex:repeat>
 
    	<tr>
-        <apex:outputText escape="false" value="<td colspan=3 align=right><b>Grand Total</b></td>" rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}" />             
-        <apex:outputText escape="false" value="<td colspan=6 align=right><b>Grand Total</b></td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />      
+        <apex:outputText escape="false" value="<td colspan=4 align=right><b>Grand Total</b></td>" rendered="{!agreement.FundingCurrencyCode__c == project.ProjectFunctionalCurrencyCode__c}" />             
+        <apex:outputText escape="false" value="<td colspan=7 align=right><b>Grand Total</b></td>" rendered="{!agreement.FundingCurrencyCode__c != project.ProjectFunctionalCurrencyCode__c}" />      
         <td><apex:outputField value="{!agreement.TotalFundingAmount__c}"/></td>
    	</tr>
     

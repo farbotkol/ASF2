@@ -864,7 +864,7 @@
         		<apex:pageBlockButtons >
             		<apex:commandButton value="Save" action="{!saveChangeManager}"/>
                 	<apex:commandButton value="Return to Project" action="{!returnToProject}" immediate="true"/>
-                    <apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" rendered="{!needOracleLogin}"/>
+                    <apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" rendered="{!NOT($User.IsValidOracleToken__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed')}"/>
                     <apex:commandButton value="Submit for Approval" action="{!SubmitForApproval}" id="Submit_for_Approval" rendered="{!(changeManager.ApprovalStatus__c == null || changeManager.ApprovalStatus__c == '' || changeManager.ApprovalStatus__c == 'Rejected') && projectSynchMessages == ''}"/>
                     <apex:commandButton value="Synchronize Project" rendered="{!changeManager.OracleApprovalSyncStatus__c == 'Failed'}" action="{!SynchronizeProject}" id="SynchronizeProjectButton"/>                  
                     <!--<apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" />-->
