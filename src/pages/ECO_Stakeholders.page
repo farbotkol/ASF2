@@ -131,6 +131,16 @@
 		initComboBox();
 	})
 
+	//replaces the Enter key function when the modal is opened
+	function handleEnter(e){
+        if(e.keyCode === 13){
+            e.preventDefault();
+		    searchKeyMembers();
+        }
+        return false;
+    }
+
+    //converts salesforce Ids to somethign jQuery can use
 	function esc(myid) {
    		return myid.replace(/(:|\.)/g,'\\\\$1');
  	}
@@ -257,7 +267,7 @@
 						        	<apex:facet name="footer">
 										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', addDeputyProjectManager());return false;">Add New Deputy Project Manager</apex:outputLink>
 									</apex:facet>
-									<apex:column>
+									<apex:column >
 										<apex:facet name="header">Action</apex:facet>
 										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '', '{!item.previousDate}'));return false;" rendered="{!AND(AND(ISNULL(item.oPTM.Contact__c), AND(AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate')), item.canEdit)}">Select</apex:outputLink>
 										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '{!item.oPTM.Id}', '{!item.oPTM.StartDate__c}'));return false;" rendered="{!AND(AND(ISNULL(item.oPTM.EndDate__c), AND(NOT(ISNULL(item.oPTM.Contact__c)), AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate')), item.canEdit)}">Replace</apex:outputLink>
@@ -692,17 +702,17 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 			 	<apex:pageMessages id="modalMessages" />
 			 	<!-- search form section -->
 			 	<apex:pageBlockSection showHeader="false">
-			 		<apex:inputText label="Delegate's Name" id="queryContactName" />
+			 		<apex:inputText label="Delegate's Name" id="queryContactName" onkeypress="handleEnter(event)" />
 			 		<apex:outputField id="modalProjectRoles" value="{!insertReplaceProjectTeamMember.ProjectRole__c}" />
 					<apex:pageBlockSectionItem >
 						<!--<c:ECO_HelpIcon helpText="The date of when the role replacement will take effect. This will create the end date of the role being replaced to a day previous to this date."/> -->
 						<apex:outputLabel value="Effective Date" />
 						<apex:outputPanel layout="block" styleClass="requiredInput">
 						<apex:outputPanel layout="block" styleClass="requiredBlock"/>
-			 				<apex:inputField value="{!insertReplaceProjectTeamMember.StartDate__c}" id="queryStartDate" />
+			 				<apex:inputField value="{!insertReplaceProjectTeamMember.StartDate__c}" id="queryStartDate" onkeypress="handleEnter(event)"/>
 			 			</apex:outputPanel>
 			 		</apex:pageBlockSectionItem>
-			 		<apex:selectRadio label="Lookup Type" value="{!userSelectQueryType}" id="queryType">
+			 		<apex:selectRadio label="Lookup Type" value="{!userSelectQueryType}" id="queryType" onkeypress="handleEnter(event)">
 			 			<apex:selectOption itemValue="Delegate" itemLabel="Delegate" />
 			 			<apex:selectOption itemValue="Unfiltered" itemLabel="Unfiltered" />
 			 		</apex:selectRadio>
