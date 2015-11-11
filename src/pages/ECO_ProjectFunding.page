@@ -111,28 +111,51 @@
 
 <apex:outputText value="{!taskId}" style="visibility: hidden;"/>
 <apex:pageBlockSection columns="2">
-<apex:outputField value="{!project.Name}"/>
-<apex:outputField value="{!agreement.Amount__c}"/>
-<apex:pageBlockSectionItem >
-    <apex:outputText value="Agreement Currency"/>
-    <apex:outputField value="{!agreement.FundingCurrencyCode__c}"/>
-</apex:pageBlockSectionItem>
-<apex:pageBlockSectionItem >
-    <apex:outputText value="Project Currency"/>
-    <apex:outputField value="{!project.ProjectFunctionalCurrencyCode__c}"/>
-</apex:pageBlockSectionItem>
-<apex:outputField value="{!project.TotalApprovedRevenue__c}"/>
-<apex:outputField value="{!project.TotalForecastRevenue__c}"/>
-<apex:inputField value="{!project.ProjectLevelFundingFlag__c}"/>
-<apex:inputField value="{!project.EnableTopTaskCustomerFlag__c}" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}"/>
-<apex:pageBlockSectionItem >
-<apex:outputLabel value="Segmented" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}" />
-<apex:outputField value="{!project.isSegmented__c}" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}"/>
-</apex:pageBlockSectionItem>
-<apex:pageBlockSectionItem >
-    <apex:outputLabel value="Segmentation Status" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}" />
-    <apex:outputField value="{!project.SegmentationStatus__c}" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}"/>
-</apex:pageBlockSectionItem>
+    <apex:outputField value="{!project.Name}"/>
+    <apex:pageBlockSectionItem >
+        <apex:outputText value="Agreement Currency"/>
+        <apex:outputField value="{!agreement.FundingCurrencyCode__c}"/>
+    </apex:pageBlockSectionItem>
+
+    <apex:pageBlockSectionItem >
+        <apex:outputText value="Project Currency"/>
+        <apex:outputField value="{!project.ProjectFunctionalCurrencyCode__c}"/>
+    </apex:pageBlockSectionItem>
+
+    <apex:outputField value="{!agreement.Amount__c}"/>
+
+    <apex:outputField value="{!project.TotalApprovedRevenue__c}"/>
+
+    <apex:outputField value="{!agreement.TotalApprovedRevenueLimit__c}" />
+
+    <apex:outputField value="{!project.TotalForecastRevenue__c}"/>
+
+    <apex:outputField value="{!agreement.TotalFundingAmount__c}"/>
+
+    <apex:inputField value="{!project.ProjectLevelFundingFlag__c}"/>
+
+    <apex:outputField value="{!agreement.UnallocatedFunding__c}"/>
+
+    <apex:inputField value="{!project.EnableTopTaskCustomerFlag__c}" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}"/>
+
+    <apex:pageBlockSection>
+
+    </apex:pageBlockSection>
+
+    <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Segmented" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}" />
+        <apex:outputField value="{!project.isSegmented__c}" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}"/>
+    </apex:pageBlockSectionItem>
+
+    <apex:pageBlockSectionItem>
+
+    </apex:pageBlockSectionItem>
+
+    <apex:pageBlockSectionItem >
+        <apex:outputLabel value="Segmentation Status" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}" />
+        <apex:outputField value="{!project.SegmentationStatus__c}" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}"/>
+    </apex:pageBlockSectionItem>
+
 </apex:pageBlockSection>
 
 <apex:pageblockSection columns="1">

@@ -47,7 +47,7 @@ public class ECO_ProjectFundingController {
             project = [select Id, Name, ProjectLevelFundingFlag__c, TotalApprovedRevenue__c, CurrencyIsoCode, TotalForecastRevenue__c, isSegmented__c, SegmentationStatus__c, ProjectCurrencyCode__c, ProjectFunctionalCurrencyCode__c, EnableTopTaskCustomerFlag__c, DistributionRule__c, OUID__c from pse__Proj__c where Id = :projectAgreements[0].Project__c];
             //topTask = project.EnableTopTaskCustomerFlag__c;
         }
-        agreement = [select Id, Name, Amount__c, Account__c, Description__c, FundingCurrencyCode__c, CurrencyIsoCode, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
+        agreement = [select Id, Name, Amount__c, Account__c, Description__c, TotalApprovedRevenueLimit__c, UnallocatedFunding__c, FundingCurrencyCode__c, CurrencyIsoCode, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
         
         if(!project.ProjectLevelFundingFlag__c)
         {
@@ -98,9 +98,7 @@ public class ECO_ProjectFundingController {
             initializeProjectLevelFunding();
         }
 
-
-
-        agreement = [select Id, Name, Amount__c, Account__c, Description__c, FundingCurrencyCode__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
+        agreement = [select Id, Name, Amount__c, Account__c, Description__c, FundingCurrencyCode__c, TotalApprovedRevenueLimit__c, UnallocatedFunding__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
         //System.Debug('BrentBrentBrentfundingsize2' + projectLevelFunding.size());
         //PageReference pageRef = new PageReference('/apex/ECO_ProjectFunding');
         //pageRef.getParameters().put('AgreementId', agreement.Id);

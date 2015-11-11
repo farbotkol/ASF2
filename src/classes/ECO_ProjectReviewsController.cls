@@ -391,7 +391,7 @@ public with sharing virtual class ECO_ProjectReviewsController
 	{
 		if(theProject == null)
 		{
-			String query = 'SELECT Id, ProjectNumber__c, pse__Stage__c, pse__End_Date__c, CarryingOutOrganizationFormula__c, PercentageMargin__c, WeightedNSR__c, ProjectApprover__c, pse__Start_Date__c, RecordType.Name, CarryingOutOrganization__c, CarryingOutOrganization__r.Region__c, pse__Project_Manager__c, NetServicesRevenue__c, ProjectOwningOrg__c, TotalMargin__c, PrimaryEndClient__c, PrimaryEndClientName__c, TotalBidBudget__c, PrimaryBillingClient__c, PrimaryBillingClientName__c';
+			String query = 'SELECT Id, ProjectNumber__c, OwnerId, pse__Stage__c, pse__End_Date__c, CarryingOutOrganizationFormula__c, PercentageMargin__c, WeightedNSR__c, ProjectApprover__c, pse__Start_Date__c, RecordType.Name, CarryingOutOrganization__c, CarryingOutOrganization__r.Region__c, pse__Project_Manager__c, NetServicesRevenue__c, ProjectOwningOrg__c, TotalMargin__c, PrimaryEndClient__c, PrimaryEndClientName__c, TotalBidBudget__c, PrimaryBillingClient__c, PrimaryBillingClientName__c';
 			for(Schema.FieldSetMember f : getCustomProjSetupFields())
 			//for(Schema.FieldSetMember f : getCustomProjFields())
 			{
@@ -429,7 +429,7 @@ public with sharing virtual class ECO_ProjectReviewsController
 		
 		else if((oProjectReview.MeetingMinutes__c == null || oProjectReview.MeetingMinutes__c == '') && !isProjectPerfReview)
 		{
-			lAgendaItemTemplates = new List<AgendaItemTemplate__c>([Select Id, Name, Section__c, SortOrder__c, Description__c From AgendaItemTemplate__c Where ProjectReviewTemplate__r.TemplateType__c = :mRecordTypes.get(oProjectReview.RecordTypeId).Name]);
+			lAgendaItemTemplates = new List<AgendaItemTemplate__c>([Select Id, Name, Section__c, SortOrder__c, Description__c From AgendaItemTemplate__c Where ProjectReviewTemplate__r.TemplateType__c = :mRecordTypes.get(oProjectReview.RecordTypeId).Name Order By SortOrder__c]);
 			Integer iAgendaNum = 1;
 
 			if(!lAgendaItemTemplates.isEmpty())

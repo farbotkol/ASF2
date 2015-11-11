@@ -754,6 +754,8 @@ public class ECO_ChangeManagerDetailController {
         if(projectSynchMessages != '' && projectSynchMessages != null)
             projectSynchMessages = '<ol>' + projectSynchMessages + '</ol>';*/   
 
+        if(changeManager.IsPMHandoverChange__c)
+            return new PageReference('/' + changeManager.Id);
 
    		return null;
     }
