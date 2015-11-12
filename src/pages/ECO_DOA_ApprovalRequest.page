@@ -73,11 +73,13 @@
 									<apex:inputCheckbox value="{!Trigger.bChecked}" disabled="{!Trigger.oTrigger.DOAApprovalRequest__c != null}" id="checkboxes"/>
 								</apex:column>
 								<apex:column headerValue="Action"  width="80">
+                                    <apex:actionRegion >
                                     <apex:outputLink value="/{!Trigger.oTrigger.id}/e?retURL=%2F{!Trigger.oTrigger.id}">Edit</apex:outputLink>
                                     &nbsp;&nbsp;
-                                    <apex:commandLink action="{!deleteDOA}" value="Delete" rerender="ProjectTriggerPanel, messages">
+                                    <apex:commandLink action="{!deleteDOA}" value="Delete" rerender="thepageblocksection, ProjectTriggerPanel, messages" >
                                     	<apex:param assignTo="{!deleteId}" name="DeleteId" value="{!Trigger.oTrigger.id}" />
                                     </apex:commandLink>
+                                    </apex:actionRegion>
 								</apex:column>	
 								<apex:repeat value="{!$ObjectType.DOARegister__c.FieldSets.DOA_TriggerView}" var="SearchField">
 									<apex:column value="{!Trigger.oTrigger[SearchField]}" />
@@ -89,6 +91,7 @@
 				</apex:actionStatus>
 			</apex:outputPanel>
             <br/>
+            <apex:outputPanel id="outerpanel">
 			<apex:pageBlockSection title="Add DOA Trigger" columns="1"  id="thepageblocksection" collapsible="true">
                 
 				<!--<apex:repeat value="{!$ObjectType.DOARegister__c.FieldSets.DOAInputFields}" var="Field1">
@@ -117,11 +120,11 @@
                     
                 </apex:outputPanel>
                 
-                <apex:pageMessage severity="INFO" rendered="{!IF(lstTemplateQues.size > 0, false, true)}" summary="No Results Were Found."></apex:pageMessage> 
-                <apex:pageBlockTable value="{!lstTemplateQues}" rendered="{!IF(lstTemplateQues.size > 0, true, false)}" var="Questions" >
+                <apex:pageMessage severity="INFO" rendered="{!IF(lstTemplateQuestions.size > 0, false, true)}" summary="No Results Were Found."></apex:pageMessage> 
+                <apex:pageBlockTable value="{!lstTemplateQuestions}" rendered="{!IF(lstTemplateQuestions.size > 0, true, false)}" var="Questions" id="templateTable">
                     <apex:column width="100px">
                         <apex:facet name="header">Select</apex:facet>
-                        <apex:commandLink action="{!addQuestion}" value="Select" rerender="ProjectTriggerPanel, messages">
+                        <apex:commandLink action="{!addQuestion}" value="Select" rerender="ProjectTriggerPanel, messages, thepageblocksection">
                             <apex:param assignTo="{!idQuestionID}" name="QuestionId" value="{!Questions.id}" />
                         </apex:commandLink>&nbsp;&nbsp;
                     </apex:column>
@@ -140,7 +143,7 @@
             </apex:pageBlockSection>  
             
             <script> twistSection(document.getElementById('{!$Component.theform.thepageblock.thepageblocksection}').getElementsByTagName('img')[0]) </script>
-			
+			</apex:outputPanel>			
 			<apex:pageBlockSection title="DOA Request For Approval "  columns="1" collapsible="false"></apex:pageBlockSection>
 			<apex:pageMessage severity="INFO" rendered="{!if(lstDOARequests.size > 0, false, true)}" summary="No DOA Requests Found"></apex:pageMessage> 
 			<apex:pageBlockTable value="{!lstDOARequests}" var="Request" rendered="{!if(lstDOARequests.size > 0, true, false)}">
