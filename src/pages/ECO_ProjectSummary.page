@@ -213,15 +213,6 @@
 
 	<apex:form >
 
-		<apex:outputPanel rendered="{!isProjectNumber}">
-	        <div class="customHelpText">
-	            <div class="customHelpBody">
-					Once minimum fields are populated, you can request an Oracle project number to be allocated to the project.  Note this will not be a chargeable until you have approval to execute, but will allow you to proceed with creating file structures and document registers etc if required.  It is recommended that a project number is not requested until there is a degree of certainty about awarding the project.<br/><br/>
-					To get a number, click on the "Request Project Number" button.  If you have not yet provided sufficient information you will receive an error message and be able to amend information from this page.  You may be required to log into Oracle if you have not done so recently.
-	            </div>
-	        </div> 	
-		</apex:outputPanel>
-
 		<div id="divSyncProgress"></div>
 
 		<apex:actionFunction action="{!initiateOracleProjectSyncRequest}" name="initiateOracleProjectSyncRequest_JS" status="statusBar" oncomplete="executeOracleProjectSyncRequest_JS();"/>
@@ -280,9 +271,15 @@
 			</apex:actionStatus>
 		</apex:sectionHeader>
 
-	
+		<apex:outputPanel rendered="{!isProjectNumber}">
+	        <div class="customHelpText">
+	            <div class="customHelpBody">
+					Once minimum fields are populated, you can request an Oracle project number to be allocated to the project.  Note this will not be a chargeable until you have approval to execute, but will allow you to proceed with creating file structures and document registers etc if required.  It is recommended that a project number is not requested until there is a degree of certainty about awarding the project.<br/><br/>
+					To get a number, click on the "Request Project Number" button.  If you have not yet provided sufficient information you will receive an error message and be able to amend information from this page.  You may be required to log into Oracle if you have not done so recently.
+	            </div>
+	        </div> 	
+		</apex:outputPanel>	
 		
-
 		<!--
 		<input type="button" value="{!btnValue}" onclick="initiateOracleProjectSyncRequest_JS();"/>
 		-->
