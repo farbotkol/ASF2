@@ -326,7 +326,7 @@ public class ECO_ProjectFundingController {
         }
 
 
-		agreement = [select Id, Name, Amount__c, Account__c, Description__c, TotalApprovedRevenueLimit__c, FundingCurrencyCode__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
+		agreement = [select Id, Name, Amount__c, Account__c, Description__c, TotalApprovedRevenueLimit__c, FundingCurrencyCode__c, UnallocatedFunding__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
                 
         creatingNewFunding = false;                 
     }
