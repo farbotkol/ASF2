@@ -168,6 +168,8 @@
     <apex:pageMessages rendered="{!changeManager.ApprovalStatus__c != null && changeManager.IsExecutionApprovalChange__c}"/>
     <apex:pageMessages rendered="{!NOT(changeManager.IsExecutionApprovalChange__c) && changeManager.ApprovalStatus__c != null}"/>
 
+    <apex:pageMessages />
+
     <apex:outputPanel id="msgPollingTop" >
         <script type="text/javascript">
             var pollMessageQueue = "{!pollMessageQueue}";
@@ -188,7 +190,9 @@
         <apex:pageBlock mode="edit" title="{!changeManager.RecordType.Name & ' Edit'}" id="pb2">
             <apex:pageBlockButtons >
                 <apex:commandButton value="Edit" action="{!editChangeManager}" rendered="{!NOT(changeManager.IsApproved__c) && mode == ''}" />
-                <apex:commandButton value="Save" action="{!saveChangeManager}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}" />
+                
+                <apex:commandButton value="Save" action="{!saveChangeManager}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}" reRender="changes" />
+                
                 <apex:commandButton value="Return to Change Manager" action="{!returnToChangeManager}" rendered="{!mode != ''}" />
                 <apex:commandButton value="Return to Project" action="{!returnToProject}" rendered="{!mode == ''}" />
                 <apex:commandButton value="Return to Project Changes" action="{!returnToProjectChanges}" rendered="{!mode == ''}" />
@@ -428,7 +432,7 @@
     </div>
         
     <div id="notifications">
-            <apex:pageBlockSection title="Details" collapsible="false" rendered="{!changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c|| changeManager.IntExtClassifications__c}">
+            <apex:pageBlockSection id="intExtDetails" title="Details" collapsible="false" rendered="{!changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c|| changeManager.IntExtClassifications__c}">
                 <apex:outputField value="{!changeManager.Project__c}"/>
                 <apex:outputField value="{!changeManager.ProjectNumber__c}"/>
                 <apex:pageBlockSectionItem >
@@ -443,9 +447,9 @@
 
                  <apex:outputField value="{!changeManager.ProjectAccountantApprover__c}" rendered="{!NOT(changeManager.IsApproved__c)}"/>
 
-                <apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
                         <apex:outputText value="Contributing Factor"/>
-                        <apex:outputPanel>
+                        <apex:outputPanel >
                             <apex:inputField value="{!changeManager.ContributingFactor__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
                             <apex:outputField value="{!changeManager.ContributingFactor__c}" rendered="{!changeManager.IsApproved__c && mode == ''}"/>
                         </apex:outputPanel>
@@ -453,9 +457,9 @@
 
                <apex:outputField value="{!changeManager.FinanceApprover__c}" rendered="{!NOT(changeManager.IsApproved__c)}"/>
                 
-                <apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
                     <apex:outputText value="Contributing Factor Details"/>    
-                    <apex:outputPanel>    
+                    <apex:outputPanel >    
                         <apex:inputField value="{!changeManager.ContributingFactorDetails__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
                         <apex:outputField value="{!changeManager.ContributingFactorDetails__c}" rendered="{!changeManager.IsApproved__c && mode == ''}"/>
                     </apex:outputPanel>
@@ -477,9 +481,9 @@
                 <apex:outputField value="{!changeManager.ProjectApprover__c}" rendered="{!NOT(changeManager.IsApproved__c)}"/>
 
                 <!--<apex:outputField value="{!changeManager.OracleApprovalSyncStatus__c}"/> -->
-                <apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
                         <apex:outputText value="Contributing Factor"/>
-                        <apex:outputPanel>
+                        <apex:outputPanel >
                             <apex:inputField value="{!changeManager.ContributingFactor__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
                             <apex:outputField value="{!changeManager.ContributingFactor__c}" rendered="{!changeManager.IsApproved__c && mode == ''}"/>
                         </apex:outputPanel>
@@ -487,9 +491,9 @@
 
                  <apex:outputField value="{!changeManager.ProjectAccountantApprover__c}" rendered="{!NOT(changeManager.IsApproved__c)}"/>
 
-                <apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
                     <apex:outputText value="Contributing Factor Details"/>    
-                    <apex:outputPanel>    
+                    <apex:outputPanel >    
                         <apex:inputField value="{!changeManager.ContributingFactorDetails__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
                         <apex:outputField value="{!changeManager.ContributingFactorDetails__c}" rendered="{!changeManager.IsApproved__c && mode == ''}"/>
                     </apex:outputPanel>
@@ -842,7 +846,8 @@
                         
                 <apex:outputLabel value="Resilience Change Notes" styleclass="dmeOutput"/>
                 <apex:outputPanel >            
-                    <apex:inputField value="{!changeManager.IntExtSecurityComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}"/>
+                    <apex:inputField value="{!changeManager.IntExtSecurityComments__c}" style="width: 825px; height: 40px" 
+                            rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="{!changeManager.IntExtSecurity__c}"/>
                     <apex:outputField value="{!changeManager.IntExtSecurityComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
                 </apex:outputPanel>
             </apex:pageBlockSection>                                                                                                
@@ -970,6 +975,52 @@
                 </apex:outputPanel>			
 
             </apex:pageBlockSection>            	
+
+
+            <apex:pageBlockSection columns="1" title="Request History" id="syncHistorySection">
+                <apex:pageBlockSectionItem >
+                    <apex:tabPanel switchType="client" selectedTab="successSync">
+                        <apex:tab label="Successful Requests ({!numSuccessfulSyncs})" id="successSync">
+                            <apex:pageMessage severity="INFO" rendered="{!!hasSyncHistory}" summary="No sync history exists."></apex:pageMessage>                                   
+                            <apex:pageBlockTable value="{!syncHistory}" var="history" rendered="{!hasSyncHistory}">                 
+                                <apex:column >
+                                    <apex:facet name="header">{!$ObjectType.IntegrationMessageQueue__c.Fields.Status__c.Label}</apex:facet>
+                                    <apex:image url="{!URLFOR($Resource.greenStar)}" height="20px" width="20px" />
+                                </apex:column>                  
+                                <apex:column >
+                                    <apex:facet name="header">{!$ObjectType.IntegrationMessageQueue__c.Fields.SuccessMessage__c.Label}</apex:facet>
+                                    {!if(history.msgQueue.SuccessMessage__c == null, 'Project request successfully processed.', history.msgQueue.SuccessMessage__c)}
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">Date Processed</apex:facet>
+                                    {!history.syncLocalDateTime}
+                                </apex:column>
+                            </apex:pageBlockTable>  
+                        </apex:tab>
+                        <apex:tab label="Failed/Attempted Requests ({!numFailedAttemptedSyncs})" id="failedSync">
+                            <apex:pageMessage severity="INFO" rendered="{!!hasRequestFailures}" summary="No sync failures exists."></apex:pageMessage>                                  
+                            <apex:pageBlockTable value="{!requestFailures}" var="failure" rendered="{!hasRequestFailures}">             
+                                <apex:column >
+                                    <apex:facet name="header">{!$ObjectType.IntegrationMessageQueue__c.Fields.Status__c.Label}</apex:facet>
+                                    <apex:image url="{!if(failure.msgQueue.ErrorMessage__c == '' || failure.msgQueue.ErrorMessage__c == null, URLFOR($Resource.yellowCircle), URLFOR($Resource.redTriangle))}" height="20px" width="20px" />{!failure.msgQueue.Status__c}
+                                </apex:column>                  
+                                <apex:column >
+                                    <apex:facet name="header">{!$ObjectType.IntegrationMessageQueue__c.Fields.ErrorMessage__c.Label}</apex:facet>
+                                    {!failure.msgQueue.ErrorMessage__c}
+                                </apex:column>
+                                <apex:column >
+                                    <apex:facet name="header">Date Attempted</apex:facet>
+                                    {!failure.syncLocalDateTime}
+                                </apex:column>
+                            </apex:pageBlockTable>  
+                        </apex:tab>
+
+                    </apex:tabPanel>
+
+                </apex:pageBlockSectionItem>
+            </apex:pageBlockSection>
+
+
             	
      		<apex:pageBlockSection title="Schedule/WBS" collapsible="false" rendered="{!ChangedTasks != null}" columns="1">  
                 <apex:pageBlockTable value="{!ChangedTasks}" var="task" rendered="{!ChangedTasks != null}">
@@ -984,8 +1035,9 @@
                 </apex:pageBlockTable>              
             </apex:pageBlockSection>
 
-           <apex:pageBlockSection title="Project Team" collapsible="false" rendered="{!changeManager.IntExtKeyMembers__c}" columns="1">  
-                <apex:pageBlockTable value="{!ChangedKeyMembers}" var="teamMember" rendered="{!ChangedKeyMembers != null && NOT(changeManager.IsApproved__c)}">
+
+           <apex:pageBlockSection title="Project Team" collapsible="false" rendered="{!ChangedKeyMembers != null}" columns="1">  
+                <apex:pageBlockTable value="{!ChangedKeyMembers}" var="teamMember" rendered="{!ChangedKeyMembers != null}">
                     <apex:column headerValue="Change Type" width="35px">
                         <apex:outputText value="New" rendered="{!teamMember.ChangeManagerIsNew__c}"/>
                         <apex:outputText value="Update" rendered="{!NOT(teamMember.ChangeManagerIsNew__c)}"/>
