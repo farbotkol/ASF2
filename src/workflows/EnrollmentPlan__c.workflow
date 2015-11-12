@@ -222,39 +222,60 @@
     </alerts>
     <alerts>
         <fullName>Participant_Change_Notify_Approver_1</fullName>
-        <description>Participant Change  - Notify Approver 1</description>
+        <description>Participant Change  - Notify Approver 1 &amp; PM</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
         <recipients>
             <field>Approver1__c</field>
             <type>userLookup</type>
         </recipients>
         <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
-        <template>DTW_Project_Incentives/Participant_Change</template>
+        <template>DTW_Project_Incentives/EA_Notification_that_Participants_have_Changed</template>
     </alerts>
     <alerts>
         <fullName>Participant_Change_Notify_Approver_2</fullName>
-        <description>Participant Change  - Notify Approver 2</description>
+        <description>Participant Change  - Notify Approver 1, 2, &amp; PM</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <recipients>
+            <field>Approver1__c</field>
+            <type>userLookup</type>
+        </recipients>
         <recipients>
             <field>Approver2__c</field>
             <type>userLookup</type>
         </recipients>
         <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
-        <template>DTW_Project_Incentives/Participant_Change</template>
+        <template>DTW_Project_Incentives/EA_Notification_that_Participants_have_Changed</template>
     </alerts>
     <alerts>
         <fullName>Participant_Change_Notify_Approver_3</fullName>
-        <description>Participant Change  - Notify Approver 3</description>
+        <description>Participant Change  - Notify Approver 1,2,3 &amp; PM</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <recipients>
+            <field>Approver1__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>Approver2__c</field>
+            <type>userLookup</type>
+        </recipients>
         <recipients>
             <field>Approver3__c</field>
             <type>userLookup</type>
         </recipients>
         <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
-        <template>DTW_Project_Incentives/Participant_Change</template>
+        <template>DTW_Project_Incentives/EA_Notification_that_Participants_have_Changed</template>
     </alerts>
     <alerts>
         <fullName>Participant_Change_Notify_PM</fullName>
@@ -265,7 +286,7 @@
         </recipients>
         <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
         <senderType>OrgWideEmailAddress</senderType>
-        <template>DTW_Project_Incentives/Participant_Change</template>
+        <template>DTW_Project_Incentives/EA_Notification_that_Participants_have_Changed</template>
     </alerts>
     <alerts>
         <fullName>Prepayment_Alert_to_Approver_1_and_PM</fullName>
@@ -1347,6 +1368,7 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Set_EA_Status_to_Opt_Out</fullName>
@@ -1365,6 +1387,7 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Set_EA_Status_to_Pending_AP2_Action</fullName>
@@ -1374,6 +1397,7 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Set_EA_Status_to_Pending_AP3_Action</fullName>
@@ -1383,6 +1407,7 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Set_EA_Status_to_Pending_DTW_Admin</fullName>
@@ -1392,6 +1417,7 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Set_EA_Status_to_Pending_PM_Action</fullName>
@@ -2501,10 +2527,16 @@ AND(
             <name>Set_EPChanged_to_No</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>false</active>
-        <description>Notify Approver 1 if Participant Count Changes.</description>
-        <formula>and(or(ischanged(NumberofParticipants__c),ischanged( TotalAllocationParticipants__c)),
-App_1_Processed__c)</formula>
+        <active>true</active>
+        <description>If participant is added or changed by Approver 2, notifies Approver 1 &amp; PM.</description>
+        <formula>and(
+LastModifiedById=Approver2_ID__c,
+ischanged(EnrollmentStatus__c), 
+or(
+ispickval(EnrollmentStatus__c,&quot;Enrolled&quot;),
+contains(text(EnrollmentStatus__c),&quot;Pending&quot;))
+,
+ispickval(EPChanged__c,&quot;Yes&quot;))</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
@@ -2513,10 +2545,18 @@ App_1_Processed__c)</formula>
             <name>Participant_Change_Notify_Approver_2</name>
             <type>Alert</type>
         </actions>
-        <active>false</active>
-        <description>Notify Approver 2 if Participant Count Changes.</description>
-        <formula>and(or(ischanged(NumberofParticipants__c),ischanged( TotalAllocationParticipants__c)),
-App_2_Processed__c)</formula>
+        <actions>
+            <name>Set_EPChanged_to_No</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>If participant is added or changed by Approver 3, notifies Approver 1, 2 &amp; PM.</description>
+        <formula>and(LastModifiedById= Approver3ID__c ,
+
+ischanged(EnrollmentStatus__c), 
+or(
+ispickval(EnrollmentStatus__c,&quot;Enrolled&quot;),contains(text(EnrollmentStatus__c),&quot;Pending&quot;)),
+ispickval(EPChanged__c,&quot;Yes&quot;))</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
@@ -2525,21 +2565,38 @@ App_2_Processed__c)</formula>
             <name>Participant_Change_Notify_Approver_3</name>
             <type>Alert</type>
         </actions>
+        <actions>
+            <name>Set_EPChanged_to_No</name>
+            <type>FieldUpdate</type>
+        </actions>
         <active>true</active>
-        <description>Notify Approver 3 if Participant Count Changes.</description>
-        <formula>and(or(ischanged(NumberofParticipants__c),ischanged( TotalAllocationParticipants__c)),
-App_3_Processed__c)</formula>
+        <description>If participant is added or changed by DTWAdmin, notifies Approver 1,2,3 &amp; PM.</description>
+        <formula>and(LastModifiedById=DTWAdminID__c, 
+
+ischanged(EnrollmentStatus__c), 
+or( 
+ispickval(EnrollmentStatus__c,&quot;Enrolled&quot;),contains(text(EnrollmentStatus__c),&quot;Pending&quot;)), 
+ispickval(EPChanged__c,&quot;Yes&quot;))</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
         <fullName>Notify of Participant Change - PM</fullName>
-        <active>false</active>
+        <actions>
+            <name>Participant_Change_Notify_PM</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>Set_EPChanged_to_No</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
         <description>Notify PM if Participant Count Changes.</description>
-        <formula>and(or(ischanged(NumberofParticipants__c),ischanged( TotalAllocationParticipants__c)),
+        <formula>and(LastModifiedById=Approver1ID__c, 
 
-or(LastModifiedById = Approver1ID__c,
- LastModifiedById = Approver2_ID__c, 
- LastModifiedById = Approver3ID__c))</formula>
+ischanged(EnrollmentStatus__c), 
+or( 
+ispickval(EnrollmentStatus__c,&quot;Enrolled&quot;),contains(text(EnrollmentStatus__c),&quot;Pending&quot;)), 
+ispickval(EPChanged__c,&quot;Yes&quot;))</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>

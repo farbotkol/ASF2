@@ -2382,7 +2382,7 @@ IF(IncentiveProject__r.ActualNetMarginITD__c &gt; 0,
   ,0)
 ,NULL)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Indicates the Inception to Date (ITD) Gross Margin % of NSR for the project.  Current project performance should be compared to the budget and EAC for the purposes of setting a DTW baseline.  Click for further details about the ITD financial performance o</inlineHelpText>
+        <inlineHelpText>Indicates the Inception to Date (ITD) Margin % of NSR for the project. Compare current project performance to the EAC when setting a DTW baseline. Click (i) To view the ITD financial performance of the project</inlineHelpText>
         <label>ITD Margin % NSR</label>
         <precision>18</precision>
         <required>false</required>
@@ -2397,7 +2397,6 @@ IF(IncentiveProject__r.ActualNetMarginITD__c &gt; 0,
 =ITD Cost at enrollment / (EAC cost at enrollment +(Current Cost Budget - Cost Budget at enrollment)) ITD Cost at enrollment, EAC cost at enrollment, Budget cost at enrollment are Ecosystem snapshot values.  Current cost budget is fresh weekly from Insight, This adjusted % complete is the one that defines Estimated Pool, Max Pool, etc.</description>
         <externalId>false</externalId>
         <formula>DTWComplete__c</formula>
-        <inlineHelpText>Admins can adjust Actual Total Cost at Snapshot, Forecast Cost Budget at Snapshot and Approved Cost Budget at Snapshot to impact Adjusted % Complete.</inlineHelpText>
         <label>Adjusted % Complete</label>
         <precision>18</precision>
         <required>false</required>
@@ -2416,7 +2415,7 @@ IF(IncentiveProject__r.ActualNetMarginITD__c &gt; 0,
       IF( TEXT(LegacyFormCreateDate__c) = &quot;&quot;, DATEVALUE(CreatedDate), LegacyFormCreateDate__c)),
       NULL
 )</formula>
-        <inlineHelpText>Total age in days</inlineHelpText>
+        <inlineHelpText>Total days since the form was initiated</inlineHelpText>
         <label>Form Age</label>
         <precision>18</precision>
         <required>false</required>
@@ -2552,7 +2551,7 @@ CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null
   IF( AND(TEXT(ConfirmBaseline__c ) &lt;&gt; &quot;Yes&quot;, BEGINS(TEXT(EnrollmentStatus__c), &quot;Pending Approver&quot;)),
       IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Please Confirm Baseline&quot; &amp; BR(), NULL) &amp;
 
-   IF(OR(NumberofParticipants__c &lt; 1, TotalAllocationParticipants__c &lt; 0.02), 
+   IF(OR(NumberofParticipants__c &lt; 1, TotalAllocationParticipants__c &lt; 0.01), 
       IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Missing Participants or Allocations Too Low&quot; &amp; BR(), NULL) &amp;
 
    IF( OR(ScoreOnSafetyforLifeMetrics__c = 0, TEXT(ScoreOnSafetyforLifeMetrics__c) = &quot;&quot; ), 
@@ -2670,10 +2669,6 @@ IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;,
 IF( AND(OR(TEXT(PassCSat__c)&lt;&gt;&quot;Yes&quot;,TEXT(PassDSO__c)&lt;&gt;&quot;Yes&quot;, TEXT(PassSafetyforLife__c)&lt;&gt;&quot;Yes&quot;), (FinalIncentivePoolAdjusted__c &gt;= EstimatedIncPoolITD__c) ), 
 IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Final Pool Not Reduced for Ops Metrics Results&quot; &amp; BR(), NULL) &amp; 
 
-IF( AND(OR(TEXT(PassCSat__c)=&quot;Yes&quot;,TEXT(PassDSO__c)=&quot;Yes&quot;, TEXT(PassSafetyforLife__c)=&quot;Yes&quot;), (TotalPaymentAmount__c &lt; FinalIncentivePoolAdjusted__c) ), 
-IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; All Ops Metrics Satisfied, Total Pool Not Allocated&quot; &amp; BR(), NULL) &amp; 
-
-
 IF( ParticipantNoPayAmount__c &gt; 0, 
 IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Active Employee with $0 Award&quot; &amp; BR(), NULL))) )))))),NULL)</formula>
         <inlineHelpText>If exceptions are requested, enrollment will require 3rd level approval (typically Region Executive)</inlineHelpText>
@@ -2691,8 +2686,8 @@ IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;,
 CASE(ApplicationType__c,&quot;OPT&quot;,NULL, &quot;Pay&quot;, NULL, 
 
 IF(AND(TEXT(IncentivePlan__r.ContractType__c) = &quot;Time &amp; Material&quot;, NOT(ISPICKVAL( ApplicationType__c, &quot;Pay&quot;))), 
-    IF(ABS(Round(BaselineGMofNSR__c,2) -(CASE(IncentivePlan__r.ContractSubType__c, &quot;Gross Margin&quot;, 
-    Round(IncentiveProject__r.ApprovedGrossMarginofNSR__c,2), Round(IncentiveProject__r.ApprovedNetMarginBudget__c,2)))) &gt; 0.0002, 
+    IF(ABS(Round(BaselineGMofNSR__c,4) -(CASE(IncentivePlan__r.ContractSubType__c, &quot;Gross Margin&quot;, 
+    Round(IncentiveProject__r.ApprovedGrossMarginofNSR__c,4), Round(IncentiveProject__r.ApprovedNMofNSR__c,4)))) &gt; 0.0002, 
     IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Baseline Margin% is not equal to Budget Margin%&quot; &amp; 
     BR(), NULL)&amp; 
 
@@ -2738,6 +2733,7 @@ CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null
    IF(AND(BEGINS(TEXT(EnrollmentStatus__c), &quot;Pending Approver&quot;), TotalAllocationParticipants__c  &gt; 1),
       IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Participant Allocations are greater than 100%&quot; &amp; BR(), NULL)))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>STOP signs indicate application cannot continue in workflow until resolved.</inlineHelpText>
         <label>Application Issues 2</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -2773,6 +2769,7 @@ IMAGE(&quot;/resource/1435520899000/INC_StopSignImage&quot;,&quot;Alert&quot;, 2
 
 )
 ,NULL)</formula>
+        <inlineHelpText>STOP signs indicate application cannot continue in workflow until resolved.</inlineHelpText>
         <label>Application Issues (Pay)</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -2975,9 +2972,9 @@ TEXT(IncentivePlan__r.MaxAllocationPool__c*100) &amp; &quot;%&quot; &amp; BR(), 
     </fields>
     <fields>
         <fullName>ApprovedDPEBudgetatSnapshot__c</fullName>
-        <description>Represents the DPE Budget of the project when the form was created.</description>
+        <description>Represents the DPE Budget of the project when the form was created or approved.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Represents the DPE Budget of the project when the form was created.</inlineHelpText>
+        <inlineHelpText>Represents the DPE Budget of the project when the form was created or approved.</inlineHelpText>
         <label>Budgeted DPE at Snapshot</label>
         <precision>18</precision>
         <required>false</required>
@@ -3130,9 +3127,9 @@ TEXT(IncentivePlan__r.MaxAllocationPool__c*100) &amp; &quot;%&quot; &amp; BR(), 
     </fields>
     <fields>
         <fullName>ApprovedGrossMarginBudgetatSnapshot__c</fullName>
-        <description>Represents the Gross Margin Budget of the project when the form was created.</description>
+        <description>Represents the Gross Margin Budget of the project when the form was created or approved.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Represents the Gross Margin Budget of the project when the form was created.</inlineHelpText>
+        <inlineHelpText>Represents the Gross Margin Budget of the project when the form was created or approved.</inlineHelpText>
         <label>Budgeted Gross Margin at Snapshot</label>
         <precision>18</precision>
         <required>false</required>
@@ -3699,11 +3696,11 @@ IncentiveProject__r.ApprovedDPEBudget__c,IF(OR(NOT(ISPICKVAL(ApplicationType__c,
     </fields>
     <fields>
         <fullName>BaselineGMofNSR__c</fullName>
-        <description>Baseline GM% will move if Budgeted GM% moves (and therefore  Threshold GM% and Threshold GM$ will move as well), =(current GM$ + mgmt adj to GM$) / (current NSR$ + mgmt adj to NSR$), Current GM$ and Current NSR $ come from weekly Insight feed.  Mgmt adjustments owned / stored by Ecosystem</description>
+        <description>For projects enrolled in the Fixed Price plan only, Baseline Margin% will change if Budgeted Margin% changes (and therefore Threshold Margin% and Threshold Margin will change)</description>
         <externalId>false</externalId>
         <formula>BaselineMarginCalculated__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Baseline GM% will move if Budgeted GM% moves (and therefore  Threshold GM% and Threshold GM$ will move as well)</inlineHelpText>
+        <inlineHelpText>For projects enrolled in the Fixed Price plan only, Baseline Margin% will change if Budgeted Margin% changes (and therefore Threshold Margin% and Threshold Margin will change)</inlineHelpText>
         <label>Baseline Margin % of NSR</label>
         <precision>18</precision>
         <required>false</required>
@@ -3750,7 +3747,7 @@ IncentiveProject__r.ApprovedDPEBudget__c,IF(OR(NOT(ISPICKVAL(ApplicationType__c,
     </fields>
     <fields>
         <fullName>BaselineGrossMargin__c</fullName>
-        <description>For the purposes of Deliver To Win only, displays budgeted amount inclusive of mgmt adjustments.  Baseline GM = Budgeted GM + GM Adjustment.  Future changes to the project&apos;s budget may impact the Deliver to Win Baseline.</description>
+        <description>Used for purposes of Deliver To Win only.  Displays budgeted margin inclusive of mgmt adjustments, and represents expected margin for the project.</description>
         <externalId>false</externalId>
         <formula>CASE(IncentivePlan__r.ContractSubType__c
 	,&apos;Gross Margin&apos;
@@ -3773,7 +3770,7 @@ IncentiveProject__r.ApprovedDPEBudget__c,IF(OR(NOT(ISPICKVAL(ApplicationType__c,
 	)
 ) + (GrossMarginAmountScopeChange__c + GrossMarginAmountAdjustment__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>For the purposes of Deliver To Win only, displays budgeted amount inclusive of mgmt adjustments.  Baseline GM = Budgeted GM + GM Adjustment.  Future changes to the project&apos;s budget may impact the Deliver to Win Baseline.</inlineHelpText>
+        <inlineHelpText>Used for purposes of Deliver To Win only.  Displays budgeted margin inclusive of mgmt adjustments, and represents expected margin for the project.</inlineHelpText>
         <label>Baseline Margin</label>
         <precision>18</precision>
         <required>false</required>
@@ -3954,7 +3951,6 @@ IncentiveProject__r.ApprovedDPEBudget__c,IF(OR(NOT(ISPICKVAL(ApplicationType__c,
 
  + GrossMarginAdjustment__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Place holder.  Formula still needed</inlineHelpText>
         <label>Baseline Net Margin</label>
         <precision>18</precision>
         <required>false</required>
@@ -3992,12 +3988,10 @@ OR(ISPICKVAL(EnrollmentStatus__c,&apos;Enrolled&apos;),NOT(ISPICKVAL(Application
     </fields>
     <fields>
         <fullName>BudgetVariance__c</fullName>
-        <description>Used for testing only</description>
         <externalId>false</externalId>
         <formula>IF( (ABS(BaselineGrossMarginCaptured__c - BaselineGrossMargin__c) / BaselineGrossMargin__c) &gt; 0,
     (ABS(BaselineGrossMarginCaptured__c - BaselineGrossMargin__c) / BaselineGrossMargin__c), 0)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Used for testing only</inlineHelpText>
         <label>Budget Variance %</label>
         <precision>18</precision>
         <required>false</required>
@@ -4278,7 +4272,7 @@ OR(ISPICKVAL(EnrollmentStatus__c,&apos;Enrolled&apos;),NOT(ISPICKVAL(Application
         <fullName>DPEAdjustment__c</fullName>
         <description>Displays any adjustment input by an approver during the course of the approval process.  An adjustment should be considered if the current approved budget does not reflect the expected performance of the project.  Click for further details about management adjustments.  The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An increase to the Budgeted DPE should be input as a positive number.  A decrease to the Budgeted DPE should be input as a negative number.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Displays any adjustment input by an approver during the course of the approval process.  An adjustment should be considered if the current approved budget does not reflect the expected performance of the project.  Click for further details about managemen</inlineHelpText>
+        <inlineHelpText>Displays any adjustment input by an approver during the course of the approval process. An adjustment should be considered if the current approved budget does not reflect the expected performance of the project.</inlineHelpText>
         <label>DPE Adjustment</label>
         <precision>18</precision>
         <required>false</required>
@@ -4425,7 +4419,6 @@ ActualTotalCostBudgetatSnapshot__c / (ForecastCostBudgetatSnapshot__c +(Incentiv
         <fullName>DisplayApprovalHistory__c</fullName>
         <description>Override to force the Approval History to be displayed even when there are Application Issues.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Override to force the Approval History to be displayed even when there are Application Issues.</inlineHelpText>
         <label>Display Approval History</label>
         <picklist>
             <picklistValues>
@@ -4576,7 +4569,6 @@ TEXT(EmployeeName__r.Status__c)  &amp; &quot;  &quot; &amp; IMAGE(&quot;/resourc
     <fields>
         <fullName>EAThresholdField1__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Editable Threshold field.  Must be a number.</inlineHelpText>
         <label>EA.Threshold Field 1</label>
         <precision>18</precision>
         <required>false</required>
@@ -4601,7 +4593,7 @@ TEXT(EmployeeName__r.Status__c)  &amp; &quot;  &quot; &amp; IMAGE(&quot;/resourc
     <fields>
         <fullName>EAURL__c</fullName>
         <externalId>false</externalId>
-        <formula>&quot;https://aecom--ecosysdev.cs15.my.salesforce.com/&quot;&amp;Id</formula>
+        <formula>LEFT($Api.Partner_Server_URL_260, FIND( &apos;/services&apos;, $Api.Partner_Server_URL_260))&amp;Id</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>EA URL</label>
         <required>false</required>
@@ -4627,7 +4619,7 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
 ))
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Gross or Net Margin % Performance</inlineHelpText>
+        <inlineHelpText>Gross or Net Margin % Performance compared to DTW baseline</inlineHelpText>
         <label>EAC Margin % Performance</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -4810,8 +4802,8 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
         <externalId>false</externalId>
         <formula>BaselineGrossMargin__c * (1 + EstimatedGMGrowthPercentage__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Gross or Net Margin dollar amount @ growth %</inlineHelpText>
-        <label>Estimated Margin $ @ Growth %</label>
+        <inlineHelpText>Total Gross or Net margin amount @ growth % indicated above</inlineHelpText>
+        <label>Sample Margin $ @ Growth %</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -4823,8 +4815,8 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
         <fullName>EstimatedGMGrowthPercentage__c</fullName>
         <defaultValue>0.10</defaultValue>
         <externalId>false</externalId>
-        <inlineHelpText>GM or NM. To estimate an incentive pool for the T&amp;M plan,an increase in Margin must be projected.  Default set to 10% estimated growth. You may update this figure based on real-world expectations to see changes reflected in the estimated incentive pool.</inlineHelpText>
-        <label>Estimated Margin Growth %</label>
+        <inlineHelpText>GM or NM. To estimate an incentive pool for the T&amp;M plan, an increase in Margin must be projected. Default set to 10% estimated growth. Adjust this figure and click save to see changes reflected in the estimated incentive pool.</inlineHelpText>
+        <label>Sample Margin Growth %</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -4836,8 +4828,7 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
         <fullName>EstimatedIncPoolEAC__c</fullName>
         <description>Field populated by a trigger on update of Application or Project record.  Used in the EstimatedIncentivePoolEAC__c field in place of a calculation.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Field populated by a trigger on update of Application or Project record.  Used in the EstimatedIncentivePoolEAC__c field in place of a calculation.</inlineHelpText>
-        <label>EstimatedIncPoolEAC</label>
+        <label>SampleIncPoolEAC</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -4849,8 +4840,7 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
         <fullName>EstimatedIncPoolITD__c</fullName>
         <description>Field populated by a WFR on create of Application.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Field populated by a WFR on create of Application.</inlineHelpText>
-        <label>EstimatedIncPoolITD</label>
+        <label>SampleIncPoolITD</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -4860,12 +4850,12 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
     </fields>
     <fields>
         <fullName>EstimatedIncentivePoolEAC__c</fullName>
-        <description>If Estimated Incentive pool  EAC&gt; Max Pool, Estimated = Max</description>
+        <description>For Fixed Price plan: EAC NSR x (EAC Margin % - Baseline Margin %) x Profit Share % x (1 - % Complete @ Enrollment Adjusted for Change Orders).  For T&amp;M GM plan: (EAC Margin – Baseline Margin) x 5%.  For T&amp;M NM plan: (EAC Margin – Baseline Margin) x 20%.</description>
         <externalId>false</externalId>
         <formula>IF(MAX(EstimatedIncPoolEAC__c,0)&gt;  MaxIncentivePool__c, MaxIncentivePool__c,MAX(EstimatedIncPoolEAC__c,0))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>EAC NSR x (EAC Gross Margin % - Baseline Gross Margin %) x Profit Share % x (1 - % Complete @ Enrollment Adjusted for Change Orders)</inlineHelpText>
-        <label>Estimated Incentive Pool EAC</label>
+        <inlineHelpText>For Fixed Price plan: EAC NSR x (EAC Margin % - Baseline Margin %) x Profit Share % x (1 - % Complete @ Enrollment Adjusted for Change Orders).  For T&amp;M GM plan: (EAC Margin – Baseline Margin) x 5%.  For T&amp;M NM plan: (EAC Margin – Baseline Margin) x 20%.</inlineHelpText>
+        <label>Sample Incentive Pool EAC</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -4880,7 +4870,7 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
         <formula>EstimatedIncPoolITD__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>ITD NSR (Final ITD Gross Margin % - Baseline Gross Margin %) x Profit Share % x (1 - % Complete @ Enrollment Adjusted for Change Orders)</inlineHelpText>
-        <label>Estimated Incentive Pool ITD</label>
+        <label>Sample Incentive Pool ITD</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -4897,7 +4887,7 @@ MAX(0,(0.03*BaselineNSR__c*(1-PercentCompleteCostITD__c)))
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>If the current EAC GM % NSR is greater than the threshold, an Estimated Incentive Pool is displayed.  This is a point-in-time estimate based on the PM&apos;s EAC.  Management Adjustments wil impact the possible incentive pool for the project.  Future changes t</inlineHelpText>
-        <label>Estimated Incentive Pool</label>
+        <label>Sample Incentive Pool</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -4912,7 +4902,7 @@ MAX(0,(0.03*BaselineNSR__c*(1-PercentCompleteCostITD__c)))
  IF( (BaselineGrossMargin__c * 0.10) * (IncentivePlan__r.ProfitSharingPercent__c) &gt; IncentivePlan__r.MaxPoolCap__c, IncentivePlan__r.MaxPoolCap__c,
 (BaselineGrossMargin__c * 0.10) * (IncentivePlan__r.ProfitSharingPercent__c)),0)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Estimated Pool @ Baseline + 10%</label>
+        <label>Sample Pool @ Baseline + 10%</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -5142,9 +5132,9 @@ amount of the reduction to the incentive pool.</inlineHelpText>
     </fields>
     <fields>
         <fullName>ForecastDPEBudgetatSnapshot__c</fullName>
-        <description>Represents the DPE Estimate at Completion (EAC) of the project when the form was created.</description>
+        <description>Represents the DPE Estimate at Completion (EAC) of the project when the form was created or approved.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Represents the DPE Estimate at Completion (EAC) of the project when the form was created.</inlineHelpText>
+        <inlineHelpText>Represents the DPE Estimate at Completion (EAC) of the project when the form was created or approved.</inlineHelpText>
         <label>Forecast DPE at Form Snapshot</label>
         <precision>18</precision>
         <required>false</required>
@@ -5258,9 +5248,9 @@ amount of the reduction to the incentive pool.</inlineHelpText>
     </fields>
     <fields>
         <fullName>ForecastGMBudgetatSnapshot__c</fullName>
-        <description>Represents the Gross Margin Estimate at Completion (EAC)  of the project when the form was created.</description>
+        <description>Represents the Gross Margin Estimate at Completion (EAC)  of the project when the form was created or approved.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Represents the Gross Margin Estimate at Completion (EAC)  of the project when the form was created.</inlineHelpText>
+        <inlineHelpText>Represents the Gross Margin Estimate at Completion (EAC)  of the project when the form was created or approved.</inlineHelpText>
         <label>Forecast GM at Snapshot</label>
         <precision>18</precision>
         <required>false</required>
@@ -5313,7 +5303,7 @@ amount of the reduction to the incentive pool.</inlineHelpText>
         <externalId>false</externalId>
         <formula>IncentiveProject__r.ForecastGrossMarginofNSR__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Indicates the Estimate at Completion (EAC) Gross Margin % of NSR for the project.  The EAC should be compared to the budget and ITD performance for the purposes of setting a DTW baseline.  Click for further details about the EAC of the project (goes to vi</inlineHelpText>
+        <inlineHelpText>Indicates the Estimate at Completion (EAC) Gross Margin % of NSR for the project. The EAC should be compared to the budget and ITD performance for the purposes of setting a DTW baseline. Click for further details about the EAC of the project.</inlineHelpText>
         <label>Forecast GM% of NSR</label>
         <precision>18</precision>
         <required>false</required>
@@ -5424,9 +5414,9 @@ amount of the reduction to the incentive pool.</inlineHelpText>
     </fields>
     <fields>
         <fullName>ForecastNSRBudgetatSnapshot__c</fullName>
-        <description>Represents the NSR Estimate at Completion (EAC) of the project when the form was created.</description>
+        <description>Represents the NSR Estimate at Completion (EAC) of the project when the form was created or approved.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Represents the NSR Estimate at Completion (EAC) of the project when the form was created.</inlineHelpText>
+        <inlineHelpText>Represents the NSR Estimate at Completion (EAC) of the project when the form was created or approved.</inlineHelpText>
         <label>Forecast NSR Budget at Snapshot</label>
         <precision>18</precision>
         <required>false</required>
@@ -5688,6 +5678,7 @@ amount of the reduction to the incentive pool.</inlineHelpText>
         <externalId>false</externalId>
         <formula>TODAY() - FormStatusDate__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Number of days the form has been in the current status</inlineHelpText>
         <label>Form Status Age</label>
         <precision>18</precision>
         <required>false</required>
@@ -5740,10 +5731,8 @@ IMAGE(&quot;/resource/1429552689000/ExclamationMark&quot;,&quot;Alert&quot;,20,2
     </fields>
     <fields>
         <fullName>GM_Change__c</fullName>
-        <description>For testing purposes only</description>
         <externalId>false</externalId>
         <formula>(ABS((BaselineGrossMarginCaptured__c -  BaselineGrossMargin__c) / BaselineGrossMargin__c))</formula>
-        <inlineHelpText>For testing purposes only</inlineHelpText>
         <label>GM Change</label>
         <precision>18</precision>
         <required>false</required>
@@ -5755,7 +5744,7 @@ IMAGE(&quot;/resource/1429552689000/ExclamationMark&quot;,&quot;Alert&quot;,20,2
     <fields>
         <fullName>GMofNSRAdjustment__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Gross or Net Margin of NSR Adjustment</inlineHelpText>
+        <inlineHelpText>Gross or Net Margin % of NSR Adjustment</inlineHelpText>
         <label>Margin % of NSR Adjustment</label>
         <precision>18</precision>
         <required>false</required>
@@ -5781,7 +5770,7 @@ IMAGE(&quot;/resource/1429552689000/ExclamationMark&quot;,&quot;Alert&quot;,20,2
         <externalId>false</externalId>
         <formula>IncentiveProject__r.ApprovedGrossMarginBudget__c / IncentiveProject__r.ApprovedNSRBudget__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Gross or Net Margin of NSR</inlineHelpText>
+        <inlineHelpText>Gross or Net Margin % of NSR</inlineHelpText>
         <label>Margin % of NSR</label>
         <precision>18</precision>
         <required>false</required>
@@ -5823,7 +5812,7 @@ The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An i
         <externalId>false</externalId>
         <formula>NSRAdjustment__c - DPEAdjustment__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Displays any adjustment input by an approver during the course of the approval process.  An adjustment should be considered if the current approved budget does not reflect the expected performance of the project.  Click for further details about managemen</inlineHelpText>
+        <inlineHelpText>Displays any adjustment input by an approver during the course of the approval process. An adjustment should be considered if the current approved budget does not reflect the expected performance of the project. Click for further details.</inlineHelpText>
         <label>Net/Gross Margin Adjustment</label>
         <precision>18</precision>
         <required>false</required>
@@ -5926,7 +5915,7 @@ The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An i
     <fields>
         <fullName>IPFreqofPayment__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Are you requesting interim payments on an Annual basis or Milestone basis?</inlineHelpText>
+        <inlineHelpText>Indicate whether request is for interim payments on an Annual basis or Milestone basis</inlineHelpText>
         <label>Frequency of Interim Payments</label>
         <picklist>
             <picklistValues>
@@ -5946,6 +5935,7 @@ The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An i
     <fields>
         <fullName>IPNumberofPayments__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Enter expected number of Annual or Milestone payments</inlineHelpText>
         <label>Total Number of Payments</label>
         <precision>18</precision>
         <required>false</required>
@@ -5972,7 +5962,7 @@ The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An i
     <fields>
         <fullName>IPYearsRemaining__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Estimated number of years remaining on project?</inlineHelpText>
+        <inlineHelpText>Enter estimated number of years remaining on project</inlineHelpText>
         <label>Scheduled Years Remaining @ Enrollment</label>
         <precision>18</precision>
         <required>false</required>
@@ -5996,9 +5986,9 @@ The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An i
     </fields>
     <fields>
         <fullName>ITDCostCompleteatSnapshot__c</fullName>
-        <description>Represents the ITD Cost % Complete of the project when the form was created, and is calculated as ITD costs divided by EAC costs.</description>
+        <description>Represents the ITD Cost % Complete of the project when the form was created or approved, and is calculated as ITD costs divided by EAC costs.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Represents the ITD Cost % Complete of the project when the form was created, updated at enrollment. Calculated as ITD costs divided by EAC costs.</inlineHelpText>
+        <inlineHelpText>Represents the ITD Cost % Complete of the project when the form was created or approved, updated at enrollment. Calculated as ITD costs divided by EAC costs.</inlineHelpText>
         <label>ITD Cost % Complete at Snapshot</label>
         <precision>5</precision>
         <required>false</required>
@@ -6012,6 +6002,7 @@ The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An i
         <externalId>false</externalId>
         <formula>IncentiveProject__r.ITDDSO__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Indicates Inception to Date Days Sales Outstanding from the time the project set up in Oracle.  May not be available for projects in other local systems.</inlineHelpText>
         <label>ITD DSO</label>
         <precision>18</precision>
         <required>false</required>
@@ -6039,7 +6030,6 @@ The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An i
         <externalId>false</externalId>
         <formula>IncentivePlan__r.VarianceAlert__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Related Incentive Plan Variance Alert for Baseline Changes</inlineHelpText>
         <label>Incentive Plan Variance Alert</label>
         <precision>18</precision>
         <required>false</required>
@@ -6356,7 +6346,7 @@ The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An i
     <fields>
         <fullName>MA_Comments__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Edit field for entering MA comments.  Text will be archived in the Enrollment Comments section and this field will be cleared.</inlineHelpText>
+        <inlineHelpText>Edit field for entering Management Adjustment comments. Text will be archived in the Enrollment Comments section and this field will be cleared.</inlineHelpText>
         <label>MA Comments</label>
         <length>32768</length>
         <trackHistory>true</trackHistory>
@@ -6366,7 +6356,7 @@ The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An i
     </fields>
     <fields>
         <fullName>MaxIncentivePool__c</fullName>
-        <description>Based on the current EAC NSR, this is the maximum possible payout for the project.  The maximum payout would be earned if the project achieved GM % NSR of baseline + 6%</description>
+        <description>For Fixed Price plan: 3% of final NSR, prorated based on % complete at enrollment.  For T&amp;M plan: lesser of 2% of EAC NSR, or $200,000 USD</description>
         <externalId>false</externalId>
         <formula>MAX(
 CASE(IncentivePlan__r.ContractType__c ,
@@ -6378,7 +6368,7 @@ CASE(IncentivePlan__r.ContractType__c ,
 ,0
 ),0)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Max Incent Pool @ EAC is  the lesser of 2% of EAC NSR, or $200,000 USD</inlineHelpText>
+        <inlineHelpText>For Fixed Price plan: 3% of final NSR, prorated based on % complete at enrollment.  For T&amp;M plan: lesser of 2% of EAC NSR, or $200,000 USD</inlineHelpText>
         <label>Maximum Incentive Pool @ EAC</label>
         <precision>18</precision>
         <required>false</required>
@@ -6459,7 +6449,6 @@ CASE(IncentivePlan__r.ContractType__c ,
         <fullName>MinPartAllocation__c</fullName>
         <description>System field used for alerts</description>
         <externalId>false</externalId>
-        <inlineHelpText>System field used for alerts</inlineHelpText>
         <label>MinPartAllocation</label>
         <summarizedField>EnrollmentParticipant__c.TargetIncentivePoolAllocated__c</summarizedField>
         <summaryForeignKey>EnrollmentParticipant__c.EnrollmentPlan__c</summaryForeignKey>
@@ -6473,7 +6462,7 @@ CASE(IncentivePlan__r.ContractType__c ,
         <externalId>false</externalId>
         <formula>IncentivePlan__r.MinAllocationAmount__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Minimum Participant $ Allocation Allowable</inlineHelpText>
+        <inlineHelpText>Minimum Amount of Participant Award at Sample Pool</inlineHelpText>
         <label>Min Participant Payout $</label>
         <precision>18</precision>
         <required>false</required>
@@ -6497,9 +6486,9 @@ CASE(IncentivePlan__r.ContractType__c ,
     </fields>
     <fields>
         <fullName>NSRAdjustment__c</fullName>
-        <description>Displays any adjustment input by an approver during the course of the approval process.  An adjustment should be considered if the current approved budget does not reflect the expected performance of the project.  Click for further details about management adjustments.  The NSR Adjustment is added to the NSR Budget to set the DTW Baseline NSR.  An increase to the Budgeted NSR should be input as a positive number.  A decrease to the Budgeted NSR should be input as a negative number.</description>
+        <description>Displays any adjustment input by an approver during the course of the approval process. An adjustment should be considered if the current approved budget does not reflect the expected performance of the project. Click for further details.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Displays any adjustment input by an approver during the course of the approval process.  An adjustment should be considered if the current approved budget does not reflect the expected performance of the project.  Click for further details about managemen</inlineHelpText>
+        <inlineHelpText>Displays any adjustment input by an approver during the course of the approval process. An adjustment should be considered if the current approved budget does not reflect the expected performance of the project. Click for further details.</inlineHelpText>
         <label>NSR Adjustment</label>
         <precision>18</precision>
         <required>false</required>
@@ -6554,7 +6543,7 @@ CASE(IncentivePlan__r.ContractType__c ,
         <fullName>ParentApplication__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
-        <inlineHelpText>Link to Enrolled Application this record is a Change Request for.</inlineHelpText>
+        <inlineHelpText>Link to Enrolled Application related to this Change request</inlineHelpText>
         <label>Parent Application</label>
         <referenceTo>EnrollmentPlan__c</referenceTo>
         <relationshipLabel>Change Request Applications</relationshipLabel>
@@ -6568,7 +6557,6 @@ CASE(IncentivePlan__r.ContractType__c ,
         <fullName>ParticipantNoPayAmount__c</fullName>
         <description>Roll-up field needed for the Application Exceptions (PAY)</description>
         <externalId>false</externalId>
-        <inlineHelpText>Roll-up field needed for the Application Exceptions (PAY)</inlineHelpText>
         <label>ParticipantNoPayAmount</label>
         <summaryFilterItems>
             <field>EnrollmentParticipant__c.TargetIncentivePoolAllocated__c</field>
@@ -6690,7 +6678,7 @@ CASE(IncentivePlan__r.ContractType__c ,
     </fields>
     <fields>
         <fullName>PlaceHolder1__c</fullName>
-        <description>Add neg check and NM check and TM check</description>
+        <description>Total incremental margin above the DTW baseline</description>
         <externalId>false</externalId>
         <formula>MAX(IF(
           ISPICKVAL(
@@ -6728,6 +6716,7 @@ CASE(
     )    
 ,0)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Total incremental margin above the DTW baseline</inlineHelpText>
         <label>Incremental Margin $ vs Baseline</label>
         <precision>18</precision>
         <required>false</required>
@@ -6766,6 +6755,7 @@ BaselineMarginofNSRatSnapshot__c)
         <externalId>false</externalId>
         <formula>TEXT(IncentivePlan__r.ContractType__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>Reflects proposed incentive plan.  To change plan type click &quot;Choose Incentive Plan&quot; above.</inlineHelpText>
         <label>Requested Incentive Plan</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -6970,7 +6960,6 @@ BEGINS(IncentiveProject__r.SuperGeography__c,&quot;APAC&quot;), &quot;APACDTWInc
    &quot;&quot;
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Stop.  Prompt hazard icon if user triggers workflow progression and a numeric value ≠0 is not present</inlineHelpText>
         <label>Score Safety for Life Metrics Alert</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -7045,7 +7034,7 @@ IF
         <fullName>Submittal_Template_Text__c</fullName>
         <description>Field for use in Approval Submittal Template</description>
         <externalId>false</externalId>
-        <formula>if(not(contains(Text(EnrollmentStatus__c),&quot;Rejected&quot;)),&quot;Submitted For Your Approval&quot;,
+        <formula>if(not(contains(Text(EnrollmentStatus__c),&quot;Reject&quot;)),&quot;Submitted For Your Approval&quot;,
 
 &quot;RETURNED FOR CORRECTION OR REJECTED&quot;)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -7137,7 +7126,7 @@ IF
         <externalId>false</externalId>
         <formula>(BaselineGMofNSR__c + IF(IncentivePlan__r.ThresholdPercent__c &gt; 0, IncentivePlan__r.ThresholdPercent__c, 0 ))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Gross Margin or Net Margin. Baseline Margin % plus x%, with x determined by the Incentive Plan Selected</inlineHelpText>
+        <inlineHelpText>The margin % that must be achieved for a project enrolled in the Fixed Price plan to earn an incentive pool.</inlineHelpText>
         <label>Threshold Margin %</label>
         <precision>18</precision>
         <required>false</required>
@@ -7298,19 +7287,6 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
-    </fields>
-    <fields>
-        <fullName>VFPageURL__c</fullName>
-        <externalId>false</externalId>
-        <formula>&quot;https://aecom--ecosysdev.cs15.my.salesforce.com/apex/INC_EnrollmentApp?id=&quot;&amp;Id</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Takes you to the VF Page for this Enrollment Application.  For testing purposes only.</inlineHelpText>
-        <label>VF Page URL</label>
-        <required>false</required>
-        <trackHistory>false</trackHistory>
-        <trackTrending>false</trackTrending>
-        <type>Text</type>
-        <unique>false</unique>
     </fields>
     <fields>
         <fullName>WizardStatus__c</fullName>
@@ -7593,6 +7569,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <columns>FinalITDDSO__c</columns>
         <columns>FinalIncentivePoolAdjusted__c</columns>
         <columns>FinalScoreonSafetyForLife__c</columns>
+        <columns>IncentivePlanContractType__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>ApplicationType__c</field>
@@ -7611,14 +7588,14 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <columns>AdjustedComplete__c</columns>
         <columns>AppIicationIssues__c</columns>
         <columns>Application_Exceptions__c</columns>
+        <columns>ApplicationExceptionsFP__c</columns>
+        <columns>ApplicationExceptionsPAY__c</columns>
+        <columns>ApplicationExceptionsTM__c</columns>
         <columns>ApplicationType__c</columns>
         <columns>AgeDays__c</columns>
-        <columns>FormStatusAge__c</columns>
         <columns>IncentivePlan__c</columns>
-        <columns>Region__c</columns>
         <columns>ProjectGeography__c</columns>
         <columns>IPProjectManager__c</columns>
-        <columns>ContractType__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>EnrollmentStatus__c</field>
@@ -7626,30 +7603,6 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
             <value>pending</value>
         </filters>
         <label>Pending Applications KS</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
-        <fullName>RLK</fullName>
-        <columns>DTWAdmin__c</columns>
-        <columns>IPDTWAdmin__c</columns>
-        <columns>App_1_Processed__c</columns>
-        <columns>App_2_Processed__c</columns>
-        <columns>App_3_Processed__c</columns>
-        <columns>WorkflowOwner__c</columns>
-        <columns>NAME</columns>
-        <columns>ContractType__c</columns>
-        <columns>EnrollmentStatus__c</columns>
-        <columns>ApplicationType__c</columns>
-        <columns>PlanType__c</columns>
-        <columns>SubmitStatus__c</columns>
-        <columns>NumberofParticipants__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>NAME</field>
-            <operation>contains</operation>
-            <value>Kona-Landfill</value>
-        </filters>
-        <label>RLK</label>
         <language>en_US</language>
     </listViews>
     <nameField>

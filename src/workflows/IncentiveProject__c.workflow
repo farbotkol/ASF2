@@ -144,6 +144,7 @@
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
     </fieldUpdates>
     <rules>
         <fullName>11Notify Approver 1 of project closure and payment form to complete</fullName>
@@ -152,16 +153,15 @@
             <type>Alert</type>
         </actions>
         <active>true</active>
-        <description>11Notify Approver 1 of project closure and payment form to complete</description>
+        <description>11Notify Approver 1 of project closure and payment form to complete
+AND(
+,</description>
         <formula>AND(
-    NOT(ISBLANK(EnrollmentApprover1__c )),
-    ISPICKVAL( EnrollmentPlan__r.EnrollmentStatus__c, &quot;Enrolled&quot;), 
-    OR 
-      (
-       ProjectStatus__c=&quot;CLOSED - Closed&quot;,
-       ProjectStatus__c=&quot;PENDING CLOSE - Closed in Current Year&quot;
-       )
-    )</formula>
+  TEXT(IsClosed__c) = &quot;Yes&quot;,
+  EnrollmentStatus__c = &quot;Enrolled&quot;,
+  EnrollmentPlan__r.EstimatedIncPoolITD__c &gt;0,
+  PaymentRequest__c = &quot;&quot;
+  )</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
@@ -360,9 +360,11 @@ ISPICKVAL(PRIORVALUE(TMPlanOverallEligibility__c),&apos;No&apos;)
         </actions>
         <active>true</active>
         <description>Sets the Is Closed to &quot;Yes&quot; when the the Incentive Project Status changes from Insight</description>
-        <formula>OR (
-    BEGINS(ProjectStatus__c,&quot;CLOSED&quot;),
-    ProjectStatus__c =  &quot;PENDING CLOSE - Closed in Current Year&quot;
+        <formula>AND(TEXT(IsClosed__c) &lt;&gt; &quot;Yes&quot;,
+OR(
+   CONTAINS(ProjectStatus__c,&quot;CLOSE&quot;),
+   CONTAINS(ProjectStatus__c,&quot;Close&quot;),
+   CONTAINS(ProjectStatus__c,&quot;close&quot;))
    )</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
