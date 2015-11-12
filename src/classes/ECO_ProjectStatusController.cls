@@ -330,6 +330,8 @@ public with sharing class ECO_ProjectStatusController {
                     return retStatus;*/
                 if(retStatus == 'Submitted')
                     return 'Started';
+                else if(retStatus == 'Complete')
+                    return 'Complete';
                 else
                     return 'NotStarted';
             }
