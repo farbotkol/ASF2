@@ -116,25 +116,27 @@ public without sharing class ECO_CostDistributionLineTriggers {
 	public static void calculateFiscalMonths(list<CostDistLine__c> costDistLines)
 	{
 		// Time period
-		List<pse__Time_Period__c> timePeriods = [select Id, pse__Start_Date__c, pse__End_Date__c, TimePeriodCode__c 
-													from pse__Time_Period__c 
-													where pse__Type__c = 'Month'
-													order by pse__End_Date__c asc];
+		List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
+		
+		pse__Time_Period__c fm = null;
 		for (CostDistLine__c cdl : costDistLines){
 												
 			for (Integer i = 0; i < timePeriods.size(); i++){
+				
 				if (cdl.GLDate__c != null){	
-					if (cdl.GLDate__c <= timePeriods[i].pse__End_Date__c  &&
-						cdl.GLDate__c >= timePeriods[i].pse__Start_Date__c){
-						cdl.GLFiscalMonth__c = timePeriods[i].TimePeriodCode__c;
+					fm = ECO_Utils_Date.getFiscalPeriod(cdl.GLDate__c, 0, timePeriods);  
+					if (fm != null){
+						cdl.GLFiscalMonth__c = fm.TimePeriodCode__c;
 					}
+					
 				}
 				
 				if (cdl.PADate__c != null){	
-					if (cdl.PADate__c <= timePeriods[i].pse__End_Date__c  &&
-						cdl.PADate__c >= timePeriods[i].pse__Start_Date__c){
-						cdl.PAFiscalMonth__c = timePeriods[i].TimePeriodCode__c;
+					fm = ECO_Utils_Date.getFiscalPeriod(cdl.PADate__c, 0, timePeriods);  
+					if (fm != null){
+						cdl.PAFiscalMonth__c = fm.TimePeriodCode__c;
 					}
+					
 				}
 			}
 			

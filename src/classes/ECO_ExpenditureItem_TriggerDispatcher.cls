@@ -75,21 +75,19 @@ public with sharing class ECO_ExpenditureItem_TriggerDispatcher
 	private static void calculateFiscalMonths(list<ExpendItem__c> expendItems)
 	{
 		// Time period
-		List<pse__Time_Period__c> timePeriods = [select Id, pse__Start_Date__c, pse__End_Date__c, TimePeriodCode__c 
-													from pse__Time_Period__c 
-													where pse__Type__c = 'Month'
-													order by pse__End_Date__c asc];
+		List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
+		
+		pse__Time_Period__c fm = null;
 		for (ExpendItem__c ei : expendItems){
-			if (ei.ExpenditureItemDate__c != null){										
-				for (Integer i = 0; i < timePeriods.size(); i++){
-					if (ei.ExpenditureItemDate__c <= timePeriods[i].pse__End_Date__c  &&
-						ei.ExpenditureItemDate__c >= timePeriods[i].pse__Start_Date__c){
-						ei.ExpenditureDateFiscalMonth__c = timePeriods[i].TimePeriodCode__c;
-						if (i > 0){
-							ei.ExpenditureDatePreviousFiscalMonth__c = timePeriods[i-1].TimePeriodCode__c;
-						}
-					}
-				}
+			if (ei.ExpenditureItemDate__c != null){	
+				fm = ECO_Utils_Date.getFiscalPeriod(ei.ExpenditureItemDate__c, 0, timePeriods);  
+				if (fm != null){
+					ei.ExpenditureDateFiscalMonth__c = fm.TimePeriodCode__c;
+				}	
+				fm = ECO_Utils_Date.getFiscalPeriod(ei.ExpenditureItemDate__c, 1, timePeriods);  
+				if (fm != null){
+					ei.ExpenditureDatePreviousFiscalMonth__c = fm.TimePeriodCode__c;
+				}								
 			}
 		}
 	}

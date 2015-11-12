@@ -76,6 +76,18 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>Delegate_Swapped__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Delegate Swapped</label>
+        <referenceTo>Contact</referenceTo>
+        <relationshipLabel>Delegations</relationshipLabel>
+        <relationshipName>Delegations</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>Delegate__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
         <description>Related Delegate to which record is submitted for approval</description>
@@ -92,7 +104,16 @@
         <fullName>Delegation_Reason__c</fullName>
         <externalId>false</externalId>
         <label>Delegation Reason</label>
-        <length>255</length>
+        <length>131072</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>5</visibleLines>
+    </fields>
+    <fields>
+        <fullName>DelegatorID__c</fullName>
+        <externalId>false</externalId>
+        <formula>Delegate__r.Delegator__r.pse__Salesforce_User__c</formula>
+        <label>Delegator User ID</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -129,6 +150,18 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Project__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <externalId>false</externalId>
+        <label>Project</label>
+        <referenceTo>pse__Proj__c</referenceTo>
+        <relationshipLabel>Delegations</relationshipLabel>
+        <relationshipName>Delegations</relationshipName>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
     </fields>
     <fields>
         <fullName>RecordLink__c</fullName>

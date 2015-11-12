@@ -12,8 +12,8 @@ public with sharing class ECO_ProjectTaskTriggers {
 
 		List<WeeklyRollupEntry__c> toUpsert = new List<WeeklyRollupEntry__c>();
 		
-		List<pse__Time_Period__c> timePeriods = [select id, TimePeriodCode__c, pse__Start_Date__c, pse__End_Date__c from pse__Time_Period__c where pse__Type__c = 'Month' order by pse__Start_Date__c];
-
+		List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
+		
 		for (pse__Proj__c project : projects) {
 			Date newStartDate = null;
 			Date newEndDate = null;
@@ -70,11 +70,12 @@ public with sharing class ECO_ProjectTaskTriggers {
 						PeriodStartDate__c = ECO_Service_Snapshots.getFirstDateOfWeek(currentDate));
 					
 					// time period
-					for (pse__Time_Period__c tp : timePeriods){
-						if (rollup.PeriodStartDate__c >= tp.pse__Start_Date__c  && rollup.PeriodStartDate__c <= tp.pse__End_Date__c ){	
-							rollup.FiscalMonth__c = tp.TimePeriodCode__c;
+					if (rollup.PeriodStartDate__c != null){	
+						pse__Time_Period__c fm = ECO_Utils_Date.getFiscalPeriod(rollup.PeriodStartDate__c, 0, timePeriods);  
+						if (fm != null){
+							rollup.FiscalMonth__c = fm.TimePeriodCode__c;
 						}
-					}
+					}	
 
 					toUpsert.add(rollup);
 
@@ -561,10 +562,8 @@ public with sharing class ECO_ProjectTaskTriggers {
 	public static void calculateFiscalMonths(list<pse__Project_Task__c> projectTasks)
 	{
 		// Time period
-		List<pse__Time_Period__c> timePeriods = [select Id, pse__Start_Date__c, pse__End_Date__c, TimePeriodCode__c 
-													from pse__Time_Period__c 
-													where pse__Type__c = 'Month'
-													order by pse__End_Date__c asc];
+		List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
+		
 		for (pse__Project_Task__c pt : projectTasks){	
 			if (pt.pse__End_Date__c != null){									
 				for (Integer i = 0; i < timePeriods.size(); i++){
