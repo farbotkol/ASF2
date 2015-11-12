@@ -110,4 +110,20 @@ public without sharing class ECO_Utils_Date {
 		System.debug('All start of week dates: ' + listOfStartOfWeekDatesBetweenDates);
 		return listOfStartOfWeekDatesBetweenDates;
 	}
+	
+	
+	public static pse__Time_Period__c getFiscalPeriod(Date dateUsed, Integer periodsBack, List<pse__Time_Period__c> timePeriods) {
+		
+		for (Integer i = 0; i < timePeriods.size(); i++){
+            	if (dateUsed <= timePeriods[i].pse__End_Date__c  &&
+                    dateUsed >= timePeriods[i].pse__Start_Date__c){ 
+                    if (i > 0 && (i-periodsBack >= 0)){
+                        return timePeriods[i-periodsBack];
+                    } 
+                } 
+         }
+         
+         return null;
+		
+	}
 }

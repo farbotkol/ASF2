@@ -20,9 +20,14 @@ public class ECO_Service_ProjectTask{
 
 		try {
 			
+			List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
+			
 			Map<String,AggregateResult> originalBudget = getOriginalBudgetInformation();
 			Map<String,AggregateResult> currentBudget = getCurrentBudgetInformation();
-			Map<String,AggregateResult> forecastBudget = getForecastBudgetInformation();
+			Map<String,AggregateResult> forecastBudget = getForecastBudgetInformation(timePeriods);
+			
+			Date threeMonthsAgoFiscalEndDate = getMonthEndDate3FiscalMonthsAgo(timePeriods);
+			Map<String,AggregateResult> ITD3Months = getITD3Months(threeMonthsAgoFiscalEndDate);
 			
 			tasks = [select Id,
 							RevenueBudgetOriginal__c,  // ok
@@ -33,13 +38,13 @@ public class ECO_Service_ProjectTask{
 							TotalForecastCostPrevME__c,			//Select TotalForecastCost__c from BudgetTask where BudgetHeader.Status=forecast and BudgetHeader.date is in previous fiscal month or earlier
 							EarnedValue__c,						// ???
 							CPI__c,								// ???
-							CostITD1FiscalMonthEndAgo__c,
-							CostITD2FiscalMonthEndsAgo__c,
+							MonthEndDate3FiscalMonthsAgo__c,
 							CostITD3FiscalMonthEndsAgo__c,
 							EndDateFiscalMonth__c,
 							EndDatePreviousFiscalMonth__c
 						from pse__Project_Task__c 
 						where Id = : projectTaskIds];
+						
 			List<String> months = new List<String>();
 			for (pse__Project_Task__c pt : tasks){
 				if (!String.isBlank(pt.EndDateFiscalMonth__c)){
@@ -61,9 +66,8 @@ public class ECO_Service_ProjectTask{
 				pt.TotalForecastCostPrevME__c = (Decimal) forecastBudget.get(pt.Id).get('totalCost');
 				pt.EarnedValue__c = null;
 				pt.CPI__c = null;
-				pt.CostITD1FiscalMonthEndAgo__c = null;
-				pt.CostITD2FiscalMonthEndsAgo__c = null;
-				pt.CostITD3FiscalMonthEndsAgo__c = null;
+				pt.MonthEndDate3FiscalMonthsAgo__c = threeMonthsAgoFiscalEndDate;
+				pt.CostITD3FiscalMonthEndsAgo__c =  (Decimal) ITD3Months.get(pt.Id).get('totalCost');
 				
 			} 
 			
@@ -90,8 +94,7 @@ public class ECO_Service_ProjectTask{
            	}
            	return out;
            
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             System.Debug(e.getStackTraceString());
         }   
         return null;
@@ -112,8 +115,7 @@ public class ECO_Service_ProjectTask{
            	}
            	return out;
            
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             System.Debug(e.getStackTraceString());
         }   
         return null;
@@ -137,8 +139,7 @@ public class ECO_Service_ProjectTask{
            	}
            	return out;
            
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             System.Debug(e.getStackTraceString());
         }   
         return null;
@@ -182,39 +183,29 @@ public class ECO_Service_ProjectTask{
            	}
            	return out;
            
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
             System.Debug(e.getStackTraceString());
         }   
         return null;
     }
     
-     private Map<String, AggregateResult> getForecastBudgetInformation() {
+    private Map<String, AggregateResult> getForecastBudgetInformation(List<pse__Time_Period__c> timePeriods) {
 	
         try {
-			List<pse__Time_Period__c> timePeriods = [select Id, pse__Start_Date__c, pse__End_Date__c, TimePeriodCode__c 
-                                                        from pse__Time_Period__c 
-                                                        where pse__Type__c = 'Month'
-                                                        order by pse__End_Date__c asc];
             Date now = Date.Today();
-            Date previousFMEndDate = null;                                         
-                                                 
-            for (Integer i = 0; i < timePeriods.size(); i++){
-            	if (now <= timePeriods[i].pse__End_Date__c  &&
-                    now >= timePeriods[i].pse__Start_Date__c){
-                    if (i > 0){
-                        previousFMEndDate = timePeriods[i-1].pse__End_Date__c;
-                    } 
-                } 
+            Date previousFMEndDate = null;
+            
+            pse__Time_Period__c previousFM = ECO_Utils_Date.getFiscalPeriod(now, 1, timePeriods); 
+            if (previousFM != null){
+            	previousFMEndDate = previousFM.pse__End_Date__c;  
             }
-                                               
-             
+                                                    
 			List<AggregateResult> results = [SELECT 	ProjectTask__c, 
 											        	SUM(TotalForecastCost__c)totalCost 
 											   			FROM BudgetTask__c 
 											            WHERE ProjectTask__c IN :projectTaskIds
 											            AND BudgetHeader__r.Status__c = 'Forecast'
-											            //AND BudgetHeader__r.StatusOfDate <=: previousFMEndDate
+											           	AND BudgetHeader__r.StatusAsOfDate__c <=: previousFMEndDate
 											            GROUP BY ProjectTask__c]; 
            
            	Map<String, AggregateResult> out = new Map<String, AggregateResult>();
@@ -223,8 +214,49 @@ public class ECO_Service_ProjectTask{
            	}
            	return out;
            
-        }
-        catch(Exception e) {
+        } catch(Exception e) {
+            System.Debug(e.getStackTraceString());
+        }   
+        return null;
+    }
+    
+    private Date getMonthEndDate3FiscalMonthsAgo(List<pse__Time_Period__c> timePeriods) {
+	
+        try {
+            Date now = Date.Today();
+            Date returnDate = null;
+            
+            pse__Time_Period__c threeMonthsAgoFM = ECO_Utils_Date.getFiscalPeriod(now, 3, timePeriods); 
+            if (threeMonthsAgoFM != null){
+            	returnDate = threeMonthsAgoFM.pse__End_Date__c;
+            }
+            
+            return returnDate;
+	   } catch(Exception e) {
+            System.Debug(e.getStackTraceString());
+       }   
+       return null;
+	}
+	
+	 
+     private Map<String, AggregateResult> getITD3Months(Date threeMonthsAgoFiscalEndDate) {
+	
+        try {
+                                                    
+			List<AggregateResult> results = [SELECT 	ProjectTask__c, 
+											        	SUM(ProjectFunctionalBurdenedCost__c)totalCost 
+											   			FROM ExpendItem__c 
+											            WHERE ProjectTask__c IN :projectTaskIds
+											            AND ExpenditureItemDate__c <= : threeMonthsAgoFiscalEndDate
+											            GROUP BY ProjectTask__c]; 
+           
+           	Map<String, AggregateResult> out = new Map<String, AggregateResult>();
+           	for (AggregateResult ar : results){
+           		out.put((String)ar.get('ProjectTask__c'), ar);
+           	}
+           	return out;
+           
+        } catch(Exception e) {
             System.Debug(e.getStackTraceString());
         }   
         return null;
