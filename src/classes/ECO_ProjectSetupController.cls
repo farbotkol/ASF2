@@ -87,6 +87,9 @@ public with sharing class ECO_ProjectSetupController {
     private static integer orgLessLIMIT = 20;
     private static integer orgMoreLIMIT = 200;
 
+    public boolean tab2enabled {get;set;}
+
+
     /* Custom classes to facilitate this controller */
     public class EcoControllerException extends Exception {}
 
@@ -239,6 +242,7 @@ public with sharing class ECO_ProjectSetupController {
         sSelectedOrganizationId = '';
         bSearchInProgress = false;
         bSearchOutsideUserOrg = false;
+        tab2enabled = false;
         //isValid();
         //SearchOrganizations();
 
@@ -553,7 +557,7 @@ public with sharing class ECO_ProjectSetupController {
             }
         }
 
-
+        tab2enabled = true;
         tabState = 'name2';    
         return null;    
     }    
@@ -870,12 +874,42 @@ public with sharing class ECO_ProjectSetupController {
     public boolean isValid()
     {
         boolean bIsValid = false;
+        boolean noEmptyCB = true;
         Decimal dTotal = 0;
+        Decimal dSiteTotal = 0;
+
+        for (SiteWrapper oSiteWrapper:lstSites)
+        {
+            Decimal dPercentage = ECO_Utils_String.NullCheck(oSiteWrapper.contributions); 
+            dSiteTotal += dPercentage;
+
+            if(oSiteWrapper.billingContact == null){
+                noEmptyCB = false;
+            }
+        }
+
         for(OrganizationWrapper po : lSelectedOrganizations)
         {
             Decimal dPercentage = ECO_Utils_String.NullCheck(po.oProjectOrganization.ContributionPercent__c);
             dTotal += dPercentage;
         }
+
+        if(!noEmptyCB)
+        {
+            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'All selected sites must have a billing contact');
+            ApexPages.addMessage(oPageMessage);
+        } else {
+            bIsValid = true;            
+        }
+
+        if(dSiteTotal != 100)
+        {
+            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Sites does not total 100%.');
+            ApexPages.addMessage(oPageMessage);
+        } else {
+            bIsValid = true;
+        }
+
         if(dTotal != 100)
         {
             ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Organizations does not total 100%.');
