@@ -24,7 +24,7 @@ private class ECO_DelegateManagerControllerTest {
 		pg.getParameters().put('retURL', '/' + testContact.Id);
 		Test.setCurrentPage(pg);
 		System.runAs(testUser){
-			ECO_DelegateManagerController controller = new ECO_DelegateManagerController();
+			ECO_DelegateManagerController controller = new ECO_DelegateManagerController(new ApexPages.StandardController(new Delegate__c()));
 			system.assertEquals('Key Roles', controller.currentRecordType);
 			system.assertEquals(4, controller.delegateRecordTypeMap.size());
 			system.assertEquals(true, controller.canEdit);
@@ -34,7 +34,7 @@ private class ECO_DelegateManagerControllerTest {
 		pg.getParameters().put('contactId', testContact.Id);
 		pg.getParameters().put('retURL', '/' + testContact.Id);
 		Test.setCurrentPage(pg);
-		ECO_DelegateManagerController controller = new ECO_DelegateManagerController();
+		ECO_DelegateManagerController controller = new ECO_DelegateManagerController(new ApexPages.StandardController(new Delegate__c()));
 		system.assertEquals(true, controller.canEdit);
 		system.assertEquals(false, controller.canCreateAlternate);
 		system.assertEquals(UserInfo.getDefaultCurrency(), controller.currentCurrency);
@@ -50,7 +50,7 @@ private class ECO_DelegateManagerControllerTest {
 		pg.getParameters().put('retURL', '/' + testContact.Id);
 		Test.setCurrentPage(pg);
 		System.runAs(testUser){
-			ECO_DelegateManagerController controller = new ECO_DelegateManagerController();
+			ECO_DelegateManagerController controller = new ECO_DelegateManagerController(new ApexPages.StandardController(new Delegate__c()));
 			system.assertEquals('Key Roles', controller.currentRecordType);
 			pg.getParameters().put('recordTypeId', controller.delegateRecordTypeMap.get('Vacation'));
 			controller.changeTabFields();
@@ -87,6 +87,7 @@ private class ECO_DelegateManagerControllerTest {
 			age_Change_in_Forecast_Net_Margin_lt__c = 1, 
 			age_Change_in_Forecast_Net_Margin__c = 5,
 			Agreement_Amount_estimated__c = 5000,
+			Agreement_Amount_estimated_lt__c = 100,
 			Backlog_Value_lt__c = 1000,
 			Backlog_Value__c = 5000,
 			Project_Net_Margin_age_of_NSR_lt__c = 1,
@@ -110,7 +111,7 @@ private class ECO_DelegateManagerControllerTest {
 		PageReference pg = Page.ECO_DelegateManager;
 		pg.getParameters().put('contactId', testContact.Id);
 		Test.setCurrentPage(pg);
-		ECO_DelegateManagerController controller = new ECO_DelegateManagerController();
+		ECO_DelegateManagerController controller = new ECO_DelegateManagerController(new ApexPages.StandardController(new Delegate__c()));
 		controller.checkIfAlternate();
 		system.assertEquals(true, controller.canEdit);
 		controller.sendApprovalProcess(delegates[0]);
@@ -124,8 +125,9 @@ private class ECO_DelegateManagerControllerTest {
 
 		system.runAs(testUser){
 
-			ECO_DelegateManagerController controller = new ECO_DelegateManagerController();
+			ECO_DelegateManagerController controller = new ECO_DelegateManagerController(new ApexPages.StandardController(new Delegate__c()));
 			controller.delegate.Agreement_Amount_estimated__c = 5000;
+			controller.delegate.Agreement_Amount_estimated_lt__c = 100;
 			controller.delegate.Project_Revenue_Budget__c = 5000;
 			controller.delegate.Project_Revenue_Budget_lt__c = 100;
 			controller.delegate.Backlog_Value__c = 5000;
@@ -166,8 +168,7 @@ private class ECO_DelegateManagerControllerTest {
 		Test.setCurrentPage(pg);
 
 		System.runAs(testUser){
-			ECO_DelegateManagerController controller = new ECO_DelegateManagerController();
-			controller.delegate.CurrencyIsoCode = 'USD';
+			ECO_DelegateManagerController controller = new ECO_DelegateManagerController(new ApexPages.StandardController(new Delegate__c()));
 			controller.delegate.Delegate__c = testContact2.Id;
 			controller.delegate.Key_Member_Role__c = 'Project Manager';
 			controller.delegate.Start_Date__c = Date.today().addDays(5);
@@ -192,7 +193,7 @@ private class ECO_DelegateManagerControllerTest {
 			controller.c4Bypass = 'Yes';
 			controller.addNewDelegate();
 			system.assertEquals(0, controller.contact.Delegates1__r.size());
-			controller = new ECO_DelegateManagerController();
+			controller = new ECO_DelegateManagerController(new ApexPages.StandardController(new Delegate__c()));
 			controller.agreementAmountBypass = 'No';
 			controller.projectRevenueBudgetBypass = 'No';
 			controller.backlogValueBypass = 'No';
@@ -217,8 +218,9 @@ private class ECO_DelegateManagerControllerTest {
 			controller.delegate.Key_Member_Role__c = 'Project Manager';
 			controller.delegate.Start_Date__c = Date.today().addDays(20);
 			ECO_Delegate_Limits__c delegateLimitSettings = ECO_Delegate_Limits__c.getOrgDefaults();
-			//controller.owningOrganizations[0].checked = true;
+			controller.owningOrganizations[0].checked = true;
 			controller.addNewDelegate();
+			system.assertEquals(0, controller.contact.Delegates__r.size());
 			//system.assertEquals(2, controller.contact.Delegates1__r.size());
 			testContact2.Status__c = 'Inactive';
 			update testContact2;
@@ -226,6 +228,7 @@ private class ECO_DelegateManagerControllerTest {
 			controller.delegate.Key_Member_Role__c = 'Project Approver';
 			controller.delegate.Start_Date__c = Date.today().addDays(25);
 			controller.delegate.Agreement_Amount_estimated__c = 500;
+			controller.delegate.Agreement_Amount_estimated_lt__c = 100;
 			controller.delegate.Project_Revenue_Budget__c = 500;
 			controller.delegate.Project_Revenue_Budget_lt__c = 500;
 			controller.delegate.Backlog_Value__c = 500;
@@ -239,6 +242,15 @@ private class ECO_DelegateManagerControllerTest {
 			controller.delegate.Value_change_in_Forecast_Net_Margin__c = 500;
 			controller.delegate.Value_change_in_Forecast_Net_Margin_lt__c = 500;
 			controller.addNewDelegate();
+			system.assertEquals(0, controller.contact.Delegates__r.size());
+			controller = new ECO_DelegateManagerController(new ApexPages.StandardController(new Delegate__c()));
+			RecordType alternateRecordType = [Select Id from RecordType where sObjectType = 'Delegate__c' and Name = 'Administrator Override'];
+			controller.delegate.recordTypeId = alternateRecordType.Id;
+			controller.delegate.Delegate__c = testContact.Id;
+			controller.delegate.Start_Date__c = date.today();
+			controller.attachment = new Attachment(Name = 'Test', body = blob.valueOf('test attachment'));    
+       		controller.addNewDelegate();
+       		system.assertEquals(0, controller.contact.Delegates__r.size());
 		}
 	}
 
@@ -313,6 +325,7 @@ private class ECO_DelegateManagerControllerTest {
 		ECO_Delegate_Limits__c delegateLimitSettings = ECO_Delegate_Limits__c.getOrgDefaults();
 		delegateLimitSettings.age_Change_in_Forecast_Net_Margin__c = 5;
 		delegateLimitSettings.Agreement_Amount__c = 1000;
+		delegateLimitSettings.Agreement_Amount_lt__c = 100;
 		delegateLimitSettings.Backlog_Value__c = 1000;
 		delegateLimitSettings.Project_Net_Margin_age_of_NSR__c = 3;
 		delegateLimitSettings.Project_Net_Margin_Value__c = 1000;

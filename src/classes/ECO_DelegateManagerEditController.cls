@@ -9,7 +9,6 @@
 public with sharing class ECO_DelegateManagerEditController {
 
     public Delegate__c extensionDelegate{get; set;}
-    public RecordType currentRecordType{get; set;}
     public ECO_Delegate_Limits__c delegateLimitSettings{get; set;}
 	public List<ECO_DelegateManagerController.owningOrganization> owningOrganizations{get; set;}
     private ApexPages.StandardController controller;
@@ -33,90 +32,6 @@ public with sharing class ECO_DelegateManagerEditController {
 			redirectURL = ApexPages.currentPage().getParameters().get('retUrl');
 		}
     }
-
-    private void queryDelegate(){
-    	Set<String> fieldSetFields = ECO_Utils_sObject.getFieldSetMembers('DelegationModuleContactDetails', 'Contact');
-		String queryFields = '';
-		Boolean foundName = false;
-
-		//create a soql compatible string of field names to select
-		for(String fieldSetField : fieldSetFields){
-			queryFields += 'Delegate__r.' + fieldSetField + ', ';
-			if(fieldSetField == 'Name'){
-				foundName = true;
-			}
-		}
-
-		if(!foundName){
-			queryFields += ' Delegate__r.Name, ';
-		}
-
-		String query = 'Select Id, Name, ' + queryFields + ' Delegate__c, Delegator__c, Delegator__r.pse__Salesforce_User__c, RecordType.Name, RecordTypeId, Allowed_Organizations__c, ';
-		query += 'age_Change_in_Forecast_Net_Margin_lt__c, age_Change_in_Forecast_Net_Margin__c, age_Change_in_Forecast_Net_Margin_Byp_lt__c, age_Change_in_Forecast_Net_Margin_Bypass__c, ';
-		query += 'Agreement_Amount_estimated_lt__c, Agreement_Amount_estimated__c, Agreement_Amount_estimated_Bypass_lt__c, Agreement_Amount_estimated_Bypass__c, Backlog_Value_Bypass__c, Backlog_Value_Bypass_lt__c, ';
-		query += 'Project_Net_Margin_age_of_NSR_lt__c, Project_Net_Margin_age_of_NSR__c, Project_Net_Margin_of_NSR_Bypass_lt__c, Project_Net_Margin_age_of_NSR_Bypass__c, Project_Net_Margin_Value_lt__c, ';
-		query += 'Project_Net_Margin_Value__c, Project_Net_Margin_Value_Bypass_lt__c, Project_Net_Margin_Value_Bypass__c, Project_Revenue_Budget_lt__c, Project_Revenue_Budget__c, ';
-		query += 'Project_Revenue_Budget_Bypass_lt__c, Project_Revenue_Budget_Bypass__c, Project_Review_Category_C_0_Bypass__c, Project_Review_Category_C_1_Bypass__c, Project_Review_Category_C_2_Bypass__c, ';
-		query += 'Project_Review_Category_C_3_Bypass__c, Project_Review_Category_C_4_Bypass__c, Value_change_in_Forecast_Net_Margin_lt__c, Value_change_in_Forecast_Net_Margin__c, Value_change_Forecast_Nt_Margn_Byps_lt__c, Value_change_in_Forecast_Net_Margin_Byps__c ';
-		query += ' from Delegate__c where Id = \'' + extensionDelegate.Id + '\'';
-		extensionDelegate = Database.query(query);
-    }
-
-    //loads the list owningOrganization wrapper for the owning organization table
-	private void populateOwningOrganizations(){
-		//retrieve field string from fieldset
-		owningOrganizations = new List<ECO_DelegateManagerController.owningOrganization>();
-		List<ProjectTeamMember__c> projectTeamMembers = new List<ProjectTeamMember__c>();
-		Set<String> organizationStringIds = new Set<String>();
-
-		if(extensionDelegate.Allowed_Organizations__c != null && extensionDelegate.Allowed_Organizations__c.contains(';')){
-			List<String> orgStringIds = extensionDelegate.Allowed_Organizations__c.split(';');
-			organizationStringIds = new Set<String>(orgStringIds);
-		}
-
-		projectTeamMembers = [Select Id, Project__c from ProjectTeamMember__c where Contact__c =: extensionDelegate.Delegator__c and (ProjectRole__r.Name = 'Project Approver 2' OR ProjectRole__r.Name = 'Finance Lead')];
-		
-		Set<Id> projectIds = new Set<Id>();
-		for(ProjectTeamMember__c projectTeamMember : projectTeamMembers){
-			projectIds.add(projectTeamMember.Project__c);
-		}
-		if(projectIds.size() > 0){
-			Set<String> organizationStringFields = ECO_Utils_sObject.getFieldSetMembers('Delegate_Owning_Organization_Table', 'OrganizationString__c');
-			
-			if(organizationStringFields.size() > 0){
-				String queryFields = '';
-
-				//create the query field string 
-				for(String organizationStringField : organizationStringFields){
-					queryFields += 'CarryingOutOrganization__r.' + organizationStringField + ', ';
-				}
-
-				//query string
-				String query = 'Select Id, CarryingOutOrganization__c, CarryingOutOrganization__r.LocationName__c, ' + queryFields.removeEnd(', ') + ' From pse__Proj__c where Id IN : projectIds';
-				List<pse__Proj__c> projects = Database.query(query);
-				Set<Id> organizationIdsUsed = new Set<Id>();
-
-				//load the owningOrganizations wrapper from query results
-				for(pse__Proj__c project : projects){
-					if(!organizationIdsUsed.contains(project.CarryingOutOrganization__c)){
-						organizationIdsUsed.add(project.CarryingOutOrganization__c);
-						ECO_DelegateManagerController.owningOrganization ownOrganization = new ECO_DelegateManagerController.owningOrganization(project.CarryingOutOrganization__r);
-						if(organizationStringIds.size() > 0){
-							if(organizationStringIds.contains(project.CarryingOutOrganization__c)){
-								ownOrganization.checked = true;
-							}
-						}
-						else if(extensionDelegate.Allowed_Organizations__c != null){
-							if(extensionDelegate.Allowed_Organizations__c == project.CarryingOutOrganization__c){
-								ownOrganization.checked = true;
-							}
-						}
-						owningOrganizations.add(ownOrganization);
-					}
-				}
-			}
-		}
-	}
 
 	//saves the updated data
     public PageReference save() {
@@ -500,4 +415,83 @@ public with sharing class ECO_DelegateManagerEditController {
 		}
 	}
 	//End Getters/Setters for all of the Yes/No fields
+
+	//builds the soql query for the delegate data
+	private void queryDelegate(){
+    	Set<String> fieldSetFields = ECO_Utils_sObject.getFieldSetMembers('DelegationModuleContactDetails', 'Contact');
+		String queryFields = '';
+		Boolean foundName = false;
+
+		//create a soql compatible string of field names to select
+		for(String fieldSetField : fieldSetFields){
+			queryFields += 'Delegate__r.' + fieldSetField + ', ';
+			if(fieldSetField == 'Name'){
+				foundName = true;
+			}
+		}
+
+		if(!foundName){
+			queryFields += ' Delegate__r.Name, ';
+		}
+
+		String query = 'Select Id, Name, ' + queryFields + ' Delegate__c, Delegator__c, Delegator__r.pse__Salesforce_User__c, RecordType.Name, RecordTypeId, Allowed_Organizations__c, ';
+		query += 'age_Change_in_Forecast_Net_Margin_lt__c, age_Change_in_Forecast_Net_Margin__c, age_Change_in_Forecast_Net_Margin_Byp_lt__c, age_Change_in_Forecast_Net_Margin_Bypass__c, ';
+		query += 'Agreement_Amount_estimated_lt__c, Agreement_Amount_estimated__c, Agreement_Amount_estimated_Bypass_lt__c, Agreement_Amount_estimated_Bypass__c, Backlog_Value_Bypass__c, Backlog_Value_Bypass_lt__c, ';
+		query += 'Project_Net_Margin_age_of_NSR_lt__c, Project_Net_Margin_age_of_NSR__c, Project_Net_Margin_of_NSR_Bypass_lt__c, Project_Net_Margin_age_of_NSR_Bypass__c, Project_Net_Margin_Value_lt__c, ';
+		query += 'Project_Net_Margin_Value__c, Project_Net_Margin_Value_Bypass_lt__c, Project_Net_Margin_Value_Bypass__c, Project_Revenue_Budget_lt__c, Project_Revenue_Budget__c, ';
+		query += 'Project_Revenue_Budget_Bypass_lt__c, Project_Revenue_Budget_Bypass__c, Project_Review_Category_C_0_Bypass__c, Project_Review_Category_C_1_Bypass__c, Project_Review_Category_C_2_Bypass__c, ';
+		query += 'Project_Review_Category_C_3_Bypass__c, Project_Review_Category_C_4_Bypass__c, Value_change_in_Forecast_Net_Margin_lt__c, Value_change_in_Forecast_Net_Margin__c, Value_change_Forecast_Nt_Margn_Byps_lt__c, Value_change_in_Forecast_Net_Margin_Byps__c ';
+		query += ' from Delegate__c where Id = \'' + extensionDelegate.Id + '\'';
+		extensionDelegate = Database.query(query);
+    }
+
+    //loads the list owningOrganization wrapper for the owning organization table
+	private void populateOwningOrganizations(){
+		//retrieve field string from fieldset
+		owningOrganizations = new List<ECO_DelegateManagerController.owningOrganization>();
+		List<ProjectTeamMember__c> projectTeamMembers = new List<ProjectTeamMember__c>();
+		Set<String> organizationStringIds = new Set<String>();
+
+		if(extensionDelegate.Allowed_Organizations__c != null && extensionDelegate.Allowed_Organizations__c.contains(';')){
+			List<String> orgStringIds = extensionDelegate.Allowed_Organizations__c.split(';');
+			organizationStringIds = new Set<String>(orgStringIds);
+		}
+
+		projectTeamMembers = [Select Id, Project__c from ProjectTeamMember__c where Contact__c =: extensionDelegate.Delegator__c and (ProjectRole__r.Name = 'Project Approver 2' OR ProjectRole__r.Name = 'Finance Lead')];
+		
+		Set<Id> projectIds = new Set<Id>();
+		for(ProjectTeamMember__c projectTeamMember : projectTeamMembers){
+			projectIds.add(projectTeamMember.Project__c);
+		}
+		if(projectIds.size() > 0){
+			Set<String> organizationStringFields = ECO_Utils_sObject.getFieldSetMembers('Delegate_Owning_Organization_Table', 'OrganizationString__c');
+			
+			if(organizationStringFields.size() > 0){
+				String queryFields = '';
+
+				//create the query field string 
+				for(String organizationStringField : organizationStringFields){
+					queryFields += 'CarryingOutOrganization__r.' + organizationStringField + ', ';
+				}
+
+				//query string
+				String query = 'Select Id, CarryingOutOrganization__c, CarryingOutOrganization__r.LocationName__c, ' + queryFields.removeEnd(', ') + ' From pse__Proj__c where Id IN : projectIds';
+				List<pse__Proj__c> projects = Database.query(query);
+				Set<Id> organizationIdsUsed = new Set<Id>();
+
+				//load the owningOrganizations wrapper from query results
+				for(pse__Proj__c project : projects){
+					if(!organizationIdsUsed.contains(project.CarryingOutOrganization__c)){
+						organizationIdsUsed.add(project.CarryingOutOrganization__c);
+						ECO_DelegateManagerController.owningOrganization ownOrganization = new ECO_DelegateManagerController.owningOrganization(project.CarryingOutOrganization__r);
+						if(organizationStringIds.contains(project.CarryingOutOrganization__c)){
+							ownOrganization.checked = true;
+						}
+						owningOrganizations.add(ownOrganization);
+					}
+				}
+			}
+		}
+	}
+
 }
