@@ -34,7 +34,8 @@ public class ECO_Service_ProjectSnapshots {
     Map<Id, FinancialMetrics> unapprovedBudgetHeaderMap;
     Map<String, pse__Time_Period__c> timePeriodMap;
     Map<Id, FinancialMetrics> mtdActualFinancialMetricsMap;
-
+    Map<Id, FinancialMetrics> itdActualFinancialMetricsMap;
+    Map<Id, FinancialMetrics> ytdActualFinancialMetricsMap;
         
     @TestVisible private class ProjectOrganization
     {
@@ -546,6 +547,8 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
 	        	Date monthStartDate = monthTP.pse__Start_Date__c;
 	        	mtdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, monthStartDate);    
 
+	        	itdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, null);
+
 				pse__Time_Period__c yearTP = (pse__Time_Period__c) timePeriodMap.get('Year');
 				Date yearStartDate = yearTP.pse__Start_Date__c;
 
@@ -640,7 +643,7 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
 	                FinancialMetrics draftBudgetFinancialMetrics = draftBudgetHeaderMap.get(project.Id);
 	                snapshot = getDraftBudgetHeaderMapInformation(draftBudgetFinancialMetrics, snapshot);
 
-	                //UnApproved            	
+	                //Unapproved            	
 	                FinancialMetrics unapprovedBudgetFinancialMetrics = unapprovedBudgetHeaderMap.get(project.Id);
 	                snapshot = getUnapprovedBudgetHeaderMapInformation(unapprovedBudgetFinancialMetrics, snapshot);
 	                
@@ -648,6 +651,15 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
 	            	FinancialMetrics mtdFinancialMetrics = mtdActualFinancialMetricsMap.get(project.Id);
 	                snapshot = getMtdActualFinancialMetricsMapInformation(mtdFinancialMetrics, snapshot, monthStartDate);
 	                
+	                // ITD
+	            	FinancialMetrics itdFinancialMetrics = itdActualFinancialMetricsMap.get(project.Id);
+	                snapshot = getItdActualFinancialMetricsMapInformation(itdFinancialMetrics, snapshot);
+	                
+	                // YTD
+	            	FinancialMetrics ytdFinancialMetrics = ytdActualFinancialMetricsMap.get(project.Id);
+	                snapshot = getYtdActualFinancialMetricsMapInformation(ytdFinancialMetrics, snapshot, yearStartDate);
+	                
+
 	                snapshotList.add(snapshot);
 	            }
 	        }
@@ -756,15 +768,55 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
         snapshot.NMGRMonthToDate__c = mtdActualFinancialMetrics.NMGR;
         snapshot.LaborMultMonthToDate__c = mtdActualFinancialMetrics.LaborMult;
         snapshot.ContingencyMonthToDate__c = mtdActualFinancialMetrics.TotalContingency;
-        
         snapshot.SurMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
-        
         snapshot.CostsODCEXPSMonthToDate__c = mtdActualFinancialMetrics.CostsODCEXPS;
         snapshot.CostsODCSUBSMonthToDate__c = mtdActualFinancialMetrics.CostsODCSUBS;
         snapshot.LaborMonthToDate__c = mtdActualFinancialMetrics.Labor;
         snapshot.FringeMonthToDate__c = mtdActualFinancialMetrics.Fringe;
         snapshot.OverheadMonthToDate__c = mtdActualFinancialMetrics.Overhead;
         snapshot.HoursMonthToDate__c = mtdActualFinancialMetrics.Hours;
+    	return snapshot;
+    }
+
+    @TestVisible private ProjectSnapshot__c getItdActualFinancialMetricsMapInformation(FinancialMetrics itdActualFinancialMetrics, 
+    		ProjectSnapshot__c snapshot) {
+
+    	snapshot.GrossRevenueITD__c = itdActualFinancialMetrics.TotalRevenue;
+        snapshot.CostITD__c = itdActualFinancialMetrics.TotalCost;
+        snapshot.NetMarginITD__c = itdActualFinancialMetrics.NetMargin;
+        snapshot.NetServiceITD__c = itdActualFinancialMetrics.NetServiceRevenue;
+        snapshot.NMNSRITD__c = itdActualFinancialMetrics.NMNSR;
+        snapshot.NMGRITD__c = itdActualFinancialMetrics.NMGR;
+        snapshot.LaborMultITD__c = itdActualFinancialMetrics.LaborMult;
+        snapshot.ContingencyITD__c = itdActualFinancialMetrics.TotalContingency;
+        snapshot.SurMarginITD__c = ((snapshot.NMNSRITD__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceITD__c)/100;
+        snapshot.CostsODCEXPSITD__c = itdActualFinancialMetrics.CostsODCEXPS;
+        snapshot.CostsODCSUBSITD__c = itdActualFinancialMetrics.CostsODCSUBS;
+        snapshot.LaborITD__c = itdActualFinancialMetrics.Labor;
+        snapshot.FringeITD__c = itdActualFinancialMetrics.Fringe;
+        snapshot.OverheadITD__c = itdActualFinancialMetrics.Overhead;
+        snapshot.HoursITD__c = itdActualFinancialMetrics.Hours;
+    	return snapshot;
+    }
+
+    @TestVisible private ProjectSnapshot__c getYtdActualFinancialMetricsMapInformation(FinancialMetrics ytdActualFinancialMetrics, 
+    		ProjectSnapshot__c snapshot, Date yearStartDate) {
+
+    	snapshot.GrossRevenueYearToDate__c = ytdActualFinancialMetrics.TotalRevenue;
+        snapshot.CostYearToDate__c = ytdActualFinancialMetrics.TotalCost;
+        snapshot.NetMarginYearToDate__c = ytdActualFinancialMetrics.NetMargin;
+        snapshot.NetServiceYearToDate__c = ytdActualFinancialMetrics.NetServiceRevenue;
+        snapshot.NMNSRYearToDate__c = ytdActualFinancialMetrics.NMNSR;
+        snapshot.NMGRYearToDate__c = ytdActualFinancialMetrics.NMGR;
+        snapshot.LaborMultYearToDate__c = ytdActualFinancialMetrics.LaborMult;
+        snapshot.ContingencyYearToDate__c = ytdActualFinancialMetrics.TotalContingency;
+        snapshot.SurMarginYearToDate__c = ((snapshot.NMNSRYearToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceYearToDate__c)/100;
+        snapshot.CostsODCEXPSYearToDate__c = ytdActualFinancialMetrics.CostsODCEXPS;
+        snapshot.CostsODCSUBSYearToDate__c = ytdActualFinancialMetrics.CostsODCSUBS;
+        snapshot.LaborYearToDate__c = ytdActualFinancialMetrics.Labor;
+        snapshot.FringeYearToDate__c = ytdActualFinancialMetrics.Fringe;
+        snapshot.OverheadYearToDate__c = ytdActualFinancialMetrics.Overhead;
+        snapshot.HoursYearToDate__c = ytdActualFinancialMetrics.Hours;
     	return snapshot;
     }
 
