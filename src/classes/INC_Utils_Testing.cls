@@ -72,7 +72,13 @@ public without sharing class INC_Utils_Testing {
         
         User EmployeeUser = INC_Utils_Testing.createUser();
         EmployeeUser.Email = '2' + EmployeeUser.email;
+        EmployeeUser.Username = '2' + EmployeeUser.Username;
         EmployeeUser.ManagerId = managerUser.Id;
+        EmployeeUser.CommunityNickname = EmployeeUser.CommunityNickname + '2';
+        EmployeeUser.FederationIdentifier = EmployeeUser.FederationIdentifier + '2';
+        EmployeeUser.OracleEmployeeId__c = EmployeeUser.OracleEmployeeId__c + '2';
+        EmployeeUser.TrackingID__c = EmployeeUser.TrackingID__c + '2';
+        EmployeeUser.URS_FIM_GUID__c = EmployeeUser.URS_FIM_GUID__c + '2';
         insert EmployeeUser;
         
         Account account = new Account();

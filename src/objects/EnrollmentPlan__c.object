@@ -4803,7 +4803,7 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
         <formula>BaselineGrossMargin__c * (1 + EstimatedGMGrowthPercentage__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>Total Gross or Net margin amount @ growth % indicated above</inlineHelpText>
-        <label>Sample Margin $ @ Growth %</label>
+        <label>Estimated Margin $ @ Growth %</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -4816,7 +4816,7 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
         <defaultValue>0.10</defaultValue>
         <externalId>false</externalId>
         <inlineHelpText>GM or NM. To estimate an incentive pool for the T&amp;M plan, an increase in Margin must be projected. Default set to 10% estimated growth. Adjust this figure and click save to see changes reflected in the estimated incentive pool.</inlineHelpText>
-        <label>Sample Margin Growth %</label>
+        <label>Estimated Margin Growth %</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -4828,7 +4828,7 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
         <fullName>EstimatedIncPoolEAC__c</fullName>
         <description>Field populated by a trigger on update of Application or Project record.  Used in the EstimatedIncentivePoolEAC__c field in place of a calculation.</description>
         <externalId>false</externalId>
-        <label>SampleIncPoolEAC</label>
+        <label>EstimatedIncPoolEAC</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -4840,7 +4840,7 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
         <fullName>EstimatedIncPoolITD__c</fullName>
         <description>Field populated by a WFR on create of Application.</description>
         <externalId>false</externalId>
-        <label>SampleIncPoolITD</label>
+        <label>EstimatedIncPoolITD</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -4855,7 +4855,7 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
         <formula>IF(MAX(EstimatedIncPoolEAC__c,0)&gt;  MaxIncentivePool__c, MaxIncentivePool__c,MAX(EstimatedIncPoolEAC__c,0))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>For Fixed Price plan: EAC NSR x (EAC Margin % - Baseline Margin %) x Profit Share % x (1 - % Complete @ Enrollment Adjusted for Change Orders).  For T&amp;M GM plan: (EAC Margin – Baseline Margin) x 5%.  For T&amp;M NM plan: (EAC Margin – Baseline Margin) x 20%.</inlineHelpText>
-        <label>Sample Incentive Pool EAC</label>
+        <label>Estimated Incentive Pool EAC</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -4870,7 +4870,7 @@ IF(ForecastGrossMarginofNSR__c &gt; BaselineGMofNSR__c, &quot;Above Margin&quot;
         <formula>EstimatedIncPoolITD__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>ITD NSR (Final ITD Gross Margin % - Baseline Gross Margin %) x Profit Share % x (1 - % Complete @ Enrollment Adjusted for Change Orders)</inlineHelpText>
-        <label>Sample Incentive Pool ITD</label>
+        <label>Estimated Incentive Pool ITD</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -4887,7 +4887,7 @@ MAX(0,(0.03*BaselineNSR__c*(1-PercentCompleteCostITD__c)))
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>If the current EAC GM % NSR is greater than the threshold, an Estimated Incentive Pool is displayed.  This is a point-in-time estimate based on the PM&apos;s EAC.  Management Adjustments wil impact the possible incentive pool for the project.  Future changes t</inlineHelpText>
-        <label>Sample Incentive Pool</label>
+        <label>Estimated Incentive Pool</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -4902,7 +4902,7 @@ MAX(0,(0.03*BaselineNSR__c*(1-PercentCompleteCostITD__c)))
  IF( (BaselineGrossMargin__c * 0.10) * (IncentivePlan__r.ProfitSharingPercent__c) &gt; IncentivePlan__r.MaxPoolCap__c, IncentivePlan__r.MaxPoolCap__c,
 (BaselineGrossMargin__c * 0.10) * (IncentivePlan__r.ProfitSharingPercent__c)),0)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Sample Pool @ Baseline + 10%</label>
+        <label>Estimated Pool @ Baseline + 10%</label>
         <precision>18</precision>
         <required>false</required>
         <scale>0</scale>
@@ -4916,7 +4916,7 @@ MAX(0,(0.03*BaselineNSR__c*(1-PercentCompleteCostITD__c)))
         <formula>MaxIncentivePool__c /2</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>The sample pool reflects the calculated incentive pool assuming final GM% is 3% above baseline, all operational metrics are achieved and there are no changes to current project scope.</inlineHelpText>
-        <label>Sample Pool if Baseline +3%</label>
+        <label>Estimated Pool if Baseline +3%</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>

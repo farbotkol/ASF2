@@ -14,7 +14,13 @@ private class INC_DeliverToWinLandingTest {
         insert setting2;
         
         User oUser = INC_Utils_Testing.createUser();
-
+        oUser.Email = '3' + oUser.email;
+        oUser.UserName = oUser.UserName + '3';
+        oUser.CommunityNickname = oUser.CommunityNickname + '3';
+        oUser.FederationIdentifier = oUser.FederationIdentifier + '3';
+        oUser.OracleEmployeeId__c = oUser.OracleEmployeeId__c + '3';
+        oUser.TrackingID__c = oUser.TrackingID__c + '3';
+        oUser.URS_FIM_GUID__c = oUser.URS_FIM_GUID__c + '3';
         insert oUser;
         
         map<string, User> mUsers = new map<string, User>();

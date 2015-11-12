@@ -16,12 +16,29 @@ private class INC_Matching_Service_Test
         insert setting2;
 
 		list<User> lusers = new list<User>();
-		User runningUser = INC_Utils_Testing.createTestUser('Standard User');
-		User DTWAdminWater = INC_Utils_Testing.createTestUser('Standard User');
-		User DTWAdminTest = INC_Utils_Testing.createTestUser('System Administrator');
+		User runningUser = INC_Utils_Testing.createUser();
+		User DTWAdminWater = INC_Utils_Testing.createUser();
+		DTWAdminWater.UserName = DTWAdminWater.userName + '2';
+		DTWAdminWater.CommunityNickname = DTWAdminWater.CommunityNickname + '2';
+        DTWAdminWater.FederationIdentifier = DTWAdminWater.FederationIdentifier + '2';
+        DTWAdminWater.OracleEmployeeId__c = DTWAdminWater.OracleEmployeeId__c + '2';
+        DTWAdminWater.TrackingID__c = DTWAdminWater.TrackingID__c + '2';
+        DTWAdminWater.URS_FIM_GUID__c = DTWAdminWater.URS_FIM_GUID__c + '2';
+		DTWAdminWater.Email = '2' + DTWAdminWater.Email;
+		User DTWAdminTest = INC_Utils_Testing.createUser();
+		DTWAdminTest.UserName = DTWAdminTest.userName + '3';
+		DTWAdminTest.CommunityNickname = DTWAdminTest.CommunityNickname + '3';
+        DTWAdminTest.FederationIdentifier = DTWAdminTest.FederationIdentifier + '3';
+        DTWAdminTest.OracleEmployeeId__c = DTWAdminTest.OracleEmployeeId__c + '3';
+        DTWAdminTest.TrackingID__c = DTWAdminTest.TrackingID__c + '3';
+        DTWAdminTest.URS_FIM_GUID__c = DTWAdminTest.URS_FIM_GUID__c + '3';
+		DTWAdminTest.Email = '3' + DTWAdminTest.Email;
 		lUsers.add(runningUser);
 		lUsers.add(DTWAdminWater);
 		lUsers.add(DTWAdminTest);
+		System.Debug(logginglevel.error,'ru ' + runningUser.CommunityNickname);
+		System.Debug(logginglevel.error,'DTWAdminWater ' + DTWAdminWater.CommunityNickname);
+		System.Debug(logginglevel.error,'DTWAdminTest ' + DTWAdminTest.CommunityNickname);
 		insert lUsers;
 
 		map<String,User> mUsers = new map<String,User>();
@@ -125,14 +142,41 @@ private class INC_Matching_Service_Test
         insert setting2;
 
 		list<User> lusers = new list<User>();
-		User runningUser = INC_Utils_Testing.createTestUser('Standard User');
-		User DTWAdminWater = INC_Utils_Testing.createTestUser('Standard User');
-		User DTWAdminTest = INC_Utils_Testing.createTestUser('Standard User');
-		User DTWAdminWater2 = INC_Utils_Testing.createTestUser('Standard User');
+		User runningUser = INC_Utils_Testing.createUser();
+		User DTWAdminWater = INC_Utils_Testing.createUser();
+		User DTWAdminWater2 = INC_Utils_Testing.createUser();
+		User DTWAdminTest = INC_Utils_Testing.createUser();
+	
+		runningUser.CommunityNickname = 'Nick1';
+
+		DTWAdminWater.userName = DTWAdminWater.userName + '2';
+		DTWAdminWater.CommunityNickname = 'nick223r2423';
+        DTWAdminWater.FederationIdentifier = DTWAdminWater.FederationIdentifier + '2';
+        DTWAdminWater.OracleEmployeeId__c = DTWAdminWater.OracleEmployeeId__c + '2';
+        DTWAdminWater.TrackingID__c = DTWAdminWater.TrackingID__c + '2';
+        DTWAdminWater.URS_FIM_GUID__c = DTWAdminWater.URS_FIM_GUID__c + '2';
+		DTWAdminWater.Email = '2' + DTWAdminWater.Email;
+	
+		DTWAdminTest.userName = DTWAdminTest.userName + '3';
+		DTWAdminTest.CommunityNickname = 'nick31234124';
+        DTWAdminTest.FederationIdentifier = DTWAdminTest.FederationIdentifier + '3';
+        DTWAdminTest.OracleEmployeeId__c = DTWAdminTest.OracleEmployeeId__c + '3';
+        DTWAdminTest.TrackingID__c = DTWAdminTest.TrackingID__c + '3';
+        DTWAdminTest.URS_FIM_GUID__c = DTWAdminTest.URS_FIM_GUID__c + '3';
+		DTWAdminTest.Email = '3' + DTWAdminTest.Email;
+	
+		DTWAdminWater2.userName = DTWAdminWater2.userName + '4';
+		DTWAdminWater2.CommunityNickname = 'nick414312';
+        DTWAdminWater2.FederationIdentifier = DTWAdminWater2.FederationIdentifier + '4';
+        DTWAdminWater2.OracleEmployeeId__c = DTWAdminWater2.OracleEmployeeId__c + '4';
+        DTWAdminWater2.TrackingID__c = DTWAdminWater2.TrackingID__c + '4';
+        DTWAdminWater2.URS_FIM_GUID__c = DTWAdminWater2.URS_FIM_GUID__c + '4';
+		DTWAdminWater2.Email = '4' + DTWAdminWater2.Email;
 		lUsers.add(runningUser);
 		lUsers.add(DTWAdminWater);
 		lUsers.add(DTWAdminTest);
 		lUsers.add(DTWAdminWater2);
+		
 		insert lUsers;
 
 		List<OrganizationString__c> lOrgStrings = new List<OrganizationString__c>();
@@ -234,9 +278,25 @@ private class INC_Matching_Service_Test
         insert setting2;
 
 		list<User> lusers = new list<User>();
-		User runningUser = INC_Utils_Testing.createTestUser('Standard User');
-		User DTWAdminWater = INC_Utils_Testing.createTestUser('Standard User');
-		User DTWAdminTest = INC_Utils_Testing.createTestUser('Standard User');
+		User runningUser = INC_Utils_Testing.createUser();
+		User DTWAdminWater = INC_Utils_Testing.createUser();
+		
+		DTWAdminWater.userName = DTWAdminWater.userName + '2';
+		DTWAdminWater.CommunityNickname = DTWAdminWater.CommunityNickname + '2';
+        DTWAdminWater.FederationIdentifier = DTWAdminWater.FederationIdentifier + '2';
+        DTWAdminWater.OracleEmployeeId__c = DTWAdminWater.OracleEmployeeId__c + '2';
+        DTWAdminWater.TrackingID__c = DTWAdminWater.TrackingID__c + '2';
+        DTWAdminWater.URS_FIM_GUID__c = DTWAdminWater.URS_FIM_GUID__c + '2';
+		DTWAdminWater.Email = '2' + DTWAdminWater.Email;
+		
+		User DTWAdminTest = INC_Utils_Testing.createUser();
+		DTWAdminTest.userName = DTWAdminTest.userName + '3';
+		DTWAdminTest.CommunityNickname = DTWAdminTest.CommunityNickname + '3';
+        DTWAdminTest.FederationIdentifier = DTWAdminTest.FederationIdentifier + '3';
+        DTWAdminTest.OracleEmployeeId__c = DTWAdminTest.OracleEmployeeId__c + '3';
+        DTWAdminTest.TrackingID__c = DTWAdminTest.TrackingID__c + '3';
+        DTWAdminTest.URS_FIM_GUID__c = DTWAdminTest.URS_FIM_GUID__c + '3';
+		DTWAdminTest.Email = '3' + DTWAdminTest.Email;
 		lUsers.add(runningUser);
 		lUsers.add(DTWAdminWater);
 		lUsers.add(DTWAdminTest);
@@ -372,9 +432,25 @@ private class INC_Matching_Service_Test
         insert setting2;
         
 		list<User> lusers = new list<User>();
-		User runningUser = INC_Utils_Testing.createTestUser('Standard User');
-		User DTWAdminWater = INC_Utils_Testing.createTestUser('Standard User');
-		User DTWAdminTest = INC_Utils_Testing.createTestUser('Standard User');
+		User runningUser = INC_Utils_Testing.createUser();
+		User DTWAdminWater = INC_Utils_Testing.createUser();
+	
+		DTWAdminWater.userName = DTWAdminWater.userName + '2';
+		DTWAdminWater.CommunityNickname = DTWAdminWater.CommunityNickname + '2';
+        DTWAdminWater.FederationIdentifier = DTWAdminWater.FederationIdentifier + '2';
+        DTWAdminWater.OracleEmployeeId__c = DTWAdminWater.OracleEmployeeId__c + '2';
+        DTWAdminWater.TrackingID__c = DTWAdminWater.TrackingID__c + '2';
+        DTWAdminWater.URS_FIM_GUID__c = DTWAdminWater.URS_FIM_GUID__c + '2';
+		DTWAdminWater.Email = '2' + DTWAdminWater.Email;
+	
+		User DTWAdminTest = INC_Utils_Testing.createUser();
+		DTWAdminTest.userName = DTWAdminTest.userName + '3';
+		DTWAdminTest.CommunityNickname = DTWAdminTest.CommunityNickname + '3';
+        DTWAdminTest.FederationIdentifier = DTWAdminTest.FederationIdentifier + '3';
+        DTWAdminTest.OracleEmployeeId__c = DTWAdminTest.OracleEmployeeId__c + '3';
+        DTWAdminTest.TrackingID__c = DTWAdminTest.TrackingID__c + '3';
+        DTWAdminTest.URS_FIM_GUID__c = DTWAdminTest.URS_FIM_GUID__c + '3';
+		DTWAdminTest.Email = '3' + DTWAdminTest.Email;
 		lUsers.add(runningUser);
 		lUsers.add(DTWAdminWater);
 		lUsers.add(DTWAdminTest);
