@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <description>Object used for tracking billing information from Oracle</description>
@@ -52,8 +53,74 @@
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
+    <fields>
+        <fullName>AR0to30__c</fullName>
+        <externalId>false</externalId>
+        <formula>If( isblank(InvoiceDate__c)  ,0,
+If( (today()- InvoiceDate__c ) &gt;= 0  &amp;&amp;  (today()- InvoiceDate__c ) &lt;= 30, BalanceDue__c , 0))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>AR 0 to 30</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>AR181Plus__c</fullName>
+        <externalId>false</externalId>
+        <formula>If( isblank(InvoiceDate__c)  ,0,
+If( (today()- InvoiceDate__c ) &gt;= 181, BalanceDue__c , 0))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>AR 181 Plus</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>AR31to60__c</fullName>
+        <externalId>false</externalId>
+        <formula>If( isblank(InvoiceDate__c)  ,0,
+If( (today()- InvoiceDate__c ) &gt;= 31  &amp;&amp;  (today()- InvoiceDate__c ) &lt;= 60, BalanceDue__c , 0))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>AR 31 to 60</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>AR61to90__c</fullName>
+        <externalId>false</externalId>
+        <formula>If( isblank(InvoiceDate__c)  ,0,
+If( (today()- InvoiceDate__c ) &gt;= 61  &amp;&amp;  (today()- InvoiceDate__c ) &lt;= 90, BalanceDue__c , 0))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>AR 61 to 90</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>AR91to180__c</fullName>
+        <externalId>false</externalId>
+        <formula>If( isblank(InvoiceDate__c)  ,0,
+If( (today()- InvoiceDate__c ) &gt;= 91  &amp;&amp;  (today()- InvoiceDate__c ) &lt;= 180, BalanceDue__c , 0))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>AR 91 to 180</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
     <fields>
         <fullName>AccountedBalanceDue__c</fullName>
         <externalId>false</externalId>
@@ -226,9 +293,33 @@ HYPERLINK(&quot;https://abc.aecomnet.com/aecom/jsp/pdf.jsp?&amp;docId=&quot; + S
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>PreTaxInvoiceAmount__c</fullName>
+        <externalId>false</externalId>
+        <formula>InvoiceAmount__c -  TaxAmount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Pre-Tax Invoice Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>ProjectFunctionalInvoiceAmount__c</fullName>
         <externalId>false</externalId>
         <label>Project Functional Invoice Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ProjectFunctionalPreTaxInvoiceAmoun__c</fullName>
+        <externalId>false</externalId>
+        <formula>ProjectFunctionalInvoiceAmount__c -  AccountedTaxAmount__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project Functional Pre-Tax Invoice Amoun</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>

@@ -46,6 +46,7 @@
         <skipRecordTypeSelect>false</skipRecordTypeSelect>
         <type>Visualforce</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
@@ -53,24 +54,42 @@
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>false</enableReports>
+    <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fields>
-        <fullName>AR0to90Original__c</fullName>
+        <fullName>AR0to30Comments__c</fullName>
         <externalId>false</externalId>
-        <formula>CashPerfBilled0__c+ CashPerfBilled31__c +  CashPerfBilled60__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>AR 0 to 90 Original</label>
+        <label>AR 0 to 30 Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AR0to30__c</fullName>
+        <externalId>false</externalId>
+        <label>AR 0 to 30</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AR0to90Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>AR 0 to 90 Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>AR0to90__c</fullName>
         <externalId>false</externalId>
-        <formula>CashPerfBilled0__c+CashPerfBilled31__c+ CashPerfBilled60__c</formula>
+        <formula>AR0to30__c + AR31to60__c + AR61to90__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>AR 0 to 90</label>
         <precision>18</precision>
@@ -80,19 +99,18 @@
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>AR181PlusOriginal__c</fullName>
+        <fullName>AR181PlusComments__c</fullName>
         <externalId>false</externalId>
-        <label>AR 181 Plus Original</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
+        <label>AR 181 Plus Comments</label>
+        <length>32768</length>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>AR181Plus__c</fullName>
         <externalId>false</externalId>
-        <label>AR 181Plus</label>
+        <label>AR 181 Plus</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -100,31 +118,141 @@
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>AR91to180Original__c</fullName>
+        <fullName>AR31to60Comments__c</fullName>
         <externalId>false</externalId>
-        <label>AR 91 to 180 Original</label>
+        <label>AR 31 to 60 Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AR31to60__c</fullName>
+        <externalId>false</externalId>
+        <label>AR 31 to 60</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AR61PlusComments__c</fullName>
+        <externalId>false</externalId>
+        <label>AR 61 Plus Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AR61Plus__c</fullName>
+        <externalId>false</externalId>
+        <formula>AR61to90__c +  AR91to180__c +  AR181Plus__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>AR 61 Plus</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>AR61to90Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>AR 61 to 90 Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AR61to90__c</fullName>
+        <externalId>false</externalId>
+        <label>AR 61 to 90</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>AR91PlusComments__c</fullName>
+        <externalId>false</externalId>
+        <label>AR 91 Plus Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>AR91Plus__c</fullName>
+        <externalId>false</externalId>
+        <formula>AR91to180__c + AR181Plus__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>AR 91 Plus</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>AR91to180Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>AR 91 to 180 Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>AR91to180__c</fullName>
         <externalId>false</externalId>
-        <label>AR 91to180</label>
+        <label>AR 91 to 180</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ARBIEEComments__c</fullName>
+        <externalId>false</externalId>
+        <label>AR BIEE Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>ARBIEE__c</fullName>
+        <externalId>false</externalId>
+        <label>AR BIEE</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ARComments__c</fullName>
+        <externalId>false</externalId>
+        <label>AR Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
     </fields>
     <fields>
         <fullName>ARDaysActual__c</fullName>
         <externalId>false</externalId>
         <formula>ARTotal__c /( AR0to90__c /91)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>AR DaysActual</label>
+        <label>AR Days Actual</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -132,14 +260,13 @@
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>ARRetentionOriginal__c</fullName>
+        <fullName>ARRetentionComments__c</fullName>
         <externalId>false</externalId>
-        <label>AR Retention Original</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
+        <label>AR Retention Comments</label>
+        <length>32768</length>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>ARRetention__c</fullName>
@@ -152,14 +279,13 @@
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>ARTotalOriginal__c</fullName>
+        <fullName>ARTotalComments__c</fullName>
         <externalId>false</externalId>
-        <label>AR Total Original</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
+        <label>AR Total Comments</label>
+        <length>32768</length>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
     </fields>
     <fields>
         <fullName>ARTotal__c</fullName>
@@ -170,6 +296,25 @@
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>AR__c</fullName>
+        <externalId>false</externalId>
+        <label>AR</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Alerts__c</fullName>
+        <externalId>false</externalId>
+        <label>Alerts</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
     </fields>
     <fields>
         <fullName>AvgLaborHourBudgetOriginal__c</fullName>
@@ -289,6 +434,16 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>BudgetChanges__c</fullName>
+        <externalId>false</externalId>
+        <label>Budget Changes</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>BudgetSpentCost__c</fullName>
         <externalId>false</externalId>
         <label>% Budget Spent (Cost)</label>
@@ -299,144 +454,26 @@
         <type>Percent</type>
     </fields>
     <fields>
-        <fullName>CashPerfBIEEComments__c</fullName>
+        <fullName>CashFlowITDPrevME__c</fullName>
         <externalId>false</externalId>
-        <label>CashPerfBIEEComments</label>
-        <length>32768</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>2</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CashPerfBIEE__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfBIEE</label>
+        <label>Cash Flow ITD Prev. ME</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
-        <fullName>CashPerfBilled0Comments__c</fullName>
+        <fullName>CashFlowITD__c</fullName>
         <externalId>false</externalId>
-        <label>CashPerfBilled0Comments</label>
-        <length>32768</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>2</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CashPerfBilled0__c</fullName>
-        <externalId>false</externalId>
-        <label>Cash Perf Billed 0-30</label>
+        <formula>GrossRevenueITD__c -  AR__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cash Flow ITD</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CashPerfBilled31Comments__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfBilled31Comments</label>
-        <length>32768</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>2</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CashPerfBilled31__c</fullName>
-        <externalId>false</externalId>
-        <label>Cash Perf Billed 31-60</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CashPerfBilled60Comments__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfBilled60Comments</label>
-        <length>32768</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>2</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CashPerfBilled60__c</fullName>
-        <externalId>false</externalId>
-        <label>Cash Perf Billed 60+</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CashPerfBilled90Comments__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfBilled90Comments</label>
-        <length>32768</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>2</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CashPerfBilled90__c</fullName>
-        <externalId>false</externalId>
-        <label>Cash Perf Billed 90+</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CashPerfBilledARComments__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfBilledARComments</label>
-        <length>32768</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>2</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CashPerfBilledAR__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfBilledAR</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CashPerfBilledITDComments__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfBilledITDComments</label>
-        <length>32768</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>2</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CashPerfBilledITD__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfBilledITD</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>CashPerfRetentionComments__c</fullName>
@@ -446,143 +483,6 @@
         <trackTrending>false</trackTrending>
         <type>LongTextArea</type>
         <visibleLines>2</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CashPerfRetention__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfRetention</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CashPerfTotalUnbilledComments__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfTotalUnbilledComments</label>
-        <length>32768</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>2</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CashPerfTotalUnbilled__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfTotalUnbilled</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CashPerfUnbilled0Comments__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfUnbilled0Comments</label>
-        <length>32768</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>2</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CashPerfUnbilled0__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfUnbilled0</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CashPerfUnbilled30Comments__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfUnbilled30Comments</label>
-        <length>32768</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>2</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CashPerfUnbilled30__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfUnbilled30</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CashPerfUnbilled60Comments__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfUnbilled60Comments</label>
-        <length>32768</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>2</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CashPerfUnbilled60PlusComments__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfUnbilled60PlusComments</label>
-        <length>32768</length>
-        <trackTrending>false</trackTrending>
-        <type>LongTextArea</type>
-        <visibleLines>2</visibleLines>
-    </fields>
-    <fields>
-        <fullName>CashPerfUnbilled60Plus__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfUnbilled60Plus</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>CashPerfUnbilled60__c</fullName>
-        <externalId>false</externalId>
-        <label>CashPerfUnbilled60</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
-        <fullName>Cash_Flow_ITD_Prev_ME__c</fullName>
-        <description>Used on Cash flow chart</description>
-        <externalId>false</externalId>
-        <inlineHelpText>Cash Flow ITD Prev. ME</inlineHelpText>
-        <label>Cash Flow ITD Prev. ME</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
-    </fields>
-    <fields>
-        <fullName>Cash_Flow_ITD__c</fullName>
-        <description>Cash Flow ($ - ITD)</description>
-        <externalId>false</externalId>
-        <formula>GrossRevenueITD__c - CashPerfBilledAR__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <inlineHelpText>Cash Flow ($ - ITD)</inlineHelpText>
-        <label>Cash Flow ITD</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Currency</type>
     </fields>
     <fields>
         <fullName>ChangeManager__c</fullName>
@@ -638,7 +538,7 @@
     <fields>
         <fullName>ContingencyBudget__c</fullName>
         <externalId>false</externalId>
-        <label>ContingencyBudget</label>
+        <label>Contingency Budget</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -649,7 +549,7 @@
     <fields>
         <fullName>ContingencyDraft__c</fullName>
         <externalId>false</externalId>
-        <label>ContingencyDraft</label>
+        <label>Contingency Draft</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -683,7 +583,7 @@
     <fields>
         <fullName>ContingencyForecast__c</fullName>
         <externalId>false</externalId>
-        <label>ContingencyForecast</label>
+        <label>Contingency Forecast</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -694,7 +594,7 @@
     <fields>
         <fullName>ContingencyITD__c</fullName>
         <externalId>false</externalId>
-        <label>ContingencyITD</label>
+        <label>Contingency ITD</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -705,7 +605,7 @@
     <fields>
         <fullName>ContingencyMonthToDate__c</fullName>
         <externalId>false</externalId>
-        <label>ContingencyMonthToDate</label>
+        <label>Contingency Month To Date</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -716,7 +616,7 @@
     <fields>
         <fullName>ContingencyUnapproved__c</fullName>
         <externalId>false</externalId>
-        <label>ContingencyUnapproved</label>
+        <label>Contingency Unapproved</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -727,7 +627,7 @@
     <fields>
         <fullName>ContingencyYearToDate__c</fullName>
         <externalId>false</externalId>
-        <label>ContingencyYearToDate</label>
+        <label>Contingency Year To Date</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -738,7 +638,7 @@
     <fields>
         <fullName>CostBudget__c</fullName>
         <externalId>false</externalId>
-        <label>CostBudget</label>
+        <label>Cost Budget</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -756,6 +656,18 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CostETC__c</fullName>
+        <externalId>false</externalId>
+        <formula>CostForecast__c -  CostITD__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cost ETC</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>CostForecast__c</fullName>
@@ -789,6 +701,16 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CostOrigBudget__c</fullName>
+        <externalId>false</externalId>
+        <label>Cost Orig Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>CostUnapproved__c</fullName>
@@ -1023,6 +945,16 @@
         <type>Date</type>
     </fields>
     <fields>
+        <fullName>CurrentBudget__c</fullName>
+        <externalId>false</externalId>
+        <label>Current Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>DSO__c</fullName>
         <externalId>false</externalId>
         <formula>TotalWorkingCapital__c /( AR0to90__c /91)</formula>
@@ -1116,6 +1048,14 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ExpenditureComments__c</fullName>
+        <externalId>false</externalId>
+        <label>Expenditure Comments</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
     </fields>
     <fields>
         <fullName>FandAParticipantTitle__c</fullName>
@@ -1803,6 +1743,34 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>InvoiceDescription__c</fullName>
+        <externalId>false</externalId>
+        <label>Invoice Description</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>TextArea</type>
+    </fields>
+    <fields>
+        <fullName>InvoicedCommitmentCurrency__c</fullName>
+        <externalId>false</externalId>
+        <label>Invoiced Commitment Currency</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>InvoicedFunctionalCurrency__c</fullName>
+        <externalId>false</externalId>
+        <label>Invoiced Functional Currency</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>KAMClientManager__c</fullName>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
@@ -2024,6 +1992,7 @@
     </fields>
     <fields>
         <fullName>LostMarginETC__c</fullName>
+        <description>LostMarginForecast__c -  LostMarginITD__c</description>
         <externalId>false</externalId>
         <formula>LostMarginForecast__c -  LostMarginITD__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -2049,24 +2018,26 @@
     <fields>
         <fullName>LostMarginITD__c</fullName>
         <externalId>false</externalId>
+        <formula>((NMNSRITD__c - NMNSRBudget__c) * NetServiceITD__c)/100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Lost Margin ITD</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>LostMarginMonthToDate__c</fullName>
         <externalId>false</externalId>
+        <formula>((NMNSRMonthToDate__c -  NMNSRBudget__c) *  NetServiceMonthToDate__c ) / 100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Lost Margin Month To Date</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>LostMarginUnapproved__c</fullName>
@@ -2082,13 +2053,14 @@
     <fields>
         <fullName>LostMarginYearToDate__c</fullName>
         <externalId>false</externalId>
+        <formula>((NMNSRYearToDate__c -  NMNSRBudget__c) *  NetServiceYearToDate__c ) / 100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Lost Margin Year To Date</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>NMGRBudget__c</fullName>
@@ -2302,6 +2274,26 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>NetMarginChanges__c</fullName>
+        <externalId>false</externalId>
+        <label>Net Margin Changes</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>NetMarginCurrentBudget__c</fullName>
+        <externalId>false</externalId>
+        <label>Net Margin Current Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>NetMarginDraft__c</fullName>
         <externalId>false</externalId>
         <label>Net Margin Draft</label>
@@ -2382,6 +2374,16 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>NetMarginOrigBudget__c</fullName>
+        <externalId>false</externalId>
+        <label>Net Margin Orig Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>NetMarginUnapproved__c</fullName>
         <externalId>false</externalId>
         <label>Net Margin Unapproved</label>
@@ -2440,7 +2442,7 @@
     <fields>
         <fullName>NetServiceETC__c</fullName>
         <externalId>false</externalId>
-        <formula>NetServiceForecast__c -  NetServiceITD__c</formula>
+        <formula>GrossRevenueETC__c - ( CostsODCEXPSETC__c +  CostsODCSUBSETC__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Net Service ETC</label>
         <precision>18</precision>
@@ -2537,6 +2539,16 @@
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>OrigBudget__c</fullName>
+        <externalId>false</externalId>
+        <label>Orig Budget</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>OriginalBudgetAsOfDate__c</fullName>
@@ -2687,6 +2699,46 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>POBalanceFunctionalCurrency__c</fullName>
+        <externalId>false</externalId>
+        <label>PO Balance Functional Currency</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>POCommitmentCurrency__c</fullName>
+        <externalId>false</externalId>
+        <label>PO Commitment Currency</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>POFunctionalCurrency__c</fullName>
+        <externalId>false</externalId>
+        <label>PO Functional Currency</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PaidAmount__c</fullName>
+        <externalId>false</externalId>
+        <label>Paid Amount</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Period_Namee__c</fullName>
         <externalId>false</externalId>
         <formula>Time_Period__r.Name</formula>
@@ -2725,6 +2777,15 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>ProjectEndDateChangedsincePrevME__c</fullName>
+        <externalId>false</externalId>
+        <formula>ProjectEndDate__c &lt;&gt;  ProjectEndDatePrevME__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Project End Date Changed since Prev. ME</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
     </fields>
     <fields>
         <fullName>ProjectEndDatePrevME__c</fullName>
@@ -2843,10 +2904,22 @@
         <writeRequiresMasterRead>false</writeRequiresMasterRead>
     </fields>
     <fields>
+        <fullName>ReceiptsITD__c</fullName>
+        <externalId>false</externalId>
+        <formula>ARTotal__c -  AR__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Receipts ITD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Receipts_ITD__c</fullName>
         <description>Receipts ($ - ITD)</description>
         <externalId>false</externalId>
-        <formula>CashPerfBilledITD__c -  CashPerfBilledAR__c</formula>
+        <formula>ARTotal__c -  AR__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <inlineHelpText>Receipts ($ - ITD)</inlineHelpText>
         <label>Receipts ITD</label>
@@ -2893,6 +2966,16 @@
         </picklist>
         <trackTrending>false</trackTrending>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>RunRateAverageCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Run Rate Average Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>SCMBudgetOriginal__c</fullName>
@@ -3010,6 +3093,30 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ScheduledVarianceDays__c</fullName>
+        <externalId>false</externalId>
+        <formula>ScheduledVarianceValue__c / (CostBudget__c / ( Project__r.EstimatedEndDate__c  - ProjectStartDate__c))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Scheduled Variance (Days)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>ScheduledVarianceValue__c</fullName>
+        <externalId>false</externalId>
+        <formula>EarnedValue__c - EarnedValuePlannedValue__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Scheduled Variance (Value)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>SecondaryFutureSpend__c</fullName>
@@ -3258,17 +3365,6 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>TotalUnbilled__c</fullName>
-        <externalId>false</externalId>
-        <label>Total Unbilled</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>TotalWorkingCapital__c</fullName>
         <externalId>false</externalId>
         <formula>ARTotal__c + UnbilledTotal__c</formula>
@@ -3281,11 +3377,39 @@
         <type>Currency</type>
     </fields>
     <fields>
-        <fullName>UnBilled61to90__c</fullName>
+        <fullName>Unbilled0to30Comments__c</fullName>
         <externalId>false</externalId>
-        <formula>Unbilled0to60__c</formula>
+        <label>Unbilled 0 to 30 Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Unbilled0to30__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbilled 0 to 30</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Unbilled0to60Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbilled 0 to 60 Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Unbilled0to60Original__c</fullName>
+        <externalId>false</externalId>
+        <formula>Unbilled0to30__c +  Unbilled31to60__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>UnBilled61to90</label>
+        <label>Unbilled 0 to 60 Original</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -3295,9 +3419,128 @@
     <fields>
         <fullName>Unbilled0to60__c</fullName>
         <externalId>false</externalId>
-        <formula>CashPerfBilled0__c + CashPerfBilled31__c</formula>
+        <formula>Unbilled0to30__c +  Unbilled31to60__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>Unbilled0to60</label>
+        <label>Unbilled 0 to 60</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Unbilled181PlusComments__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbilled 181 Plus Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Unbilled181Plus__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbilled 181 Plus</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Unbilled31to60Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbilled 31 to 60 Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Unbilled31to60Original__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbilled 31 to 60 Original</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Unbilled31to60__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbilled 31 to 60</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Unbilled61PlusComments__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbilled 61 Plus Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Unbilled61Plus__c</fullName>
+        <externalId>false</externalId>
+        <formula>GrossRevenueITD__c - ( ARTotal__c +  Unbilled0to30__c + Unbilled31to60__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Unbilled 61 Plus</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Unbilled61to90Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbilled 61 to 90 Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>2</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Unbilled61to90__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbilled 61 to 90</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Unbilled91Plus__c</fullName>
+        <externalId>false</externalId>
+        <formula>GrossRevenueITD__c - ( ARTotal__c +  Unbilled0to30__c + Unbilled31to60__c + Unbilled61to90__c )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Unbilled 91 Plus</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>Unbilled91to180Comments__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbilled 91 to 180 Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
+    </fields>
+    <fields>
+        <fullName>Unbilled91to180__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbilled 91 to 180</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -3307,14 +3550,23 @@
     <fields>
         <fullName>UnbilledDaysActual__c</fullName>
         <externalId>false</externalId>
-        <formula>UnBilled61to90__c /( AR0to90__c /91)</formula>
+        <formula>Unbilled61to90__c /( AR0to90__c /91)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
-        <label>UnbilledDaysActual</label>
+        <label>Unbilled Days Actual</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>UnbilledTotalComments__c</fullName>
+        <externalId>false</externalId>
+        <label>Unbilled Total Comments</label>
+        <length>32768</length>
+        <trackTrending>false</trackTrending>
+        <type>LongTextArea</type>
+        <visibleLines>3</visibleLines>
     </fields>
     <fields>
         <fullName>UnbilledTotal__c</fullName>

@@ -44,6 +44,7 @@
         <actionName>View</actionName>
         <type>Default</type>
     </actionOverrides>
+    <allowInChatterGroups>false</allowInChatterGroups>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <deploymentStatus>Deployed</deploymentStatus>
     <enableActivities>false</enableActivities>
@@ -52,6 +53,7 @@
     <enableFeeds>false</enableFeeds>
     <enableHistory>false</enableHistory>
     <enableReports>true</enableReports>
+    <enableSearch>true</enableSearch>
     <enableSharing>true</enableSharing>
     <enableStreamingApi>true</enableStreamingApi>
     <fieldSets>
@@ -163,22 +165,18 @@
     <fields>
         <fullName>Contact__c</fullName>
         <deleteConstraint>Restrict</deleteConstraint>
-        <description>Record Type must be PSA_Resource</description>
+        <description>AECOM Users only.  The contact must have a valid Salesforce user.</description>
         <externalId>false</externalId>
-        <inlineHelpText>Record Type must be PSA_Resource</inlineHelpText>
+        <inlineHelpText>AECOM Users only.  The contact must have a valid Salesforce user.</inlineHelpText>
         <label>Name</label>
         <lookupFilter>
-            <active>false</active>
-            <filterItems>
-                <field>Contact.RecordType.DeveloperName</field>
-                <operation>equals</operation>
-                <value>PSA_Resource</value>
-            </filterItems>
+            <active>true</active>
             <filterItems>
                 <field>Contact.pse__Salesforce_User__c</field>
                 <operation>notEqual</operation>
                 <value></value>
             </filterItems>
+            <infoMessage>AECOM Users only.  The contact must have a valid Salesforce user.</infoMessage>
             <isOptional>true</isOptional>
         </lookupFilter>
         <referenceTo>Contact</referenceTo>
@@ -429,6 +427,17 @@
     </fields>
     <fields>
         <fullName>LaborHours03FiscalMonthsAgo__c</fullName>
+        <externalId>false</externalId>
+        <label>Labor Hours 03 Fiscal Months Ago</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LaborHours04FiscalMonthsAgo__c</fullName>
         <externalId>false</externalId>
         <label>Labor Hours 03 Fiscal Months Ago</label>
         <precision>18</precision>
