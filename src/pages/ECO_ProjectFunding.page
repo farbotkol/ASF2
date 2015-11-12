@@ -58,7 +58,23 @@
   border-right: none;
 }
 
+.customHelpText{
+    padding: 7px;
+    border: 1px solid #85B3CE;
+    min-height: 30px;
+    display: block;
+    width: auto;
+    margin: 0 0 5px 0;
+    background-repeat: no-repeat;
+    border-radius: 4px;
+    background-color: #A2D3F1;            
+}
 
+.customHelpBody{
+    display:inline-block;
+    color:#;
+    max-width:95%;
+}
 
 </style>
 
@@ -79,7 +95,12 @@
 <apex:form >
 <apex:pageMessages id="pageMessages" />
 <apex:sectionHeader subtitle="{!project.Name}" title="Project Funding Management"/>
-
+  <div class="customHelpText">
+    <div class="customHelpBody">
+  Use this screen to allocate and manage funding on your project.  Funding a project with an agreement from a client is required step before revenue is accrued or an invoice generated.  The amount of project funding must equal the revenue budget amount (in the Budget in order to successfully baseline the budget.  Seek advice and assistance from your Project Accountant on appropriate funding setup.<br/><br/>
+  Project Level Funding - this is the default setting and is recommended as appropriate for most projects.Task Level<br/><br/>
+  Funding - in order to fund the project at the top task level, unclick the Project Level Funding Flag and hit Save.  You can then enter funding against each top task, which may trigger segmentation.
+  </div></div>
 <apex:pageBlock title="Project Funding Managment Edit" id="pb">
 
 <apex:pageBlockButtons >
@@ -122,7 +143,10 @@
         <apex:outputField value="{!project.ProjectFunctionalCurrencyCode__c}"/>
     </apex:pageBlockSectionItem>
 
-    <apex:outputField value="{!agreement.Amount__c}"/>
+    <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Amount__c.inlineHelpText}">
+      <apex:outputText value="Agreement Amount (confirmed and committed)"/>
+      <apex:outputField value="{!agreement.Amount__c}"/>
+    </apex:pageBlockSectionItem>
 
     <apex:outputField value="{!project.TotalApprovedRevenue__c}"/>
 
@@ -138,7 +162,7 @@
 
     <apex:inputField value="{!project.EnableTopTaskCustomerFlag__c}" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}"/>
 
-    <apex:pageBlockSection>
+    <apex:pageBlockSection >
 
     </apex:pageBlockSection>
 
@@ -147,7 +171,7 @@
         <apex:outputField value="{!project.isSegmented__c}" rendered="{!NOT(project.ProjectLevelFundingFlag__c)}"/>
     </apex:pageBlockSectionItem>
 
-    <apex:pageBlockSectionItem>
+    <apex:pageBlockSectionItem >
 
     </apex:pageBlockSectionItem>
 
