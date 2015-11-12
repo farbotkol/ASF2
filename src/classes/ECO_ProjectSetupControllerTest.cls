@@ -100,7 +100,7 @@ private class ECO_ProjectSetupControllerTest
 
 
 		List<OrganizationString__c> lOrgStrings = new List<OrganizationString__c>();
-		OrganizationString__c Org1 = INC_Utils_Testing.createTestOrg();
+		OrganizationString__c Org1 = ECO_Utils_Testing.createTestOrg();
 		Org1.OrganizationName__c = 'Test Organization';
 		Org1.Name = 'Test Organization';
 		Org1.BusinessLineName__c = 'test';
@@ -117,7 +117,7 @@ private class ECO_ProjectSetupControllerTest
 		lOrgStrings.add(Org1);
 
 
-		OrganizationString__c Org2 = INC_Utils_Testing.createTestOrg();
+		OrganizationString__c Org2 = ECO_Utils_Testing.createTestOrg();
 
 		Org2.OrganizationName__c = 'Water Organization';
 		Org2.Name = 'Water Organization';
