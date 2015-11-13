@@ -326,6 +326,8 @@ public with sharing class ECO_ProjectStatusController {
                 retStatus = currentProject.ProgBarPrelimPlanApproval__c;
                 if(retStatus == 'NotStarted')
                     return 'Ready';
+                else if (retStatus == 'Submitted')
+                    return 'Started';
                 else
                     return retStatus;
                 /*if(retStatus == 'Submitted')
