@@ -308,7 +308,7 @@
                 
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.EVRulesGuidelines__c.Label}" for="evhRules"/>
-                    <apex:inputField value="{!Project.EVRulesGuidelines__c}" id="evhRules" style="width:500px;"/>
+                    <apex:inputField value="{!Project.EVRulesGuidelines__c}" id="evhRules" style="width:750px;"/>
                 </apex:pageBlockSectionItem> 
             </apex:pageBlockSection>
 
@@ -391,6 +391,19 @@
                     <apex:outputText value="${0, number, ###,###,###,###}"> <apex:param value="{!taskwrapper.task.TotalApprovedCost__c}"/> </apex:outputText>
                 </apex:column>
 
+
+
+            <apex:column width="5px" styleClass="numericCol" >
+                    =
+                </apex:column>
+
+            <apex:column headerClass="numericCol" styleClass="numericCol" >
+                    <apex:facet name="header">
+                        Earned Value
+                    </apex:facet>
+                    <apex:outputText value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.earnedValue}"/> </apex:outputText>
+                </apex:column>
+
             <apex:column headerClass="numericCol" styleClass="numericCol" >
                     <apex:facet name="header">
                         <apex:outputPanel >
@@ -403,17 +416,6 @@
                     <apex:inputField style="width:110px;text-align:right;" value="{!taskWrapper.earnedValueTask.CostAccruals__c}" styleClass="{!taskWrapper.earnedValueTask.Id}" rendered="{!if(taskWrapper.canEdit && !taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
                     <apex:outputField value="{!taskWrapper.earnedValueTask.CostAccruals__c}" rendered="{!if(taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
                     </apex:outputPanel>                 
-                </apex:column>
-
-            <apex:column width="5px" styleClass="numericCol" >
-                    =
-                </apex:column>
-
-            <apex:column headerClass="numericCol" styleClass="numericCol" >
-                    <apex:facet name="header">
-                        Earned Value
-                    </apex:facet>
-                    <apex:outputText value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.earnedValue}"/> </apex:outputText>
                 </apex:column>
 
             <apex:column headerClass="numericCol" styleClass="numericCol" >
