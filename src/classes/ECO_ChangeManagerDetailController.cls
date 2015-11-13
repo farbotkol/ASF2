@@ -755,6 +755,9 @@ public class ECO_ChangeManagerDetailController {
     	ECO_Service_ProjectSnapshots snapshotService = new ECO_Service_ProjectSnapshots(changeManager.Project__c);
     	ProjectSnapshot__c snapshot = snapshotService.getProjectSnapshot();
     	snapshot.ChangeManager__c = changeManager.Id;
+        snapshot.Project__c = changeManager.Project__c;
+
+        insert snapshot;
     	
     	return null;
     }
