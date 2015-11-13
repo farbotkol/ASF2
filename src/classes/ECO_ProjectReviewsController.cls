@@ -125,7 +125,6 @@ public with sharing virtual class ECO_ProjectReviewsController
 		return true;
 	}
 
-
 	public List<Schema.FieldSetMember> getCustomProjFields()
 	{
 		if(theProject.pse__Stage__c == 'Planning')	
