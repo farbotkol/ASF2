@@ -90,6 +90,9 @@ public with sharing class ECO_ProjectSetupController {
 
     public boolean tab2enabled {get;set;}
 
+    public List<SelectOption> opportunityRecType {get;set;}
+    public string idSelectedOppRecType {get;set;}
+
 
     /* Custom classes to facilitate this controller */
     public class EcoControllerException extends Exception {}
@@ -274,6 +277,15 @@ public with sharing class ECO_ProjectSetupController {
         showMoreOrgText = 'Show More';
 
         oppName = null;
+
+        opportunityRecType = new List<SelectOption>();
+
+        opportunityRecType.add(new SelectOption('', 'None'));
+        for(recordtype r:[select id, name from recordtype where SobjectType = 'Opportunity']){
+            opportunityRecType.add(new SelectOption(r.id, r.name));
+        }        
+
+        idSelectedOppRecType = null;
 
         SearchOrganizations();
         SearchUserOrganization();
@@ -545,6 +557,13 @@ public with sharing class ECO_ProjectSetupController {
     }
 
     public PageReference SkipOpportunity(){
+
+        if(idSelectedOppRecType == '' ||idSelectedOppRecType == null ){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'You must select recordtype for automatic opportunity creation.');
+            ApexPages.addMessage(oMsg);  
+            return null;             
+        }
+
         oProject.pse__Opportunity__c = null;
         oProject.name = null;
         oppName = null;
@@ -1240,6 +1259,7 @@ public with sharing class ECO_ProjectSetupController {
         oOpportunityToInsert.accountid = oPrimaryEnd.osite.Account__c;
         oOpportunityToInsert.TO_Procurement_Method__c = 'Competitive Task Orders';
         oOpportunityToInsert.Capture_Manager_User__c = UserInfo.getUserId();
+        oOpportunityToInsert.recordtypeid = idSelectedOppRecType;
 
         insert oOpportunityToInsert;
 
