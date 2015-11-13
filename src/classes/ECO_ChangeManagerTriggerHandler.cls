@@ -739,6 +739,19 @@ public class ECO_ChangeManagerTriggerHandler {
 				//if(project.ScheduledOnHoldDate__c <= Date.today())
 				project.pse__Stage__c = 'Execution';	
 			}
+
+			else if(project.RequestedProjectStatus__c == 'Execution' && changeManager.IsProjectReOpen__c == true)
+			{
+				Id recordTypeId2 = [select Id from RecordType where DeveloperName = 'CustomerProjectSynced' limit 1].Id;
+
+				project.CMProjectClosureIsChanged__c = false;
+				project.CMProjectClosureIsApproved__c = false;
+				project.RecordTypeId = recordTypeId2;
+				//project.CMProjectOnHoldIsChanged__c = false;	
+
+				//if(project.ScheduledOnHoldDate__c <= Date.today())
+				project.pse__Stage__c = 'Execution';	
+			}			
 				
 			update project;		
 		}

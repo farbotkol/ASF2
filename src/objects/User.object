@@ -9,6 +9,10 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>DeletePhotoAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>EditUserAction</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -45,7 +49,15 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
+        <actionName>UpdatePhotoAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
         <actionName>UserActivationAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>ViewPhotoAction</actionName>
         <type>Default</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
@@ -1573,7 +1585,6 @@
     </fields>
     <fields>
         <fullName>TrackingID__c</fullName>
-        <caseSensitive>false</caseSensitive>
         <externalId>true</externalId>
         <inlineHelpText>Employee Tracking ID</inlineHelpText>
         <label>TrackingID</label>
@@ -1581,7 +1592,7 @@
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
-        <unique>true</unique>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Training_Summary__c</fullName>
@@ -1961,7 +1972,6 @@
         <columns>CORE.USERS.USERNAME</columns>
         <columns>CORE.USER_ROLE.NAME</columns>
         <columns>CREATED_DATE</columns>
-        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>CORE.USERS.ACTIVE</field>
@@ -1978,7 +1988,6 @@
         <columns>CORE.USERS.USERNAME</columns>
         <columns>CORE.USERS.LAST_LOGIN</columns>
         <columns>CORE.USER_ROLE.NAME</columns>
-        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>CORE.PROFILE.NAME</columns>
         <columns>CORE.USERS.ACTIVE</columns>
         <columns>CORE.USERS.EMAIL</columns>
@@ -2000,7 +2009,6 @@
         <columns>CORE.USERS.EMAIL</columns>
         <columns>CORE.USERS.LAST_LOGIN</columns>
         <columns>CORE.USER_ROLE.NAME</columns>
-        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>CORE.PROFILE.NAME</columns>
         <columns>MANAGER</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -2112,7 +2120,6 @@
         <fullName>Canada_East_Users</fullName>
         <columns>FULL_NAME</columns>
         <columns>Auto_Deactivation_Exception__c</columns>
-        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>CORE.USERS.USERNAME</columns>
         <columns>CORE.USERS.ACTIVE</columns>
         <columns>LAST_UPDATE</columns>
@@ -2603,7 +2610,6 @@
         <columns>CORE.PROFILE.NAME</columns>
         <columns>CORE.USERS.LAST_LOGIN</columns>
         <columns>CORE.USERS.LAST_NAME</columns>
-        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>CORE.USERS.EMAIL</columns>
         <columns>EMPLOYEE_NUMBER</columns>
         <columns>CREATED_BY_NAME</columns>
@@ -2762,17 +2768,12 @@
     </listViews>
     <listViews>
         <fullName>users_without_federation_ID</fullName>
-        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.USERNAME</columns>
         <columns>CORE.USERS.LAST_LOGIN</columns>
         <columns>CORE.USER_ROLE.NAME</columns>
         <columns>CORE.PROFILE.NAME</columns>
         <filterScope>Everything</filterScope>
-        <filters>
-            <field>CORE.USERS.SAML_SUBJECT</field>
-            <operation>equals</operation>
-        </filters>
         <filters>
             <field>CORE.USERS.ACTIVE</field>
             <operation>equals</operation>
@@ -2800,8 +2801,6 @@
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.PHONE</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.EXTENSION</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.CELL</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>00Ne0000001U3NH</lookupPhoneDialogsAdditionalFields>
-        <lookupPhoneDialogsAdditionalFields>00Ne0000001U3N7</lookupPhoneDialogsAdditionalFields>
         <searchFilterFields>FULL_NAME</searchFilterFields>
         <searchFilterFields>CORE.USERS.FIRST_NAME</searchFilterFields>
         <searchFilterFields>CORE.USERS.LAST_NAME</searchFilterFields>

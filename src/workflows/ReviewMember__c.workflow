@@ -1,16 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <alerts>
-        <fullName>EcoDeliverableReviewReadyEmail</fullName>
-        <description>EcoDeliverableReviewReadyEmail</description>
-        <protected>false</protected>
-        <recipients>
-            <field>User_Stamp__c</field>
-            <type>userLookup</type>
-        </recipients>
-        <senderType>CurrentUser</senderType>
-        <template>EcoSystem_Templates/EcoTechnicalQualityTeamReviewReady</template>
-    </alerts>
     <fieldUpdates>
         <fullName>Eco_RM_Approved_Status_Upd</fullName>
         <field>Status__c</field>
@@ -49,18 +38,4 @@
         <operation>Literal</operation>
         <protected>false</protected>
     </fieldUpdates>
-    <rules>
-        <fullName>EcoDeliverableReadyToReview</fullName>
-        <actions>
-            <name>EcoDeliverableReviewReadyEmail</name>
-            <type>Alert</type>
-        </actions>
-        <active>true</active>
-        <criteriaItems>
-            <field>ReviewMember__c.ReviewSubmitted__c</field>
-            <operation>equals</operation>
-            <value>True</value>
-        </criteriaItems>
-        <triggerType>onCreateOrTriggeringUpdate</triggerType>
-    </rules>
 </Workflow>

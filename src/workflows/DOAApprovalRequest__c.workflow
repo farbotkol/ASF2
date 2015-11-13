@@ -15,6 +15,9 @@
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoAAECOMHubApprovalComplete</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedAECOMHubEcosystem</template>
     </alerts>
@@ -24,6 +27,9 @@
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoAAECOMHubApprovalComplete(Non-Ecosystem)</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedAECOMHubNonEcosystem</template>
     </alerts>
@@ -33,6 +39,9 @@
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoADCSHubApprovalComplete</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedDCSHubEcosystem</template>
     </alerts>
@@ -42,6 +51,9 @@
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoAEnterpriseApprovalComplete</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedEntepriseEcosystem</template>
     </alerts>
@@ -51,6 +63,9 @@
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoAEnterpriseApprovalComplete (Non-Ecosystem)</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedEntepriseNonEcosystem</template>
     </alerts>
@@ -61,6 +76,10 @@
         <ccEmails>CHRISTINA.BICKSLER@aecom.com</ccEmails>
         <description>EcoDoAForAECOMHubApproval</description>
         <protected>false</protected>
+        <recipients>
+            <field>AECOMHubAdministratorApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProject</template>
     </alerts>
@@ -71,6 +90,10 @@
         <ccEmails>CHRISTINA.BICKSLER@aecom.com</ccEmails>
         <description>EcoDoAForDCSHubApproval</description>
         <protected>false</protected>
+        <recipients>
+            <field>DCSHubAdministratorApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProject</template>
     </alerts>
@@ -81,6 +104,26 @@
         <ccEmails>CHRISTINA.BICKSLER@aecom.com</ccEmails>
         <description>EcoDoAForEnterpriseApproval</description>
         <protected>false</protected>
+        <recipients>
+            <field>CEOApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>EnterpriseOtherApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>EnterpriseRiskCommitteeApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GeneralCounselApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>PresidentCFOApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProject</template>
     </alerts>
@@ -91,6 +134,66 @@
         <ccEmails>CHRISTINA.BICKSLER@aecom.com</ccEmails>
         <description>EcoDoAForGeoApproval(Ecosystem)</description>
         <protected>false</protected>
+        <recipients>
+            <field>AreaCounselApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>AreaManagerApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>BusinessUnitLeaderApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>CounselContractsManagerApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>DCSgeoRiskCommitteeApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>FedContractsandProcurementApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>FinanceGeographyControlApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GeoChiefOperatingOfficerApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GeoOtherApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GeoPresidentApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GeographyChiefCounselApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>HRDirectorGeographyDirApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>ProjectManagerApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>RegBLExecutiveApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>RegionChiefCounselApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProject</template>
     </alerts>
@@ -101,6 +204,22 @@
         <ccEmails>CHRISTINA.BICKSLER@aecom.com</ccEmails>
         <description>EcoDoAForGroupApproval</description>
         <protected>false</protected>
+        <recipients>
+            <field>GroupChiefCounselApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GroupChiefExecutiveApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GroupChiefFinancialOfficerApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GroupOtherApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProject</template>
     </alerts>
@@ -110,6 +229,9 @@
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoAGeoApprovalComplete</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedGeoEcosystem</template>
     </alerts>
@@ -119,6 +241,9 @@
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoAGeoApprovalComplete(Non-Ecosystem)</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedGeoNonEcosystem</template>
     </alerts>
@@ -128,6 +253,9 @@
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoAGroupApprovalComplete</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedGroupEcosystem</template>
     </alerts>
@@ -137,15 +265,162 @@
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoDoAGroupApprovalComplete (Non-Ecosystem)</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedGroupNonEcosystem</template>
+    </alerts>
+    <alerts>
+        <fullName>EcoDoaForAECOMApproval_Non_Ecosystem</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <description>EcoDoaAECOMForApproval(Non-Ecosystem)</description>
+        <protected>false</protected>
+        <recipients>
+            <field>AECOMHubAdministratorApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectNonEcosystem</template>
+    </alerts>
+    <alerts>
+        <fullName>EcoDoaForDCSApproval_Non_Ecosystem</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <description>EcoDoaDCSForApproval(Non-Ecosystem)</description>
+        <protected>false</protected>
+        <recipients>
+            <field>DCSHubAdministratorApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectNonEcosystem</template>
+    </alerts>
+    <alerts>
+        <fullName>EcoDoaForEnterpriseApproval_Non_Ecosystem</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <description>EcoDoaEnterpriseForApproval(Non-Ecosystem)</description>
+        <protected>false</protected>
+        <recipients>
+            <field>CEOApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>EnterpriseOtherApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>EnterpriseRiskCommitteeApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GeneralCounselApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>PresidentCFOApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectNonEcosystem</template>
     </alerts>
     <alerts>
         <fullName>EcoDoaForGeoApproval_Non_Ecosystem</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
-        <description>EcoDoaForApproval(Non-Ecosystem)</description>
+        <description>EcoDoaGeoForApproval(Non-Ecosystem)</description>
         <protected>false</protected>
+        <recipients>
+            <field>AreaCounselApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>AreaManagerApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>BusinessUnitLeaderApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>CounselContractsManagerApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>DCSgeoRiskCommitteeApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>FedContractsandProcurementApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>FinanceGeographyControlApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GeneralCounselApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GeoChiefOperatingOfficerApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GeoOtherApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GeoPresidentApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GeographyChiefCounselApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>HRDirectorGeographyDirApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>ProjectManagerApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>RegBLExecutiveApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>RegionChiefCounselApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectNonEcosystem</template>
+    </alerts>
+    <alerts>
+        <fullName>EcoDoaForGroupApproval_Non_Ecosystem</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <description>EcoDoaGroupForApproval(Non-Ecosystem)</description>
+        <protected>false</protected>
+        <recipients>
+            <field>GroupChiefCounselApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GroupChiefExecutiveApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GroupChiefFinancialOfficerApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>GroupOtherApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectNonEcosystem</template>
     </alerts>
@@ -155,6 +430,9 @@
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>Eco DCS Hub Approval Complete (Non-Ecosystem)</description>
         <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestProjectApprovedDCSHubNonEcosystem</template>
     </alerts>
@@ -166,6 +444,40 @@
         <protected>false</protected>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestCompletedEcosystem</template>
+    </alerts>
+    <alerts>
+        <fullName>Eco_DOA_Approval_Request_Complete_Ecosystem</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <description>Eco DOA Approval Request Complete (Ecosystem)</description>
+        <protected>false</protected>
+        <recipients>
+            <field>ProjectManagerApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>Requestor__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestCompletedEcosystem</template>
+    </alerts>
+    <alerts>
+        <fullName>Eco_DOA_Approval_Request_Complete_Non_Ecosystem</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
+        <description>Eco DOA Approval Request Complete (Non-Ecosystem)</description>
+        <protected>false</protected>
+        <recipients>
+            <field>ProjectManagerApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>Requestor__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalRequestCompletedNonEcosystem</template>
     </alerts>
     <fieldUpdates>
         <fullName>EcoDCSApprovalStatusApproved</fullName>
@@ -524,7 +836,7 @@
     <rules>
         <fullName>Eco AECOM Hub DOA Approval Submission %28Non-Ecosystem%29</fullName>
         <actions>
-            <name>EcoDoaForGeoApproval_Non_Ecosystem</name>
+            <name>EcoDoaForAECOMApproval_Non_Ecosystem</name>
             <type>Alert</type>
         </actions>
         <actions>
@@ -644,7 +956,7 @@
     <rules>
         <fullName>Eco DCS Hub DOA Approval Submission %28Non-Ecosystem%29</fullName>
         <actions>
-            <name>EcoDoaForGeoApproval_Non_Ecosystem</name>
+            <name>EcoDoaForDCSApproval_Non_Ecosystem</name>
             <type>Alert</type>
         </actions>
         <actions>
@@ -673,6 +985,44 @@
             <field>DOAApprovalRequest__c.SubmitDCSHubforApproval__c</field>
             <operation>equals</operation>
             <value>True</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Non-Ecosystem (Submitted)</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Eco DOA Approval Request Complete %28Ecosystem%29</fullName>
+        <actions>
+            <name>Eco_DOA_Approval_Request_Complete_Ecosystem</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.ApprovalStatus__c</field>
+            <operation>equals</operation>
+            <value>Conditionally Approved,Approved,Rejected,Cancelled</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.RecordTypeId</field>
+            <operation>equals</operation>
+            <value>Ecosystem (Submitted)</value>
+        </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Eco DOA Approval Request Complete %28Non-Ecosystem%29</fullName>
+        <actions>
+            <name>Eco_DOA_Approval_Request_Complete_Non_Ecosystem</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>DOAApprovalRequest__c.ApprovalStatus__c</field>
+            <operation>equals</operation>
+            <value>Conditionally Approved,Approved,Rejected,Cancelled</value>
         </criteriaItems>
         <criteriaItems>
             <field>DOAApprovalRequest__c.RecordTypeId</field>
@@ -764,7 +1114,7 @@ RecordType.DeveloperName = &apos;NonProject&apos;)</formula>
     <rules>
         <fullName>Eco Enterprise DOA Approval Submission %28Non-Ecosystem%29</fullName>
         <actions>
-            <name>EcoDoaForGeoApproval_Non_Ecosystem</name>
+            <name>EcoDoaForEnterpriseApproval_Non_Ecosystem</name>
             <type>Alert</type>
         </actions>
         <actions>
@@ -1004,7 +1354,7 @@ RecordType.DeveloperName = &apos;NonProject&apos;)</formula>
     <rules>
         <fullName>Eco Group DOA Approval Submission %28Non-Ecosystem%29</fullName>
         <actions>
-            <name>EcoDoaForGeoApproval_Non_Ecosystem</name>
+            <name>EcoDoaForGroupApproval_Non_Ecosystem</name>
             <type>Alert</type>
         </actions>
         <actions>

@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
-    <alerts>
-        <fullName>EcoSendHealthyStartEmail</fullName>
-        <ccEmails>bjacobi@centerstance.com</ccEmails>
-        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
-        <description>EcoSend Healthy Start Email</description>
-        <protected>false</protected>
-        <senderType>CurrentUser</senderType>
-        <template>EcoSystem_Templates/EcoBimHealthyStart</template>
-    </alerts>
     <fieldUpdates>
         <fullName>EcoSetBimHealthyStartEmail</fullName>
         <description>Sets the BIM healthy start email field</description>
@@ -39,20 +30,6 @@ IF(OR(ISPICKVAL(Scope_Owner__r.Project__r.Owner:User.Geography_Allocation__c,&qu
         <operation>Literal</operation>
         <protected>false</protected>
     </fieldUpdates>
-    <rules>
-        <fullName>EcoBIM Send Healthy Start Email</fullName>
-        <actions>
-            <name>EcoSendHealthyStartEmail</name>
-            <type>Alert</type>
-        </actions>
-        <active>true</active>
-        <criteriaItems>
-            <field>Packages__c.Utilize_BMI_Technology__c</field>
-            <operation>equals</operation>
-            <value>True</value>
-        </criteriaItems>
-        <triggerType>onCreateOrTriggeringUpdate</triggerType>
-    </rules>
     <rules>
         <fullName>EcoSet Bim Healthy Start Email</fullName>
         <actions>

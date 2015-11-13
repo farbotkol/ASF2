@@ -238,7 +238,9 @@
  
             </apex:outputPanel>
             
-            <apex:outputPanel id="outsideOfficeEnvironment" rendered="{!pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes'}"> 
+			<div style="display:{!if(pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes',"inline","none")};" >
+                
+                <!--!pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes'--->
             <apex:outputPanel id="undertakeWork">   
             <apex:actionRegion >
                 <table><tr>
@@ -250,8 +252,9 @@
                         <apex:actionSupport event="onchange" rerender="undertakeWork"/>
                     </apex:selectRadio></td>                    
                 </tr></table>
-
-                <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthUndertakeWork__c == 'Yes'}">
+				<div style="display:{!if(pse__Proj__c.SafetyHealthUndertakeWork__c =='Yes',"inline","none")};" >
+                
+                    <!-- pse__Proj__c.SafetyHealthUndertakeWork__c == 'Yes' -->
                 <div class="ouputPanelSep">
                     <div class="customHelpText" >
 	                    <div class="customHelpBody">
@@ -264,8 +267,6 @@
         <!--            <apex:outputLabel style="font-weight:bold;">Inductions Register</apex:outputLabel><br/> -->
                     <apex:outputPanel >
                         
-
-
                         <apex:variable var="rowNumInd" value="{!0}"/>
 
                         <apex:pageBlockTable value="{!inductionRegistrations}" var="induction" rendered="{!inductionRegistrations.size > 0}">
@@ -342,13 +343,13 @@
                 <apex:outputPanel rendered="{!inductionRegistrations.size == 0}">
                     <apex:outputText value="No records to display"/>
                 </apex:outputPanel><br/><br/>                                       
-                </div></apex:outputPanel>
+                </div>
+                </div>
                 </apex:actionRegion>                
             </apex:outputPanel>
             
             <apex:outputPanel id="siteInspections">
-            
-            <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes'}">
+            <div style="display:{!if(pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes',"inline","none")};" >
             
             <table><tr>
             <td width="800px"><apex:outputText ><b><br/>Does the project involve site inspections and/or field tasks?</b></apex:outputText></td>
@@ -358,8 +359,20 @@
             </apex:selectRadio></apex:actionRegion></td>
             </tr></table>
                     
-            <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthSiteInspections__c=='Yes'}">
-
+                <br/>
+             <div style="display:{!if(pse__Proj__c.SafetyHealthSiteInspections__c =='Yes',"inline","none")};" >
+                
+            <apex:outputPanel id="theFieldsPanel"> 
+                         <apex:actionRegion >   
+                             
+            <apex:inputFile id="safetyHealthInspectionAttachment" value="{!newsafetyHealthInspectionAttachment.Body}"
+                            contentType="{!newsafetyHealthInspectionAttachment.ContentType}" fileName="{!newsafetyHealthInspectionAttachment.Name}"
+                            onchange="fileChosen('{!$Component.cmdSafetyHealthInspectionAttachment}', this, '{!$Component.overrideSafetyHealthInspectionName}'); return false;" />
+                
+	            <apex:inputText id="overrideSafetyHealthInspectionName" value="{!overrideSafetyHealthInspectionName}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
+                <apex:commandButton id="cmdsafetyHealthInspectionAttachment" value="Attach" action="{!saveSafetyHealthInspectionAttachmentAndProject}" styleclass="attachNewFile"/><br/>
+            </apex:actionRegion> 
+			<br/>
             <div class="ouputPanelSep">
                 <div class="customHelpText" >
                     <div class="customHelpBody">
@@ -379,11 +392,14 @@
                         <apex:column value="{!attachedSafetyInspectionFile.LastModifiedDate}" />    
                         <apex:column value="{!attachedSafetyInspectionFile.LastModifiedById}" />
                     </apex:pageBlockTable></div>
-                    <apex:inputFile id="safetyHealthInspectionAttachment" value="{!newSafetyHealthInspectionAttachment.Body}" contentType="{!newSafetyHealthInspectionAttachment.ContentType}" fileName="{!newSafetyHealthInspectionAttachment.Name}" onchange="fileChosen('{!$Component.cmdSafetyHealthInspectionAttachment}', this, '{!$Component.overrideSafetyHealthInspectionName}'); return false;" />
-                    <apex:inputText id="overrideSafetyHealthInspectionName" value="{!overrideSafetyHealthInspectionName}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
-                    <apex:commandButton id="cmdSafetyHealthInspectionAttachment" value="Attach" action="{!saveSafetyHealthInspectionAttachmentAndProject}" styleclass="attachNewFile"/><br/>
-                <br/></div></apex:outputPanel></apex:outputPanel>
-
+                
+                <br/>
+           	</div>
+		                  
+            </apex:outputPanel> 
+                 </div>   
+                
+			</div>
             </apex:outputPanel>
             
             <apex:outputPanel id="healthRequirements">      
@@ -416,6 +432,7 @@
                     </apex:selectRadio></apex:actionregion></td>
                 </tr>
             </table>
+                
             <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthSafetyPlan__c =='Yes'}">
                 <div class="ouputPanelSep">
                 <apex:outputText >                                  
@@ -461,7 +478,9 @@
                 <apex:commandButton id="cmdLocationsAndResilience" value="Locations and Resilience" action="{!gotoLocationsAndResilience}"/><br/>
                 </apex:outputPanel>
             </apex:outputPanel>
-        </apex:outputPanel>
+                
+            </div>
+                
         </apex:outputPanel>                                                     
         </apex:pageBlockSection>
         
@@ -474,7 +493,7 @@ To complete the Environmental Review:<br/><br/>
 <ul>
 <li>Subjectively rank the significance of each impact as high medium or low</li>
 <li>Note whether AECOM can either control or influence each identified potential impact</li>
-<li>For impacts that have been identified as being of high or medium significant and where AECOM can control or influence then, set out our proposed actions to manage these issues; and</li>
+<li>For impacts that have been identified as being of high or medium significant and where AECOM can control or influence them, set out our proposed actions to manage these issues; and</li>
 <li>At each project review, update this assessment and note action taken (if applicable)</li>
 <li>If there are no environmental impacts, please note “none” to highlight that a review has been undertaken</li>
 </ul>
@@ -555,7 +574,6 @@ To complete the Environmental Review:<br/><br/>
             <br/><br/>
             </apex:actionregion>
     </apex:outputPanel>                              
-        
 
             <b>Additional Guidance </b><br /><br />
             The Project Environmental Review is compliant by:<br /><br />

@@ -37,12 +37,20 @@
     <enableMobileDeviceAccess>true</enableMobileDeviceAccess>
     <finalApprovalActions>
         <action>
+            <name>EcoExportControlsApprovedRejected</name>
+            <type>Alert</type>
+        </action>
+        <action>
             <name>EcoExportControlSetStatusToApproved</name>
             <type>FieldUpdate</type>
         </action>
     </finalApprovalActions>
     <finalApprovalRecordLock>true</finalApprovalRecordLock>
     <finalRejectionActions>
+        <action>
+            <name>EcoExportControlsApprovedRejected</name>
+            <type>Alert</type>
+        </action>
         <action>
             <name>EcoExportControlSetStatusToRejected</name>
             <type>FieldUpdate</type>
@@ -51,8 +59,8 @@
     <finalRejectionRecordLock>false</finalRejectionRecordLock>
     <initialSubmissionActions>
         <action>
-            <name>EcoApproval_Send_Email_to_Submitter</name>
-            <type>Alert</type>
+            <name>Eco_Set_Owner_to_Export_Control_Team</name>
+            <type>FieldUpdate</type>
         </action>
         <action>
             <name>EcoExportControlSetStatusSubmitted</name>
@@ -65,6 +73,10 @@
         <userHierarchyField>Manager</userHierarchyField>
     </nextAutomatedApprover>
     <recallActions>
+        <action>
+            <name>EcoExportControlsApprovedRejected</name>
+            <type>Alert</type>
+        </action>
         <action>
             <name>EcoExportControlStatusToCancelled</name>
             <type>FieldUpdate</type>
