@@ -1,29 +1,29 @@
 public with sharing class ECO_DOAConditionsOfApprovalController {
-	
-	public DOAConditions__c doaConditions {get; set;}
+  
+  public DOAConditions__c doaConditions {get; set;}
     public DOAApprovalRequest__c doaApproval {get;set;}
-	public Agreement__c agreement {get; set;}
+  public Agreement__c agreement {get; set;}
     public Id DoaApprovalId {get;set;}
     public String retVFP {get;set;}
     public Id projectId {get;set;}
-	public ECO_DOAConditionsOfApprovalController(ApexPages.StandardController standardController)
-	{
-		doaConditions = (DOAConditions__c)standardController.getRecord();
+  public ECO_DOAConditionsOfApprovalController(ApexPages.StandardController standardController)
+  {
+    doaConditions = (DOAConditions__c)standardController.getRecord();
         DoaApprovalId = ApexPages.currentPage().getParameters().get('doaId');
         retVFP = ApexPages.currentPage().getParameters().get('retvfp');
         doaApproval = new DOAApprovalRequest__c();
         System.debug('doaConditions:  '+doaConditions.Id);
         System.debug('retVFP:   '+retVFP);
-	}
+  }
 
-	public void init()
-	{
-		if(Apexpages.currentPage().getParameters().get('Agreement__c') != null)
-		{
-			doaConditions.Agreement__c = Apexpages.currentPage().getParameters().get('Agreement__c'); 
-			agreement = [select Id, AgreementNumber__c, ContractTitle__c from Agreement__c where Id = :doaConditions.Agreement__c];		
-		}
-		//else
+  public void init()
+  {
+    if(Apexpages.currentPage().getParameters().get('Agreement__c') != null)
+    {
+      doaConditions.Agreement__c = Apexpages.currentPage().getParameters().get('Agreement__c'); 
+      agreement = [select Id, AgreementNumber__c, ContractTitle__c from Agreement__c where Id = :doaConditions.Agreement__c];    
+    }
+    //else
             //agreement = [select Id, AgreementNumber__c, ContractTitle__c from Agreement__c where Id = :doaConditions.Agreement__c];
         /*if(ApexPages.currentPage().getParameters().get('doaId') != null)
             doaConditions.DOAApprovalRequest__c = ApexPages.currentPage().getParameters().get('doaId');*/
@@ -33,10 +33,10 @@ public with sharing class ECO_DOAConditionsOfApprovalController {
             doaConditions.DOAApprovalRequest__c = DoaApprovalId;
         }
             
-	}
-	
-	public PageReference save()
-	{
+  }
+  
+  public PageReference save()
+  {
         try{
             PageReference pageRef;
             if(doaConditions.Id == null)
@@ -53,11 +53,11 @@ public with sharing class ECO_DOAConditionsOfApprovalController {
             System.debug('pageRef    = '+pageRef);
             return pageRef;
         } catch (Exception e) {
-	            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to creating DOA Condition. Please contact your administrator with the following error: ' + e);
-	            ApexPages.addMessage(oMsg);
-	            return null;
-		}
-	}
+              ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to creating DOA Condition. Please contact your administrator with the following error: ' + e);
+              ApexPages.addMessage(oMsg);
+              return null;
+    }
+  }
     
     public PageReference returnToDOA(){
         Pagereference Pgref;
@@ -65,10 +65,10 @@ public with sharing class ECO_DOAConditionsOfApprovalController {
             if(retVFP != null || retVFP != '')
                 Pgref = new PageReference('/apex/ECO_DOAApprovals?Id=' + doaConditions.DOAApprovalRequest__c);
             else
-            	Pgref = new PageReference('/'+doaConditions.DOAApprovalRequest__c);
+              Pgref = new PageReference('/'+doaConditions.DOAApprovalRequest__c);
             System.debug('Pgref:   '+Pgref);
             System.debug('doaConditions.DOAApprovalRequest__c:   '+doaConditions.DOAApprovalRequest__c);
-       		return Pgref; 
+           return Pgref; 
         }
         else if((doaConditions.Agreement__c != null || doaConditions.Agreement__c != '')){
             Pgref = new PageReference('/' + doaConditions.Agreement__c);

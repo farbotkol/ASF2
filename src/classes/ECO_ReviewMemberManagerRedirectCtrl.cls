@@ -1,8 +1,8 @@
 public with sharing class ECO_ReviewMemberManagerRedirectCtrl {
-	public TechnicalQualityReview__c oTechnicalQualityReview {get;set;}
+  public TechnicalQualityReview__c oTechnicalQualityReview {get;set;}
     
     public ECO_ReviewMemberManagerRedirectCtrl(ApexPages.StandardController stdController) {
-		this.oTechnicalQualityReview = (TechnicalQualityReview__c)stdController.getRecord();
+    this.oTechnicalQualityReview = (TechnicalQualityReview__c)stdController.getRecord();
         
     }
     public PageReference redirect(){

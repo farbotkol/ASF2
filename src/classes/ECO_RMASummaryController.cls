@@ -1,257 +1,257 @@
 public with sharing virtual class ECO_RMASummaryController extends ECO_PageControllerBase 
 {
-	public ApexPages.StandardController oStandardController {get; set;}
-	public QuestionnaireSet__c oQuestionnaireSet {get; set;}
-	public list<Participant__c> lParticipants {get; set;}
-	public list<Questionnaire__c> lQuestionnaires {get; set;}
-	public list<ExportControl__c> lExportControls {get; set;}
-	public list<MarketAssessment__c> lMarketAssessments {get; set;}
-	public list<QuestionnaireSet__c> lQuestionnaireSets {get; set;}
-	public list<SelectOption> loQuestionnaireSets {get; set;}
-	public list<ProjectCountry_Risk__c> lProjectCountryRisks {get; set;}
+  public ApexPages.StandardController oStandardController {get; set;}
+  public QuestionnaireSet__c oQuestionnaireSet {get; set;}
+  public list<Participant__c> lParticipants {get; set;}
+  public list<Questionnaire__c> lQuestionnaires {get; set;}
+  public list<ExportControl__c> lExportControls {get; set;}
+  public list<MarketAssessment__c> lMarketAssessments {get; set;}
+  public list<QuestionnaireSet__c> lQuestionnaireSets {get; set;}
+  public list<SelectOption> loQuestionnaireSets {get; set;}
+  public list<ProjectCountry_Risk__c> lProjectCountryRisks {get; set;}
     public list<ProjectCity__c> lProjectCityRisks {get;set;}
-	public list<ProjectOrganization__c> lProjectOrganizations {get; set;}
-	public list<Project_Site__c> lProjectSites {get; set;}
-	public list<Notification> lNotifications {get; set;}
-	public pse__Proj__c theProject { get; set; }
-	public string sSelectedQuestionnaireSet {get; set;}
-	public boolean BeginButtonDisabled {get; set;}
+  public list<ProjectOrganization__c> lProjectOrganizations {get; set;}
+  public list<Project_Site__c> lProjectSites {get; set;}
+  public list<Notification> lNotifications {get; set;}
+  public pse__Proj__c theProject { get; set; }
+  public string sSelectedQuestionnaireSet {get; set;}
+  public boolean BeginButtonDisabled {get; set;}
     public boolean isAssessmentStarted {get;set;}
-	public boolean showGoNoGoButton {get; set;}
-	public Id navTargetQuestionnaireId {get;set;}
+  public boolean showGoNoGoButton {get; set;}
+  public Id navTargetQuestionnaireId {get;set;}
     public Integer countMA {get;set;}
     public Integer percentMA {get;set;}
-	public list<Agreement__c> agreementsWithDOACondtions {get; set;}
+  public list<Agreement__c> agreementsWithDOACondtions {get; set;}
 
-	public ECO_RMASummaryController(ApexPages.StandardController oStandardController) {
-		this.oStandardController = oStandardController;
-		list<string> lFields = new list<string>();
+  public ECO_RMASummaryController(ApexPages.StandardController oStandardController) {
+    this.oStandardController = oStandardController;
+    list<string> lFields = new list<string>();
         lFields.add('Name');
         lFields.add('TotalQuestions__c');
         oStandardController.addFields(lFields);
 
-		oQuestionnaireSet = (QuestionnaireSet__c)oStandardController.getRecord();
+    oQuestionnaireSet = (QuestionnaireSet__c)oStandardController.getRecord();
 
-		if(ECO_Utils_String.NullCheck(oQuestionnaireSet.Project__c) == ''){
-			oQuestionnaireSet.Project__c = ApexPages.currentPage().getParameters().get('ProjectId');
-		}
-		if(ECO_Utils_String.NullCheck(oQuestionnaireSet.Name) == ''){
-			oQuestionnaireSet.Name = EncodingUtil.urlDecode(ApexPages.currentPage().getParameters().get('qsName'), 'UTF-8');
-		}
+    if(ECO_Utils_String.NullCheck(oQuestionnaireSet.Project__c) == ''){
+      oQuestionnaireSet.Project__c = ApexPages.currentPage().getParameters().get('ProjectId');
+    }
+    if(ECO_Utils_String.NullCheck(oQuestionnaireSet.Name) == ''){
+      oQuestionnaireSet.Name = EncodingUtil.urlDecode(ApexPages.currentPage().getParameters().get('qsName'), 'UTF-8');
+    }
 
-		if(ECO_Utils_String.NullCheck(oQuestionnaireSet.Project__c) == ''){
-			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'You have reached this page improperly, please access it from the Project screen.');
+    if(ECO_Utils_String.NullCheck(oQuestionnaireSet.Project__c) == ''){
+      ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'You have reached this page improperly, please access it from the Project screen.');
             ApexPages.addMessage(oPageMessage);
             return;
-		}
-		
-		getTheProject();
+    }
+    
+    getTheProject();
 
-		system.debug(oQuestionnaireSet);
-			
-		lParticipants = new list<Participant__c>([SELECT Id
-														, User__c 
-												FROM Participant__c 
-												WHERE QuestionnaireSet__c = :oQuestionnaireSet.Id]);
+    system.debug(oQuestionnaireSet);
+      
+    lParticipants = new list<Participant__c>([SELECT Id
+                            , User__c 
+                        FROM Participant__c 
+                        WHERE QuestionnaireSet__c = :oQuestionnaireSet.Id]);
 
-		if(lParticipants.size() == 0)
-		{
-			lParticipants.add(new Participant__c(QuestionnaireSet__c = oQuestionnaireSet.Id));
-		}
+    if(lParticipants.size() == 0)
+    {
+      lParticipants.add(new Participant__c(QuestionnaireSet__c = oQuestionnaireSet.Id));
+    }
 
-		lQuestionnaires = new list<Questionnaire__c>([SELECT Id
-															, Name
-															, ProjectRisk__c
-															, DoATriggers__c
-															, PercentComplete__c 
-													FROM Questionnaire__c 
-													WHERE QuestionnaireSet__c = :oQuestionnaireSet.Id]);
+    lQuestionnaires = new list<Questionnaire__c>([SELECT Id
+                              , Name
+                              , ProjectRisk__c
+                              , DoATriggers__c
+                              , PercentComplete__c 
+                          FROM Questionnaire__c 
+                          WHERE QuestionnaireSet__c = :oQuestionnaireSet.Id]);
 
-		if(lQuestionnaires.isEmpty())
-		{	
-			lQuestionnaires = new list<Questionnaire__c>();
-			
-			String queryString = 'SELECT Id';
-			queryString += ' , Name';
-			queryString += ' , (SELECT Id';
-			queryString += ' FROM Questions__r';
-				queryString += ' WHERE (GeographiesAvailableTo__c INCLUDES (\''+theProject.CarryingOutOrganization__r.GeographyName__c+'\')';
-					queryString += ' OR GeographiesAvailableTo__c = null';
-					queryString += ' OR GeographiesAvailableTo__c = \'\'';
-					queryString += ' OR GeographiesAvailableTo__c INCLUDES (\'ALL\'))';
-				queryString += ' AND (BusinessLinesAvailableTo__c INCLUDES (\''+theProject.CarryingOutOrganization__r.BusinessLineName__c+'\')';	
-					queryString += ' OR BusinessLinesAvailableTo__c = null';
-					queryString += ' OR BusinessLinesAvailableTo__c = \'\'';
-					queryString += ' OR BusinessLinesAvailableTo__c INCLUDES (\'ALL\'))';			
-			queryString += ' AND IsActive__c = true';
-			queryString += ' )';	
-			queryString += ' FROM QuestionnaireTemplate__c';
+    if(lQuestionnaires.isEmpty())
+    {  
+      lQuestionnaires = new list<Questionnaire__c>();
+      
+      String queryString = 'SELECT Id';
+      queryString += ' , Name';
+      queryString += ' , (SELECT Id';
+      queryString += ' FROM Questions__r';
+        queryString += ' WHERE (GeographiesAvailableTo__c INCLUDES (\''+theProject.CarryingOutOrganization__r.GeographyName__c+'\')';
+          queryString += ' OR GeographiesAvailableTo__c = null';
+          queryString += ' OR GeographiesAvailableTo__c = \'\'';
+          queryString += ' OR GeographiesAvailableTo__c INCLUDES (\'ALL\'))';
+        queryString += ' AND (BusinessLinesAvailableTo__c INCLUDES (\''+theProject.CarryingOutOrganization__r.BusinessLineName__c+'\')';  
+          queryString += ' OR BusinessLinesAvailableTo__c = null';
+          queryString += ' OR BusinessLinesAvailableTo__c = \'\'';
+          queryString += ' OR BusinessLinesAvailableTo__c INCLUDES (\'ALL\'))';      
+      queryString += ' AND IsActive__c = true';
+      queryString += ' )';  
+      queryString += ' FROM QuestionnaireTemplate__c';
 
-			System.debug('QuestionnaireTemplate query: ' + queryString);
-			
-			list<QuestionnaireTemplate__c> lQuestionnaireTemplates = Database.query(queryString);
+      System.debug('QuestionnaireTemplate query: ' + queryString);
+      
+      list<QuestionnaireTemplate__c> lQuestionnaireTemplates = Database.query(queryString);
 
-			for(QuestionnaireTemplate__c oQuestionnaireTemplate : lQuestionnaireTemplates){
-				lQuestionnaires.add(new Questionnaire__c(Name = oQuestionnaireTemplate.Name, QuestionnaireTemplate__c = oQuestionnaireTemplate.Id));
-			}
-		}
-		
-		lExportControls = new list<ExportControl__c>([Select Id
-															, Name
-															, Status__c 
-                                                      		, SubmittedDate__c
-													From ExportControl__c 
-													WHERE QuestionnaireSet__c = :oQuestionnaireSet.Id]);
-		
-		lMarketAssessments = new list<MarketAssessment__c>([Select Id
-																	, Name
-																	, Status__c 
-																	, AwareofOpportunity__c
-																	, FreeFormDocumentedBusinessPlan__c
-																	, DocumentedBusinessPlan__c
-																	, FreeFormDocumentedKeyAccount__c
-																	, DocumentedKeyAccount__c
-																	, FreeFormStrongClientRelationship__c
-																	, StrongClientRelationship__c
-																	, FreeFormRecentProjectExperience__c
-																	, RecentProjectExperience__c
-																	, FreeFormRequiredTechnicalPersonnel__c
-																	, RequiredTechnicalPersonnel__c
-																	, FreeFormStrongPositiveWin__c
-																	, StrongPositiveWin__c
-																	, FreeFormAwareofOpportunity__c
-																	, AdditionalInformation__c 
-																	, FreeFormSufficientTimeandResources__c
-																	, SufficientTimeandResources__c
-																	, FreeFormIncumbent__c
-																	, Incumbent__c
-																	, FreeFormDecisionMaker__c
-																	, DecisionMaker__c
-																	, FreeFormDecisiontoAppoint__c
-																	, DecisiontoAppoint__c
-																	, ExpertWitnessorLitigationSupport__c
-																	, JVinvolvement__c
-																	, ProgramManagementServices__c
-																	, RFPDevelopmentServices__c
-																	, StaffAugmentationorembeddedworkforce__c
-																	, FreeFormPotentialConflictofInterest__c
-																	, Potentialconflictofinterestissues__c
-															From MarketAssessment__c 
-															WHERE QuestionnaireSet__c = :oQuestionnaireSet.Id]);
-		
-												
-		lProjectCountryRisks = new list<ProjectCountry_Risk__c>([Select Safety_Rating__c, 
-																		CountryName__c 
-																From ProjectCountry_Risk__c 
-																Where Project__c = :oQuestionnaireSet.Project__c]);
-																
-		lProjectOrganizations = new list<ProjectOrganization__c>([Select Id
-																	From ProjectOrganization__c
-																	Where Project__c = :oQuestionnaireSet.Project__c]);
-																	
-		lProjectSites = new list<Project_Site__c>([Select Account_Name__c, 
-															CreditRiskRating__c,
-															OracleCustomerNumber__c,
-															Address1__c,
-															City__c,
-															State__c,
-															Country__c,
-															Postal_Code__c,
-															Is_Billing__c,
-															Is_Default_Top_Task__c,
-															Is_End__c,
-															Is_Primary_End__c
-													From Project_Site__c
-													Where Project__c = :oQuestionnaireSet.Project__c]);
+      for(QuestionnaireTemplate__c oQuestionnaireTemplate : lQuestionnaireTemplates){
+        lQuestionnaires.add(new Questionnaire__c(Name = oQuestionnaireTemplate.Name, QuestionnaireTemplate__c = oQuestionnaireTemplate.Id));
+      }
+    }
+    
+    lExportControls = new list<ExportControl__c>([Select Id
+                              , Name
+                              , Status__c 
+                                                          , SubmittedDate__c
+                          From ExportControl__c 
+                          WHERE QuestionnaireSet__c = :oQuestionnaireSet.Id]);
+    
+    lMarketAssessments = new list<MarketAssessment__c>([Select Id
+                                  , Name
+                                  , Status__c 
+                                  , AwareofOpportunity__c
+                                  , FreeFormDocumentedBusinessPlan__c
+                                  , DocumentedBusinessPlan__c
+                                  , FreeFormDocumentedKeyAccount__c
+                                  , DocumentedKeyAccount__c
+                                  , FreeFormStrongClientRelationship__c
+                                  , StrongClientRelationship__c
+                                  , FreeFormRecentProjectExperience__c
+                                  , RecentProjectExperience__c
+                                  , FreeFormRequiredTechnicalPersonnel__c
+                                  , RequiredTechnicalPersonnel__c
+                                  , FreeFormStrongPositiveWin__c
+                                  , StrongPositiveWin__c
+                                  , FreeFormAwareofOpportunity__c
+                                  , AdditionalInformation__c 
+                                  , FreeFormSufficientTimeandResources__c
+                                  , SufficientTimeandResources__c
+                                  , FreeFormIncumbent__c
+                                  , Incumbent__c
+                                  , FreeFormDecisionMaker__c
+                                  , DecisionMaker__c
+                                  , FreeFormDecisiontoAppoint__c
+                                  , DecisiontoAppoint__c
+                                  , ExpertWitnessorLitigationSupport__c
+                                  , JVinvolvement__c
+                                  , ProgramManagementServices__c
+                                  , RFPDevelopmentServices__c
+                                  , StaffAugmentationorembeddedworkforce__c
+                                  , FreeFormPotentialConflictofInterest__c
+                                  , Potentialconflictofinterestissues__c
+                              From MarketAssessment__c 
+                              WHERE QuestionnaireSet__c = :oQuestionnaireSet.Id]);
+    
+                        
+    lProjectCountryRisks = new list<ProjectCountry_Risk__c>([Select Safety_Rating__c, 
+                                    CountryName__c 
+                                From ProjectCountry_Risk__c 
+                                Where Project__c = :oQuestionnaireSet.Project__c]);
+                                
+    lProjectOrganizations = new list<ProjectOrganization__c>([Select Id
+                                  From ProjectOrganization__c
+                                  Where Project__c = :oQuestionnaireSet.Project__c]);
+                                  
+    lProjectSites = new list<Project_Site__c>([Select Account_Name__c, 
+                              CreditRiskRating__c,
+                              OracleCustomerNumber__c,
+                              Address1__c,
+                              City__c,
+                              State__c,
+                              Country__c,
+                              Postal_Code__c,
+                              Is_Billing__c,
+                              Is_Default_Top_Task__c,
+                              Is_End__c,
+                              Is_Primary_End__c
+                          From Project_Site__c
+                          Where Project__c = :oQuestionnaireSet.Project__c]);
 
-		//Available questionnaire sets
-		lQuestionnaireSets = ECO_Utils_Questionnaire.GetRelatedQuestionnaireSets(oQuestionnaireSet.Project__c);
-		loQuestionnaireSets = new list<SelectOption>();
+    //Available questionnaire sets
+    lQuestionnaireSets = ECO_Utils_Questionnaire.GetRelatedQuestionnaireSets(oQuestionnaireSet.Project__c);
+    loQuestionnaireSets = new list<SelectOption>();
 
-		for(QuestionnaireSet__c oQuestionnaireSet : lQuestionnaireSets){
-			loQuestionnaireSets.add(new SelectOption(oQuestionnaireSet.Id, oQuestionnaireSet.Name));
-		}
+    for(QuestionnaireSet__c oQuestionnaireSet : lQuestionnaireSets){
+      loQuestionnaireSets.add(new SelectOption(oQuestionnaireSet.Id, oQuestionnaireSet.Name));
+    }
 
-		sSelectedQuestionnaireSet = oQuestionnaireSet.Id;
-		
-		BeginButtonDisabled = false;
-		if(String.isBlank(sSelectedQuestionnaireSet))
-			BeginButtonDisabled = true;
+    sSelectedQuestionnaireSet = oQuestionnaireSet.Id;
+    
+    BeginButtonDisabled = false;
+    if(String.isBlank(sSelectedQuestionnaireSet))
+      BeginButtonDisabled = true;
 
-		if(oQuestionnaireSet.GoNoGo_Review__c != null)
-		{
-			showGoNoGoButton = false;
-		}
-		else
-		{
-			showGoNoGoButton = true;
-		}
-		
-		list<Agreement__c> msaAgreementsWithConditions = [select Id from Agreement__c where Id in (select Agreement__c from DOAConditions__c)];
-		
-		agreementsWithDOACondtions = [select Id from Agreement__c 
-											where Project__c = :theProject.Id and 
-												MSAReference__c in :msaAgreementsWithConditions];		
-		
-		lNotifications = new List<Notification>();
-		validate();
-		marketAssess();
-		System.debug('In controller percentMA:    '+percentMA+'   countMA:  '+countMA);
+    if(oQuestionnaireSet.GoNoGo_Review__c != null)
+    {
+      showGoNoGoButton = false;
+    }
+    else
+    {
+      showGoNoGoButton = true;
+    }
+    
+    list<Agreement__c> msaAgreementsWithConditions = [select Id from Agreement__c where Id in (select Agreement__c from DOAConditions__c)];
+    
+    agreementsWithDOACondtions = [select Id from Agreement__c 
+                      where Project__c = :theProject.Id and 
+                        MSAReference__c in :msaAgreementsWithConditions];    
+    
+    lNotifications = new List<Notification>();
+    validate();
+    marketAssess();
+    System.debug('In controller percentMA:    '+percentMA+'   countMA:  '+countMA);
 
-	}
-	
-	public PageReference init()
-	{
-		PageReference oPR;
-		System.debug('qsName: ' + ApexPages.currentPage().getParameters().get('qsName'));
-		if(ApexPages.currentPage().getParameters().get('qsName') != null)
-		{
-			oPR = oStandardController.save();
-		}
-		return oPR;
-	}
-	
-	private boolean allRMAQuestionsHaveBeenAnswered()
-	{
-		if(oQuestionnaireSet.UnansweredQuestionCount__c == 0)
-			return true;
-		return false;
-	}
-	
-	public PageReference submitForApproval()
-	{
-		if(!allRMAQuestionsHaveBeenAnswered())
-		{
-			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Completion off all R&M assessment questions are required prior to submitting for approval!');
-        	ApexPages.addMessage(oPageMessage);
-			
-			return null;
-		}
-		//
-		/*system.debug( 'Approval submitted user = ' + theProject.ProjectApprover__r.pse__Salesforce_User__c );
+  }
+  
+  public PageReference init()
+  {
+    PageReference oPR;
+    System.debug('qsName: ' + ApexPages.currentPage().getParameters().get('qsName'));
+    if(ApexPages.currentPage().getParameters().get('qsName') != null)
+    {
+      oPR = oStandardController.save();
+    }
+    return oPR;
+  }
+  
+  private boolean allRMAQuestionsHaveBeenAnswered()
+  {
+    if(oQuestionnaireSet.UnansweredQuestionCount__c == 0)
+      return true;
+    return false;
+  }
+  
+  public PageReference submitForApproval()
+  {
+    if(!allRMAQuestionsHaveBeenAnswered())
+    {
+      ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Completion off all R&M assessment questions are required prior to submitting for approval!');
+          ApexPages.addMessage(oPageMessage);
+      
+      return null;
+    }
+    //
+    /*system.debug( 'Approval submitted user = ' + theProject.ProjectApprover__r.pse__Salesforce_User__c );
         
-		Boolean hasPermissionForApprovalProcess = ECO_Service_RecordAccess.getProjectRecordAccessForApprovalProcess ('Risk__c', theProject.Id);
-		
+    Boolean hasPermissionForApprovalProcess = ECO_Service_RecordAccess.getProjectRecordAccessForApprovalProcess ('Risk__c', theProject.Id);
+    
         if (! hasPermissionForApprovalProcess)  
         {   
             system.debug( 'No Permission for approval process' );
             
-			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'You do not have permission Permission for Approval Process');
+      ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'You do not have permission Permission for Approval Process');
             ApexPages.addMessage(oPageMessage);            
 
-        	return null;
+          return null;
         }*/
 
-		//return null;
+    //return null;
         // Above line is just for test purposes, will be taken out. BH
         
-		// have to set the appover field on the RMA before submitting
+    // have to set the appover field on the RMA before submitting
         oQuestionnaireSet.ProjectApprover__c = theProject.ProjectApprover__r.pse__Salesforce_User__c;
 
-		update oQuestionnaireSet;
-		
-		// Create an approval request for the account
-       	Approval.ProcessSubmitRequest req1 = new Approval.ProcessSubmitRequest();
+    update oQuestionnaireSet;
+    
+    // Create an approval request for the account
+         Approval.ProcessSubmitRequest req1 = new Approval.ProcessSubmitRequest();
         req1.setObjectId(oQuestionnaireSet.Id);
         
         // Submit on behalf of a specific submitter
@@ -265,76 +265,76 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
         Approval.ProcessResult result = Approval.process(req1);
         
         return null;
-	}
+  }
     public PageReference enableSubmitApex(){
         System.debug('oQuestionnaireSet go no go:'+oQuestionnaireSet.GoNoGoRecommendation__c);
         return null;
     }
-	public PageReference goToSpecificQuestionnaire () {
-    	
-    	PageReference oPageReference = Page.ECO_RMAQuestionnaire;
+  public PageReference goToSpecificQuestionnaire () {
+      
+      PageReference oPageReference = Page.ECO_RMAQuestionnaire;
 
-    	oPageReference.getParameters().put('Id', navTargetQuestionnaireId);
-    	oPageReference.setRedirect(true);
-    	
-    	return oPageReference;
+      oPageReference.getParameters().put('Id', navTargetQuestionnaireId);
+      oPageReference.setRedirect(true);
+      
+      return oPageReference;
     }
     
-	public PageReference generatePDF () {
-    	PageReference oPageReference = Page.ECO_RMASummaryPdf;
-		oPageReference.getParameters().put('Id', oQuestionnaireSet.Id);
-    	oPageReference.setRedirect(true);
-    	return oPageReference;
+  public PageReference generatePDF () {
+      PageReference oPageReference = Page.ECO_RMASummaryPdf;
+    oPageReference.getParameters().put('Id', oQuestionnaireSet.Id);
+      oPageReference.setRedirect(true);
+      return oPageReference;
     }    
-	
-	public List<Schema.FieldSetMember> getCustomProjSetupFields()
-	{
-		
-		return SObjectType.pse__Proj__c.FieldSets.ProjectFieldsforRMASummary.getFields();
-		//return SObjectType.pse__Proj__c.FieldSets.pse_ProjectFieldsforCustomProjectSetup.getFields();
-	}
-	
-	public pse__Proj__c getTheProject()
-	{
-		if(theProject == null)
-		{
-			String query = 'SELECT Id, PrimaryEndClient__c, PrimaryBillingClient__c, ProjectOwningOrg__c, ProjectNumber__c, CarryingOutOrganization__c, CarryingOutOrganization__r.Region__c, CarryingOutOrganization__r.GeographyName__c, CarryingOutOrganization__r.BusinessLineName__c, AccountManager__c, ProjectApprover__r.pse__Salesforce_User__c ';
-			// query += 'TotalMargin__c, TotalBidBudget__c, PrimaryEndClient__c, PrimaryBillingClient__c';
-			for(Schema.FieldSetMember f : getCustomProjSetupFields()) 
-			{
-	            query += ', ' + f.getFieldPath();
-	        }
-	        query += ' FROM pse__Proj__c WHERE Id = \'' + oQuestionnaireSet.Project__c + '\' Limit 1';
-	        theProject = Database.query(query);
-		}
-		return theProject;
-	}
-	
-	public void validate(){
-		// System.debug('entering validate');
-		if(lExportControls.size() > 0)
-		{
-			if(lExportControls[0].Status__c != 'Completed')
-			{
-            	Notification oNote = new Notification('You must complete an Export Controls document due to selections in your Risk Assessment.');
-            	lNotifications.add(oNote);
-			}
-		}
+  
+  public List<Schema.FieldSetMember> getCustomProjSetupFields()
+  {
+    
+    return SObjectType.pse__Proj__c.FieldSets.ProjectFieldsforRMASummary.getFields();
+    //return SObjectType.pse__Proj__c.FieldSets.pse_ProjectFieldsforCustomProjectSetup.getFields();
+  }
+  
+  public pse__Proj__c getTheProject()
+  {
+    if(theProject == null)
+    {
+      String query = 'SELECT Id, PrimaryEndClient__c, PrimaryBillingClient__c, ProjectOwningOrg__c, ProjectNumber__c, CarryingOutOrganization__c, CarryingOutOrganization__r.Region__c, CarryingOutOrganization__r.GeographyName__c, CarryingOutOrganization__r.BusinessLineName__c, AccountManager__c, ProjectApprover__r.pse__Salesforce_User__c ';
+      // query += 'TotalMargin__c, TotalBidBudget__c, PrimaryEndClient__c, PrimaryBillingClient__c';
+      for(Schema.FieldSetMember f : getCustomProjSetupFields()) 
+      {
+              query += ', ' + f.getFieldPath();
+          }
+          query += ' FROM pse__Proj__c WHERE Id = \'' + oQuestionnaireSet.Project__c + '\' Limit 1';
+          theProject = Database.query(query);
+    }
+    return theProject;
+  }
+  
+  public void validate(){
+    // System.debug('entering validate');
+    if(lExportControls.size() > 0)
+    {
+      if(lExportControls[0].Status__c != 'Completed')
+      {
+              Notification oNote = new Notification('You must complete an Export Controls document due to selections in your Risk Assessment.');
+              lNotifications.add(oNote);
+      }
+    }
 
-		// System.debug('In validate, check size of lProjectCountryRisks');		
-		if(lProjectCountryRisks.size() == 0)
-		{
+    // System.debug('In validate, check size of lProjectCountryRisks');    
+    if(lProjectCountryRisks.size() == 0)
+    {
             Notification oNote = new Notification('No Country Selected for this Risk Assessment.');
             lNotifications.add(oNote);
-		}
-		else
-		{
+    }
+    else
+    {
             Integer count = 0;
-			// System.debug('In validate, iterate over lProjectCountryRisks');	
-			for(ProjectCountry_Risk__c oPCR : lProjectCountryRisks)
-			{
-				if(oPCR.Safety_Rating__c > 2.9)
-				{
+      // System.debug('In validate, iterate over lProjectCountryRisks');  
+      for(ProjectCountry_Risk__c oPCR : lProjectCountryRisks)
+      {
+        if(oPCR.Safety_Rating__c > 2.9)
+        {
                     String notificationString = 'The project has a location with a security risk rating greater than 2.9 ';
                     loadProjectCityRisks(oQuestionnaireSet.Project__c);
                     System.debug('lProjectCityRisks size:'+lProjectCityRisks.size());
@@ -350,53 +350,53 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
                     }
                     Notification oNote = new Notification(notificationString);
                     lNotifications.add(oNote);
-            		break;
-				}
-			}
-		}
-		
-		// System.debug('In validate, check size of agreementsWithDOACondtions');
-		if(agreementsWithDOACondtions.size() > 0)
-		{
-        	Notification oNote = new Notification('This project is linked to an MSA that has existing DOA conditions of approval.');
-            lNotifications.add(oNote);		
-		}
+                break;
+        }
+      }
+    }
+    
+    // System.debug('In validate, check size of agreementsWithDOACondtions');
+    if(agreementsWithDOACondtions.size() > 0)
+    {
+          Notification oNote = new Notification('This project is linked to an MSA that has existing DOA conditions of approval.');
+            lNotifications.add(oNote);    
+    }
 
-		// System.debug('In validate, null check AccountManager__c');
-		if(!(theProject.AccountManager__c == '' || theProject.AccountManager__c ==null))
-		{
-        	Notification oNote = new Notification('One or more of your nominated clients is an ECAM or CAM Account. Please work the nominated Account Manager.');
-            lNotifications.add(oNote);		
-		}		
-		
-		// System.debug('In validate, check size of lProjectOrganizations');		
-		if (lProjectOrganizations.size() == 0) {
-			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'No Organization is related to this project. You may not begin an assessment until one is selected.');
+    // System.debug('In validate, null check AccountManager__c');
+    if(!(theProject.AccountManager__c == '' || theProject.AccountManager__c ==null))
+    {
+          Notification oNote = new Notification('One or more of your nominated clients is an ECAM or CAM Account. Please work the nominated Account Manager.');
+            lNotifications.add(oNote);    
+    }    
+    
+    // System.debug('In validate, check size of lProjectOrganizations');    
+    if (lProjectOrganizations.size() == 0) {
+      ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'No Organization is related to this project. You may not begin an assessment until one is selected.');
             ApexPages.addMessage(oPageMessage);
             BeginButtonDisabled = true;
-		}
-		
-		// System.debug('In validate, start iteration of lProjectSites');
-		for(Project_Site__c oPS : lProjectSites)
-		{
-			String riskRating;
-			if(oPS.Is_Billing__c)
-			{
-				System.debug('CreditRiskRating: ' + oPS.CreditRiskRating__c);
-				if(oPS.CreditRiskRating__c <= 1297)
-					riskRating = 'severe';
-				if(oPS.CreditRiskRating__c >= 1298 && oPS.CreditRiskRating__c <= 1358)
-					riskRating = 'medium';
-					
-				if(riskRating != null)
-				{
-	            	Notification oNote = new Notification(oPS.Account_Name__c + ' has a ' + riskRating + ' credit risk (' + oPS.CreditRiskRating__c + ')');
-            		lNotifications.add(oNote);
-				}
-			}
-		}
-	}
-	
+    }
+    
+    // System.debug('In validate, start iteration of lProjectSites');
+    for(Project_Site__c oPS : lProjectSites)
+    {
+      String riskRating;
+      if(oPS.Is_Billing__c)
+      {
+        System.debug('CreditRiskRating: ' + oPS.CreditRiskRating__c);
+        if(oPS.CreditRiskRating__c <= 1297)
+          riskRating = 'severe';
+        if(oPS.CreditRiskRating__c >= 1298 && oPS.CreditRiskRating__c <= 1358)
+          riskRating = 'medium';
+          
+        if(riskRating != null)
+        {
+                Notification oNote = new Notification(oPS.Account_Name__c + ' has a ' + riskRating + ' credit risk (' + oPS.CreditRiskRating__c + ')');
+                lNotifications.add(oNote);
+        }
+      }
+    }
+  }
+  
     public void loadProjectCityRisks(Id projectId){
         lProjectCityRisks = new List<ProjectCity__c>([Select Id, CityName__c, SafetyRating__c From ProjectCity__c Where Project__c= :projectId AND SafetyRating__c > 2.9]);
     }
@@ -451,46 +451,46 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
         System.debug('In method...  countMA = '+countMA+'   percentMA='+percentMA);
     }
     
-	public PageReference SelectNewQuestionnaire()
-	{
-		system.debug(sSelectedQuestionnaireSet);
-		PageReference oPageReference;
-		if(sSelectedQuestionnaireSet != '' && sSelectedQuestionnaireSet != null)
-		{
-			oPageReference = Page.ECO_RMASummary;
-			oPageReference.setRedirect(true);
-			oPageReference.getParameters().put('Id', sSelectedQuestionnaireSet);
-		}
-		else
-		{
-			oPageReference = Page.ECO_RMASummary;
-			oPageReference.setRedirect(true);
-			oPageReference.getParameters().put('ProjectId', oQuestionnaireSet.Project__c);
-			oPageReference.getParameters().put('qsName', EncodingUtil.urlEncode('Follow-up Risk Assessment', 'UTF-8'));
-			return oPageReference;
-			/*
-			oQuestionnaireSet = new QuestionnaireSet__c();
-			oQuestionnaireSet.Name = 'Follow-up Risk Assessment';
-			oQuestionnaireSet.Project__c = theProject.Id;
-			oPageReference = BeginRiskAssessment();
-			*/
-		}
-		return oPageReference;
-	}
-	
-	public PageReference ReturnToProject()
-	{
+  public PageReference SelectNewQuestionnaire()
+  {
+    system.debug(sSelectedQuestionnaireSet);
+    PageReference oPageReference;
+    if(sSelectedQuestionnaireSet != '' && sSelectedQuestionnaireSet != null)
+    {
+      oPageReference = Page.ECO_RMASummary;
+      oPageReference.setRedirect(true);
+      oPageReference.getParameters().put('Id', sSelectedQuestionnaireSet);
+    }
+    else
+    {
+      oPageReference = Page.ECO_RMASummary;
+      oPageReference.setRedirect(true);
+      oPageReference.getParameters().put('ProjectId', oQuestionnaireSet.Project__c);
+      oPageReference.getParameters().put('qsName', EncodingUtil.urlEncode('Follow-up Risk Assessment', 'UTF-8'));
+      return oPageReference;
+      /*
+      oQuestionnaireSet = new QuestionnaireSet__c();
+      oQuestionnaireSet.Name = 'Follow-up Risk Assessment';
+      oQuestionnaireSet.Project__c = theProject.Id;
+      oPageReference = BeginRiskAssessment();
+      */
+    }
+    return oPageReference;
+  }
+  
+  public PageReference ReturnToProject()
+  {
         System.debug('theProject.id:  '+ theProject.Id );
         PageReference oPR = new PageReference('/' + oQuestionnaireSet.Project__c);
-		oPR.setRedirect(true);
-		return oPR;
-	}
+    oPR.setRedirect(true);
+    return oPR;
+  }
 
 
-	public PageReference BeginRiskAssessment(){
-		Questionnaire__c oFirstQuestionnaire = lQuestionnaires.get(0);
-		system.debug('lQuestionnaires:  '+ lQuestionnaires);
-		system.debug('oQuestionnaireSet.Id:  '+ oQuestionnaireSet.Id);
+  public PageReference BeginRiskAssessment(){
+    Questionnaire__c oFirstQuestionnaire = lQuestionnaires.get(0);
+    system.debug('lQuestionnaires:  '+ lQuestionnaires);
+    system.debug('oQuestionnaireSet.Id:  '+ oQuestionnaireSet.Id);
         try{
             if(oQuestionnaireSet.Id == null || oFirstQuestionnaire.Id == null)
             {
@@ -522,10 +522,10 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
                         queryString += ' OR GeographiesAvailableTo__c = null';
                         queryString += ' OR GeographiesAvailableTo__c = \'\'';
                         queryString += ' OR GeographiesAvailableTo__c INCLUDES (\'ALL\'))';
-                    queryString += ' AND (BusinessLinesAvailableTo__c INCLUDES (\''+theProject.CarryingOutOrganization__r.BusinessLineName__c+'\')';	
+                    queryString += ' AND (BusinessLinesAvailableTo__c INCLUDES (\''+theProject.CarryingOutOrganization__r.BusinessLineName__c+'\')';  
                         queryString += ' OR BusinessLinesAvailableTo__c = null';
                         queryString += ' OR BusinessLinesAvailableTo__c = \'\'';
-                        queryString += ' OR BusinessLinesAvailableTo__c INCLUDES (\'ALL\'))';					
+                        queryString += ' OR BusinessLinesAvailableTo__c INCLUDES (\'ALL\'))';          
                     queryString += ' AND IsActive__c = true';
                     queryString += ' )';
                     
@@ -579,72 +579,72 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
             ApexPages.addMessages(e);
             return null;
         }
-	}
+  }
 
-	public PageReference AddParticipant(){
-		lParticipants.add(new Participant__c(QuestionnaireSet__c = oQuestionnaireSet.Id));
+  public PageReference AddParticipant(){
+    lParticipants.add(new Participant__c(QuestionnaireSet__c = oQuestionnaireSet.Id));
 
-		return null;
-	}
+    return null;
+  }
 
-	public PageReference CreateGoNoGoReview()
-	{
-		PageReference oPR;
-		try
-		{
-			List<RecordType> LgoNoGORT = new List<RecordType>([Select Id From RecordType Where sObjectType = 'ProjectReview__c' And DeveloperName = 'GoNoGo']);
+  public PageReference CreateGoNoGoReview()
+  {
+    PageReference oPR;
+    try
+    {
+      List<RecordType> LgoNoGORT = new List<RecordType>([Select Id From RecordType Where sObjectType = 'ProjectReview__c' And DeveloperName = 'GoNoGo']);
 
-			if(!LgoNoGORT.isEmpty())
-			{
-				ProjectReview__c oGoNoGo = new ProjectReview__c();
-				oGoNoGo.RecordTypeId = LgoNoGORT[0].Id;
-				oGoNoGo.Project__c = oQuestionnaireSet.Project__c;
-				oGoNoGo.Name = 'Go/No Go Meeting';
-				oGoNoGo.Status__c = 'Assessing';
-				List<AgendaItemTemplate__c> lAIT = new List<AgendaItemTemplate__c>([Select Id, Name, ProjectReviewTemplate__c From AgendaItemTemplate__c Where ProjectReviewTemplate__r.TemplateType__c = 'Go/No Go']);
+      if(!LgoNoGORT.isEmpty())
+      {
+        ProjectReview__c oGoNoGo = new ProjectReview__c();
+        oGoNoGo.RecordTypeId = LgoNoGORT[0].Id;
+        oGoNoGo.Project__c = oQuestionnaireSet.Project__c;
+        oGoNoGo.Name = 'Go/No Go Meeting';
+        oGoNoGo.Status__c = 'Assessing';
+        List<AgendaItemTemplate__c> lAIT = new List<AgendaItemTemplate__c>([Select Id, Name, ProjectReviewTemplate__c From AgendaItemTemplate__c Where ProjectReviewTemplate__r.TemplateType__c = 'Go/No Go']);
 
-				List<AgendaItem__c> lAI = new List<AgendaItem__c>();
-				if(!lAIT.isEmpty())
-				{
-					oGoNoGo.ProjectReviewTemplate__c = lAIT[0].ProjectReviewTemplate__c;
-					insert oGoNoGo;
-					oQuestionnaireSet.GoNoGo_Review__c = oGoNoGo.Id;
-					update oQuestionnaireSet;
-					for(AgendaItemTemplate__c ait : lAIT)
-					{
-						AgendaItem__c ai = new AgendaItem__c();
-						ai.ProjectReview__c = oGoNoGo.Id;
-						ai.AgendaItemTemplate__c = ait.Id;
-						ai.Name = ait.Name;
-						lAI.add(ai);
-					}
-					insert lAI;
-					oPR = Page.ECO_ProjectReviews;
-					oPR.setRedirect(true);
-					oPR.getParameters().put('Id', oGoNoGo.Id);
-				}
-				showGoNoGoButton = false;
-			}
-			else
-			{
-				ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'Review cannot be created. RecordType missing.');
-            	ApexPages.addMessage(oPageMessage);
-			}
-		}
-		catch(DmlException e)
-		{
-			System.debug('CreateGoNoGoReview error: ' + e.getMessage());
-			ApexPages.addMessages(e);
-		}
-		return oPR;
-	}
-	
-	class Notification
-	{
-		public String sMessage {get;set;}
-		public Notification(String message)
-		{
-			this.sMessage = message;
-		}
-	}
+        List<AgendaItem__c> lAI = new List<AgendaItem__c>();
+        if(!lAIT.isEmpty())
+        {
+          oGoNoGo.ProjectReviewTemplate__c = lAIT[0].ProjectReviewTemplate__c;
+          insert oGoNoGo;
+          oQuestionnaireSet.GoNoGo_Review__c = oGoNoGo.Id;
+          update oQuestionnaireSet;
+          for(AgendaItemTemplate__c ait : lAIT)
+          {
+            AgendaItem__c ai = new AgendaItem__c();
+            ai.ProjectReview__c = oGoNoGo.Id;
+            ai.AgendaItemTemplate__c = ait.Id;
+            ai.Name = ait.Name;
+            lAI.add(ai);
+          }
+          insert lAI;
+          oPR = Page.ECO_ProjectReviews;
+          oPR.setRedirect(true);
+          oPR.getParameters().put('Id', oGoNoGo.Id);
+        }
+        showGoNoGoButton = false;
+      }
+      else
+      {
+        ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'Review cannot be created. RecordType missing.');
+              ApexPages.addMessage(oPageMessage);
+      }
+    }
+    catch(DmlException e)
+    {
+      System.debug('CreateGoNoGoReview error: ' + e.getMessage());
+      ApexPages.addMessages(e);
+    }
+    return oPR;
+  }
+  
+  class Notification
+  {
+    public String sMessage {get;set;}
+    public Notification(String message)
+    {
+      this.sMessage = message;
+    }
+  }
 }

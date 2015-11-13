@@ -1,21 +1,21 @@
 public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControllerBase 
 {
 
-	public Questionnaire__c oQuestionnaire {get; set;}
-	public list<Questionnaire__c> lQuestionnaires {get; set;}
-	public ApexPages.StandardController oStandardController {get; set;}
-	public Boolean showDOASection {get; set;}
+  public Questionnaire__c oQuestionnaire {get; set;}
+  public list<Questionnaire__c> lQuestionnaires {get; set;}
+  public ApexPages.StandardController oStandardController {get; set;}
+  public Boolean showDOASection {get; set;}
     public Boolean showDOASubSection {get; set;}
     public Answer__c DOA_SectionAnswer {get;set;}
 
-	private integer iIndex {get; set;}
+  private integer iIndex {get; set;}
 
-	public class EcoControllerException extends Exception {}
+  public class EcoControllerException extends Exception {}
 
-	public map<string, list<Answer__c>> mDoAAnswers {get; set;}
-	public map<string, list<Answer__c>> mNotDoAAnswers {get; set;}
-	public list<Answer__c> lAnswers {get; set;}
-	public Map<Id, Risk__c> questionToRiskMap { get; set; }  // Key is TemplateQuestion__c id
+  public map<string, list<Answer__c>> mDoAAnswers {get; set;}
+  public map<string, list<Answer__c>> mNotDoAAnswers {get; set;}
+  public list<Answer__c> lAnswers {get; set;}
+  public Map<Id, Risk__c> questionToRiskMap { get; set; }  // Key is TemplateQuestion__c id
     public Map<Id, DOARegister__c> questionToDOAMap { get; set; }  // Key is TemplateQuestion__c id
     public list<TemplateQuestion__c> lTemplateQuestion {get; set;}
     public list<SelectOption> lAnswerValues {get; set;}
@@ -25,8 +25,8 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
     public Id navTargetQuestionnaireId {get;set;}
 
     public ECO_RMAQuestionnaireController(ApexPages.StandardController oStandardController) {
-    	showDOASection = false;
-    	showDOASubSection = false;
+      showDOASection = false;
+      showDOASubSection = false;
         list<string> lFields = new list<string>();
         lFields.add('QuestionnaireSet__c');
         lFields.add('QuestionnaireSet__r.Project__c');
@@ -51,44 +51,44 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
         this.oStandardController = oStandardController;
 
         if(ECO_Utils_String.NullCheck(oQuestionnaire.QuestionnaireSet__c) == ''){
-			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING,'You have reached this page improperly, please access it from the Project screen.');
+      ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING,'You have reached this page improperly, please access it from the Project screen.');
             ApexPages.addMessage(oPageMessage);
 
             return;
-		}
-		//lTemplateQuestion = new list<TemplateQuestion__c>([Select id From TemplateQuestion__c where Question__c = 'Does this project trigger any DoA Items?']);
+    }
+    //lTemplateQuestion = new list<TemplateQuestion__c>([Select id From TemplateQuestion__c where Question__c = 'Does this project trigger any DoA Items?']);
         refreshData();
     }
     
     public PageReference goToSpecificQuestionnaire () {
-    	
-    	doSaveAction();
-    	
-    	refreshData();
-    	
-    	PageReference oPageReference = Page.ECO_RMAQuestionnaire;
+      
+      doSaveAction();
+      
+      refreshData();
+      
+      PageReference oPageReference = Page.ECO_RMAQuestionnaire;
 
-    	oPageReference.getParameters().put('Id', navTargetQuestionnaireId);
-    	oPageReference.setRedirect(true);
-    	
-    	return oPageReference;
+      oPageReference.getParameters().put('Id', navTargetQuestionnaireId);
+      oPageReference.setRedirect(true);
+      
+      return oPageReference;
     }
     
     public PageReference doShowDOASection () {
-    	showDOASection = true;
+      showDOASection = true;
         showDOASubSection = true;
-    	return null;
+      return null;
     }
     
     public PageReference doHideDOASection () {
-    	showDOASection = false;
+      showDOASection = false;
         showDOASubSection = false;
-    	return null;
+      return null;
     }
-	
+  
     public void refreshData(){
         
-    	lQuestionnaires = ECO_Utils_Questionnaire.GetQuestionnaires(oQuestionnaire.QuestionnaireSet__c);
+      lQuestionnaires = ECO_Utils_Questionnaire.GetQuestionnaires(oQuestionnaire.QuestionnaireSet__c);
         iIndex = ECO_Utils_Questionnaire.FindQuestionnaireIndex(lQuestionnaires, oQuestionnaire);
 
         lAnswers = ECO_Utils_Questionnaire.GetAnswers(oQuestionnaire.Id);
@@ -100,9 +100,9 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
 
         for(Answer__c oAnswer : lAnswers)
         {
-        	if(oAnswer.TemplateQuestion__r.IsDoATrigger__c)
+          if(oAnswer.TemplateQuestion__r.IsDoATrigger__c)
             {
-        		if(!mDoAAnswers.containsKey(oAnswer.TemplateQuestion__r.QuestionSet__c))
+            if(!mDoAAnswers.containsKey(oAnswer.TemplateQuestion__r.QuestionSet__c))
                 {
                     mDoAAnswers.put(oAnswer.TemplateQuestion__r.QuestionSet__c, new list<Answer__c>());
                 }
@@ -112,9 +112,9 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
                 // Show the answers section if the section header is 'yes'
                 if(oAnswer.TemplateQuestion__r.isDOAmaster__c && 'Yes'.equalsIgnoreCase(oAnswer.Value__c)) 
                 {
-                	doShowDOASection();
+                  doShowDOASection();
                 }
-				
+        
                 //Preload the DOA map
                 DOARegister__c newDOA = new DOARegister__c();
                 newDOA.Questionnaire__c = oQuestionnaire.Id;
@@ -127,7 +127,7 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
                 //newDOA.MitigationStrategy__c = '';
                 
                 questionToDOAMap.put(oAnswer.TemplateQuestion__c, newDOA);
-    		}
+        }
             else
             {
                 if(!oAnswer.TemplateQuestion__r.isDOAmaster__c){
@@ -148,7 +148,7 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
                     System.debug('setting showDOASection:   '+showDOASection);
                     System.debug('oAnswer:   '+oAnswer);
                 }
-    		}
+        }
             // Preload the risk map
             questionToRiskMap.put(oAnswer.TemplateQuestion__c, new Risk__c());
         }
@@ -159,30 +159,30 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
         System.debug('showDOASection:   '+showDOASection);
         System.debug('showDOASubSection:   '+showDOASubSection);
         for (Risk__c r : ECO_Service_Risks.getRisksForAnswers(lAnswers)) {
-        	questionToRiskMap.put(r.Answer__r.TemplateQuestion__c, r);
+          questionToRiskMap.put(r.Answer__r.TemplateQuestion__c, r);
         }
 
         for (DOARegister__c d : ECO_Service_Risks.getDOAForAnswers(lAnswers)) {
             questionToDOAMap.put(d.TemplateQuestion__c, d);
         }
-		
-  		return;
+    
+      return;
     }
     
     public PageReference addRiskToAnswer () {
-    	Risk__c newRisk = new Risk__c();
-    	newRisk.Questionnaire__c = oQuestionnaire.Id;
-    	newRisk.Project__c = oQuestionnaire.QuestionnaireSet__r.Project__c;
-    	newRisk.PlanElement__c = oQuestionnaire.Name;
-    	questionToRiskMap.put(selectedQuestionId, newRisk);
-    	
-    	return null;
+      Risk__c newRisk = new Risk__c();
+      newRisk.Questionnaire__c = oQuestionnaire.Id;
+      newRisk.Project__c = oQuestionnaire.QuestionnaireSet__r.Project__c;
+      newRisk.PlanElement__c = oQuestionnaire.Name;
+      questionToRiskMap.put(selectedQuestionId, newRisk);
+      
+      return null;
     }
     
     public PageReference removeRiskFromAnswer () {
-    	questionToRiskMap.put(selectedQuestionId, new Risk__c());
-    	
-    	return null;
+      questionToRiskMap.put(selectedQuestionId, new Risk__c());
+      
+      return null;
     }
 
     public PageReference addDOARiskToAnswer () 
@@ -227,19 +227,19 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
     
     private void doSaveAction () 
     {
-    	try
+      try
         {
-    		markDOAAnswersAsNoIfParentIsNo();
-    		
-    		//oStandardController.save();
-    		upsert lAnswers;
-    		
-    		// Create our map so we can set the answer field properly on the risks
-    		Map<Id, Id> questionTemplateToAnswerMap = new Map<Id, Id>();
+        markDOAAnswersAsNoIfParentIsNo();
+        
+        //oStandardController.save();
+        upsert lAnswers;
+        
+        // Create our map so we can set the answer field properly on the risks
+        Map<Id, Id> questionTemplateToAnswerMap = new Map<Id, Id>();
             Boolean ExportControlExists = ECO_Utils_Questionnaire.ExportControlExists(oQuestionnaire.QuestionnaireSet__c);
-    		for (Answer__c a : lAnswers) 
+        for (Answer__c a : lAnswers) 
             {
-    			questionTemplateToAnswerMap.put(a.TemplateQuestion__c, a.Id);
+          questionTemplateToAnswerMap.put(a.TemplateQuestion__c, a.Id);
 
                 if(a.TemplateQuestion__r.RiskTitle__c == 'Export Controls' && !ExportControlExists && (a.Value__c == 'Yes' || a.Value__c == 'Unknown'))
                 {
@@ -248,65 +248,65 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
                     insert oEC;
                     ExportControlExists = true;
                 }
-    		}
-    		
-    		cleanEmptyRisks();
-    		
-    		for (Id i : questionToRiskMap.keySet()) {
-    			questionToRiskMap.get(i).Answer__c = questionTemplateToAnswerMap.get(i);
-    		}
+        }
+        
+        cleanEmptyRisks();
+        
+        for (Id i : questionToRiskMap.keySet()) {
+          questionToRiskMap.get(i).Answer__c = questionTemplateToAnswerMap.get(i);
+        }
 
             for (Id i : questionToDOAMap.keySet()) {
                 questionToDOAMap.get(i).Answer__c = questionTemplateToAnswerMap.get(i);
             }
             System.debug('questionToDOAMap size: ' + questionToDOAMap.size());
-    		
-    		upsert questionToRiskMap.values();
+        
+        upsert questionToRiskMap.values();
             upsert questionToDOAMap.values();
-    	} 
+      } 
         catch (Exception e) 
         {
             System.debug('doSaveAction error: ' + e.getMessage());
-    		ApexPages.addMessages(e);  // TODO:  Make this pretty
-    	}
+        ApexPages.addMessages(e);  // TODO:  Make this pretty
+      }
     }
     
     private void markDOAAnswersAsNoIfParentIsNo () {
-    	Boolean isSectionHeaderNo = false;
-    	for (Answer__c a : lAnswers) 
+      Boolean isSectionHeaderNo = false;
+      for (Answer__c a : lAnswers) 
         {
-    		// Check if this is the header question for the DOA section, and if it's 'No'
-    		//if (a.TemplateQuestion__r.IsDoATrigger__c 
-    		if(a.TemplateQuestion__r.isDOAmaster__c
-    			&& 'No'.equalsIgnoreCase(a.Value__c)) {
-    				isSectionHeaderNo = true;
-    				break;
-    		}
-    	}
-    	
-    	// If it is equal to 'no', our boolean is true, so let's loop over them again and set the kids to no
-    	if (isSectionHeaderNo) {
-    		for (Answer__c a : lAnswers) {
-    			// Only set to 'no' if the type matches DOA trigger
-	    	if (questionToDOAMAP.containsKey(a.TemplateQuestion__c)) {
-    			a.Value__c = 'No';
-    			}
-    		}
-    	}
+        // Check if this is the header question for the DOA section, and if it's 'No'
+        //if (a.TemplateQuestion__r.IsDoATrigger__c 
+        if(a.TemplateQuestion__r.isDOAmaster__c
+          && 'No'.equalsIgnoreCase(a.Value__c)) {
+            isSectionHeaderNo = true;
+            break;
+        }
+      }
+      
+      // If it is equal to 'no', our boolean is true, so let's loop over them again and set the kids to no
+      if (isSectionHeaderNo) {
+        for (Answer__c a : lAnswers) {
+          // Only set to 'no' if the type matches DOA trigger
+        if (questionToDOAMAP.containsKey(a.TemplateQuestion__c)) {
+          a.Value__c = 'No';
+          }
+        }
+      }
     }
     
     private void cleanEmptyRisks () {
-    	for (Id questionId : questionToRiskMap.keySet()) {
-    		Risk__c thisRisk = questionToRiskMap.get(questionId);
-    		Boolean keepThisRisk = false;
-    		
-    		keepThisRisk = (thisRisk.Project__c != null) ? true : false;
-    		
-    		if (!keepThisRisk) {
+      for (Id questionId : questionToRiskMap.keySet()) {
+        Risk__c thisRisk = questionToRiskMap.get(questionId);
+        Boolean keepThisRisk = false;
+        
+        keepThisRisk = (thisRisk.Project__c != null) ? true : false;
+        
+        if (!keepThisRisk) {
                 System.debug('questionId:   '+questionId);
-    			questionToRiskMap.remove(questionId);
-    		}
-    	}
+          questionToRiskMap.remove(questionId);
+        }
+      }
 
         for (Id questionId : questionToDOAMap.keySet()) {
             DOARegister__c thisDOA = questionToDOAMap.get(questionId);
@@ -344,50 +344,50 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
             return null;
         }
 
-    	if(iIndex + 1 < 0){
-    		throw new EcoControllerException('Error Cannot Go Next');
-    	}
-    	
-    	iIndex++;
-    	
-    	system.debug('lQuestionnaires.size():  '+lQuestionnaires.size());
-		
-		if (lQuestionnaires.size() <= iIndex) {
-			
-			List<MarketAssessment__c> lMarketAssessment = [SELECT Id 
-															FROM MarketAssessment__c 
-															WHERE QuestionnaireSet__c = :oQuestionnaire.QuestionnaireSet__c];
-			system.debug('lMarketAssessment:  '+lMarketAssessment);
-			if (!lMarketAssessment.isEmpty()) {
+      if(iIndex + 1 < 0){
+        throw new EcoControllerException('Error Cannot Go Next');
+      }
+      
+      iIndex++;
+      
+      system.debug('lQuestionnaires.size():  '+lQuestionnaires.size());
+    
+    if (lQuestionnaires.size() <= iIndex) {
+      
+      List<MarketAssessment__c> lMarketAssessment = [SELECT Id 
+                              FROM MarketAssessment__c 
+                              WHERE QuestionnaireSet__c = :oQuestionnaire.QuestionnaireSet__c];
+      system.debug('lMarketAssessment:  '+lMarketAssessment);
+      if (!lMarketAssessment.isEmpty()) {
 
                 doSaveAction();
                 refreshData();
-				return new PageReference('/'+lMarketAssessment[0].Id);
-			} else {
-				PageReference oPageReference = Page.ECO_RMASummary;
+        return new PageReference('/'+lMarketAssessment[0].Id);
+      } else {
+        PageReference oPageReference = Page.ECO_RMASummary;
 
-		    	oPageReference.getParameters().put('Id', oQuestionnaire.QuestionnaireSet__c);
-		    	oPageReference.setRedirect(true);
-		    	
+          oPageReference.getParameters().put('Id', oQuestionnaire.QuestionnaireSet__c);
+          oPageReference.setRedirect(true);
+          
                 doSaveAction();
                 refreshData();
-		    	return oPageReference;
-			}
-			
-		}
-    	
-    	Questionnaire__c oPreviousQuestionnaire = lQuestionnaires.get(iIndex);
+          return oPageReference;
+      }
+      
+    }
+      
+      Questionnaire__c oPreviousQuestionnaire = lQuestionnaires.get(iIndex);
 
-    	doSaveAction();
+      doSaveAction();
 
-    	PageReference oPageReference = Page.ECO_RMAQuestionnaire;
+      PageReference oPageReference = Page.ECO_RMAQuestionnaire;
 
-    	oPageReference.getParameters().put('Id', oPreviousQuestionnaire.Id);
-    	oPageReference.setRedirect(true);
+      oPageReference.getParameters().put('Id', oPreviousQuestionnaire.Id);
+      oPageReference.setRedirect(true);
 
-    	refreshData();
+      refreshData();
 
-    	return oPageReference;
+      return oPageReference;
     }
 
     public PageReference SavePrevious(){
@@ -397,22 +397,22 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
             return null;
         }
 
-    	if(iIndex - 1 < 0){
-    		throw new EcoControllerException('Error Cannot Go Previous');
-    	}
+      if(iIndex - 1 < 0){
+        throw new EcoControllerException('Error Cannot Go Previous');
+      }
 
-    	Questionnaire__c oPreviousQuestionnaire = lQuestionnaires.get(iIndex - 1);
+      Questionnaire__c oPreviousQuestionnaire = lQuestionnaires.get(iIndex - 1);
 
-    	doSaveAction();
+      doSaveAction();
 
-    	PageReference oPageReference = Page.ECO_RMAQuestionnaire;
+      PageReference oPageReference = Page.ECO_RMAQuestionnaire;
 
-    	oPageReference.getParameters().put('Id', oPreviousQuestionnaire.Id);
-    	oPageReference.setRedirect(true);
+      oPageReference.getParameters().put('Id', oPreviousQuestionnaire.Id);
+      oPageReference.setRedirect(true);
 
-    	refreshData();
+      refreshData();
 
-    	return oPageReference;
+      return oPageReference;
     }
 
     public PageReference SaveRecord(){
@@ -422,22 +422,22 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
             return null;
         }
 
-    	doSaveAction();
+      doSaveAction();
 
-    	refreshData();
+      refreshData();
 
-    	return null;
+      return null;
     }
 
     public PageReference ReturnToSummary(){
-    	PageReference oPageReference = Page.ECO_RMASummary;
+      PageReference oPageReference = Page.ECO_RMASummary;
 
-    	oPageReference.getParameters().put('Id', oQuestionnaire.QuestionnaireSet__c);
-    	oPageReference.setRedirect(true);
+      oPageReference.getParameters().put('Id', oQuestionnaire.QuestionnaireSet__c);
+      oPageReference.setRedirect(true);
 
-    	refreshData();
+      refreshData();
 
-    	return oPageReference;
+      return oPageReference;
     }
     public PageReference SetDefaultNo(){
         for(Answer__c oAnswer : lAnswers){
