@@ -368,7 +368,15 @@
                                                             <apex:outputPanel id="SiteSelect" rendered="{!if(lstSites.size > 0, true, false)}">
 
                                                             <div style="padding:0 12px;margin-top:7px">
+                                                                <apex:variable var="rowNum" value="{!0}"/>
                                                                 <apex:pageBlockTable value="{!lstSites}" var="Site" rendered="{!if(lstSites.size > 0, true, false)}">
+                                                                    <apex:column headerValue="Action">
+
+                                                                        <apex:commandLink style="text-decoration: none;" value="Remove" action="{!RemoveSite}" title="Remove" rerender="tabPanel" status="SiteSelectUpdateStatus" rendered="{!and(not(Site.booIsDefaultTopTask), not(Site.booIsPrimaryEnd))}">
+                                                                          <apex:param name="rowIndex" value="{!rowNum}" assignTo="{!iSiteRowDelete}"/>
+                                                                       </apex:commandLink>
+                                                                       <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                                                                    </apex:column>
                                                                     <apex:repeat value="{!$ObjectType.Site__c.FieldSets.pse_ClientFinder_Search_Result_Fieldset}" var="SearchField">
                                                                         <apex:column value="{!Site.oSite[SearchField]}" />
                                                                     </apex:repeat>
@@ -485,7 +493,7 @@
                                         
                                         <div style="text-align:center;">
                                             <apex:outputLabel value="Show me clients that are not in my Operating Unit" />&nbsp;
-                                            <c:ECO_HelpIcon helpText="Click box to search for clients with physical/billing location outside of Opertating Unit"/>
+                                            <c:ECO_HelpIcon helpText="Check the box to search for clients with physical or billing locations outside of the users operating unit (region/geography)"/>
                                             <apex:inputCheckbox value="{!bSearchOutsideUserOrg}" />
                                             <br/><br/>
                                             <apex:commandButton id="SearchButton" action="{!SearchSites}" value="Search" rerender="SiteTab" status="SiteSearchUpdateStatus" />
@@ -600,9 +608,15 @@
                                         </apex:facet>
                                     </apex:actionStatus>
                                     <br /><br />
+                                    <apex:outputPanel id="skipOpp" >
                                     <div style="text-align:center;">
-                                        <apex:commandButton value="Skip Opportunity Selection" action="{!SkipOpportunity}" reRender="tabPanel, messages" />
+                                        <apex:outputLabel value="RecordType" />&nbsp;&nbsp;
+                                        <apex:selectList value="{!idSelectedOppRecType}" size="1">
+                                            <apex:selectOptions value="{!opportunityRecType}"></apex:selectoptions>
+                                        </apex:selectList>&nbsp;&nbsp;
+                                        <apex:commandButton value="Skip Opportunity Selection" action="{!SkipOpportunity}"  reRender="tabPanel, messages" />
                                     </div>
+                                    </apex:outputPanel>
                                     <BR /><BR />
                                     <div class="customHelpText">
                                         <div class="customHelpBody">

@@ -42,7 +42,6 @@ public class ECO_ChangeManagerDetailController {
     public List<syncHistoryHelper> requestFailures {get; private set;}
 
 
-
     public ECO_ChangeManagerDetailController(ApexPages.StandardController controller)
     {
         //changeManager = (ChangeManager__c)controller.getRecord();
