@@ -21,6 +21,15 @@
         <targetObject>Project__c</targetObject>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>StatusAsOfDate_c</fullName>
+        <field>StatusAsOfDate__c</field>
+        <formula>Now()</formula>
+        <name>StatusAsOfDate</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Update_Status_To_Approved</fullName>
         <field>Status__c</field>
         <literalValue>Approved</literalValue>
@@ -100,6 +109,20 @@
             <operation>equals</operation>
             <value>Forecast</value>
         </criteriaItems>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Budget Header Status As Of Date to Now</fullName>
+        <actions>
+            <name>StatusAsOfDate_c</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>false</active>
+        <criteriaItems>
+            <field>BudgetHeader__c.StatusAsOfDate__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <description>On insert or when Status field changes, update this field to Now()</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
 </Workflow>

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
     <actionOverrides>
         <actionName>Accept</actionName>
         <type>Default</type>
@@ -62,7 +62,27 @@
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
-            <field>OperatingGroup__c</field>
+            <field>GeographyName__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Region__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>District__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>BusinessLineName__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Department__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
@@ -80,22 +100,18 @@
     </fields>
     <fields>
         <fullName>CFOorDelegateContact__c</fullName>
-        <deleteConstraint>SetNull</deleteConstraint>
+        <deleteConstraint>Restrict</deleteConstraint>
         <externalId>false</externalId>
         <label>CFO or Delegate</label>
         <lookupFilter>
             <active>true</active>
             <filterItems>
-                <field>Contact.RecordTypeId</field>
-                <operation>equals</operation>
-                <value>PSA Resource</value>
-            </filterItems>
-            <filterItems>
                 <field>Contact.pse__Salesforce_User__c</field>
                 <operation>notEqual</operation>
                 <value></value>
             </filterItems>
-            <isOptional>false</isOptional>
+            <infoMessage>The corresponding contact must have a related salesforce user.</infoMessage>
+            <isOptional>true</isOptional>
         </lookupFilter>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Organization String (CFO or Delegate)</relationshipLabel>
@@ -103,6 +119,17 @@
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>Currency__c</fullName>
+        <externalId>false</externalId>
+        <formula>TEXT(CurrencyIsoCode)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Currency</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Department__c</fullName>
@@ -138,6 +165,21 @@
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>F&amp;A Manager</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Contact.pse__Salesforce_User__c</field>
+                <operation>notEqual</operation>
+                <value></value>
+            </filterItems>
+            <filterItems>
+                <field>Contact.pse__Salesforce_User__r.PersonId__c</field>
+                <operation>notContain</operation>
+                <value>U</value>
+            </filterItems>
+            <infoMessage>AECOM Users only.  The contact must have a valid Salesforce user.</infoMessage>
+            <isOptional>false</isOptional>
+        </lookupFilter>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Organization String (F&amp;A Manager)</relationshipLabel>
         <relationshipName>FAManagerRoleEntries</relationshipName>
@@ -153,15 +195,16 @@
         <lookupFilter>
             <active>true</active>
             <filterItems>
-                <field>Contact.RecordTypeId</field>
-                <operation>equals</operation>
-                <value>PSA Resource</value>
-            </filterItems>
-            <filterItems>
                 <field>Contact.pse__Salesforce_User__c</field>
                 <operation>notEqual</operation>
                 <value></value>
             </filterItems>
+            <filterItems>
+                <field>Contact.pse__Salesforce_User__r.PersonId__c</field>
+                <operation>notContain</operation>
+                <value>U</value>
+            </filterItems>
+            <infoMessage>AECOM Users only.  The contact must have a valid Salesforce user.</infoMessage>
             <isOptional>true</isOptional>
         </lookupFilter>
         <referenceTo>Contact</referenceTo>
@@ -180,15 +223,16 @@
         <lookupFilter>
             <active>true</active>
             <filterItems>
-                <field>Contact.RecordTypeId</field>
-                <operation>equals</operation>
-                <value>PSA Resource</value>
-            </filterItems>
-            <filterItems>
                 <field>Contact.pse__Salesforce_User__c</field>
                 <operation>notEqual</operation>
                 <value></value>
             </filterItems>
+            <filterItems>
+                <field>Contact.pse__Salesforce_User__r.PersonId__c</field>
+                <operation>notContain</operation>
+                <value>U</value>
+            </filterItems>
+            <infoMessage>AECOM Users only.  The contact must have a valid Salesforce user.</infoMessage>
             <isOptional>true</isOptional>
         </lookupFilter>
         <referenceTo>Contact</referenceTo>
@@ -311,16 +355,17 @@
         <lookupFilter>
             <active>true</active>
             <filterItems>
-                <field>Contact.RecordTypeId</field>
-                <operation>equals</operation>
-                <value>PSA Resource</value>
-            </filterItems>
-            <filterItems>
                 <field>Contact.pse__Salesforce_User__c</field>
                 <operation>notEqual</operation>
                 <value></value>
             </filterItems>
-            <isOptional>false</isOptional>
+            <filterItems>
+                <field>Contact.pse__Salesforce_User__r.PersonId__c</field>
+                <operation>notContain</operation>
+                <value>U</value>
+            </filterItems>
+            <infoMessage>AECOM Users only.  The contact must have a valid Salesforce user.</infoMessage>
+            <isOptional>true</isOptional>
         </lookupFilter>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Organization String</relationshipLabel>
@@ -337,16 +382,17 @@
         <lookupFilter>
             <active>true</active>
             <filterItems>
-                <field>Contact.RecordTypeId</field>
-                <operation>equals</operation>
-                <value>PSA Resource</value>
-            </filterItems>
-            <filterItems>
                 <field>Contact.pse__Salesforce_User__c</field>
                 <operation>notEqual</operation>
                 <value></value>
             </filterItems>
-            <isOptional>false</isOptional>
+            <filterItems>
+                <field>Contact.pse__Salesforce_User__r.PersonId__c</field>
+                <operation>notContain</operation>
+                <value>U</value>
+            </filterItems>
+            <infoMessage>AECOM Users only.  The contact must have a valid Salesforce user.</infoMessage>
+            <isOptional>true</isOptional>
         </lookupFilter>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Organization String (Project Accountant 2)</relationshipLabel>
@@ -363,16 +409,17 @@
         <lookupFilter>
             <active>true</active>
             <filterItems>
-                <field>Contact.RecordTypeId</field>
-                <operation>equals</operation>
-                <value>PSA Resource</value>
-            </filterItems>
-            <filterItems>
                 <field>Contact.pse__Salesforce_User__c</field>
                 <operation>notEqual</operation>
                 <value></value>
             </filterItems>
-            <isOptional>false</isOptional>
+            <filterItems>
+                <field>Contact.pse__Salesforce_User__r.PersonId__c</field>
+                <operation>notContain</operation>
+                <value>U</value>
+            </filterItems>
+            <infoMessage>AECOM Users only.  The contact must have a valid Salesforce user.</infoMessage>
+            <isOptional>true</isOptional>
         </lookupFilter>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Organization String (Project Accountant)</relationshipLabel>
@@ -389,16 +436,17 @@
         <lookupFilter>
             <active>true</active>
             <filterItems>
-                <field>Contact.RecordTypeId</field>
-                <operation>equals</operation>
-                <value>PSA Resource</value>
-            </filterItems>
-            <filterItems>
                 <field>Contact.pse__Salesforce_User__c</field>
                 <operation>notEqual</operation>
                 <value></value>
             </filterItems>
-            <isOptional>false</isOptional>
+            <filterItems>
+                <field>Contact.pse__Salesforce_User__r.PersonId__c</field>
+                <operation>notContain</operation>
+                <value>U</value>
+            </filterItems>
+            <infoMessage>AECOM Users only.  The contact must have a valid Salesforce user.</infoMessage>
+            <isOptional>true</isOptional>
         </lookupFilter>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Organization String (Project Approver)</relationshipLabel>
@@ -12856,7 +12904,6 @@
         <customTabListAdditionalFields>BusinessLineName__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>Department__c</customTabListAdditionalFields>
         <customTabListAdditionalFields>xxPLManagerxx__c</customTabListAdditionalFields>
-        <customTabListAdditionalFields xsi:nil="true"/>
         <lookupDialogsAdditionalFields>OUName__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>OrgID__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>OUID__c</lookupDialogsAdditionalFields>
@@ -12865,7 +12912,6 @@
         <lookupDialogsAdditionalFields>BusinessLineName__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>Department__c</lookupDialogsAdditionalFields>
         <lookupDialogsAdditionalFields>xxPLManagerxx__c</lookupDialogsAdditionalFields>
-        <lookupDialogsAdditionalFields xsi:nil="true"/>
         <searchResultsAdditionalFields>OrgID__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>OUID__c</searchResultsAdditionalFields>
         <searchResultsAdditionalFields>Region__c</searchResultsAdditionalFields>

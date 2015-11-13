@@ -279,6 +279,15 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>CustomerAccountStatus__c</fullName>
+        <externalId>false</externalId>
+        <formula>Site__r.Account__r.CustomerAccountStatus__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Customer Account Status</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>IsCustomer__c</fullName>
         <externalId>false</externalId>
         <formula>IF(  ISBLANK(OracleCustomerID__c), false, true)</formula>
@@ -605,6 +614,13 @@ S = Successful</inlineHelpText>
         <searchResultsAdditionalFields>OracleCustomerNumber__c</searchResultsAdditionalFields>
     </searchLayouts>
     <sharingModel>ControlledByParent</sharingModel>
+    <validationRules>
+        <fullName>EcoProjectSiteCannotChange</fullName>
+        <active>true</active>
+        <description>The project site name cannot be changed.</description>
+        <errorConditionFormula>AND(NOT(ISNEW()),ISCHANGED(Name),$Profile.Name != &quot;System Administrator&quot;)</errorConditionFormula>
+        <errorMessage>The project site name cannot be changed.</errorMessage>
+    </validationRules>
     <webLinks>
         <fullName>ManageSites</fullName>
         <availability>online</availability>
