@@ -385,9 +385,6 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
 				Date yearStartDate = yearTP.pse__Start_Date__c;
 				ytdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, yearStartDate);    
 
-				originalOrForecastBudgetCostsMap = getOriginalOrForecastBudgetCostsMap(projectIds);
-				originalOrForecastBudgetHoursMap = getOriginalOrForecastBudgetHoursMap(projectIds);
-
 	            ProjectSnapshot__c snapshot;
 	            
 	            Map<Id, ProjectSnapshot__c> projIdToSnapshotMap = new Map<Id, ProjectSnapshot__c>();
@@ -407,7 +404,10 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
 	                projIdToSnapshotMap.put(project.Id, snapshot);
 	            }
 
-				projIdToSnapshotMap = getSnapshotFiscalMonths(projIdToSnapshotMap.values());
+                List<ProjectSnapshot__c> tempSnapshotList = projIdToSnapshotMap.values();
+				projIdToSnapshotMap = getSnapshotFiscalMonths(tempSnapshotList);
+                originalOrForecastBudgetCostsMap = getOriginalOrForecastBudgetCostsMap(projectIds, projIdToSnapshotMap);
+                //originalOrForecastBudgetHoursMap = getOriginalOrForecastBudgetHoursMap(projectIds);
 
 	            for (pse__Proj__c project : projects) {
 	            	snapshot = projIdToSnapshotMap.get(project.Id);
@@ -468,10 +468,11 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
 	                FinancialMetrics forecastBudgetFinancialMetrics = forecastBudgetHeaderMap.get(project.Id);
 	                snapshot = getForecastBudgetHeaderMapInformation(forecastBudgetFinancialMetrics, snapshot);
 	            
-					/*
+					
 					// Costs Forecast EAC
 		            snapshot = originalOrForecastBudgetCostsMap.get(project.Id);
 
+/* TO DO:
 		            // Hours Forecast EAC
 		            snapshot = originalOrForecastBudgetHoursMap.get(project.Id);
 
@@ -1349,13 +1350,14 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
         b) Filter by category: BudgetAssignment__r.BudgetResource.PLReportCategory = (whatever category is)
         c) Filter by status: BudgetAssignment__r.BudgetResource__r.Budgetheader.Status = 'Forecast'
     */
-    @TestVisible private Map<Id, ProjectSnapshot__c> getOriginalOrForecastBudgetCostsMap(List<Id> projectIds) {
-    	Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap = new Map<Id, ProjectSnapshot__c>();
+    @TestVisible private Map<Id, ProjectSnapshot__c> getOriginalOrForecastBudgetCostsMap(List<Id> projectIds,
+            Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap) {
         Set<String> plReportCategorySet = getPLReportCategories();
         
         try {
             List<BudgetAssignment__c> budgetAssignments = 
-                [SELECT OverrideTotalCost__c, TotalComputedCost__c, BudgetResource__r.PLReportCategory__c
+                [SELECT OverrideTotalCost__c, TotalComputedCost__c, BudgetResource__r.PLReportCategory__c,
+                    ProjectTask__r.pse__Project__r.Id
                  FROM BudgetAssignment__c 
                  WHERE BudgetResource__r.PLReportCategory__c IN :plReportCategorySet
                  AND (BudgetResource__r.BudgetHeader__r.OriginalBudget__c=true
@@ -1366,7 +1368,7 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
             for (BudgetAssignment__c ba : budgetAssignments) {
                 String PLReportCategory = ba.BudgetResource__r.PLReportCategory__c;
                 Id projId = ba.ProjectTask__r.pse__Project__r.Id;
-                ProjectSnapshot__c snapshot = new ProjectSnapshot__c();
+                ProjectSnapshot__c snapshot = projectIdToSnapshotMap.get(projId);
 
                 if (ba.BudgetResource__r.BudgetHeader__r.Status__c == 'Forecast') {
                     if (ba.OverrideTotalCost__c > 0) {
@@ -1466,7 +1468,7 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
             {
                 Decimal hours = (Decimal)ar.get('Hours');
                 if (hours != null) {
-                	ProjectSnapshot__c snapshot = new ProjectSnapshot__c();
+                	ProjectSnapshot__c snapshot = new ProjectSnapshot__c(); //USE a Map to get the snapshot ??
                     snapshot.HoursBudgetOriginal__c = hours;
                     snapshot.HoursForecast__c = hours;
                     snapshot.HoursBudget__c = hours;
