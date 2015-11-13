@@ -318,24 +318,20 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
             
             
             // Time period
-            List<pse__Time_Period__c> timePeriods = [select Id, pse__Start_Date__c, pse__End_Date__c, TimePeriodCode__c 
-                                                        from pse__Time_Period__c 
-                                                        where pse__Type__c = 'Month'
-                                                        order by pse__End_Date__c asc];
-            //System.Debug('snapshot date:' + snapshot.SnapshotDate__c); 
+            List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
             
-            if (snapshot.SnapshotDate__c != null){                                      
-                for (Integer i = 0; i < timePeriods.size(); i++){
-                    System.Debug('end date:' + timePeriods[i].pse__End_Date__c + 'start date:' + timePeriods[i].pse__Start_Date__c);
-                    if (snapshot.SnapshotDate__c.date() <= timePeriods[i].pse__End_Date__c  &&
-                        snapshot.SnapshotDate__c.date() >= timePeriods[i].pse__Start_Date__c){
-                            System.Debug('found');
-                        snapshot.SnapshotFiscalMonth__c = timePeriods[i].TimePeriodCode__c;
-                        if (i > 0){
-                            snapshot.SnapshotPreviousFiscalMonth__c = timePeriods[i-1].TimePeriodCode__c;
-                        } 
-                    } 
-                }
+            pse__Time_Period__c fm = null;
+            if (snapshot.SnapshotDate__c != null){	
+				fm = ECO_Utils_Date.getFiscalPeriod(snapshot.SnapshotDate__c.date(), 0, timePeriods);  
+				if (fm != null){
+					snapshot.SnapshotFiscalMonth__c = fm.TimePeriodCode__c;
+				}
+				
+				fm = ECO_Utils_Date.getFiscalPeriod(snapshot.SnapshotDate__c.date(), 1, timePeriods);  
+				if (fm != null){
+					snapshot.SnapshotPreviousFiscalMonth__c = fm.TimePeriodCode__c;
+				}                                   
+               
             }
             
             
