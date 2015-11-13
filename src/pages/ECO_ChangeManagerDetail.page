@@ -188,16 +188,16 @@
         <apex:outputPanel id="IntExt" rendered="{!NOT(changeManager.IsPMHandoverChange__c) && NOT(changeManager.IsExecutionApprovalChange__c)}">
         <apex:variable value="{!ChangedProjectClosure}"  var="projectClosure" /> 
         <apex:pageBlock mode="edit" title="{!changeManager.RecordType.Name & ' Edit'}" id="pb2">
-            <apex:pageBlockButtons >
+            <apex:pageBlockButtons id="pbButtonsIntExt">
                 <apex:commandButton value="Edit" action="{!editChangeManager}" rendered="{!NOT(changeManager.IsApproved__c) && mode == ''}" />
                 
-                <apex:commandButton value="Save" action="{!saveChangeManager}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}" reRender="changes" />
+                <apex:commandButton value="Save" action="{!saveChangeManager}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}" reRender="changes,pbButtonsIntExt" />
                 
                 <apex:commandButton value="Return to Change Manager" action="{!returnToChangeManager}" rendered="{!mode != ''}" />
                 <apex:commandButton value="Return to Project" action="{!returnToProject}" rendered="{!mode == ''}" />
                 <apex:commandButton value="Return to Project Changes" action="{!returnToProjectChanges}" rendered="{!mode == ''}" />
                 <apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" rendered="{!NOT($User.IsValidOracleToken__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed') && 
-                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c)}"/>
+                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c)}"/>
                  <apex:commandButton value="Submit for Approval" action="{!SubmitForApproval}" id="Submit_for_Approval" rendered="{!(changeManager.ApprovalStatus__c == null || changeManager.ApprovalStatus__c == '' || changeManager.ApprovalStatus__c == 'Rejected') && projectSynchMessages == '' && mode == ''}"/>
                  <apex:commandButton value="Synchronize Project" rendered="{!changeManager.OracleApprovalSyncStatus__c == 'Failed'}" action="{!SynchronizeProject}" />
             </apex:pageBlockButtons>
@@ -432,7 +432,7 @@
     </div>
         
     <div id="notifications">
-            <apex:pageBlockSection id="intExtDetails" title="Details" collapsible="false" rendered="{!changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c|| changeManager.IntExtClassifications__c}">
+            <apex:pageBlockSection id="intExtDetails" title="Details" collapsible="false" rendered="{!changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c|| changeManager.IntExtClassifications__c || changeManager.IntExtProjectClosure__c}">
                 <apex:outputField value="{!changeManager.Project__c}"/>
                 <apex:outputField value="{!changeManager.ProjectNumber__c}"/>
                 <apex:pageBlockSectionItem >
@@ -441,11 +441,11 @@
                 </apex:pageBlockSectionItem>
                 <apex:outputField value="{!changeManager.ApprovalStatus__c}"/>  
 
-                <apex:outputField value="{!changeManager.ProjectApprover__c}" rendered="{!NOT(changeManager.IsApproved__c)}"/>
+                <apex:outputField value="{!changeManager.ProjectApprover__c}" />
 
                 <apex:outputField value="{!changeManager.OracleApprovalSyncStatus__c}"/> 
 
-                 <apex:outputField value="{!changeManager.ProjectAccountantApprover__c}" rendered="{!NOT(changeManager.IsApproved__c)}"/>
+                 <apex:outputField value="{!changeManager.ProjectAccountantApprover__c}" />
 
                 <apex:pageBlockSectionItem >
                         <apex:outputText value="Contributing Factor"/>
@@ -455,7 +455,7 @@
                         </apex:outputPanel>
                 </apex:pageBlockSectionItem>
 
-               <apex:outputField value="{!changeManager.FinanceApprover__c}" rendered="{!NOT(changeManager.IsApproved__c)}"/>
+               <apex:outputField value="{!changeManager.FinanceApprover__c}" />
                 
                 <apex:pageBlockSectionItem >
                     <apex:outputText value="Contributing Factor Details"/>    
@@ -469,7 +469,7 @@
                 
             </apex:pageBlockSection> 
 
-            <apex:pageBlockSection title="Details" collapsible="false" rendered="{!NOT(changeManager.IntExtKeyMembers__c) &&  NOT(changeManager.IntExtProjectTasks__c) && NOT(changeManager.IntExtCustomers__c) && NOT(changeManager.IntExtClassifications__c)}">
+            <apex:pageBlockSection title="Details" collapsible="false" rendered="{!NOT(changeManager.IntExtKeyMembers__c) &&  NOT(changeManager.IntExtProjectTasks__c) && NOT(changeManager.IntExtCustomers__c) && NOT(changeManager.IntExtClassifications__c) && NOT(changeManager.IntExtProjectClosure__c)}">
                 <apex:outputField value="{!changeManager.Project__c}"/>
                 <apex:outputField value="{!changeManager.ProjectNumber__c}"/>
                 <apex:pageBlockSectionItem >
@@ -478,7 +478,7 @@
                 </apex:pageBlockSectionItem>
                 <apex:outputField value="{!changeManager.ApprovalStatus__c}"/>  
 
-                <apex:outputField value="{!changeManager.ProjectApprover__c}" rendered="{!NOT(changeManager.IsApproved__c)}"/>
+                <apex:outputField value="{!changeManager.ProjectApprover__c}" />
 
                 <!--<apex:outputField value="{!changeManager.OracleApprovalSyncStatus__c}"/> -->
                 <apex:pageBlockSectionItem >
@@ -489,7 +489,7 @@
                         </apex:outputPanel>
                 </apex:pageBlockSectionItem>
 
-                 <apex:outputField value="{!changeManager.ProjectAccountantApprover__c}" rendered="{!NOT(changeManager.IsApproved__c)}"/>
+                 <apex:outputField value="{!changeManager.ProjectAccountantApprover__c}" />
 
                 <apex:pageBlockSectionItem >
                     <apex:outputText value="Contributing Factor Details"/>    
@@ -499,7 +499,7 @@
                     </apex:outputPanel>
                 </apex:pageBlockSectionItem>
 
-               <apex:outputField value="{!changeManager.FinanceApprover__c}" rendered="{!NOT(changeManager.IsApproved__c)}"/>
+               <apex:outputField value="{!changeManager.FinanceApprover__c}" />
             
                 <apex:outputPanel />              
                 

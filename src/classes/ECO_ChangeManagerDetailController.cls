@@ -779,7 +779,7 @@ public class ECO_ChangeManagerDetailController {
         if(changeManager.IsPMHandoverChange__c)
             return new PageReference('/' + changeManager.Id);
 
-   		return null;
+   		return new PageReference('/' + changeManager.Id);
     }
     
     public PageReference takeProjectSnapshot()
