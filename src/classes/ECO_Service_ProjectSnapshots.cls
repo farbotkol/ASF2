@@ -36,12 +36,24 @@ public class ECO_Service_ProjectSnapshots {
     Map<Id, FinancialMetrics> mtdActualFinancialMetricsMap;
     Map<Id, FinancialMetrics> itdActualFinancialMetricsMap;
     Map<Id, FinancialMetrics> ytdActualFinancialMetricsMap;
-    Map<Id, BillingMetrics> billingMetricsMap;
 
     Map<Id, ProjectSnapshot__c> originalOrForecastBudgetCostsMap;
     Map<Id, ProjectSnapshot__c> originalOrForecastBudgetHoursMap;
     Map<Id, ProjectSnapshot__c> previousFMForecastMap;
 
+    Map<Id, BillingMetrics> billingMetricsARMap;
+    Map<Id, Decimal> billingMetricsAR0to30Map;
+    /*AR31to60__c = billingMetrics.Billed31to60;
+                    snapshot.AR61to90__c = billingMetrics.Billed61to90;
+                    snapshot.AR91to180__c = billingMetrics.Billed91to180;
+                    snapshot.AR181Plus__c = billingMetrics.Billed181Plus;
+
+   snapshot.Unbilled0to30__c = billingMetrics.Unbilled0to30;
+                    snapshot.Unbilled31to60__c = billingMetrics.Unbilled31to60;
+                    snapshot.Unbilled61to90__c = billingMetrics.Unbilled61to90;
+                    snapshot.Unbilled91to180__c = billingMetrics.Unbilled91to180;
+                    snapshot.Unbilled181Plus_
+*/
     @TestVisible private class ProjectOrganization
     {
         public Id OrganizationId {get; set;}
@@ -232,27 +244,6 @@ public class ECO_Service_ProjectSnapshots {
             snapshot.FutureSpendMonth4__c = getTotalFutureSpendForPeriod(projectMonth4FutureSpend.values());
             snapshot.FutureSpendMonth5__c = getTotalFutureSpendForPeriod(projectMonth5FutureSpend.values());
             snapshot.FutureSpendMonth6__c = getTotalFutureSpendForPeriod(projectMonth6FutureSpend.values());
-            
-            
-            /*
-            // Time period
-            List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
-            
-            pse__Time_Period__c fm = null;
-            if (snapshot.SnapshotDate__c != null){                                      
-				fm = ECO_Utils_Date.getFiscalPeriod(snapshot.SnapshotDate__c.date(), 0, timePeriods);  
-				if (fm != null){
-					snapshot.SnapshotFiscalMonth__c = fm.TimePeriodCode__c;
-                        } 
-				
-				fm = ECO_Utils_Date.getFiscalPeriod(snapshot.SnapshotDate__c.date(), 1, timePeriods);  
-				if (fm != null){
-					snapshot.SnapshotPreviousFiscalMonth__c = fm.TimePeriodCode__c;
-                }
-            }
-            */
-            
-            
         }
         catch (Exception e) {
             System.debug(e.getStackTraceString());
@@ -303,8 +294,8 @@ public class ECO_Service_ProjectSnapshots {
 				Date yearStartDate = yearTP.pse__Start_Date__c;
 				ytdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, yearStartDate); 
 
-                //billingMetricsMap = getBillingARMetrics(projectIds, itdActualFinancialMetrics.TotalRevenue);
-  
+                billingMetricsAR0to30Map = getBillingMetricsAR0to30Map(projectIds);
+
 	            ProjectSnapshot__c snapshot;
 	            
 	            Map<Id, ProjectSnapshot__c> projIdToSnapshotMap = new Map<Id, ProjectSnapshot__c>();
@@ -329,6 +320,8 @@ public class ECO_Service_ProjectSnapshots {
                 originalOrForecastBudgetCostsMap = getOriginalOrForecastBudgetCostsMap(projectIds, projIdToSnapshotMap);
                 originalOrForecastBudgetHoursMap = getOriginalOrForecastBudgetHoursMap(projectIds, projIdToSnapshotMap);
                 previousFMForecastMap = getPreviousFMForecastMap(projIdToSnapshotMap);
+
+                billingMetricsARMap = getBillingMetricsARMap(projectIds, itdActualFinancialMetricsMap);
 
 	            for (pse__Proj__c project : projects) {
 	            	snapshot = projIdToSnapshotMap.get(project.Id);
@@ -360,7 +353,6 @@ public class ECO_Service_ProjectSnapshots {
 	                    }   
 	                    
 	                    //Earned Value
-	                    //map<Date, Decimal> mapTest = earnedValueController.mapDateCPI;
 	                    if (EarnedValueSnapshotDate != null)
 	                    {
 	                        snapshot.EarnedValueCPI__c = earnedValueController.mapDateCPI.get(EarnedValueSnapshotDate);
@@ -419,24 +411,30 @@ public class ECO_Service_ProjectSnapshots {
 	                snapshot = getYtdActualFinancialMetricsMapInformation(ytdFinancialMetrics, snapshot, yearStartDate);
 	                
                     //Billing Metrics    
-                    BillingMetrics billingMetrics = billingMetricsMap.get(project.Id);   
-                    snapshot.AR0to30__c = billingMetrics.Billed0to30;
-                    snapshot.AR31to60__c = billingMetrics.Billed31to60;
+                    
+                    //snapshot.AR0to30__c = billingMetrics.Billed0to30;
+                    snapshot.AR0to30__c = billingMetricsAR0to30Map.get(project.Id);
+
+
+                    /*snapshot.AR31to60__c = billingMetrics.Billed31to60;
                     snapshot.AR61to90__c = billingMetrics.Billed61to90;
                     snapshot.AR91to180__c = billingMetrics.Billed91to180;
                     snapshot.AR181Plus__c = billingMetrics.Billed181Plus;
 
-                    snapshot.ARTotal__c = billingMetrics.BilledAR;
-                    snapshot.ARRetention__c = billingMetrics.Retention;
-
-                    snapshot.Unbilled0to30__c = billingMetrics.Unbilled0to30;
+   snapshot.Unbilled0to30__c = billingMetrics.Unbilled0to30;
                     snapshot.Unbilled31to60__c = billingMetrics.Unbilled31to60;
                     snapshot.Unbilled61to90__c = billingMetrics.Unbilled61to90;
                     snapshot.Unbilled91to180__c = billingMetrics.Unbilled91to180;
                     snapshot.Unbilled181Plus__c = billingMetrics.Unbilled181Plus;
 
-                    snapshot.ARBIEE__c = billingMetrics.BIEE;
-                    snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
+                    
+*/
+
+//billingMetricsMap = getBillingARMetrics(projectIds, itdActualFinancialMetrics.TotalRevenue);
+                    // Billing Metrics
+                    BillingMetrics billingMetricsAR = billingMetricsARMap.get(project.Id);
+                    snapshot = getBillingMetricsARMapInformation(billingMetricsAR, snapshot);
+                    
 
 	                snapshotList.add(snapshot);
 	            }
@@ -449,6 +447,77 @@ public class ECO_Service_ProjectSnapshots {
         return snapshotList;
     }
 
+
+////////
+    private Map<Id, BillingMetrics> getBillingMetricsARMap(List<Id> projectIds, Map<Id, FinancialMetrics> itdActualFinancialMetricsMap)
+    {
+        Map<Id, BillingMetrics> billingMetricsMap = new Map<Id, BillingMetrics>();
+        BillingMetrics billingMetrics;
+        try {
+            for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled, SUM(RetentionAmount__c) totalRetention
+                            FROM Billing__c WHERE ProjectNumber__c IN :projectIds GROUP BY ProjectNumber__c])
+            {
+                if (ar.get('totalBilled') != null)
+                {   
+                    billingMetrics = new BillingMetrics();
+                    Id projId = (Id) ar.get('ProjectNumber__c');
+                    Decimal totalRevenue = itdActualFinancialMetricsMap.get(projId).TotalRevenue;
+                    if ((Decimal)ar.get('totalBilled') != null) {
+                        billingMetrics.BilledAR = (Decimal)ar.get('totalBilled');   
+                    }
+                    billingMetrics.Retention =  (Decimal)ar.get('totalRetention');  
+                    billingMetrics.TotalUnbilled = totalRevenue - billingMetrics.BilledAR;
+                    if ((billingMetrics.TotalUnbilled) < 0) {
+                        billingMetrics.BIEE = totalRevenue - billingMetrics.BilledAR;
+                    }
+                    billingMetricsMap.put(projId, billingMetrics);
+                }
+            }
+        }
+        catch (Exception e) {
+            System.debug(e.getStackTraceString());
+        }
+        return billingMetricsMap;
+    }
+
+    @TestVisible private ProjectSnapshot__c getBillingMetricsARMapInformation(BillingMetrics billingMetricsAR, ProjectSnapshot__c snapshot) {
+        snapshot.ARTotal__c = billingMetricsAR.BilledAR;
+        snapshot.ARRetention__c = billingMetricsAR.Retention;
+        snapshot.ARBIEE__c = billingMetricsAR.BIEE;
+        snapshot.UnbilledTotal__c = billingMetricsAR.TotalUnbilled;
+        return snapshot;
+    }
+
+    private Map<Id, Decimal> getBillingMetricsAR0to30Map(List<Id> projectIds)
+    {
+        Map<Id, Decimal> billingMetricsMap = new Map<Id, Decimal>();
+        Date startDate;
+        Date endDate;
+        BillingMetrics billingMetrics;
+        try {
+            startDate = Date.today();
+            endDate = Date.today().addDays(-30);
+            for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled0to30 
+                            FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
+                            InvoiceDate__c <= :startDate AND InvoiceDate__c >= :endDate 
+                            GROUP BY ProjectNumber__c])
+            {
+                if (ar.get('totalBilled0to30') != null)
+                {
+                    billingMetrics = new BillingMetrics();
+                    Id projId = (Id) ar.get('ProjectNumber__c');
+                    billingMetrics.Billed0to30 = (Decimal)ar.get('totalBilled0to30');
+                    billingMetricsMap.put(projId, billingMetrics.Billed0to30);
+                }
+            }
+        }
+        catch (Exception e) {
+            System.debug(e.getStackTraceString());
+        }
+        return billingMetricsMap;
+    }
+
+//////////
 
     @TestVisible private ProjectSnapshot__c getOriginalBudgetHeaderMapInformation(FinancialMetrics originalBudgetFinancialMetrics, ProjectSnapshot__c snapshot) {
         snapshot.GrossRevenueBudgetOriginal__c = originalBudgetFinancialMetrics.TotalRevenue;
@@ -757,10 +826,6 @@ public class ECO_Service_ProjectSnapshots {
     }
 
     /****** END: Refactored by Arman *****/
-
-
-
-
 
         
     private String getRelatedProjectTasks(List<Id> projectIds)
