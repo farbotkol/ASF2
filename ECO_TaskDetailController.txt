@@ -217,7 +217,12 @@ public class ECO_TaskDetailController
             
             lstAction.add(new SelectOption('','Select Action'));
             lstAction.add(new SelectOption('AddPeerTask','Add Peer Task'));
-            lstAction.add(new SelectOption('AddSubTask','Add Sub Task'));
+            
+            if(objEPT.oprojectTask.OracleSyncStatus__c == 'P' || objEPT.oprojectTask.OracleSyncStatus__c == 'E')
+            {
+                lstAction.add(new SelectOption('AddSubTask','Add Sub Task'));
+                
+            }
             lstAction.add(new SelectOption('DeleteTask','Delete Task'));
             
         }
