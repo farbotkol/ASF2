@@ -1,18 +1,18 @@
 public with sharing class ECO_DOA_ApprovalRequestRecordCtrl {
-	public String DOARecordType {get;set;}
+  public String DOARecordType {get;set;}
     public List <RecordType> lstRecordtypes {get;set;}
     public String selectedRecordType {get; set;}
     public DOAApprovalRequest__c newDOA {get;set;}
     public ECO_DOA_ApprovalRequestRecordCtrl(ApexPages.StandardController controller) {
-		newDOA = new DOAApprovalRequest__c();
+    newDOA = new DOAApprovalRequest__c();
         lstRecordtypes = new List <RecordType>();
         lstRecordtypes = [Select Id, Name, DeveloperName, Description 
                           From RecordType 
                           WHERE SobjectType = 'DOAApprovalRequest__c'
-                         	AND DeveloperName IN ('DOACreate', 'NonProject', 'NonEcosystemCreate')];
+                           AND DeveloperName IN ('DOACreate', 'NonProject', 'NonEcosystemCreate')];
     }
     
-	/*public List<selectOption> getDOARecType(){
+  /*public List<selectOption> getDOARecType(){
         List<selectOption> lstDOARecordType = new List<selectOption>();
         
         for(RecordType rt : lstRecordtypes){
@@ -20,16 +20,16 @@ public with sharing class ECO_DOA_ApprovalRequestRecordCtrl {
         }
          
         return lstDOARecordType;
-	}*/
+  }*/
     
     public list<RecordType> getDoaApprovalRecordTypes()
-	{
-		lstRecordtypes = [Select Id, Name, DeveloperName, Description 
+  {
+    lstRecordtypes = [Select Id, Name, DeveloperName, Description 
                           From RecordType 
                           WHERE SobjectType = 'DOAApprovalRequest__c'
-                         	AND DeveloperName IN ('DOACreate', 'NonProject', 'NonEcosystemCreate')];
+                           AND DeveloperName IN ('DOACreate', 'NonProject', 'NonEcosystemCreate')];
         return lstRecordtypes;
-	}
+  }
     
     public PageReference redirect(){
         PageReference pgRef;
@@ -48,7 +48,7 @@ public with sharing class ECO_DOA_ApprovalRequestRecordCtrl {
         }
     }
     public PageReference recordTypeSelected()
-	{
+  {
         PageReference pgRef;
         RecordType recordType = [select Id, DeveloperName, Name from RecordType where Id = :selectedRecordType];
         try{
@@ -56,7 +56,7 @@ public with sharing class ECO_DOA_ApprovalRequestRecordCtrl {
             //pgRef = new pagereference('/apex/ECO_DOA_ApprovalRequest');
             newDOA.RecordTypeId = recordType.Id;
             Insert newDOA;
-        	pgRef = new pagereference('/apex/ECO_DOA_ApprovalRequestCreation');
+          pgRef = new pagereference('/apex/ECO_DOA_ApprovalRequestCreation');
             }
             else{
                 newDOA.RecordTypeId = recordType.Id;

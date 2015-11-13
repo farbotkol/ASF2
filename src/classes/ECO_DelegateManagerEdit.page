@@ -1,0 +1,398 @@
+<apex:page standardController="Delegate__c"  extensions="ECO_DelegateManagerEditController" tabStyle="Contact" >
+<apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+
+<script type="text/javascript">
+	var $x = jQuery.noConflict();
+
+	$x(document).ready(function(){
+		resetLimitLabels();
+	})
+
+	//removes the > and < signs from the limit table labels
+	function resetLimitLabels(){
+		$x('.limitsLabel').each(function(){
+			$x(this).html($x(this).html().replace(/&/g, ''));
+			$x(this).html($x(this).html().replace(/gt;/g, ''));
+			$x(this).html($x(this).html().replace(/lt;/g, ''));
+		});
+	}
+
+	//selects/deselects all of the allowed organization checkboxes depending on the checkbox state in the header
+	function selectAllOrganizations(){
+		 $x('.organizationCheckBox').each(function () {
+		 	$x(this).prop('checked', $x('[id$=organizationCheckAll]').prop('checked'));
+		 })
+	}
+</script>
+<style>
+	.limitTable{
+		width: 100%;
+	}
+	fieldset {   
+  		-moz-border-radius:5px;  
+  		border-radius: 5px;  
+  		-webkit-border-radius: 5px;
+	}
+	.selectRadio{
+		margin-top:-10px;
+	}
+	.maximumColumn{
+		margin-top:5px;
+	}
+
+	.limitColumn{
+		min-width:200px;
+	}
+</style>
+	<apex:form >
+		<apex:pageMessages id="pageMessages" />
+		<apex:sectionHeader title="Delegation Manager" subtitle="{!extensionDelegate.delegate__r.Name}" /> 
+
+		<!-- contact details pb -->
+		<apex:pageBlock title="Contact Details">
+			<apex:pageBlockButtons location="top">
+				<apex:commandButton value="Back" immediate="true" action="{!back}" />
+			</apex:pageBlockButtons>
+			<apex:pageBlockSection showHeader="false">
+				<apex:repeat value="{!$ObjectType.Contact.Fieldsets.DelegationModuleContactDetails}" var="contactField">
+					<apex:outputField value="{!extensionDelegate.delegate__r[contactField]}" />
+				</apex:repeat>
+			</apex:pageBlockSection>
+		</apex:pageBlock>
+		<apex:pageBlock title="Update Delegate" id="pbAddDelegate">
+			<apex:pageBlockButtons location="top" id="pbButtons">
+				<apex:commandButton value="Save" action="{!save}"  />
+			</apex:pageBlockButtons>
+			<apex:pageBlockSection showHeader="false">
+				<apex:inputField value="{!Delegate__c.Delegate__c}" required="true"  />
+				<apex:inputField value="{!Delegate__c.Key_Member_Role__c}" required="true" rendered="{!extensionDelegate.RecordType.Name == 'Key Roles'}" />
+				<apex:pageBlockSectionItem rendered="{!extensionDelegate.RecordType.Name != 'Key Roles'}" />
+				<apex:inputField value="{!Delegate__c.Start_Date__c}" required="true" />
+				<apex:inputField value="{!Delegate__c.End_Date__c}" />
+			</apex:pageBlockSection>
+			<apex:outputPanel rendered="{!extensionDelegate.RecordType.Name == 'Key Roles'}">
+						<fieldset>
+						<legend>Delegation Limits</legend>
+							<table class="limitTable">
+								<tr>
+									<th>Criteria</th>
+									<th>Delegation Limit</th>
+									<th>Maximum Delegatable</th>
+									<th>Bypass Delegate?</th>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Agreement_Amount_estimated__c.label}" />
+									</td>
+									<td class="limitColumn">
+										Greater Than&nbsp;<apex:inputField value="{!Delegate__c.Agreement_Amount_estimated__c}" />&nbsp;{!currentCurrency}
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.Agreement_Amount__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!agreementAmountBypass}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Agreement_Amount_estimated_lt__c.label}" />
+									</td>
+									<td class="limitColumn" style="padding-left:15px;">
+										Less Than&nbsp;<apex:inputField value="{!Delegate__c.Agreement_Amount_estimated_lt__c}" />&nbsp;{!currentCurrency}
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.Agreement_Amount_lt__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!agreementAmountBypassLT}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Project_Revenue_Budget__c.label}" escape="false" />
+									</td>
+									<td class="limitColumn">
+										Greater Than&nbsp;<apex:inputField value="{!Delegate__c.Project_Revenue_Budget__c}" />&nbsp;{!currentCurrency}
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.Project_Revenue_Budget__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!projectRevenueBudgetBypass}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Project_Revenue_Budget_lt__c.label}" />
+									</td>
+									<td class="limitColumn" style="padding-left:15px;">
+										Less Than&nbsp;<apex:inputField value="{!Delegate__c.Project_Revenue_Budget_lt__c}" />&nbsp;{!currentCurrency}
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.Project_Revenue_Budget_lt__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!projectRevenueBudgetBypassLT}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Backlog_Value__c.label}" />
+									</td>
+									<td class="limitColumn">
+										Greater Than&nbsp;<apex:inputField value="{!Delegate__c.Backlog_Value__c}" />&nbsp;{!currentCurrency}
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.Backlog_Value__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!backlogValueBypass}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Backlog_Value_lt__c.label}" />
+									</td>
+									<td class="limitColumn" style="padding-left:15px;">
+										Less Than&nbsp;<apex:inputField value="{!Delegate__c.Backlog_Value_lt__c}" />&nbsp;{!currentCurrency}
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.Backlog_Value_lt__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!backlogValueBypassLT}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Project_Net_Margin_Value__c.label}" />
+									</td>
+									<td class="limitColumn">
+										Greater Than&nbsp;<apex:inputField value="{!Delegate__c.Project_Net_Margin_Value__c}" />&nbsp;{!currentCurrency}
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.Project_Net_Margin_Value__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!projectNetMarginValueBypass}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Project_Net_Margin_Value_lt__c.label}" />
+									</td>
+									<td class="limitColumn" style="padding-left:15px;">
+										Less Than&nbsp;<apex:inputField value="{!Delegate__c.Project_Net_Margin_Value_lt__c}" />&nbsp;{!currentCurrency}
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.Project_Net_Margin_Value_lt__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!projectNetMarginValueBypassLT}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Project_Net_Margin_age_of_NSR__c.label}" />
+									</td>
+									<td class="limitColumn">
+										Greater Than&nbsp;<apex:inputField value="{!Delegate__c.Project_Net_Margin_age_of_NSR__c}" />&nbsp;&#37;
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.Project_Net_Margin_age_of_NSR__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!projectNetMarginNSRBypass}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Project_Net_Margin_age_of_NSR_lt__c.label}" />
+									</td>
+									<td class="limitColumn" style="padding-left:15px;">
+										Less Than&nbsp;<apex:inputField value="{!Delegate__c.Project_Net_Margin_age_of_NSR_lt__c}" />&nbsp;&#37;
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.Project_Net_Margin_age_of_NSR_lt__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!projectNetMarginNSRBypassLT}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.age_Change_in_Forecast_Net_Margin__c.label}" />
+									</td>
+									<td class="limitColumn">
+										Greater Than&nbsp;<apex:inputField value="{!Delegate__c.age_Change_in_Forecast_Net_Margin__c}" />&nbsp;&#37;
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.age_Change_in_Forecast_Net_Margin__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!percentageChangeInForecastBypass}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.age_Change_in_Forecast_Net_Margin_lt__c.label}" />
+									</td>
+									<td class="limitColumn" style="padding-left:15px;">
+										Less Than&nbsp;<apex:inputField value="{!Delegate__c.age_Change_in_Forecast_Net_Margin_lt__c}" />&nbsp;&#37;
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.age_Change_in_Forecast_Net_Margin_lt__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!percentageChangeInForecastBypassLT}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Value_change_in_Forecast_Net_Margin__c.label}" />
+									</td>
+									<td class="limitColumn">
+										Greater Than&nbsp;<apex:inputField value="{!Delegate__c.Value_change_in_Forecast_Net_Margin__c}" />&nbsp;{!currentCurrency}
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.Value_Change_In_Forecast_Net_Margin__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!valueChangeInForecastNetMarginBypass}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Value_change_in_Forecast_Net_Margin_lt__c.label}" />
+									</td>
+									<td class="limitColumn" style="padding-left:15px;">
+										Less Than&nbsp;<apex:inputField value="{!Delegate__c.Value_change_in_Forecast_Net_Margin_lt__c}" />&nbsp;{!currentCurrency}
+									</td>
+									<td>
+										<apex:outputField value="{!delegateLimitSettings.Value_change_in_Forecast_Net_Margin_lt__c}" styleClass="maximumColumn" />
+									</td>
+									<td>
+										<apex:selectRadio value="{!valueChangeInForecastNetMarginBypassLT}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td>
+										<apex:outputLabel styleClass="limitsLabel" value="Project Review Category" />
+									</td>
+									<td>
+										<apex:outputLabel value="C-0" />&nbsp;<apex:inputField value="{!Delegate__c.Project_Review_Category_C_0__c}" />
+									</td>
+									<td />
+									<td>
+										<apex:selectRadio value="{!c0Bypass}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td />
+									<td>
+										<apex:outputLabel value="C-1" />&nbsp;<apex:inputField value="{!Delegate__c.Project_Review_Category_C_1__c}" />
+									</td>
+									<td />
+									<td>
+										<apex:selectRadio value="{!c1Bypass}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td />
+									<td>
+										<apex:outputLabel value="C-2" />&nbsp;<apex:inputField value="{!Delegate__c.Project_Review_Category_C_2__c}" />
+									</td>
+									<td />
+									<td>
+										<apex:selectRadio value="{!c2Bypass}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td />
+									<td>
+										<apex:outputLabel value="C-3" />&nbsp;<apex:inputField value="{!Delegate__c.Project_Review_Category_C_3__c}" />
+									</td>
+									<td />
+									<td>
+										<apex:selectRadio value="{!c3Bypass}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+								<tr>
+									<td />
+									<td>
+										<apex:outputLabel value="C-4" />&nbsp;<apex:inputField value="{!Delegate__c.Project_Review_Category_C_4__c}" />
+									</td>
+									<td />
+									<td>
+										<apex:selectRadio value="{!c4Bypass}" styleClass="selectRadio">
+											<apex:selectOptions value="{!yesNoOptions}" />
+										</apex:selectRadio>
+									</td>
+								</tr>
+							</table>
+						</fieldset>
+					</apex:outputPanel>
+					<apex:outputPanel rendered="{!extensionDelegate.RecordType.Name == 'Key Roles'}">
+						<fieldset>
+							<legend>Notes</legend>
+							<apex:inputField value="{!Delegate__c.Notes__c}"  style="width:100%; height:45px;" />
+						</fieldset>
+					</apex:outputPanel>
+					<apex:outputPanel rendered="{!AND(AND(owningOrganizations != NULL, owningOrganizations.SIZE > 0), extensionDelegate.RecordType.Name == 'Key Roles')}">
+						<fieldset>
+							<legend>Allowed Organizations</legend>
+							<apex:pageBlockTable value="{!owningOrganizations}" var="owningOrganization">
+								<apex:column >
+									<apex:facet name="header">
+										<apex:inputCheckbox onclick="selectAllOrganizations()" id="organizationCheckAll"/>
+									</apex:facet>
+									<apex:inputCheckbox value="{!owningOrganization.checked}" styleClass="organizationCheckBox"/>
+								</apex:column>
+								<apex:repeat value="{!$ObjectType.OrganizationString__c.Fieldsets.Delegate_Owning_Organization_Table}" var="orgField" >
+									<apex:column value="{!owningOrganization.organization[orgField]}" />               
+								</apex:repeat>
+								<apex:column headerValue="Office" value="{!owningOrganization.organization.LocationName__c}"/>
+							</apex:pageBlockTable>
+						</fieldset>
+					</apex:outputPanel>
+		</apex:pageBlock>
+	</apex:form>
+	
+</apex:page>

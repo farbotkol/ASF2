@@ -324,16 +324,16 @@ public with sharing class ECO_ProjectStatusController {
             String retStatus = '';
             if(rmAssessDecisionStatus == 'Complete'){
                 retStatus = currentProject.ProgBarPrelimPlanApproval__c;
-                /*if(retStatus == 'NotStarted')
+                if(retStatus == 'NotStarted')
                     return 'Ready';
                 else
-                    return retStatus;*/
-                if(retStatus == 'Submitted')
+                    return retStatus;
+                /*if(retStatus == 'Submitted')
                     return 'Started';
                 else if(retStatus == 'Complete')
                     return 'Complete';
                 else
-                    return 'NotStarted';
+                    return 'NotStarted';*/
             }
             else
                 return 'NotStarted';

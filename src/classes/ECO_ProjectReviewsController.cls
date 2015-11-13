@@ -363,6 +363,7 @@ public with sharing virtual class ECO_ProjectReviewsController
 		ECO_Service_ProjectSnapshots projectSnapshotService = new ECO_Service_ProjectSnapshots(theProject.Id);
 		ProjectSnapshot__c projectSnapshot = projectSnapshotService.getProjectSnapshot();
 		projectSnapshot.ProjectReview__c = oProjectReview.Id;
+		projectSnapshot.Project__c = oProjectReview.Project__c;
 		insert projectSnapshot;
 		upsert lKPI_Results;
 		//return SaveAll();

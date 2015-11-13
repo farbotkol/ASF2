@@ -81,7 +81,7 @@
         
     </script>    
 
-    <apex:sectionHeader title="Project Location(s) and Resilence" subtitle="{!pse__Proj__c.Name}" />
+    <apex:sectionHeader title="Project Location(s) and Resilience" subtitle="{!pse__Proj__c.Name}" />
 
     <style>
         .searchText{
@@ -139,8 +139,8 @@
         <apex:pageBlock title="Project Location(s)" id="pgBlockId">
 
             <apex:pageBlockButtons location="top">
-                <apex:commandButton value="Return to Project" action="{!cancel}" />
                 <apex:commandButton value="Save" action="{!SaveSelectedLocations}" />
+                <apex:commandButton value="Return to Project" action="{!cancel}" />
             </apex:pageBlockButtons>
            
             <apex:panelGrid columns="4" id="panelGridId">
@@ -214,10 +214,10 @@
                 <apex:commandButton value="Travel Security Information Document" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Travel%20Security%20Information%20Document/AECOM%20Travel%20Security%20Information%20Document.pdf');" />
                 <apex:commandButton value="Physical Resilience Standard" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/Shared%20Documents/_GRG%20Home%20Page/Policy%20and%20Standards/Physical%20Resilience%20Standard%20-RS2-002-PR1.pdf');" />
                 <apex:commandButton value="Country Security Standard" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/SitePages/Home.aspx?RootFolder=%2Fsites%2Fgrgp%2FShared%20Documents%2FTravel%20Security%20Landing%20Page%2FCountry%20Security%20Standards&FolderCTID=0x012000D13C84D93D4AD74ABE09B56950AEA117&View={66F60314-229D-46B1-952A-BEF57127A7ED}');" />  
-                <apex:commandButton value="AECOM Office OSPs" onclick="alert('Under Dev');" />  
+                <apex:commandButton value="AECOM Office OSPs" onclick="window.open('http://sharepoint.aecomnet.com/sites/grgp/SitePages/Home.aspx?RootFolder=%2Fsites%2Fgrgp%2FShared%20Documents%2F%5FGRG%20Home%20Page%2FOperational%20Security%20Plans%20%2D%20Completed&FolderCTID=0x012000D13C84D93D4AD74ABE09B56950AEA117&View={66F60314-229D-46B1-952A-BEF57127A7ED}&InitialTabId=Ribbon%2EDocument&VisibilityContext=WSSTabPersistence');" />  
             </apex:pageBlockButtons>
-
-            <apex:pageBlockSection title="Travel Security"  columns="1" collapsible="false" />
+            
+          <apex:pageBlockSection title="Travel Security"  columns="1" collapsible="false" />
 
             <apex:pageMessage severity="INFO" rendered="{!if(lstProjectCities.size > 0, false, true)}" summary="Project Location must be selected to support resilience planning."></apex:pageMessage> 
             <apex:outputPanel rendered="{!if(lstProjectCities.size > 0, true, false)}">
@@ -375,7 +375,6 @@
     
        <apex:form id="frmId1">  
         <apex:pageBlock title="Attachments">         
-                <apex:pageBlockSection title="Attachments" columns="1" collapsible="false">
 			<div class="ouputPanelSep">
                 <div class="fileList">
                     <apex:pageBlockTable value="{!OSP_AttachmentFiles}" var="attachedOSPFile" style="width: 825px;" rendered="{!pse__Proj__c.OSP_Attachment__c != null}">
@@ -387,13 +386,12 @@
                         <apex:column value="{!attachedOSPFile.ContentType}" /> 
                         <apex:column value="{!attachedOSPFile.LastModifiedDate}" />    
                         <apex:column value="{!attachedOSPFile.LastModifiedById}" />
-                    </apex:pageBlockTable></div><br/>
+                    </apex:pageBlockTable></div>
                     <apex:inputFile id="safetyHealthInspectionAttachment" value="{!newOSP_Attachment.Body}" contentType="{!newOSP_Attachment.ContentType}" fileName="{!newOSP_Attachment.Name}" onchange="fileChosen('{!$Component.cmdSafetyHealthInspectionAttachment}', this, '{!$Component.overrideSafetyHealthInspectionName}'); return false;" />
                     <apex:inputText id="overrideSafetyHealthInspectionName" value="{!overrideSafetyHealthInspectionName}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
                     <apex:commandButton id="cmdSafetyHealthInspectionAttachment" value="Attach" action="{!saveOSP_AttachmentAndProject}" styleclass="attachNewFile"/><br/>
                 <br/>
            	</div>            
-            </apex:pageBlockSection>
         </apex:pageBlock>
      </apex:form>
 </apex:page>

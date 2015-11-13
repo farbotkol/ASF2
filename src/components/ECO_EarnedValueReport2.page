@@ -1,0 +1,493 @@
+<apex:page standardController="pse__Proj__c" extensions="ECO_EarnedValueReport2Controller" action="{!init}" sidebar="false">
+
+    <script type="text/javascript" src="https://www.google.com/jsapi"></script>
+    <script type="text/javascript">
+        google.load('visualization', '1.1', {packages: ['line']});
+    </script>
+    
+    <script type="text/javascript">
+        j$ = jQuery.noConflict();
+
+        var isAllCheck = false;
+
+        function checkUncheckAllTasks(){
+            if(isAllCheck == true){
+                j$(".taskCheckbox").prop("checked", false);
+                isAllCheck = false;
+                j$("#lnkCheckAll").html('[ Select All ]');          
+            }else{
+                j$(".taskCheckbox").prop("checked", true);
+                isAllCheck = true;
+                j$("#lnkCheckAll").html('[Unselect All]');  
+            }
+        }
+
+        var isAllCheckNotifyTaskOwner = false;
+
+        function checkUncheckAllNotifyTaskOwner(){
+            if(isAllCheckNotifyTaskOwner == true){
+                j$(".taskNotifyTaskOwner").prop("checked", false);
+                isAllCheckNotifyTaskOwner = false;
+                j$("#lnkCheckAllNotifyTaskOwner").html('Select All');           
+            }else{
+                j$(".taskNotifyTaskOwner").prop("checked", true);
+                isAllCheckNotifyTaskOwner = true;
+                j$("#lnkCheckAllNotifyTaskOwner").html('Unselect All'); 
+            }
+        }
+
+        function handleNewReportTypeSelection(reportType){
+            j$("[id*=selectedReportAction]").val(reportType);   
+            if(reportType == 'new'){
+                j$("[id*=evhReportName]").removeAttr('disabled'); 
+                j$("[id*=evhSnapshot]").removeAttr('disabled');         
+                j$("[id*=evhExistingReports]").val('');
+                j$("[id*=evhExistingReports]").attr('disabled', 'disabled'); 
+                reloadTasksForProject_JS();
+            }else{
+                j$("[id*=evhReportName]").attr('disabled', 'disabled');                 
+                j$("[id*=evhSnapshot]").attr('disabled', 'disabled');               
+                j$("[id*=evhExistingReports]").removeAttr('disabled'); 
+                clearTasks_JS();
+            }           
+        }
+
+        function handleExistingReportChange(reportId){
+            if(reportId.length > 0){
+                j$("[id*=selectedExistingReportId]").val(reportId); 
+                applySelectedReportToTasks_JS();
+            }else{
+                j$("[id*=evhExistingReports]").val(j$("[id*=selectedExistingReportId]").val());
+            }           
+        }
+
+        function handleSnapshotDateChange(snapShotDate){
+            j$("[id*=selectedSnapshotDate]").val(snapShotDate);
+            applySelectedSnapShotToTasks_JS();
+        }
+
+
+        function handleSnapshotDateChangeForNewReport(snapShotDate){            
+            j$("[id*=selectedSnapshotDate]").val(snapShotDate);         
+        }
+        
+        // Auto-Grow-TextArea script.
+        // Script copyright (C) 2011 www.cryer.co.uk.
+        // Script is free to use provided this copyright header is included.
+        function AutoGrowTextArea(textField)
+        {
+          if (textField.clientHeight < textField.scrollHeight)
+          {
+            textField.style.height = textField.scrollHeight + "px";
+            if (textField.clientHeight < textField.scrollHeight)
+            {
+              textField.style.height = 
+                (textField.scrollHeight * 2 - textField.clientHeight) + "px";
+            }
+          }
+        }
+
+        function commitChanges(){
+            if(confirm("Are you sure you want to commit your changes? You will not be able to edit it aftwards?")){
+                commitEarnedValueTasksForSnapshot_JS();
+            }
+        }
+
+        function disableSnapshotDateSelect(){
+            j$("[id*=evhSnapshot]").attr('disabled', 'disabled');       
+        }
+
+        function enableSnapshotDateSelect(){
+            j$("[id*=evhSnapshot]").removeAttr('disabled');         
+        }
+    </script>
+
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQuery_1_11_2_min_js)}" />
+
+    <apex:form >
+
+    <apex:actionFunction name="applySelectedSnapShotToTasks_JS" action="{!moveToSelectedSnapshotDate}" status="statusBar"/>
+    
+    <apex:actionFunction name="commitEarnedValueTasksForSnapshot_JS" action="{!commitEarnedValueTasksForSnapshot}" rerender="rrOnSaveOrCommit,msg" status="statusBar"/>
+
+    <apex:outputPanel id="setChartJsonJS">
+        <script type="text/javascript">
+            // alert('in setChartJsonJS');
+            var chartJson = '{!chartJSON}';     
+            var cpiAndSpiJSON = '{!cpiAndSpiJSON}';     
+        </script>
+    </apex:outputPanel>
+
+    <script type="text/javascript">
+    
+        function reRenderCharts(){
+            //drawChart();
+            //drawCpiAndSpiChart();   
+        }
+        
+        j$(document).ready(function(){
+            //drawChart();
+            //drawCpiAndSpiChart();
+        });
+
+/*
+        function drawChart() {          
+              var data = new google.visualization.DataTable();
+              data.addColumn('string', 'Period Date');
+              data.addColumn('number', 'Approved Cost');
+              data.addColumn('number', 'Actual Cost');
+              data.addColumn('number', 'Earned Value');
+              data.addColumn('number', 'Trend EAC 1');
+              data.addColumn('number', 'Trend EAC 2');
+
+              var rows = JSON.parse(chartJson);
+
+              rows.forEach(function(entry) {
+                 entry[1] = parseInt(entry[1]);
+                 entry[2] = parseInt(entry[2]);
+                 entry[3] = parseInt(entry[3]);
+
+                 if(entry[3] == 0)
+                    entry[3] = null;
+
+                 entry[4] = parseInt(entry[4]);
+                 entry[5] = parseInt(entry[5]);
+              });
+
+              var row1Total = 0;
+              var row2Total = 0;
+              //var row3Total = 0;
+
+              for(key in rows){
+                 row1Total += rows[key][1];
+                 row2Total += rows[key][2];
+                 //row3Total += rows[key][3];
+
+                 rows[key][1] = row1Total;
+                 rows[key][2] = row2Total;
+                 //rows[key][3] = row3Total;
+              }
+
+              data.addRows(rows);
+
+              var options = {
+                chart: {
+                  title: 'Project Progress Report',
+                  subtitle: ''
+                },
+                width: 700,
+                height: 450,
+                pointSize: 10
+              };
+
+              var chart = new google.charts.Line(document.getElementById('curve_chart'));
+
+              chart.draw(data, options);
+        }
+
+        function drawCpiAndSpiChart(){
+            var data = new google.visualization.DataTable();
+              data.addColumn('string', 'Period Date');
+              data.addColumn('number', 'CPI');
+              data.addColumn('number', 'SPI');
+
+              var rows = JSON.parse(cpiAndSpiJSON);
+
+              rows.forEach(function(entry) {
+                 entry[1] = parseInt(entry[1]);
+                 entry[2] = parseInt(entry[2]);
+
+              });
+
+              data.addRows(rows);
+
+              var options = {
+                chart: {
+                  title: 'CPI and SPI',
+                  subtitle: ''
+                },
+                width: 700,
+                height: 450,
+                pointSize: 10
+              };
+
+              var chart = new google.charts.Line(document.getElementById('cpiAndSpi_chart'));
+
+              chart.draw(data, options);
+        }
+*/        
+        
+    </script>
+
+    <style>
+        .numericCol {
+            text-align: right;
+        }
+        .customHelpText{
+            padding:7px;
+            border:1px solid #85B3CE;
+            min-height:30px;
+            display:block;
+            width:auto;
+            margin:0;
+            background-color:#E3F0F8;
+            background-repeat:no-repeat;
+            border-radius:4px;
+        }
+        .customHelpBody{
+            display:block;
+            color:#;
+            max-width:95%;
+        }
+
+        .mouseOverInfo{
+            text-align: left;
+        }
+        .message{
+            background-color: #A2D3F1;
+        }            
+    </style>
+
+    <apex:sectionHeader title="Earned Value Report" subtitle="{!project.ProjectSectionHeaderName__c}" >
+            <apex:actionStatus id="statusBar">
+                <apex:facet name="start">
+                    <p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Processing...</p>
+                </apex:facet>
+                <apex:facet name="stop">
+                </apex:facet>
+            </apex:actionStatus>
+    </apex:sectionHeader>
+
+    <apex:pageMessages id="msg" escape="false"/>
+
+    <apex:outputPanel id="rrOnSaveOrCommit">
+    
+    <apex:pageBlock >
+
+        <apex:pageBlockButtons location="top">
+            <apex:commandButton value="Commit Changes" onclick="commitChanges(); return false;" />
+            <apex:commandButton action="{!saveEarnedValueTasksForSnapshot}" value="Save" reRender="msg,rrOnSaveOrCommit,setChartJsonJS" oncomplete="reRenderCharts();"/>
+            <apex:commandButton action="{!returnToProject}" value="Return to Project" />
+        </apex:pageBlockButtons>
+
+       	<apex:pageMessage id="headerSummaryMessage" severity="info"  escape="false"  summary='
+                   Earned value is a tool used to help determine if a project is progressing as planned.  Utilize this tool to compare your project plan against actual work completed and budget spent to date.   To complete and Earned Value report:
+                   <br /><br />
+                    1.  Select the "Week Of" date for the period you wish to complete the report.<br />
+                    2.  Enter the "Percent Complete" assessment for each task.  Note that this is the physical percent (%) of work completed to date.<br />
+                    3.  Enter any "Cost Accruals" relative to the percent complete claimed (e.g., any Subs or ODCs not yet accounted for in the project costs to date).<br />
+                    4.  Enter any "Comments" for future reference to substantiate the percent complete.<br />
+                    5.  When complete, click on "Commit Changes" to submit and lock the Earned Value assessment for that week.<br />
+                    <br />
+                    Click on "Save" at any time to save the work done to date.  Note however the updates will not reflect on the Earned Value graphs until the assessment has been committed.' />
+        
+        <br />
+
+            <apex:pageBlockSection columns="1" title="Report Information">
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.Project__c.Label}" for="evhProject"/>
+                    <apex:outputField value="{!project.Name}" id="evhProject" />
+                </apex:pageBlockSectionItem> 
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.ReportName__c.Label}" for="evhReport"/>
+                    <apex:outputField value="{!evhRecord.ReportName__c}" id="evhReport" />
+                </apex:pageBlockSectionItem> 
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Week of" for="evhSnapshot"/>
+                    <apex:outputPanel >
+                        <apex:commandButton id="btnPrevSnapShot" action="{!moveBackwardByAWeek}" value=" << " disabled="{!!hasPrevWeek}" />
+                        <apex:selectList size="1" id="evhSnapshot" onchange="handleSnapshotDateChange(this.options[this.selectedIndex].value);" value="{!selectedSnapshotDate}" >
+                            <apex:selectOptions value="{!startOfWeekDatesBetweenProjectStartAndEndDates}"/>
+                        </apex:selectList>
+                        <apex:commandButton id="btnNextSnapShot" action="{!moveForwardByAWeek}" value=" >> " disabled="{!!hasNextWeek}" />
+                    </apex:outputPanel>
+                </apex:pageBlockSectionItem> 
+                
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.EVRulesGuidelines__c.Label}" for="evhRules"/>
+                    <apex:inputField value="{!Project.EVRulesGuidelines__c}" id="evhRules" style="width:750px;"/>
+                </apex:pageBlockSectionItem> 
+            </apex:pageBlockSection>
+
+        <apex:pageBlockSection columns="1" id="pbtSnapshotTasks" title="Task Progress">
+
+            <apex:pageBlockTable value="{!availableTasks}" var="taskwrapper"  rendered="{!if(numAvailableTasks > 0, 'true', 'false')}">
+            <apex:column >
+                <apex:facet name="header">
+                    <!-- {!$ObjectType.pse__Project_Task__c.Fields.FinancialTask__c.Label} -->
+                    FT
+                </apex:facet>
+                {!if(taskwrapper.task.FinancialTask__c == true, 'Y','N')}
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header"></apex:facet>
+                {!taskwrapper.task.ProjectTaskNumber__c}
+            </apex:column>
+            <apex:column >
+                <apex:facet name="header">
+                    {!$ObjectType.pse__Project_Task__c.Fields.Name.Label}
+                </apex:facet>
+                {!taskwrapper.task.Name}
+            </apex:column>      
+
+            <apex:column >
+                <apex:facet name="header">
+                    {!$ObjectType.pse__Project_Task__c.Fields.ProjectTaskOwner__c.Label}
+                </apex:facet>
+                {!BLANKVALUE(taskwrapper.task.ProjectTaskOwner__r.Name, 'Not Assigned')}
+            </apex:column>              
+
+            <apex:column style="white-space: nowrap;" >
+                <apex:facet name="header">
+                        {!$ObjectType.pse__Project_Task__c.Fields.pse__Start_Date__c.Label}
+                    </apex:facet>
+                    <apex:outputText value="{0, date, yyyy-MM-dd}">
+                    <apex:param value="{!taskwrapper.task.pse__Start_Date__c}" />                                           
+                </apex:outputText>      
+            </apex:column>
+
+            <apex:column style="white-space: nowrap;" >
+                <apex:facet name="header">
+                    {!$ObjectType.pse__Project_Task__c.Fields.pse__End_Date__c.Label}
+                </apex:facet>
+                <apex:outputText value="{0, date, yyyy-MM-dd}">
+                    <apex:param value="{!taskwrapper.task.pse__End_Date__c}" />                                         
+                </apex:outputText>                              
+            </apex:column>
+
+            <apex:column headerClass="numericCol" styleClass="numericCol" >
+                    <apex:facet name="header">
+                        Prior Week
+                    </apex:facet>
+                        {!taskWrapper.priorComplete} &#37;
+                </apex:column>
+
+            <apex:column headerClass="numericCol" styleClass="numericCol" >
+                    <apex:facet name="header">
+                        <apex:outputPanel >
+                        {!$ObjectType.EarnedValueTask__c.Fields.PercentComplete__c.Label}
+                        <c:ECO_HelpIcon helpText="{!$ObjectType.EarnedValueTask__c.Fields.PercentComplete__c.inlineHelpText}" />
+
+                        </apex:outputPanel>
+                    </apex:facet>
+
+                    <apex:outputPanel >
+                    <apex:inputField style="width:30px;text-align:right;" value="{!taskWrapper.earnedValueTask.PercentComplete__c}" styleClass="{!taskWrapper.earnedValueTask.Id}" rendered="{!if(taskWrapper.canEdit && !taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/> 
+                    <apex:outputField value="{!taskWrapper.earnedValueTask.PercentComplete__c}" rendered="{!if(taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/> &#37;
+                    </apex:outputPanel>
+                </apex:column>  
+
+            <apex:column width="5px" styleClass="numericCol" >
+                    X
+                </apex:column>
+
+            <apex:column headerClass="numericCol" styleClass="numericCol" >
+                    <apex:facet name="header">
+                        Budget
+                    </apex:facet>
+                    <apex:outputText value="${0, number, ###,###,###,###}"> <apex:param value="{!taskwrapper.task.TotalApprovedCost__c}"/> </apex:outputText>
+                </apex:column>
+
+
+
+            <apex:column width="5px" styleClass="numericCol" >
+                    =
+                </apex:column>
+
+            <apex:column headerClass="numericCol" styleClass="numericCol" >
+                    <apex:facet name="header">
+                        Earned Value
+                    </apex:facet>
+                    <apex:outputText value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.earnedValue}"/> </apex:outputText>
+                </apex:column>
+
+            <apex:column headerClass="numericCol" styleClass="numericCol" >
+                    <apex:facet name="header">
+                        <apex:outputPanel >
+                        {!$ObjectType.EarnedValueTask__c.Fields.CostAccruals__c.Label}                        
+                        <c:ECO_HelpIcon helpText="{!$ObjectType.EarnedValueTask__c.Fields.CostAccruals__c.inlineHelpText}" />
+                        </apex:outputPanel>
+
+                    </apex:facet>
+                    <apex:outputPanel >
+                    <apex:inputField style="width:110px;text-align:right;" value="{!taskWrapper.earnedValueTask.CostAccruals__c}" styleClass="{!taskWrapper.earnedValueTask.Id}" rendered="{!if(taskWrapper.canEdit && !taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
+                    <apex:outputField value="{!taskWrapper.earnedValueTask.CostAccruals__c}" rendered="{!if(taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
+                    </apex:outputPanel>                 
+                </apex:column>
+
+            <apex:column headerClass="numericCol" styleClass="numericCol" >
+                    <apex:facet name="header">
+                        <apex:outputPanel >Total Cost 
+                        <c:ECO_HelpIcon helpText="Includes the actual cost on the project as well as any accruals noted." />
+                        </apex:outputPanel>
+
+                    </apex:facet>
+                    <apex:outputText value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.task.TotalProjectFunctionalBurdenedCost__c}"/> </apex:outputText>
+                </apex:column>
+
+            <apex:column headerClass="numericCol" styleClass="numericCol" >
+                    <apex:facet name="header">
+                        <apex:outputPanel >
+                            {!$ObjectType.EarnedValueTask__c.Fields.TrendEAC1__c.Label}
+                            <c:ECO_HelpIcon helpText="{!$ObjectType.EarnedValueTask__c.Fields.TrendEAC1__c.inlineHelpText}" />
+                        </apex:outputPanel>
+                        
+                        
+                    </apex:facet>
+                    <apex:outputText value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.earnedValueTask.TrendEAC1__c}"/> </apex:outputText>
+                    
+                </apex:column>
+
+            <apex:column headerClass="numericCol" styleClass="numericCol" >
+                    <apex:facet name="header">
+                        <apex:outputPanel >
+                            {!$ObjectType.EarnedValueTask__c.Fields.TrendEAC2__c.Label}
+                            <c:ECO_HelpIcon helpText="{!$ObjectType.EarnedValueTask__c.Fields.TrendEAC2__c.inlineHelpText}" />
+                        </apex:outputPanel>
+                    </apex:facet>
+                    <apex:outputText value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.earnedValueTask.TrendEAC2__c}"/> </apex:outputText>
+                </apex:column>
+
+            <apex:column >
+                    <apex:facet name="header">
+                        <apex:outputPanel >
+                            {!$ObjectType.EarnedValueTask__c.Fields.Comments__c.Label}
+                            <c:ECO_HelpIcon helpText="{!$ObjectType.EarnedValueTask__c.Fields.Comments__c.inlineHelpText}" />
+                        </apex:outputPanel>
+                    </apex:facet>
+
+                    <apex:outputPanel >
+                    <apex:inputField value="{!taskWrapper.earnedValueTask.Comments__c}" onkeyup="AutoGrowTextArea(this)" rendered="{!if(taskWrapper.canEdit && !taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
+                    <apex:outputField value="{!taskWrapper.earnedValueTask.Comments__c}" rendered="{!if(taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
+                    </apex:outputPanel>                             
+                </apex:column>
+    
+            </apex:pageBlockTable>
+            
+        </apex:pageBlockSection>
+            
+    </apex:pageBlock>
+    
+    </apex:outputPanel>
+
+    <apex:outputPanel id="chart">
+        <table>
+            <tr>
+                <td>
+                    <div id="curve_chart" style="width: 700px; height: 450px"></div>
+                </td>
+                <td>
+                    <div id="cpiAndSpi_chart" style="width: 700px; height: 450px"></div>
+                </td>
+            </tr>
+        </table>
+    </apex:outputPanel>
+         
+    </apex:form>
+
+    <c:ECO_EarnedValueFlyout ProjectId="{!pse__Proj__c.id}" />
+
+</apex:page>

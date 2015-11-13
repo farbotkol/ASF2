@@ -9,10 +9,6 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>DeletePhotoAction</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>EditUserAction</actionName>
         <type>Default</type>
     </actionOverrides>
@@ -26,6 +22,10 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>FreezeUserAction</actionName>
+        <type>Default</type>
+    </actionOverrides>
+    <actionOverrides>
+        <actionName>LinkToSetupUserDetailAction</actionName>
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
@@ -45,21 +45,13 @@
         <type>Default</type>
     </actionOverrides>
     <actionOverrides>
-        <actionName>UpdatePhotoAction</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
         <actionName>UserActivationAction</actionName>
-        <type>Default</type>
-    </actionOverrides>
-    <actionOverrides>
-        <actionName>ViewPhotoAction</actionName>
         <type>Default</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <enableFeeds>true</enableFeeds>
     <externalSharingModel>Private</externalSharingModel>
-	<fields>
+    <fields>
         <fullName>AD_MobilePhone__c</fullName>
         <externalId>false</externalId>
         <label>AD MobilePhone</label>
@@ -228,6 +220,16 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>Carrer_Band__c</fullName>
+        <externalId>false</externalId>
+        <label>Carrer Band</label>
+        <length>4</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Certification_Summary__c</fullName>
         <description>Summary field of User&apos;s Certifications Profile Parts</description>
         <externalId>false</externalId>
@@ -330,6 +332,17 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>DEManager__c</fullName>
+        <description>Delivery Excellence Manager, populated from HR Insight.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Delivery Excellence Manager, populated from HR Insight.</inlineHelpText>
+        <label>DE Manager</label>
+        <relationshipName>DEMgr</relationshipName>
+        <restrictedAdminField>false</restrictedAdminField>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Hierarchy</type>
+    </fields>
+    <fields>
         <fullName>DTWApplicationLevel__c</fullName>
         <description>Denotes the highest level this user plays in the DTW Application process</description>
         <externalId>false</externalId>
@@ -378,6 +391,26 @@
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>Department_Number__c</fullName>
+        <externalId>false</externalId>
+        <label>Department Number</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Department_Title__c</fullName>
+        <externalId>false</externalId>
+        <label>Department Title</label>
+        <length>240</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>District__c</fullName>
@@ -728,6 +761,14 @@
         <externalId>false</externalId>
         <label>IsValidGBSQueueMember</label>
         <trackFeedHistory>false</trackFeedHistory>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>IsValidOracleToken__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF( AND(NOT(ISNULL(ShaKey__c)), ShaKey__c != &apos;&apos;,  NormalTransDateTime__c &gt;  NOW()), true, false)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Is Valid Oracle Token</label>
         <type>Checkbox</type>
     </fields>
     <fields>
@@ -1093,6 +1134,16 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Operating_Group__c</fullName>
+        <externalId>false</externalId>
+        <label>Operating Group</label>
+        <length>240</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>OracleEmployeeId__c</fullName>
         <caseSensitive>false</caseSensitive>
         <externalId>true</externalId>
@@ -1111,6 +1162,17 @@
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Date</type>
+    </fields>
+    <fields>
+        <fullName>PLManager__c</fullName>
+        <description>Regional P&amp;L Manager populated from HR Insight.</description>
+        <externalId>false</externalId>
+        <inlineHelpText>Regional P&amp;L Manager populated from HR Insight.</inlineHelpText>
+        <label>P&amp;L Manager</label>
+        <relationshipName>PLMember</relationshipName>
+        <restrictedAdminField>false</restrictedAdminField>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Hierarchy</type>
     </fields>
     <fields>
         <fullName>PL_Manager__c</fullName>
@@ -1251,6 +1313,16 @@
         </picklist>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Picklist</type>
+    </fields>
+    <fields>
+        <fullName>Project_Title__c</fullName>
+        <externalId>false</externalId>
+        <label>Project Title</label>
+        <length>30</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>Publication_Summary__c</fullName>
@@ -1471,6 +1543,26 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Supervisor_Person_ID__c</fullName>
+        <externalId>false</externalId>
+        <label>Supervisor Person ID</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>Supervisor_Tracking_Id__c</fullName>
+        <externalId>false</externalId>
+        <label>Supervisor Tracking Id</label>
+        <length>50</length>
+        <required>false</required>
+        <trackFeedHistory>false</trackFeedHistory>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>Term_Date__c</fullName>
         <externalId>false</externalId>
         <inlineHelpText>Date employee left AECOM</inlineHelpText>
@@ -1489,7 +1581,7 @@
         <required>false</required>
         <trackFeedHistory>false</trackFeedHistory>
         <type>Text</type>
-        <unique>false</unique>
+        <unique>true</unique>
     </fields>
     <fields>
         <fullName>Training_Summary__c</fullName>
@@ -1561,6 +1653,16 @@
         <required>false</required>
         <scale>0</scale>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>ValidOracleTokenIcon__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(IsValidOracleToken__c, IMAGE(&quot;/resource/1435520899000/ECO_ValidToken&quot;,&quot;Ok&quot;, 20,20), IMAGE(&quot;/resource/1435520899000/ECO_InvalidToken&quot;,&quot;Alert&quot;, 20,20))</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Valid Oracle Token Icon</label>
+        <required>false</required>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -1859,6 +1961,7 @@
         <columns>CORE.USERS.USERNAME</columns>
         <columns>CORE.USER_ROLE.NAME</columns>
         <columns>CREATED_DATE</columns>
+        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>CORE.USERS.ACTIVE</field>
@@ -1875,6 +1978,7 @@
         <columns>CORE.USERS.USERNAME</columns>
         <columns>CORE.USERS.LAST_LOGIN</columns>
         <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>CORE.PROFILE.NAME</columns>
         <columns>CORE.USERS.ACTIVE</columns>
         <columns>CORE.USERS.EMAIL</columns>
@@ -1896,6 +2000,7 @@
         <columns>CORE.USERS.EMAIL</columns>
         <columns>CORE.USERS.LAST_LOGIN</columns>
         <columns>CORE.USER_ROLE.NAME</columns>
+        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>CORE.PROFILE.NAME</columns>
         <columns>MANAGER</columns>
         <columns>CORE.USERS.ALIAS</columns>
@@ -2007,6 +2112,7 @@
         <fullName>Canada_East_Users</fullName>
         <columns>FULL_NAME</columns>
         <columns>Auto_Deactivation_Exception__c</columns>
+        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>CORE.USERS.USERNAME</columns>
         <columns>CORE.USERS.ACTIVE</columns>
         <columns>LAST_UPDATE</columns>
@@ -2497,6 +2603,7 @@
         <columns>CORE.PROFILE.NAME</columns>
         <columns>CORE.USERS.LAST_LOGIN</columns>
         <columns>CORE.USERS.LAST_NAME</columns>
+        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>CORE.USERS.EMAIL</columns>
         <columns>EMPLOYEE_NUMBER</columns>
         <columns>CREATED_BY_NAME</columns>
@@ -2655,12 +2762,17 @@
     </listViews>
     <listViews>
         <fullName>users_without_federation_ID</fullName>
+        <columns>CORE.USERS.SAML_SUBJECT</columns>
         <columns>FULL_NAME</columns>
         <columns>CORE.USERS.USERNAME</columns>
         <columns>CORE.USERS.LAST_LOGIN</columns>
         <columns>CORE.USER_ROLE.NAME</columns>
         <columns>CORE.PROFILE.NAME</columns>
         <filterScope>Everything</filterScope>
+        <filters>
+            <field>CORE.USERS.SAML_SUBJECT</field>
+            <operation>equals</operation>
+        </filters>
         <filters>
             <field>CORE.USERS.ACTIVE</field>
             <operation>equals</operation>
@@ -2688,6 +2800,8 @@
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.PHONE</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.EXTENSION</lookupPhoneDialogsAdditionalFields>
         <lookupPhoneDialogsAdditionalFields>CORE.USERS.CELL</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>00Ne0000001U3NH</lookupPhoneDialogsAdditionalFields>
+        <lookupPhoneDialogsAdditionalFields>00Ne0000001U3N7</lookupPhoneDialogsAdditionalFields>
         <searchFilterFields>FULL_NAME</searchFilterFields>
         <searchFilterFields>CORE.USERS.FIRST_NAME</searchFilterFields>
         <searchFilterFields>CORE.USERS.LAST_NAME</searchFilterFields>
