@@ -170,6 +170,7 @@
 					<apex:commandButton value="Submit" action="{!createChangeManagement}" rendered="{!oProject.RequestedProjectStatus__c !=null}" />
 					<apex:commandButton value="Save" action="{!closesave}" rendered="{!oProject.RequestedProjectStatus__c !=null}"  />
 					<apex:commandButton value="Return to Project" action="{!back}" immediate="true" />
+					<apex:commandButton value="Re-open Project" rendered="{!oProject.RequestedProjectStatus__c == 'Closed' && oProject.pse__Stage__c = 'Closed'}" action="{!createChangeManagementReopen}" />
 				</apex:pageBlockButtons>
 
 				<apex:outputPanel id="projectFields">
