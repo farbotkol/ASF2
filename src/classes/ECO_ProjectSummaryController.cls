@@ -440,7 +440,15 @@ public with sharing class ECO_ProjectSummaryController {
 	    		validationMsgForSite += checkForEmpty(site.Account_Name__c, siteCustomerName);
 	    		validationMsgForSite += checkForEmpty(site.OracleCustomerID__c, siteCustomerId);
 				validationMsgForSite += checkForEmpty(site.OracleCustomerNumber__c, siteCustomerNumber);
-				validationMsgForSite += checkForEmpty(site.BillingContactID__c, siteBillingContactId);
+				
+				if(String.isEmpty(site.BillingContactID__c))
+					validationMsgForSite += checkForEmpty(site.BillingContactID__c, siteBillingContactId);
+				else
+				{
+					if(!site.BillingContactID__c.isNumeric())
+						validationMsgForSite += 'The Billing Contact Id contains invalid characters';	
+				}
+
 
 				//allow for overriding of site bill to and ship to
 				if(String.isEmpty(site.BillToAddressID__c)){
@@ -454,6 +462,8 @@ public with sharing class ECO_ProjectSummaryController {
 				}else{
 					validationMsgForSite += checkForEmpty(site.ShipToAddressID__c, siteShipToAddressId);
 				}
+
+
 
 	    		//validationMsgForSite += checkForEmpty(site.BillToAddressID__c, siteBillToAddressId);
 	    		//validationMsgForSite += checkForEmpty(site.ShipToAddressID__c, siteShipToAddressId);
@@ -564,7 +574,7 @@ public with sharing class ECO_ProjectSummaryController {
 
 	    		if(member.OraclePersonId__c != null)
 	    		{
-	    			if(member.OraclePersonId__c.contains('U'))
+	    			if(!member.OraclePersonId__c.isNumeric())
 	    				validationMsgForKeyMember += 'The Oracle Person Id for this Key Member contains an invalid character.  Please chose a different team member for that role or update the person id.';
 	    		}
 

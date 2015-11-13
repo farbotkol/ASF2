@@ -359,8 +359,41 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
         } 
 
         return new pagereference('/apex/eco_changemanagerdetail?id=' + cm.id + '&Mode=Edit');
+    }
 
 
+    public pagereference createChangeManagementReOpen(){
+
+        oProject.RequestedProjectStatus__c = 'Execution';
+        oProject.CMProjectClosureIsChanged__c = true;
+
+        Savepoint oSavePoint = Database.setSavepoint();
+
+        try{
+            //oProject.pse__Stage__c = 'Approved';
+            update oProject;
+        }catch(EcoControllerException e){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e);
+            ApexPages.addMessage(oMsg);
+            Database.rollback(oSavePoint);
+            return null; 
+        } 
+
+        list<RecordType> lstRT = [select id from recordtype where sObjectType='ChangeManager__c' and developername='InternalChange'];
+        
+        ChangeManager__c cm;
+        
+        cm = new ChangeManager__c(recordtypeid = lstRT[0].id, Project__c = oProject.id, IntExtProjectClosure__c=true,  IsProjectReOpen__c=true, IntExtProjectClosureComments__c = 'Re-opening the Project');
+
+        try{
+            insert cm;
+        }catch(EcoControllerException e){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to insert Change Manager: ' + e);
+            ApexPages.addMessage(oMsg);
+            return null; 
+        } 
+
+        return new pagereference('/apex/eco_changemanagerdetail?id=' + cm.id + '&Mode=Edit');
     }
 
     public Attachment doRecommendationAttachment

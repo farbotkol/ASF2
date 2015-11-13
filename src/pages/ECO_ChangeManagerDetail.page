@@ -857,25 +857,33 @@
                     <apex:variable value="{!ChangedProjectClosure[0]}" var="projstatus"/>
                     
                     <apex:outputPanel rendered="{!projstatus.RequestedProjectStatus__c == 'Closed'}">
-                    <apex:pageBlockTable value="{!ChangedProjectClosure}" var="closure">
-                        <apex:column headervalue="Action"><apex:commandLink action="{!viewProjectClosureRequest}" value="Project Closure Request"/></apex:column>
-                        <apex:column headervalue="Requested Status"><apex:outputText value="{!closure.RequestedProjectStatus__c}" /></apex:column>
-                        <apex:column headervalue="Closure Date"><apex:outputField value="{!closure.ClosureDate__c}" /></apex:column>
-                        <apex:column headervalue="Modified By"><apex:outputField value="{!closure.ChangeManagerProjectStatusUpdatedBy__c}" /></apex:column>
-                        <apex:column headervalue="Modified Date"><apex:outputField value="{!closure.ChangeManagerProjectStatusUpdatedDate__c}" /></apex:column>                     
-                    </apex:pageBlockTable>
+                        <apex:pageBlockTable value="{!ChangedProjectClosure}" var="closure">
+                            <apex:column headervalue="Action"><apex:commandLink action="{!viewProjectClosureRequest}" value="Project Closure Request"/></apex:column>
+                            <apex:column headervalue="Requested Status"><apex:outputText value="{!closure.RequestedProjectStatus__c}" /></apex:column>
+                            <apex:column headervalue="Closure Date"><apex:outputField value="{!closure.ClosureDate__c}" /></apex:column>
+                            <apex:column headervalue="Modified By"><apex:outputField value="{!closure.ChangeManagerProjectStatusUpdatedBy__c}" /></apex:column>
+                            <apex:column headervalue="Modified Date"><apex:outputField value="{!closure.ChangeManagerProjectStatusUpdatedDate__c}" /></apex:column>                     
+                        </apex:pageBlockTable>
 
-                    <apex:outputLabel value="Closure Notes: " styleclass="dmeOutput"/><br/>  
-                    <apex:outputText value="{!projstatus.ProjectClosureNotes__c}" /> 
+                        <apex:outputLabel value="Closure Notes: " styleclass="dmeOutput"/><br/>  
+                        <apex:outputText value="{!projstatus.ProjectClosureNotes__c}" /> 
                     
-                    <br/><br/>
-                    <apex:outputLabel value="Project Closure Change Notes" styleclass="dmeOutput"/><br/>
-                    <apex:outputPanel >           
-                        <apex:inputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
-                        <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
-                    </apex:outputPanel>
+                        <br/><br/>
+                        <apex:outputLabel value="Project Closure Change Notes" styleclass="dmeOutput"/><br/>
+                        <apex:outputPanel >           
+                            <apex:inputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                            <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                        </apex:outputPanel>
                     </apex:outputPanel>
                     
+                    <apex:outputPanel rendered="{!projstatus.RequestedProjectStatus__c == 'Execution'}">
+                        <apex:outputLabel value="Project Re-Open Change Notes" styleclass="dmeOutput"/><br/>
+                        <apex:outputPanel >           
+                            <apex:inputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                            <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+
                     <apex:outputPanel rendered="{!projstatus.RequestedProjectStatus__c == 'On Hold'}">
                     <apex:pageBlockTable value="{!ChangedProjectClosure}" var="onHold">
                         <apex:column headervalue="Action"><apex:commandLink action="{!viewProjectClosureRequest}" value="Project On Hold Request"/></apex:column>
@@ -895,7 +903,8 @@
                         <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
                     </apex:outputPanel>
                     </apex:outputPanel>                 
-                </apex:outputPanel>                            
+                </apex:outputPanel>  
+                       
             </apex:pageBlockSection>    
                                                                                                       
             </apex:outputPanel>    
