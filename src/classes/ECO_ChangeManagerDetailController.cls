@@ -742,39 +742,7 @@ public class ECO_ChangeManagerDetailController {
             return null;            
         }
 
-        //if(results != ''){
-        //    ApexPages.addMessages(new ApexPages.Message(ApexPages.Severity.ERROR, results.replace('&quot;', '"')));
-        //    mode = 'Edit';
-        //    return null;
-        //}
-
    		mode = '';
-
-       /* ECO_ProjectSummaryController projectSummaryController2 = new ECO_ProjectSummaryController();
-    
-        projectSynchMessages = '';
-        projectSynchMessages += projectSummaryController2.projectMsg;
-        if(changeManager.IntExtSchedule__c)
-        {
-            projectSynchMessages += projectSummaryController2.taskMsg;
-            invalidTasks = projectSummaryController2.invalidTasks;
-        }
-        if(changeManager.IntExtKeyMembers__c)
-        {
-            projectSynchMessages += projectSummaryController2.keyMemberMsg;
-            invalidKeyMembers = projectSummaryController2.invalidKeyMembers;
-        }
-        if(changeManager.IntExtCustomers__c)
-        {
-            projectSynchMessages += projectSummaryController2.customersMsg; 
-            invalidCustomers = projectSummaryController2.invalidCustomers; 
-        }
-
-        if(changeManager.IntExtContractManagement__c)
-            projectSynchMessages += validateAgreements();
-
-        if(projectSynchMessages != '' && projectSynchMessages != null)
-            projectSynchMessages = '<ol>' + projectSynchMessages + '</ol>';*/   
 
         if(changeManager.IsPMHandoverChange__c)
             return new PageReference('/' + changeManager.Id);
