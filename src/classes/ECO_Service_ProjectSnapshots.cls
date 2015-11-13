@@ -39,6 +39,7 @@ public class ECO_Service_ProjectSnapshots {
 
     Map<Id, ProjectSnapshot__c> originalOrForecastBudgetCostsMap;
     Map<Id, ProjectSnapshot__c> originalOrForecastBudgetHoursMap;
+    Map<Id, ProjectSnapshot__c> previousFMForecastMap;
 
     @TestVisible private class ProjectOrganization
     {
@@ -321,17 +322,16 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
             List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
             
             pse__Time_Period__c fm = null;
-            if (snapshot.SnapshotDate__c != null){	
+            if (snapshot.SnapshotDate__c != null){                                      
 				fm = ECO_Utils_Date.getFiscalPeriod(snapshot.SnapshotDate__c.date(), 0, timePeriods);  
 				if (fm != null){
 					snapshot.SnapshotFiscalMonth__c = fm.TimePeriodCode__c;
-				}
+                        } 
 				
 				fm = ECO_Utils_Date.getFiscalPeriod(snapshot.SnapshotDate__c.date(), 1, timePeriods);  
 				if (fm != null){
 					snapshot.SnapshotPreviousFiscalMonth__c = fm.TimePeriodCode__c;
-				}                                   
-               
+                }
             }
             
             
@@ -407,7 +407,8 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
                 List<ProjectSnapshot__c> tempSnapshotList = projIdToSnapshotMap.values();
 				projIdToSnapshotMap = getSnapshotFiscalMonths(tempSnapshotList);
                 originalOrForecastBudgetCostsMap = getOriginalOrForecastBudgetCostsMap(projectIds, projIdToSnapshotMap);
-                //originalOrForecastBudgetHoursMap = getOriginalOrForecastBudgetHoursMap(projectIds);
+                originalOrForecastBudgetHoursMap = getOriginalOrForecastBudgetHoursMap(projectIds, projIdToSnapshotMap);
+                previousFMForecastMap = getPreviousFMForecastMap(projIdToSnapshotMap);
 
 	            for (pse__Proj__c project : projects) {
 	            	snapshot = projIdToSnapshotMap.get(project.Id);
@@ -467,18 +468,15 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
 	                //Forecast Budget
 	                FinancialMetrics forecastBudgetFinancialMetrics = forecastBudgetHeaderMap.get(project.Id);
 	                snapshot = getForecastBudgetHeaderMapInformation(forecastBudgetFinancialMetrics, snapshot);
-	            
 					
 					// Costs Forecast EAC
 		            snapshot = originalOrForecastBudgetCostsMap.get(project.Id);
 
-/* TO DO:
 		            // Hours Forecast EAC
 		            snapshot = originalOrForecastBudgetHoursMap.get(project.Id);
 
 		            //Previous Forecast
-		            snapshot = getPreviousFMForecastInformation(projIdToSnapshotMap);
-		            */
+		            snapshot = previousFMForecastMap.get(project.Id);
 
 	                //Draft
 	                FinancialMetrics draftBudgetFinancialMetrics = draftBudgetHeaderMap.get(project.Id);
@@ -1346,14 +1344,13 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
     }
 
     /*  a) If BudgetAssignment.OverrideTotalCost > 0, use BudgetAssignment.OverrideTotalCost, else use 
-            BudgetAssignment.TotalComputedCost
+              BudgetAssignment.TotalComputedCost
         b) Filter by category: BudgetAssignment__r.BudgetResource.PLReportCategory = (whatever category is)
         c) Filter by status: BudgetAssignment__r.BudgetResource__r.Budgetheader.Status = 'Forecast'
     */
     @TestVisible private Map<Id, ProjectSnapshot__c> getOriginalOrForecastBudgetCostsMap(List<Id> projectIds,
             Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap) {
-        Set<String> plReportCategorySet = getPLReportCategories();
-        
+        Set<String> plReportCategorySet = getPLReportCategories();      
         try {
             List<BudgetAssignment__c> budgetAssignments = 
                 [SELECT OverrideTotalCost__c, TotalComputedCost__c, BudgetResource__r.PLReportCategory__c,
@@ -1451,8 +1448,8 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
     /* Total number of hours in current forecast budget (by Budget Assignment: ExpenditureResourceType=Lab; 
        use Quantity; filter where Budget Header: Status  = Forecast)
     */
-    @TestVisible private Map<Id, ProjectSnapshot__c> getOriginalOrForecastBudgetHoursMap(List<Id> projectIds) {
-        Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap = new Map<Id, ProjectSnapshot__c>();
+    @TestVisible private Map<Id, ProjectSnapshot__c> getOriginalOrForecastBudgetHoursMap(List<Id> projectIds,
+            Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap) {
         try {
             List<AggregateResult> results = 
                 [SELECT SUM(Quantity__c) Hours, ProjectTask__r.pse__Project__r.Id projectId
@@ -1464,16 +1461,16 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
                  AND ProjectTask__r.pse__Project__r.Id IN : projectIds
                  GROUP BY ProjectTask__r.pse__Project__r.Id];
 
-            for (AggregateResult ar: results)
+            for (AggregateResult ar : results)
             {
                 Decimal hours = (Decimal)ar.get('Hours');
                 if (hours != null) {
-                	ProjectSnapshot__c snapshot = new ProjectSnapshot__c(); //USE a Map to get the snapshot ??
+                    Id projId = (Id) ar.get('projectId');
+                    ProjectSnapshot__c snapshot = projectIdToSnapshotMap.get(projId);
                     snapshot.HoursBudgetOriginal__c = hours;
                     snapshot.HoursForecast__c = hours;
                     snapshot.HoursBudget__c = hours;
-                    snapshot.Project__c = (Id) ar.get('projectId');
-                    projectIdToSnapshotMap.put(snapshot.Project__c, snapshot);
+                    projectIdToSnapshotMap.put(projId, snapshot);
                 }
             }
         }
@@ -1483,50 +1480,53 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
         return projectIdToSnapshotMap;
     }
 
-    /*INCOMPLETE:
-    @TestVisible private Map<Id, ProjectSnapshot__c> getPreviousFMForecastMap(List<ProjectSnapshot__c> snapshots) 
+    @TestVisible private Map<Id, ProjectSnapshot__c> getPreviousFMForecastMap(Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap) 
     {
-    	Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap = new Map<Id, ProjectSnapshot__c>();
-        
-        List<ProjectSnapshot__c> projectSnapshots = getPreviousFMForecastInformation(prevFiscalMonth);
+        List<String> prevFiscalMonthList = new List<String>();
+        for (ProjectSnapshot__c ps : projectIdToSnapshotMap.values()) {
+            prevFiscalMonthList.add(ps.SnapshotPreviousFiscalMonth__c);
+        }
 
-        for (ProjectSnapshot__c snapshot : snapshots) {
-        	//String prevFiscalMonth = snapshot.SnapshotPreviousFiscalMonth__c;
-            snapshot.GrossRevenueForecastPrevME__c = snapshotPrevFM.GrossRevenueForecast__c;
-            snapshot.CostsODCEXPSForecastPrevME__c = snapshotPrevFM.CostsODCEXPSForecast__c;
-            snapshot.CostsODCSUBSForecastPrevME__c = snapshotPrevFM.CostsODCSUBSForecast__c;
-            snapshot.ContingencyForecastPrevME__c = snapshotPrevFM.ContingencyForecast__c;
-            snapshot.LaborForecastPrevME__c = snapshotPrevFM.LaborForecast__c;
-            snapshot.FringeForecastPrevME__c = snapshotPrevFM.FringeForecast__c;
-            snapshot.OverheadForecastPrevME__c = snapshotPrevFM.OverheadForecast__c;
-            snapshot.HoursForecastPrevME__c = snapshotPrevFM.HoursForecast__c;
-            snapshot.LostMarginForecast__c = snapshotPrevFM.LostMarginForecast__c;
-            snapshot.ProjectEndDatePrevME__c = snapshotPrevFM.ProjectEndDate__c;
-        	projectIdToSnapshotMap.put(snapshot.Project__c, snapshot);
+        if (prevFiscalMonthList.size() > 0) {
+            List<ProjectSnapshot__c> snapshotPrevFMList = getPreviousFMForecastInformation(prevFiscalMonthList);
+
+            for (ProjectSnapshot__c snapshotPrevFM : snapshotPrevFMList) {
+                Id projId = snapshotPrevFM.Project__c;
+                ProjectSnapshot__c snapshot = projectIdToSnapshotMap.get(projId);
+                snapshot.GrossRevenueForecastPrevME__c = snapshotPrevFM.GrossRevenueForecast__c;
+                snapshot.CostsODCEXPSForecastPrevME__c = snapshotPrevFM.CostsODCEXPSForecast__c;
+                snapshot.CostsODCSUBSForecastPrevME__c = snapshotPrevFM.CostsODCSUBSForecast__c;
+                snapshot.ContingencyForecastPrevME__c = snapshotPrevFM.ContingencyForecast__c;
+                snapshot.LaborForecastPrevME__c = snapshotPrevFM.LaborForecast__c;
+                snapshot.FringeForecastPrevME__c = snapshotPrevFM.FringeForecast__c;
+                snapshot.OverheadForecastPrevME__c = snapshotPrevFM.OverheadForecast__c;
+                snapshot.HoursForecastPrevME__c = snapshotPrevFM.HoursForecast__c;
+                snapshot.LostMarginForecast__c = snapshotPrevFM.LostMarginForecast__c;
+                snapshot.ProjectEndDatePrevME__c = snapshotPrevFM.ProjectEndDate__c;
+            	projectIdToSnapshotMap.put(projId, snapshot);
+            }
         }
         return projectIdToSnapshotMap;
     }
 
-    private List<ProjectSnapshot__c> getPreviousFMForecastInformation(String prevFiscalMonth) 
+    private List<ProjectSnapshot__c> getPreviousFMForecastInformation(List<String> prevFiscalMonthList) 
     {   
         List<ProjectSnapshot__c> projSnapshots;
         try {
-            projSnapshots = [SELECT Id, GrossRevenueForecast__c, 
+            projSnapshots = [SELECT Id, Project__c, GrossRevenueForecast__c, 
                 CostsODCEXPSForecast__c, CostsODCSUBSForecast__c, ContingencyForecast__c,
                 LaborForecast__c, FringeForecast__c, OverheadForecast__c, HoursForecast__c, 
                 LostMarginForecast__c, ProjectEndDate__c
                 FROM ProjectSnapshot__c 
                 WHERE SnapshotType__c = 'Auto' 
-                AND SnapshotFiscalMonth__c =: prevFiscalMonth];
+                AND SnapshotFiscalMonth__c IN : prevFiscalMonthList];
         }
         catch(Exception e) {
             System.Debug(e.getStackTraceString());
         }
         return projSnapshots;
-    }*/
+    }
     
-    
-
     private Decimal getLaborMult(Decimal revenue, Decimal nonLabor, Decimal labor)
     {
         if (labor == 0)
@@ -1567,7 +1567,7 @@ snapshot.UnbilledTotal__c = billingMetrics.TotalUnbilled;
     
 
     /******** LATER ************/
-    
+
     /*INCOMPLETE: private BillingMetrics getBillingARMetrics(List<Id> projectIds, Decimal totalRevenue)
     {
         Date startDate;
