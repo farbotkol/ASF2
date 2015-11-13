@@ -317,7 +317,8 @@
             <apex:pageBlockTable value="{!availableTasks}" var="taskwrapper"  rendered="{!if(numAvailableTasks > 0, 'true', 'false')}">
             <apex:column >
                 <apex:facet name="header">
-                    {!$ObjectType.pse__Project_Task__c.Fields.FinancialTask__c.Label}
+                    <!-- {!$ObjectType.pse__Project_Task__c.Fields.FinancialTask__c.Label} -->
+                    FT
                 </apex:facet>
                 {!if(taskwrapper.task.FinancialTask__c == true, 'Y','N')}
             </apex:column>
@@ -387,7 +388,7 @@
                     <apex:facet name="header">
                         Budget
                     </apex:facet>
-                    <apex:outputText value="${0, number, ###,###,###,###.00}"> <apex:param value="{!taskwrapper.task.TotalApprovedCost__c}"/> </apex:outputText>
+                    <apex:outputText value="${0, number, ###,###,###,###}"> <apex:param value="{!taskwrapper.task.TotalApprovedCost__c}"/> </apex:outputText>
                 </apex:column>
 
             <apex:column headerClass="numericCol" styleClass="numericCol" >
@@ -412,7 +413,7 @@
                     <apex:facet name="header">
                         Earned Value
                     </apex:facet>
-                    <apex:outputText value="${0, number, ###,###,###,###.00}"> <apex:param value="{!taskWrapper.earnedValue}"/> </apex:outputText>
+                    <apex:outputText value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.earnedValue}"/> </apex:outputText>
                 </apex:column>
 
             <apex:column headerClass="numericCol" styleClass="numericCol" >
@@ -422,7 +423,7 @@
                         </apex:outputPanel>
 
                     </apex:facet>
-                    <apex:outputText value="${0, number, ###,###,###,###.00}"> <apex:param value="{!taskWrapper.task.TotalProjectFunctionalBurdenedCost__c}"/> </apex:outputText>
+                    <apex:outputText value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.task.TotalProjectFunctionalBurdenedCost__c}"/> </apex:outputText>
                 </apex:column>
 
             <apex:column headerClass="numericCol" styleClass="numericCol" >
@@ -434,7 +435,7 @@
                         
                         
                     </apex:facet>
-                    <apex:outputText value="${0, number, ###,###,###,###.00}"> <apex:param value="{!taskWrapper.earnedValueTask.TrendEAC1__c}"/> </apex:outputText>
+                    <apex:outputText value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.earnedValueTask.TrendEAC1__c}"/> </apex:outputText>
                     
                 </apex:column>
 
@@ -445,7 +446,7 @@
                             <c:ECO_HelpIcon helpText="{!$ObjectType.EarnedValueTask__c.Fields.TrendEAC2__c.inlineHelpText}" />
                         </apex:outputPanel>
                     </apex:facet>
-                    <apex:outputText value="${0, number, ###,###,###,###.00}"> <apex:param value="{!taskWrapper.earnedValueTask.TrendEAC2__c}"/> </apex:outputText>
+                    <apex:outputText value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.earnedValueTask.TrendEAC2__c}"/> </apex:outputText>
                 </apex:column>
 
             <apex:column >
