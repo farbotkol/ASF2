@@ -7,7 +7,7 @@ public class ECO_ReviewMember_TriggerHandler {
             pse__proj__c project = [Select Id, pse__Stage__c From pse__proj__c Where Id = :deliverable.Project__c];
             //System.debug('Trigger Handler:::::  Stage:'+rm.TechnicalQualityReview__r.Deliverable__r.Project__r.pse__Stage__c+':::::::::Role:::'+rm.Role__c);
             if(project.pse__Stage__c == 'Approved' && (rm.Role__c == 'Reviewer' || rm.Role__c == 'Lead Verifier' || rm.Role__c == 'Independent Reviewer')){
-              System.debug('Trigger Handler:::::Inside If');
+            	System.debug('Trigger Handler:::::Inside If');
                 handleEmailNotificationHelper (rm);
             }
         }
@@ -62,7 +62,7 @@ public class ECO_ReviewMember_TriggerHandler {
                 lstMsgsToSend.add(emailToSend);
             }
             Messaging.sendEmail(lstMsgsToSend);
-  }
-    catch (EmailException e) {}
+	}
+  	catch (EmailException e) {}
     }
 }
