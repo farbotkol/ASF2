@@ -144,11 +144,21 @@ public with sharing class ECO_DeliverableADDTQReviewersController {
         set<id> setRedisplaymembers = new set<id>();
         for(Integer iRow : mapDisplayTQTExisting.keyset()){
             TQT_Wrapper oTQTW = mapDisplayTQTExisting.get(iRow);
+            System.debug('oTQTW.oPTM::::'+oTQTW.oPTM);
+            System.debug('oTQTW.oTechnicalQualityTeam.TechnicalQualityTeamMember__c:::::'+oTQTW.oTechnicalQualityTeam.TechnicalQualityTeamMember__c);
             if(oTQTW.bSelected){
+                System.debug('oTQTW::::::'+oTQTW);
+                System.debug('oTQTW.oTechnicalQualityTeam:::::'+oTQTW.oTechnicalQualityTeam.Id);
                 if(oTQTW.oPTM == null){ //means existing project team record
                     setRedisplaymembers.add(oTQTW.oTechnicalQualityTeam.TechnicalQualityTeamMember__c);
                 }
                 mapDisplayTQTExisting.remove(iRow);
+                try{
+                    delete oTQTW.oTechnicalQualityTeam;
+                }catch(Exception e){
+                    ApexPages.addMessages(e);
+                }
+                
             }
         }
 
