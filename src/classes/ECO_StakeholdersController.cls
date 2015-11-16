@@ -103,7 +103,8 @@ public with sharing class ECO_StakeholdersController
 			SearchSites();
 
 			lProjectRoles = new List<ProjectRole__c>([Select Id, Name, Type__c From ProjectRole__c Where Active__c = true Order By SortOrder__c ASC]);
-			List<ProjectTeamMember__c> projectTeamMembers = new List<ProjectTeamMember__c>([Select Id, ProjectRole__c, ProjectRole__r.Name, ProjectRole__r.Type__c, Contact__c, Contact__r.Name, Contact__r.pse__Is_Resource_Active__c, Contact__r.pse__Salesforce_User__c, Status__c, ProjectRoleTitle__c, Project__c, StartDate__c, EndDate__c, Phone__c, Email__c, Active__c From ProjectTeamMember__c Where Project__c = :thisProject.Id]);
+            
+            List<ProjectTeamMember__c> projectTeamMembers = new List<ProjectTeamMember__c>([Select Id, ProjectRole__c, ProjectRole__r.Name, ProjectRole__r.Type__c, Contact__c, Contact__r.Name, Contact__r.pse__Is_Resource_Active__c, Contact__r.pse__Salesforce_User__c, Status__c, ProjectRoleTitle__c, Project__c, StartDate__c, EndDate__c, Phone__c, Email__c, Active__c From ProjectTeamMember__c Where Project__c = :thisProject.Id]);
 			
 			lStakeholders = new List<Stakeholder__c>([Select Id, StakeholderType__c, Organization__c, ContactName__c, ContactPhone__c, Interest__c, AECOMContact__c From Stakeholder__c Where Project__c = :thisProject.Id]);
 			
@@ -129,7 +130,8 @@ public with sharing class ECO_StakeholdersController
 					}
 				}
 				else{
-					lProjectTeamMembers.add(projectTeamMember);
+                    if(projectTeamMember.ProjectRole__r.Name != 'Inactive Deliverable Owner')
+						lProjectTeamMembers.add(projectTeamMember);
 				}
 			}
             
@@ -239,7 +241,7 @@ public with sharing class ECO_StakeholdersController
 					tm.RoleType = ptm.ProjectRole__r.Type__c;
 					tm.oPTM = ptm;
 
-					if(ptm.contact__r.pse__Is_Resource_Active__c){
+					if(ptm.contact__r.pse__Is_Resource_Active__c ){
 						lMembersTeam.add(tm);
 					} else {
 						lInactiveMembersTeam.add(tm);
