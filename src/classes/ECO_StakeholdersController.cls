@@ -957,7 +957,7 @@ public with sharing class ECO_StakeholdersController
 
 			for(ProjectRole__c pr : lProjectRoles)
 			{
-				if(pr.Type__c == 'Team Member')
+				if(pr.Type__c == 'Team Member' && pr.Name != 'Inactive Deliverable Owner')
 				{
 					lTeamRoleTypes.add(new SelectOption(pr.Id, pr.Name));
 				}
