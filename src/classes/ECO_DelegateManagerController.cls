@@ -398,6 +398,16 @@ public class ECO_DelegateManagerController {
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Value Change in Forecast Net Margin is less than allowed Minimum'));
 			}
 		}
+		else if(currentRecordType == 'Vacation'){
+			if(delegate.Start_Date__c > delegate.End_Date__c){
+				valid = false;
+				delegate.End_Date__c.addError('End Date cannot be less than Start Date');
+			}
+			else if(delegate.Start_Date__c.daysBetween(delegate.End_Date__c) > 60){
+				valid = false;
+				delegate.End_Date__c.addError('Vacation Duration cannot exceed 60 days');
+			}
+		}
 		return valid;
 	}
 
