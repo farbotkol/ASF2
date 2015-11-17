@@ -38,5 +38,12 @@ public class ECO_DeliverableListController {
         System.debug('oDeliver id:  '+oDeliver.Id);
         System.debug('oDeliver project id:  '+oDeliver.Project__c);
         return new PageReference('/'+oDeliver.Id+'/e?retURL=/apex/ECO_DeliverableList?id='+thisProject.id);
-    }    
+    }   
+    public PageReference exportCSV(){
+        String reportId = ReportDetails__c.getInstance('Deliverables List (JM)').Report_Id__c;
+        String projectId = thisProject.id;
+        //projectId = projectId.substring(0, 15);
+        System.debug('reportId:  '+reportId);
+        return new PageReference('/'+reportId+'?pv0='+projectId);
+    }
 }
