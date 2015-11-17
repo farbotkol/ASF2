@@ -36,6 +36,7 @@
 		 })
 	}
 
+	//adds the contactId into the url on page reload
 	function addURLParameters(){
 		var contactId = '{!contact.Id}';
 		if(contactId != ''){
@@ -44,6 +45,19 @@
 				window.history.replaceState('', 'contactId', currentURL+'?contactId={!contact.Id}');
 		}
 	}
+
+	//selects the opposite of what is selected by default in the bypass radio button lists
+	function resetRadioSelects(yesOrNo){
+		$x('.selectRadio input:radio').each(function(index){
+			if($x(this).val() == yesOrNo){
+				$x(this).prop('checked', true);
+			}
+			else{
+				$x(this).prop('checked', false);
+			}
+		});
+	}
+
 </script>
 <style>
 	.limitTable{
@@ -95,7 +109,7 @@
 						<apex:inputField value="{!delegate.Start_Date__c}" required="true" />
 						<apex:inputField value="{!delegate.End_Date__c}" />
 					</apex:pageBlockSection>
-					<apex:outputPanel rendered="{!AND(canEdit, currentRecordType == 'Key Roles')}">
+					<apex:outputPanel id="panelKeyRoles" rendered="{!AND(canEdit, currentRecordType == 'Key Roles')}">
 						<fieldset>
 						<legend>Delegation Limits</legend>
 							<table class="limitTable">
@@ -391,6 +405,12 @@
 										</apex:selectRadio>
 									</td>
 								</tr>
+								<tfoot>
+									<td colspan="4" align="right">
+										<apex:commandButton onclick="resetRadioSelects('Yes')" reRender="panelKeyRoles" action="{!setDefaultBypassDefaults}" rendered="{!userPreferences.Default_Delegate_Bypass_to_No__c}" value="Set Bypass Defaults to Yes" immediate="true" />
+										<apex:commandButton onclick="resetRadioSelects('No')" reRender="panelKeyRoles" action="{!setDefaultBypassDefaults}" rendered="{!NOT(userPreferences.Default_Delegate_Bypass_to_No__c)}" value="Set Bypass Defaults to No" immediate="true" />
+									</td>
+								</tfoot>
 							</table>
 						</fieldset>
 					</apex:outputPanel>

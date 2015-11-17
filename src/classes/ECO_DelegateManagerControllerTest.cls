@@ -40,6 +40,8 @@ private class ECO_DelegateManagerControllerTest {
 		system.assertEquals(UserInfo.getDefaultCurrency(), controller.currentCurrency);
 		system.assertEquals(2, controller.yesNoOptions.size());
 		system.assertEquals('/' + testContact.Id, controller.backToContact().getUrl());
+		controller.setDefaultBypassDefaults();
+		system.assertEquals(true, ECO_Delegate_User_Preferences__c.getInstance(UserInfo.getUserId()).Default_Delegate_Bypass_to_No__c);
 	}
 
 	
@@ -127,7 +129,7 @@ private class ECO_DelegateManagerControllerTest {
 
 			ECO_DelegateManagerController controller = new ECO_DelegateManagerController(new ApexPages.StandardController(new Delegate__c()));
 			controller.delegate.Agreement_Amount_estimated__c = 5000;
-			controller.delegate.Agreement_Amount_estimated_lt__c = 100;
+			controller.delegate.Agreement_Amount_estimated_lt__c = 50;
 			controller.delegate.Project_Revenue_Budget__c = 5000;
 			controller.delegate.Project_Revenue_Budget_lt__c = 100;
 			controller.delegate.Backlog_Value__c = 5000;
@@ -201,6 +203,7 @@ private class ECO_DelegateManagerControllerTest {
 			controller.projectNetMarginNSRBypass = 'No';
 			controller.percentageChangeInForecastBypass = 'No';
 			controller.valueChangeInForecastNetMarginBypass = 'No';
+			controller.agreementAmountBypassLT = 'No';
 			controller.projectRevenueBudgetBypassLT = 'No';
 			controller.backlogValueBypassLT = 'No';
 			controller.projectNetMarginValueBypassLT = 'No';

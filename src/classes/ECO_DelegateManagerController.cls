@@ -35,6 +35,7 @@ public class ECO_DelegateManagerController {
 	public String c4Bypass{get; set;}
 	public Boolean canEdit{get; set;}
 	public Attachment attachment{get; set;}
+	public ECO_Delegate_User_Preferences__c userPreferences{get; set;}
 	private ApexPages.StandardController controller;
 	private Id keyRolesRecordType;
 	private String redirectUrl;  //stores the url of the page to return to
@@ -170,6 +171,23 @@ public class ECO_DelegateManagerController {
 			}
 		}
 		queryContact(recordTypeId);
+		return null;
+	}
+
+	public PageReference setDefaultBypassDefaults(){
+		if(userPreferences == null){
+			userPreferences = new ECO_Delegate_User_Preferences__c(Name = UserInfo.getUserId(), Default_Delegate_Bypass_to_No__c = true);
+		}
+		else{
+			if(userPreferences.Default_Delegate_Bypass_to_No__c){
+				userPreferences.Default_Delegate_Bypass_to_No__c = false;
+			}
+			else{
+				userPreferences.Default_Delegate_Bypass_to_No__c = true;
+			}
+		}
+		upsert userPreferences;
+		resetBypassYesNoFields();
 		return null;
 	}
 
@@ -598,25 +616,32 @@ public class ECO_DelegateManagerController {
 
 	//resets all of the yes/no bypass delegate fields to yes
 	private void resetBypassYesNoFields(){
-		agreementAmountBypass = 'Yes';
-		agreementAmountBypassLT = 'Yes';
-		projectRevenueBudgetBypass = 'Yes';
-		projectRevenueBudgetBypassLT = 'Yes';
-		backlogValueBypass = 'Yes';
-		backlogValueBypassLT = 'Yes';
-		projectNetMarginValueBypass = 'Yes';
-		projectNetMarginValueBypassLT = 'Yes';
-		projectNetMarginNSRBypass = 'Yes';
-		projectNetMarginNSRBypassLT = 'Yes';
-		percentageChangeInForecastBypass = 'Yes';
-		percentageChangeInForecastBypassLT = 'Yes';
-		valueChangeInForecastNetMarginBypass = 'Yes';
-		valueChangeInForecastNetMarginBypassLT = 'Yes';
-		c0Bypass = 'Yes';
-		c1Bypass = 'Yes';
-		c2Bypass = 'Yes';
-		c3Bypass = 'Yes';
-		c4Bypass = 'Yes';
+		String yesOrNo = 'Yes';
+		userPreferences = ECO_Delegate_User_Preferences__c.getInstance(UserInfo.getUserId());
+		if(userPreferences != null && userPreferences.Default_Delegate_Bypass_to_No__c){
+			yesOrNo = 'No';
+		}
+
+		system.debug('***yesOrNo ' + yesOrNo);
+		agreementAmountBypass = yesOrNo;
+		agreementAmountBypassLT = yesOrNo;
+		projectRevenueBudgetBypass = yesOrNo;
+		projectRevenueBudgetBypassLT = yesOrNo;
+		backlogValueBypass = yesOrNo;
+		backlogValueBypassLT = yesOrNo;
+		projectNetMarginValueBypass = yesOrNo;
+		projectNetMarginValueBypassLT = yesOrNo;
+		projectNetMarginNSRBypass = yesOrNo;
+		projectNetMarginNSRBypassLT = yesOrNo;
+		percentageChangeInForecastBypass = yesOrNo;
+		percentageChangeInForecastBypassLT = yesOrNo;
+		valueChangeInForecastNetMarginBypass = yesOrNo;
+		valueChangeInForecastNetMarginBypassLT = yesOrNo;
+		c0Bypass = yesOrNo;
+		c1Bypass = yesOrNo;
+		c2Bypass = yesOrNo;
+		c3Bypass = yesOrNo;
+		c4Bypass = yesOrNo;
 	}
 
 	//returns the query string for the delegate table
