@@ -205,63 +205,8 @@ public class ECO_Service_ProjectSnapshots {
         
     public ProjectSnapshot__c getProjectSnapshot()
     {
-        populateOrganizationsMaps(projectIds);
-        
-        ProjectSnapshot__c snapshot = new ProjectSnapshot__c();
-        snapshot.SnapshotDate__c = DateTime.now();
-
-        try {
-            //Future Spend
-            projectMonth1FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today(), Date.today().addMonths(1));
-            projectMonth2FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(1), Date.today().addMonths(2));        
-            projectMonth3FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(2), Date.today().addMonths(3));        
-            projectMonth4FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(3), Date.today().addMonths(4));        
-            projectMonth5FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(4), Date.today().addMonths(5));        
-            projectMonth6FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(5), Date.today().addMonths(6));        
-
-            Decimal projectPercent;
-            Decimal month1Spend = 0;
-            Decimal month2Spend = 0;
-            Decimal month3Spend = 0;
-            Decimal month4Spend = 0;
-            Decimal month5Spend = 0;
-            Decimal month6Spend = 0;
-            
-            for (Id organizationId:organizationNameMap.keyset())
-            {
-                for (Id projId:organizationProjectsMap.get(organizationId))
-                {
-                    projectPercent = organizationProjectPercentage.get(organizationId + '-' + projId);  
-                    month1Spend += projectPercent/100 * returnMapDecimalValue(projectMonth1FutureSpend.get(projId));
-                    month2Spend += projectPercent/100 * returnMapDecimalValue(projectMonth2FutureSpend.get(projId));
-                    month3Spend += projectPercent/100 * returnMapDecimalValue(projectMonth3FutureSpend.get(projId));
-                    month4Spend += projectPercent/100 * returnMapDecimalValue(projectMonth4FutureSpend.get(projId));
-                    month5Spend += projectPercent/100 * returnMapDecimalValue(projectMonth5FutureSpend.get(projId));
-                    month6Spend += projectPercent/100 * returnMapDecimalValue(projectMonth6FutureSpend.get(projId));
-                }
-                if (snapshot.PrimaryFutureSpend__c == '' || snapshot.PrimaryFutureSpend__c == null)
-                    snapshot.PrimaryFutureSpend__c = organizationNameMap.get(organizationId);
-                else
-                    snapshot.PrimaryFutureSpend__c += ';;' + organizationNameMap.get(organizationId);
-                snapshot.PrimaryFutureSpend__c += '::' + month1Spend;
-                snapshot.PrimaryFutureSpend__c += '::' + month2Spend;
-                snapshot.PrimaryFutureSpend__c += '::' + month3Spend;
-                snapshot.PrimaryFutureSpend__c += '::' + month4Spend;
-                snapshot.PrimaryFutureSpend__c += '::' + month5Spend;
-                snapshot.PrimaryFutureSpend__c += '::' + month6Spend;               
-            }
-            
-            snapshot.FutureSpendMonth1__c = getTotalFutureSpendForPeriod(projectMonth1FutureSpend.values());
-            snapshot.FutureSpendMonth2__c = getTotalFutureSpendForPeriod(projectMonth2FutureSpend.values());
-            snapshot.FutureSpendMonth3__c = getTotalFutureSpendForPeriod(projectMonth3FutureSpend.values());
-            snapshot.FutureSpendMonth4__c = getTotalFutureSpendForPeriod(projectMonth4FutureSpend.values());
-            snapshot.FutureSpendMonth5__c = getTotalFutureSpendForPeriod(projectMonth5FutureSpend.values());
-            snapshot.FutureSpendMonth6__c = getTotalFutureSpendForPeriod(projectMonth6FutureSpend.values());
-        }
-        catch (Exception e) {
-            System.debug(e.getStackTraceString());
-        }
-        return snapshot;
+        List<ProjectSnapshot__c> snapshotList = createProjectSnapshots();
+        return snapshotList[0];
     }
     
 
@@ -345,7 +290,9 @@ public class ECO_Service_ProjectSnapshots {
                 previousFMForecastMap = getPreviousFMForecastMap(projIdToSnapshotMap);
 
                 billingMetricsARMap = getBillingMetricsARMap(projectIds, itdActualFinancialMetricsMap);
-
+                
+                populateFutureSpendMaps(projectIds);
+                
 	            for (pse__Proj__c project : projects) {
 	            	snapshot = projIdToSnapshotMap.get(project.Id);
 	                if (projectIds.size() == 1) {
@@ -441,6 +388,11 @@ public class ECO_Service_ProjectSnapshots {
                     snapshot.AR61to90__c = billingMetricsAR61to90Map.get(project.Id);
                     snapshot.AR91to180__c = billingMetricsAR91to180Map.get(project.Id);
                     snapshot.AR181Plus__c = billingMetricsAR181PlusMap.get(project.Id);
+                    
+                    snapshot.ARTotal__c = billingMetricsAR.BilledAR;
+                    snapshot.ARRetention__c = billingMetricsAR.Retention;
+                    snapshot.ARBIEE__c = billingMetricsAR.BIEE;
+                    snapshot.UnbilledTotal__c = billingMetricsAR.TotalUnbilled;
 
 					// Unbilled Metrics
 					snapshot.Unbilled0to30__c = unbilledMetricsAR0to30Map.get(project.Id);
@@ -449,6 +401,9 @@ public class ECO_Service_ProjectSnapshots {
                     snapshot.Unbilled91to180__c = unbilledMetricsAR91to180Map.get(project.Id);
                     snapshot.Unbilled181Plus__c = unbilledMetricsAR181PlusMap.get(project.Id);
       
+      				// Future Spend
+      				snapshot = getFutureSpendInformation(snapshot);
+      				
 	                snapshotList.add(snapshot);
 	            }        
 	        }
@@ -458,6 +413,64 @@ public class ECO_Service_ProjectSnapshots {
         }
         return snapshotList;
     }
+    
+    /////// Future Spend
+    @TestVisible private void populateFutureSpendMaps(List<Id> projectIds) {
+	    projectMonth1FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today(), Date.today().addMonths(1));
+        projectMonth2FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(1), Date.today().addMonths(2));        
+        projectMonth3FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(2), Date.today().addMonths(3));        
+        projectMonth4FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(3), Date.today().addMonths(4));        
+        projectMonth5FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(4), Date.today().addMonths(5));        
+        projectMonth6FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(5), Date.today().addMonths(6));        
+    }
+    
+    @TestVisible private ProjectSnapshot__c getFutureSpendInformation(ProjectSnapshot__c snapshot) {
+        Decimal projectPercent;
+        Decimal month1Spend = 0;
+        Decimal month2Spend = 0;
+        Decimal month3Spend = 0;
+        Decimal month4Spend = 0;
+        Decimal month5Spend = 0;
+        Decimal month6Spend = 0;
+        
+        for (Id organizationId:organizationNameMap.keyset())
+        {
+            for (Id projId:organizationProjectsMap.get(organizationId))
+            {
+                projectPercent = organizationProjectPercentage.get(organizationId + '-' + projId);  
+                month1Spend += projectPercent/100 * returnMapDecimalValue(projectMonth1FutureSpend.get(projId));
+                month2Spend += projectPercent/100 * returnMapDecimalValue(projectMonth2FutureSpend.get(projId));
+                month3Spend += projectPercent/100 * returnMapDecimalValue(projectMonth3FutureSpend.get(projId));
+                month4Spend += projectPercent/100 * returnMapDecimalValue(projectMonth4FutureSpend.get(projId));
+                month5Spend += projectPercent/100 * returnMapDecimalValue(projectMonth5FutureSpend.get(projId));
+                month6Spend += projectPercent/100 * returnMapDecimalValue(projectMonth6FutureSpend.get(projId));
+            }
+            
+            if (snapshot.PrimaryFutureSpend__c == '' || snapshot.PrimaryFutureSpend__c == null) {
+                snapshot.PrimaryFutureSpend__c = organizationNameMap.get(organizationId);
+            }
+            else {
+                snapshot.PrimaryFutureSpend__c += ';;' + organizationNameMap.get(organizationId);
+            }
+            
+            snapshot.PrimaryFutureSpend__c += '::' + month1Spend;
+            snapshot.PrimaryFutureSpend__c += '::' + month2Spend;
+            snapshot.PrimaryFutureSpend__c += '::' + month3Spend;
+            snapshot.PrimaryFutureSpend__c += '::' + month4Spend;
+            snapshot.PrimaryFutureSpend__c += '::' + month5Spend;
+            snapshot.PrimaryFutureSpend__c += '::' + month6Spend;               
+        }
+        
+        snapshot.FutureSpendMonth1__c = getTotalFutureSpendForPeriod(projectMonth1FutureSpend.values());
+        snapshot.FutureSpendMonth2__c = getTotalFutureSpendForPeriod(projectMonth2FutureSpend.values());
+        snapshot.FutureSpendMonth3__c = getTotalFutureSpendForPeriod(projectMonth3FutureSpend.values());
+        snapshot.FutureSpendMonth4__c = getTotalFutureSpendForPeriod(projectMonth4FutureSpend.values());
+        snapshot.FutureSpendMonth5__c = getTotalFutureSpendForPeriod(projectMonth5FutureSpend.values());
+        snapshot.FutureSpendMonth6__c = getTotalFutureSpendForPeriod(projectMonth6FutureSpend.values());
+        
+        return snapshot;
+	}
+    ///// END: Future Spend
 
     private Map<Id, BillingMetrics> getBillingMetricsARMap(List<Id> projectIds, Map<Id, FinancialMetrics> itdActualFinancialMetricsMap)
     {
@@ -1010,7 +1023,7 @@ public class ECO_Service_ProjectSnapshots {
         return retVal;
     }
     
-    private map<Id, Decimal> getFutureSpendForPeriodMap(List<Id> projectIds, Date startDate, Date endDate)
+    public Map<Id, Decimal> getFutureSpendForPeriodMap(List<Id> projectIds, Date startDate, Date endDate)
     {
         //Decimal futureSpend = 0;
         map<Id, Decimal> projectsFutureSpendMap = new map<Id, Decimal>();
@@ -1467,11 +1480,8 @@ public class ECO_Service_ProjectSnapshots {
         }
         return metricsMap; 
     }
-
     /**** END REFACTORED ***/
 
-
-    
 
     @TestVisible private Set<String> getPLReportCategories() {
         Set<String> plReportCategorySet = new Set<String>();
