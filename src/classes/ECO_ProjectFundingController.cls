@@ -224,96 +224,101 @@ public class ECO_ProjectFundingController {
     public void save()
     {               
         list<Funding__c> fundingRecordsToBeSaved = new list<Funding__c>();
+
+        try
+        {
                                
-        if(project.ProjectLevelFundingFlag__c)
-        {
-            if(projectLevelFunding != null)
+            if(project.ProjectLevelFundingFlag__c)
             {
-                for(Funding f:projectLevelFunding)
+                if(projectLevelFunding != null)
                 {
-                	if(f.newFunding)
-                	{
-						f.funding.CurrencyIsoCode = agreement.FundingCurrencyCode__c;   
-                    	f.funding.ProjFuncRateType__c = 'Spot';
-                    	f.funding.ProjFuncRateDate__c = f.funding.DateAllocatedDate__c;
-                        f.funding.ChangeManagerIsNew__c = true;
-                    	f.funding.ProjFuncRateExchangeRate__c = ECO_Service_ExchangeRate.getExchangeRate(agreement.FundingCurrencyCode__c, project.ProjectFunctionalCurrencyCode__c, f.funding.DateAllocatedDate__c);                	
-                    	f.newFunding = false;
-                    	fundingRecordsToBeSaved.add(f.funding);
-                    	agreementFundingAllocation = agreementFundingAllocation + f.funding.AllocatedAmount__c; 
-                	}
-                	//handles allowing you to change rates
-                    else if(!f.newFunding && !f.rateLocked)
-                	{
-                		fundingRecordsToBeSaved.add(f.funding); 
-                        f.rateLocked = true;
-                	}
-                	//only synch approvals
-                    else if(!f.newFunding && f.rateLocked && f.funding.ChangeManagerApprovedForSynch__c)    
+                    for(Funding f:projectLevelFunding)
                     {
-                    	fundingRecordsToBeSaved.add(f.funding);     
-                    } 
-                }
-            }
-        }
-        else
-        {
-            if(projectTasksFundedMap != null)
-            {
-                for(list<Funding> fundings:projectTasksFundedMap.values())
-                {
-                    for(Funding f:fundings)
-                    {
-                        //handles first time you save funding.  this will save and pull back exchange rate.  will be allowed to save once more before funding is locked
-                        if(f.newFunding)
-                        {
-                            f.funding.CurrencyIsoCode = agreement.FundingCurrencyCode__c;   
-                            f.funding.ProjFuncRateType__c = 'Spot';
-                            f.funding.ProjFuncRateDate__c = f.funding.DateAllocatedDate__c;
+                    	if(f.newFunding)
+                    	{
+    						f.funding.CurrencyIsoCode = agreement.FundingCurrencyCode__c;   
+                        	f.funding.ProjFuncRateType__c = 'Spot';
+                        	f.funding.ProjFuncRateDate__c = f.funding.DateAllocatedDate__c;
                             f.funding.ChangeManagerIsNew__c = true;
-                            f.funding.ProjFuncRateExchangeRate__c = ECO_Service_ExchangeRate.getExchangeRate(agreement.FundingCurrencyCode__c, project.ProjectFunctionalCurrencyCode__c, f.funding.DateAllocatedDate__c);
-                            fundingRecordsToBeSaved.add(f.funding); 
-                            f.newFunding = false;   
-                            
-                            if(projectTasksMap.get(f.funding.ProjectTask__c).TotalFunding__c == null)
-                            	projectTasksMap.get(f.funding.ProjectTask__c).TotalFunding__c = f.funding.AllocatedAmount__c;
-                            else
-                            	projectTasksMap.get(f.funding.ProjectTask__c).TotalFunding__c += f.funding.AllocatedAmount__c; 
-                        }
-                        //handles allowing you to change rates
+                        	f.funding.ProjFuncRateExchangeRate__c = ECO_Service_ExchangeRate.getExchangeRate(agreement.FundingCurrencyCode__c, project.ProjectFunctionalCurrencyCode__c, f.funding.DateAllocatedDate__c);                	
+                        	f.newFunding = false;
+                        	fundingRecordsToBeSaved.add(f.funding);
+                        	agreementFundingAllocation = agreementFundingAllocation + f.funding.AllocatedAmount__c; 
+                    	}
+                    	//handles allowing you to change rates
                         else if(!f.newFunding && !f.rateLocked)
-                        {
-                            fundingRecordsToBeSaved.add(f.funding); 
+                    	{
+                    		fundingRecordsToBeSaved.add(f.funding); 
                             f.rateLocked = true;
-                        }
-                        //only synch approvals
+                    	}
+                    	//only synch approvals
                         else if(!f.newFunding && f.rateLocked && f.funding.ChangeManagerApprovedForSynch__c)    
                         {
-                            fundingRecordsToBeSaved.add(f.funding);     
-                        }   
-                    }           
-                }           
+                        	fundingRecordsToBeSaved.add(f.funding);     
+                        } 
+                    }
+                }
             }
-            pse__Project_Task__c taskToUpdate;
-            if(changedTasks.size() > 0)
+            else
             {
-                for(Id taskId: changedTasks)
+                if(projectTasksFundedMap != null)
                 {
-                    taskToUpdate = projectTasksMap.get(taskId);
-                    taskToUpdate.CurrencyISOCode = projectTaskOriginalCurrencyMap.get(taskId);
-                    update taskToUpdate;            
-                }           
+                    for(list<Funding> fundings:projectTasksFundedMap.values())
+                    {
+                        for(Funding f:fundings)
+                        {
+                            //handles first time you save funding.  this will save and pull back exchange rate.  will be allowed to save once more before funding is locked
+                            if(f.newFunding)
+                            {
+                                f.funding.CurrencyIsoCode = agreement.FundingCurrencyCode__c;   
+                                f.funding.ProjFuncRateType__c = 'Spot';
+                                f.funding.ProjFuncRateDate__c = f.funding.DateAllocatedDate__c;
+                                f.funding.ChangeManagerIsNew__c = true;
+                                f.funding.ProjFuncRateExchangeRate__c = ECO_Service_ExchangeRate.getExchangeRate(agreement.FundingCurrencyCode__c, project.ProjectFunctionalCurrencyCode__c, f.funding.DateAllocatedDate__c);
+                                fundingRecordsToBeSaved.add(f.funding); 
+                                f.newFunding = false;   
+                                
+                                if(projectTasksMap.get(f.funding.ProjectTask__c).TotalFunding__c == null)
+                                	projectTasksMap.get(f.funding.ProjectTask__c).TotalFunding__c = f.funding.AllocatedAmount__c;
+                                else
+                                	projectTasksMap.get(f.funding.ProjectTask__c).TotalFunding__c += f.funding.AllocatedAmount__c; 
+                            }
+                            //handles allowing you to change rates
+                            else if(!f.newFunding && !f.rateLocked)
+                            {
+                                fundingRecordsToBeSaved.add(f.funding); 
+                                f.rateLocked = true;
+                            }
+                            //only synch approvals
+                            else if(!f.newFunding && f.rateLocked && f.funding.ChangeManagerApprovedForSynch__c)    
+                            {
+                                fundingRecordsToBeSaved.add(f.funding);     
+                            }   
+                        }           
+                    }           
+                }
+                pse__Project_Task__c taskToUpdate;
+                if(changedTasks.size() > 0)
+                {
+                    for(Id taskId: changedTasks)
+                    {
+                        taskToUpdate = projectTasksMap.get(taskId);
+                        taskToUpdate.CurrencyISOCode = projectTaskOriginalCurrencyMap.get(taskId);
+                        update taskToUpdate;            
+                    }           
+                }
+                //initializeProjectTaskLevelFunding();          
             }
-            //initializeProjectTaskLevelFunding();          
+            
+            if(fundingRecordsToBeSaved.size() > 0)
+                upsert fundingRecordsToBeSaved;
+            update project;
         }
-        
-        if(fundingRecordsToBeSaved.size() > 0)
-            upsert fundingRecordsToBeSaved;
-        update project;
-        
-        
-        
-        
+        catch(Exception e)
+        {
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, e.getMessage()));
+        }
+                
         if(!project.ProjectLevelFundingFlag__c && (changedTasks.size() > 0 || fundingRecordsToBeSaved.size() == 0))
         {
             initializeProjectTaskLevelFundingProjectTasks();
@@ -324,7 +329,6 @@ public class ECO_ProjectFundingController {
         {
             initializeProjectLevelFunding();
         }
-
 
 		agreement = [select Id, Name, Amount__c, Account__c, Description__c, TotalApprovedRevenueLimit__c, FundingCurrencyCode__c, UnallocatedFunding__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
                 

@@ -36,6 +36,7 @@ trigger ECO_Project_AllEvents on pse__Proj__c (before update, before insert, aft
             ECO_ProjectTriggers.maintainEscalationAlerts(trigger.oldMap, trigger.newMap);
             ECO_ProjectTriggers.handleDefaultingTaskOwningCustomer(trigger.oldMap, trigger.newMap);
             ECO_ProjectTriggers.handleProjectRestart(trigger.oldMap, trigger.newMap);
+            ECO_ProjectTriggers.handleFundingLevelFlagChanges(trigger.oldMap, trigger.newMap);
         }
     }
     
