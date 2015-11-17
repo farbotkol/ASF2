@@ -8,6 +8,12 @@ public class ECO_Service_ProjectSnapshots {
     public static final String BILLED_61to90 = 'Billed61to90';
     public static final String BILLED_91to180 = 'Billed91to180';
     public static final String BILLED_181Plus = 'Billed181Plus';
+    
+    public static final String UNBILLED_0to30 = 'Unbilled0to30';
+    public static final String UNBILLED_31to60 = 'Unbilled31to60';
+    public static final String UNBILLED_61to90 = 'Unbilled61to90';
+    public static final String UNBILLED_91to180 = 'Unbilled91to180';
+    public static final String UNBILLED_181Plus = 'Unbilled181Plus';
 
     public ECO_EarnedValueReportController earnedValueController {get; set;}
     public Date EarnedValueSnapshotDate {get; set;}
@@ -54,12 +60,12 @@ public class ECO_Service_ProjectSnapshots {
     Map<Id, Decimal> billingMetricsAR91to180Map;
     Map<Id, Decimal> billingMetricsAR181PlusMap;
     
-    /*snapshot.Unbilled0to30__c = billingMetrics.Unbilled0to30;
-                    snapshot.Unbilled31to60__c = billingMetrics.Unbilled31to60;
-                    snapshot.Unbilled61to90__c = billingMetrics.Unbilled61to90;
-                    snapshot.Unbilled91to180__c = billingMetrics.Unbilled91to180;
-                    snapshot.Unbilled181Plus_
-    */
+    Map<Id, BillingMetrics> unbilledMetricsARMap;
+    Map<Id, Decimal> unbilledMetricsAR0to30Map;
+    Map<Id, Decimal> unbilledMetricsAR31to60Map;
+    Map<Id, Decimal> unbilledMetricsAR61to90Map;
+    Map<Id, Decimal> unbilledMetricsAR91to180Map;
+    Map<Id, Decimal> unbilledMetricsAR181PlusMap;
     
     @TestVisible private class ProjectOrganization
     {
@@ -301,13 +307,18 @@ public class ECO_Service_ProjectSnapshots {
 				Date yearStartDate = yearTP.pse__Start_Date__c;
 				ytdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, yearStartDate); 
 
-                //billingMetricsAR0to30Map = getBillingMetricsAR0to30Map(projectIds);
-                billingMetricsAR0to30Map = getBillingMetricARDateRangeMap(projectIds, BILLED_0to30);
-                billingMetricsAR31to60Map = getBillingMetricARDateRangeMap(projectIds, BILLED_31to60);
-                billingMetricsAR61to90Map = getBillingMetricARDateRangeMap(projectIds, BILLED_61to90);
-                billingMetricsAR91to180Map = getBillingMetricARDateRangeMap(projectIds, BILLED_91to180);
+                billingMetricsAR0to30Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_0to30);
+                billingMetricsAR31to60Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_31to60);
+                billingMetricsAR61to90Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_61to90);
+                billingMetricsAR91to180Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_91to180);
                 billingMetricsAR181PlusMap = getBillingMetricsAR181PlusMap(projectIds);
 
+				unbilledMetricsAR0to30Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_0to30);
+                unbilledMetricsAR31to60Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_31to60);
+                unbilledMetricsAR61to90Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_61to90);
+                unbilledMetricsAR91to180Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_91to180);
+                unbilledMetricsAR181PlusMap = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_181Plus);
+                
 	            ProjectSnapshot__c snapshot;
 	            
 	            Map<Id, ProjectSnapshot__c> projIdToSnapshotMap = new Map<Id, ProjectSnapshot__c>();
@@ -430,20 +441,16 @@ public class ECO_Service_ProjectSnapshots {
                     snapshot.AR61to90__c = billingMetricsAR61to90Map.get(project.Id);
                     snapshot.AR91to180__c = billingMetricsAR91to180Map.get(project.Id);
                     snapshot.AR181Plus__c = billingMetricsAR181PlusMap.get(project.Id);
-/*
-   snapshot.Unbilled0to30__c = billingMetrics.Unbilled0to30;
-                    snapshot.Unbilled31to60__c = billingMetrics.Unbilled31to60;
-                    snapshot.Unbilled61to90__c = billingMetrics.Unbilled61to90;
-                    snapshot.Unbilled91to180__c = billingMetrics.Unbilled91to180;
-                    snapshot.Unbilled181Plus__c = billingMetrics.Unbilled181Plus;
 
-                    
-*/
-                    
-
+					// Unbilled Metrics
+					snapshot.Unbilled0to30__c = unbilledMetricsAR0to30Map.get(project.Id);
+					snapshot.Unbilled31to60__c = unbilledMetricsAR31to60Map.get(project.Id);
+                    snapshot.Unbilled61to90__c = unbilledMetricsAR61to90Map.get(project.Id);
+                    snapshot.Unbilled91to180__c = unbilledMetricsAR91to180Map.get(project.Id);
+                    snapshot.Unbilled181Plus__c = unbilledMetricsAR181PlusMap.get(project.Id);
+      
 	                snapshotList.add(snapshot);
-	            }
-	            
+	            }        
 	        }
         }
         catch(Exception e) {
@@ -452,8 +459,6 @@ public class ECO_Service_ProjectSnapshots {
         return snapshotList;
     }
 
-
-////////
     private Map<Id, BillingMetrics> getBillingMetricsARMap(List<Id> projectIds, Map<Id, FinancialMetrics> itdActualFinancialMetricsMap)
     {
         Map<Id, BillingMetrics> billingMetricsMap = new Map<Id, BillingMetrics>();
@@ -501,7 +506,7 @@ public class ECO_Service_ProjectSnapshots {
         BillingMetrics billingMetrics;
         try {
             startDate = Date.today();
-            endDate = Date.today().addDays(-30);
+            endDate = Date.today().addDays(-181);
             for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled
                             FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
                             InvoiceDate__c <= :startDate
@@ -522,7 +527,7 @@ public class ECO_Service_ProjectSnapshots {
         return billingMetricsMap;
     }
 
-    private Map<Id, Decimal> getBillingMetricARDateRangeMap(List<Id> projectIds, String range)
+    private Map<Id, Decimal> getBillingMetricsARDateRangeMap(List<Id> projectIds, String range)
     {
         Map<Id, Decimal> billingMetricsMap = new Map<Id, Decimal>();
         Date startDate; 
@@ -545,7 +550,6 @@ public class ECO_Service_ProjectSnapshots {
                 endDate = Date.today().addDays(-180);
             }
 
-            //
             for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled
                             FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
                             InvoiceDate__c <= :startDate AND InvoiceDate__c >= :endDate 
@@ -565,35 +569,97 @@ public class ECO_Service_ProjectSnapshots {
         return billingMetricsMap;
     }
 
-    private Map<Id, Decimal> getBillingMetricsAR61to90Map(List<Id> projectIds)
+	////////// Start Unbilled
+	private Map<Id, Decimal> getUnbilledMetricsARDateRangeMap(List<Id> projectIds, String range)
     {
-        Map<Id, Decimal> billingMetricsMap = new Map<Id, Decimal>();
+        Map<Id, Decimal> unbilledMetricsMap = new Map<Id, Decimal>();
         Date startDate;
-        Date endDate;
-        BillingMetrics billingMetrics;
         try {
-            startDate = Date.today().addDays(-61);
-            endDate = Date.today().addDays(-90);
-            for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled61to90
-                            FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
-                            InvoiceDate__c <= :startDate AND InvoiceDate__c >= :endDate 
+        	if (range == UNBILLED_0to30) {
+                startDate = Date.today();
+            }
+            else if (range == UNBILLED_31to60) {
+                startDate = Date.today().addDays(-31);
+            }
+            else if (range == UNBILLED_61to90) {
+                startDate = Date.today().addDays(-61);
+            }
+            else if (range == UNBILLED_91to180) {
+                startDate = Date.today().addDays(-91);
+            }
+            else if (range == UNBILLED_181Plus) {
+                startDate = Date.today().addDays(-180);
+            }
+            
+        	for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(Amount__c) totalRevenue
+                            FROM Revenue__c WHERE ProjectNumber__c IN :projectIds
+                            AND GLDate__c <= :startDate
                             GROUP BY ProjectNumber__c])
             {
-                if (ar.get('totalBilled61to90') != null)
-                {
-                    billingMetrics = new BillingMetrics();
-                    Id projId = (Id) ar.get('ProjectNumber__c');
-                    billingMetrics.Billed61to90 = (Decimal)ar.get('totalBilled61to90');
-                    billingMetricsMap.put(projId, billingMetrics.Billed61to90);
-                }
+            	Decimal unbilledValue = 0;
+                Decimal totalRevenue = (Decimal)ar.get('totalRevenue');
+                Id projId = (Id) ar.get('ProjectNumber__c');
+                
+                if (range == UNBILLED_181Plus) {
+	                if (totalRevenue != null)
+	                {
+	                    unbilledValue = totalRevenue - billingMetricsARMap.get(projId).BilledAR;
+	                }
+                	else {
+                    	unbilledValue = 0 - billingMetricsARMap.get(projId).BilledAR;
+		            }
+            	}
+            	else if (range == UNBILLED_91to180) {
+	                if (totalRevenue != null)
+	                {
+	                    unbilledValue = totalRevenue - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId)); 
+	                }
+                	else {
+                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId)); 
+		            }
+            	}
+            	else if (range == UNBILLED_61to90) {
+	                if (totalRevenue != null)
+	                {
+	                    unbilledValue = totalRevenue - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
+	                    	unbilledMetricsAR91to180Map.get(projId));
+	                }
+                	else {
+                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
+                    		unbilledMetricsAR91to180Map.get(projId)); 
+		            }
+            	}
+            	else if (range == UNBILLED_31to60) {
+	                if (totalRevenue != null)
+	                {
+	                    unbilledValue = totalRevenue - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
+	                    	unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId));
+	                }
+                	else {
+                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
+                    		unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId));
+		            }
+            	}
+            	else if (range == UNBILLED_0to30) {
+	                if (totalRevenue != null)
+	                {
+	                    unbilledValue = totalRevenue - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
+	                    	unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId) + unbilledMetricsAR31to60Map.get(projId));
+	                }
+                	else {
+                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
+                    		unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId) + unbilledMetricsAR31to60Map.get(projId));
+		            }
+            	}
+            	unbilledMetricsMap.put(projId, unbilledValue);
             }
         }
         catch (Exception e) {
             System.debug(e.getStackTraceString());
         }
-        return billingMetricsMap;
+        return unbilledMetricsMap;
     }
-//////////
+	//////// END Unbilled
 
     @TestVisible private ProjectSnapshot__c getOriginalBudgetHeaderMapInformation(FinancialMetrics originalBudgetFinancialMetrics, ProjectSnapshot__c snapshot) {
         snapshot.GrossRevenueBudgetOriginal__c = originalBudgetFinancialMetrics.TotalRevenue;
@@ -744,8 +810,6 @@ public class ECO_Service_ProjectSnapshots {
     	return snapshot;
     }
 
-
-
 	public Map<Id, FinancialMetrics> getProjectActualFinancialsCosts(List<Id> projectIds, Date asOfDate)
     {
     	Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
@@ -784,7 +848,7 @@ public class ECO_Service_ProjectSnapshots {
                         	metrics.TotalContingency = funcBurdenedCost;
 						}
 						else if (arCategory == category && category == 'Labor') {
-                        	//DO NOTHING //metrics.Labor = funcBurdenedCost;
+// ?? DO NOTHING ?? //metrics.Labor = funcBurdenedCost;
 						}
 						else if (arCategory == category && category == 'Fringe') {
                         	metrics.Fringe = funcBurdenedCost;
@@ -917,7 +981,6 @@ public class ECO_Service_ProjectSnapshots {
                 returnString += '::' + projectTask.Name + ';;' + projectTask.ProjectTaskNumber__c + ';;' + projectTask.pse__Start_Date__c.format()  + ';;' + projectTask.pse__End_Date__c.format()  + ';;' + projectTask.pse__Actual_Start_Date__c + ';;' + projectTask.pse__Actual_End_Date__c;            
         }
         return returnString;
-        //return returnString.replace('null', ' ');
     }
     
     private DateTime getLastUpdatedBudgetDate(List<Id> projectIds)
@@ -1639,77 +1702,5 @@ public class ECO_Service_ProjectSnapshots {
         if (netService == 0)
             return 0;
         return (netMargin/netService) * 100;        
-    }       
-    
-
-    /******** LATER ************/
-
-    /*private Map<Id, BillingMetrics> getBillingARMetricsMap(List<Id> projectIds, Decimal totalRevenue)
-    {
-        Map<Id, BillingMetrics> billingMetricsMap = new Map<Id, BillingMetrics>();
-        Date startDate;
-        Date endDate;
-        
-        BillingMetrics billingMetrics = new BillingMetrics();
-        try {
-
-            ///////////////////////////
-
-            // Unbilled
-            startDate = Date.today().addDays(-180);
-            for (AggregateResult ar:[SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds 
-                                                    AND GLDate__c < :startDate])
-            {
-                if ((Decimal)ar.get('totalRevenue') != null)
-                    billingMetrics.Unbilled181Plus = (Decimal)ar.get('totalRevenue') - billingMetrics.BilledAR;
-                else
-                    billingMetrics.Unbilled181Plus = 0 - billingMetrics.BilledAR;
-            }                   
-
-            startDate = Date.today().addDays(-90);
-            for (AggregateResult ar:[SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds 
-                                                    AND GLDate__c < :startDate])
-            {
-                if ((Decimal)ar.get('totalRevenue') != null)
-                    billingMetrics.Unbilled91to180 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus);
-                else
-                    billingMetrics.Unbilled91to180 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus);
-            }
-
-            startDate = Date.today().addDays(-60);
-            for (AggregateResult ar:[SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds 
-                                                    AND GLDate__c < :startDate])
-            {
-                if ((Decimal)ar.get('totalRevenue') != null) 
-                    billingMetrics.Unbilled61to90 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus + billingMetrics.Unbilled91to180);
-                else
-                    billingMetrics.Unbilled61to90 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus + billingMetrics.Unbilled91to180);
-            }
-
-            startDate = Date.today().addDays(-30);
-            for (AggregateResult ar:[SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds 
-                                                    AND GLDate__c < :startDate])
-            {
-                if ((Decimal)ar.get('totalRevenue') != null) 
-                    billingMetrics.Unbilled31to60 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus + billingMetrics.Unbilled91to180 + billingMetrics.Unbilled61to90);
-                else
-                    billingMetrics.Unbilled31to60 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus + billingMetrics.Unbilled91to180 + billingMetrics.Unbilled61to90);
-            }       
-            
-            startDate = Date.today().addDays(0);
-            for (AggregateResult ar:[SELECT SUM(Amount__c) totalRevenue FROM Revenue__c WHERE ProjectNumber__c IN :projectIds 
-                                                    AND GLDate__c < :startDate])
-            {
-                if ((Decimal)ar.get('totalRevenue') != null) 
-                    billingMetrics.Unbilled0to30 = (Decimal)ar.get('totalRevenue') - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus + billingMetrics.Unbilled91to180 + billingMetrics.Unbilled61to90 + billingMetrics.Unbilled31to60);
-                else
-                    billingMetrics.Unbilled0to30 = 0 - (billingMetrics.BilledAR + billingMetrics.Unbilled181Plus + billingMetrics.Unbilled91to180 + billingMetrics.Unbilled61to90 + billingMetrics.Unbilled31to60);
-            }
-        }
-        catch(Exception e) {
-            System.Debug(e.getStackTraceString());
-        }
-        return billingMetricsMap;
-    }*/
-
+    }
 }
