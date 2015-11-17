@@ -115,8 +115,24 @@ public without sharing class ECO_CostDistributionLineTriggers {
 	
 	public static void calculateFiscalMonths(list<CostDistLine__c> costDistLines)
 	{
+          list<date> enddatelist = new list<date>();
+        for (CostDistLine__c ba : costDistLines){
+             if (ba.GLDate__c != null){ 
+                 
+                 enddatelist.add((ba.GLDate__c).addmonths(2));
+                 enddatelist.add((ba.GLDate__c).addmonths(-3));
+             }
+        }
+        system.debug('enddatelist----'+enddatelist);
+         List<pse__Time_Period__c> timePeriods  = new  List<pse__Time_Period__c>();
+        if(enddatelist.size()>0)
+        {
 		// Time period
-		List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
+          timePeriods = ECO_Utils_Date.calcTimePeriods(enddatelist,'Month');
+        
+        
+        // Time period
+       // List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
 		
 		pse__Time_Period__c fm = null;
 		for (CostDistLine__c cdl : costDistLines){
@@ -139,7 +155,7 @@ public without sharing class ECO_CostDistributionLineTriggers {
 					
 				}
 			}
-			
+           } 
 		}
 	}
 }

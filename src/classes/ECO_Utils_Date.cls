@@ -111,13 +111,19 @@ public without sharing class ECO_Utils_Date {
 		return listOfStartOfWeekDatesBetweenDates;
 	}
 	
+  public static List<pse__Time_Period__c> calcTimePeriods (list<date> enddatelist ,string type){
+      List<pse__Time_Period__c> calcTimePeriods = new list<pse__Time_Period__c>([select id,TimePeriodCode__c,pse__End_Date__c,pse__Start_Date__c from pse__Time_Period__c where pse__Type__c =:type and pse__Start_Date__c <=:enddatelist and pse__End_Date__c  >=:enddatelist]);
+  return calcTimePeriods ;
+  }
+  
 	
 	public static pse__Time_Period__c getFiscalPeriod(Date dateUsed, Integer periodsBack, List<pse__Time_Period__c> timePeriods) {
 		
 		for (Integer i = 0; i < timePeriods.size(); i++){
             	if (dateUsed <= timePeriods[i].pse__End_Date__c  &&
                     dateUsed >= timePeriods[i].pse__Start_Date__c){ 
-                    if (i > 0 && (i-periodsBack >= 0)){
+                   // if (i > 0 && (i-periodsBack >= 0)){
+                    if (i > 0 || (i-periodsBack >= 0)){
                         return timePeriods[i-periodsBack];
                     } 
                 } 

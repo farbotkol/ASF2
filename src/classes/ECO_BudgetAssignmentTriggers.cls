@@ -171,22 +171,39 @@ public without sharing class ECO_BudgetAssignmentTriggers {
 
 	public static void calculateFiscalMonths(list<BudgetAssignment__c> budgetAssignments)
 	{
+        
+        list<date> enddatelist = new list<date>();
+        for (BudgetAssignment__c ba : budgetAssignments){
+             if (ba.EndDate__c != null){ 
+                 
+                 enddatelist.add((ba.EndDate__c).addmonths(2));
+                 enddatelist.add((ba.EndDate__c).addmonths(-3));
+             }
+        }
+        system.debug('enddatelist----'+enddatelist);
+         List<pse__Time_Period__c> timePeriods  = new  List<pse__Time_Period__c>();
+        if(enddatelist.size()>0)
+        {
 		// Time period
-		List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
-
+          timePeriods = ECO_Utils_Date.calcTimePeriods(enddatelist,'Month');
+          //  List<pse__Time_Period__c> timePeriods = new list<pse__Time_Period__c>([select id,TimePeriodCode__c,pse__End_Date__c,pse__Start_Date__c from pse__Time_Period__c where pse__Type__c = 'Month' and pse__Start_Date__c <=:enddatelist and pse__End_Date__c  >=:enddatelist]);
+          system.debug('timePeriods ----'+timePeriods );
 		pse__Time_Period__c fm = null;
 		for (BudgetAssignment__c ba : budgetAssignments){
 			if (ba.EndDate__c != null){	
 				fm = ECO_Utils_Date.getFiscalPeriod(ba.EndDate__c, 0, timePeriods);  
+                    system.debug('207-----'+fm);
 				if (fm != null){
 					ba.EndDateFiscalMonth__c = fm.TimePeriodCode__c;
 				}
 				
 				fm = ECO_Utils_Date.getFiscalPeriod(ba.EndDate__c, 1, timePeriods);
+                     system.debug('213-----'+fm);
 				if (fm != null){
 					ba.EndDatePreviousFiscalMonth__c = fm.TimePeriodCode__c; 
 				}
 			}
 		}
 	}
+    }
 }
