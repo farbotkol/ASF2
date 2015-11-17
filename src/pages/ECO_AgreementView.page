@@ -358,13 +358,14 @@
             <apex:commandButton value="Return To Agreement" action="{!cancel}" rendered="{!mode == 'Edit'}"/>   
             <apex:commandButton value="Edit" action="{!editAgreement}" rendered="{!mode == ''}"/>   
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}"/>
-            <apex:commandButton value="Return To Project" action="{!cancel}" rendered="{!mode == 'New'}" immediate="true"/>
+            <apex:commandButton value="Return To Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
             <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
+
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
                 <apex:outputText value="ECO Agreement Number"/>
                 <apex:outputPanel >
@@ -820,11 +821,11 @@
             <apex:commandButton value="Return To Agreement" action="{!cancel}" rendered="{!mode == 'Edit'}"/>   
             <apex:commandButton value="Edit" action="{!editAgreement}" rendered="{!mode == ''}"/>   
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}"/>
-            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New'}" immediate="true"/>
+            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
             <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
     <apex:pageBlockSection >
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
@@ -1282,10 +1283,10 @@
             <apex:commandButton value="Edit" action="{!editAgreement}" rendered="{!mode == ''}"/>   
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}"/>
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
-            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New'}" immediate="true"/>
+            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
             <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
@@ -1701,10 +1702,10 @@
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}" />
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
 
-            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New'}"/> 
+            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}"/> 
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
             <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
@@ -2066,11 +2067,11 @@
             <apex:commandButton value="Edit" action="{!editAgreement}" rendered="{!mode == ''}"/>
             <apex:commandButton value="Return To Agreement" action="{!cancel}" rendered="{!mode == 'Edit'}"/>           
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New'}"  immediate="true"/>  
+            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}"  immediate="true"/>  
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
             <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
@@ -2482,11 +2483,11 @@
             <apex:commandButton value="Edit" action="{!editAgreement}" rendered="{!mode == ''}"/>
             <apex:commandButton value="Return To Agreement" action="{!cancel}" rendered="{!mode == 'Edit'}"/>           
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New'}"  immediate="true"/>  
+            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}"  immediate="true"/>  
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
             <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
@@ -2772,11 +2773,11 @@
             <apex:commandButton value="Return To Agreement" action="{!cancel}" rendered="{!mode == 'Edit'}"/>           
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}" />
             <apex:commandButton value="View MSA" action="{!viewMSA}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New'}" immediate="true"/>                       
+            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>                       
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
             <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
 
         <apex:pageBlockSection >
