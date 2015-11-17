@@ -863,6 +863,7 @@ public with sharing class ECO_ProjectSummaryController {
 	    	}else{
 	    		intProgressBarNumCells = 17;
 	    	}
+	    	allowRequestSubmit = false;
 	    	pollingMessageQueueMsg = '';
 	    	pollingMessageQueueMsgBottom = '';
 	    	stepMsgs = new List<String>();
