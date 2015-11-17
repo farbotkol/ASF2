@@ -309,10 +309,10 @@
 				<apex:outputPanel layout="block" styleClass="questionnaire" id="theAccordion" >
 					<apex:pageBlock title="{!Questionnaire__c.Name} Risk Assessment Details" id="theBlock" >
 						<apex:pageBlockButtons location="both"> 
-							<apex:commandButton action="{!SavePrevious}" value="Save & Previous" rerender="pageMessages" onClick="showModal();" onComplete="hideModal();" disabled="{!oQuestionnaire.QuestionnaireSet__r.ApprovalStatus__c=='Approved'}" />
-							<apex:commandButton action="{!SaveNext}" value="Save & Next" rerender="pageMessages" onClick="showModal();" onComplete="hideModal();"  disabled="{!oQuestionnaire.QuestionnaireSet__r.ApprovalStatus__c=='Approved'}"/>
+							<apex:commandButton action="{!SavePrevious}" value="Save & Previous" rerender="pageMessages" onClick="showModal();" onComplete="hideModal();" disabled="{!oQuestionnaire.QuestionnaireSet__r.ApprovalStatus__c!='Pending Approval'}" />
+							<apex:commandButton action="{!SaveNext}" value="Save & Next" rerender="pageMessages" onClick="showModal();" onComplete="hideModal();"  disabled="{!oQuestionnaire.QuestionnaireSet__r.ApprovalStatus__c!='Pending Approval'}"/>
 							
-							<apex:commandButton action="{!SaveRecord}" value="Save" rerender="pageMessages, countBlock" onClick="showModal();" onComplete="hideModal();"  disabled="{!oQuestionnaire.QuestionnaireSet__r.ApprovalStatus__c=='Approved'}"/>
+							<apex:commandButton action="{!SaveRecord}" value="Save" rerender="pageMessages, countBlock" onClick="showModal();" onComplete="hideModal();"  disabled="{!oQuestionnaire.QuestionnaireSet__r.ApprovalStatus__c!='Pending Approval'}"/>
 							<apex:commandButton action="{!ReturnToSummary}" value="Return to Summary" rerender="pageMessages" onClick="showModal();" onComplete="hideModal();" />
                             <!--<apex:commandButton action="{!SetDefaultNo}" value="Default to Remaining to No" />-->
 						</apex:pageBlockButtons>
@@ -332,7 +332,7 @@
 										<td width="150px" class="cell">
 											<apex:outputField value="{!answer.TemplateQuestion__r.RiskTitle__c}" />
 											<apex:outputPanel rendered="{!if(answer.TemplateQuestion__r.Help_Icon_Text__c == null, false, true)}">
-											 <c:ECO_HelpIcon helpText="{!answer.TemplateQuestion__r.Help_Icon_Text__c}"/>
+											 <c:ECO_HelpIcon helpText="{!answer.TemplateQuestion__r.Help_Icon_Text__c}"/>
 											</apex:outputPanel>
 										</td>
 										<td class="cell {!answer.TemplateQuestion__r.Indented__c}">
