@@ -269,9 +269,9 @@
 									</apex:facet>
 									<apex:column >
 										<apex:facet name="header">Action</apex:facet>
-										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '', '{!item.previousDate}'));return false;" rendered="{!AND(AND(ISNULL(item.oPTM.Contact__c), AND(AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate')), item.canEdit)}">Select</apex:outputLink>
-										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '{!item.oPTM.Id}', '{!item.oPTM.StartDate__c}'));return false;" rendered="{!AND(AND(ISNULL(item.oPTM.EndDate__c), AND(NOT(ISNULL(item.oPTM.Contact__c)), AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate')), item.canEdit)}">Replace</apex:outputLink>
-										<apex:outputPanel layout="none" rendered="{!AND(AND(NOT(ISNULL(item.oPTM.Contact__c)), AND(AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate')), item.canEdit)}">
+										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '', '{!item.previousDate}'));return false;" rendered="{!AND(ISNULL(item.oPTM.Contact__c), item.canEdit)}">Select</apex:outputLink>
+										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '{!item.oPTM.Id}', '{!item.oPTM.StartDate__c}'));return false;" rendered="{!AND(AND(ISNULL(item.oPTM.EndDate__c), NOT(ISNULL(item.oPTM.Contact__c))), item.canEdit)}">Replace</apex:outputLink>
+										<apex:outputPanel layout="none" rendered="{!AND(NOT(ISNULL(item.oPTM.Contact__c)), item.canEdit)}">
 											&nbsp;
 											<apex:outputLink value="/{!item.oPTM.Id}/e?retURL={!returnURL}">Edit</apex:outputLink>
 										</apex:outputPanel>
