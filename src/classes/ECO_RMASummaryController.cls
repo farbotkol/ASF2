@@ -220,51 +220,55 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 	
 	public PageReference submitForApproval()
 	{
-		if(!allRMAQuestionsHaveBeenAnswered())
-		{
-			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Completion off all R&M assessment questions are required prior to submitting for approval!');
-        	ApexPages.addMessage(oPageMessage);
-			
-			return null;
-		}
-		//
-		/*system.debug( 'Approval submitted user = ' + theProject.ProjectApprover__r.pse__Salesforce_User__c );
-        
-		Boolean hasPermissionForApprovalProcess = ECO_Service_RecordAccess.getProjectRecordAccessForApprovalProcess ('Risk__c', theProject.Id);
-		
-        if (! hasPermissionForApprovalProcess)  
-        {   
-            system.debug( 'No Permission for approval process' );
+        try{
+            if(!allRMAQuestionsHaveBeenAnswered()){
+                ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Completion off all R&M assessment questions are required prior to submitting for approval!');
+                ApexPages.addMessage(oPageMessage);
+                
+                return null;
+            }
+            //
+            /*system.debug( 'Approval submitted user = ' + theProject.ProjectApprover__r.pse__Salesforce_User__c );
             
-			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'You do not have permission Permission for Approval Process');
-            ApexPages.addMessage(oPageMessage);            
-
-        	return null;
-        }*/
-
-		//return null;
-        // Above line is just for test purposes, will be taken out. BH
-        
-		// have to set the appover field on the RMA before submitting
-        oQuestionnaireSet.ProjectApprover__c = theProject.ProjectApprover__r.pse__Salesforce_User__c;
-
-		update oQuestionnaireSet;
-		
-		// Create an approval request for the account
-       	Approval.ProcessSubmitRequest req1 = new Approval.ProcessSubmitRequest();
-        req1.setObjectId(oQuestionnaireSet.Id);
-        
-        // Submit on behalf of a specific submitter
-        //req1.setSubmitterId(user1.Id);
-        
-        // Submit the record to specific process and skip the criteria evaluation
-        //req1.setProcessDefinitionNameOrId('PTO_Request_Process');
-        //req1.setSkipEntryCriteria(true);
-        
-        // Submit the approval request for the account
-        Approval.ProcessResult result = Approval.process(req1);
-        
-        return null;
+            Boolean hasPermissionForApprovalProcess = ECO_Service_RecordAccess.getProjectRecordAccessForApprovalProcess ('Risk__c', theProject.Id);
+            
+            if (! hasPermissionForApprovalProcess)  
+            {   
+                system.debug( 'No Permission for approval process' );
+                
+                ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'You do not have permission Permission for Approval Process');
+                ApexPages.addMessage(oPageMessage);            
+    
+                return null;
+            }*/
+    
+            //return null;
+            // Above line is just for test purposes, will be taken out. BH
+            
+            // have to set the appover field on the RMA before submitting
+            oQuestionnaireSet.ProjectApprover__c = theProject.ProjectApprover__r.pse__Salesforce_User__c;
+    
+            update oQuestionnaireSet;
+            
+            // Create an approval request for the account
+            Approval.ProcessSubmitRequest req1 = new Approval.ProcessSubmitRequest();
+            req1.setObjectId(oQuestionnaireSet.Id);
+            
+            // Submit on behalf of a specific submitter
+            //req1.setSubmitterId(user1.Id);
+            
+            // Submit the record to specific process and skip the criteria evaluation
+            //req1.setProcessDefinitionNameOrId('PTO_Request_Process');
+            //req1.setSkipEntryCriteria(true);
+            
+            // Submit the approval request for the account
+            Approval.ProcessResult result = Approval.process(req1);
+            
+            return null;
+        }catch(Exception e){
+            ApexPages.addMessages(e);
+            return null;
+        }
 	}
     public PageReference enableSubmitApex(){
         System.debug('oQuestionnaireSet go no go:'+oQuestionnaireSet.GoNoGoRecommendation__c);
