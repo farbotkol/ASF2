@@ -209,9 +209,6 @@ public class ECO_Service_ProjectSnapshots {
         return snapshotList[0];
     }
     
-
-    /*** REFACTORED ********/
-
     public List<ProjectSnapshot__c> createProjectSnapshots()
     {
     	List<ProjectSnapshot__c> snapshotList = new List<ProjectSnapshot__c>();
@@ -1652,6 +1649,7 @@ public class ECO_Service_ProjectSnapshots {
                 snapshot.HoursForecastPrevME__c = snapshotPrevFM.HoursForecast__c;
                 snapshot.LostMarginForecast__c = snapshotPrevFM.LostMarginForecast__c;
                 snapshot.ProjectEndDatePrevME__c = snapshotPrevFM.ProjectEndDate__c;
+                snapshot.CashFlowITDPrevME__c = snapshotPrevFM.CashFlowITD__c;
             	projectIdToSnapshotMap.put(projId, snapshot);
             }
         }
@@ -1665,7 +1663,7 @@ public class ECO_Service_ProjectSnapshots {
             projSnapshots = [SELECT Id, Project__c, GrossRevenueForecast__c, 
                 CostsODCEXPSForecast__c, CostsODCSUBSForecast__c, ContingencyForecast__c,
                 LaborForecast__c, FringeForecast__c, OverheadForecast__c, HoursForecast__c, 
-                LostMarginForecast__c, ProjectEndDate__c
+                LostMarginForecast__c, ProjectEndDate__c, CashFlowITD__c
                 FROM ProjectSnapshot__c 
                 WHERE SnapshotType__c = 'Auto' 
                 AND SnapshotFiscalMonth__c IN : prevFiscalMonthList];
@@ -1713,4 +1711,13 @@ public class ECO_Service_ProjectSnapshots {
             return 0;
         return (netMargin/netService) * 100;        
     }
+    
+    
+    /* "1. Run Rate Average Cost: (Cost ITD minus (Cost ITD from three ""auto"" month end snapshots ago)) / 3. 
+	Three auto month ends ago = select cost itd from projectsnapshot where status=auto and projectid=projectid and date<(snpshot date-120)
+	order by snapshotdate desc limit three
+	then use the last item in the result
+	*/
+	
+				
 }
