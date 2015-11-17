@@ -1652,48 +1652,6 @@ public class ECO_Service_ProjectSnapshots {
         
         BillingMetrics billingMetrics = new BillingMetrics();
         try {
-            
-            
-            startDate = Date.today().addDays(-31);
-            endDate = Date.today().addDays(-60);
-            for (AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled31to60 
-                            FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
-                            InvoiceDate__c <= :startDate AND InvoiceDate__c >= :endDate])
-            {
-                if (ar.get('totalBilled31to60') != null)
-                    billingMetrics.Billed31to60 = (Decimal)ar.get('totalBilled31to60');
-            }
-
-            startDate = Date.today().addDays(-61);
-            endDate = Date.today().addDays(-90);
-            for (AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled61to90 
-                            FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
-                            InvoiceDate__c <= :startDate AND InvoiceDate__c >= :endDate])
-            {
-                if (ar.get('totalBilled61to90') != null)
-                    billingMetrics.Billed61to90 = (Decimal)ar.get('totalBilled61to90');
-            }
-
-            startDate = Date.today().addDays(-91);
-            endDate = Date.today().addDays(-180);
-            for (AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled91to180 
-                            FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
-                            InvoiceDate__c <= :startDate AND InvoiceDate__c >= :endDate])
-            {
-                if (ar.get('totalBilled91to180') != null)
-                    billingMetrics.Billed91to180 = (Decimal)ar.get('totalBilled91to180');
-            }
-    
-            startDate = Date.today().addDays(-181);
-            for (AggregateResult ar: [SELECT SUM(InvoiceAmount__c) totalBilled181Plus 
-                            FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
-                            InvoiceDate__c <= :startDate])
-            {
-                if (ar.get('totalBilled181Plus') != null)
-                    billingMetrics.Billed181Plus = (Decimal)ar.get('totalBilled181Plus');
-            }       
-
-
 
             ///////////////////////////
 
