@@ -849,6 +849,7 @@ public with sharing class ECO_StakeholdersController
 			Integer teamMemberToRemove = Integer.valueOf(ApexPages.currentPage().getParameters().get('teamMemberToRemove'));
 			if(lMembersTeam[teamMemberToRemove].oPTM.Id != null){
 				lMembersTeam[teamMemberToRemove].oPTM.Is_Active__c = false;
+				lMembersTeam[teamMemberToRemove].oPTM.EndDate__c = Date.today();
 				update lMembersTeam[teamMemberToRemove].oPTM;
 				lInactiveMembersTeam.add(lMembersTeam[teamMemberToRemove]);
 			}
