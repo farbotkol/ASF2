@@ -406,9 +406,9 @@
 					<td class="cell" width="200" valign="bottom">
 						<apex:outputField value="{!endClientAccount.BillingStreet}" />
 						<br/>
-						<apex:outputField value="{!endClientAccount.BillingCity}" /><apex:outputText value="," rendered="{!bShowUltimateEndUserAddress}"/>&nbsp;<apex:outputField value="{!endClientAccount.BillingState}" />
+						<apex:outputField value="{!endClientAccount.BillingCity}" /><apex:outputText value="," rendered="{!AND(bShowUltimateEndUserAddress, IF(endClientAccount.BillingCity != null, true, false))}"/>&nbsp;<apex:outputField value="{!endClientAccount.BillingState}" />
 						<br/>
-						<apex:outputField value="{!endClientAccount.BillingCountry}" /><apex:outputText value="," rendered="{!bShowUltimateEndUserAddress}"/>&nbsp;<apex:outputField value="{!endClientAccount.BillingPostalCode}" />
+						<apex:outputField value="{!endClientAccount.BillingCountry}" /><apex:outputText value="," rendered="{!AND(bShowUltimateEndUserAddress, IF(endClientAccount.BillingCountry != null, true,false))}"/>&nbsp;<apex:outputField value="{!endClientAccount.BillingPostalCode}" />
 					</td>
 				</tr>
 				<tr>
@@ -541,7 +541,7 @@
 						<table style="width: 100%;">
 							<tr>
 								<td align="right" width="60%" valign="middle">If Yes, provide the name, address and website for each third party:</td>
-								<td align="right" valign="top"><apex:inputTextarea id="thirdPartyText" required="true" value="{!ExportControl__c.EndUserorClientContactInfo__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
+								<td align="right" valign="top"><apex:inputTextarea id="thirdPartyText" value="{!ExportControl__c.EndUserorClientContactInfo__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
 							</tr>
 						</table>	
 					</td>
@@ -572,7 +572,7 @@
                             <table style="width: 100%;">
                                 <tr>
                                     <td align="right" width="60%" valign="middle">If Yes, provide the name, address and website for each partner or subcontractor:</td>
-                                    <td align="right" valign="top"><apex:inputTextarea id="partnerText1" required="true"  value="{!ExportControl__c.PartnerorSubContactInfo__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
+                                    <td align="right" valign="top"><apex:inputTextarea id="partnerText1"   value="{!ExportControl__c.PartnerorSubContactInfo__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
                                 </tr>
                             </table>
                             
@@ -583,7 +583,7 @@
                             <table style="width: 100%;">
                                 <tr>
                                     <td align="right" width="60%" valign="middle">If Yes, briefly describe the goods, services or data each partner or subcontractor <br/> will contribute to this opportunity or project:</td>
-                                    <td align="right" valign="top"><apex:inputTextarea id="partnerText2" required="true"  value="{!ExportControl__c.PartnerOrSubServices__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
+                                    <td align="right" valign="top"><apex:inputTextarea id="partnerText2"   value="{!ExportControl__c.PartnerOrSubServices__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
                                 </tr>
                             </table>
                         </td>
@@ -609,7 +609,7 @@
 						<table style="width: 100%;">
 							<tr>
 								<td align="right" width="60%" valign="middle">If Yes, provide the name of the Joint Venture, and identify all parties in addition to AECOM who comprise this Joint Venture:</td>
-								<td align="right" valign="top"><apex:inputTextarea id="jvText" required="true"  value="{!ExportControl__c.JointVentureName__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
+								<td align="right" valign="top"><apex:inputTextarea id="jvText"  value="{!ExportControl__c.JointVentureName__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
 							</tr>
 						</table>
 						
@@ -866,7 +866,7 @@
                             <table style="width: 100%;">
                                 <tr>
                                     <td align="right" width="60%" valign="middle">If Yes, list the country or countries of travel:</td>
-                                    <td align="right" valign="top"><apex:inputTextarea id="travelText1" required="true"  value="{!ExportControl__c.TravelCountries__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
+                                    <td align="right" valign="top"><apex:inputTextarea id="travelText1"  value="{!ExportControl__c.TravelCountries__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
                                 </tr>
                             </table>
                             

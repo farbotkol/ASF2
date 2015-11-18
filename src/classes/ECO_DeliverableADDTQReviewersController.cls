@@ -284,7 +284,7 @@ public with sharing class ECO_DeliverableADDTQReviewersController {
                         , Submit_For_Approval__c
                         , TechnicalQualityTeamMember__c
                         , TechnicalQualityTeamMember__r.Name
-                      From TechnicalQualityTeam__c where Deliverable__c =: setID];
+                      From TechnicalQualityTeam__c where Deliverable__c =: setID AND Role__c <> 'Inactive Deliverable Owner'];
     }
     
     public list<ProjectTeamMember__c> getProjectTeamByProjectID(set<String>setID){

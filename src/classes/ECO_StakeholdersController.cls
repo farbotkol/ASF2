@@ -126,7 +126,7 @@ public with sharing class ECO_StakeholdersController
 					}
 				}
 				else{
-                    if(projectTeamMember.ProjectRole__r.Name != 'Inactive Deliverable Owner')
+                    //if(projectTeamMember.ProjectRole__r.Name != 'Inactive Deliverable Owner')
 						lProjectTeamMembers.add(projectTeamMember);
 				}
 			}
