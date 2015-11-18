@@ -189,7 +189,7 @@ public class ECO_Service_ProjectSnapshots {
                                                 WHERE EarnedValueHeader__c = :evHeaders[0].Id
                                                 ORDER BY SnapshotDate__c DESC
                                                 LIMIT 1];
-                    //List<EarnedValueSnapshot__c> snapshots = [SELECT Id, WeekStartDate__c FROM EarnedValueSnapshot__c WHERE WeekStartDate__c <= TODAY AND ProjectTask__r.pse__Project__c = :snapshotProjectId order by WeekStartDate__c desc];
+                    
                     if (earnedValueTasks.size() > 0)
                     {
                         EarnedValueSnapshotDate = earnedValueTasks[0].SnapshotDate__c;
@@ -402,7 +402,11 @@ public class ECO_Service_ProjectSnapshots {
       				snapshot = getFutureSpendInformation(snapshot);
       				
 	                snapshotList.add(snapshot);
-	            }        
+	            }
+	            
+	            if (snapshotList.size() > 0) {
+	            	insert snapshotList;
+	            } 
 	        }
         }
         catch(Exception e) {
@@ -477,12 +481,15 @@ public class ECO_Service_ProjectSnapshots {
             for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled, SUM(RetentionAmount__c) totalRetention
                             FROM Billing__c WHERE ProjectNumber__c IN :projectIds GROUP BY ProjectNumber__c])
             {
-                if (ar.get('totalBilled') != null)
+            	Decimal totalBilledValue = (Decimal) ar.get('totalBilled');
+                if (totalBilledValue != null)
                 {   
                     billingMetrics = new BillingMetrics();
                     Id projId = (Id) ar.get('ProjectNumber__c');
+                    System.debug(System.LoggingLevel.WARN, '___projId from ProjectNumber__c='+projId);
                     Decimal totalRevenue = itdActualFinancialMetricsMap.get(projId).TotalRevenue;
-                    if ((Decimal)ar.get('totalBilled') != null) {
+                    System.debug(System.LoggingLevel.WARN, '___totalRevenue='+totalRevenue);
+                    if (totalBilledValue != null) {
                         billingMetrics.BilledAR = (Decimal)ar.get('totalBilled');   
                     }
                     billingMetrics.Retention =  (Decimal)ar.get('totalRetention');  
@@ -609,15 +616,17 @@ public class ECO_Service_ProjectSnapshots {
             	Decimal unbilledValue = 0;
                 Decimal totalRevenue = (Decimal)ar.get('totalRevenue');
                 Id projId = (Id) ar.get('ProjectNumber__c');
+                System.debug(System.LoggingLevel.WARN, '___totalRevenue='+totalRevenue+', projId='+projId);
                 
                 if (range == UNBILLED_181Plus) {
 	                if (totalRevenue != null)
 	                {
-	                    unbilledValue = totalRevenue - billingMetricsARMap.get(projId).BilledAR;
+	                	unbilledValue = totalRevenue - billingMetricsARMap.get(projId).BilledAR;
 	                }
                 	else {
                     	unbilledValue = 0 - billingMetricsARMap.get(projId).BilledAR;
 		            }
+		            System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap.get(projId).BilledAR='+billingMetricsARMap.get(projId).BilledAR);
             	}
             	else if (range == UNBILLED_91to180) {
 	                if (totalRevenue != null)
@@ -826,7 +835,6 @@ public class ECO_Service_ProjectSnapshots {
         list<AggregateResult> results = new list<AggregateResult>();
     
         try {
-            //CostsODCEXPS
             String query = 
             	'SELECT SUM(ProjectFunctionalBurdenedCost__c) funcBurdenedCost, '+ 
             	' ExpenditureItem__r.PLReportCategory__c category '+
@@ -835,9 +843,11 @@ public class ECO_Service_ProjectSnapshots {
 
             if(asOfDate != null) {
                 query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate '+
-                    ' AND ExpenditureItem__r.ExpenditureItemDate__c <= TODAY'+
-                	' GROUP BY ExpenditureItem__r.PLReportCategory__c';
+                	' AND ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
             }
+            
+        	query += ' GROUP BY ExpenditureItem__r.PLReportCategory__c';
+            
             results = database.query(query);
             Set<String> plReportCategorySet = getPLReportCategories();
 
@@ -882,11 +892,10 @@ public class ECO_Service_ProjectSnapshots {
         list<AggregateResult> results = new list<AggregateResult>();
     
         try {
-            //CostsODCEXPS
             String query = 
-            	'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id projectId, '+ 
+            	'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId, '+ 
             	' SUM(ProjectFunctionalBurdenedCost__c) Labor FROM CostDistLine__c'+
-                ' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN '+ projectIds +
+                ' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds' +
                 ' AND ExpenditureItem__r.PLReportCategory__c = \'Labor\' '+
                 ' AND ExpenditureItem__r.PLReportCategory__c != \'Fringe\' '+
                 ' AND ExpenditureItem__r.PLReportCategory__c != \'Overhead\' ';  
@@ -896,7 +905,7 @@ public class ECO_Service_ProjectSnapshots {
                     ' AND ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
             }
 
-            query += ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id';
+            query += ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__c';
             results = database.query(query);
             Set<String> plReportCategorySet = getPLReportCategories();
 
@@ -921,27 +930,27 @@ public class ECO_Service_ProjectSnapshots {
         list<AggregateResult> results = new list<AggregateResult>();
     
         try {
-            //CostsODCEXPS
             String query = 
-            	'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id projectId, '+ 
-            	' SUM(ExpenditureItem__r.Quantity__c) Hours FROM CostDistLine__c, '+
-                ' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN '+ projectIds;
+            	'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId, '+ 
+            	' SUM(ExpenditureItem__r.Quantity__c) Hours FROM CostDistLine__c '+
+                ' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds';
 
-            if(asOfDate != null) {
+            if (asOfDate != null) {
                 query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate '+
                     ' AND ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
             }
 
-            query += ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id';
+            query += ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__c';
             results = database.query(query);
             Set<String> plReportCategorySet = getPLReportCategories();
 
             for(AggregateResult ar : results)
             {
+            	Decimal hoursValue = (Decimal)ar.get('Hours');
             	FinancialMetrics metrics = new FinancialMetrics();
-            	if(ar.get('Hours') != null) {
-                    metrics.Hours = (Decimal)ar.get('Hours');
-                    metricsMap.put((Id)ar.get('Project__c'), metrics);
+            	if(hoursValue != null) {
+                    metrics.Hours = hoursValue;
+                    metricsMap.put((Id)ar.get('projectId'), metrics);
             	}
             }
         }
@@ -975,13 +984,12 @@ public class ECO_Service_ProjectSnapshots {
         return projectIdToSnapshotMap;
     }
 
-    /****** END: Refactored by Arman *****/
-
-        
     private String getRelatedProjectTasks(List<Id> projectIds)
     {
         String returnString = '';
-        List<pse__Project_Task__c> projectTasks = [SELECT Id, Name, pse__Actual_End_Date__c, pse__Actual_Start_Date__c, pse__End_Date__c, pse__Start_Date__c, ProjectTaskNumber__c FROM pse__Project_Task__c WHERE pse__Project__c IN :projectIds];
+        List<pse__Project_Task__c> projectTasks = [SELECT Id, Name, pse__Actual_End_Date__c, pse__Actual_Start_Date__c, 
+        	pse__End_Date__c, pse__Start_Date__c, ProjectTaskNumber__c FROM pse__Project_Task__c 
+        	WHERE pse__Project__c IN :projectIds];
             
         for (pse__Project_Task__c projectTask:projectTasks)
         {
@@ -1022,11 +1030,11 @@ public class ECO_Service_ProjectSnapshots {
     
     public Map<Id, Decimal> getFutureSpendForPeriodMap(List<Id> projectIds, Date startDate, Date endDate)
     {
-        //Decimal futureSpend = 0;
         map<Id, Decimal> projectsFutureSpendMap = new map<Id, Decimal>();
         for (AggregateResult ar : [SELECT SUM(ApprovedCost__c) ApprovedCost, Project__c
                                     FROM WeeklyRollupEntry__c
-                                    WHERE Project__c IN :projectIds AND PeriodStartDate__c > :startDate AND PeriodStartDate__c <= :endDate
+                                    WHERE Project__c IN :projectIds AND PeriodStartDate__c > :startDate 
+                                    AND PeriodStartDate__c <= :endDate
                                     GROUP BY Project__c])
         {
             if (ar.get('ApprovedCost') != null)
@@ -1070,7 +1078,6 @@ public class ECO_Service_ProjectSnapshots {
 
     private String getPendingChangeOrders(List<Id> projectIds, Id recordTypeId)
     {
-        
         String changeOrders = '';
         for (BudgetHeader__c header:[SELECT Id, Name, BudgetName__c, TotalRevenue__c, TotalCost__c 
                                         FROM BudgetHeader__c 
@@ -1087,13 +1094,13 @@ public class ECO_Service_ProjectSnapshots {
         return changeOrders;            
     }
     
-    
     private String getDraftChangedOrders(List<Id> projectIds, Id recordTypeId)
     {   
         String changeOrders = '';   
         for (BudgetHeader__c header:[SELECT Id, Name, BudgetName__c, TotalRevenue__c, TotalCost__c 
                 FROM BudgetHeader__c WHERE Project__c IN :projectIds 
-                                        AND Id Not IN (SELECT BudgetHeader__c FROM ChangeManager__c WHERE Project__c IN :projectIds)])
+                                        AND Id Not IN (SELECT BudgetHeader__c FROM ChangeManager__c 
+                                        WHERE Project__c IN :projectIds)])
         {
             if (changeOrders == '')
                 changeOrders =  header.BudgetName__c  + ';;' + header.TotalRevenue__c + ';;' + header.TotalCost__c;
@@ -1103,8 +1110,6 @@ public class ECO_Service_ProjectSnapshots {
         return changeOrders;
     }
 
-    
-    /** REFACTOR ****/
     @TestVisible private Map<Id, FinancialMetrics> getOriginalBudgetHeaderMap(List<Id> projectIds, boolean showUnsynchedBudgets)
     {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
@@ -1115,9 +1120,10 @@ public class ECO_Service_ProjectSnapshots {
             ' SUM(TotalContingencyAmount__c) totalContingency '+
             ' FROM BudgetHeader__c '+
             ' WHERE OriginalBudget__c = true '+
-            ' AND Project__c IN ' + projectIds +
+            ' AND Project__c IN :projectIds '+
             ' GROUP BY Project__c';
         
+        System.debug(System.LoggingLevel.WARN, '___query='+query);
         try {
             List<AggregateResult> results = database.query(query); 
             for (AggregateResult ar : results) {
@@ -1154,9 +1160,9 @@ public class ECO_Service_ProjectSnapshots {
 	        ' SUM(TotalCost__c) totalCost, '+
 	        ' SUM(TotalNonLabor__c) totalNonLabor, '+
 	        ' SUM(TotalLaborAmount__c) totalLabor, '+
-	        ' SUM(TotalContingencyAmount__c) totalContingency, '+
+	        ' SUM(TotalContingencyAmount__c) totalContingency '+
 	        ' FROM BudgetHeader__c '+
-	        ' WHERE Project__c IN '+ projectIds +
+	        ' WHERE Project__c IN :projectIds '+
 	        ' AND Status__c = \'Approved\' '+
 	        ' AND ChangeManagerApprovedForSynch__c = false '+
 	        ' GROUP BY Project__c';
@@ -1280,12 +1286,13 @@ public class ECO_Service_ProjectSnapshots {
 	        ' SUM(TotalLaborAmount__c) totalLabor, '+
 	        ' SUM(TotalContingencyAmount__c) totalContingency '+
 	        ' FROM BudgetHeader__c '+
-	        ' WHERE Project__c IN '+ projectIds +
-	        ' AND Status__c != '+ approvalStatus +
-	        ' AND Id IN (SELECT BudgetHeader__c FROM ChangeManager__c WHERE ApprovalStatus__c != '+ approvalStatus +
-	        ' AND Project__c IN '+ projectIds + ') '+
+	        ' WHERE Project__c IN :projectIds '+
+	        ' AND Status__c != \''+ approvalStatus + '\' '+
+	        ' AND Id IN (SELECT BudgetHeader__c FROM ChangeManager__c WHERE ApprovalStatus__c != \''+ approvalStatus + '\' '+
+	        ' AND Project__c IN :projectIds) '+
 			' GROUP BY Project__c';     
-
+			
+		System.debug(System.LoggingLevel.WARN, '___query='+query);
         try {
             List<AggregateResult> results = database.query(query); 
             
@@ -1322,7 +1329,7 @@ public class ECO_Service_ProjectSnapshots {
         FinancialMetrics metrics = new FinancialMetrics();
         try {
         	String query = 'SELECT ProjectNumber__c, SUM(Amount__c) totalRevenue FROM Revenue__c '+
-        		' WHERE ProjectNumber__c IN '+ projectIds;
+        		' WHERE ProjectNumber__c IN :projectIds ';
         	if (asOfDate != null) {
         	    query += ' AND GLDate__c >= :asOfDate AND GLDate__c <= TODAY ';
         	}
@@ -1331,8 +1338,9 @@ public class ECO_Service_ProjectSnapshots {
             List<AggregateResult> results = database.query(query); 
             for (AggregateResult ar: results)
             {
-                if (ar.get('totalRevenue') != null) {
-                    metrics.TotalRevenue = (Decimal)ar.get('totalRevenue');
+            	Decimal totalRevenueValue = (Decimal)ar.get('totalRevenue');
+                if (totalRevenueValue != null) {
+                    metrics.TotalRevenue = totalRevenueValue;
                 	metricsMap.put((Id)ar.get('ProjectNumber__c'), metrics);
             	}
             }
@@ -1349,19 +1357,20 @@ public class ECO_Service_ProjectSnapshots {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
         FinancialMetrics metrics = new FinancialMetrics();
         try {
-        	String query = 'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id projectId, '+ 
+        	String query = 'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId, '+ 
         		' SUM(ProjectRawCost__c) totalCost FROM CostDistLine__c '+ 
-        		' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN '+ projectIds;                                                                                       
+        		' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds ';                                                                                       
             if (asOfDate != null) {
                 query += ' AND GLDate__c >= :asOfDate AND GLDate__c <= TODAY ';
             }
-            query += ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id';
+            query += ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__c';
             
             List<AggregateResult> results = database.query(query);
             for (AggregateResult ar: results)
             {
-                if (ar.get('totalCost') != null) {
-                    metrics.TotalCost = (Decimal)ar.get('totalCost');
+            	Decimal totalCostValue = (Decimal)ar.get('totalCost');
+                if (totalCostValue != null) {
+                    metrics.TotalCost = totalCostValue;
                     Decimal totalRevenueValue = (Decimal) totalRevenueMap.get((Id)ar.get('projectId')).TotalRevenue;
                     metrics.NetMargin = totalRevenueValue - metrics.TotalCost;
                 	metricsMap.put((Id)ar.get('projectId'), metrics);
@@ -1379,20 +1388,21 @@ public class ECO_Service_ProjectSnapshots {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
         FinancialMetrics metrics = new FinancialMetrics();
         try {
-        	String query = 'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id projectId, '+ 
+        	String query = 'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId, '+ 
         		' SUM(ProjectRawCost__c) totalLabor FROM CostDistLine__c '+
-        		' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN '+ projectIds + 
+        		' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds '+
         		' AND ExpenditureItem__r.ExpenditureType__c like  \'LAB% \' ';
             if (asOfDate != null) {
                 query += ' AND GLDate__c >= :asOfDate AND GLDate__c <= TODAY ';
             }
-            query += ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id';
+            query += ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__c';
             
             List<AggregateResult> results = database.query(query);
             for (AggregateResult ar: results)
             {
-                if (ar.get('totalLabor') != null) {
-                    metrics.TotalLabor = (Decimal)ar.get('totalLabor');
+            	Decimal totalLaborValue = (Decimal)ar.get('totalLabor');
+                if (totalLaborValue != null) {
+                    metrics.TotalLabor = totalLaborValue;
 					metricsMap.put((Id)ar.get('projectId'), metrics);
             	}
             }
@@ -1408,20 +1418,21 @@ public class ECO_Service_ProjectSnapshots {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
         FinancialMetrics metrics = new FinancialMetrics();
         try {
-        	String query = 'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id projectId, '+ 
+        	String query = 'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId, '+ 
         		' SUM(ProjectRawCost__c) totalNonLabor FROM CostDistLine__c '+
-        		' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN '+ projectIds + 
-        		' AND (NOT ExpenditureItem__r.ExpenditureType__c like  \'LAB% \') ';
+        		' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds ' + 
+        		' AND (NOT ExpenditureItem__r.ExpenditureType__c like \'LAB% \') ';
             if (asOfDate != null) {
                 query += ' AND GLDate__c >= :asOfDate AND GLDate__c <= TODAY ';
             }
-            query += ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id';
+            query += ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__c';
             
             List<AggregateResult> results = database.query(query);
             for (AggregateResult ar: results)
             {
-                if (ar.get('totaNonlLabor') != null) {
-                    metrics.TotalNonLabor = (Decimal)ar.get('totalNonLabor');
+            	Decimal totalNonLaborValue = (Decimal)ar.get('totalNonLabor');
+                if (totalNonLaborValue != null) {
+                    metrics.TotalNonLabor = totalNonLaborValue;
 					metricsMap.put((Id)ar.get('projectId'), metrics);
             	}
             }
@@ -1448,17 +1459,29 @@ public class ECO_Service_ProjectSnapshots {
             
             for (Id projId : projectIds) {
             	FinancialMetrics totalRevenueMetrics = totalRevenueMap.get(projId);
+            	System.debug(System.LoggingLevel.WARN, '___totalRevenueMetrics='+totalRevenueMetrics);
            	 	FinancialMetrics totalCostMetrics = totalCostMap.get(projId);
            	 	FinancialMetrics totalLaborMetrics = totalLaborMap.get(projId);
            	 	FinancialMetrics totalNonLaborMetrics = totalNonLaborMap.get(projId);
+				
 				FinancialMetrics funcBurdenedCostsMetrics = funcBurdenedCostsMap.get(projId);
            	 	FinancialMetrics funcBurdenedCostsLaborMetrics = funcBurdenedCostsLaborMap.get(projId);
            	 	FinancialMetrics funcBurdenedCostsHoursMetrics = funcBurdenedCostsHoursMap.get(projId);
 
-	            metrics.NetServiceRevenue = getNetService(totalRevenueMetrics.TotalRevenue, totalNonLaborMetrics.TotalNonLabor); 
-	            metrics.NMGR = getNMGR(totalCostMetrics.NetMargin, totalRevenueMetrics.TotalRevenue);
-	            metrics.NMNSR = getNMNSRC(totalCostMetrics.NetMargin, metrics.NetServiceRevenue);
-	            metrics.LaborMult = getLaborMult(totalRevenueMetrics.TotalRevenue, totalNonLaborMetrics.TotalNonLabor, totalLaborMetrics.TotalLabor);
+				if (totalRevenueMetrics != null && totalCostMetrics != null && 
+						totalLaborMetrics != null && totalNonLaborMetrics != null) {	
+		            metrics.NetServiceRevenue = getNetService(totalRevenueMetrics.TotalRevenue, totalNonLaborMetrics.TotalNonLabor); 
+		            System.debug(System.LoggingLevel.WARN, '___metrics.NetServiceRevenue='+metrics.NetServiceRevenue);
+		            metrics.NMGR = getNMGR(totalCostMetrics.NetMargin, totalRevenueMetrics.TotalRevenue);
+		            System.debug(System.LoggingLevel.WARN, '___metrics.NMGR='+metrics.NMGR);
+		            metrics.NMNSR = getNMNSRC(totalCostMetrics.NetMargin, metrics.NetServiceRevenue);
+		            System.debug(System.LoggingLevel.WARN, '___metrics.NMNSR='+metrics.NMNSR); 
+		            System.debug(System.LoggingLevel.WARN, '___totalRevenue='+totalRevenueMetrics.TotalRevenue+
+		            	', totalNonLabor='+totalNonLaborMetrics.TotalNonLabor+', totalLabor='+ totalLaborMetrics.TotalLabor);
+		            metrics.LaborMult = getLaborMult(totalRevenueMetrics.TotalRevenue, totalNonLaborMetrics.TotalNonLabor, totalLaborMetrics.TotalLabor);
+		            System.debug(System.LoggingLevel.WARN, '___metrics.LaborMult='+metrics.LaborMult); 
+				}
+					    
 	            metrics.SurplusMargin = getSurplusMargin();
 	            metrics.LostMargin = getLostMargin();
 
@@ -1477,8 +1500,6 @@ public class ECO_Service_ProjectSnapshots {
         }
         return metricsMap; 
     }
-    /**** END REFACTORED ***/
-
 
     @TestVisible private Set<String> getPLReportCategories() {
         Set<String> plReportCategorySet = new Set<String>();
@@ -1500,7 +1521,7 @@ public class ECO_Service_ProjectSnapshots {
         try {
             List<BudgetAssignment__c> budgetAssignments = 
                 [SELECT OverrideTotalCost__c, TotalComputedCost__c, BudgetResource__r.PLReportCategory__c,
-                    ProjectTask__r.pse__Project__r.Id
+                    ProjectTask__r.pse__Project__r.Id, BudgetResource__r.BudgetHeader__r.Status__c
                  FROM BudgetAssignment__c 
                  WHERE BudgetResource__r.PLReportCategory__c IN :plReportCategorySet
                  AND (BudgetResource__r.BudgetHeader__r.OriginalBudget__c=true
@@ -1676,9 +1697,19 @@ public class ECO_Service_ProjectSnapshots {
     
     private Decimal getLaborMult(Decimal revenue, Decimal nonLabor, Decimal labor)
     {
-        if (labor == 0)
-            return 0;
-        return (revenue - nonLabor)/labor;
+    	Decimal laborMultValue = 0;
+    	System.debug(System.LoggingLevel.WARN, '___ START getLaborMult(...) ');
+    	try {
+	    	System.debug(System.LoggingLevel.WARN, '___getLaborMult: revenue='+revenue+', nonLabor='+nonLabor+', labor='+labor);
+	        if (labor == 0) {
+	            return 0;
+	        }
+	        laborMultValue = (revenue - nonLabor)/labor;
+    	}
+	    catch(Exception e) {
+            System.Debug(System.LoggingLevel.WARN, '___getLaborMult: '+e.getStackTraceString());
+        }
+        return laborMultValue;
     }
     
     @TestVisible private Decimal getSurplusMargin()
@@ -1695,6 +1726,7 @@ public class ECO_Service_ProjectSnapshots {
     
     private Decimal getNetService(Decimal revenue, Decimal nonLabor)
     {
+    	System.debug(System.LoggingLevel.WARN, '___getNetService: revenue='+revenue+', nonLabor='+nonLabor);
         return revenue - nonLabor;
     }
     
@@ -1714,10 +1746,19 @@ public class ECO_Service_ProjectSnapshots {
     
     
     /* "1. Run Rate Average Cost: (Cost ITD minus (Cost ITD from three ""auto"" month end snapshots ago)) / 3. 
-	Three auto month ends ago = select cost itd from projectsnapshot where status=auto and projectid=projectid and date<(snpshot date-120)
+	Three auto month ends ago = select cost itd from projectsnapshot where status=auto and projectid=projectid 
+	and date<(snpshot date-120)
 	order by snapshotdate desc limit three
 	then use the last item in the result
 	*/
-	
-				
+	/*@TestVisible private Map<Id, ProjectSnapshot__c> findRunRateAverageCost(List<Id> projectIds) {
+		Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap = new Map<Id, ProjectSnapshot__c>();
+		List<ProjectSnapshot__c> projSnapshots =
+			[SELECT Project__c, CostITD__c FROM ProjectSnapshot__c WHERE SnapshotType__c ='Auto'
+			 AND Project__c IN :projectIds AND Project__c =
+			 (SELECT Project__c FROM ProjectSnapshot__c WHERE (SnapshotDate__c < LAST_N_DAYS:90)
+			 ORDER BY SnapshotDate__c DESC LIMIT 3)];
+			 
+		return projectIdToSnapshotMap;
+	}*/		
 }
