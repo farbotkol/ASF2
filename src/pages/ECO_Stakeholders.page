@@ -399,19 +399,17 @@
 							<apex:tab id="inactiveTeamMember" label="Inactive Team Members" name="inActiveTeamMember">
 								<apex:pageMessage severity="info" rendered="{!if(lInactiveMembersTeam.size = 0, true, false)}" summary="No inactive users have been found." />
 								<apex:pageBlockTable value="{!lInactiveMembersTeam}" rendered="{!if(lInactiveMembersTeam.size = 0, false, true)}" var="item" width="100%" columnsWidth="60px">
-									<apex:column >
+									<apex:column style="width:10%" >
 										<apex:facet name="header">Role Type</apex:facet>
-										<apex:selectList size="1" multiselect="false" value="{!item.RoleID}">
-											<apex:selectOptions value="{!item.lTeamRoleTypes}" />
-										</apex:selectList>
+										<apex:outputLabel value="{!item.RoleName}" />
 									</apex:column>
 									<apex:column >
 										<apex:facet name="header">Name</apex:facet>
-										<apex:inputField value="{!item.oPTM.Contact__c}" />
+										<apex:outputField value="{!item.oPTM.Contact__c}" />
 									</apex:column>
 									<apex:column >
 										<apex:facet name="header">Project Role Title</apex:facet>
-										<apex:inputField value="{!item.oPTM.ProjectRoleTitle__c}" />
+										<apex:outputField value="{!item.oPTM.ProjectRoleTitle__c}" />
 									</apex:column>
 									<apex:column >
 										<apex:facet name="header">Phone</apex:facet>
