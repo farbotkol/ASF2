@@ -9,7 +9,7 @@
 public with sharing class ECO_DelegateManagerEditController {
 
     public Delegate__c extensionDelegate{get; set;}
-    public ECO_Delegate_Limits__c delegateLimitSettings{get; set;}
+    public ECO_Delegate_Limit__c delegateLimitSettings{get; set;}
 	public List<ECO_DelegateManagerController.owningOrganization> owningOrganizations{get; set;}
     private ApexPages.StandardController controller;
     private String redirectURL;
@@ -19,11 +19,11 @@ public with sharing class ECO_DelegateManagerEditController {
         this.controller = standardController;
         this.extensionDelegate = (Delegate__c)standardController.getRecord();
         queryDelegate();
-        if(extensionDelegate.Delegator__r.pse__Salesforce_User__c != null && ECO_Delegate_Limits__c.getInstance(extensionDelegate.Delegator__r.pse__Salesforce_User__c) != null){
-			delegateLimitSettings = ECO_Delegate_Limits__c.getInstance(extensionDelegate.Delegator__r.pse__Salesforce_User__c);
+        if(extensionDelegate.Delegator__r.pse__Salesforce_User__c != null && ECO_Delegate_Limit__c.getInstance(extensionDelegate.Delegator__r.pse__Salesforce_User__c) != null){
+			delegateLimitSettings = ECO_Delegate_Limit__c.getInstance(extensionDelegate.Delegator__r.pse__Salesforce_User__c);
 		}
 		else{
-			delegateLimitSettings = ECO_Delegate_Limits__c.getOrgDefaults();
+			delegateLimitSettings = ECO_Delegate_Limit__c.getOrgDefaults();
 		}
 		if(extensionDelegate.RecordType.Name == 'Key Roles'){
 			populateOwningOrganizations();
