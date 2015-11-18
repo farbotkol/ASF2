@@ -18,7 +18,7 @@ public static void updateCustomername(list<billing__c> billinglist){
         for(Billing__c b:billinglist){
             if(accountmap.containskey(b.customernumber__c))
             {
-                b.customer_name__c = accountmap.get(b.customernumber__c);
+                b.customername__c = accountmap.get(b.customernumber__c);
             }
         }
     
