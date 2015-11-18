@@ -272,11 +272,30 @@ public with sharing class ECO_StakeholdersController
 
 	//does the current project have all of the necessary default team members assigned to allow editing?
 	private Boolean canEditKeyMember(String projectRoleName){
-		if(financeRoles.contains(projectRoleName) && financeTeamMember != null){
-			return true;
+		if(projectRoleName == 'CFO or Delegate'){
+			return false;
+		}
+		else if(financeRoles.contains(projectRoleName) && financeTeamMember != null){
+			if(projectRoleName == 'Finance Lead' && financeTeamMember.pse__Salesforce_User__c == UserInfo.getUserId()){
+				return true;
+			}
+			else if(projectRoleName == 'Finance Lead'){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		else if(pAndLTeamMember != null && !financeRoles.contains(projectRoleName)){
-			return true;
+			if(projectRoleName == 'Project Approver 2' && pAndLTeamMember.pse__Salesforce_User__c == UserInfo.getUserId()){
+				return true;
+			}
+			else if(projectRoleName == 'Project Approver 2'){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return false;
 	}
@@ -660,19 +679,21 @@ public with sharing class ECO_StakeholdersController
 	private void sendApprovalProcess(ProjectTeamMember__c projectTeamMember, String roleName){
 		Contact contact;
 
-		//find the contact from the loaded list already in viewstate
-		for(Contact queryDelegate : queryDelegates){
-			if(queryDelegate.Id == projectTeamMember.Contact__c){
-				contact = queryDelegate;
+		if(roleName != 'Project Approver 2' && roleName != 'Finance Lead'){
+			//find the contact from the loaded list already in viewstate
+			for(Contact queryDelegate : queryDelegates){
+				if(queryDelegate.Id == projectTeamMember.Contact__c){
+					contact = queryDelegate;
+				}
 			}
-		}
 
-		Approval.ProcessSubmitRequest newPendingRequest = new Approval.ProcessSubmitRequest();
-        newPendingRequest.setComments('Submitting request for ' + contact.Name + ' to be in the role of ' + roleName + ' for Project ' + oProject.Name);
-		newPendingRequest.setObjectId(projectTeamMember.Id);
-        newPendingRequest.setProcessDefinitionNameOrId('Project_Team_Member_Approve_Team_Member');
-        newPendingRequest.setSkipEntryCriteria(true);
-        Approval.ProcessResult processResult = Approval.process(newPendingRequest);
+			Approval.ProcessSubmitRequest newPendingRequest = new Approval.ProcessSubmitRequest();
+	        newPendingRequest.setComments('Submitting request for ' + contact.Name + ' to be in the role of ' + roleName + ' for Project ' + oProject.Name);
+			newPendingRequest.setObjectId(projectTeamMember.Id);
+	        newPendingRequest.setProcessDefinitionNameOrId('Project_Team_Member_Approve_Team_Member');
+	        newPendingRequest.setSkipEntryCriteria(true);
+       		Approval.ProcessResult processResult = Approval.process(newPendingRequest);
+    	}
 	}
 
 	//validates assigning a new team member for key roles to the project
@@ -936,7 +957,7 @@ public with sharing class ECO_StakeholdersController
 
 			for(ProjectRole__c pr : lProjectRoles)
 			{
-				if(pr.Type__c == 'Team Member')
+				if(pr.Type__c == 'Team Member' && pr.Name != 'Inactive Deliverable Owner')
 				{
 					lTeamRoleTypes.add(new SelectOption(pr.Id, pr.Name));
 				}

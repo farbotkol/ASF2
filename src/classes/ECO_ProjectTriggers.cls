@@ -10,6 +10,20 @@ public without sharing class ECO_ProjectTriggers {
 			}
 		}
 	}
+
+	public static void handleFundingLevelFlagChanges(Map<Id, pse__Proj__c> oldProjectsMap, Map<Id, pse__Proj__c> newProjectsMap)
+	{
+		List<Id> projectsToDeleteFunding = new List<Id>();
+		for(pse__Proj__c project:newProjectsMap.values())
+		{
+			if(project.ProjectLevelFundingFlag__c != oldProjectsMap.get(project.Id).ProjectLevelFundingFlag__c)
+				projectsToDeleteFunding.add(project.Id);	
+		}
+		list<Funding__c> fundings = [select Id from Funding__c where Project__c in :projectsToDeleteFunding];
+
+		if(!fundings.isEmpty())
+			delete fundings;
+	}
 	
 	public static void indetifyChangeManagerRelatedUpdates(map<Id, pse__Proj__c> oldProjectMap, list<pse__Proj__c> updatedProjects)
 	{

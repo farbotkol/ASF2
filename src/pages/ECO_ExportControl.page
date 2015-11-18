@@ -10,8 +10,6 @@
 	<apex:stylesheet value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/css/nifty.css')}" />
 	<apex:stylesheet value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/css/font-awesome.min.css')}" />
 	<style>
-
-
 		input.hiddenIdField {
 			display: block;
 		}
@@ -153,7 +151,7 @@
 		}
 
 	</style>
-
+	
 
 	<script type="text/javascript">
 		function setFocusOnLoad() {}	
@@ -161,13 +159,113 @@
 		var j$ = jQuery.noConflict();
 
 		j$(document).ready(function (){
+			showOrHideThirdPartyDescription();
 			j$("input[id$='ReviewDate']").blur();
 		});
 	</script>
 
-
-
-
+	<script>
+      $j = jQuery.noConflict();
+    
+      // Added a check for a specific custom object
+    	//	if(window.location.href.indexOf("id=a57") != -1) {
+    //$j(document).ready(function() {     
+    //$j("input[name='piSubmit']").hide();
+    //});
+    //}
+	</script>
+	<script type="text/javascript">
+    	$j = jQuery.noConflict();
+		$(document).ready(function () {
+			
+			$('#spinnerModal').modal({
+				show: false
+			});
+		});
+		
+		function toggleShow (thisElement) 
+		{
+			if (thisElement.value == 'Yes' || thisElement.value == 'True' || thisElement.value == 'Unknown') 
+			{
+				
+				$('#spinnerModal').modal({
+					show: true
+				});
+			}
+			else
+			{
+				$('#spinnerModal').modal({
+					show: false
+				});
+				
+			}
+		}
+		
+		function showOrHideThirdPartyDescription(){	
+			$j('input:radio[name$=showThirdPartyDescription]').each(function(index){
+				if($j(this).prop('checked') && $j(this).val() == 'Yes'){
+					$j('[id$=thirdPartyDescription]').show();
+				}
+				else if(!$j(this).prop('checked') && $j(this).val() == 'Yes'){
+					$j('[id$=thirdPartyDescription]').hide();
+                    $j('[id$=thirdPartyText]').val('');
+				}
+			});
+            $j('input:radio[name$=partnerSC]').each(function(index){
+				if($j(this).prop('checked') && $j(this).val() == 'Yes'){
+					$j('[id$=partnerAddress]').show();
+                    $j('[id$=partnerGoods]').show();
+				}
+				else if(!$j(this).prop('checked') && $j(this).val() == 'Yes'){
+					$j('[id$=partnerAddress]').hide();
+                    $j('[id$=partnerText1]').val('');
+                    $j('[id$=partnerGoods]').hide();
+                    $j('[id$=partnerText2]').val('');
+				}
+			});
+            $j('input:checkbox[name$=jointVenture]').each(function(index){
+                //alert($j(this).val());
+                if($j(this).prop('checked') && $j(this).val() == "1"){
+					$j('[id$=jvName]').show();
+                }
+                else{ //if(!$j(this).prop('checked') $j(this).val() != 'True'){
+					$j('[id$=jvName]').hide();
+                    $j('[id$=jvText]').val('');
+                }
+			});
+            $j('input:radio[name$=travel]').each(function(index){
+				if($j(this).prop('checked') && $j(this).val() == 'Yes'){
+					$j('[id$=travel1]').show();
+                    $j('[id$=travel2]').show();
+				}
+				else if(!$j(this).prop('checked') && $j(this).val() == 'Yes'){
+					$j('[id$=travel1]').hide();
+                    $j('[id$=travelText1]').val('');
+                    $j('[id$=travel2]').hide();
+                    $j('[id$=travelText2]').val('');
+				}
+			});
+			if($j('[id$=governing]').val() == 'Other'){
+				$j('[id$=governingCountry]').show();
+			}
+			else{
+				$j('[id$=governingCountry]').hide();
+                $j('[id$=governingText]').val('');
+			}
+		}
+    	
+    	
+		function showModal () {
+			$('#spinnerModal').modal({
+				show: true
+			});
+		}
+		
+		function hideModal () {
+			$('#spinnerModal').modal('hide');
+		}
+    	
+	</script>
 	<apex:sectionHeader title="Export Control(s)" subtitle="Export/Import Analysis Form" />
 	<apex:pageMessages id="pageMessages" />
 	<div class="customHelpText">
@@ -182,7 +280,8 @@
 		<apex:pageBlock >
 			<apex:pageBlockButtons location="both">
 				<apex:commandButton action="{!ReturnToSummary}" value="Return to Summary" immediate="true" />
-				<apex:commandButton action="{!save}" value="Save" />
+				<apex:commandButton action="{!SaveRecord}" value="Save" />
+                <apex:commandButton action="{!SubmitForReview}" value="Submit for Review" rendered="{!NOT(oExportControl.SubmitforReview__c)}"/>
 			</apex:pageBlockButtons>
 		
 			<apex:pageBlockSection collapsible="false" title="Section I – Basic Information Concerning Your Transaction / Opportunity"></apex:pageBlockSection>
@@ -194,15 +293,9 @@
 
 			<apex:outputPanel id="all">
 			<table class="list table-hover" width="100%" cellpadding="0" cellspacing="0">				
-				<!--<tr class="headerRow">
-					<th colspan="2">Section I – Basic Information Concerning Your Transaction / Opportunity
-					<span style="padding:5px;display:block;font-weight: normal">The purpose of this section is to collect basic data about you and the opportunity or transaction.</span>
-					</th>
-				</tr>-->
-
 				<tr>
 					<td class="cell">
-						Opportunity/Project ID:
+						EPM ID:
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:outputField value="{!ExportControl__c.EcoSystemReferenceNumber__c}" />
@@ -268,8 +361,8 @@
 					<td class="cell">
 						List all other AECOM Legal Entities that are/will be participating in this opportunity or transaction: 
 					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:inputField id="LegalEntities" value="{!ExportControl__c.OtherAECOMLegalEntities__c}" />
+					<td class="cell" width="180" height="200" valign="bottom">
+						<apex:inputField id="LegalEntities" value="{!ExportControl__c.OtherAECOMLegalEntities__c}" style="height:200px;width:200px"/>
 					</td>
 				</tr>
 				</table>
@@ -281,12 +374,7 @@
 					</div>
 				</div>								
 				<table class="list table-hover" width="100%" cellpadding="0" cellspacing="0">
-				<!--<tr class="headerRow">
-					<th colspan="2" >Section II – Parties to the Transaction
-					<span style="padding:5px;display:block;font-weight: normal">The purpose of this section is to collect basic data concerning third parties, including the Ultimate End User, our client (if not the Ultimate End User),  parties known to date and contracted by the end user/owner <br/>or our client, and known parties AECOM contracts or intends to contract, including non-technical agents and consultants.	</span>
-					</th>
-				</tr>-->
-				<tr>
+				<tr bgcolor="#C9EDFF">
 					<td class="cell bold italic" colspan="2">Final Destination</td>
 				</tr>
 				<tr>
@@ -294,14 +382,10 @@
 						List the final destination to which goods, services or data AECOM will send (for example, a bridge designed for a project in Singapore – the final destination is Singapore): 
 					</td>
 					<td class="cell" width="200" valign="bottom">
-						<apex:selectList value="{!ExportControl__c.FinalDestination__c}" multiselect="false" size="1">
-			            	<apex:selectOptions value="{!lCities}"/>
-			            </apex:selectList>
+                        <apex:inputField value="{!ExportControl__c.Final_Destination_Place__c}"/>
 					</td>
 				</tr>
-				
-
-				<tr>
+				<tr bgcolor="#C9EDFF">
 					<td colspan="2">
 					<span class="cell bold italic" >Ultimate End User </span>
 					(The “Ultimate End User” is the ultimate party, whether or not contracted with AECOM, who will be the actual beneficiary or user of AECOM supplied goods, services or data.)
@@ -312,7 +396,7 @@
 						Ultimate End User full legal name:
 					</td>
 					<td class="cell" width="200" valign="bottom">
-						<apex:outputField value="{!oUltimateEndUser.Site__r.Account__r.Name}" />
+						<apex:outputField value="{!endClientAccount.Name}" />
 					</td>
 				</tr>
 				<tr>
@@ -320,11 +404,11 @@
 						Ultimate End User address:
 					</td>
 					<td class="cell" width="200" valign="bottom">
-						<apex:outputField value="{!oUltimateEndUser.Site__r.Account__r.BillingStreet}" />
+						<apex:outputField value="{!endClientAccount.BillingStreet}" />
 						<br/>
-						<apex:outputField value="{!oUltimateEndUser.Site__r.Account__r.BillingCity}" /><apex:outputText value="," rendered="{!bShowUltimateEndUserAddress}"/>&nbsp;<apex:outputField value="{!oUltimateEndUser.Site__r.Account__r.BillingState}" />
+						<apex:outputField value="{!endClientAccount.BillingCity}" /><apex:outputText value="," rendered="{!bShowUltimateEndUserAddress}"/>&nbsp;<apex:outputField value="{!endClientAccount.BillingState}" />
 						<br/>
-						<apex:outputField value="{!oUltimateEndUser.Site__r.Account__r.BillingCountry}" /><apex:outputText value="," rendered="{!bShowUltimateEndUserAddress}"/>&nbsp;<apex:outputField value="{!oUltimateEndUser.Site__r.Account__r.BillingPostalCode}" />
+						<apex:outputField value="{!endClientAccount.BillingCountry}" /><apex:outputText value="," rendered="{!bShowUltimateEndUserAddress}"/>&nbsp;<apex:outputField value="{!endClientAccount.BillingPostalCode}" />
 					</td>
 				</tr>
 				<tr>
@@ -332,7 +416,7 @@
 						Ultimate End User website:
 					</td>
 					<td class="cell" width="200" valign="bottom">
-						<apex:outputField value="{!oUltimateEndUser.Site__r.Account__r.Website}" />
+						<apex:inputField value="{!ExportControl__c.End_Client_Website__c}" />
 					</td>
 				</tr>
 				<tr>
@@ -375,7 +459,7 @@
 			            </apex:selectRadio>
 					</td>
 				</tr>
-				<tr>
+				<tr bgcolor="#C9EDFF">
 					<td colspan="2">
 					<span class="cell bold italic">Client if not the Ultimate End User</span>
 					(If the “Ultimate End User” is not contracting AECOM directly.)</td>
@@ -385,7 +469,7 @@
 						Client's full legal name:
 					</td>
 					<td class="cell" width="200" valign="bottom">
-						<apex:outputField value="{!oClient.Site__r.Account__r.Name}" />
+						<apex:outputField value="{!billingClientAccount.Name}" />
 					</td>
 				</tr>
 				<tr>
@@ -393,11 +477,11 @@
 						Client's address:
 					</td>
 					<td class="cell" width="200" valign="bottom">
-						<apex:outputField value="{!oClient.Site__r.Account__r.BillingStreet}" />
+						<apex:outputField value="{!billingClientAccount.BillingStreet}" />
 						<br />
-						<apex:outputField value="{!oClient.Site__r.Account__r.BillingCity}" /><apex:outputText value="," rendered="{!bShowClientAddress}"/>&nbsp;<apex:outputField value="{!oClient.Site__r.Account__r.BillingState}" />
+						<apex:outputField value="{!billingClientAccount.BillingCity}" /><apex:outputText value="," rendered="{!bShowClientAddress}"/>&nbsp;<apex:outputField value="{!billingClientAccount.BillingState}" />
 						<br />
-						<apex:outputField value="{!oClient.Site__r.Account__r.BillingCountry}" /><apex:outputText value="," rendered="{!bShowClientAddress}"/>&nbsp;<apex:outputField value="{!oClient.Site__r.Account__r.BillingPostalCode}" />
+						<apex:outputField value="{!billingClientAccount.BillingCountry}" /><apex:outputText value="," rendered="{!bShowClientAddress}"/>&nbsp;<apex:outputField value="{!billingClientAccount.BillingPostalCode}" />
 					</td>
 				</tr>
 				<tr>
@@ -405,7 +489,7 @@
 						Client's website:
 					</td>
 					<td class="cell" width="200" valign="bottom">
-						<apex:outputField value="{!oClient.Site__r.Account__r.Website}" />
+						<apex:inputField value="{!oExportControl.Billing_Client_Website__c}" />
 					</td>
 				</tr>
 				<tr>
@@ -438,7 +522,7 @@
 			            </apex:selectRadio>
 					</td>
 				</tr>
-				<tr>
+				<tr bgcolor="#C9EDFF">
 					<td class="cell bold italic" colspan="2">Ultimate End User or Client Third Parties</td>
 				</tr>
 				<tr>
@@ -446,40 +530,27 @@
 						Will the Ultimate End User or Client directly hire third parties with whom AECOM will need to exchange goods, data or services?
 					</td>
 					<td class="cell" width="200" valign="bottom">
-						<apex:actionRegion >
-							<apex:selectRadio value="{!ExportControl__c.EndUserorClientDirectHire__c}">
-								<apex:actionSupport event="onclick" rerender="all" />
-				            	<apex:selectOptions value="{!lAnswerValues}"/>
-				            </apex:selectRadio>
-			            </apex:actionRegion>
+						<apex:selectRadio id="showThirdPartyDescription" onchange="showOrHideThirdPartyDescription()" value="{!ExportControl__c.EndUserorClientDirectHire__c}" >
+                            <apex:selectOptions value="{!lAnswerValues}"/>
+			            </apex:selectRadio>
 					</td>
 				</tr>
-				<apex:outputPanel layout="none" rendered="{!if(ExportControl__c.EndUserorClientDirectHire__c=='Yes', true, false)}">
-				<tr>
-					<!--<td class="cell">
-						If Yes, provide the name, address and website for each third party: 
-					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:inputField value="{!ExportControl__c.EndUserorClientContactInfo__c}" style="border-left: 5px solid red; padding: 10px" />
-					</td>-->
-
+                <!--<apex:actionRegion >-->
+                <tr id="thirdPartyDescription">
 					<td class="cell" align="right" colspan="2">
 						<table style="width: 100%;">
 							<tr>
 								<td align="right" width="60%" valign="middle">If Yes, provide the name, address and website for each third party:</td>
-								<td align="right" valign="top"><apex:inputTextarea required="true" value="{!ExportControl__c.EndUserorClientContactInfo__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
+								<td align="right" valign="top"><apex:inputTextarea id="thirdPartyText" required="true" value="{!ExportControl__c.EndUserorClientContactInfo__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
 							</tr>
-						</table>
-						
+						</table>	
 					</td>
-
-
-				</tr>
-
-
-
-				</apex:outputPanel>
-				<tr>
+                </tr>
+                <!--</apex:actionRegion>-->
+                <script>
+                    $('[Id $= "clientDH"]').css('display','block');
+                 </script>
+				<tr bgcolor="#C9EDFF">
 					<td class="cell bold italic" colspan="2">AECOM's Partners or Subcontractors</td>
 				</tr>
 				<tr>
@@ -487,56 +558,38 @@
 						Will AECOM use partners or subcontractors? 
 					</td>
 					<td class="cell" width="200" valign="bottom">
-						<apex:actionRegion >
-							<apex:selectRadio value="{!ExportControl__c.PartnerOrSubcontractors__c}">
-								<apex:actionSupport event="onclick" rerender="all" />
+						<!--<apex:actionRegion >-->
+							<apex:selectRadio id="partnerSC" value="{!ExportControl__c.PartnerOrSubcontractors__c}" onchange="showOrHideThirdPartyDescription()">
+								<!--<apex:actionSupport event="onclick" rerender="partner" />-->
 				            	<apex:selectOptions value="{!lAnswerValues}"/>
 				            </apex:selectRadio>
-			            </apex:actionRegion>
+			            <!--</apex:actionRegion>-->
 					</td>
 				</tr>
-				<apex:outputPanel layout="none" rendered="{!if(ExportControl__c.PartnerOrSubcontractors__c=='Yes', true, false)}">
-				<!--<tr>
-					<td class="cell">
-						If Yes, provide the name, address and website for each partner or subcontractor 
-					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:inputField value="{!ExportControl__c.PartnerorSubContactInfo__c}" />
-					</td>
+                <tr >
+                    <tr id="partnerAddress">
+                        <td class="cell" align="right" colspan="2">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td align="right" width="60%" valign="middle">If Yes, provide the name, address and website for each partner or subcontractor:</td>
+                                    <td align="right" valign="top"><apex:inputTextarea id="partnerText1" required="true"  value="{!ExportControl__c.PartnerorSubContactInfo__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
+                                </tr>
+                            </table>
+                            
+                        </td>
+                    </tr>
+                    <tr id="partnerGoods">
+                        <td class="cell" align="right" colspan="2">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td align="right" width="60%" valign="middle">If Yes, briefly describe the goods, services or data each partner or subcontractor <br/> will contribute to this opportunity or project:</td>
+                                    <td align="right" valign="top"><apex:inputTextarea id="partnerText2" required="true"  value="{!ExportControl__c.PartnerOrSubServices__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
 				</tr>
-
-				<tr>
-					<td class="cell">
-						If Yes, briefly describe the goods, services or data each partner or subcontractor will contribute to this opportunity or project.
-					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:inputField value="{!ExportControl__c.PartnerOrSubServices__c}" />
-					</td>
-				</tr>-->
-				<tr>
-					<td class="cell" align="right" colspan="2">
-						<table style="width: 100%;">
-							<tr>
-								<td align="right" width="60%" valign="middle">If Yes, provide the name, address and website for each partner or subcontractor:</td>
-								<td align="right" valign="top"><apex:inputTextarea required="true"  value="{!ExportControl__c.PartnerorSubContactInfo__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
-							</tr>
-						</table>
-						
-					</td>
-				</tr>
-				<tr>
-					<td class="cell" align="right" colspan="2">
-						<table style="width: 100%;">
-							<tr>
-								<td align="right" width="60%" valign="middle">If Yes, briefly describe the goods, services or data each partner or subcontractor <br/> will contribute to this opportunity or project:</td>
-								<td align="right" valign="top"><apex:inputTextarea required="true"  value="{!ExportControl__c.PartnerOrSubServices__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
-							</tr>
-						</table>
-						
-					</td>
-				</tr>
-				</apex:outputPanel>
-				<tr>
+				<tr bgcolor="#C9EDFF">
 					<td class="cell bold italic" colspan="2">AECOM Joint Ventures</td>
 				</tr>
 				<tr>
@@ -544,45 +597,33 @@
 						Will AECOM be forming or use an existing Joint Venture for this opportunity or transaction?
 					</td>
 					<td class="cell" width="200" valign="bottom">
-						<apex:actionRegion >
-							<apex:inputField value="{!ExportControl__c.ExistingJointVenture__c}" >
-								<apex:actionSupport event="onclick" rerender="all" />
+						<!--<apex:actionRegion >-->
+							<apex:inputField id="jointVenture" value="{!oExportControl.ExistingJointVentureInput__c}" onchange="showOrHideThirdPartyDescription()">
+								<!--<apex:actionSupport event="onclick" rerender="jointVenture" />-->
 							</apex:inputField>
-						</apex:actionRegion>
+						<!--</apex:actionRegion>-->
 					</td>
 				</tr>
-				<apex:outputPanel layout="none" rendered="{!if(ExportControl__c.ExistingJointVenture__c, true, false)}">
-				<!--<tr>
-					<td class="cell">
-						If Yes, provide the name of the Joint Venture, and identify all parties in addition to AECOM who comprise this Joint Venture:
-					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:inputField value="{!ExportControl__c.JointVentureName__c}" />
-					</td>
-				</tr>-->
-
-				<tr>
+                <tr id="jvName">
 					<td class="cell" align="right" colspan="2">
 						<table style="width: 100%;">
 							<tr>
 								<td align="right" width="60%" valign="middle">If Yes, provide the name of the Joint Venture, and identify all parties in addition to AECOM who comprise this Joint Venture:</td>
-								<td align="right" valign="top"><apex:inputTextarea required="true"  value="{!ExportControl__c.JointVentureName__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
+								<td align="right" valign="top"><apex:inputTextarea id="jvText" required="true"  value="{!ExportControl__c.JointVentureName__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
 							</tr>
 						</table>
 						
 					</td>
 				</tr>
-
-
-				</apex:outputPanel>
 				</table>
-						
+           
 				<apex:pageBlockSection collapsible="false" title="Section III – Opportunities or Transaction Details"></apex:pageBlockSection>		
 				<div class="customHelpText">
 					<div class="customHelpBody">
 						The purpose of this section is to collect basic facts concerning the opportunity or transaction in plain layperson language.
 					</div>
-				</div>													
+				</div>	
+                <apex:outputPanel id="Opportunities">
 				<table class="list table-hover" width="100%" cellpadding="0" cellspacing="0">
 				<!--<tr class="headerRow">
 					<th colspan="2"  class="headerRow">						
@@ -601,16 +642,19 @@
 					<td class="cell">
 						Using plain, layperson language, describe what the project is (i.e. resort development, bridge design, military operational support project, etc.) and what AECOM and its partners or subcontractors do for this opportunity or project (i.e. design a civilian bridge, provide military maintenance and support services, etc.)
 					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:outputField value="{!ExportControl__c.xxProjectDescription__c}" />
-					</td>
+					<td class="cell" width="200" height="150" valign="bottom">
+						<apex:outputField value="{!ExportControl__c.Project__r.ProjectDescription__c}" />
+                    </td>
 				</tr>
 				<tr>
 					<td class="cell italic" colspan="2">Does the opportunity or transaction concern or is related to ANY of the following (select all that apply):</td>
 				</tr>
 				<tr>
-					<td class="cell">
-						Military, police or prison facilities?
+                    <td class="cell" >
+                        <div style="padding-left: 26px;"> 
+                            Military, police or prison facilities?
+                        </div> 
+						
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransMilitary__c}">
@@ -620,7 +664,9 @@
 				</tr>
 				<tr>
 					<td class="cell">
+                        <div style="padding-left: 26px;"> 
 						Intelligence-gathering, CLASSIFIED or UNCLASSIFIED but sensitive or confidential? 
+                        </div>
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransIntelligence__c}">
@@ -630,7 +676,9 @@
 				</tr>
 				<tr>
 					<td class="cell">
+                        <div style="padding-left: 26px;"> 
 						Space, high-altitude equipment, radar equipment or satellites and their ground stations?
+                        </div>
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransSpace__c}">
@@ -640,7 +688,9 @@
 				</tr>
 				<tr>
 					<td class="cell">
+                        <div style="padding-left: 26px;"> 
 						Biological, chemical, or nuclear weapons, weapons of mass destruction or remediation of same?
+                        </div>
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransChemical__c}">
@@ -650,7 +700,9 @@
 				</tr>
 				<tr>
 					<td class="cell">
+                        <div style="padding-left: 26px;"> 
 						Conventional weapons and related supplies or accessories?
+                        </div>
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransWeapons__c}">
@@ -660,7 +712,9 @@
 				</tr>
 				<tr>
 					<td class="cell">
+                        <div style="padding-left: 26px;"> 
 						Personal protective equipment?
+                        </div>
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransProtectiveEquip__c}">
@@ -670,7 +724,9 @@
 				</tr>
 				<tr>
 					<td class="cell">
+                        <div style="padding-left: 26px;"> 
 						Anti-terrorism, anti-narcotrafficking?
+                        </div>
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransTerrorism__c}">
@@ -680,7 +736,9 @@
 				</tr>
 				<tr>
 					<td class="cell">
+                        <div style="padding-left: 26px;"> 
 						Government embassy or building?
+                        </div>
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransEmbassy__c}">
@@ -690,7 +748,9 @@
 				</tr>
 				<tr>
 					<td class="cell">
+                        <div style="padding-left: 26px;"> 
 						Air or ocean port with both civilian AND military features?
+                        </div>
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransPort__c}">
@@ -700,7 +760,9 @@
 				</tr>
 				<tr>
 					<td class="cell">
+                        <div style="padding-left: 26px;"> 
 						Facility security design for government or civilian facility, including air or ocean port?
+                        </div>
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransSecurity__c}">
@@ -710,7 +772,9 @@
 				</tr>
 				<tr>
 					<td class="cell">
+                        <div style="padding-left: 26px;"> 
 						Nuclear energy or research applications?
+                        </div>
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransNuclear__c}">
@@ -720,7 +784,9 @@
 				</tr>
 				<tr>
 					<td class="cell">
+                        <div style="padding-left: 26px;"> 
 						Biological, chemical or nuclear hospital or laboratory facilities including those for military or civilian hospitals? 
+                        </div>
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransHospital__c}">
@@ -730,7 +796,9 @@
 				</tr>
 				<tr>
 					<td class="cell">
+                        <div style="padding-left: 26px;"> 
 						Public or private university projects in support research or studies other than studies of liberal arts? 
+                        </div>
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransUniversity__c}">
@@ -740,7 +808,9 @@
 				</tr>
 				<tr>
 					<td class="cell">
+                        <div style="padding-left: 26px;"> 
 						Oil &amp; gas refinery, storage or operations of same, including remediation?
+                        </div>
 					</td>
 					<td class="cell" width="200" valign="bottom">
 						<apex:selectRadio value="{!ExportControl__c.OpptyOrTransOilandGas__c}">
@@ -749,7 +819,7 @@
 					</td>
 				</tr>
 				</table>
-			
+				</apex:outputPanel>
 				<apex:pageBlockSection collapsible="false" title="Section IV – Import Activity"></apex:pageBlockSection>
 				<div class="customHelpText">
 					<div class="customHelpBody">
@@ -757,10 +827,6 @@
 					</div>
 				</div>	
 				<table class="list table-hover" width="100%" cellpadding="0" cellspacing="0">
-				<!--<tr class="headerRow">
-					<th colspan="2"  class="headerRow">Section IV – Import Activity
-					<span style="padding:5px;display:block;font-weight: normal">The purpose of this section is to collect basic facts concerning tangible goods that may be export to or imported into the above-described final institution </span></th>
-				</tr>-->
 				<tr>
 					<td class="cell">
 						Will AECOM PERMANENTLY import goods directly or indirectly to an intermediate location or the final destination in support of this transaction?
@@ -779,145 +845,105 @@
 						The purpose of this section is to collect supplemental business data concerning the opportunity or transaction that assist in completing the analysis.
 					</div>
 				</div>	
-				<table class="list table-hover" width="100%" cellpadding="0" cellspacing="0">
-				<!--<tr class="headerRow">
-					<th colspan="2"  class="headerRow">Section V – Supplemental Questions
-					<span style="padding:5px;display:block;font-weight: normal">The purpose of this section is to collect supplemental business data concerning the opportunity or transaction that assist in completing the analysis.</span></th>
-				</tr>-->
-				<tr>
-					<td class="cell">
-						Will AECOM stakeholders, including the requestor or project team travel internationally in support of this opportunity or transaction? 
-					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:actionRegion >
-							<apex:selectRadio value="{!ExportControl__c.TravelInternationally__c}">
-								<apex:actionSupport event="onclick" rerender="all" />
-				            	<apex:selectOptions value="{!lAnswerValues}"/>
-				            </apex:selectRadio>
-			            </apex:actionRegion>
-					</td>
-				</tr>
-				<apex:outputPanel layout="none" rendered="{!if(ExportControl__c.TravelInternationally__c=='Yes', true, false)}">
-				<!--<tr>
-					<td class="cell">
-						If Yes, list the country or countries of travel:
-					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:inputField value="{!ExportControl__c.TravelCountries__c}" />
-					</td>
-				</tr>
-				
-				<tr>
-					<td class="cell">
-						If Yes, other than AECOM-assigned laptops, mobile phones or standard data devices, describe any other equipment needed for travel in support of this opportunity or transaction.  If no other equipment, please write “none.” 
-						<br/><br/>
-						If you will be taking AECOM-assigned laptops, mobile phones or standard data devices with you while traveling outside your home country, refer to AECOM IT policies concerning device security requirements and AECOM Corporate Security for international travel requirements including travel safety.
-					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:inputField value="{!ExportControl__c.TravelEquipment__c}" />
-					</td>
-				</tr>-->
-
-				<tr>
-					<td class="cell" align="right" colspan="2">
-						<table style="width: 100%;">
-							<tr>
-								<td align="right" width="60%" valign="middle">If Yes, list the country or countries of travel:</td>
-								<td align="right" valign="top"><apex:inputTextarea required="true"  value="{!ExportControl__c.TravelCountries__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
-							</tr>
-						</table>
-						
-					</td>
-				</tr>
-
-				<tr>
-					<td class="cell" align="right" colspan="2">
-						<table style="width: 100%;">
-							<tr>
-								<td align="right" width="60%" valign="middle">If Yes, other than AECOM-assigned laptops, mobile phones or standard data devices, describe <br/>
-								any other equipment needed for travel in support of this opportunity or transaction.  If no other equipment, please write “none.” 
-						<br/><br/>
-						If you will be taking AECOM-assigned laptops, mobile phones or standard data devices with you while traveling outside your home country, <br/>refer to AECOM IT policies concerning device security requirements and AECOM Corporate Security for international travel <br/>requirements including travel safety:</td>
-								<td align="right" valign="top"><apex:inputTextarea value="{!ExportControl__c.TravelEquipment__c}" style="width: 98%; height: 120px; border-left: 5px solid red; padding: 10px" /></td>
-							</tr>
-						</table>
-						
-					</td>
-				</tr>
-
-
-
-
-				</apex:outputPanel>
-				<tr>
-					<td class="cell">
-						Will AECOM employees be assigned to work abroad in support of this opportunity or transaction?  If “Yes,” contact AECOM's Global Mobility Team for international visa requirements. 
-					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:selectRadio value="{!ExportControl__c.AssignmentAbroad__c}">
-			            	<apex:selectOptions value="{!lAnswerValues}"/>
-			            </apex:selectRadio>
-					</td>
-				</tr>
-				<tr>
-					<td class="cell">
-						Indicate the governing law of any bid or contract terms and conditions: 
-					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:actionRegion >
-							<apex:inputField value="{!ExportControl__c.GoverningLaw__c}" >
-								<apex:actionSupport event="onchange" rerender="all" />
-							</apex:inputField>
-						</apex:actionRegion>
-					</td>
-				</tr>
-				<apex:outputPanel layout="none" rendered="{!if(ExportControl__c.GoverningLaw__c=='Other', true, false)}">
-				<tr>
-
-					<td class="cell" align="right" colspan="2">
-						<table style="width: 100%;">
-							<tr>
-								<td align="right" width="60%" valign="middle">If “Other Country,” identify the governing law country or countries:</td>
-								<td align="right" valign="top"><apex:inputTextarea value="{!ExportControl__c.OtherCountry__c}" style="width: 98%; height: 120px; border-left: 5px solid red; padding: 10px" /></td>
-							</tr>
-						</table>
-						
-					</td>
-
-					<!--<td class="cell">
-						If “Other Country,” identify the governing law country or countries:
-					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:inputField value="{!ExportControl__c.OtherCountry__c}" />
-					</td>-->
-				</tr>
-				</apex:outputPanel>
-
-				<tr>
-					<td class="cell">
-						Has AECOM's International Tax Department reviewed the proposed opportunity or transaction? If “No,” contact AECOM's Tax Team for international tax guidance.
-					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:selectRadio value="{!ExportControl__c.InternationalTaxDepartmentReview__c}">
-			            	<apex:selectOptions value="{!lAnswerValues}"/>
-			            </apex:selectRadio>
-					</td>
-				</tr>
-				<tr>
-					<td class="cell">
-						Have you obtained Geography approval to proceed with the project in the subject AECOM Geography? If “No,” review Delegation of Authority approval requirements
-					</td>
-					<td class="cell" width="200" valign="bottom">
-						<apex:selectRadio value="{!ExportControl__c.GeographyApproval__c}">
-			            	<apex:selectOptions value="{!lAnswerValues}"/>
-			            </apex:selectRadio>
-					</td>
-				</tr>
-			</table>
+                <apex:actionRegion >
+                  <table class="list table-hover" width="100%" cellpadding="0" cellspacing="0" >
+                    <apex:outputPanel id="SupplementalQ">
+                    <tr>
+                        <td class="cell">
+                            Will AECOM stakeholders, including the requestor or project team travel internationally in support of this opportunity or transaction? 
+                        </td>
+                        <td class="cell" width="200" valign="bottom">
+                            <apex:actionRegion >
+                                <apex:selectRadio id="travel" value="{!ExportControl__c.TravelInternationally__c}"  onchange="showOrHideThirdPartyDescription()">
+                                    <!--<apex:actionSupport event="onclick" rerender="SupplementalQ" />-->
+                                    <apex:selectOptions value="{!lAnswerValues}"/>
+                                </apex:selectRadio>
+                            </apex:actionRegion>
+                        </td>
+                    </tr>
+                    <tr id="travel1">
+                        <td class="cell" align="right" colspan="2">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td align="right" width="60%" valign="middle">If Yes, list the country or countries of travel:</td>
+                                    <td align="right" valign="top"><apex:inputTextarea id="travelText1" required="true"  value="{!ExportControl__c.TravelCountries__c}" style="width: 98%; height: 60px; border-left: 5px solid red; padding: 10px" /></td>
+                                </tr>
+                            </table>
+                            
+                        </td>
+                    </tr>
+    				<tr id="travel2">
+                        <td class="cell" align="right" colspan="2">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td align="right" width="60%" valign="middle">If Yes, other than AECOM-assigned laptops, mobile phones or standard data devices, describe <br/>
+                                    any other equipment needed for travel in support of this opportunity or transaction.  If no other equipment, please write “none.” 
+                            <br/><br/>
+                            If you will be taking AECOM-assigned laptops, mobile phones or standard data devices with you while traveling outside your home country, <br/>refer to AECOM IT policies concerning device security requirements and AECOM Corporate Security for international travel <br/>requirements including travel safety:</td>
+                                    <td align="right" valign="top"><apex:inputTextarea id="travelText2" value="{!ExportControl__c.TravelEquipment__c}" style="width: 98%; height: 120px; border-left: 5px solid red; padding: 10px" /></td>
+                                </tr>
+                            </table>
+                            
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="cell">
+                            Will AECOM employees be assigned to work abroad in support of this opportunity or transaction?  If “Yes,” contact AECOM's Global Mobility Team for international visa requirements. 
+                        </td>
+                        <td class="cell" width="200" valign="bottom">
+                            <apex:selectRadio value="{!ExportControl__c.AssignmentAbroad__c}">
+                                <apex:selectOptions value="{!lAnswerValues}"/>
+                            </apex:selectRadio>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="cell">
+                            Indicate the governing law of any bid or contract terms and conditions: 
+                        </td>
+                        <td class="cell" width="200" valign="bottom">
+                            <!--<apex:actionRegion >-->
+                                <apex:inputField id="governing" value="{!ExportControl__c.GoverningLaw__c}" onchange="showOrHideThirdPartyDescription();">
+                                </apex:inputField>
+                            <!--</apex:actionRegion>-->
+                        </td>
+                    </tr>
+                    <tr id="governingCountry">
+                    	<td class="cell" align="right" colspan="2">
+                            <table style="width: 100%;">
+                                <tr>
+                                    <td align="right" width="60%" valign="middle">If “Other Country,” identify the governing law country or countries:</td>
+                                    <td align="right" valign="top"><apex:inputTextarea id="governingText" value="{!ExportControl__c.OtherCountry__c}" style="width: 98%; height: 120px; border-left: 5px solid red; padding: 10px" /></td>
+                                </tr>
+                            </table>
+						</td>
+    				</tr>
+                    <tr>
+                        <td class="cell">
+                            Has AECOM's International Tax Department reviewed the proposed opportunity or transaction? If “No,” contact AECOM's Tax Team for international tax guidance.
+                        </td>
+                        <td class="cell" width="200" valign="bottom">
+                            <apex:selectRadio value="{!ExportControl__c.InternationalTaxDepartmentReview__c}">
+                                <apex:selectOptions value="{!lAnswerValues}"/>
+                            </apex:selectRadio>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="cell">
+                            Have you obtained Geography approval to proceed with the project in the subject AECOM Geography? If “No,” review Delegation of Authority approval requirements
+                        </td>
+                        <td class="cell" width="200" valign="bottom">
+                            <apex:selectRadio value="{!ExportControl__c.GeographyApproval__c}">
+                                <apex:selectOptions value="{!lAnswerValues}"/>
+                            </apex:selectRadio>
+                        </td>
+                    </tr>
+                   </apex:outputPanel>
+                </table>
+                </apex:actionRegion>
 			</apex:outputPanel>
 		</apex:pageBlock>
 			
 
 	</apex:form>
-	<apex:relatedList list="ProcessSteps" />
+	<!--<apex:relatedList list="ProcessSteps" />-->
 </apex:page>

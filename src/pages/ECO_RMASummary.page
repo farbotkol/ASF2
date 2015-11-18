@@ -463,11 +463,11 @@
                 <!-- <apex:pageBlockSection collapsible="false" title="Go / No Go Recommendation" columns="1"></apex:pageBlockSection> -->
                 <div class="goNoGoBox">
                     <h2>Go / No Go Recommendation</h2>
-                    <apex:selectRadio value="{!QuestionnaireSet__c.GoNoGoRecommendation__c}" disabled="{!AND(oQuestionnaireSet.ApprovalStatus__c == 'Approved', oQuestionnaireSet.GoNoGoRecommendation__c == '')}" onchange="enableSubmit();">
+                    <apex:selectRadio value="{!QuestionnaireSet__c.GoNoGoRecommendation__c}" disabled="{!IF(OR(percentMA != 100, oQuestionnaireSet.ApprovalStatus__c != 'Pending Approval', oQuestionnaireSet.UnansweredQuestionCount__c != 0 ), true, false)}" onchange="enableSubmit();">
                         <apex:selectOption itemValue="Go" itemLabel="Go"/>
                         <apex:selectOption id="selectNoGo" itemValue="No Go" itemLabel="No Go"/>
                     </apex:selectRadio>
-                    <apex:commandButton id="SubmitApproval" value="Submit for Approval" action="{!submitForApproval}" disabled="{!OR(oQuestionnaireSet.ApprovalStatus__c == 'Approved', oQuestionnaireSet.GoNoGoRecommendation__c = '', oQuestionnaireSet.TotalQuestions__c = 0)}" />
+                    <apex:commandButton id="SubmitApproval" value="Submit for Approval" action="{!submitForApproval}" disabled="{!IF(OR(oQuestionnaireSet.GoNoGoRecommendation__c == '',  oQuestionnaireSet.ApprovalStatus__c != 'Pending Approval' ), true, false)}" />
                 </div>
             
             </apex:pageBlock>

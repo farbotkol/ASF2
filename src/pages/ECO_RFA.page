@@ -80,7 +80,7 @@
                 </apex:repeat>-->
                 <apex:inputField value="{!oForm.Business_Group__c}"/>
             </apex:pageBlockSection>
-				
+				<!-- -->
             <apex:pageBlockSection title="Step 2: Owning Organization" collapsible="false">
                 <apex:inputField value="{!oForm.OwningOrganization__c}"/>
             </apex:pageBlockSection>
@@ -190,7 +190,7 @@
             <apex:pageBlockSection collapsible="false" columns="1" rendered="{!isNonProjectRelated}" id="NonProject">
 				<apex:pageMessage severity="INFO" rendered="{!IF(lstTemplateQuestions.size > 0, false, true)}" summary="No Results Were Found."></apex:pageMessage> 
                 <apex:pageBlockTable value="{!lstTemplateQuestions}" rendered="{!IF(lstTemplateQuestions.size > 0, true, false)}" var="Questions" >
-                    <apex:column width="100px">
+                    <apex:column width="100px" headerValue="Action">
                         <apex:actionRegion >
                         <apex:facet name="header">Select</apex:facet>
                         <apex:commandLink action="{!addQuestion}" value="Select" rerender="NonProject, DOAMatter">

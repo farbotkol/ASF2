@@ -36,11 +36,13 @@ public class ECO_DelegateManagerController {
 	public Boolean canEdit{get; set;}
 	public Attachment attachment{get; set;}
 	public ECO_Delegate_User_Preferences__c userPreferences{get; set;}
+	public List<Delegate__c> delegates{get; set;}
 	private ApexPages.StandardController controller;
 	private Id keyRolesRecordType;
 	private String redirectUrl;  //stores the url of the page to return to
 	private String contactId; //stores the contactId from the query parameter
 	private String query; //stores the contact query text
+	private Id alternateRecordType;
 	private List<PermissionSetAssignment> currentUserPermissionSets = new List<PermissionSetAssignment>(); //a list of the current logged in user permission sets
 
 	//constructor
@@ -49,6 +51,14 @@ public class ECO_DelegateManagerController {
 		canEdit = false;
 		this.controller = standardController;  
 		recordTypes = [Select Id, Name from RecordType where SobjectType = 'Delegate__c'];
+		for(RecordType recordType : recordTypes){
+			if(recordType.Name == 'Key Roles'){
+				keyRolesRecordType = recordType.Id;
+			}
+			else if(recordType.Name == 'Alternate'){
+				alternateRecordType = recordType.Id;
+			}
+		}
 		currentRecordType = 'Key Roles';
 
 		if(ApexPages.currentPage().getParameters().get('retUrl') != null){
@@ -174,6 +184,7 @@ public class ECO_DelegateManagerController {
 		return null;
 	}
 
+	//stores the setting of the user's preferences for the bypass defaults
 	public PageReference setDefaultBypassDefaults(){
 		if(userPreferences == null){
 			userPreferences = new ECO_Delegate_User_Preferences__c(Name = UserInfo.getUserId(), Default_Delegate_Bypass_to_No__c = true);
@@ -263,6 +274,12 @@ public class ECO_DelegateManagerController {
         newPendingRequest.setProcessDefinitionNameOrId('ECO_Delegate_Delegation_Approval');
         newPendingRequest.setSkipEntryCriteria(true);
         Approval.ProcessResult processResult = Approval.process(newPendingRequest);
+	}
+
+	//sets the delegate limits to the settings custom settings limits
+	public PageReference setLimitsToSettingsLimits(){
+		delegate.Agreement_Amount_estimated__c = delegateLimitSettings.Agreement_Amount__c;
+		return null;
 	}
 
 	//verifies the limit values are less than the maximum amount
@@ -396,6 +413,16 @@ public class ECO_DelegateManagerController {
 			else if(delegate.Value_change_in_Forecast_Net_Margin_lt__c.longValue() < delegateLimitSettings.Value_change_in_Forecast_Net_Margin_lt__c.longValue()){
 				valid = false;
 				ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Value Change in Forecast Net Margin is less than allowed Minimum'));
+			}
+		}
+		else if(currentRecordType == 'Vacation'){
+			if(delegate.Start_Date__c > delegate.End_Date__c){
+				valid = false;
+				delegate.End_Date__c.addError('End Date cannot be less than Start Date');
+			}
+			else if(delegate.Start_Date__c.daysBetween(delegate.End_Date__c) > 60){
+				valid = false;
+				delegate.End_Date__c.addError('Vacation Duration cannot exceed 60 days');
 			}
 		}
 		return valid;
@@ -544,10 +571,12 @@ public class ECO_DelegateManagerController {
 	//runs the query for the contact and delegates.  Initializes the delegate so a new one can be added
 	private void queryContact(String recordTypeId){
 		try{
+			
 			contact = Database.query(buildSOQL(recordTypeId));
 			delegate = new Delegate__c(Delegator__c = contact.Id, 
 										RecordTypeId = recordTypeId);
-			
+			delegates = new List<Delegate__c>();
+
 			if(keyRolesRecordType == null){
 				for(RecordType recordType : recordTypes){
 					if(recordType.Name == 'Key Roles'){
@@ -565,6 +594,13 @@ public class ECO_DelegateManagerController {
 				resetBypassYesNoFields();
 				populateOwningOrganizations();
 			}
+			else if(recordTypeId == alternateRecordType){
+				if(contact.ReportsToId != null){
+					Delegate__c managerDelegate = new Delegate__c(Delegate__c = contact.ReportsToId, Delegator__c = contactId, RecordTypeId = alternateRecordType);
+					delegates.add(managerDelegate);
+				}
+			}
+			delegates.addAll(contact.Delegates1__r);
 			attachment = new Attachment();
 		}
 		catch(Exception ex){
@@ -651,6 +687,7 @@ public class ECO_DelegateManagerController {
 		String queryFields = '';
 		Boolean foundName = false;
 		Boolean foundUser = false;
+		Boolean foundReportsTo = false;
 
 		//create a soql compatible string of field names to select
 		for(String fieldSetField : fieldSetFields){
@@ -659,6 +696,9 @@ public class ECO_DelegateManagerController {
 			}
 			if(fieldSetField == 'pse__Salesforce_User__c'){
 				foundUser = true;
+			}
+			if(fieldSetField == 'ReportsToId'){
+				foundReportsTo = true;
 			}
 			queryFields += fieldSetField + ', ';
 		}
@@ -674,7 +714,11 @@ public class ECO_DelegateManagerController {
 			queryFields += ', pse__Salesforce_User__c';
 		}
 
-		query = 'Select ' + queryFields + ', (Select Delegate__c, End_Date__c, RecordType.Name, Key_Member_Role__c, Notes__c, Start_Date__c, CreatedBy.Name, LastModifiedDate From Delegates1__r where RecordTypeId = \'' + recordTypeId + '\') From Contact Where ';
+		if(!foundReportsTo){
+			queryFields += ', ReportsToId';
+		}
+
+		query = 'Select ReportsTo.Name, ' + queryFields + ', (Select Delegate__c, End_Date__c, RecordType.Name, Key_Member_Role__c, Notes__c, Start_Date__c, CreatedBy.Name, LastModifiedDate From Delegates1__r where RecordTypeId = \'' + recordTypeId + '\') From Contact Where ';
 		
 		//if the contactId is passed in the query parameter			    
 		if(contactId != null){
