@@ -348,7 +348,7 @@
 						<apex:outputPanel id="ProjectTeamTable">
 						<apex:tabPanel switchType="client" selectedTab="ActiveTeamMember">
 							<apex:tab id="activeTeamMember" label="Active Team Members" name="ActiveTeamMember">
-
+								<apex:variable var="teamMemberCounter" value="{!0}"/>
 								<apex:pageBlockTable value="{!lMembersTeam}" var="item" width="100%" columnsWidth="60px">
 									<apex:facet name="footer">
 										<apex:commandLink action="{!addRecord}" value="Add New Team Member" rerender="ProjectTeamTable" status="teamStatus">
@@ -359,7 +359,7 @@
 										<apex:facet name="header">Actions</apex:facet>
 										<apex:commandLink action="{!removeRecord}" value="Remove" rerender="ProjectTeamTable" status="teamStatus">
 											<apex:param name="object" value="MembersTeam" assignTo="{!recordObjectType}" />
-											<apex:param name="objID" value="{!item.oPTM.Id}" assignTo="{!recordObjectId}" />
+											<apex:param name="teamMemberToRemove" value="{!teamMemberCounter}" />
 										</apex:commandLink>
 									</apex:column>
 									<apex:column >
