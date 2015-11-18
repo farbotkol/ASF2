@@ -161,7 +161,7 @@
     <apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Approving the Approval Process. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && projectSynchMessages == '' && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Submitted') && changeManager.IsExecutionApprovalChange__c}"/>
 
     <apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Approving the Approval Process. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed') && 
-                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c) && NOT(changeManager.IsExecutionApprovalChange__c)}"/>
+                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c || changeManager.IntExtClassifications__c) && NOT(changeManager.IsExecutionApprovalChange__c)}"/>
 
     
 
@@ -197,7 +197,7 @@
                 <apex:commandButton value="Return to Project" action="{!returnToProject}" rendered="{!mode == ''}" />
                 <apex:commandButton value="Return to Project Changes" action="{!returnToProjectChanges}" rendered="{!mode == ''}" />
                 <apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" rendered="{!NOT($User.IsValidOracleToken__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed') && 
-                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c)}"/>
+                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c || changeManager.IntExtClassifications__c)}"/>
                  <apex:commandButton value="Submit for Approval" action="{!SubmitForApproval}" id="Submit_for_Approval" rendered="{!(changeManager.ApprovalStatus__c == null || changeManager.ApprovalStatus__c == '' || changeManager.ApprovalStatus__c == 'Rejected') && projectSynchMessages == '' && mode == ''}"/>
                  <apex:commandButton value="Synchronize Project" rendered="{!changeManager.OracleApprovalSyncStatus__c == 'Failed'}" action="{!SynchronizeProject}" />
             </apex:pageBlockButtons>
@@ -1554,7 +1554,8 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainCommR
 </apex:pageBlock>
 </apex:outputPanel>
 </apex:form>
-<apex:relatedList list="ProcessSteps"  id="approval" rendered="{!ShowApprovalProcessList && $User.IsValidOracleToken__c}"></apex:relatedList>
+<apex:relatedList list="ProcessSteps"  id="approval" rendered="{!ShowApprovalProcessList && (($User.IsValidOracleToken__c && (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c || changeManager.IntExtClassifications__c)) || (NOT(changeManager.IntExtKeyMembers__c) && NOT(changeManager.IntExtProjectTasks__c) && NOT(changeManager.IntExtCustomers__c) && NOT(changeManager.IntExtProjectClosure__c) && NOT(changeManager.IntExtProjectOnHold__c) && NOT(changeManager.IntExtClassifications__c)))}"></apex:relatedList>
+<!--<apex:relatedList list="ProcessSteps"  id="approval" />-->
 <apex:relatedList list="CombinedAttachments" rendered="{!changeManager.RecordType.Name == 'PM Handover'}"/>
 <apex:relatedList list="Project_Snapshots__r" rendered="{!changeManager.RecordType.Name == 'PM Handover'}"/>
 

@@ -50,7 +50,7 @@ public class ECO_Service_Agreement {
     {
         if(projectId != null)
             return [select Id, Name, ProjectNumber__c, PrimaryBillingClient__c, OUID__c, OracleProjectnumber__c, EstimatedContractValue__c, 
-                    EcoSystemReferenceNumber__c, pse__Project_Manager__c, ProjectCurrencyCode__c
+                    EcoSystemReferenceNumber__c, pse__Project_Manager__c, ProjectCurrencyCode__c, pse__Stage__c, EnableTopTaskCustomerFlag__c
                     from pse__Proj__c where Id = :projectId limit 1]; 
         return null;           
     }
