@@ -205,7 +205,7 @@ public class ECO_DeliverableTriggers {
                 mapUserIdByContact.put(c.id,c.pse__Salesforce_User__c);
             }
     		ProjectRole__c role = [Select Id, Name From ProjectRole__c Where Name = 'Deliverable Owner'];
-            ProjectRole__c roleInactive = [Select Id, Name From ProjectRole__c Where Name = 'Inactive Deliverable Owner'];
+            //ProjectRole__c roleInactive = [Select Id, Name From ProjectRole__c Where Name = 'Inactive Deliverable Owner'];
             for(Deliverable__c oDev : mapNew.values()){
                 devOwner = oDev.DeliverablesOwner__c;
                 System.debug('oDev.DeliverablesOwner__c:  '+devOwner);
@@ -225,6 +225,7 @@ public class ECO_DeliverableTriggers {
                        //tqt[0].TechnicalQualityTeamMember__c = mapUserIdByContact.get(oDev.DeliverablesOwner__c);
                        for(TechnicalQualityTeam__c oTQT : tqt){
                            oTQT.Role__c = 'Inactive Deliverable Owner';
+                           
                            lUpdateMembers.add(oTQT);
                            System.debug('oTQTid::::'+oTQT.Id+' ::::oTQT role:'+oTQT.Role__c);
                        }
@@ -239,9 +240,11 @@ public class ECO_DeliverableTriggers {
                    
                    if(pTM.size() >= 0){
                        for(ProjectTeamMember__c oPTM : pTM){
-                           oPTM.ProjectRole__c = roleInactive.Id;
+                           oPTM.EndDate__c = Date.today();
+                           oPTM.Is_Active__c = false;
+                           //oPTM.ProjectRole__c = roleInactive.Id;
                            lUpdateTeamMembers.add(oPTM);
-                           System.debug('roleInactive.Id::::'+roleInactive.Id+':::::oPTMId:'+oPTM.Id+':::oPTM Role:'+oPTM.ProjectRole__c);
+                           //System.debug('roleInactive.Id::::'+roleInactive.Id+':::::oPTMId:'+oPTM.Id+':::oPTM Role:'+oPTM.ProjectRole__c);
                        }
                    }
                        
