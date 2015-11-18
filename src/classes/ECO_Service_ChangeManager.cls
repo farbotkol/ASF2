@@ -396,10 +396,8 @@ public class ECO_Service_ChangeManager {
         return database.query(query);            	
     }   
 
-    //@future(callout=true)
     public static void synchronizeProject(String messageQueueId, Id projectId)
     {
-        //Id messageQueueId = ECO_Service_ProjectSync.createMessageQueueForRequest(projectId, ECO_Service_ProjectSync.JOBNAME_PROJECT_SYNC);
         Datetime lastSync = DateTime.newInstance(1900, 1, 1);
 
         ECO_Service_ProjectSync.flagProjectTasksWithSyncStatus('P', projectId, lastSync);
@@ -408,8 +406,6 @@ public class ECO_Service_ChangeManager {
 
         User user = [select Id, ShaKey__c from User where Id = :UserInfo.getUserId()];
         ECO_IntegrationEndpoints__c cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
-        //String url = cs.EndPointUrl__c + user.ShaKey__c + '&MESSAGE_TYPE=UPDATE_PROJECT&pTransType=N';
-        //String url = cs.EndPointUrl__c + user.ShaKey__c;
         String url = cs.EndPointUrl__c + user.ShaKey__c + '&MESSAGE_TYPE=UPDATE_PROJECT';
         handleOracleCallout(projectId, url, messageQueueId);
 
@@ -420,23 +416,12 @@ public class ECO_Service_ChangeManager {
 
     public static void synchronizeProject2(String messageQueueId, Id projectId)
     {
-        //Id messageQueueId = ECO_Service_ProjectSync.createMessageQueueForRequest(projectId, ECO_Service_ProjectSync.JOBNAME_PROJECT_SYNC);
         Datetime lastSync = DateTime.newInstance(1900, 1, 1);
-
-        //ECO_Service_ProjectSync.flagProjectTasksWithSyncStatus('P', projectId, lastSync);
-        //ECO_Service_ProjectSync.flagKeymembersWithSyncStatus('P', projectId, lastSync);
-        //ECO_Service_ProjectSync.flagProjectSitesWithSyncStatus('P', projectId, lastSync);
 
         User user = [select Id, ShaKey__c from User where Id = :UserInfo.getUserId()];
         ECO_IntegrationEndpoints__c cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
-        //String url = cs.EndPointUrl__c + user.ShaKey__c + '&MESSAGE_TYPE=UPDATE_PROJECT&pTransType=N';
-        //String url = cs.EndPointUrl__c + user.ShaKey__c;
         String url = cs.EndPointUrl__c + user.ShaKey__c + '&MESSAGE_TYPE=UPDATE_PROJECT';
         handleOracleCallout2(projectId, url, messageQueueId);
-
-        //ECO_Service_ProjectSync.flagProjectTasksWithSyncStatus('T', projectId, lastSync);
-        //ECO_Service_ProjectSync.flagKeymembersWithSyncStatus('T', projectId, lastSync);
-        //ECO_Service_ProjectSync.flagProjectSitesWithSyncStatus('T', projectId, lastSync);
     }    
 
     @future(callout=true)

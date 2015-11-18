@@ -379,18 +379,20 @@ public class ECO_Service_ProjectSnapshots {
 	                
                     // Billing Metrics
                     BillingMetrics billingMetricsAR = billingMetricsARMap.get(project.Id);
-                    snapshot = getBillingMetricsARMapInformation(billingMetricsAR, snapshot);
-                    snapshot.AR0to30__c = billingMetricsAR0to30Map.get(project.Id);
-                    snapshot.AR31to60__c = billingMetricsAR31to60Map.get(project.Id);
-                    snapshot.AR61to90__c = billingMetricsAR61to90Map.get(project.Id);
-                    snapshot.AR91to180__c = billingMetricsAR91to180Map.get(project.Id);
-                    snapshot.AR181Plus__c = billingMetricsAR181PlusMap.get(project.Id);
+                    if (billingMetricsAR != null) {
+	                    snapshot = getBillingMetricsARMapInformation(billingMetricsAR, snapshot);
+	                    snapshot.AR0to30__c = billingMetricsAR0to30Map.get(project.Id);
+	                    snapshot.AR31to60__c = billingMetricsAR31to60Map.get(project.Id);
+	                    snapshot.AR61to90__c = billingMetricsAR61to90Map.get(project.Id);
+	                    snapshot.AR91to180__c = billingMetricsAR91to180Map.get(project.Id);
+	                    snapshot.AR181Plus__c = billingMetricsAR181PlusMap.get(project.Id);
+	                    
+	                    snapshot.ARTotal__c = billingMetricsAR.BilledAR;
+	                    snapshot.ARRetention__c = billingMetricsAR.Retention;
+	                    snapshot.ARBIEE__c = billingMetricsAR.BIEE;
+	                    snapshot.UnbilledTotal__c = billingMetricsAR.TotalUnbilled;
+                    }
                     
-                    snapshot.ARTotal__c = billingMetricsAR.BilledAR;
-                    snapshot.ARRetention__c = billingMetricsAR.Retention;
-                    snapshot.ARBIEE__c = billingMetricsAR.BIEE;
-                    snapshot.UnbilledTotal__c = billingMetricsAR.TotalUnbilled;
-
 					// Unbilled Metrics
 					snapshot.Unbilled0to30__c = unbilledMetricsAR0to30Map.get(project.Id);
 					snapshot.Unbilled31to60__c = unbilledMetricsAR31to60Map.get(project.Id);
@@ -484,20 +486,25 @@ public class ECO_Service_ProjectSnapshots {
             	Decimal totalBilledValue = (Decimal) ar.get('totalBilled');
                 if (totalBilledValue != null)
                 {   
-                    billingMetrics = new BillingMetrics();
-                    Id projId = (Id) ar.get('ProjectNumber__c');
-                    System.debug(System.LoggingLevel.WARN, '___projId from ProjectNumber__c='+projId);
-                    Decimal totalRevenue = itdActualFinancialMetricsMap.get(projId).TotalRevenue;
-                    System.debug(System.LoggingLevel.WARN, '___totalRevenue='+totalRevenue);
-                    if (totalBilledValue != null) {
-                        billingMetrics.BilledAR = (Decimal)ar.get('totalBilled');   
-                    }
-                    billingMetrics.Retention =  (Decimal)ar.get('totalRetention');  
-                    billingMetrics.TotalUnbilled = totalRevenue - billingMetrics.BilledAR;
-                    if ((billingMetrics.TotalUnbilled) < 0) {
-                        billingMetrics.BIEE = totalRevenue - billingMetrics.BilledAR;
-                    }
-                    billingMetricsMap.put(projId, billingMetrics);
+                	if (itdActualFinancialMetricsMap != null) {
+	                    billingMetrics = new BillingMetrics();
+	                    Id projId = (Id) ar.get('ProjectNumber__c');
+	                    System.debug(System.LoggingLevel.WARN, '___projId from ProjectNumber__c='+projId);
+	                    FinancialMetrics itdFM = itdActualFinancialMetricsMap.get(projId);
+	                    if (itdFM != null) {
+		                    Decimal totalRevenue = itdFM.TotalRevenue;
+		                    System.debug(System.LoggingLevel.WARN, '___totalRevenue='+totalRevenue);
+		                    if (totalBilledValue != null) {
+		                        billingMetrics.BilledAR = (Decimal)ar.get('totalBilled');   
+		                    }
+		                    billingMetrics.Retention =  (Decimal)ar.get('totalRetention');  
+		                    billingMetrics.TotalUnbilled = totalRevenue - billingMetrics.BilledAR;
+		                    if ((billingMetrics.TotalUnbilled) < 0) {
+		                        billingMetrics.BIEE = totalRevenue - billingMetrics.BilledAR;
+		                    }
+		                    billingMetricsMap.put(projId, billingMetrics);
+	                    }
+                	}
                 }
             }
         }
@@ -508,10 +515,12 @@ public class ECO_Service_ProjectSnapshots {
     }
 
     @TestVisible private ProjectSnapshot__c getBillingMetricsARMapInformation(BillingMetrics billingMetricsAR, ProjectSnapshot__c snapshot) {
-        snapshot.ARTotal__c = billingMetricsAR.BilledAR;
-        snapshot.ARRetention__c = billingMetricsAR.Retention;
-        snapshot.ARBIEE__c = billingMetricsAR.BIEE;
-        snapshot.UnbilledTotal__c = billingMetricsAR.TotalUnbilled;
+        if (billingMetricsAR != null) {
+	        snapshot.ARTotal__c = billingMetricsAR.BilledAR;
+	        snapshot.ARRetention__c = billingMetricsAR.Retention;
+	        snapshot.ARBIEE__c = billingMetricsAR.BIEE;
+	        snapshot.UnbilledTotal__c = billingMetricsAR.TotalUnbilled;
+        }
         return snapshot;
     }
 
@@ -617,60 +626,60 @@ public class ECO_Service_ProjectSnapshots {
                 Decimal totalRevenue = (Decimal)ar.get('totalRevenue');
                 Id projId = (Id) ar.get('ProjectNumber__c');
                 System.debug(System.LoggingLevel.WARN, '___totalRevenue='+totalRevenue+', projId='+projId);
-                
-                if (range == UNBILLED_181Plus) {
-	                if (totalRevenue != null)
-	                {
-	                	unbilledValue = totalRevenue - billingMetricsARMap.get(projId).BilledAR;
-	                }
-                	else {
-                    	unbilledValue = 0 - billingMetricsARMap.get(projId).BilledAR;
-		            }
-		            System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap.get(projId).BilledAR='+billingMetricsARMap.get(projId).BilledAR);
-            	}
-            	else if (range == UNBILLED_91to180) {
-	                if (totalRevenue != null)
-	                {
-	                    unbilledValue = totalRevenue - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId)); 
-	                }
-                	else {
-                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId)); 
-		            }
-            	}
-            	else if (range == UNBILLED_61to90) {
-	                if (totalRevenue != null)
-	                {
-	                    unbilledValue = totalRevenue - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
-	                    	unbilledMetricsAR91to180Map.get(projId));
-	                }
-                	else {
-                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
-                    		unbilledMetricsAR91to180Map.get(projId)); 
-		            }
-            	}
-            	else if (range == UNBILLED_31to60) {
-	                if (totalRevenue != null)
-	                {
-	                    unbilledValue = totalRevenue - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
-	                    	unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId));
-	                }
-                	else {
-                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
-                    		unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId));
-		            }
-            	}
-            	else if (range == UNBILLED_0to30) {
-	                if (totalRevenue != null)
-	                {
-	                    unbilledValue = totalRevenue - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
-	                    	unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId) + unbilledMetricsAR31to60Map.get(projId));
-	                }
-                	else {
-                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
-                    		unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId) + unbilledMetricsAR31to60Map.get(projId));
-		            }
-            	}
-            	unbilledMetricsMap.put(projId, unbilledValue);
+                if (billingMetricsARMap != null) {
+	                if (range == UNBILLED_181Plus) {
+		                if (totalRevenue != null)
+		                {
+		                	unbilledValue = totalRevenue - billingMetricsARMap.get(projId).BilledAR;
+		                }
+	                	else {
+	                    	unbilledValue = 0 - billingMetricsARMap.get(projId).BilledAR;
+			            }
+	            	}
+	            	else if (range == UNBILLED_91to180) {
+		                if (totalRevenue != null)
+		                {
+		                    unbilledValue = totalRevenue - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId)); 
+		                }
+	                	else {
+	                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId)); 
+			            }
+	            	}
+	            	else if (range == UNBILLED_61to90) {
+		                if (totalRevenue != null)
+		                {
+		                    unbilledValue = totalRevenue - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
+		                    	unbilledMetricsAR91to180Map.get(projId));
+		                }
+	                	else {
+	                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
+	                    		unbilledMetricsAR91to180Map.get(projId)); 
+			            }
+	            	}
+	            	else if (range == UNBILLED_31to60) {
+		                if (totalRevenue != null)
+		                {
+		                    unbilledValue = totalRevenue - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
+		                    	unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId));
+		                }
+	                	else {
+	                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
+	                    		unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId));
+			            }
+	            	}
+	            	else if (range == UNBILLED_0to30) {
+		                if (totalRevenue != null)
+		                {
+		                    unbilledValue = totalRevenue - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
+		                    	unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId) + unbilledMetricsAR31to60Map.get(projId));
+		                }
+	                	else {
+	                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
+	                    		unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId) + unbilledMetricsAR31to60Map.get(projId));
+			            }
+	            	}
+	            	unbilledMetricsMap.put(projId, unbilledValue);
+                }
             }
         }
         catch (Exception e) {
@@ -681,21 +690,25 @@ public class ECO_Service_ProjectSnapshots {
 	//////// END Unbilled
 
     @TestVisible private ProjectSnapshot__c getOriginalBudgetHeaderMapInformation(FinancialMetrics originalBudgetFinancialMetrics, ProjectSnapshot__c snapshot) {
-        snapshot.GrossRevenueBudgetOriginal__c = originalBudgetFinancialMetrics.TotalRevenue;
-        snapshot.LaborBudgetOriginal__c = originalBudgetFinancialMetrics.TotalLabor;
-        snapshot.ContingencyBudgetOriginal__c = originalBudgetFinancialMetrics.TotalContingency;
+        if (originalBudgetFinancialMetrics != null) {
+	        snapshot.GrossRevenueBudgetOriginal__c = originalBudgetFinancialMetrics.TotalRevenue;
+	        snapshot.LaborBudgetOriginal__c = originalBudgetFinancialMetrics.TotalLabor;
+	        snapshot.ContingencyBudgetOriginal__c = originalBudgetFinancialMetrics.TotalContingency;
+        }
         return snapshot;
     }
 
     @TestVisible private ProjectSnapshot__c getApprovedBudgetHeaderMapInformation(FinancialMetrics approvedBudgetFinancialMetrics, ProjectSnapshot__c snapshot) {
-        snapshot.GrossRevenueBudget__c = approvedBudgetFinancialMetrics.TotalRevenue;
-        snapshot.CostBudget__c = approvedBudgetFinancialMetrics.TotalCost;
-        snapshot.NetMarginBudget__c = approvedBudgetFinancialMetrics.NetMargin;
-        snapshot.NetServiceBudget__c = approvedBudgetFinancialMetrics.NetServiceRevenue;
-        snapshot.NMNSRBudget__c = approvedBudgetFinancialMetrics.NMNSR;
-        snapshot.NMGRBudget__c = approvedBudgetFinancialMetrics.NMGR;
-        snapshot.LaborMultBudget__c = approvedBudgetFinancialMetrics.LaborMult;
-        snapshot.ContingencyBudget__c = approvedBudgetFinancialMetrics.TotalContingency;
+        if (approvedBudgetFinancialMetrics != null) {
+	        snapshot.GrossRevenueBudget__c = approvedBudgetFinancialMetrics.TotalRevenue;
+	        snapshot.CostBudget__c = approvedBudgetFinancialMetrics.TotalCost;
+	        snapshot.NetMarginBudget__c = approvedBudgetFinancialMetrics.NetMargin;
+	        snapshot.NetServiceBudget__c = approvedBudgetFinancialMetrics.NetServiceRevenue;
+	        snapshot.NMNSRBudget__c = approvedBudgetFinancialMetrics.NMNSR;
+	        snapshot.NMGRBudget__c = approvedBudgetFinancialMetrics.NMGR;
+	        snapshot.LaborMultBudget__c = approvedBudgetFinancialMetrics.LaborMult;
+	        snapshot.ContingencyBudget__c = approvedBudgetFinancialMetrics.TotalContingency;
+        }
         return snapshot;
 	}
 
@@ -731,101 +744,110 @@ public class ECO_Service_ProjectSnapshots {
     }
 
     @TestVisible private ProjectSnapshot__c getForecastBudgetHeaderMapInformation(FinancialMetrics forecastBudgetFinancialMetrics, ProjectSnapshot__c snapshot) {
-        snapshot.GrossRevenueForecast__c = forecastBudgetFinancialMetrics.TotalRevenue + snapshot.GrossRevenueBudget__c;
-        snapshot.CostForecast__c = forecastBudgetFinancialMetrics.TotalCost + snapshot.CostBudget__c;
-        snapshot.NetMarginForecast__c = forecastBudgetFinancialMetrics.NetMargin + snapshot.NetMarginBudget__c; 
-        snapshot.NetServiceForecast__c = forecastBudgetFinancialMetrics.NetServiceRevenue + snapshot.NetServiceBudget__c;
-        snapshot.NMNSRForecast__c = forecastBudgetFinancialMetrics.NMNSR + snapshot.NMNSRBudget__c;
-        snapshot.NMGRForecast__c = forecastBudgetFinancialMetrics.NMGR + snapshot.NMGRBudget__c;
-        snapshot.LaborMultForecast__c = forecastBudgetFinancialMetrics.LaborMult + snapshot.LaborMultBudget__c;
-        snapshot.ContingencyForecast__c = forecastBudgetFinancialMetrics.TotalContingency + snapshot.ContingencyBudget__c;
+        if (forecastBudgetFinancialMetrics != null) {
+	        snapshot.GrossRevenueForecast__c = forecastBudgetFinancialMetrics.TotalRevenue + snapshot.GrossRevenueBudget__c;
+	        snapshot.CostForecast__c = forecastBudgetFinancialMetrics.TotalCost + snapshot.CostBudget__c;
+	        snapshot.NetMarginForecast__c = forecastBudgetFinancialMetrics.NetMargin + snapshot.NetMarginBudget__c; 
+	        snapshot.NetServiceForecast__c = forecastBudgetFinancialMetrics.NetServiceRevenue + snapshot.NetServiceBudget__c;
+	        snapshot.NMNSRForecast__c = forecastBudgetFinancialMetrics.NMNSR + snapshot.NMNSRBudget__c;
+	        snapshot.NMGRForecast__c = forecastBudgetFinancialMetrics.NMGR + snapshot.NMGRBudget__c;
+	        snapshot.LaborMultForecast__c = forecastBudgetFinancialMetrics.LaborMult + snapshot.LaborMultBudget__c;
+	        snapshot.ContingencyForecast__c = forecastBudgetFinancialMetrics.TotalContingency + snapshot.ContingencyBudget__c;
+        }
 		return snapshot;
 	}        
 
     @TestVisible private ProjectSnapshot__c getDraftBudgetHeaderMapInformation(FinancialMetrics draftBudgetFinancialMetrics, ProjectSnapshot__c snapshot) {
-        snapshot.GrossRevenueDraft__c = draftBudgetFinancialMetrics.TotalRevenue;
-        snapshot.CostDraft__c = draftBudgetFinancialMetrics.TotalCost;
-        snapshot.NetMarginDraft__c = draftBudgetFinancialMetrics.NetMargin; 
-        snapshot.NetServiceDraft__c = draftBudgetFinancialMetrics.NetServiceRevenue;
-        snapshot.NMNSRDraft__c = draftBudgetFinancialMetrics.NMNSR;
-        snapshot.NMGRDraft__c = draftBudgetFinancialMetrics.NMGR;
-        snapshot.LaborMultDraft__c = draftBudgetFinancialMetrics.LaborMult;
-        snapshot.ContingencyDraft__c = draftBudgetFinancialMetrics.TotalContingency;
+        if (draftBudgetFinancialMetrics != null) {
+	        snapshot.GrossRevenueDraft__c = draftBudgetFinancialMetrics.TotalRevenue;
+	        snapshot.CostDraft__c = draftBudgetFinancialMetrics.TotalCost;
+	        snapshot.NetMarginDraft__c = draftBudgetFinancialMetrics.NetMargin; 
+	        snapshot.NetServiceDraft__c = draftBudgetFinancialMetrics.NetServiceRevenue;
+	        snapshot.NMNSRDraft__c = draftBudgetFinancialMetrics.NMNSR;
+	        snapshot.NMGRDraft__c = draftBudgetFinancialMetrics.NMGR;
+	        snapshot.LaborMultDraft__c = draftBudgetFinancialMetrics.LaborMult;
+	        snapshot.ContingencyDraft__c = draftBudgetFinancialMetrics.TotalContingency;
+        }
 	    return snapshot;
     }
 
     @TestVisible private ProjectSnapshot__c getUnapprovedBudgetHeaderMapInformation(FinancialMetrics unapprovedBudgetFinancialMetrics, ProjectSnapshot__c snapshot) {
-    	snapshot.GrossRevenueUnapproved__c = unapprovedBudgetFinancialMetrics.TotalRevenue;
-        snapshot.CostUnapproved__c = unapprovedBudgetFinancialMetrics.TotalCost;
-        snapshot.NetMarginUnapproved__c = unapprovedBudgetFinancialMetrics.NetMargin;   
-        snapshot.NetServiceUnapproved__c = unapprovedBudgetFinancialMetrics.NetServiceRevenue;
-        snapshot.NMNSRUnapproved__c = unapprovedBudgetFinancialMetrics.NMNSR;
-        snapshot.NMGRUnapproved__c = unapprovedBudgetFinancialMetrics.NMGR;
-        snapshot.LaborMultUnapproved__c = unapprovedBudgetFinancialMetrics.LaborMult;
-        snapshot.ContingencyUnapproved__c = unapprovedBudgetFinancialMetrics.TotalContingency; 
+    	if (unapprovedBudgetFinancialMetrics != null) {
+	    	snapshot.GrossRevenueUnapproved__c = unapprovedBudgetFinancialMetrics.TotalRevenue;
+	        snapshot.CostUnapproved__c = unapprovedBudgetFinancialMetrics.TotalCost;
+	        snapshot.NetMarginUnapproved__c = unapprovedBudgetFinancialMetrics.NetMargin;   
+	        snapshot.NetServiceUnapproved__c = unapprovedBudgetFinancialMetrics.NetServiceRevenue;
+	        snapshot.NMNSRUnapproved__c = unapprovedBudgetFinancialMetrics.NMNSR;
+	        snapshot.NMGRUnapproved__c = unapprovedBudgetFinancialMetrics.NMGR;
+	        snapshot.LaborMultUnapproved__c = unapprovedBudgetFinancialMetrics.LaborMult;
+	        snapshot.ContingencyUnapproved__c = unapprovedBudgetFinancialMetrics.TotalContingency; 
+    	}
     	return snapshot;
     }
 
     @TestVisible private ProjectSnapshot__c getMtdActualFinancialMetricsMapInformation(FinancialMetrics mtdActualFinancialMetrics, 
     		ProjectSnapshot__c snapshot, Date monthStartDate) {
-
-    	snapshot.GrossRevenueMonthToDate__c = mtdActualFinancialMetrics.TotalRevenue;
-        snapshot.CostMonthToDate__c = mtdActualFinancialMetrics.TotalCost;
-        snapshot.NetMarginMonthToDate__c = mtdActualFinancialMetrics.NetMargin;
-        snapshot.NetServiceMonthToDate__c = mtdActualFinancialMetrics.NetServiceRevenue;
-        snapshot.NMNSRMonthToDate__c = mtdActualFinancialMetrics.NMNSR;
-        snapshot.NMGRMonthToDate__c = mtdActualFinancialMetrics.NMGR;
-        snapshot.LaborMultMonthToDate__c = mtdActualFinancialMetrics.LaborMult;
-        snapshot.ContingencyMonthToDate__c = mtdActualFinancialMetrics.TotalContingency;
-        snapshot.SurMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
-        snapshot.CostsODCEXPSMonthToDate__c = mtdActualFinancialMetrics.CostsODCEXPS;
-        snapshot.CostsODCSUBSMonthToDate__c = mtdActualFinancialMetrics.CostsODCSUBS;
-        snapshot.LaborMonthToDate__c = mtdActualFinancialMetrics.Labor;
-        snapshot.FringeMonthToDate__c = mtdActualFinancialMetrics.Fringe;
-        snapshot.OverheadMonthToDate__c = mtdActualFinancialMetrics.Overhead;
-        snapshot.HoursMonthToDate__c = mtdActualFinancialMetrics.Hours;
+		if (mtdActualFinancialMetrics != null) {
+	    	snapshot.GrossRevenueMonthToDate__c = mtdActualFinancialMetrics.TotalRevenue;
+	        snapshot.CostMonthToDate__c = mtdActualFinancialMetrics.TotalCost;
+	        snapshot.NetMarginMonthToDate__c = mtdActualFinancialMetrics.NetMargin;
+	        snapshot.NetServiceMonthToDate__c = mtdActualFinancialMetrics.NetServiceRevenue;
+	        snapshot.NMNSRMonthToDate__c = mtdActualFinancialMetrics.NMNSR;
+	        snapshot.NMGRMonthToDate__c = mtdActualFinancialMetrics.NMGR;
+	        snapshot.LaborMultMonthToDate__c = mtdActualFinancialMetrics.LaborMult;
+	        snapshot.ContingencyMonthToDate__c = mtdActualFinancialMetrics.TotalContingency;
+	        snapshot.SurMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
+	        snapshot.CostsODCEXPSMonthToDate__c = mtdActualFinancialMetrics.CostsODCEXPS;
+	        snapshot.CostsODCSUBSMonthToDate__c = mtdActualFinancialMetrics.CostsODCSUBS;
+	        snapshot.LaborMonthToDate__c = mtdActualFinancialMetrics.Labor;
+	        snapshot.FringeMonthToDate__c = mtdActualFinancialMetrics.Fringe;
+	        snapshot.OverheadMonthToDate__c = mtdActualFinancialMetrics.Overhead;
+	        snapshot.HoursMonthToDate__c = mtdActualFinancialMetrics.Hours;
+		}
     	return snapshot;
     }
 
     @TestVisible private ProjectSnapshot__c getItdActualFinancialMetricsMapInformation(FinancialMetrics itdActualFinancialMetrics, 
     		ProjectSnapshot__c snapshot) {
-
-    	snapshot.GrossRevenueITD__c = itdActualFinancialMetrics.TotalRevenue;
-        snapshot.CostITD__c = itdActualFinancialMetrics.TotalCost;
-        snapshot.NetMarginITD__c = itdActualFinancialMetrics.NetMargin;
-        snapshot.NetServiceITD__c = itdActualFinancialMetrics.NetServiceRevenue;
-        snapshot.NMNSRITD__c = itdActualFinancialMetrics.NMNSR;
-        snapshot.NMGRITD__c = itdActualFinancialMetrics.NMGR;
-        snapshot.LaborMultITD__c = itdActualFinancialMetrics.LaborMult;
-        snapshot.ContingencyITD__c = itdActualFinancialMetrics.TotalContingency;
-        snapshot.SurMarginITD__c = ((snapshot.NMNSRITD__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceITD__c)/100;
-        snapshot.CostsODCEXPSITD__c = itdActualFinancialMetrics.CostsODCEXPS;
-        snapshot.CostsODCSUBSITD__c = itdActualFinancialMetrics.CostsODCSUBS;
-        snapshot.LaborITD__c = itdActualFinancialMetrics.Labor;
-        snapshot.FringeITD__c = itdActualFinancialMetrics.Fringe;
-        snapshot.OverheadITD__c = itdActualFinancialMetrics.Overhead;
-        snapshot.HoursITD__c = itdActualFinancialMetrics.Hours;
+		if (itdActualFinancialMetrics != null) {
+	    	snapshot.GrossRevenueITD__c = itdActualFinancialMetrics.TotalRevenue;
+	        snapshot.CostITD__c = itdActualFinancialMetrics.TotalCost;
+	        snapshot.NetMarginITD__c = itdActualFinancialMetrics.NetMargin;
+	        snapshot.NetServiceITD__c = itdActualFinancialMetrics.NetServiceRevenue;
+	        snapshot.NMNSRITD__c = itdActualFinancialMetrics.NMNSR;
+	        snapshot.NMGRITD__c = itdActualFinancialMetrics.NMGR;
+	        snapshot.LaborMultITD__c = itdActualFinancialMetrics.LaborMult;
+	        snapshot.ContingencyITD__c = itdActualFinancialMetrics.TotalContingency;
+	        snapshot.SurMarginITD__c = ((snapshot.NMNSRITD__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceITD__c)/100;
+	        snapshot.CostsODCEXPSITD__c = itdActualFinancialMetrics.CostsODCEXPS;
+	        snapshot.CostsODCSUBSITD__c = itdActualFinancialMetrics.CostsODCSUBS;
+	        snapshot.LaborITD__c = itdActualFinancialMetrics.Labor;
+	        snapshot.FringeITD__c = itdActualFinancialMetrics.Fringe;
+	        snapshot.OverheadITD__c = itdActualFinancialMetrics.Overhead;
+	        snapshot.HoursITD__c = itdActualFinancialMetrics.Hours;
+		}
     	return snapshot;
     }
 
     @TestVisible private ProjectSnapshot__c getYtdActualFinancialMetricsMapInformation(FinancialMetrics ytdActualFinancialMetrics, 
     		ProjectSnapshot__c snapshot, Date yearStartDate) {
-
-    	snapshot.GrossRevenueYearToDate__c = ytdActualFinancialMetrics.TotalRevenue;
-        snapshot.CostYearToDate__c = ytdActualFinancialMetrics.TotalCost;
-        snapshot.NetMarginYearToDate__c = ytdActualFinancialMetrics.NetMargin;
-        snapshot.NetServiceYearToDate__c = ytdActualFinancialMetrics.NetServiceRevenue;
-        snapshot.NMNSRYearToDate__c = ytdActualFinancialMetrics.NMNSR;
-        snapshot.NMGRYearToDate__c = ytdActualFinancialMetrics.NMGR;
-        snapshot.LaborMultYearToDate__c = ytdActualFinancialMetrics.LaborMult;
-        snapshot.ContingencyYearToDate__c = ytdActualFinancialMetrics.TotalContingency;
-        snapshot.SurMarginYearToDate__c = ((snapshot.NMNSRYearToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceYearToDate__c)/100;
-        snapshot.CostsODCEXPSYearToDate__c = ytdActualFinancialMetrics.CostsODCEXPS;
-        snapshot.CostsODCSUBSYearToDate__c = ytdActualFinancialMetrics.CostsODCSUBS;
-        snapshot.LaborYearToDate__c = ytdActualFinancialMetrics.Labor;
-        snapshot.FringeYearToDate__c = ytdActualFinancialMetrics.Fringe;
-        snapshot.OverheadYearToDate__c = ytdActualFinancialMetrics.Overhead;
-        snapshot.HoursYearToDate__c = ytdActualFinancialMetrics.Hours;
+		if (ytdActualFinancialMetrics != null) {
+	    	snapshot.GrossRevenueYearToDate__c = ytdActualFinancialMetrics.TotalRevenue;
+	        snapshot.CostYearToDate__c = ytdActualFinancialMetrics.TotalCost;
+	        snapshot.NetMarginYearToDate__c = ytdActualFinancialMetrics.NetMargin;
+	        snapshot.NetServiceYearToDate__c = ytdActualFinancialMetrics.NetServiceRevenue;
+	        snapshot.NMNSRYearToDate__c = ytdActualFinancialMetrics.NMNSR;
+	        snapshot.NMGRYearToDate__c = ytdActualFinancialMetrics.NMGR;
+	        snapshot.LaborMultYearToDate__c = ytdActualFinancialMetrics.LaborMult;
+	        snapshot.ContingencyYearToDate__c = ytdActualFinancialMetrics.TotalContingency;
+	        snapshot.SurMarginYearToDate__c = ((snapshot.NMNSRYearToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceYearToDate__c)/100;
+	        snapshot.CostsODCEXPSYearToDate__c = ytdActualFinancialMetrics.CostsODCEXPS;
+	        snapshot.CostsODCSUBSYearToDate__c = ytdActualFinancialMetrics.CostsODCSUBS;
+	        snapshot.LaborYearToDate__c = ytdActualFinancialMetrics.Labor;
+	        snapshot.FringeYearToDate__c = ytdActualFinancialMetrics.Fringe;
+	        snapshot.OverheadYearToDate__c = ytdActualFinancialMetrics.Overhead;
+	        snapshot.HoursYearToDate__c = ytdActualFinancialMetrics.Hours;
+		}
     	return snapshot;
     }
 
@@ -1485,14 +1507,18 @@ public class ECO_Service_ProjectSnapshots {
 	            metrics.SurplusMargin = getSurplusMargin();
 	            metrics.LostMargin = getLostMargin();
 
-	            metrics.CostsODCEXPS = funcBurdenedCostsMetrics.CostsODCEXPS;
-	            metrics.CostsODCSUBS = funcBurdenedCostsMetrics.CostsODCSUBS;
-	            metrics.TotalContingency = funcBurdenedCostsMetrics.TotalContingency;
-	            metrics.Fringe = funcBurdenedCostsMetrics.Fringe;
-	            metrics.Overhead = funcBurdenedCostsMetrics.Overhead;
-
-	            metrics.Labor = funcBurdenedCostsLaborMetrics.Labor;
-	            metrics.Hours = funcBurdenedCostsHoursMetrics.Hours;
+				if (funcBurdenedCostsMetrics != null) {
+		            metrics.CostsODCEXPS = funcBurdenedCostsMetrics.CostsODCEXPS;
+		            metrics.CostsODCSUBS = funcBurdenedCostsMetrics.CostsODCSUBS;
+		            metrics.TotalContingency = funcBurdenedCostsMetrics.TotalContingency;
+		            metrics.Fringe = funcBurdenedCostsMetrics.Fringe;
+		            metrics.Overhead = funcBurdenedCostsMetrics.Overhead;
+				}
+				
+				if (funcBurdenedCostsLaborMetrics != null && funcBurdenedCostsHoursMetrics != null) {
+		            metrics.Labor = funcBurdenedCostsLaborMetrics.Labor;
+		            metrics.Hours = funcBurdenedCostsHoursMetrics.Hours;
+				}
 	        }
         }
         catch(Exception e) {

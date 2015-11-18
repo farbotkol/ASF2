@@ -11,7 +11,7 @@ public class ECO_DelegateManagerController {
 	public Boolean isError {get; set;} //if the page is in an error condition
 	public Delegate__c delegate {get; set;} //the new delegate record to be added
 	public Map<String, Id> delegateRecordTypeMap {get; set;}//map to store the record type name to the id for the delegate object
-	public ECO_Delegate_Limits__c delegateLimitSettings{get; set;}//the delegate limit setting amounts for the current contact
+	public ECO_Delegate_Limit__c delegateLimitSettings{get; set;}//the delegate limit setting amounts for the current contact
 	public List<RecordType> recordTypes{get; set;}//the list of recordTypes for the Delegate object
 	public String agreementAmountBypass{get; set;}
 	public String agreementAmountBypassLT{get; set;}
@@ -99,11 +99,11 @@ public class ECO_DelegateManagerController {
 		//retrieve contact and delegates info
 		try{
 			//retrieve the delegate amount limits
-			if(contact.pse__Salesforce_User__c != null && ECO_Delegate_Limits__c.getInstance(contact.pse__Salesforce_User__c) != null){
-				delegateLimitSettings = ECO_Delegate_Limits__c.getInstance(contact.pse__Salesforce_User__c);
+			if(contact.pse__Salesforce_User__c != null && ECO_Delegate_Limit__c.getInstance(contact.pse__Salesforce_User__c) != null){
+				delegateLimitSettings = ECO_Delegate_Limit__c.getInstance(contact.pse__Salesforce_User__c);
 			}
 			else{
-				delegateLimitSettings = ECO_Delegate_Limits__c.getOrgDefaults();
+				delegateLimitSettings = ECO_Delegate_Limit__c.getOrgDefaults();
 			}
 		}
 		catch(Exception ex){

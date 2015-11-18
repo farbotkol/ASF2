@@ -220,7 +220,7 @@ private class ECO_DelegateManagerControllerTest {
 			controller.delegate.Delegate__c = testContact2.Id;
 			controller.delegate.Key_Member_Role__c = 'Project Manager';
 			controller.delegate.Start_Date__c = Date.today().addDays(20);
-			ECO_Delegate_Limits__c delegateLimitSettings = ECO_Delegate_Limits__c.getOrgDefaults();
+			ECO_Delegate_Limit__c delegateLimitSettings = ECO_Delegate_Limit__c.getOrgDefaults();
 			controller.owningOrganizations[0].checked = true;
 			controller.addNewDelegate();
 			system.assertEquals(0, controller.contact.Delegates__r.size());
@@ -325,7 +325,7 @@ private class ECO_DelegateManagerControllerTest {
 		insert projectMembers;
 
 		
-		ECO_Delegate_Limits__c delegateLimitSettings = ECO_Delegate_Limits__c.getOrgDefaults();
+		ECO_Delegate_Limit__c delegateLimitSettings = ECO_Delegate_Limit__c.getOrgDefaults();
 		delegateLimitSettings.age_Change_in_Forecast_Net_Margin__c = 5;
 		delegateLimitSettings.Agreement_Amount__c = 1000;
 		delegateLimitSettings.Agreement_Amount_lt__c = 100;

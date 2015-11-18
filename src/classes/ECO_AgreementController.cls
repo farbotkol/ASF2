@@ -85,6 +85,50 @@ global virtual class ECO_AgreementController {
         primeScopeText = '';    
     }
 
+    public void init()
+    {
+        if(Apexpages.currentPage().getParameters().get('RecordToDelete') != null)
+        {
+            handleDeletingCancelledChildObject();       
+        }
+               
+        projectId = ApexPages.currentPage().getParameters().get('ProjectId');
+        recordTypeId = ApexPages.currentPage().getParameters().get('RecordType'); 
+        mode = ApexPages.currentPage().getParameters().get('Mode'); 
+      
+        if(mode == 'New')
+            project = [select Id, Name, EstimatedContractValue__c, pse__Stage__c, EnableTopTaskCustomerFlag__c, EcoSystemReferenceNumber__c, OracleProjectnumber__c, pse__Project_Manager__c from pse__Proj__c where Id = :projectId limit 1];       
+                
+        if(recordTypeId != null && recordTypeId != '')
+        {  
+            mode = 'New';     
+            createdFromAgreementPage = true;
+            agreementRecordType = [select Id, Name from RecordType where Id = :recordTypeId].Name;
+        }
+        else if((recordTypeId == null || recordTypeId == '') && (contractType == '' || contractType == null))
+        {
+            agreement = ECO_Service_Agreement.getAgreementFromId(agreement.Id);
+            
+            if(agreement.Project__c != null) 
+                project = ECO_Service_Agreement.getProjectFromId(agreement.Project__c); 
+            else
+            {
+                if(!agreement.ISMSA__c)
+                {
+                    project = ECO_Service_Agreement.getProjectFromProjectAgreement(agreement.Id); 
+                    agreement.Project__c = project.Id; 
+                    update agreement;
+                    agreement = ECO_Service_Agreement.getAgreementFromId(agreement.Id);   
+                }        
+            }        
+            
+            agreementRecordType = agreement.RecordType.Name;
+        } 
+
+        populateRelatedAgreementObjects(); 
+        getPrimeScopeText();    
+    }
+
     public PageReference initAgreementScopeChanged()
     {
         PageReference editAgreement = new PageReference('/apex/ECO_AgreementView?Id='+agreement.Id);        
@@ -113,51 +157,7 @@ global virtual class ECO_AgreementController {
 			delete purchaseOrder;
 		}	
     }
-    
-    public void init()
-    {
-    	if(Apexpages.currentPage().getParameters().get('RecordToDelete') != null)
-		{
-			handleDeletingCancelledChildObject();		
-		}
-    	 	   
-        projectId = ApexPages.currentPage().getParameters().get('ProjectId');
-        recordTypeId = ApexPages.currentPage().getParameters().get('RecordType'); 
-        mode = ApexPages.currentPage().getParameters().get('Mode'); 
-      
-        if(mode == 'New')
-            project = [select Id, Name, EstimatedContractValue__c, EcoSystemReferenceNumber__c, OracleProjectnumber__c, pse__Project_Manager__c from pse__Proj__c where Id = :projectId limit 1];       
-                
-        if(recordTypeId != null && recordTypeId != '')
-        {  
-            mode = 'New';     
-            createdFromAgreementPage = true;
-            agreementRecordType = [select Id, Name from RecordType where Id = :recordTypeId].Name;
-        }
-        else if((recordTypeId == null || recordTypeId == '') && (contractType == '' || contractType == null))
-        {
-            agreement = ECO_Service_Agreement.getAgreementFromId(agreement.Id);
-            
-            if(agreement.Project__c != null) 
-            	project = ECO_Service_Agreement.getProjectFromId(agreement.Project__c); 
-            else
-            {
-            	if(!agreement.ISMSA__c)
-            	{
-            		project = ECO_Service_Agreement.getProjectFromProjectAgreement(agreement.Id); 
-            		agreement.Project__c = project.Id; 
-            		update agreement;
-            		agreement = ECO_Service_Agreement.getAgreementFromId(agreement.Id);	  
-            	}        
-            }        
-            
-            agreementRecordType = agreement.RecordType.Name;
-        } 
-
-        populateRelatedAgreementObjects(); 
-        getPrimeScopeText();    
-    }
-       
+           
     public String getContractReviewStatus()
     {
     	list<Contract_Review__c> requests = [select Id, Status_Review__c from Contract_Review__c where Agreement__c = :agreement.Id];
@@ -963,7 +963,7 @@ global virtual class ECO_AgreementController {
     public PageReference save()
     {
         agreement.CurrencyIsoCode = agreement.FundingCurrencyCode__c; 
-        //agreement.TERMID__c = ECO_Service_Agreement.getPaymentTermIdFromString(agreement.PaymentTerms__c);
+        project = [select Id, Name, EstimatedContractValue__c, pse__Stage__c, EnableTopTaskCustomerFlag__c, EcoSystemReferenceNumber__c, OracleProjectnumber__c, pse__Project_Manager__c from pse__Proj__c where Id = :agreement.Project__c limit 1];  
         
         if(agreement.Amount__c <= 0)
         {
@@ -971,7 +971,15 @@ global virtual class ECO_AgreementController {
             ApexPages.addMessage(oPageMessage);
         	return null;
         }
-        	
+
+        if(project.pse__Stage__c == 'Execution' && agreement.RecordType.Name == 'Prime' && !project.EnableTopTaskCustomerFlag__c)
+        {
+            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Prime Agreement cannot be created for project in execution status and top tasks not enabled for project');
+            ApexPages.addMessage(oPageMessage);
+
+            return null;
+        }
+      	
         if(createdFromAgreementPage)
         {
             if(agreement.Project__c != null)
