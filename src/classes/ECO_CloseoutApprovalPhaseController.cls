@@ -263,7 +263,7 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
             returnvalue = false;         
         }        
 
-        for(ProjectReview__c pr: [select id, name, Status__c  from ProjectReview__c where Status__c != 'Approved'  and Project__c =: oproject.id]){
+        for(ProjectReview__c pr: [select id, name, Status__c  from ProjectReview__c where Status__c != 'Approved' and Status__c != 'Completed' and Project__c =: oproject.id]){
             ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Project Review Found - ' + pr.name + ' - ' + pr.Status__c + '.');
             ApexPages.addMessage(oMsg);     
             returnvalue = false;         

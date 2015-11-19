@@ -151,6 +151,10 @@ public with sharing class ECO_ProjectSetupController {
         public string id {get;set;}
         public string acctName {get;set;}
         public string oppName {get;set;}
+        public string oppNumber {get;set;}
+        public string stage {get;set;}
+        public string type {get;set;}
+        public string value {get;set;}
         public string capManager {get;set;}
         public string createdDate {get;set;}
     }
