@@ -4,7 +4,7 @@
             display:none !important;
         }
     </style>
-    <script>document.getElementById('{!$Component.proj}').disabled = true; </script>
+    
     <apex:form >
 	<apex:sectionHeader title="DOA Conditions of Approval Edit" subtitle="{!agreement.ContractTitle__c}({!agreement.AgreementNumber__c})" rendered="{!IF(agreement.ContractTitle__c != null,true,false)}"/>
 	<apex:sectionHeader title="DOA Conditions of Approval Edit" rendered="{!IF(agreement.ContractTitle__c == null,true,false)}"/>
@@ -12,31 +12,28 @@
 
 	<apex:pageBlockButtons >
 		<apex:commandButton value="Save" action="{!save}"/>
-		<apex:commandButton value="Return to MSA" action="{!returnToDOA}" rendered="{!IF(doaConditions.DOAApprovalRequest__c == null,true,false)}"/>
-        <apex:commandButton value="Return to DOA" action="{!returnToDOA}" rendered="{!IF(doaConditions.DOAApprovalRequest__c == null,false,true)}"/>
-        <apex:commandButton action="{!Cancel}" value="Return"/>
+		<!--<apex:commandButton value="Return to MSA" action="{!returnToDOA}" rendered="{!IF(doaConditions.DOAApprovalRequest__c == null,true,false)}"/>
+        <apex:commandButton value="Return to DOA" action="{!returnToDOA}" rendered="{!IF(doaConditions.DOAApprovalRequest__c == null,false,true)}"/>-->
+        <apex:commandButton action="{!Cancel}" value="Return" rendered="{!NOT(lockFields)}"/>
 	</apex:pageBlockButtons>
-
-	<apex:pageBlockSection collapsible="false">
-		<apex:pageBlockSectionItem >
+	<apex:pageBlockSection collapsible="false" rendered="{!NOT(lockFields)}">
+		<apex:pageBlockSectionItem rendered="{!NOT(lockFields)}">
 			<apex:outputText value="DOA Condition"/>
-			<apex:inputField value="{!DOAConditions__c.Name}"/>
+			<apex:inputField value="{!DOAConditions__c.Name}" />
+        </apex:pageBlockSectionItem>
+        <apex:inputField value="{!DOAConditions__c.DOAApprovalRequest__c}" rendered="{!NOT(lockFields)}"/>
+        <!--<apex:inputField value="{!DOAConditions__c.DOARegister__c}" rendered="{!IF(DoaApprovalId == null,true,false)}"/>-->
+        <apex:inputField value="{!DOAConditions__c.Project__c}" rendered="{!AND(IF(DOAConditions__c.Project__c != null,true,false),NOT(lockFields))}" id="proj"/>
+        <apex:inputField styleClass="hideDropdown" value="{!DOAConditions__c.CreatedBy__c}" rendered="{!NOT(lockFields)}"/>
+    </apex:pageBlockSection>
+    <apex:pageBlockSection collapsible="false" rendered="{!lockFields}">
+        <apex:pageBlockSectionItem >
+			<apex:outputText value="DOA Condition"/>
+			<apex:outputField value="{!DOAConditions__c.Name}" />
 		</apex:pageBlockSectionItem>
-        <apex:inputField value="{!DOAConditions__c.DOAApprovalRequest__c}"/>
-        
-		<!--<apex:inputField value="{!DOAConditions__c.DOARegister__c}" rendered="{!IF(DoaApprovalId == null,true,false)}"/>-->
-        <apex:inputField value="{!DOAConditions__c.Project__c}" rendered="{!IF(DOAConditions__c.Project__c != null,true,false)}" id="proj"/>
-        <apex:inputField styleClass="hideDropdown" value="{!DOAConditions__c.CreatedBy__c}"/>
-        
-        
-		<!--<apex:pageBlockSection >
-        	<apex:pageBlockSectionItem rendered="{!IF(DoaApprovalId != null,true,false)}">
-            	<apex:outputLabel value="Approver" />
-                <apex:inputField styleClass="hideDropdown" value="{!DOAConditions__c.CreatedBy__c}"/>
-            </apex:pageBlockSectionItem>
-		</apex:pageBlockSection>-->
-        <!--<apex:inputField value="{!DOAConditions__c.DoATriggerNo__c}" rendered="{!IF(DoaApprovalId == null,true,false)}"/>-->
-		<!--<apex:inputField value="{!DOAConditions__c.TriggerDescription__c}" rendered="{!IF(DoaApprovalId == null,true,false)}" style="width:50%;"/>-->
+        <apex:outputField value="{!DOAConditions__c.DOAApprovalRequest__c}" />
+		<apex:outputField value="{!DOAConditions__c.Project__c}" rendered="{!IF(DOAConditions__c.Project__c != null,true,false)}" id="proj2"/>
+        <apex:outputField value="{!DOAConditions__c.CreatedBy__c}" />
     </apex:pageBlockSection>
     <apex:pageBlockSection columns="1">
         <apex:pageBlockSectionItem helpText="{!$ObjectType.DOAConditions__c.fields.Mitigation_Plan__c.InlineHelpText}">
