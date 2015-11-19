@@ -14,7 +14,10 @@ public class ECO_Service_ProjectSnapshots {
     public static final String UNBILLED_61to90 = 'Unbilled61to90';
     public static final String UNBILLED_91to180 = 'Unbilled91to180';
     public static final String UNBILLED_181Plus = 'Unbilled181Plus';
-
+    
+    public DateTime pSnapshotDateTime {get; set;}
+    public Date pSnapshotDate {get; set;}
+    
     public ECO_EarnedValueReportController earnedValueController {get; set;}
     public Date EarnedValueSnapshotDate {get; set;}
     public DateTime EarnedValueLastModifiedDate {get; set;}
@@ -202,14 +205,17 @@ public class ECO_Service_ProjectSnapshots {
         }
     }
         
-    public ProjectSnapshot__c getProjectSnapshot()
+    public ProjectSnapshot__c getProjectSnapshot(DateTime pSnapshotAsOfDateTime)
     {
-        List<ProjectSnapshot__c> snapshotList = createProjectSnapshots();
+        List<ProjectSnapshot__c> snapshotList = createProjectSnapshots(pSnapshotAsOfDateTime);
         return snapshotList[0];
     }
     
-    public List<ProjectSnapshot__c> createProjectSnapshots()
+    public List<ProjectSnapshot__c> createProjectSnapshots(DateTime pSnapshotAsOfDateTime)
     {
+    	pSnapshotDateTime = pSnapshotAsOfDateTime;
+    	pSnapshotDate = pSnapshotDateTime.date();
+    	
     	List<ProjectSnapshot__c> snapshotList = new List<ProjectSnapshot__c>();
         try {
         	populateOrganizationsMaps(projectIds);
@@ -424,12 +430,12 @@ public class ECO_Service_ProjectSnapshots {
     
     /////// Future Spend
     @TestVisible private void populateFutureSpendMaps(List<Id> projectIds) {
-	    projectMonth1FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today(), Date.today().addMonths(1));
-        projectMonth2FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(1), Date.today().addMonths(2));        
-        projectMonth3FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(2), Date.today().addMonths(3));        
-        projectMonth4FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(3), Date.today().addMonths(4));        
-        projectMonth5FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(4), Date.today().addMonths(5));        
-        projectMonth6FutureSpend = getFutureSpendForPeriodMap(projectIds, Date.today().addMonths(5), Date.today().addMonths(6));        
+	    projectMonth1FutureSpend = getFutureSpendForPeriodMap(projectIds, pSnapshotDate, pSnapshotDate.addMonths(1));
+        projectMonth2FutureSpend = getFutureSpendForPeriodMap(projectIds, pSnapshotDate.addMonths(1), pSnapshotDate.addMonths(2));        
+        projectMonth3FutureSpend = getFutureSpendForPeriodMap(projectIds, pSnapshotDate.addMonths(2), pSnapshotDate.addMonths(3));        
+        projectMonth4FutureSpend = getFutureSpendForPeriodMap(projectIds, pSnapshotDate.addMonths(3), pSnapshotDate.addMonths(4));        
+        projectMonth5FutureSpend = getFutureSpendForPeriodMap(projectIds, pSnapshotDate.addMonths(4), pSnapshotDate.addMonths(5));        
+        projectMonth6FutureSpend = getFutureSpendForPeriodMap(projectIds, pSnapshotDate.addMonths(5), pSnapshotDate.addMonths(6));        
     }
     
     @TestVisible private ProjectSnapshot__c getFutureSpendInformation(ProjectSnapshot__c snapshot) {
@@ -536,8 +542,8 @@ public class ECO_Service_ProjectSnapshots {
         Date endDate;
         BillingMetrics billingMetrics;
         try {
-            startDate = Date.today();
-            endDate = Date.today().addDays(-181);
+			startDate = pSnapshotDate;
+            endDate = pSnapshotDate.addDays(-181);
             for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled
                             FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
                             InvoiceDate__c <= :startDate
@@ -565,20 +571,20 @@ public class ECO_Service_ProjectSnapshots {
         Date endDate;
         try {
             if (range == BILLED_0to30) {
-                startDate = Date.today();
-                endDate = Date.today().addDays(-30);
+                startDate = pSnapshotDate;
+                endDate = pSnapshotDate.addDays(-30);
             }
             else if (range == BILLED_31to60) {
-                startDate = Date.today().addDays(-31);
-                endDate = Date.today().addDays(-60);
+                startDate = pSnapshotDate.addDays(-31);
+                endDate = pSnapshotDate.addDays(-60);
             }
             else if (range == BILLED_61to90) {
-                startDate = Date.today().addDays(-61);
-                endDate = Date.today().addDays(-90);
+                startDate = pSnapshotDate.addDays(-61);
+                endDate = pSnapshotDate.addDays(-90);
             }
             else if (range == BILLED_91to180) {
-                startDate = Date.today().addDays(-91);
-                endDate = Date.today().addDays(-180);
+                startDate = pSnapshotDate.addDays(-91);
+                endDate = pSnapshotDate.addDays(-180);
             }
 
             for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled
@@ -607,19 +613,19 @@ public class ECO_Service_ProjectSnapshots {
         Date startDate;
         try {
         	if (range == UNBILLED_0to30) {
-                startDate = Date.today();
+                startDate = pSnapshotDate;
             }
             else if (range == UNBILLED_31to60) {
-                startDate = Date.today().addDays(-31);
+                startDate = pSnapshotDate.addDays(-31);
             }
             else if (range == UNBILLED_61to90) {
-                startDate = Date.today().addDays(-61);
+                startDate = pSnapshotDate.addDays(-61);
             }
             else if (range == UNBILLED_91to180) {
-                startDate = Date.today().addDays(-91);
+                startDate = pSnapshotDate.addDays(-91);
             }
             else if (range == UNBILLED_181Plus) {
-                startDate = Date.today().addDays(-180);
+                startDate = pSnapshotDate.addDays(-180);
             }
             
         	for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(Amount__c) totalRevenue
@@ -750,14 +756,14 @@ public class ECO_Service_ProjectSnapshots {
 
     @TestVisible private ProjectSnapshot__c getForecastBudgetHeaderMapInformation(FinancialMetrics forecastBudgetFinancialMetrics, ProjectSnapshot__c snapshot) {
         if (forecastBudgetFinancialMetrics != null) {
-	        snapshot.GrossRevenueForecast__c = forecastBudgetFinancialMetrics.TotalRevenue + snapshot.GrossRevenueBudget__c;
-	        snapshot.CostForecast__c = forecastBudgetFinancialMetrics.TotalCost + snapshot.CostBudget__c;
-	        snapshot.NetMarginForecast__c = forecastBudgetFinancialMetrics.NetMargin + snapshot.NetMarginBudget__c; 
-	        snapshot.NetServiceForecast__c = forecastBudgetFinancialMetrics.NetServiceRevenue + snapshot.NetServiceBudget__c;
-	        snapshot.NMNSRForecast__c = forecastBudgetFinancialMetrics.NMNSR + snapshot.NMNSRBudget__c;
-	        snapshot.NMGRForecast__c = forecastBudgetFinancialMetrics.NMGR + snapshot.NMGRBudget__c;
-	        snapshot.LaborMultForecast__c = forecastBudgetFinancialMetrics.LaborMult + snapshot.LaborMultBudget__c;
-	        snapshot.ContingencyForecast__c = forecastBudgetFinancialMetrics.TotalContingency + snapshot.ContingencyBudget__c;
+	        snapshot.GrossRevenueForecast__c = forecastBudgetFinancialMetrics.TotalRevenue;
+	        snapshot.CostForecast__c = forecastBudgetFinancialMetrics.TotalCost;
+	        snapshot.NetMarginForecast__c = forecastBudgetFinancialMetrics.NetMargin; 
+	        snapshot.NetServiceForecast__c = forecastBudgetFinancialMetrics.NetServiceRevenue;
+	        snapshot.NMNSRForecast__c = forecastBudgetFinancialMetrics.NMNSR;
+	        snapshot.NMGRForecast__c = forecastBudgetFinancialMetrics.NMGR;
+	        snapshot.LaborMultForecast__c = forecastBudgetFinancialMetrics.LaborMult;
+	        snapshot.ContingencyForecast__c = forecastBudgetFinancialMetrics.TotalContingency;
         }
 		return snapshot;
 	}        
@@ -1387,7 +1393,7 @@ public class ECO_Service_ProjectSnapshots {
     
     @TestVisible private Map<Id, FinancialMetrics> getTotalCostITD3MonthsAgoMap(List<Id> projectIds)
     {
-    	Date asOfDate = Date.today().addDays(-90);
+    	Date asOfDate = pSnapshotDate.addDays(-90);
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
         FinancialMetrics metrics = new FinancialMetrics();
         try {
@@ -1639,30 +1645,45 @@ public class ECO_Service_ProjectSnapshots {
                         }
                     }
                 }
-                else {
+                else if (ba.BudgetResource__r.BudgetHeader__r.OriginalBudget__c==true) {
                     if (PLReportCategory == ODC_Exps) {
-                        snapshot.CostsODCEXPSBudgetOriginal__c = ba.TotalComputedCost__c;
-                        snapshot.CostsODCEXPSForecast__c = ba.TotalComputedCost__c;
+                        snapshot.CostsODCEXPSBudgetOriginal__c = ba.TotalComputedCost__c;  
                     }
                     else if (PLReportCategory == ODC_Subs) {
                         snapshot.CostsODCSUBSBudgetOriginal__c = ba.TotalComputedCost__c;
-                        snapshot.CostsODCSUBSForecast__c = ba.TotalComputedCost__c;
                     }
                     else if (PLReportCategory == ODC_Contingency) {
                         snapshot.ContingencyBudgetOriginal__c = ba.TotalComputedCost__c;
-                        snapshot.ContingencyForecast__c = ba.TotalComputedCost__c;
                     }
                     else if (PLReportCategory == 'Labor') {
                         snapshot.LaborBudgetOriginal__c = ba.TotalComputedCost__c;
-                        snapshot.LaborForecast__c = ba.TotalComputedCost__c;
                     }
                     else if (PLReportCategory == 'Fringe') {
                         snapshot.FringeBudgetOriginal__c = ba.TotalComputedCost__c;
-                        snapshot.FringeForecast__c = ba.TotalComputedCost__c;
                     }
                     else if (PLReportCategory == 'Overhead') {
                         snapshot.OverheadBudgetOriginal__c = ba.TotalComputedCost__c;
-                        snapshot.OverheadForecast__c = ba.TotalComputedCost__c;
+                    }
+                }
+                else if (ba.BudgetResource__r.BudgetHeader__r.Status__c == 'Approved'){
+                	
+                    if (PLReportCategory == ODC_Exps) {
+                        snapshot.CostsODCEXPSBudget__c = ba.TotalComputedCost__c;
+                    }
+                    else if (PLReportCategory == ODC_Subs) {
+                        snapshot.CostsODCSUBSBudget__c = ba.TotalComputedCost__c;
+                    }
+                    else if (PLReportCategory == ODC_Contingency) {
+                        snapshot.ContingencyBudget__c = ba.TotalComputedCost__c;
+                    }
+                    else if (PLReportCategory == 'Labor') {
+                        snapshot.LaborBudget__c = ba.TotalComputedCost__c;
+                    }
+                    else if (PLReportCategory == 'Fringe') {
+                        snapshot.FringeBudget__c = ba.TotalComputedCost__c;
+                    }
+                    else if (PLReportCategory == 'Overhead') {
+                        snapshot.OverheadBudget__c = ba.TotalComputedCost__c;
                     }
                 }
 
