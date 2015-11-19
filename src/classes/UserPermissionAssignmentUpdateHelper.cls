@@ -1,4 +1,3 @@
-
 /*******************************************************************
   Name        :   UserPermissionAssignmentUpdateHelper
   Requester   :   CRS Requirments , Additional global system permissionsets
@@ -109,18 +108,16 @@ public  class UserPermissionAssignmentUpdateHelper
 	public void ProcessCRSPermissionsSets()
 	{
 	    // get CRS permissions sets
-		List<PermissionSet>  permissionSetsCRS = [Select id, Name From PermissionSet where name in ('Contract_Reviewer','Contract_Reviewer_SF'
-												,'Contract_Reviewer_General_User' , 'Contract_Reviewer_General_User_SF') order by Name];
+		List<PermissionSet>  permissionSetsCRS = [Select id, Name From PermissionSet where name in ('Contract_Reviewer_permission'
+								) order by Name];
 	
 		PermissionSet permissionSetCRS = permissionSetsCRS[0];
-		PermissionSet permissionSetSFCRS = permissionSetsCRS[3];
-		PermissionSet generalPermissionSetCRS = permissionSetsCRS[1];
-		PermissionSet generalPermissionSetSFCRS = permissionSetsCRS[2];
+		//PermissionSet generalPermissionSetCRS = permissionSetsCRS[0];
 
 		List<Id> userListIdsInsert = new List<Id>();
 		List<Id> userlistIdsRemove = new List<Id>();
 		
-		List<Id> generalUserListIdsInsert = new List<Id>();
+		//List<Id> generalUserListIdsInsert = new List<Id>();
 		for(User user: users){
 			//Detirmine if we are removing or adding the legal contract reviewe permission set for each user
 			if (user.Legal__c == true )
@@ -132,7 +129,7 @@ public  class UserPermissionAssignmentUpdateHelper
    				// add to list of users to remove the permision set from 
    				userlistIdsRemove.add(user.Id);
    			}
-   			generalUserListIdsInsert.add(user.Id);
+   			//generalUserListIdsInsert.add(user.Id);
 		}
 		
 
@@ -142,40 +139,41 @@ public  class UserPermissionAssignmentUpdateHelper
 			     										 WHERE id IN :userListIdsInsert AND 
 			     										 	 id not in (Select  AssigneeId From PermissionSetAssignment 
 			     										 	 			where (PermissionSetId = :permissionSetCRS.Id
-																     			 OR PermissionSetId = :permissionSetSFCRS.Id)
+																     			 //OR PermissionSetId = :permissionSetSFCRS.Id
+																     			 )
 																     			 and AssigneeId IN :userListIdsInsert)]);	
 										
 		//Get list of updated/inserted users that dont have either of the contract reviewer general  permission sets	     																     	
-		List<User> generalUserListToInsertCRS  	= 		new  List<User>([SELECT id, profile.UserLicense.Name
+		/*List<User> generalUserListToInsertCRS  	= 		new  List<User>([SELECT id, profile.UserLicense.Name
 			     										 FROM User
 			     										 WHERE id IN :generalUserListIdsInsert AND 
 			     										 	 id not in (Select  AssigneeId From PermissionSetAssignment 
 			     										 	 			where (PermissionSetId = :generalPermissionSetCRS.Id
 																     			 OR PermissionSetId = :generalPermissionSetSFCRS.Id)
 																     			 and AssigneeId IN :generalUserListIdsInsert)]);			
-
+	*/
 
 		// loop through discovered legal users and add the permission set related to their licence.
 		for(User user : userListToInsertCRS)
 		{
 	   		PermissionSetAssignment psa = new PermissionSetAssignment( AssigneeId = user.Id);
-	   		if (user.profile.UserLicense.Name == 'salesforce' )
+	   		/*if (user.profile.UserLicense.Name == 'salesforce' )
 	   		{
 	   			psa.PermissionSetId = permissionSetSFCRS.Id;
 	   			permissionSetAssignmentToUpdate.add(psa);
 	   		}
 	   		else if (user.profile.UserLicense.Name == 'Force.com - App Subscription')
-	   		{
+	   		{*/
 	   			psa.PermissionSetId = permissionSetCRS.Id;
 	   			permissionSetAssignmentToUpdate.add(psa);
-	   		}
+	   		//}
 
 	   		
 		}
 		
 
 		// loop through discovered  users and add the permission set related to their licence.
-		for(User user : generalUserListToInsertCRS)
+		/*for(User user : generalUserListToInsertCRS)
 		{
 	   		PermissionSetAssignment psa = new PermissionSetAssignment( AssigneeId = user.Id);
 	   		if (user.profile.UserLicense.Name == 'salesforce' )
@@ -189,13 +187,13 @@ public  class UserPermissionAssignmentUpdateHelper
 	   			permissionSetAssignmentToUpdate.add(psa);
 	   		}
 	   		
-		}
+		}*/
 
 		// find the users that require the contract reviewer permssion set removed.
 	    permissionSetAssignmentToRemove  =   [SELECT id
 		     										 FROM PermissionSetAssignment
 		     										 WHERE (PermissionSetId = :permissionSetCRS.Id
-		     										 OR PermissionSetId = :permissionSetSFCRS.Id
+		     										 //OR PermissionSetId = :permissionSetSFCRS.Id
 		     										 ) and AssigneeId IN :userlistIdsRemove];
 
 
