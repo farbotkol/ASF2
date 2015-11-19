@@ -249,11 +249,23 @@ private class ECO_DelegateManagerControllerTest {
 			controller = new ECO_DelegateManagerController(new ApexPages.StandardController(new Delegate__c()));
 			RecordType alternateRecordType = [Select Id from RecordType where sObjectType = 'Delegate__c' and Name = 'Administrator Override'];
 			controller.delegate.recordTypeId = alternateRecordType.Id;
+			controller.currentRecordType = 'Administrator Override';
 			controller.delegate.Delegate__c = testContact.Id;
 			controller.delegate.Start_Date__c = date.today();
 			controller.attachment = new Attachment(Name = 'Test', body = blob.valueOf('test attachment'));    
        		controller.addNewDelegate();
        		system.assertEquals(0, controller.contact.Delegates__r.size());
+       		alternateRecordType = [Select Id from RecordType where sObjectType = 'Delegate__c' and Name = 'Vacation'];
+			controller.delegate.recordTypeId = alternateRecordType.Id;
+			controller.currentRecordType = 'Vacation';
+			controller.delegate.Delegate__c = testContact.Id;
+			controller.delegate.Start_Date__c = date.today().addDays(61);
+			controller.delegate.End_Date__c = date.today();
+			controller.addNewDelegate();
+			controller.delegate.Start_Date__c = date.today();
+			controller.delegate.End_Date__c = date.today().addDays(61);
+			controller.addNewDelegate();
+
 		}
 	}
 
