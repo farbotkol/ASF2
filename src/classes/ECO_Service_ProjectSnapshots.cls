@@ -48,6 +48,7 @@ public class ECO_Service_ProjectSnapshots {
     Map<Id, FinancialMetrics> mtdActualFinancialMetricsMap;
     Map<Id, FinancialMetrics> itdActualFinancialMetricsMap;
     Map<Id, FinancialMetrics> ytdActualFinancialMetricsMap;
+	Map<Id, FinancialMetrics> totalCostITD3MonthsAgoMetricsMap;
 
     Map<Id, ProjectSnapshot__c> originalOrForecastBudgetCostsMap;
     Map<Id, ProjectSnapshot__c> originalOrForecastBudgetHoursMap;
@@ -85,8 +86,6 @@ public class ECO_Service_ProjectSnapshots {
         public Decimal LaborMult {get; set;}
         public Decimal TotalLabor {get; set;}
         public Decimal TotalNonLabor {get; set;}
-        public Decimal SurplusMargin {get; set;}
-        public Decimal LostMargin {get; set;}
         public Decimal TotalContingency {get; set;}
         public Decimal CostsODCEXPS {get; set;}
         public Decimal CostsODCSUBS {get; set;}
@@ -285,6 +284,8 @@ public class ECO_Service_ProjectSnapshots {
                 originalOrForecastBudgetCostsMap = getOriginalOrForecastBudgetCostsMap(projectIds, projIdToSnapshotMap);
                 originalOrForecastBudgetHoursMap = getOriginalOrForecastBudgetHoursMap(projectIds, projIdToSnapshotMap);
                 previousFMForecastMap = getPreviousFMForecastMap(projIdToSnapshotMap);
+                
+    			totalCostITD3MonthsAgoMetricsMap = getTotalCostITD3MonthsAgoMap(projectIds);
 
                 billingMetricsARMap = getBillingMetricsARMap(projectIds, itdActualFinancialMetricsMap);
                 
@@ -348,12 +349,16 @@ public class ECO_Service_ProjectSnapshots {
 	                FinancialMetrics forecastBudgetFinancialMetrics = forecastBudgetHeaderMap.get(project.Id);
 	                snapshot = getForecastBudgetHeaderMapInformation(forecastBudgetFinancialMetrics, snapshot);
 					
+					//RunRateAverageCost related
+		            FinancialMetrics costITD3MonthsAgoFinancialMetrics = totalCostITD3MonthsAgoMetricsMap.get(project.Id);
+					snapshot = getTotalCostITD3MonthsAgoMapInformation(costITD3MonthsAgoFinancialMetrics, snapshot);
+					
 					// Costs Forecast EAC
 		            snapshot = originalOrForecastBudgetCostsMap.get(project.Id);
 
 		            // Hours Forecast EAC
 		            snapshot = originalOrForecastBudgetHoursMap.get(project.Id);
-
+		            
 		            //Previous Forecast
 		            snapshot = previousFMForecastMap.get(project.Id);
 
@@ -828,6 +833,13 @@ public class ECO_Service_ProjectSnapshots {
 		}
     	return snapshot;
     }
+    
+    @TestVisible private ProjectSnapshot__c getTotalCostITD3MonthsAgoMapInformation(FinancialMetrics costITD3MonthsAgoFinancialMetrics, ProjectSnapshot__c snapshot) {
+        if (costITD3MonthsAgoFinancialMetrics != null) {
+	        snapshot.CostInceptionto3MonthsAgo__c = costITD3MonthsAgoFinancialMetrics.TotalCost; 
+        }
+		return snapshot;
+	}
 
     @TestVisible private ProjectSnapshot__c getYtdActualFinancialMetricsMapInformation(FinancialMetrics ytdActualFinancialMetrics, 
     		ProjectSnapshot__c snapshot, Date yearStartDate) {
@@ -858,13 +870,13 @@ public class ECO_Service_ProjectSnapshots {
     
         try {
             String query = 
-            	'SELECT SUM(ProjectFunctionalBurdenedCost__c) funcBurdenedCost, '+ 
-            	' ExpenditureItem__r.PLReportCategory__c category '+
+            	'SELECT SUM(ProjectFunctionalBurdenedCost__c) funcBurdenedCost,'+ 
+            	' ExpenditureItem__r.PLReportCategory__c category'+
             	' FROM CostDistLine__c'+
                 ' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds';
 
             if(asOfDate != null) {
-                query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate '+
+                query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate'+
                 	' AND ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
             }
             
@@ -890,7 +902,7 @@ public class ECO_Service_ProjectSnapshots {
                         	metrics.TotalContingency = funcBurdenedCost;
 						}
 						else if (arCategory == category && category == 'Labor') {
-// ?? DO NOTHING ?? //metrics.Labor = funcBurdenedCost;
+							metrics.Labor = funcBurdenedCost;
 						}
 						else if (arCategory == category && category == 'Fringe') {
                         	metrics.Fringe = funcBurdenedCost;
@@ -915,15 +927,15 @@ public class ECO_Service_ProjectSnapshots {
     
         try {
             String query = 
-            	'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId, '+ 
+            	'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId,'+ 
             	' SUM(ProjectFunctionalBurdenedCost__c) Labor FROM CostDistLine__c'+
                 ' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds' +
-                ' AND ExpenditureItem__r.PLReportCategory__c = \'Labor\' '+
-                ' AND ExpenditureItem__r.PLReportCategory__c != \'Fringe\' '+
+                ' AND ExpenditureItem__r.PLReportCategory__c = \'Labor\''+
+                ' AND ExpenditureItem__r.PLReportCategory__c != \'Fringe\''+
                 ' AND ExpenditureItem__r.PLReportCategory__c != \'Overhead\' ';  
 
             if(asOfDate != null) {
-                query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate '+
+                query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate'+
                     ' AND ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
             }
 
@@ -953,12 +965,12 @@ public class ECO_Service_ProjectSnapshots {
     
         try {
             String query = 
-            	'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId, '+ 
-            	' SUM(ExpenditureItem__r.Quantity__c) Hours FROM CostDistLine__c '+
+            	'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId,'+ 
+            	' SUM(ExpenditureItem__r.Quantity__c) Hours FROM CostDistLine__c'+
                 ' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds';
 
             if (asOfDate != null) {
-                query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate '+
+                query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate'+
                     ' AND ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
             }
 
@@ -1135,14 +1147,14 @@ public class ECO_Service_ProjectSnapshots {
     @TestVisible private Map<Id, FinancialMetrics> getOriginalBudgetHeaderMap(List<Id> projectIds, boolean showUnsynchedBudgets)
     {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
-        String query = 'SELECT Project__c, SUM(TotalRevenue__c) totalRevenue, '+
-            ' SUM(TotalCost__c) totalCost, '+ 
-            ' SUM(TotalNonLabor__c) totalNonLabor, '+ 
-            ' SUM(TotalLaborAmount__c) totalLabor, '+
-            ' SUM(TotalContingencyAmount__c) totalContingency '+
-            ' FROM BudgetHeader__c '+
-            ' WHERE OriginalBudget__c = true '+
-            ' AND Project__c IN :projectIds '+
+        String query = 'SELECT Project__c, SUM(TotalRevenue__c) totalRevenue,'+
+            ' SUM(TotalCost__c) totalCost,'+ 
+            ' SUM(TotalNonLabor__c) totalNonLabor,'+ 
+            ' SUM(TotalLaborAmount__c) totalLabor,'+
+            ' SUM(TotalContingencyAmount__c) totalContingency'+
+            ' FROM BudgetHeader__c'+
+            ' WHERE OriginalBudget__c = true'+
+            ' AND Project__c IN :projectIds'+
             ' GROUP BY Project__c';
         
         System.debug(System.LoggingLevel.WARN, '___query='+query);
@@ -1178,15 +1190,15 @@ public class ECO_Service_ProjectSnapshots {
     @TestVisible private Map<Id, FinancialMetrics> getApprovedBudgetHeaderMap(List<Id> projectIds, boolean showUnsynchedBudgets)
     {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
-        String query = 'SELECT Project__c, SUM(TotalRevenue__c) totalRevenue, '+
-	        ' SUM(TotalCost__c) totalCost, '+
-	        ' SUM(TotalNonLabor__c) totalNonLabor, '+
-	        ' SUM(TotalLaborAmount__c) totalLabor, '+
-	        ' SUM(TotalContingencyAmount__c) totalContingency '+
-	        ' FROM BudgetHeader__c '+
-	        ' WHERE Project__c IN :projectIds '+
-	        ' AND Status__c = \'Approved\' '+
-	        ' AND ChangeManagerApprovedForSynch__c = false '+
+        String query = 'SELECT Project__c, SUM(TotalRevenue__c) totalRevenue,'+
+	        ' SUM(TotalCost__c) totalCost,'+
+	        ' SUM(TotalNonLabor__c) totalNonLabor,'+
+	        ' SUM(TotalLaborAmount__c) totalLabor,'+
+	        ' SUM(TotalContingencyAmount__c) totalContingency'+
+	        ' FROM BudgetHeader__c'+
+	        ' WHERE Project__c IN :projectIds'+
+	        ' AND Status__c = \'Approved\''+
+	        ' AND ChangeManagerApprovedForSynch__c = false'+
 	        ' GROUP BY Project__c';
         
         try {
@@ -1302,16 +1314,16 @@ public class ECO_Service_ProjectSnapshots {
     {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
         String approvalStatus = 'Approved';
-        String query = 'SELECT Project__c, SUM(TotalRevenue__c) totalRevenue, '+
-	        ' SUM(TotalCost__c) totalCost, '+
-	        ' SUM(TotalNonLabor__c) totalNonLabor, '+
-	        ' SUM(TotalLaborAmount__c) totalLabor, '+
-	        ' SUM(TotalContingencyAmount__c) totalContingency '+
-	        ' FROM BudgetHeader__c '+
-	        ' WHERE Project__c IN :projectIds '+
-	        ' AND Status__c != \''+ approvalStatus + '\' '+
-	        ' AND Id IN (SELECT BudgetHeader__c FROM ChangeManager__c WHERE ApprovalStatus__c != \''+ approvalStatus + '\' '+
-	        ' AND Project__c IN :projectIds) '+
+        String query = 'SELECT Project__c, SUM(TotalRevenue__c) totalRevenue,'+
+	        ' SUM(TotalCost__c) totalCost,'+
+	        ' SUM(TotalNonLabor__c) totalNonLabor,'+
+	        ' SUM(TotalLaborAmount__c) totalLabor,'+
+	        ' SUM(TotalContingencyAmount__c) totalContingency'+
+	        ' FROM BudgetHeader__c'+
+	        ' WHERE Project__c IN :projectIds'+
+	        ' AND Status__c != \''+ approvalStatus + '\''+
+	        ' AND Id IN (SELECT BudgetHeader__c FROM ChangeManager__c WHERE ApprovalStatus__c != \''+ approvalStatus + '\''+
+	        ' AND Project__c IN :projectIds)'+
 			' GROUP BY Project__c';     
 			
 		System.debug(System.LoggingLevel.WARN, '___query='+query);
@@ -1350,7 +1362,7 @@ public class ECO_Service_ProjectSnapshots {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
         FinancialMetrics metrics = new FinancialMetrics();
         try {
-        	String query = 'SELECT ProjectNumber__c, SUM(Amount__c) totalRevenue FROM Revenue__c '+
+        	String query = 'SELECT ProjectNumber__c, SUM(Amount__c) totalRevenue FROM Revenue__c'+
         		' WHERE ProjectNumber__c IN :projectIds ';
         	if (asOfDate != null) {
         	    query += ' AND GLDate__c >= :asOfDate AND GLDate__c <= TODAY ';
@@ -1372,6 +1384,34 @@ public class ECO_Service_ProjectSnapshots {
         }
         return metricsMap; 
     }
+    
+    @TestVisible private Map<Id, FinancialMetrics> getTotalCostITD3MonthsAgoMap(List<Id> projectIds)
+    {
+    	Date asOfDate = Date.today().addDays(-90);
+        Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
+        FinancialMetrics metrics = new FinancialMetrics();
+        try {
+        	String query = 'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId,'+ 
+        		' SUM(ProjectRawCost__c) totalCost FROM CostDistLine__c'+ 
+        		' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds'+
+                ' AND GLDate__c <= :asOfDate'+
+                ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__c';
+            
+            List<AggregateResult> results = database.query(query);
+            for (AggregateResult ar: results)
+            {
+            	Decimal totalCostValue = (Decimal)ar.get('totalCost');
+                if (totalCostValue != null) {
+                    metrics.TotalCost = totalCostValue;
+                	metricsMap.put((Id)ar.get('projectId'), metrics);
+                }
+            }
+        }
+        catch(Exception e) {
+            System.Debug(e.getStackTraceString());
+        }
+        return metricsMap; 
+    }
 
     @TestVisible private Map<Id, FinancialMetrics> getProjectActualFinancialsTotalCostMap(List<Id> projectIds, 
     	Date asOfDate, Map<Id, FinancialMetrics> totalRevenueMap)
@@ -1379,8 +1419,8 @@ public class ECO_Service_ProjectSnapshots {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
         FinancialMetrics metrics = new FinancialMetrics();
         try {
-        	String query = 'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId, '+ 
-        		' SUM(ProjectRawCost__c) totalCost FROM CostDistLine__c '+ 
+        	String query = 'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId,'+ 
+        		' SUM(ProjectRawCost__c) totalCost FROM CostDistLine__c'+ 
         		' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds ';                                                                                       
             if (asOfDate != null) {
                 query += ' AND GLDate__c >= :asOfDate AND GLDate__c <= TODAY ';
@@ -1410,9 +1450,9 @@ public class ECO_Service_ProjectSnapshots {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
         FinancialMetrics metrics = new FinancialMetrics();
         try {
-        	String query = 'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId, '+ 
-        		' SUM(ProjectRawCost__c) totalLabor FROM CostDistLine__c '+
-        		' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds '+
+        	String query = 'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId,'+ 
+        		' SUM(ProjectRawCost__c) totalLabor FROM CostDistLine__c'+
+        		' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds'+
         		' AND ExpenditureItem__r.ExpenditureType__c like  \'LAB% \' ';
             if (asOfDate != null) {
                 query += ' AND GLDate__c >= :asOfDate AND GLDate__c <= TODAY ';
@@ -1440,8 +1480,8 @@ public class ECO_Service_ProjectSnapshots {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
         FinancialMetrics metrics = new FinancialMetrics();
         try {
-        	String query = 'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId, '+ 
-        		' SUM(ProjectRawCost__c) totalNonLabor FROM CostDistLine__c '+
+        	String query = 'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId,'+ 
+        		' SUM(ProjectRawCost__c) totalNonLabor FROM CostDistLine__c'+
         		' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds ' + 
         		' AND (NOT ExpenditureItem__r.ExpenditureType__c like \'LAB% \') ';
             if (asOfDate != null) {
@@ -1503,9 +1543,6 @@ public class ECO_Service_ProjectSnapshots {
 		            metrics.LaborMult = getLaborMult(totalRevenueMetrics.TotalRevenue, totalNonLaborMetrics.TotalNonLabor, totalLaborMetrics.TotalLabor);
 		            System.debug(System.LoggingLevel.WARN, '___metrics.LaborMult='+metrics.LaborMult); 
 				}
-					    
-	            metrics.SurplusMargin = getSurplusMargin();
-	            metrics.LostMargin = getLostMargin();
 
 				if (funcBurdenedCostsMetrics != null) {
 		            metrics.CostsODCEXPS = funcBurdenedCostsMetrics.CostsODCEXPS;
@@ -1694,7 +1731,7 @@ public class ECO_Service_ProjectSnapshots {
                 snapshot.FringeForecastPrevME__c = snapshotPrevFM.FringeForecast__c;
                 snapshot.OverheadForecastPrevME__c = snapshotPrevFM.OverheadForecast__c;
                 snapshot.HoursForecastPrevME__c = snapshotPrevFM.HoursForecast__c;
-                snapshot.LostMarginForecast__c = snapshotPrevFM.LostMarginForecast__c;
+                snapshot.LostMarginForecastPrevME__c = snapshotPrevFM.LostMarginForecast__c;
                 snapshot.ProjectEndDatePrevME__c = snapshotPrevFM.ProjectEndDate__c;
                 snapshot.CashFlowITDPrevME__c = snapshotPrevFM.CashFlowITD__c;
             	projectIdToSnapshotMap.put(projId, snapshot);
@@ -1737,18 +1774,6 @@ public class ECO_Service_ProjectSnapshots {
         }
         return laborMultValue;
     }
-    
-    @TestVisible private Decimal getSurplusMargin()
-    {
-        
-        return null;
-    }
-    
-    private Decimal getLostMargin()
-    {
-        
-        return null;
-    }   
     
     private Decimal getNetService(Decimal revenue, Decimal nonLabor)
     {
