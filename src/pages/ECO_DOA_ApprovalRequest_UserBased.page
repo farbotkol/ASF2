@@ -48,12 +48,21 @@
     <apex:form id="theform">
         
         <apex:sectionHeader title="DOA Approval Request" subtitle="{!oDOA.Name}"/>
-        
-        <div class="customHelpText">
-            <div class="customHelpBody">
-                <p>This section summarizes the DOA approval request details prior to submitting the request and initiating the approval process.  Attach necessary documents or notes, view and revise approval forms, as needed, and click the “Submit to DoA Approval Queue” when ready to request approval for the selected DOA matters listed in the DOA Register.  The request will be submitted to a local queue and assigned to an appropriate ORM administrator to facilitate the approval process.  </p>
+        <apex:outputLabel rendered="{!NOT(isDOAAdmin)}">
+            <div class="customHelpText">
+                <div class="customHelpBody">
+                    <p>This section summarizes the DOA approval request details prior to submitting the request and initiating the approval process.  Attach necessary documents or notes, view and revise approval forms, as needed, and click the “Submit to DoA Approval Queue” when ready to request approval for the selected DOA matters listed in the DOA Register.  The request will be submitted to a local queue and assigned to an appropriate ORM administrator to facilitate the approval process.  </p>
+                </div>
             </div>
-	  	</div>
+        </apex:outputLabel>
+        <apex:outputLabel rendered="{!isDOAAdmin}">
+            <div class="customHelpText">
+                <div class="customHelpBody">
+                    <p>This section serves as a 'dashboard' for the ORM Administrator to initiate, manage and monitor the approval process for the specific DOA approval request.  Users can review the completed approval request form(s), DOA matters under consideration, approval participant names/roles, existing and/or pending approvals, contract review status (as needed), and recorded conditions of approval.</p>
+                </div>
+            </div>
+        </apex:outputLabel>
+        
         <apex:pageBlock title="Approvals" id="thepageblock">
             <apex:pageMessages id="messages" />
             <apex:pageBlockButtons >
