@@ -17,6 +17,8 @@ public with sharing class ECO_ProjectStatusController {
 		lClassificationPathNames.add('ProgressBarExecutionApproval__c');
         lClassificationPathNames.add('ProposalSubmittedDate__c');
         lClassificationPathNames.add('RM_Button_Clicked__c');
+        
+        
         controller.addFields(lClassificationPathNames);
 
         currentProject = (pse__Proj__c)controller.getRecord();
@@ -833,7 +835,7 @@ public with sharing class ECO_ProjectStatusController {
             if(lChanges.size()==0 || serviceStatus == false)
                 retStatus =  'NotStarted';
             else if(serviceStatus == true)
-                retStatus = 'Rejected';
+                retStatus = 'Started';
             else if(count > 0){
                 retStatus = 'Started';
             }
@@ -993,15 +995,15 @@ public with sharing class ECO_ProjectStatusController {
             System.debug('lchanges.size():  '+lchanges.size()+'   allStatus:'+allStatus);
             if(executeApprovalStatus == 'Complete'){
             //if(1==1){
-                if(currentProject.pse__Stage__c == 'Closed' || currentProject.pse__Stage__c == 'On Hold')
+                if(currentProject.pse__Stage__c == 'Closed' )
                     return 'Complete';
                 //if( lchanges.size()>0 && allStatus != '' && allStatus.containsOnly('C'))
                     //return 'Complete';
-				else if(lchanges.size()>0 && allStatus != '' && allStatus.contains('S'))
+				else if(lchanges.size()>0 && allStatus != '' && allStatus.contains('S') && currentProject.pse__Stage__c == 'On Hold')
                     return 'Started';
-                else if(lchanges.size()>0 )
+                /*else if(lchanges.size()>0 )
                     return 'Ready';
-                /*else if(currentProject.pse__Stage__c == 'Closed' )
+                else if(currentProject.pse__Stage__c == 'Closed' )
                     return 'Complete';
                 */else
                     return 'NotStarted';
