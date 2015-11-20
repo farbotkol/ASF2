@@ -666,7 +666,7 @@ public with sharing class ECO_StakeholdersController
 	private void sendApprovalProcess(ProjectTeamMember__c projectTeamMember, String roleName){
 		Contact contact;
 
-		if(roleName != 'Project Approver 2' && roleName != 'Finance Lead'){
+		if(roleName != 'Project Approver 2' && roleName != 'Finance Lead' && roleName != 'Deputy Project Manager'){
 			//find the contact from the loaded list already in viewstate
 			for(Contact queryDelegate : queryDelegates){
 				if(queryDelegate.Id == projectTeamMember.Contact__c){
