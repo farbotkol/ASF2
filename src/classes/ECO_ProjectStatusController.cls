@@ -820,7 +820,7 @@ public with sharing class ECO_ProjectStatusController {
             serviceStatus = ECO_Service_ChangeManager.hasUnsubmittedProjectChanges(currentRecordId);
             List<ChangeManager__c> lChanges = new List<ChangeManager__c>([Select id, ApprovalStatus__c From ChangeManager__c Where Project__c = :currentRecordId]);
             for(ChangeManager__c oChanges :lChanges){
-                if(oChanges.ApprovalStatus__c != 'Approved' || oChanges.ApprovalStatus__c!='Auto Approved'){
+                if(oChanges.ApprovalStatus__c == 'Submitted' || string.isBlank(oChanges.ApprovalStatus__c)){
                 	count++;
                 }
                 /*else if(serviceStatus == false){
@@ -832,14 +832,21 @@ public with sharing class ECO_ProjectStatusController {
                 if(oChanges.ApprovalStatus__c == 'Rejected')
                     retString = 'Rejected';*/
             }
-            if(lChanges.size()==0 || serviceStatus == false)
+            /*if(lChanges.size()==0 || serviceStatus == false)
                 retStatus =  'NotStarted';
             else if(serviceStatus == true)
                 retStatus = 'Started';
             else if(count > 0){
                 retStatus = 'Started';
             }
-            return retStatus;
+            if(lChanges.size() == 0)
+                retStatus = 'NotStarted';
+            else */
+            if(count > 0)
+                return 'Started';
+            else
+                return 'Complete';
+             
         }
         set;
     }  
