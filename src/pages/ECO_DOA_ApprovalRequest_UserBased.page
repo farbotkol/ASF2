@@ -78,7 +78,8 @@
                 <apex:commandButton action="{!submitDCSHub}" value="Submit for DCS Hub Approval" rendered="{!isDOAAdmin}"/>
                 <apex:commandButton action="{!submitAECOMHub}" value="Submit for AECOM Hub Approval" rendered="{!isDOAAdmin}"/>
                 <apex:commandButton action="{!submitDOAQueue}" value="Submit to DoA Approval Queue" rendered="{!NOT(inQueue)}"/>
-                <apex:commandButton action="/resource/RiskCommitteeSubmittalTemplate" value="Risk Committee Submittal Template" rendered="{!AND(NOT(inQueue), NOT(isDOAAdmin),oDOA.Enable_RCST_Button__c )}"/>
+                <!--<apex:commandButton action="/resource/RiskCommitteeSubmittalTemplate" value="Risk Committee Submittal Template" rendered="{!AND(NOT(inQueue), NOT(isDOAAdmin),oDOA.Enable_RCST_Button__c )}" />-->
+                <apex:outputLink value="{!URLFOR($Resource.RiskCommitteeSubmittalTemplate)}" rendered="{!AND(NOT(inQueue), NOT(isDOAAdmin),oDOA.Enable_RCST_Button__c )}" styleClass="btn" style="text-decoration:none;padding:4px;">Risk Committee Submittal Template</apex:outputLink>
                 <apex:commandButton action="/{!oDOA.Project__c}" value="Return to Project" rendered="{!AND(inQueue)}"/>
             </apex:pageBlockButtons>
             <apex:pageBlockSection title="DOA Approval Request Detail" >
