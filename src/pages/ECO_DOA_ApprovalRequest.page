@@ -76,7 +76,7 @@
                                     <apex:actionRegion >
                                     <!--<apex:outputLink value="/{!Trigger.oTrigger.id}/e?retURL=%2F{!Trigger.oTrigger.id}">Edit</apex:outputLink>
                                     &nbsp;&nbsp;-->
-                                    <apex:commandLink action="{!deleteDOA}" value="Delete" rerender="thepageblocksection, ProjectTriggerPanel, messages" >
+                                    <apex:commandLink action="{!deleteDOA}" value="Delete" rerender="thepageblocksection, ProjectTriggerPanel, messages" rendered="{!IF(Trigger.oTrigger.DOA_Request_Status__c == 'Not Started',true,false)}">
                                     	<apex:param assignTo="{!deleteId}" name="DeleteId" value="{!Trigger.oTrigger.id}" />
                                     </apex:commandLink>
                                     </apex:actionRegion>
