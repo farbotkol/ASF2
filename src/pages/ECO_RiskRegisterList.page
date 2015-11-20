@@ -47,7 +47,13 @@
             <apex:commandButton action="{!returnProj}" value="Return to Project" immediate="true"/>
             <apex:commandButton action="{!exportCSV}" value="Export to CSV"/>
         </apex:pageBlockButtons>
+        <apex:pageBlockSection columns="1" collapsible="false" >
+            <apex:outputText style="font-weight:600" value="Total Contingency included in Approved Cost Budget:  ${!totalApprovedCost}"/>
+         	<apex:outputText style="font-weight:600" value="Total Contingency included in Forecast Cost Budget:  ${!totalForecastCost}"/>
+         	<apex:outputText style="font-weight:600" value="Total Post Mitigation Per Risk Register:  ${!totalPostMitigation}"/>
+        </apex:pageBlockSection>
        	<apex:pageBlockSection title="Project Risks" columns="1" collapsible="false">
+            
             <apex:pageBlockTable value="{!Risks}" rendered="{!Risks.size > 0}" var="risklist" rowClasses="even,odd">
                 <apex:column headerValue="Action">
                     <!--<apex:commandLink value="Edit" action="/{!risklist.Id}/e?retURL=/apex/ECO_RiskRegisterList?id={!pse__Proj__c.id}"/>&nbsp;&nbsp;-->
