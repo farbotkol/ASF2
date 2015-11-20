@@ -87,7 +87,8 @@
                     <apex:outputField value="{!oDOA.OwnerId}" rendered="{!NOT(isDOAAdmin)}"/>
                 	<apex:inputField value="{!oDOA.OwnerId}" rendered="{!isDOAAdmin}"/>
                     <apex:outputField value="{!oDOA.Name}"/>
-                    <apex:inputField value="{!oDOA.Requestor__c}" styleClass="hideDropdown" required="true"/>
+                    <apex:inputField value="{!oDOA.Requestor__c}" styleClass="hideDropdown" required="true" rendered="{!IF(OR(oDOA.ApprovalStatus__c == 'Submitted', oDOA.ApprovalStatus__c == 'Approved'),false,true)}"/>
+                	<apex:outputField value="{!oDOA.Requestor__c}" styleClass="hideDropdown" rendered="{!IF(OR(oDOA.ApprovalStatus__c == 'Submitted', oDOA.ApprovalStatus__c == 'Approved'),true,false)}"/>
                     <apex:outputField value="{!oDOA.ProjectNumber__c}" rendered="{!IF(oDOA.Project__c != null, true, false)}"/>
                 	<apex:inputField value="{!oDOA.OracleProjectNumber__c}" rendered="{!IF(oDOA.Project__c != null, false, true)}"/>
                     <apex:outputField value="{!oDOA.EndClientPrimary__c}" rendered="{!IF(oDOA.Project__c != null, true, false)}"/>
