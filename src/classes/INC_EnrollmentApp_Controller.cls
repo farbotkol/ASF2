@@ -507,10 +507,6 @@ public with sharing class INC_EnrollmentApp_Controller {
     public pageReference closeNoAwardApplication(){
       EnrollmentPlan__c oEnrollmentAppToUpdate = new EnrollmentPlan__c();
 
-      oEnrollmentAppToUpdate.Id = oEnrollmentApp.Id;
-      oEnrollmentAppToUpdate.EnrollmentStatus__c = 'Closed - No Award';
-
-      update oEnrollmentAppToUpdate;
 
        ID workItem = getWorkItemId(oEnrollmentApp.ID);
        System.debug('workItemid ' + workItem);
@@ -524,6 +520,18 @@ public with sharing class INC_EnrollmentApp_Controller {
        }
        
        System.Debug(logginglevel.error,'finalRejectButton clicked');
+
+      oEnrollmentAppToUpdate.Id = oEnrollmentApp.Id;
+      oEnrollmentAppToUpdate.EnrollmentStatus__c = 'Closed - No Award';
+
+      Try{
+        update oEnrollmentAppToUpdate;
+         return new pageReference('/apex/INC_DeliverToWinLanding');
+      }
+      catch(Exception e){
+        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error, e.getMessage()));
+       } 
+      
 
       return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.id);
     }

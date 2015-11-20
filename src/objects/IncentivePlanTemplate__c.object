@@ -137,6 +137,7 @@
     <fields>
         <fullName>GeographyAllocation__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Incentive Projects must have a matching value in their Super Geography field to display this incentive plan as an option.  Changes to Super Geographies necessitate a change to this field.</inlineHelpText>
         <label>Geography Allocation</label>
         <picklist>
             <picklistValues>
@@ -149,10 +150,6 @@
             </picklistValues>
             <picklistValues>
                 <fullName>ANZ</fullName>
-                <default>false</default>
-            </picklistValues>
-            <picklistValues>
-                <fullName>APAC</fullName>
                 <default>false</default>
             </picklistValues>
             <picklistValues>
@@ -171,7 +168,11 @@
                 <fullName>Worldwide</fullName>
                 <default>false</default>
             </picklistValues>
-            <sorted>true</sorted>
+            <picklistValues>
+                <fullName>APAC</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
         </picklist>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -212,7 +213,7 @@
     <fields>
         <fullName>MaxComplete__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Max Project % Complete</inlineHelpText>
+        <inlineHelpText>An Application Exception will surface on any ENR when the value displayed in its &quot;Actual Total Cost % Complete&quot; field exceeds this value.</inlineHelpText>
         <label>Max % Complete</label>
         <precision>18</precision>
         <required>false</required>
@@ -224,7 +225,7 @@
     <fields>
         <fullName>MaxEACDays__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Max EAC Last Update (Days)</inlineHelpText>
+        <inlineHelpText>An Application Issue will surface on any ENR or CCR when today&apos;s date minus the Incentive Project&apos;s &quot;EAC as of Date&quot; exceeds this number.</inlineHelpText>
         <label>Max EAC Days</label>
         <precision>18</precision>
         <required>false</required>
@@ -412,6 +413,7 @@ IF(TEXT(MaxPoolOperator__c ) = &quot;&quot;, NULL,
     <fields>
         <fullName>MaxPoolPercent__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>This field is used in the system&apos;s underlying calculations of max incentive pool.  The formula for maximum incentive pool is displayed to the right.</inlineHelpText>
         <label>Max Pool %</label>
         <precision>18</precision>
         <required>false</required>
@@ -424,7 +426,7 @@ IF(TEXT(MaxPoolOperator__c ) = &quot;&quot;, NULL,
     <fields>
         <fullName>MaxPool__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Maximum Incentive Pool size</inlineHelpText>
+        <inlineHelpText>This field displays the formula that is used in the underlying system calculation of maximum incentive pool.</inlineHelpText>
         <label>Max Pool</label>
         <length>1000</length>
         <trackHistory>false</trackHistory>
@@ -435,7 +437,7 @@ IF(TEXT(MaxPoolOperator__c ) = &quot;&quot;, NULL,
     <fields>
         <fullName>MinAllocationAmount__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Minimum Participant $ Allocation Allowable (Max Pool x Participant %)</inlineHelpText>
+        <inlineHelpText>An Application Issue will surface on an ENR if a participant is given a target % that results in their sample pool being less than this number.</inlineHelpText>
         <label>Min Allocation $</label>
         <precision>18</precision>
         <required>false</required>
@@ -447,7 +449,7 @@ IF(TEXT(MaxPoolOperator__c ) = &quot;&quot;, NULL,
     <fields>
         <fullName>MinAllocationPer__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Minimum Participant % Allocation Allowable</inlineHelpText>
+        <inlineHelpText>An Application Issue will surface if a participant is allocated less than this number in the Target % field.</inlineHelpText>
         <label>Min Allocation %</label>
         <precision>18</precision>
         <required>false</required>
@@ -503,6 +505,7 @@ IF(TEXT(MaxPoolOperator__c ) = &quot;&quot;, NULL,
     <fields>
         <fullName>ProfitSharingDetails__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>Additional details captured as needed, regarding % of incremental margin shared with participants</inlineHelpText>
         <label>Profit Sharing Details</label>
         <length>1000</length>
         <trackHistory>false</trackHistory>
@@ -513,7 +516,7 @@ IF(TEXT(MaxPoolOperator__c ) = &quot;&quot;, NULL,
     <fields>
         <fullName>ProfitSharingPercent__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>% of incremental margin shared with participants if incentive plan metrics are achieved</inlineHelpText>
+        <inlineHelpText>This field is used in the underlying calculations of Estimated Incentive Pool @ EAC, Estimated Incentive Pool @ ITD, and Final Incentive Pool @ ITD.</inlineHelpText>
         <label>Profit Sharing %</label>
         <precision>18</precision>
         <required>false</required>
@@ -537,8 +540,7 @@ IF(TEXT(MaxPoolOperator__c ) = &quot;&quot;, NULL,
         <fullName>ScheduledEndDateNotLessThanDays__c</fullName>
         <defaultValue>90</defaultValue>
         <externalId>false</externalId>
-        <inlineHelpText>Enter the amount of days the incentive Project Scheduled End Date cannot be less than.
-(i.e. End Date can Not be Less than 90 Days from TODAY)</inlineHelpText>
+        <inlineHelpText>An application exception will surface on any ENR when the Incentive Project&apos;s &quot;Scheduled End Date&quot; minus today&apos;s date is less than this number.</inlineHelpText>
         <label>Scheduled End Date Not Less Than Days</label>
         <precision>4</precision>
         <required>false</required>
@@ -560,6 +562,7 @@ IF(TEXT(MaxPoolOperator__c ) = &quot;&quot;, NULL,
     <fields>
         <fullName>Status__c</fullName>
         <externalId>false</externalId>
+        <inlineHelpText>If Active this plan can be assigned to new Incentive Projects.  If Plan details change, and are scheduled to effect future projects, a new plan must be created.  Once zero projects reference this plan template, it can be made inactive.</inlineHelpText>
         <label>Status</label>
         <picklist>
             <picklistValues>
@@ -574,7 +577,7 @@ IF(TEXT(MaxPoolOperator__c ) = &quot;&quot;, NULL,
                 <fullName>Inactive</fullName>
                 <default>false</default>
             </picklistValues>
-            <sorted>true</sorted>
+            <sorted>false</sorted>
         </picklist>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
@@ -667,7 +670,7 @@ IF(AND(ThresholdPercent__c &lt; 3,ThresholdPercent__c &gt; 0),
     <fields>
         <fullName>Threshold__c</fullName>
         <externalId>false</externalId>
-        <inlineHelpText>Threshold above which an incentive can be earned</inlineHelpText>
+        <inlineHelpText>This field is used in the system&apos;s underlying threshold calculations.  It is stated in terms of Baseline + a numeric % (if applicable).</inlineHelpText>
         <label>Threshold</label>
         <length>1000</length>
         <trackHistory>false</trackHistory>
@@ -681,6 +684,7 @@ IF(AND(ThresholdPercent__c &lt; 3,ThresholdPercent__c &gt; 0),
         <description>1) Need to have a configurable alert threshold. 
 If the baseline this week (after latest Insight data feed) is different from the baseline from last week by &gt; x%, we want the alert to fire.</description>
         <externalId>false</externalId>
+        <inlineHelpText>When active, a notification will fire to Approver 1 when a change to the Baseline Margin % field is affected in excess of this %.</inlineHelpText>
         <label>Variance Alert</label>
         <precision>3</precision>
         <required>false</required>

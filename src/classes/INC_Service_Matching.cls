@@ -15,7 +15,7 @@ public with sharing class INC_Service_Matching {
 		list<RoutingMember_Wrapper> listReturn = new list<RoutingMember_Wrapper>();
 		For(RoutingMember__c oMember:  [Select Id
 												, Name
-												, BusinessLineDescription__c
+												, EndMarket__c
 												, GeographyDescription__c
 												, LegalEntityDescription__c
 												, RegionDescription__c

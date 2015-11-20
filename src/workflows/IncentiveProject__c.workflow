@@ -1,6 +1,16 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
     <alerts>
+        <fullName>Notification_of_Approaching_IP_Scheduled_Finish_Date</fullName>
+        <description>Notification of Approaching IP Scheduled Finish Date</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>DTW_Project_Incentives/Notification_of_Approaching_IP_Scheduled_Finish_Date</template>
+    </alerts>
+    <alerts>
         <fullName>Notify_AP1_of_project_closure_and_payment_form_to_complete</fullName>
         <description>11Notify AP1 of project closure and payment form to complete</description>
         <protected>false</protected>
@@ -60,7 +70,7 @@
     </alerts>
     <alerts>
         <fullName>Send_notification_to_PM_when_IP_Scheduled_End_Date_is_30_Days</fullName>
-        <description>Send notification to PM when IP Scheduled End Date is 30 Days</description>
+        <description>xxxxSend notification to PM when IP Scheduled End Date is 30 Days</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -70,7 +80,7 @@
     </alerts>
     <alerts>
         <fullName>Send_notification_to_PM_when_IP_Scheduled_End_Date_is_60_Days</fullName>
-        <description>Send notification to PM when IP Scheduled End Date is 60 Days</description>
+        <description>xxxxSend notification to PM when IP Scheduled End Date is 60 Days</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -166,23 +176,15 @@ AND(
     </rules>
     <rules>
         <fullName>30 Day Scheduled Finish Date Alert</fullName>
-        <actions>
-            <name>Send_notification_to_PM_when_IP_Scheduled_End_Date_is_30_Days</name>
-            <type>Alert</type>
-        </actions>
-        <active>true</active>
-        <description>Used to send an alert to the Program Manager 30 days before the Incentive Project&apos;s scheduled finish date.</description>
+        <active>false</active>
+        <description>DELETE Used to send an alert to the Program Manager 30 days before the Incentive Project&apos;s scheduled finish date.  DELETE</description>
         <formula>TODAY() - ScheduledFinishDate__c = -30</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>60 Day Scheduled Finish Date Alert</fullName>
-        <actions>
-            <name>Send_notification_to_PM_when_IP_Scheduled_End_Date_is_60_Days</name>
-            <type>Alert</type>
-        </actions>
-        <active>true</active>
-        <description>Used to send an alert to the Program Manager 60 days before the Incentive project&apos;s scheduled finish date.</description>
+        <active>false</active>
+        <description>DELETE Used to send an alert to the Program Manager 60 days before the Incentive project&apos;s scheduled finish date.  DELETE</description>
         <formula>TODAY() - ScheduledFinishDate__c = -60</formula>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>

@@ -97,7 +97,7 @@ public with sharing class INC_AssignApproversController {
 											, GeographyDescription__c
 											, DistrictDescription__c
 											, RegionDescription__c
-											, BusinessLineDescription__c
+											, EndMarket__c
 											, LegalEntityDescription__c
 											, Approver1__c
 											, Approver2__c

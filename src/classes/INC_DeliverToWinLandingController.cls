@@ -1,4 +1,4 @@
-public with sharing class INC_DeliverToWinLandingController {
+public without sharing class INC_DeliverToWinLandingController {
 	public list<IncentiveProject__c> lstIP {get;set;}
     public list<IncentiveProject__c> lstIPShort {get;set;}
 	public list<INC_LandingPageResourceLinks__c> lstResources {get;set;}

@@ -208,7 +208,7 @@
     <fieldUpdates>
         <fullName>INC_Add_Geography_to_Participant_Acknowl</fullName>
         <field>Geography__c</field>
-        <formula>IncentiveProject__r.GeographyDescription__c</formula>
+        <formula>ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.GeographyDescription__c</formula>
         <name>INC_Add Geography to Participant Acknowl</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
@@ -377,11 +377,8 @@
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
-        <criteriaItems>
-            <field>ParticipantAcknowledgement__c.Geography__c</field>
-            <operation>equals</operation>
-        </criteriaItems>
-        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <formula>Geography__c &lt;&gt;  ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.GeographyDescription__c</formula>
+        <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
         <fullName>Participant Accepts</fullName>

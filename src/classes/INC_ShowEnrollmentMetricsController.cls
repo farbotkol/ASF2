@@ -584,7 +584,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             listApproved.add(mtw);
             mtw = new metricTableRowWrapper();
             mtw.label = 'Total Cost Budget';
-            mtw.column1Val = (oEnrollmentPlan.ApprovedCostBudget__c != null ? oEnrollmentPlan.ApprovedCostBudget__c.format() : '');
+            mtw.column1Val = (oEnrollmentPlan.ApprovedCostBudgetatSnapshot__c != null ? oEnrollmentPlan.ApprovedCostBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedCostBudget__c != null ? oEnrollmentPlan.ApprovedCostBudget__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ApprovedCostBudgetVariance__c != null ? oEnrollmentPlan.ApprovedCostBudgetVariance__c.format(): '');
             listApproved.add(mtw);
