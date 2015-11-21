@@ -66,6 +66,7 @@ public class ECO_TaskDetailController
                     {
                         //Add logic here to filter the Records and assign the Project Id in Subtask's
                         idParentTask = objTDW.objEPT.oprojectTask.Id;
+                        
                         lstProjTaskToUpsert.add(objTDW.objEPT.oprojectTask);
                     }
                     else
@@ -93,22 +94,48 @@ public class ECO_TaskDetailController
                     if(lstProjTaskToUpsert.size() > 0)
                     {
                         //upsert lstProjTaskToUpsert;
+                        list<pse__Project_Task__c> lstProjTaskToInsert = new list<pse__Project_Task__c>();
+                        list<pse__Project_Task__c> lstProjTaskToUpdate = new list<pse__Project_Task__c>();
                         
-                         Database.upsertResult[] srList = Database.upsert(lstProjTaskToUpsert, false);
-                        system.debug('srList@@@ '+srList );
-                        integer i=0;
-                        for (Database.upsertResult sr : srList) 
+                        for(pse__Project_Task__c objPT : lstProjTaskToUpsert)
                         {
-                            if(sr.isSuccess() == false) 
+                            if(objPT.id != null)
+                                lstProjTaskToUpdate.add(objPT);
+                            else
+                                lstProjTaskToInsert.add(objPT);
+                        }
+                        
+                        Database.SaveResult[] srListUpdate = Database.update(lstProjTaskToUpdate, false);
+                        integer j=0;
+                        for(Database.SaveResult srru : srListUpdate )
+                        {
+                            if(!srru.isSuccess())
+                            {
+                                lstTaskDetailWrapper[j].isErrorRow = true;
+                                isDMLErrorFound = true;
+                                for(Database.Error objerru : srru.getErrors())
+                                {
+                                    lstTaskDetailWrapper[j].strErrorMsg = objerru.getMessage();
+                                }
+                            }
+                        }
+                        
+                        Database.SaveResult[] srListInsert = Database.insert(lstProjTaskToInsert, false);
+                        integer i=0;
+                        for(Database.SaveResult srr : srListInsert)
+                        {
+                            if(!srr.isSuccess())
                             {
                                 lstTaskDetailWrapper[i].isErrorRow = true;
-                                lstTaskDetailWrapper[i].strErrorMsg = sr.getErrors()[0].getMessage();
                                 isDMLErrorFound = true;
-                            }      
-                            i++;
+                                for(Database.Error objerr : srr.getErrors())
+                                {
+                                    lstTaskDetailWrapper[i].strErrorMsg = objerr.getMessage();
+                                }
+                            }
                         }
+                        
                     }
-                    
                     //Deleting the Project Task  
                     system.debug('lstProjTaskToDelete!!!!'+lstProjTaskToDelete); 
                     if(lstProjTaskToDelete.size() > 0)
@@ -147,6 +174,14 @@ public class ECO_TaskDetailController
         {
             TaskDetailWrapper objTD = new TaskDetailWrapper(obj,lstWorkTypeName);
             objTD.strSelectedWorkTypeName = obj.oprojectTask.WorkTypeName__c;
+            if(obj.oprojectTask.ForecastStartDate__c == null && obj.oprojectTask.pse__Start_Date_Time__c != null)
+            {
+                obj.oprojectTask.ForecastStartDate__c = obj.oprojectTask.pse__Start_Date_Time__c.date();
+            }
+            if(obj.oprojectTask.ForecastEndDate__c == null && obj.oprojectTask.pse__End_Date_Time__c != null)
+            {
+                obj.oprojectTask.ForecastEndDate__c = obj.oprojectTask.pse__End_Date_Time__c.date();
+            }
             lstTaskDetailWrapper.add(objTD);    
         }
         if(lstTaskDetailWrapper.size() == 0)
@@ -183,11 +218,11 @@ public class ECO_TaskDetailController
             lstAction.add(new SelectOption('','Select Action'));
             lstAction.add(new SelectOption('AddPeerTask','Add Peer Task'));
             
-            if(objEPT.oprojectTask.OracleSyncStatus__c == 'P' || objEPT.oprojectTask.OracleSyncStatus__c == 'E')
-            {
+            //if(objEPT.oprojectTask.OracleSyncStatus__c == 'P' || objEPT.oprojectTask.OracleSyncStatus__c == 'E')
+            //{
                 lstAction.add(new SelectOption('AddSubTask','Add Sub Task'));
                 
-            }
+            //}
             lstAction.add(new SelectOption('DeleteTask','Delete Task'));
             
         }
@@ -198,7 +233,7 @@ public class ECO_TaskDetailController
         try
         {
             TaskDetailWrapper objTDW = lstTaskDetailWrapper[intRowNo];
-            lstProjTaskToDelete.clear();
+            //lstProjTaskToDelete.clear();
             if(objTDW != null)
             {
                 if(objTDW.strSelectedAction.EqualsIgnoreCase('AddPeerTask') || objTDW.strSelectedAction.EqualsIgnoreCase('AddSubTask'))
@@ -206,6 +241,10 @@ public class ECO_TaskDetailController
                     ECO_ProjectTask objECO = new ECO_ProjectTask();
                     pse__Project_Task__c objPT = objTDW.objEPT.oprojectTask.clone(false, false, false, false); 
                     
+                    if(objTDW.strSelectedAction.EqualsIgnoreCase('AddSubTask'))
+                    {
+                        objTDW.objEPT.oprojectTask.IsChargeable__c = false;
+                    }
                     objPT.Name = '';
                     objPT.ProjectTaskNumber__c = null;
                     objPT.IsChargeable__c = true;
