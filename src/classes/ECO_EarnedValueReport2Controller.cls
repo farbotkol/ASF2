@@ -27,6 +27,11 @@ public with sharing class ECO_EarnedValueReport2Controller {
     public Date selectedSnapshotDate { get; set; }
     
     public List<SelectOption> startOfWeekDatesBetweenProjectStartAndEndDates { get; set; }
+
+    public List<SelectOption> projectTeamMembers {get; set;}
+    public List<SelectOption> projectTeamMembersForAssign {get; set;}
+
+    public String filterProjectTeamMember {get; set;}
     
     public static final String UNSAVED = 'Unsaved';
     
@@ -130,7 +135,8 @@ public with sharing class ECO_EarnedValueReport2Controller {
         EarnedValueHeader__c newEVR = new EarnedValueHeader__c();
         newEVR.Project__c = projectId;
         newEVR.SnapshotDate__c = project.pse__Start_Date__c.toStartofWeek();
-        newEVR.ReportName__c = ECO_Utils_Date.formatDateAsMMSlashDDSlashYYYY(newEVR.SnapshotDate__c);
+//        newEVR.ReportName__c = ECO_Utils_Date.formatDateAsMMSlashDDSlashYYYY(newEVR.SnapshotDate__c);
+        newEVR.ReportName__c = newEVR.SnapshotDate__c.format();
         selectedSnapshotDate = newEVR.SnapshotDate__c;
         return newEVR;
         }
@@ -219,7 +225,8 @@ public with sharing class ECO_EarnedValueReport2Controller {
                 Date currentWeekStartDate = firstWeekStartDate;
                 while (currentWeekStartDate <= lastWeekStartDate) {
                         System.debug('In getStartOfWeekDatesBetweenProjectStartAndEndDates, inside loop');
-                        String dateAsMMSlashDDSlashYYYY = ECO_Utils_Date.formatDateAsMMSlashDDSlashYYYY(currentWeekStartDate);
+                        //String dateAsMMSlashDDSlashYYYY = ECO_Utils_Date.formatDateAsMMSlashDDSlashYYYY(currentWeekStartDate);
+                        String dateAsMMSlashDDSlashYYYY = currentWeekStartDate.format();
                         listOfStartOfWeekDatesBetweenProjectStartAndEndDates.add(dateAsMMSlashDDSlashYYYY);      
                         currentWeekStartDate = currentWeekStartDate.addDays(7);
                 }
@@ -299,6 +306,8 @@ public with sharing class ECO_EarnedValueReport2Controller {
         
         
         public ECO_EarnedValueReport2Controller(ApexPages.StandardController stdController) {
+                filterProjectTeamMember = '-1';  // All
+
                 projectId = stdController.getId();
                 project = [select Name, ProjectSectionHeaderName__c, pse__Start_Date__c, pse__End_Date__c, EVRulesGuidelines__c from pse__Proj__c where Id = :projectId];
         }
@@ -311,6 +320,26 @@ public with sharing class ECO_EarnedValueReport2Controller {
          * 
          */
         public void init() {
+                List<ProjectTeamMember__c> members = [select Contact__r.pse__Salesforce_User__c, name from ProjectTeamMember__c where active__c = true and Project__c = :projectId order by name];
+
+                projectTeamMembers = new List<SelectOption>();
+                projectTeamMembersForAssign = new List<SelectOption>();
+
+                SelectOption option = new SelectOption('-1', 'All');
+                projectTeamMembers.add(option);
+
+                option = new SelectOption('0', 'Not Assigned');
+                projectTeamMembers.add(option);
+
+                option = new SelectOption('', 'Not Assigned');
+                projectTeamMembersForAssign.add(option);
+
+                for (ProjectTeamMember__c member : members) {
+                    option = new SelectOption(member.Contact__r.pse__Salesforce_User__c, member.name);
+                    projectTeamMembers.add(option);
+                    projectTeamMembersForAssign.add(option);
+                }
+
                 if (project.pse__Start_Date__c == null) {
                         throw new ECO_EarnedvalueReportControllerException('Project start date cannot be empty!');
                 }
@@ -368,7 +397,20 @@ public with sharing class ECO_EarnedValueReport2Controller {
                                 wrapper.priorComplete = 0;
                         }
                                 wrapper.canEdit = true;
-                                results.add(wrapper);   
+
+                                if (filterProjectTeamMember.equals('-1')) {  // All
+                                    results.add(wrapper);   
+                                } else if (filterProjectTeamMember.equals('0')) {  // Not assigned
+                                    if (task.ProjectTaskOwner__c == null) {
+                                        results.add(wrapper);   
+                                    }
+                                } else {  // specific request
+                                    if (task.ProjectTaskOwner__c != null) {
+                                        if (task.ProjectTaskOwner__c.equals(filterProjectTeamMember)) {
+                                            results.add(wrapper);   
+                                        }
+                                    }
+                                }
                 } else {
                         for (EarnedValueTask__c evTask : task.Earned_Value_Tasks__r) {
                                 ProjectTaskWrapper wrapper = new ProjectTaskWrapper();
@@ -389,7 +431,20 @@ public with sharing class ECO_EarnedValueReport2Controller {
                                         wrapper.priorComplete = 0;
                                 }
                                         wrapper.canEdit = true;
-                                        results.add(wrapper);   
+
+                                        if (filterProjectTeamMember.equals('-1')) {  // All
+                                            results.add(wrapper);   
+                                        } else if (filterProjectTeamMember.equals('0')) {  // Not assigned
+                                            if (task.ProjectTaskOwner__c == null) {
+                                                results.add(wrapper);   
+                                            }
+                                        } else {  // specific request
+                                            if (task.ProjectTaskOwner__c != null) {
+                                                if (task.ProjectTaskOwner__c.equals(filterProjectTeamMember)) {
+                                                    results.add(wrapper);   
+                                                }
+                                            }
+                                        }
                         } // end of for loop of ev tasks for each project task
                 }
         } // end of for loop of tasks
@@ -508,6 +563,20 @@ public with sharing class ECO_EarnedValueReport2Controller {
          */
     public void saveEarnedValueTasksForSnapshot(Boolean saveOnly){
         Savepoint sp = Database.setSavepoint();
+
+        try {
+            List<pse__Project_Task__c> tasksToSave = new List<pse__Project_Task__c>();
+
+            for (ProjectTaskWrapper wrapper : availableTasks) {
+                tasksToSave.add(wrapper.task);
+            }
+
+            update tasksToSave;
+        } catch (Exception e) {
+            Database.rollback(sp);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'An error has occurred while saving! ' + e.getMessage()));
+            throw e;
+        }
         
         try {                   
                 List<EarnedValueTask__c> evTasksToSave = getAvailableTasksUserCanAccess();
@@ -647,7 +716,8 @@ public with sharing class ECO_EarnedValueReport2Controller {
         system.debug('snapShotPriorDate = ' + snapShotPriorDate);
 
                 if(snapShotPriorDate != null){
-                        String reportNameForPriorDate = ECO_Utils_Date.formatDateAsMMSlashDDSlashYYYY(snapShotPriorDate);
+                        //String reportNameForPriorDate = ECO_Utils_Date.formatDateAsMMSlashDDSlashYYYY(snapShotPriorDate);
+                        String reportNameForPriorDate = snapShotPriorDate.format();
                         Map<Id, EarnedValueTask__c> mapOfProjectTaskIdToEVT = getAllEarnedValueTasksByProjectTaskForReport(reportNameForPriorDate);
             
                 for (Id eachProjectTaskId : mapOfProjectTaskIdToEVT.keySet()) {
@@ -671,6 +741,48 @@ public with sharing class ECO_EarnedValueReport2Controller {
         } else {
                 return priorWeekStartDate;
         }
+    }
+
+    public PageReference requestTaskManagerInput() {
+        Set<Id> userIds = new Set<Id>();
+
+        for (ProjectTaskWrapper wrapper : availableTasks) {
+            if (!UserInfo.getUserId().equals(wrapper.task.ProjectTaskOwner__c)) {
+                userIds.add(wrapper.task.ProjectTaskOwner__c);
+            }
+        }
+
+        List<ProjectTeamMember__c> members = [select id, Request_Input__c, Contact__r.pse__Salesforce_User__c from ProjectTeamMember__c where Project__c = :projectId];
+
+        // Set<Id> memberIds = new Set<Id>();
+
+        List<ProjectTeamMember__c> toUpdate = new List<ProjectTeamMember__c>();
+
+        for (ProjectTeamMember__c member : members) {
+            if (userIds.contains(member.Contact__r.pse__Salesforce_User__c)) {
+                if (member.Request_Input__c) {
+                    member.Request_Input__c = false;
+                    toUpdate.add(member);
+                }
+            }
+        }
+
+        update toUpdate;  // force any that were true to false first, otherwise workflow won't fire
+
+        toUpdate = new List<ProjectTeamMember__c>();
+
+        for (ProjectTeamMember__c member : members) {
+            if (userIds.contains(member.Contact__r.pse__Salesforce_User__c)) {
+                member.Request_Input__c = true;
+                toUpdate.add(member);
+            }
+        }
+
+        update toUpdate;
+
+        // Database.executeBatch(new ECO_EarnedValueRequestTMInputEmailBatch(memberIds), 1);
+
+        return null;
     }
     
         public class ProjectTaskWrapper {

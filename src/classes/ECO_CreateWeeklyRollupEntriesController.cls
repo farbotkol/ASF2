@@ -9,6 +9,9 @@ public with sharing class ECO_CreateWeeklyRollupEntriesController {
 		Set<Id> projectIds = new Set<Id>();
 		projectIds.add(stdController.getId());
 
+		List<WeeklyRollupEntry__c> oldEntries = [select id from WeeklyRollupEntry__c where Project__c in :projectIds];
+		delete oldEntries;
+
 		ECO_ProjectTaskTriggers.recalculateProjects(projectIds, true);
 	}
 }
