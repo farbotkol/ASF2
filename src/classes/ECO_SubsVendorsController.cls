@@ -33,11 +33,34 @@ public with sharing class ECO_SubsVendorsController
     public string projectFieldID {get;set;}
     public string vendorFieldID {get;set;}
 
+    public siteWrapper oSW{get;set;}
+
     public id sVendor {get;set;}
     //public list<SiteWrapper> lstSites {get;set;}
     //public map<id, SiteWrapper> mapSites {get;set;}
     private VendorSite__c oTopTask;
     private VendorSite__c oPrimaryEnd;
+
+
+    public class siteWrapper{
+        public site__c oSite {get;set;}
+        public string name {get;set;}
+        public string city {get;set;}
+        public string state {get;set;}
+        public string country {get;set;}
+
+        public siteWrapper(site__c oSite){
+            this.oSite = oSite;
+        }
+
+        public void populatedSite(){
+            oSite.account__r.name = name;
+            oSite.City__c = city;
+            oSite.State__c = state;
+            oSite.Country__c = country;
+        }
+
+    }
 
 	public ECO_SubsVendorsController(ApexPages.StandardController oStandardController) 
 	{
@@ -47,6 +70,9 @@ public with sharing class ECO_SubsVendorsController
         mapSitesEnd = new map<id, VendorSite__c>();
         oSite = new Site__c();
         oSite.account__r = new Account();
+
+        oSW = new siteWrapper(oSite);
+
         bMore = false;
         sLimit = siteLessLIMIT;
         bSearchOutsideUserOrg = false;
@@ -295,6 +321,9 @@ public with sharing class ECO_SubsVendorsController
 	
 
 	public PageReference SearchSites(){
+
+        oSW.populatedSite();
+
 		System.debug('oSite: ' + oSite);
         ResetValues();
 

@@ -1,10 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Layout xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customButtons>ProjectNumberRequest</customButtons>
     <customButtons>Expand_Collapse_PCC_Sections</customButtons>
     <customButtons>Closeout</customButtons>
     <excludeButtons>Clone</excludeButtons>
     <excludeButtons>Delete</excludeButtons>
     <excludeButtons>Submit</excludeButtons>
+    <layoutSections>
+        <customLabel>true</customLabel>
+        <detailHeading>false</detailHeading>
+        <editHeading>false</editHeading>
+        <label>Status Indicator</label>
+        <layoutColumns>
+            <layoutItems>
+                <height>175</height>
+                <page>ECO_ProjectStatus2</page>
+                <showLabel>false</showLabel>
+                <showScrollbars>false</showScrollbars>
+                <width>100%</width>
+            </layoutItems>
+        </layoutColumns>
+        <style>OneColumn</style>
+    </layoutSections>
     <layoutSections>
         <customLabel>true</customLabel>
         <detailHeading>false</detailHeading>
@@ -24,6 +41,10 @@
                 <field>EcoSystemReferenceNumber__c</field>
             </layoutItems>
             <layoutItems>
+                <behavior>Edit</behavior>
+                <field>OracleProjectnumber__c</field>
+            </layoutItems>
+            <layoutItems>
                 <emptySpace>true</emptySpace>
             </layoutItems>
             <layoutItems>
@@ -41,7 +62,7 @@
                 <field>OwnerId</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>pse__Project_Manager__c</field>
             </layoutItems>
             <layoutItems>
@@ -57,7 +78,7 @@
                 <field>PnLManager__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>pse__Stage__c</field>
             </layoutItems>
         </layoutColumns>
@@ -70,7 +91,7 @@
         <label>Description</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>ProjectDescription__c</field>
             </layoutItems>
         </layoutColumns>
@@ -205,33 +226,21 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>Financials - Bid Budget</label>
+        <label>Project Likelihood</label>
         <layoutColumns>
             <layoutItems>
                 <behavior>Required</behavior>
-                <field>AECOMLabor__c</field>
+                <field>GoProbability__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>Subs__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Edit</behavior>
-                <field>ODCs__c</field>
+                <behavior>Required</behavior>
+                <field>GetProbability__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>TotalBidBudget__c</field>
-            </layoutItems>
-            <layoutItems>
-                <behavior>Readonly</behavior>
-                <field>PotentialProfitCostofBidding__c</field>
-            </layoutItems>
-            <layoutItems>
                 <behavior>Edit</behavior>
-                <field>SuccessFee__c</field>
+                <field>pse__Notes__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -255,11 +264,11 @@
                 <field>AECOMLaborCosts__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>SubsCost__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Required</behavior>
                 <field>ODCsCost__c</field>
             </layoutItems>
         </layoutColumns>
@@ -291,21 +300,33 @@
         <customLabel>true</customLabel>
         <detailHeading>true</detailHeading>
         <editHeading>true</editHeading>
-        <label>Project Likelihood</label>
+        <label>Financials - Bid Budget</label>
         <layoutColumns>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>GoProbability__c</field>
+                <behavior>Required</behavior>
+                <field>AECOMLabor__c</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
-                <field>GetProbability__c</field>
+                <behavior>Required</behavior>
+                <field>Subs__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Required</behavior>
+                <field>ODCs__c</field>
             </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>TotalBidBudget__c</field>
+            </layoutItems>
+            <layoutItems>
+                <behavior>Readonly</behavior>
+                <field>ReturnonBidBudget__c</field>
+            </layoutItems>
+            <layoutItems>
                 <behavior>Edit</behavior>
-                <field>pse__Notes__c</field>
+                <field>SuccessFee__c</field>
             </layoutItems>
         </layoutColumns>
         <style>TwoColumnsTopToBottom</style>
@@ -425,6 +446,23 @@
         <fields>MitigationCostTotal__c</fields>
         <fields>PostmitigationContingencyTotal__c</fields>
         <relatedList>Risk__c.Project__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <customButtons>Manage_DoA_Approvals</customButtons>
+        <excludeButtons>New</excludeButtons>
+        <fields>NAME</fields>
+        <fields>BillingClientPrimary__c</fields>
+        <fields>DateRequired__c</fields>
+        <fields>ApprovalStatus__c</fields>
+        <fields>OWNER.ALIAS</fields>
+        <relatedList>DOAApprovalRequest__c.Project__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <excludeButtons>New</excludeButtons>
+        <fields>NAME</fields>
+        <fields>DOAApprovalRequest__c</fields>
+        <fields>Mitigation_Plan__c</fields>
+        <relatedList>DOAConditions__c.Project__c</relatedList>
     </relatedLists>
     <relatedLists>
         <excludeButtons>New</excludeButtons>

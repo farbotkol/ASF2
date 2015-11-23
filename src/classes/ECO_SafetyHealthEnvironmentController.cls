@@ -1,6 +1,9 @@
-public class ECO_SafetyHealthEnvironmentController {
-        
-        public pse__Proj__c project;
+public class ECO_SafetyHealthEnvironmentController {       
+
+        private  Attachment safetyHealthInspectionAtt; 
+        public String overrideSafetyHealthInspectionName1  {get;set;} 
+    
+    	public pse__Proj__c project;
         public list<Induction__c> inductionRegistrations {get;set;}
         public list<Induction__c> inductionRegistrationsRemove {get;set;}
         public list<InductedProjectTeamMembers__c> inductedProjectTeamMembers {get;set;} 
@@ -38,7 +41,8 @@ public class ECO_SafetyHealthEnvironmentController {
             inductedProjectTeamMembersMap = new map<id, list<InductedProjectTeamMembers__c>>();
                 
             project = (pse__Proj__c)sc.getRecord();
-            defaultAnswersFromRiskMarketAssessment();       
+            defaultAnswersFromRiskMarketAssessment();  
+            project.SafetyHealthOutsideOfficeEnvironment__c = 'No';
 
             queryProjectActivities();
 
@@ -146,7 +150,6 @@ public class ECO_SafetyHealthEnvironmentController {
         public void init()
         {
 
-
                 if(Apexpages.currentPage().getParameters().get('RecordToDelete') != null)
                 {
                         String recordId = Apexpages.currentPage().getParameters().get('RecordToDelete');
@@ -233,7 +236,20 @@ public class ECO_SafetyHealthEnvironmentController {
             return safetyHealthInspectionAttachment;
         }
         set;
-    }     
+    }    
+    
+        public Attachment newSafetyHealthInspectionAtt
+    {
+        get
+        {
+            if(safetyHealthInspectionAtt==null)
+            {
+                safetyHealthInspectionAtt = new Attachment(parentid = project.id);
+            }
+            return safetyHealthInspectionAtt;
+        }
+        set;
+    }    
     
     private list<Attachment> getAttachmentListFromIdList(list<String> attachmentIds)
     {
@@ -243,8 +259,6 @@ public class ECO_SafetyHealthEnvironmentController {
                 if(attachmentsMap.containsKey(attachmentId) && attachmentId != null && attachmentId != '')
                         attachments.add(attachmentsMap.get(attachmentId));
         }
-                        
-		system.debug( 'attachments size => ' + attachments.size() );        
 
         return attachments;     
     }
@@ -337,13 +351,30 @@ public class ECO_SafetyHealthEnvironmentController {
         return null;
     }
     
+    public void saveSafetyHealthInspectionAttProj()
+    {
+        
+        Attachment attachmentObj = new Attachment();
+
+        attachmentObj.ParentId = project.id;
+        attachmentObj.name = safetyHealthInspectionAtt.name;
+        attachmentObj.body = safetyHealthInspectionAtt.body;
+        insert attachmentObj;
+        attachmentObj = new Attachment();
+
+    }     
+    
     public void saveSafetyHealthInspectionAttachmentAndProject()
     {
-//      if(safetyHealthTravelAttachment.Body == null)
-//      {       
+        
+        system.debug( 'safetyHealthInspectionAttachment ' + safetyHealthInspectionAttachment );
+        
+      //if(safetyHealthTravelAttachment.Body == null)
+      //{       
                 if(overrideSafetyHealthInspectionName != null && overrideSafetyHealthInspectionName != '')
                         safetyHealthInspectionAttachment.Name = overrideSafetyHealthInspectionName;                     
-                insert safetyHealthInspectionAttachment;
+
+        	insert safetyHealthInspectionAttachment;
                 
                 if(project.SafetyHealthInspectionAttachments__c != null)
                         project.SafetyHealthInspectionAttachments__c += safetyHealthInspectionAttachment.Id + ';';
@@ -354,7 +385,7 @@ public class ECO_SafetyHealthEnvironmentController {
         
                 attachmentsMap = new Map<Id, Attachment>([select Id, Name, ContentType, LastModifiedDate, LastModifiedById from Attachment where parentId = :project.Id]);
                 safetyHealthInspectionAttachment = null;
- //     }               
+      //}               
     }   
     
     public PageReference newInduction()
@@ -383,7 +414,6 @@ public class ECO_SafetyHealthEnvironmentController {
         myPage.getParameters().put('retURL', '/apex/ECO_SafetyHealthEnvironment?Id=' + project.Id + '&RecordToDelete='+ projectTeamMember.Id + '&RecordType=TeamMember');
    
         return myPage;
-        //return null;
     }
     
     public PageReference gotoLocationsAndResilience()

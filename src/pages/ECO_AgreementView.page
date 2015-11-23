@@ -293,7 +293,8 @@
     </apex:outputPanel>
 
     <apex:outputPanel rendered="{!agreementRecordType =='Prime (MSA)'}">
-        <apex:sectionHeader title="{!'Master Services Agreement ' + mode}" subtitle="{!agreement.ContractTitle__c}({!agreement.AgreementNumber__c})"/>
+        <apex:sectionHeader title="Prime (MSA) Edit" subtitle="{!Agreement__c.SectionHeaderSubtitle__c}" rendered="{!mode!= ''}"/>
+        <apex:sectionHeader title="{!'Master Services Agreement'}" subtitle="{!agreement.ContractTitle__c}({!agreement.AgreementNumber__c})" rendered="{!mode = ''}"/>
     </apex:outputPanel>
 
     <apex:outputPanel rendered="{!agreementRecordType !='Prime (MSA)'}">
@@ -351,6 +352,7 @@
     <apex:outputPanel rendered="{!agreementRecordType =='Prime'}" id="primeSection">
     <apex:form > 
         <apex:actionFunction id="primeScopeChanged" name="primeScopeChanged" action="{!primeScopeChangedApex}" onComplete="window.location.reload();"/>
+        <apex:actionFunction id="changedPrimeAgreementStatus" name="changedPrimeAgreementStatus" rerender="primeExecutionDetails" immediate="true"/>
         <apex:pageBlock mode="{!pageBlockMode}" title="{!'Prime Agreement ' + mode}">
         <apex:pageBlockButtons >
             <apex:commandLink value="Print Agreement" action="{!printPdf}" styleClass="btn printAgreement" immediate="true" target="_blank" style="text-decoration:none" />
@@ -358,13 +360,14 @@
             <apex:commandButton value="Return To Agreement" action="{!cancel}" rendered="{!mode == 'Edit'}"/>   
             <apex:commandButton value="Edit" action="{!editAgreement}" rendered="{!mode == ''}"/>   
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}"/>
-            <apex:commandButton value="Return To Project" action="{!cancel}" rendered="{!mode == 'New'}" immediate="true"/>
+            <apex:commandButton value="Return To Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
+
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
                 <apex:outputText value="ECO Agreement Number"/>
                 <apex:outputPanel >
@@ -384,7 +387,11 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}" onchange="changedAgreementStatus();"/>
+                    <apex:actionRegion>
+                        <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
+                            <apex:actionSupport event="onchange" immediate="false" rerender="primeExecutionDetails"/>
+                        </apex:inputField>
+                    </apex:actionRegion>
                     <apex:outputField value="{!agreement.AgreementStatus__c}" rendered="{!mode == ''}"/>    
                 </apex:outputPanel>         
             </apex:pageBlockSectionItem> 
@@ -680,11 +687,12 @@
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
 
+    <apex:outputPanel id="primeExecutionDetails">
     <apex:pageBlockSection title="Agreement Execution Details" collapsible="false">
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementExecutedBy__c.inlineHelpText}">
             <apex:outputText value="Agreement Executed By"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}"/>
+                <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}" required="{!agreement.AgreementStatus__c =='Executed'}"/>
                 <apex:outputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode == ''}"/>    
             </apex:outputPanel>         
         </apex:pageBlockSectionItem>    
@@ -692,7 +700,7 @@
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExecutionDate__c.inlineHelpText}">
             <apex:outputText value="Execution Date"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.ExecutionDate__c}" rendered="{!mode != ''}"/>
+                <apex:inputField value="{!agreement.ExecutionDate__c}" rendered="{!mode != ''}" required="{!agreement.AgreementStatus__c =='Executed'}"/>
                 <apex:outputField value="{!agreement.ExecutionDate__c}" rendered="{!mode == ''}"/>  
             </apex:outputPanel>         
         </apex:pageBlockSectionItem>   
@@ -706,7 +714,7 @@
         </apex:pageBlockSectionItem>
 
     </apex:pageBlockSection>
-
+    </apex:outputPanel>
 
 
         </apex:pageBlock>
@@ -767,7 +775,7 @@
         </apex:outputPanel> 
         </apex:pageBlock>   
 
-        <apex:pageBlock title="Contract Reivews" rendered="{!mode == ''}">
+        <apex:pageBlock title="Contract Reviews" rendered="{!mode == ''}">
         <apex:outputPanel rendered="{!contractReviews.size > 0}">
             <apex:pageBlockTable value="{!contractReviews}" var="contractReview">
     
@@ -820,11 +828,11 @@
             <apex:commandButton value="Return To Agreement" action="{!cancel}" rendered="{!mode == 'Edit'}"/>   
             <apex:commandButton value="Edit" action="{!editAgreement}" rendered="{!mode == ''}"/>   
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}"/>
-            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New'}" immediate="true"/>
+            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
     <apex:pageBlockSection >
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
@@ -846,7 +854,11 @@
         <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}"/>
+                    <apex:actionRegion>
+                        <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
+                            <apex:actionSupport event="onchange" immediate="false" rerender="otherExecutionDetails"/>
+                        </apex:inputField>
+                    </apex:actionRegion>
                     <apex:outputField value="{!agreement.AgreementStatus__c}" rendered="{!mode == ''}"/>    
                 </apex:outputPanel>         
         </apex:pageBlockSectionItem>  
@@ -1087,11 +1099,11 @@
   
     </apex:pageBlockSection>
 
-    <apex:pageBlockSection collapsible="false" title="Agreement Execution Details">
+    <apex:pageBlockSection collapsible="false" title="Agreement Execution Details" id="otherExecutionDetails">
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementExecutedBy__c.inlineHelpText}">
             <apex:outputText value="Agreement Executed By"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}"/>
+                <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}" required="{!agreement.AgreementStatus__c == 'Executed'}"/>
                 <apex:outputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode == ''}"/>    
             </apex:outputPanel>         
         </apex:pageBlockSectionItem>     
@@ -1228,7 +1240,7 @@
         </apex:outputPanel> 
         </apex:pageBlock>     
 
-        <apex:pageBlock title="Contract Reivews" rendered="{!mode == ''}">
+        <apex:pageBlock title="Contract Reviews" rendered="{!mode == ''}">
         <apex:outputPanel rendered="{!contractReviews.size > 0}">
             <apex:pageBlockTable value="{!contractReviews}" var="contractReview">
     
@@ -1282,10 +1294,10 @@
             <apex:commandButton value="Edit" action="{!editAgreement}" rendered="{!mode == ''}"/>   
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}"/>
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
-            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New'}" immediate="true"/>
+            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
@@ -1305,7 +1317,11 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}"/>
+                    <apex:actionRegion>
+                        <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
+                            <apex:actionSupport event="onchange" immediate="false" rerender="intExecutedBy,intExecutedDate"/>
+                        </apex:inputField>
+                    </apex:actionRegion>
                     <apex:outputField value="{!agreement.AgreementStatus__c}" rendered="{!mode == ''}"/>    
                 </apex:outputPanel>         
             </apex:pageBlockSectionItem>        
@@ -1355,7 +1371,7 @@
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementExecutedBy__c.inlineHelpText}">
                 <apex:outputText value="Agreement Executed By"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}"/>
+                    <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}" required="{!agreement.AgreementStatus__c == 'Executed'}" id="intExecutedBy"/>
                     <apex:outputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode == ''}"/>    
                 </apex:outputPanel>         
             </apex:pageBlockSectionItem>    
@@ -1377,7 +1393,7 @@
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExecutionDate__c.inlineHelpText}">
                 <apex:outputText value="Execution Date"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.ExecutionDate__c}" rendered="{!mode != ''}"/>
+                    <apex:inputField value="{!agreement.ExecutionDate__c}" rendered="{!mode != ''}" required="{!agreement.AgreementStatus__c == 'Executed'}" id="intExecutedDate"/>
                     <apex:outputField value="{!agreement.ExecutionDate__c}" rendered="{!mode == ''}"/>  
                 </apex:outputPanel>         
             </apex:pageBlockSectionItem>    
@@ -1645,7 +1661,7 @@
         </apex:outputPanel> 
         </apex:pageBlock>     
 
-        <apex:pageBlock title="Contract Reivews" rendered="{!mode == ''}">
+        <apex:pageBlock title="Contract Reviews" rendered="{!mode == ''}">
         <apex:outputPanel rendered="{!contractReviews.size > 0}">
             <apex:pageBlockTable value="{!contractReviews}" var="contractReview">
     
@@ -1701,10 +1717,10 @@
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}" />
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
 
-            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New'}"/> 
+            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}"/> 
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
@@ -1727,7 +1743,11 @@
         <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}"/>
+                    <apex:actionRegion>
+                        <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
+                            <apex:actionSupport event="onchange" immediate="false" rerender="subExecutionDetails"/>
+                        </apex:inputField>
+                    </apex:actionRegion>
                     <apex:outputField value="{!agreement.AgreementStatus__c}" rendered="{!mode == ''}"/>
                 </apex:outputPanel>
         </apex:pageBlockSectionItem>  
@@ -1957,12 +1977,12 @@
     </apex:pageBlockSection>
 
 
-    <apex:pageBlockSection title="Agreement Execution Details" collapsible="false">
+    <apex:pageBlockSection title="Agreement Execution Details" collapsible="false" id="subExecutionDetails">
 
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementExecutedBy__c.inlineHelpText}">
             <apex:outputText value="Agreement Executed By"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}"/>
+                <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}" required="{!agreement.AgreementStatus__c == 'Executed'}"/>
                 <apex:outputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode == ''}"/>
             </apex:outputPanel>
         </apex:pageBlockSectionItem>   
@@ -1970,7 +1990,7 @@
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExecutionDate__c.inlineHelpText}">
             <apex:outputText value="Execution Date"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.ExecutionDate__c}" rendered="{!mode != ''}"/>
+                <apex:inputField value="{!agreement.ExecutionDate__c}" rendered="{!mode != ''}" required="{!agreement.AgreementStatus__c == 'Executed'}"/>
                 <apex:outputField value="{!agreement.ExecutionDate__c}" rendered="{!mode == ''}"/>
             </apex:outputPanel>
         </apex:pageBlockSectionItem> 
@@ -1987,7 +2007,7 @@
 
 </apex:pageBlock>   
         
-        <apex:pageBlock title="Contract Reivews" rendered="{!mode == ''}">
+        <apex:pageBlock title="Contract Reviews" rendered="{!mode == ''}">
         <apex:outputPanel rendered="{!contractReviews.size > 0}">
             <apex:pageBlockTable value="{!contractReviews}" var="contractReview">
     
@@ -2066,11 +2086,11 @@
             <apex:commandButton value="Edit" action="{!editAgreement}" rendered="{!mode == ''}"/>
             <apex:commandButton value="Return To Agreement" action="{!cancel}" rendered="{!mode == 'Edit'}"/>           
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New'}"  immediate="true"/>  
+            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}"  immediate="true"/>  
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
@@ -2093,7 +2113,11 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}"/>
+                    <apex:actionRegion>
+                        <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
+                            <apex:actionSupport event="onchange" immediate="false" rerender="interimExecutionDetails"/>
+                        </apex:inputField>
+                    </apex:actionRegion>    
                     <apex:outputField value="{!agreement.AgreementStatus__c}" rendered="{!mode == ''}"/>
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>   
@@ -2298,11 +2322,11 @@
             
             </apex:pageBlockSection>
 
-    <apex:pageBlockSection title="Execution Details" collapsible="false">
+    <apex:pageBlockSection title="Execution Details" collapsible="false" id="interimExecutionDetails">
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementExecutedBy__c.inlineHelpText}">
             <apex:outputText value="Agreement Executed By"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}"/>
+                <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}" required="{!agreement.AgreementStatus__c == 'Executed'}"/>
                 <apex:outputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode == ''}"/>
             </apex:outputPanel>
         </apex:pageBlockSectionItem>  
@@ -2310,7 +2334,7 @@
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExecutionDate__c.inlineHelpText}">
             <apex:outputText value="Execution Date"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.ExecutionDate__c}" rendered="{!mode != ''}"/>
+                <apex:inputField value="{!agreement.ExecutionDate__c}" rendered="{!mode != ''}" required="{!agreement.AgreementStatus__c == 'Executed'}"/>
                 <apex:outputField value="{!agreement.ExecutionDate__c}" rendered="{!mode == ''}"/>
             </apex:outputPanel>
         </apex:pageBlockSectionItem>   
@@ -2431,7 +2455,7 @@
                 <apex:outputText value="No records to display"/>
             </apex:outputPanel> 
         </apex:pageBlock>
-        <apex:pageBlock title="Contract Reivews" rendered="{!mode == ''}">
+        <apex:pageBlock title="Contract Reviews" rendered="{!mode == ''}">
         <apex:outputPanel rendered="{!contractReviews.size > 0}">
             <apex:pageBlockTable value="{!contractReviews}" var="contractReview">
     
@@ -2482,11 +2506,11 @@
             <apex:commandButton value="Edit" action="{!editAgreement}" rendered="{!mode == ''}"/>
             <apex:commandButton value="Return To Agreement" action="{!cancel}" rendered="{!mode == 'Edit'}"/>           
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New'}"  immediate="true"/>  
+            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}"  immediate="true"/>  
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
@@ -2509,7 +2533,11 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}"/>
+                    <apex:actionRegion>
+                        <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
+                            <apex:actionSupport event="onchange" immediate="false" rerender="jointExecutionDetails"/>
+                        </apex:inputField>
+                    </apex:actionRegion>
                     <apex:outputField value="{!agreement.AgreementStatus__c}" rendered="{!mode == ''}"/>
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>   
@@ -2560,9 +2588,9 @@
         <apex:pageBlockSection title="Contract Details" collapsible="false">  
 
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.JointVenturePartner__c.inlineHelpText}">
-                <apex:outputText value="Joint Venture Parnter"/>
+                <apex:outputText value="Joint Venture Partner"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.JointVenturePartner__c}" rendered="{!mode != ''}"/>
+                    <apex:inputField value="{!agreement.JointVenturePartner__c}" rendered="{!mode != ''}" required="true"/>
                     <apex:outputField value="{!agreement.JointVenturePartner__c}" rendered="{!mode == ''}"/>
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>               
@@ -2719,11 +2747,11 @@
                     
             </apex:pageBlockSection>
 
-    <apex:pageBlockSection title="Execution Details" collapsible="false">
+    <apex:pageBlockSection title="Execution Details" collapsible="false" id="jointExecutionDetails">
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementExecutedBy__c.inlineHelpText}">
             <apex:outputText value="Agreement Executed By"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}"/>
+                <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}" required="{!agreement.AgreementStatus__c == 'Executed'}"/>
                 <apex:outputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode == ''}"/>
             </apex:outputPanel>
         </apex:pageBlockSectionItem>  
@@ -2731,7 +2759,7 @@
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExecutionDate__c.inlineHelpText}">
             <apex:outputText value="Execution Date"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.ExecutionDate__c}" rendered="{!mode != ''}"/>
+                <apex:inputField value="{!agreement.ExecutionDate__c}" rendered="{!mode != ''}" required="{!agreement.AgreementStatus__c == 'Executed'}"/>
                 <apex:outputField value="{!agreement.ExecutionDate__c}" rendered="{!mode == ''}"/>
             </apex:outputPanel>
         </apex:pageBlockSectionItem>      
@@ -2746,7 +2774,43 @@
 
     </apex:pageBlockSection>
     </apex:pageBlock>
+
+        <apex:pageBlock title="Contract Reviews" rendered="{!mode == ''}">
+        <apex:outputPanel rendered="{!contractReviews.size > 0}">
+            <apex:pageBlockTable value="{!contractReviews}" var="contractReview">
+    
+                <apex:column headervalue="Contract Review Id">
+                    <apex:commandlink action="{!URLFOR($Action.Contract_Review__c.view, contractReview.Id)}"><apex:outputField value="{!contractReview.Name}"/></apex:commandLink>
+                </apex:column>          
+
+                <apex:column headervalue="Review Status">
+                    <apex:outputField value="{!contractReview.Status_Review__c}"/>
+                </apex:column>    
+                <apex:column headervalue="Review Request Type">
+                    <apex:outputField value="{!contractReview.Review_Request_Type__c}"/>
+                </apex:column>  
+                <apex:column headervalue="Opportunity Name">
+                    <apex:outputField value="{!contractReview.Opportunity_Name__c}"/>
+                </apex:column>  
+                <apex:column headervalue="Date Review is Required">
+                    <apex:outputField value="{!contractReview.Date_Required__c}"/>
+                </apex:column>                                  
+                <apex:column headervalue="Client / Vendor">
+                    <apex:outputField value="{!contractReview.Client_Vendor__c}"/>
+                </apex:column>  
+            </apex:pageBlockTable>
+
+        </apex:outputPanel>
+        <apex:outputPanel rendered="{!contractReviews.size == 0}">
+            <apex:outputText value="No records to display"/>
+        </apex:outputPanel> 
+        </apex:pageBlock> 
+
+    
     </apex:form>
+
+    <apex:relatedList list="CombinedAttachments" rendered="{!mode==''}"/>
+
     </apex:outputPanel>
 
 
@@ -2758,7 +2822,7 @@
         <apex:inputHidden value="{!MSAChanged}"/>
         </apex:outputPanel>
         <apex:actionFunction id="subScopeChanged" name="subScopeChanged" rerender="subScope"/>
-        <apex:actionFunction id="agreementStatusChanged" name="agreementStatusChanged" rerender="taskOrderFinancial" immediate="true"/>
+
         <apex:actionFunction name="changedMSA" rerender="testPanel, msaChanged" immediate="false">
             <apex:param name="changedBool" value="" assignTo="{!MSAChanged}" />
         </apex:actionFunction>
@@ -2772,11 +2836,11 @@
             <apex:commandButton value="Return To Agreement" action="{!cancel}" rendered="{!mode == 'Edit'}"/>           
             <apex:commandButton value="Initiate Contract Review" action="{!initiateContractReview}" rendered="{!mode == ''}" />
             <apex:commandButton value="View MSA" action="{!viewMSA}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New'}" immediate="true"/>                       
+            <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>                       
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == ''}" action="{!deleteAgreement}"/>
-
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
 
         <apex:pageBlockSection >
@@ -2796,10 +2860,11 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}" >
-                        <apex:actionSupport event="onChange" reRender="taskOrderFinancial" />
-                    </apex:inputField>
-
+                    <apex:actionRegion>
+                        <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}" >
+                            <apex:actionSupport event="onchange" immediate="false" reRender="taskOrderExecutionDetails" />
+                        </apex:inputField>
+                    </apex:actionRegion>
                     <apex:outputField value="{!agreement.AgreementStatus__c}" rendered="{!mode == ''}"/>    
                 </apex:outputPanel>         
             </apex:pageBlockSectionItem>             
@@ -2983,8 +3048,7 @@
             <apex:outputText value="Total Approved Revenue Limit"/>
             <apex:outputPanel id="totalApprovedRevenueLimit">
                 <apex:outputPanel >
-                        <apex:inputField value="{!agreement.TotalApprovedRevenueLimit__c}" rendered="{!mode != '' && agreement.AgreementStatus__c != 'Executed'}" required="true" />
-                        <apex:inputField value="{!agreement.TotalApprovedRevenueLimit__c}" rendered="{!mode != '' && agreement.AgreementStatus__c == 'Executed'}" required="true" />
+                        <apex:inputField value="{!agreement.TotalApprovedRevenueLimit__c}" rendered="{!mode != ''}" />
                     <apex:outputField value="{!agreement.TotalApprovedRevenueLimit__c}" rendered="{!mode == ''}"/>
                 </apex:outputPanel>
             </apex:outputPanel>
@@ -3055,11 +3119,11 @@
         <apex:outputPanel ></apex:outputPanel>                
     </apex:pageBlockSection>
 
-    <apex:pageBlockSection collapsible="false" title="Agreement Execution Details">
+    <apex:pageBlockSection collapsible="false" title="Agreement Execution Details" id="taskOrderExecutionDetails">
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementExecutedBy__c.inlineHelpText}">
                 <apex:outputText value="Agreement Executed By"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}"/>
+                    <apex:inputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode != ''}" required="{!agreement.AgreementStatus__c == 'Executed'}"/>
                     <apex:outputField value="{!agreement.AgreementExecutedBy__c}" rendered="{!mode == ''}"/>    
                 </apex:outputPanel>         
         </apex:pageBlockSectionItem>
@@ -3067,7 +3131,7 @@
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ExecutionDate__c.inlineHelpText}">
                 <apex:outputText value="Execution Date"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.ExecutionDate__c}" rendered="{!mode != ''}"/>
+                    <apex:inputField value="{!agreement.ExecutionDate__c}" rendered="{!mode != ''}" required="{!agreement.AgreementStatus__c == 'Executed'}"/>
                     <apex:outputField value="{!agreement.ExecutionDate__c}" rendered="{!mode == ''}"/>  
                 </apex:outputPanel>         
         </apex:pageBlockSectionItem>
@@ -3109,7 +3173,7 @@
         </apex:outputPanel> 
         </apex:pageBlock>   
 
-        <apex:pageBlock title="Contract Reivews" rendered="{!mode == ''}">
+        <apex:pageBlock title="Contract Reviews" rendered="{!mode == ''}">
         <apex:outputPanel rendered="{!contractReviews.size > 0}">
             <apex:pageBlockTable value="{!contractReviews}" var="contractReview">
     
@@ -3197,7 +3261,7 @@
                 <apex:commandButton value="Save" action="{!save}" rendered="{!mode !=''}"/>
                 <apex:commandButton value="Edit" action="{!editAgreement}" rendered="{!mode ==''}" />
                 <apex:commandButton value="Segmentation" action="{!launchSegmentationQuestionnaire}" rendered="{!mode == ''}" />
-                <apex:commandButton value="MSA Project Portfolio" action="{!msaProjectSnapshot}" rendered="{!mode == ''}" />
+                <apex:commandButton value="MSA Project Portfolio" action="{!msaProjectSnapshot}" rendered="{!mode == '' && relAgreements.size > 0}" />
                 <apex:commandButton value="Return To MSA" action="{!cancel}" rendered="{!mode =='Edit'}"/>             
             </apex:pageBlockButtons>
 
@@ -3653,7 +3717,7 @@
             </apex:outputPanel> 
         </apex:pageBlock>       
 
-        <apex:pageBlock title="Contract Reivews" rendered="{!mode == ''}">
+        <apex:pageBlock title="Contract Reviews" rendered="{!mode == ''}">
         <apex:outputPanel rendered="{!contractReviews.size > 0}">
             <apex:pageBlockTable value="{!contractReviews}" var="contractReview">
     

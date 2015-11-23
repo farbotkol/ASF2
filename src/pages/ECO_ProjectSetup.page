@@ -368,7 +368,15 @@
                                                             <apex:outputPanel id="SiteSelect" rendered="{!if(lstSites.size > 0, true, false)}">
 
                                                             <div style="padding:0 12px;margin-top:7px">
+                                                                <apex:variable var="rowNum" value="{!0}"/>
                                                                 <apex:pageBlockTable value="{!lstSites}" var="Site" rendered="{!if(lstSites.size > 0, true, false)}">
+                                                                    <apex:column headerValue="Action">
+
+                                                                        <apex:commandLink style="text-decoration: none;" value="Remove" action="{!RemoveSite}" title="Remove" rerender="tabPanel" status="SiteSelectUpdateStatus" rendered="{!and(not(Site.booIsDefaultTopTask), not(Site.booIsPrimaryEnd))}">
+                                                                          <apex:param name="rowIndex" value="{!rowNum}" assignTo="{!iSiteRowDelete}"/>
+                                                                       </apex:commandLink>
+                                                                       <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                                                                    </apex:column>
                                                                     <apex:repeat value="{!$ObjectType.Site__c.FieldSets.pse_ClientFinder_Search_Result_Fieldset}" var="SearchField">
                                                                         <apex:column value="{!Site.oSite[SearchField]}" />
                                                                     </apex:repeat>
@@ -485,7 +493,7 @@
                                         
                                         <div style="text-align:center;">
                                             <apex:outputLabel value="Show me clients that are not in my Operating Unit" />&nbsp;
-                                            <c:ECO_HelpIcon helpText="Click box to search for clients with physical/billing location outside of Opertating Unit"/>
+                                            <c:ECO_HelpIcon helpText="Check the box to search for clients with physical or billing locations outside of the users operating unit (region/geography)"/>
                                             <apex:inputCheckbox value="{!bSearchOutsideUserOrg}" />
                                             <br/><br/>
                                             <apex:commandButton id="SearchButton" action="{!SearchSites}" value="Search" rerender="SiteTab" status="SiteSearchUpdateStatus" />
@@ -548,7 +556,7 @@
                                             <apex:outputPanel >     
                                             <apex:pageBlockSection title="Select Opportunity"  columns="1" collapsible="false"></apex:pageBlockSection>
                                             <div style="padding:0 12px;margin-top:7px">
-                                            <apex:pageMessage severity="INFO" rendered="{!IF(lstSearchOpportunities.size > 0, false, true)}" summary="No Opportunities Were Found."></apex:pageMessage> 
+                                            <apex:pageMessage severity="INFO" rendered="{!IF(lstSearchOpportunities.size > 0, false, true)}" summary="Select an opportunity from the list below. If you do not select an existing opportunity, one will be created upon completion of the 4 project setup steps."></apex:pageMessage> 
 
                                             <!--<apex:pageBlockTable value="{!lstSearchOpportunities}" var="SearchOpportunity" rendered="{!IF(lstSearchOpportunities.size > 0, true, false)}">
 
@@ -600,9 +608,15 @@
                                         </apex:facet>
                                     </apex:actionStatus>
                                     <br /><br />
+                                    <apex:outputPanel id="skipOpp" >
                                     <div style="text-align:center;">
-                                        <apex:commandButton value="Skip Opportunity Selection" action="{!SkipOpportunity}" reRender="tabPanel, messages" />
+                                        <apex:outputText value="If a new opportunity is to be created, please select the type of opportunity to be created from the drop down list and select Create New Opportunity." />&nbsp;&nbsp;
+                                        <apex:selectList value="{!idSelectedOppRecType}" size="1">
+                                            <apex:selectOptions value="{!opportunityRecType}"></apex:selectoptions>
+                                        </apex:selectList>&nbsp;&nbsp;
+                                        <apex:commandButton value="Create New Opportunity" action="{!SkipOpportunity}"  reRender="tabPanel, messages" />
                                     </div>
+                                    </apex:outputPanel>
                                     <BR /><BR />
                                     <div class="customHelpText">
                                         <div class="customHelpBody">
@@ -632,7 +646,12 @@
                                                     <apex:pageBlockSection title="General Project Information"  columns="2" collapsible="false">
                                                         <apex:pageBlockSectionItem helpText="Consider a title that is applicable for both internal and external (client facing) use.">
                                                             <apex:outputLabel value="Project Name" />
-                                                            <apex:inputField value="{!oProject.name}" required="true" />
+                                                            <apex:outputPanel >
+                                                                <div class="requiredInput">
+                                                                    <div class="requiredBlock"></div>
+                                                                        <apex:inputtext maxlength="30" value="{!oProject.name}" required="true" />
+                                                                    </div>
+                                                                </apex:outputPanel>
                                                         </apex:pageBlockSectionItem>
                                                         <apex:pageBlockSectionItem rendered="{!oppName !=null}">
                                                             <apex:outputLabel value="Opportunity Name" />

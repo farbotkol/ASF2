@@ -83,7 +83,7 @@
                 	 text-align: right;
                 }
             </style>
-            <apex:sectionHeader title="Sub & Vendor Details"/>  
+    <apex:sectionHeader subtitle="Sub & Vendor Details" title="All values shown in : {!budgetLabourWrapper.projectCurrency}"/>  
             
             <c:ECO_ModalDialog width="850" padding="20px 20px 20px 20px" name="modalDialog0">
                 <c:ECO_AddSubAndVendor budgetHeader="{!BudgetHeader__c.id}" />
@@ -94,12 +94,26 @@
                     <tr>
                         <td>
                         </td>
-                        <td>
+                        <td style="vertical-align:top;">
                             <table class="rowHeader" cellpadding="0" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th><apex:commandButton value="Save" action="{!save}"/></th>
-                                        <th><apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/></th>
+                                        <th>
+                                        <apex:commandButton value="<<" action="{!pageFirst}" title="First Page" alt="First Page" disabled="{!!enablePageFirst}" style="width:30px;margin-bottom:5px;"/>
+                                        <apex:commandButton value="<" action="{!pagePrevious}" title="Previous Page" alt="Previous Page" disabled="{!!enablePagePrevious}" style="width:30px;"/>
+
+                                        <span style="min-width:5px;">&nbsp;</span>
+                                        Page {!currentPage + 1} of {!lastPage + 1}
+                                        <span style="min-width:5px;">&nbsp;</span>
+
+                                        <apex:commandButton value=">" action="{!pageNext}" title="Next Page" alt="Next Page" disabled="{!!enablePageNext}" style="width:30px;"/>
+                                        <apex:commandButton value=">>" action="{!pageLast}" title="Last Page" alt="Last Page" disabled="{!!enablePageLast}" style="width:30px;"/>
+
+                                        <br/>
+
+                                        <apex:commandButton value="Save" action="{!save}"/>
+                                        <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/>
+                                        </th>
                                     </tr>
                                     <tr><th>&nbsp;</th></tr>
                                     <tr><th>&nbsp;</th></tr>

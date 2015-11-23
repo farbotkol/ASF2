@@ -125,7 +125,6 @@ public with sharing virtual class ECO_ProjectReviewsController
 		return true;
 	}
 
-
 	public List<Schema.FieldSetMember> getCustomProjFields()
 	{
 		if(theProject.pse__Stage__c == 'Planning')	
@@ -211,8 +210,17 @@ public with sharing virtual class ECO_ProjectReviewsController
 		}
 		else
 		{
-			if(oProjectReview.Status__c != 'Approved' && oProjectReview.Status__c != 'Submitted')
-				update oProjectReview;
+			if(oProjectReview.Status__c == '' || oProjectReview.Status__c == 'Not Started' || oProjectReview.Status__c == null || oProjectReview.Status__c == 'Rejected' || oProjectReview.Status__c == 'Assessing')
+			{
+				try
+				{
+					update oProjectReview;
+				}
+				catch(Exception e)
+				{
+
+				}
+			}
 		}
 
 		oProjectReview = getProjectReview(oProjectReview.Id);
@@ -361,7 +369,7 @@ public with sharing virtual class ECO_ProjectReviewsController
 		SaveAll();		
 		
 		ECO_Service_ProjectSnapshots projectSnapshotService = new ECO_Service_ProjectSnapshots(theProject.Id);
-		ProjectSnapshot__c projectSnapshot = projectSnapshotService.getProjectSnapshot();
+		ProjectSnapshot__c projectSnapshot = projectSnapshotService.getProjectSnapshot(DateTime.now());
 		projectSnapshot.ProjectReview__c = oProjectReview.Id;
 		projectSnapshot.Project__c = oProjectReview.Project__c;
 		insert projectSnapshot;

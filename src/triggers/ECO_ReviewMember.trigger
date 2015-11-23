@@ -23,9 +23,9 @@ trigger ECO_ReviewMember on ReviewMember__c (before insert, before update, after
         ECO_Service_Delegation.insertDelegations(trigger.new);
     }
     
-    /*if(trigger.isAfter && trigger.isInsert){
+    if(trigger.isAfter && trigger.isInsert){
         ECO_ReviewMember_TriggerHandler.handleEmailNotification(trigger.new);
-    }*/
+    }
     
     if(trigger.isBefore && trigger.isInsert){
 

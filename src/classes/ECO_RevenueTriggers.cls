@@ -2,8 +2,23 @@ public without sharing class ECO_RevenueTriggers {
 	
 	public static void calculateFiscalMonths(list<Revenue__c> revenues)
 	{
+        
+            list<date> enddatelist = new list<date>();
+        for (Revenue__c ba : revenues){
+             if (ba.GLDate__c != null){ 
+                 
+                 enddatelist.add((ba.GLDate__c).addmonths(2));
+                 enddatelist.add((ba.GLDate__c).addmonths(-3));
+             }
+        }
 		// Time period
-		List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
+         List<pse__Time_Period__c> timePeriods  = new  List<pse__Time_Period__c>();
+        if(enddatelist.size()>0)
+        {
+            timePeriods = ECO_Utils_Date.calcTimePeriods(enddatelist,'Month');
+            
+            // Time period
+           // List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
 		
 		pse__Time_Period__c fm = null;
 		for (Revenue__c r : revenues){
@@ -33,5 +48,6 @@ public without sharing class ECO_RevenueTriggers {
 			}						
 		}
 	}
+    }
 
 }

@@ -100,6 +100,7 @@ public without sharing class ECO_Service_Projects {
                                                                			, ProgBarPrelimPlanApproval__c
                                                                			, PrimarySite__c
                                                                			, CarryingOutOrganization__r.OUID__c
+                                                               			, OracleSyncStatus__c
 																		, (SELECT Id
 																					, Type__c
 																					, OrganizationString__r.OrganizationName__c

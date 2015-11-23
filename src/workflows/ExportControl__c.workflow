@@ -13,6 +13,20 @@
         <template>EcoSystem_Templates/EcoSystem_Export_Controls_Request</template>
     </alerts>
     <alerts>
+        <fullName>EcoExportControlsApprovedRejected</fullName>
+        <description>EcoExportControlsApprovedRejected</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>Export_Controls_Team</recipient>
+            <type>group</type>
+        </recipients>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoExportControlApprovedRejected</template>
+    </alerts>
+    <alerts>
         <fullName>Ecosystem_Email_Export_Controls_Team</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
@@ -57,19 +71,29 @@
         <operation>Literal</operation>
         <protected>false</protected>
     </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Eco_Set_Owner_to_Export_Control_Team</fullName>
+        <field>OwnerId</field>
+        <lookupValue>EcoExportControlsTeam</lookupValue>
+        <lookupValueType>Queue</lookupValueType>
+        <name>Eco Set Owner to Export Control Team</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>LookupValue</operation>
+        <protected>false</protected>
+    </fieldUpdates>
     <rules>
         <fullName>EcoExport Controls Completed</fullName>
         <actions>
             <name>Ecosystem_Email_Export_Controls_Team</name>
             <type>Alert</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <criteriaItems>
             <field>ExportControl__c.Status__c</field>
             <operation>equals</operation>
             <value>Completed</value>
         </criteriaItems>
-        <description>Notifies the export controls team when a export control form is completed.</description>
+        <description>Should be handled via approval process notification.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>

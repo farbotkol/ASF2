@@ -74,8 +74,23 @@ public with sharing class ECO_ExpenditureItem_TriggerDispatcher
 	
 	private static void calculateFiscalMonths(list<ExpendItem__c> expendItems)
 	{
+         list<date> enddatelist = new list<date>();
+        for (ExpendItem__c ba : expendItems){
+             if (ba.ExpenditureItemDate__c != null){ 
+                 
+                 enddatelist.add((ba.ExpenditureItemDate__c).addmonths(2));
+                 enddatelist.add((ba.ExpenditureItemDate__c).addmonths(-3));
+             }
+        }
+        system.debug('enddatelist----'+enddatelist);
+         List<pse__Time_Period__c> timePeriods  = new  List<pse__Time_Period__c>();
+        if(enddatelist.size()>0)
+        {
 		// Time period
-		List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
+          timePeriods = ECO_Utils_Date.calcTimePeriods(enddatelist,'Month'); 
+        
+        // Time period
+        //List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
 		
 		pse__Time_Period__c fm = null;
 		for (ExpendItem__c ei : expendItems){
@@ -91,4 +106,5 @@ public with sharing class ECO_ExpenditureItem_TriggerDispatcher
 			}
 		}
 	}
+    }
 }

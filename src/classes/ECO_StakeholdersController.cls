@@ -14,10 +14,6 @@ public with sharing class ECO_StakeholdersController
 	public List<Project_Site__c> lProjectSites {get; set;}
 	public List<Account> lAccounts {get; set;}
 	public Set<Id> setAccountIds {get; set;}
-	public List<ProjectTeamMember__c> lDelete_ProjectTeamMembers {get; set;}
-	public List<Stakeholder__c> lDelete_Stakeholders {get; set;}
-	public List<CommunicationPlan__c> lDelete_CommPlans {get; set;}
-	public list<SurveySchedule__c> lDelete_SurveySchedules {get; set;}
 	public String recordObjectType {get; set;}
 	public String recordObjectId {get; set;}
 	public ApexPages.StandardController oStandardController {get; set;}
@@ -103,7 +99,8 @@ public with sharing class ECO_StakeholdersController
 			SearchSites();
 
 			lProjectRoles = new List<ProjectRole__c>([Select Id, Name, Type__c From ProjectRole__c Where Active__c = true Order By SortOrder__c ASC]);
-			List<ProjectTeamMember__c> projectTeamMembers = new List<ProjectTeamMember__c>([Select Id, ProjectRole__c, ProjectRole__r.Name, ProjectRole__r.Type__c, Contact__c, Contact__r.Name, Contact__r.pse__Is_Resource_Active__c, Contact__r.pse__Salesforce_User__c, Status__c, ProjectRoleTitle__c, Project__c, StartDate__c, EndDate__c, Phone__c, Email__c, Active__c From ProjectTeamMember__c Where Project__c = :thisProject.Id]);
+            
+            List<ProjectTeamMember__c> projectTeamMembers = new List<ProjectTeamMember__c>([Select Id, ProjectRole__c, ProjectRole__r.Name, ProjectRole__r.Type__c, Contact__c, Contact__r.Name, Contact__r.pse__Is_Resource_Active__c, Contact__r.pse__Salesforce_User__c, Status__c, ProjectRoleTitle__c, Project__c, StartDate__c, EndDate__c, Phone__c, Email__c, Active__c, Is_Active__c From ProjectTeamMember__c Where Project__c = :thisProject.Id]);
 			
 			lStakeholders = new List<Stakeholder__c>([Select Id, StakeholderType__c, Organization__c, ContactName__c, ContactPhone__c, Interest__c, AECOMContact__c From Stakeholder__c Where Project__c = :thisProject.Id]);
 			
@@ -129,7 +126,8 @@ public with sharing class ECO_StakeholdersController
 					}
 				}
 				else{
-					lProjectTeamMembers.add(projectTeamMember);
+                    //if(projectTeamMember.ProjectRole__r.Name != 'Inactive Deliverable Owner')
+						lProjectTeamMembers.add(projectTeamMember);
 				}
 			}
             
@@ -239,7 +237,7 @@ public with sharing class ECO_StakeholdersController
 					tm.RoleType = ptm.ProjectRole__r.Type__c;
 					tm.oPTM = ptm;
 
-					if(ptm.contact__r.pse__Is_Resource_Active__c){
+					if(ptm.contact__r.pse__Is_Resource_Active__c && ptm.Is_Active__c ){
 						lMembersTeam.add(tm);
 					} else {
 						lInactiveMembersTeam.add(tm);
@@ -260,21 +258,35 @@ public with sharing class ECO_StakeholdersController
 			if(lStakeholders.isEmpty()){
 				lStakeholders.add(new Stakeholder__c(Project__c = thisProject.Id));
 			}
-			
-			lDelete_ProjectTeamMembers = new List<ProjectTeamMember__c>();
-			lDelete_Stakeholders = new List<Stakeholder__c>();
-			lDelete_CommPlans = new List<CommunicationPlan__c>();
-			lDelete_SurveySchedules = new list<SurveySchedule__c>();
 		}
 	}
 
 	//does the current project have all of the necessary default team members assigned to allow editing?
 	private Boolean canEditKeyMember(String projectRoleName){
-		if(financeRoles.contains(projectRoleName) && financeTeamMember != null){
-			return true;
+		if(projectRoleName == 'CFO or Delegate'){
+			return false;
+		}
+		else if(financeRoles.contains(projectRoleName) && financeTeamMember != null){
+			if(projectRoleName == 'Finance Lead' && financeTeamMember.pse__Salesforce_User__c == UserInfo.getUserId()){
+				return true;
+			}
+			else if(projectRoleName == 'Finance Lead'){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		else if(pAndLTeamMember != null && !financeRoles.contains(projectRoleName)){
-			return true;
+			if(projectRoleName == 'Project Approver 2' && pAndLTeamMember.pse__Salesforce_User__c == UserInfo.getUserId()){
+				return true;
+			}
+			else if(projectRoleName == 'Project Approver 2'){
+				return false;
+			}
+			else{
+				return true;
+			}
 		}
 		return false;
 	}
@@ -431,10 +443,6 @@ public with sharing class ECO_StakeholdersController
 				upsert lStakeholders;
 				upsert lCommPlans;
 				upsert lSurveySchedules;
-				delete lDelete_ProjectTeamMembers;
-				delete lDelete_Stakeholders;
-				delete lDelete_CommPlans;
-				delete lDelete_SurveySchedules;
 				update oProject;
 				oPR = ApexPages.currentPage();
 				oPR.getParameters().clear();
@@ -658,19 +666,21 @@ public with sharing class ECO_StakeholdersController
 	private void sendApprovalProcess(ProjectTeamMember__c projectTeamMember, String roleName){
 		Contact contact;
 
-		//find the contact from the loaded list already in viewstate
-		for(Contact queryDelegate : queryDelegates){
-			if(queryDelegate.Id == projectTeamMember.Contact__c){
-				contact = queryDelegate;
+		if(roleName != 'Project Approver 2' && roleName != 'Finance Lead' && roleName != 'Deputy Project Manager'){
+			//find the contact from the loaded list already in viewstate
+			for(Contact queryDelegate : queryDelegates){
+				if(queryDelegate.Id == projectTeamMember.Contact__c){
+					contact = queryDelegate;
+				}
 			}
-		}
 
-		Approval.ProcessSubmitRequest newPendingRequest = new Approval.ProcessSubmitRequest();
-        newPendingRequest.setComments('Submitting request for ' + contact.Name + ' to be in the role of ' + roleName + ' for Project ' + oProject.Name);
-		newPendingRequest.setObjectId(projectTeamMember.Id);
-        newPendingRequest.setProcessDefinitionNameOrId('Project_Team_Member_Approve_Team_Member');
-        newPendingRequest.setSkipEntryCriteria(true);
-        Approval.ProcessResult processResult = Approval.process(newPendingRequest);
+			Approval.ProcessSubmitRequest newPendingRequest = new Approval.ProcessSubmitRequest();
+	        newPendingRequest.setComments('Submitting request for ' + contact.Name + ' to be in the role of ' + roleName + ' for Project ' + oProject.Name);
+			newPendingRequest.setObjectId(projectTeamMember.Id);
+	        newPendingRequest.setProcessDefinitionNameOrId('Project_Team_Member_Approve_Team_Member');
+	        newPendingRequest.setSkipEntryCriteria(true);
+       		Approval.ProcessResult processResult = Approval.process(newPendingRequest);
+    	}
 	}
 
 	//validates assigning a new team member for key roles to the project
@@ -836,22 +846,14 @@ public with sharing class ECO_StakeholdersController
 	public PageReference removeRecord(){
 		if(recordObjectType == 'MembersTeam')
 		{
-			for(Integer i=0; i<lProjectTeamMembers.size(); i++)
-			{
-				if(lProjectTeamMembers[i].Id == recordObjectId)
-					lDelete_ProjectTeamMembers.add(lProjectTeamMembers.remove(i));
+			Integer teamMemberToRemove = Integer.valueOf(ApexPages.currentPage().getParameters().get('teamMemberToRemove'));
+			if(lMembersTeam[teamMemberToRemove].oPTM.Id != null){
+				lMembersTeam[teamMemberToRemove].oPTM.Is_Active__c = false;
+				lMembersTeam[teamMemberToRemove].oPTM.EndDate__c = Date.today();
+				update lMembersTeam[teamMemberToRemove].oPTM;
+				lInactiveMembersTeam.add(lMembersTeam[teamMemberToRemove]);
 			}
-			for(Integer i=0; i<lMembersTeam.size(); i++)
-			{
-				try{
-					if(lMembersTeam[i].oPTM.Id == recordObjectId){
-						lMembersTeam.remove(i);
-					}
-				}
-				catch(Exception ex){
-					system.debug('***invalid Id ' + recordObjectId + '  ' + lMembersTeam[i].oPTM.Id);
-				}
-			}
+			lMembersTeam.remove(teamMemberToRemove);
 		}
 		else if(recordObjectType == 'Stakeholder__c')
 		{
@@ -934,7 +936,7 @@ public with sharing class ECO_StakeholdersController
 
 			for(ProjectRole__c pr : lProjectRoles)
 			{
-				if(pr.Type__c == 'Team Member')
+				if(pr.Type__c == 'Team Member' && pr.Name != 'Inactive Deliverable Owner')
 				{
 					lTeamRoleTypes.add(new SelectOption(pr.Id, pr.Name));
 				}

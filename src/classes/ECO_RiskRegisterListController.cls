@@ -1,10 +1,25 @@
 public class ECO_RiskRegisterListController {
     public pse__Proj__c thisProject {get; set;}
+    public Decimal totalPostMitigation {get;set;}
+    public Decimal totalApprovedCost {get;set;}
+    public Decimal totalForecastCost {get;set;}
     public ApexPages.StandardController oStandardController {get; set;}
     public ECO_RiskRegisterListController(ApexPages.StandardController oStandardController){
         this.oStandardController = oStandardController; 
         thisProject = (pse__Proj__c)oStandardController.getRecord();
-        
+        calculateTotals();
+    }
+    public void calculateTotals(){
+        totalApprovedCost =0;
+    	totalForecastCost =0;
+        List <BudgetHeader__c> lBudgetHeader = new List<BudgetHeader__c> ([Select Id, Status__c, Project__c, TotalContingencyAmount__c From BudgetHeader__c Where Project__c =: thisProject.Id AND (Status__c = 'Forecast' OR Status__c = 'Approved')]);
+        //List <BudgetHeader__c> approved = new List<BudgetHeader__c> ([Select Id, Status__c, Project__c, TotalContingencyAmount__c From BudgetHeader__c Where Project__c =: thisProject.Id AND Status__c = 'Approved']);
+        for(BudgetHeader__c oBH : lBudgetHeader){
+            if(oBH.Status__c == 'Approved')
+                totalApprovedCost = totalApprovedCost + oBH.TotalContingencyAmount__c;
+            if(oBH.Status__c == 'Forecast')
+                totalForecastCost = totalForecastCost + oBH.TotalContingencyAmount__c;
+        }
     }
     public PageReference returnProj(){
         return new PageReference('/' + thisProject.Id);
@@ -25,7 +40,12 @@ public class ECO_RiskRegisterListController {
         return new PageReference('/'+oRisk.Id+'/e?retURL=/apex/ECO_RiskRegisterList?id='+thisProject.id);
     }
     public List<Risk__c> getRisks(){
+        totalPostMitigation = 0;
         List <Risk__c> riskList = new List<Risk__c>([Select id, Name, CurrentStatus__c, EventPhase__c, RiskOwner__c, Premitigationrating__c, ContingencyDollars__c, RiskMitigation__c, MitigationCostTotal__c, Postmitigationrating__c, PostmitigationContingencyTotal__c From Risk__c Where Project__c = :thisProject.Id]);
+        for(Risk__c oRisk :riskList){
+            if(oRisk.CurrentStatus__c != 'Expired' && oRisk.CurrentStatus__c != 'Cancelled')
+            	totalPostMitigation = totalPostMitigation + oRisk.PostmitigationContingencyTotal__c;
+        }
         System.debug('riskList.size:  '+riskList.size());
         System.debug('thisProject.Id:  '+thisProject.Id);
         return riskList;

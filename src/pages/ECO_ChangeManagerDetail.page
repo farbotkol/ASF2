@@ -161,14 +161,14 @@
     <apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Approving the Approval Process. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && projectSynchMessages == '' && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Submitted') && changeManager.IsExecutionApprovalChange__c}"/>
 
     <apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Approving the Approval Process. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed') && 
-                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c) && NOT(changeManager.IsExecutionApprovalChange__c)}"/>
+                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c || changeManager.IntExtClassifications__c) && NOT(changeManager.IsExecutionApprovalChange__c)}"/>
 
     
 
     <apex:pageMessages rendered="{!changeManager.ApprovalStatus__c != null && changeManager.IsExecutionApprovalChange__c}"/>
     <apex:pageMessages rendered="{!NOT(changeManager.IsExecutionApprovalChange__c) && changeManager.ApprovalStatus__c != null}"/>
 
-    <apex:pageMessages />
+    <!--<apex:pageMessages />-->
 
     <apex:outputPanel id="msgPollingTop" >
         <script type="text/javascript">
@@ -197,7 +197,7 @@
                 <apex:commandButton value="Return to Project" action="{!returnToProject}" rendered="{!mode == ''}" />
                 <apex:commandButton value="Return to Project Changes" action="{!returnToProjectChanges}" rendered="{!mode == ''}" />
                 <apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" rendered="{!NOT($User.IsValidOracleToken__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed') && 
-                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c)}"/>
+                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c || changeManager.IntExtClassifications__c)}"/>
                  <apex:commandButton value="Submit for Approval" action="{!SubmitForApproval}" id="Submit_for_Approval" rendered="{!(changeManager.ApprovalStatus__c == null || changeManager.ApprovalStatus__c == '' || changeManager.ApprovalStatus__c == 'Rejected') && projectSynchMessages == '' && mode == ''}"/>
                  <apex:commandButton value="Synchronize Project" rendered="{!changeManager.OracleApprovalSyncStatus__c == 'Failed'}" action="{!SynchronizeProject}" />
             </apex:pageBlockButtons>
@@ -857,25 +857,36 @@
                     <apex:variable value="{!ChangedProjectClosure[0]}" var="projstatus"/>
                     
                     <apex:outputPanel rendered="{!projstatus.RequestedProjectStatus__c == 'Closed'}">
-                    <apex:pageBlockTable value="{!ChangedProjectClosure}" var="closure">
-                        <apex:column headervalue="Action"><apex:commandLink action="{!viewProjectClosureRequest}" value="Project Closure Request"/></apex:column>
-                        <apex:column headervalue="Requested Status"><apex:outputText value="{!closure.RequestedProjectStatus__c}" /></apex:column>
-                        <apex:column headervalue="Closure Date"><apex:outputField value="{!closure.ClosureDate__c}" /></apex:column>
-                        <apex:column headervalue="Modified By"><apex:outputField value="{!closure.ChangeManagerProjectStatusUpdatedBy__c}" /></apex:column>
-                        <apex:column headervalue="Modified Date"><apex:outputField value="{!closure.ChangeManagerProjectStatusUpdatedDate__c}" /></apex:column>                     
-                    </apex:pageBlockTable>
+                        <apex:pageBlockTable value="{!ChangedProjectClosure}" var="closure">
+                            <apex:column headervalue="Action"><apex:commandLink action="{!viewProjectClosureRequest}" value="Project Closure Request"/></apex:column>
+                            <apex:column headervalue="Requested Status"><apex:outputText value="{!closure.RequestedProjectStatus__c}" /></apex:column>
+                            <apex:column headervalue="Closure Date"><apex:outputField value="{!closure.ClosureDate__c}" /></apex:column>
+                            <apex:column headervalue="Modified By"><apex:outputField value="{!closure.ChangeManagerProjectStatusUpdatedBy__c}" /></apex:column>
+                            <apex:column headervalue="Modified Date"><apex:outputField value="{!closure.ChangeManagerProjectStatusUpdatedDate__c}" /></apex:column>                     
+                        </apex:pageBlockTable>
 
-                    <apex:outputLabel value="Closure Notes: " styleclass="dmeOutput"/><br/>  
-                    <apex:outputText value="{!projstatus.ProjectClosureNotes__c}" /> 
+                        <apex:outputLabel value="Closure Notes: " styleclass="dmeOutput"/><br/>  
+                        <apex:outputText value="{!projstatus.ProjectClosureNotes__c}" /> 
                     
-                    <br/><br/>
-                    <apex:outputLabel value="Project Closure Change Notes" styleclass="dmeOutput"/><br/>
-                    <apex:outputPanel >           
-                        <apex:inputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
-                        <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                        <br/><br/>
+                        <apex:outputLabel value="Project Closure Change Notes" styleclass="dmeOutput"/><br/>
+                        <apex:outputPanel >           
+                            <apex:inputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                            <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                        </apex:outputPanel>
                     </apex:outputPanel>
+
+                    <apex:outputPanel rendered="{!projstatus.RequestedProjectStatus__c == 'Execution'}">
+                        <apex:outputLabel value="Project Re-Open Change Notes" styleclass="dmeOutput"/><br/>
+                        <apex:outputPanel >           
+                            <apex:inputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                            <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                        </apex:outputPanel>
                     </apex:outputPanel>
+
                     
+
+
                     <apex:outputPanel rendered="{!projstatus.RequestedProjectStatus__c == 'On Hold'}">
                     <apex:pageBlockTable value="{!ChangedProjectClosure}" var="onHold">
                         <apex:column headervalue="Action"><apex:commandLink action="{!viewProjectClosureRequest}" value="Project On Hold Request"/></apex:column>
@@ -894,8 +905,18 @@
                         <apex:inputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
                         <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
                     </apex:outputPanel>
-                    </apex:outputPanel>                 
-                </apex:outputPanel>                            
+                    </apex:outputPanel>  
+
+                    <apex:outputPanel rendered="{!changeManager.IsProjectRestart__c}">
+                        <apex:outputLabel value="Project Restart Notes" styleclass="dmeOutput"/><br/>
+                        <apex:outputPanel >           
+                            <apex:inputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                            <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+
+                </apex:outputPanel>  
+                       
             </apex:pageBlockSection>    
                                                                                                       
             </apex:outputPanel>    
@@ -1545,7 +1566,8 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainCommR
 </apex:pageBlock>
 </apex:outputPanel>
 </apex:form>
-<apex:relatedList list="ProcessSteps"  id="approval" rendered="{!ShowApprovalProcessList && $User.IsValidOracleToken__c}"></apex:relatedList>
+<apex:relatedList list="ProcessSteps" id="approval"></apex:relatedList>
+<!--<apex:relatedList list="ProcessSteps"  id="approval" />-->
 <apex:relatedList list="CombinedAttachments" rendered="{!changeManager.RecordType.Name == 'PM Handover'}"/>
 <apex:relatedList list="Project_Snapshots__r" rendered="{!changeManager.RecordType.Name == 'PM Handover'}"/>
 

@@ -32,6 +32,7 @@ public class ECO_CloseoutOpportunityPhaseController {
                             ,pse__Opportunity__c
                             ,pse__Opportunity__r.name
                             ,ProjectSectionHeaderName__c
+                            ,ProjectClosureNotes__c
                     from pse__Proj__c
                     where id =: oProject.id];
 
@@ -69,6 +70,45 @@ public class ECO_CloseoutOpportunityPhaseController {
 
 
     }
+
+    public pagereference createChangeManagementPlanning()
+    {
+        Id recordTypeId = [select Id from RecordType where Name = 'Customer Project (Planning)' limit 1].Id;
+        oProject.RecordTypeId = recordTypeId;
+        oProject.pse__Stage__c = 'Planning';
+
+        Savepoint oSavePoint = Database.setSavepoint();
+
+        try
+        {
+            update oProject;
+        }
+        catch(EcoControllerException e)
+        {
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e);
+            ApexPages.addMessage(oMsg);
+            Database.rollback(oSavePoint);
+            return null; 
+        } 
+
+        /*list<RecordType> lstRT = [select id from recordtype where sObjectType='ChangeManager__c' and developername='InternalChange'];
+        
+        ChangeManager__c cm;
+        
+        cm = new ChangeManager__c(recordtypeid = lstRT[0].id, Project__c = oProject.id, IntExtProjectClosure__c=true,  IsProjectReOpen__c=true, IntExtProjectClosureComments__c = 'Putting Project back to Planning from No-Go');
+
+        try{
+            insert cm;
+        }catch(EcoControllerException e){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to insert Change Manager: ' + e);
+            ApexPages.addMessage(oMsg);
+            return null; 
+        } 
+
+        return new pagereference('/apex/eco_changemanagerdetail?id=' + cm.id + '&Mode=');*/
+        return new PageReference('/' + oProject.Id);
+    }
+
 
     public Attachment dclosureAttachment
     {

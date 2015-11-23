@@ -70,10 +70,10 @@
                             <apex:pageBlockTable rendered="{!if(lSelectedOrganizations.size > 0, true, false)}" value="{!lSelectedOrganizations}" var="organization">
                                 <apex:column >
                                     <apex:facet name="header">Action</apex:facet>
-                                    <apex:commandLink action="{!SelectPrimary}" value="Make Primary" rerender="messages, organizationSection, searchSection" status="selectStatus">
+                                    <apex:commandLink action="{!SelectPrimary}" value="Make Primary" rendered="{!not(oProject.OracleSyncStatus__c='S')}" rerender="messages, organizationSection, searchSection" status="selectStatus">
                                         <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.OrganizationString__r.Id}" />
                                     </apex:commandLink>&nbsp;&nbsp;
-                                    <apex:commandLink action="{!RemoveEntry}" value="Remove" rerender="messages, organizationSection, searchSection" status="selectStatus">
+                                    <apex:commandLink action="{!RemoveEntry}" value="Remove" rendered="{!NOT(AND(organization.Type__c='Primary', oProject.OracleSyncStatus__c='S'))}" rerender="messages, organizationSection, searchSection" status="selectStatus">
                                         <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.OrganizationString__r.Id}" />
                                     </apex:commandLink>
                                 </apex:column>
@@ -103,7 +103,7 @@
                 <apex:pageBlockTable value="{!lUserOrganizations}" var="organization" rendered="{!IF(lUserOrganizations.size > 0, true, false)}">
                     <apex:column width="200px">
                         <apex:facet name="header">Action</apex:facet>
-                        <apex:commandLink action="{!SelectPrimary}" value="Set Primary" rerender="messages, buttons, tabPanel, searchSection" status="selectStatus">
+                        <apex:commandLink action="{!SelectPrimary}" value="Set Primary"  rendered="{!not(oProject.OracleSyncStatus__c='S')}"  rerender="messages, buttons, tabPanel, searchSection" status="selectStatus">
                             <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.Id}" />
                         </apex:commandLink>&nbsp;&nbsp;
                         <apex:commandLink action="{!SelectSecondary}" value="Set Supporting" rerender="messages, buttons, tabPanel, searchSection" status="selectStatus">
@@ -191,7 +191,7 @@
                             <apex:pageBlockTable rendered="{!bSearchInProgress}" value="{!lOrganizations}" var="organization">
                                 <apex:column >
                                     <apex:facet name="header">Action</apex:facet>
-                                    <apex:commandLink action="{!SelectPrimary}" value="Set Primary" rerender="messages, organizationSection, searchSection" status="selectStatus">
+                                    <apex:commandLink action="{!SelectPrimary}" value="Set Primary"  rendered="{!not(oProject.OracleSyncStatus__c='S')}"  rerender="messages, organizationSection, searchSection" status="selectStatus">
                                         <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.Id}" />
                                     </apex:commandLink>&nbsp;&nbsp;
                                     <apex:commandLink action="{!SelectSecondary}" value="Set Supporting" rerender="messages, organizationSection, searchSection" status="selectStatus">

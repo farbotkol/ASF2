@@ -561,8 +561,22 @@ public with sharing class ECO_ProjectTaskTriggers {
 	
 	public static void calculateFiscalMonths(list<pse__Project_Task__c> projectTasks)
 	{
+         list<date> enddatelist = new list<date>();
+        for (pse__Project_Task__c ba : projectTasks){
+             if (ba.pse__End_Date__c != null){ 
+                 
+                 enddatelist.add((ba.pse__End_Date__c).addmonths(2));
+                 enddatelist.add((ba.pse__End_Date__c).addmonths(-3));
+             }
+        }
+        system.debug('enddatelist----'+enddatelist);
+         List<pse__Time_Period__c> timePeriods  = new  List<pse__Time_Period__c>();
+        if(enddatelist.size()>0)
+        {
 		// Time period
-		List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
+          timePeriods = ECO_Utils_Date.calcTimePeriods(enddatelist,'Month');
+        // Time period
+       // List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
 		
 		pse__Time_Period__c fm = null;
 		for (pse__Project_Task__c pt : projectTasks){
@@ -579,5 +593,5 @@ public with sharing class ECO_ProjectTaskTriggers {
 			}
 		}
 	}
-	
+    }
 }

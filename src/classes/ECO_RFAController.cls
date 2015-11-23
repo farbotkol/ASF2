@@ -1,12 +1,12 @@
 public with sharing class ECO_RFAController {
 
-  private final string PRMDelim = ',,,,';
-  private final string PRMItemDelim = '!!';
+	private final string PRMDelim = ',,,,';
+	private final string PRMItemDelim = '!!';
 
-  public Form__c oForm {get;set;}
-  public list<DOARegister__c> DOARegisters {get;set;}
+	public Form__c oForm {get;set;}
+	public list<DOARegister__c> DOARegisters {get;set;}
     public list<DOARegister__c> DOARegistersNP {get;set;}
-  public list<DOARegister__c> NonProjectRelatedMatters {get;set;}
+	public list<DOARegister__c> NonProjectRelatedMatters {get;set;}
     public list<DOA_TriggerWrapper> lstDOATriggers {get; set;}
     public list<TemplateQuestion__c> lstTemplateQues {get;set;}
     public set<Id> setTemplateQuesIds {get;set;}
@@ -18,7 +18,7 @@ public with sharing class ECO_RFAController {
     
     public id doaRegisterId {get;set;}
     public id idQuestionID {get;set;}
-  public integer selectedIndex {get;set;}
+	public integer selectedIndex {get;set;}
     
     public String selectBusiness {get;set;}
     public String selectGeography {get;set;}
@@ -29,23 +29,23 @@ public with sharing class ECO_RFAController {
     public String ecosystem {get;set;}
     public String oracleProjNumber {get;set;}
     public Integer totalRecs {get;set;}
-  public Integer OffsetSize {get;set;}
-  public Integer LimitSize {get;set;}
+	public Integer OffsetSize {get;set;}
+	public Integer LimitSize {get;set;}
     public String fromVisualforce {get;set;}
     public Boolean isNonProjectRelated {get;set;}
     public Boolean isDeleteRendered{get;set;}
-  private integer index;
+	private integer index;
 
-  public ECO_RFAController(ApexPages.StandardController stdController) {
-    this.oForm = (Form__c)stdController.getRecord();
+	public ECO_RFAController(ApexPages.StandardController stdController) {
+		this.oForm = (Form__c)stdController.getRecord();
         fromVisualforce = null;
-    fromVisualforce = ApexPages.currentPage().getParameters().get('vfp');
-    if(oForm.id == null){
+		fromVisualforce = ApexPages.currentPage().getParameters().get('vfp');
+		if(oForm.id == null){
             ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'You have arrived to this page through inappropriate channels');
             ApexPages.addMessage(oMsg);
-    }
+		}
 
-    
+		
         
         string strSOQL = 'SELECT ';
         string formid = oForm.id;
@@ -54,17 +54,19 @@ public with sharing class ECO_RFAController {
             strSOQL += fsmField.getFieldPath() + ', ';
         }
         
-        strSOQL += 'ID, DOAApprovalRequest__c, ReasonForRequest__c, ProposedReviewCategoryChange__c, DOAApprovalRequest__r.RecordType.DeveloperName, JustificationReviewCategoryChange__c, NonProjectRelatedMatters__c, Projid__c, Business_Group__c, OwningOrganization__c, ProjectNameSubject__c, OpportunityNumber__c, OracleProjectNumber__c FROM Form__c WHERE id=: formid';
+        strSOQL += 'ID, DOAApprovalRequest__c, ReasonForRequest__c, ProposedReviewCategoryChange__c, DOAApprovalRequest__r.RecordType.DeveloperName, DOAApprovalRequest__r.Project__r.CarryingOutOrganization__c, JustificationReviewCategoryChange__c, NonProjectRelatedMatters__c, Projid__c, Business_Group__c, OwningOrganization__c, ProjectNameSubject__c, OpportunityNumber__c, OracleProjectNumber__c FROM Form__c WHERE id=: formid';
 
         list<Form__c> lstform = (list<Form__c>)Database.query(strSOQL);
-    oForm = lstform[0];
-    
+		oForm = lstform[0];
+        if(oForm.OwningOrganization__c == '' || oForm.OwningOrganization__c == null)
+			oForm.OwningOrganization__c = oForm.DOAApprovalRequest__r.Project__r.CarryingOutOrganization__c;
+        System.debug('Owning org:::::'+oForm.DOAApprovalRequest__r.Project__r.CarryingOutOrganization__c);
         proj = new pse__Proj__c();
         loadDoaMatters();
         doaRecordType = oForm.DOAApprovalRequest__r.RecordType.DeveloperName;
-    System.debug('doa recordtype id:'+oForm.DOAApprovalRequest__r.RecordTypeId);
+		System.debug('doa recordtype id:'+oForm.DOAApprovalRequest__r.RecordTypeId);
 
-  }
+	}
     public Boolean getisNonProjectRelated(){
         if(oForm.Projid__c == null || oForm.Projid__c == '')
             isNonProjectRelated = true;
@@ -77,54 +79,54 @@ public with sharing class ECO_RFAController {
         RecordType rt = [Select Id, DeveloperName From RecordType Where Id = :oForm.DOAApprovalRequest__r.RecordTypeId];
         System.debug('rt.DeveloperName:  '+rt.DeveloperName);
         if(rt.DeveloperName == 'DOAQueueEntry' || rt.DeveloperName == 'NonProject')
-          return false;
+        	return false;
         else
             return true;
     }
     public void loadDoaMatters(){
         this.DOARegisters = [select id, name, EnterpriseDOA__c, DCSsubDOA__c, DOATrigger__c, RiskTitle__c, TemplateQuestion__c, TemplateQuestion__r.Question__c from DOARegister__c where DOAApprovalRequest__c =: oForm.DOAApprovalRequest__c];
 
-    NonProjectRelatedMatters = new list<DOARegister__c>();
+		NonProjectRelatedMatters = new list<DOARegister__c>();
 
-    index = 0;
+		index = 0;
 
-    if(oForm.NonProjectRelatedMatters__c != null){
-      list<string> lstPRM = oForm.NonProjectRelatedMatters__c.split(PRMDelim, 0);
+		if(oForm.NonProjectRelatedMatters__c != null){
+			list<string> lstPRM = oForm.NonProjectRelatedMatters__c.split(PRMDelim, 0);
 
 
-      for(string PRM: lstPRM){
+			for(string PRM: lstPRM){
 
-        if(PRM == null || PRM==''){
-          continue;
-        }
+				if(PRM == null || PRM==''){
+					continue;
+				}
 
-        index +=1;
+				index +=1;
 
-        list<string> PRMitems = PRM.split(PRMItemDelim, 0);
+				list<string> PRMitems = PRM.split(PRMItemDelim, 0);
 
-        if(PRMitems.size() == 3){
-          NonProjectRelatedMatters.add(new DOARegister__c(IndexNumber__c = index, EnterpriseDOA__c = PRMitems[0], DCSsubDOA__c = PRMitems[1], DOATrigger__c = PRMitems[0]));
+				if(PRMitems.size() == 3){
+					NonProjectRelatedMatters.add(new DOARegister__c(IndexNumber__c = index, EnterpriseDOA__c = PRMitems[0], DCSsubDOA__c = PRMitems[1], DOATrigger__c = PRMitems[0]));
 
-        } else {
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Encountered an error while trying to read Non Project Related Matters: ' + PRM);
-                ApexPages.addMessage(oMsg);
-        }  
-      }
+				} else {
+		            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Encountered an error while trying to read Non Project Related Matters: ' + PRM);
+		            ApexPages.addMessage(oMsg);
+				}	
+			}
+		}
     }
-    }
-  public pagereference AddNonProjectRelatedMatter(){
-    index +=1;
-    NonProjectRelatedMatters.add(new DOARegister__c(IndexNumber__c = index));
-    return null;
-  }
-  
+	public pagereference AddNonProjectRelatedMatter(){
+		index +=1;
+		NonProjectRelatedMatters.add(new DOARegister__c(IndexNumber__c = index));
+		return null;
+	}
+	
     public PageReference deleteDOARegister(){
         DOARegister__c doaReg = [Select Id From DOARegister__c Where Id =: doaRegisterId];
         try{
             delete doaReg;
             loadDoaMatters();
             loadDOAList();
-          return null;
+        	return null;
         }catch(Exception e){
             ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to delete DOA Register. Please contact your administrator with the following error: ' + e);
             ApexPages.addMessage(oMsg);
@@ -133,45 +135,45 @@ public with sharing class ECO_RFAController {
         
     }
     
-  public pagereference RemoveNonProjectRelatedMatter(){
+	public pagereference RemoveNonProjectRelatedMatter(){
 
-    list<DOARegister__c> newlist = new list<DOARegister__c>();
+		list<DOARegister__c> newlist = new list<DOARegister__c>();
 
-    for(DOARegister__c d: NonProjectRelatedMatters){
-      if(d.IndexNumber__c != selectedIndex){
-        newlist.add(d);
-      }
-    }
+		for(DOARegister__c d: NonProjectRelatedMatters){
+			if(d.IndexNumber__c != selectedIndex){
+				newlist.add(d);
+			}
+		}
 
-    NonProjectRelatedMatters = newlist;
+		NonProjectRelatedMatters = newlist;
 
-    return null;
-  }
+		return null;
+	}
 
 
-  private boolean writeAddNonProjectRelatedMatterToField(){
-    
-    string finalstorage ='';
+	private boolean writeAddNonProjectRelatedMatterToField(){
+		
+		string finalstorage ='';
 
-    for(DOARegister__c d: NonProjectRelatedMatters){
+		for(DOARegister__c d: NonProjectRelatedMatters){
 
-      if(d.EnterpriseDOA__c == null || d.DCSsubDOA__c == null || d.DOATrigger__c == null || d.EnterpriseDOA__c.trim().length() == 0 || d.DCSsubDOA__c.trim().length() == 0 || d.DOATrigger__c.trim().length() == 0){
-              ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Please complete all fields for Non-Project Matters');
-              ApexPages.addMessage(oMsg);
-              return false;
-      }
+			if(d.EnterpriseDOA__c == null || d.DCSsubDOA__c == null || d.DOATrigger__c == null || d.EnterpriseDOA__c.trim().length() == 0 || d.DCSsubDOA__c.trim().length() == 0 || d.DOATrigger__c.trim().length() == 0){
+	            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Please complete all fields for Non-Project Matters');
+	            ApexPages.addMessage(oMsg);
+	            return false;
+			}
 
-      finalstorage += PRMDelim + d.EnterpriseDOA__c + PRMItemDelim + d.DCSsubDOA__c + PRMItemDelim + d.DOATrigger__c;
-    
-    }
+			finalstorage += PRMDelim + d.EnterpriseDOA__c + PRMItemDelim + d.DCSsubDOA__c + PRMItemDelim + d.DOATrigger__c;
+		
+		}
 
-    oForm.NonProjectRelatedMatters__c = finalstorage;
-    return true;
-  }
+		oForm.NonProjectRelatedMatters__c = finalstorage;
+		return true;
+	}
 
-  public pagereference saveForm(){
-    //if(writeAddNonProjectRelatedMatterToField()){
-          try{
+	public pagereference saveForm(){
+		//if(writeAddNonProjectRelatedMatterToField()){
+        	try{
                 if(oForm.Projid__c == null || oForm.Projid__c == '' ){
                     System.debug('oForm fields   '+oForm.Business_Group__c);
                     update oForm;
@@ -181,26 +183,26 @@ public with sharing class ECO_RFAController {
                     doa.OpportunityNumber__c = oForm.OpportunityNumber__c;
                     doa.ProjectNameSubject__c = oForm.ProjectNameSubject__c;
                     
-                    update doa;  
+                    update doa;	
                 }
                 else
                     update oForm;
                 return null;
                 
-      } catch (Exception e) {
-              ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to update the form. Please contact your administrator with the following error: ' + e);
-              ApexPages.addMessage(oMsg);
-              return null;
-      }
-    
+			} catch (Exception e) {
+	            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to update the form. Please contact your administrator with the following error: ' + e);
+	            ApexPages.addMessage(oMsg);
+	            return null;
+			}
+		
 
-  }
+	}
     public void init(){
         
         
         totalRecs = 0;
         OffsetSize = 0;
-    LimitSize= 20;
+		LimitSize= 20;
         
         
         
@@ -222,7 +224,7 @@ public with sharing class ECO_RFAController {
         loadDOAList();
         
     }
-  private void loadTriggers(){
+	private void loadTriggers(){
 
         string strSOQL = 'SELECT ';
         for (Schema.FieldSetMember fsmField: SObjectType.DOARegister__c.FieldSets.DOA_TriggerView.getFields()) {
@@ -246,7 +248,7 @@ public with sharing class ECO_RFAController {
             
         }
     }
-  public Pagereference addQuestion(){
+	public Pagereference addQuestion(){
         try{
             System.debug('idQuestionID:    '+idQuestionID);
             newTrigger = new DOARegister__c();
@@ -306,7 +308,7 @@ public with sharing class ECO_RFAController {
         }
         else
             strSOQL += 'ID FROM TemplateQuestion__c WHERE IsNonProjectRelated__c = TRUE AND BusinessLinesAvailableTo__c = :selectBusiness AND GeographiesAvailableTo__c = :selectGeography AND QuestionnaireTemplate__r.Name = :selectQuestionnaire ORDER BY QuestionnaireTemplate__c ASC LIMIT :LimitSize OFFSET :OffsetSize'; 
-      
+    	
         
         setTemplateQuesIds = new Set<Id>();
         lstTemplateQuestions = new List<TemplateQuestion__c>();
@@ -318,7 +320,7 @@ public with sharing class ECO_RFAController {
         }
         
         for(TemplateQuestion__c tq: lstTemplateQues){
-          if(!setTemplateQuesIds.contains(tq.Id)){
+        	if(!setTemplateQuesIds.contains(tq.Id)){
                 lstTemplateQuestions.add(tq);
             }
         }
@@ -337,7 +339,7 @@ public with sharing class ECO_RFAController {
             businessOptions.add(new SelectOption(valueBusiness.getLabel(), valueBusiness.getValue()));
         }       
         return businessOptions;
-  }
+	}
     
     public List<selectOption> getGeographies()
     {
@@ -351,8 +353,8 @@ public with sharing class ECO_RFAController {
             options.add(new SelectOption(f.getLabel(), f.getValue()));
         }       
         return options;
-  }
-  
+	}
+	
     public List<selectOption> getQuestionnaires()
     {
         System.debug('inside getQuestionnaires');
@@ -367,7 +369,7 @@ public with sharing class ECO_RFAController {
             options.add(new SelectOption(QuesName, QuesName));
         }
         return options;
-  }
+	}
     
     public PageReference searchQuestionnaire(){
         System.debug('selectBusiness   '+selectBusiness);
