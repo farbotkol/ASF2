@@ -111,6 +111,12 @@ public class ECO_Service_ProjectSnapshots {
             NMGR = 0;
             LaborMult = 0;
             TotalContingency = 0;
+            CostsODCEXPS = 0;
+            CostsODCSUBS = 0;
+            Labor = 0;
+            Fringe = 0;
+            Overhead = 0;
+            Hours = 0;
         }
     }
     
@@ -831,7 +837,6 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
 	        snapshot.NMGRMonthToDate__c = mtdActualFinancialMetrics.NMGR;
 	        snapshot.LaborMultMonthToDate__c = mtdActualFinancialMetrics.LaborMult;
 	        snapshot.ContingencyMonthToDate__c = mtdActualFinancialMetrics.TotalContingency;
-	        snapshot.SurMarginMonthToDate__c = ((snapshot.NMNSRMonthToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceMonthToDate__c)/100;
 	        snapshot.CostsODCEXPSMonthToDate__c = mtdActualFinancialMetrics.CostsODCEXPS;
 	        snapshot.CostsODCSUBSMonthToDate__c = mtdActualFinancialMetrics.CostsODCSUBS;
 	        snapshot.LaborMonthToDate__c = mtdActualFinancialMetrics.Labor;
@@ -853,7 +858,6 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
 	        snapshot.NMGRITD__c = itdActualFinancialMetrics.NMGR;
 	        snapshot.LaborMultITD__c = itdActualFinancialMetrics.LaborMult;
 	        snapshot.ContingencyITD__c = itdActualFinancialMetrics.TotalContingency;
-	        snapshot.SurMarginITD__c = ((snapshot.NMNSRITD__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceITD__c)/100;
 	        snapshot.CostsODCEXPSITD__c = itdActualFinancialMetrics.CostsODCEXPS;
 	        snapshot.CostsODCSUBSITD__c = itdActualFinancialMetrics.CostsODCSUBS;
 	        snapshot.LaborITD__c = itdActualFinancialMetrics.Labor;
@@ -882,7 +886,6 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
 	        snapshot.NMGRYearToDate__c = ytdActualFinancialMetrics.NMGR;
 	        snapshot.LaborMultYearToDate__c = ytdActualFinancialMetrics.LaborMult;
 	        snapshot.ContingencyYearToDate__c = ytdActualFinancialMetrics.TotalContingency;
-	        snapshot.SurMarginYearToDate__c = ((snapshot.NMNSRYearToDate__c - snapshot.NMNSRBudget__c) * snapshot.NetServiceYearToDate__c)/100;
 	        snapshot.CostsODCEXPSYearToDate__c = ytdActualFinancialMetrics.CostsODCEXPS;
 	        snapshot.CostsODCSUBSYearToDate__c = ytdActualFinancialMetrics.CostsODCSUBS;
 	        snapshot.LaborYearToDate__c = ytdActualFinancialMetrics.Labor;
@@ -900,49 +903,67 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
     
         try {
             String query = 
-            	'SELECT SUM(ProjectFunctionalBurdenedCost__c) funcBurdenedCost,'+ 
+            	'SELECT ExpenditureItem__r.ProjectTask__r.pse__Project__c projectId,'+
+            	' SUM(ProjectFunctionalBurdenedCost__c) funcBurdenedCost,'+ 
             	' ExpenditureItem__r.PLReportCategory__c category'+
             	' FROM CostDistLine__c'+
                 ' WHERE ExpenditureItem__r.ProjectTask__r.pse__Project__r.Id IN :projectIds';
 
-            if(asOfDate != null) {
+            if (asOfDate != null) {
                 query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate'+
                 	' AND ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
             }
             
-        	query += ' GROUP BY ExpenditureItem__r.PLReportCategory__c';
-            
+        	query += ' GROUP BY ExpenditureItem__r.PLReportCategory__c, ExpenditureItem__r.ProjectTask__r.pse__Project__c'+
+        			 ' ORDER BY ExpenditureItem__r.ProjectTask__r.pse__Project__c';
+        			 
+            System.debug(System.LoggingLevel.WARN, '___ProjectActualFinancialsCosts projectIds='+projectIds+', asOfDate='+asOfDate);
+            System.debug(System.LoggingLevel.WARN, '___query='+query);
             results = database.query(query);
             plReportCategorySet = getPLReportCategories();
 
-            for(AggregateResult ar : results)
+			Id projectId;
+			Id currentProjectId;
+			FinancialMetrics metrics;
+            for (AggregateResult ar : results)
             {
-            	FinancialMetrics metrics = new FinancialMetrics();
-            	for (String category : plReportCategorySet) {
-            		String arCategory = (String) ar.get('category');
-            		Decimal funcBurdenedCost = (Decimal)ar.get('funcBurdenedCost');
-                	if (arCategory != null && funcBurdenedCost != null) {
-                    	if (arCategory == category && category == ODC_Exps) {
-                    		metrics.CostsODCEXPS = funcBurdenedCost;
-						}
-                        else if (arCategory == category && category == ODC_Subs) {
-                        	metrics.CostsODCSUBS = funcBurdenedCost;
-						}
-						else if (arCategory == category && category == ODC_Contingency) {
-                        	metrics.TotalContingency = funcBurdenedCost;
-						}
-						else if (arCategory == category && category == 'Labor') {
-							metrics.Labor = funcBurdenedCost;
-						}
-						else if (arCategory == category && category == 'Fringe') {
-                        	metrics.Fringe = funcBurdenedCost;
-						}
-						else if (arCategory == category && category == 'Overhead') {
-                        	metrics.Overhead = funcBurdenedCost;
-						}
-                    }
+            	projectId = (Id) ar.get('projectId');
+            	if (currentProjectId == null) {
+            		currentProjectId = projectId;
+            		metrics = new FinancialMetrics();
+            	}
+            	else if (projectId != currentProjectId) {
+            		metrics = new FinancialMetrics(); // reset
+            		currentProjectId = projectId;
+            	}
+            	
+        		String arCategory = (String) ar.get('category');
+        		Decimal funcBurdenedCost = (Decimal)ar.get('funcBurdenedCost');
+        		
+            	if (arCategory != null && funcBurdenedCost != null && plReportCategorySet.contains(arCategory)) {
+            		System.debug(System.LoggingLevel.WARN, '___arCategory='+arCategory+', funcBurdenedCost='+funcBurdenedCost);
+                	if (arCategory == ODC_Exps) {
+                		metrics.CostsODCEXPS = funcBurdenedCost;
+					}
+                    else if (arCategory == ODC_Subs) {
+                    	metrics.CostsODCSUBS = funcBurdenedCost;
+					}
+					else if (arCategory == ODC_Contingency) {
+                    	metrics.TotalContingency = funcBurdenedCost;
+					}
+					else if (arCategory == 'Labor') {
+						metrics.Labor = funcBurdenedCost;
+					}
+					else if (arCategory == 'Fringe') {
+                    	metrics.Fringe = funcBurdenedCost;
+					}
+					else if (arCategory == 'Overhead') {
+                    	metrics.Overhead = funcBurdenedCost;
+					}
                 }
+                metricsMap.put(currentProjectId, metrics); // store populated metrics data
             }
+            System.debug(System.LoggingLevel.WARN, '___ProjectActualFinancialsCostsMap='+metricsMap);
         }
         catch (Exception e) {
             System.debug(e.getStackTraceString());
@@ -964,21 +985,25 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
                 ' AND ExpenditureItem__r.PLReportCategory__c != \'Fringe\''+
                 ' AND ExpenditureItem__r.PLReportCategory__c != \'Overhead\' ';  
 
-            if(asOfDate != null) {
+            if (asOfDate != null) {
                 query += ' AND ExpenditureItem__r.ExpenditureItemDate__c >= :asOfDate'+
                     ' AND ExpenditureItem__r.ExpenditureItemDate__c <= TODAY';
             }
 
             query += ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__c';
+            System.debug(System.LoggingLevel.WARN, '___projectIds='+projectIds+', asOfDate='+asOfDate);
+            System.debug(System.LoggingLevel.WARN, '___query='+query);
             results = database.query(query);
             plReportCategorySet = getPLReportCategories();
 
-            for(AggregateResult ar : results)
+            for (AggregateResult ar : results)
             {
             	FinancialMetrics metrics = new FinancialMetrics();
-            	if(ar.get('Labor') != null) {
-                    metrics.Labor = (Decimal)ar.get('Labor');
-                    metricsMap.put((Id)ar.get('Project__c'), metrics);
+            	Decimal laborValue =  (Decimal)ar.get('Labor');
+            	if (laborValue != null) {
+                    metrics.Labor = laborValue;
+                    metricsMap.put((Id)ar.get('projectId'), metrics);
+                    System.debug(System.LoggingLevel.WARN, '___CostsLaborMap='+metricsMap);
             	}
             }
         }
@@ -1008,11 +1033,11 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
             results = database.query(query);
             plReportCategorySet = getPLReportCategories();
 
-            for(AggregateResult ar : results)
+            for (AggregateResult ar : results)
             {
             	Decimal hoursValue = (Decimal)ar.get('Hours');
             	FinancialMetrics metrics = new FinancialMetrics();
-            	if(hoursValue != null) {
+            	if (hoursValue != null) {
                     metrics.Hours = hoursValue;
                     metricsMap.put((Id)ar.get('projectId'), metrics);
             	}
@@ -1260,47 +1285,6 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
         return metricsMap;
     }
 
-    /*@TestVisible private Map<Id, FinancialMetrics> getForecastBudgetHeaderMap(List<Id> projectIds)
-    {
-        Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
-        try {
-System.debug(System.logginglevel.WARN, '___getForecastBudgetHeaderMap projectIds='+projectIds);
-            for (AggregateResult ar : [SELECT Project__c,
-            								  SUM(TotalRevenue__c) totalRevenue,
-                                              SUM(TotalCost__c) totalCost,
-                                              SUM(TotalNonLabor__c) totalNonLabor,
-                                              SUM(TotalLaborAmount__c) totalLabor,
-                                              SUM(TotalContingencyAmount__c) totalContingency
-                                       FROM BudgetHeader__c
-                                       WHERE Project__c IN :projectIds
-                                       AND Status__c = 'Forecast'
-                                       GROUP BY Project__c])
-            {
-                FinancialMetrics metrics = new FinancialMetrics();
-                metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
-                metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
-                metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
-                metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));  
-                metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));  
-                    
-                metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
-                metrics.NetServiceRevenue = metrics.TotalRevenue - metrics.TotalNonLabor;
-                
-                if (metrics.TotalRevenue != 0)
-                    metrics.NMGR = ((metrics.TotalRevenue - metrics.TotalCost)/metrics.TotalRevenue) * 100;
-                if (metrics.TotalRevenue - metrics.TotalNonLabor != 0)   
-                    metrics.NMNSR = ((metrics.TotalRevenue - metrics.TotalCost)/(metrics.TotalRevenue - metrics.TotalNonLabor)) * 100;
-                if (metrics.TotalLabor != 0)
-                    metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
-            	metricsMap.put((Id)ar.get('Project__c'), metrics);
-System.debug(System.logginglevel.WARN, '___getForecastBudgetHeaderMap metrics='+metrics);
-            }
-        }
-        catch(Exception e) {
-            System.Debug(e.getStackTraceString());
-        }   
-        return metricsMap;
-    }*/
     @TestVisible private Map<Id, FinancialMetrics> getForecastBudgetHeaderMap(List<Id> projectIds)
     {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
