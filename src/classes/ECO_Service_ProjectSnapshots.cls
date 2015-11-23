@@ -215,8 +215,14 @@ public class ECO_Service_ProjectSnapshots {
         
     public ProjectSnapshot__c getProjectSnapshot(DateTime pSnapshotAsOfDateTime)
     {
-        List<ProjectSnapshot__c> snapshotList = createProjectSnapshots(pSnapshotAsOfDateTime);
-        return snapshotList[0];
+        List<ProjectSnapshot__c> snapshotList;
+        snapshotList = createProjectSnapshots(pSnapshotAsOfDateTime);
+        if (snapshotList != null && snapshotList.size() > 0) {
+        	return snapshotList[0];
+        }
+        else {
+        	return null;
+        }
     }
     
     public List<ProjectSnapshot__c> createProjectSnapshots(DateTime pSnapshotAsOfDateTime)
@@ -425,12 +431,13 @@ public class ECO_Service_ProjectSnapshots {
       				snapshot = getFutureSpendInformation(snapshot);
       				
 	                snapshotList.add(snapshot);
-	            }
-	            
-	            if (snapshotList.size() > 0) {
-	            	insert snapshotList;
-	            } 
+	            }   
 	        }
+	        
+	        if (snapshotList.size() > 0) {
+	        	System.debug(System.loggingLevel.WARN, '___snapshotList.size()='+snapshotList.size());
+            	insert snapshotList;
+            } 
         }
         catch(Exception e) {
             System.Debug(e.getStackTraceString());
@@ -917,8 +924,8 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
         	query += ' GROUP BY ExpenditureItem__r.PLReportCategory__c, ExpenditureItem__r.ProjectTask__r.pse__Project__c'+
         			 ' ORDER BY ExpenditureItem__r.ProjectTask__r.pse__Project__c';
         			 
-            System.debug(System.LoggingLevel.WARN, '___ProjectActualFinancialsCosts projectIds='+projectIds+', asOfDate='+asOfDate);
-            System.debug(System.LoggingLevel.WARN, '___query='+query);
+            //System.debug(System.LoggingLevel.WARN, '___ProjectActualFinancialsCosts projectIds='+projectIds+', asOfDate='+asOfDate);
+            //System.debug(System.LoggingLevel.WARN, '___query='+query);
             results = database.query(query);
             plReportCategorySet = getPLReportCategories();
 
@@ -941,7 +948,7 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
         		Decimal funcBurdenedCost = (Decimal)ar.get('funcBurdenedCost');
         		
             	if (arCategory != null && funcBurdenedCost != null && plReportCategorySet.contains(arCategory)) {
-            		System.debug(System.LoggingLevel.WARN, '___arCategory='+arCategory+', funcBurdenedCost='+funcBurdenedCost);
+            		//System.debug(System.LoggingLevel.WARN, '___arCategory='+arCategory+', funcBurdenedCost='+funcBurdenedCost);
                 	if (arCategory == ODC_Exps) {
                 		metrics.CostsODCEXPS = funcBurdenedCost;
 					}
@@ -1587,15 +1594,15 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
            	 	FinancialMetrics funcBurdenedCostsLaborMetrics = funcBurdenedCostsLaborMap.get(projId);
            	 	FinancialMetrics funcBurdenedCostsHoursMetrics = funcBurdenedCostsHoursMap.get(projId);
 
-				if (totalRevenueMetrics != null && totalCostMetrics != null && 
-						totalLaborMetrics != null && totalNonLaborMetrics != null) {	
+				if (totalRevenueMetrics != null || totalCostMetrics != null ||
+						totalLaborMetrics != null || totalNonLaborMetrics != null) {	
 		            metrics.NetServiceRevenue = getNetService(totalRevenueMetrics.TotalRevenue, totalNonLaborMetrics.TotalNonLabor); 
 		            System.debug(System.LoggingLevel.WARN, '___metrics.NetServiceRevenue='+metrics.NetServiceRevenue);
 		            metrics.NMGR = getNMGR(totalCostMetrics.NetMargin, totalRevenueMetrics.TotalRevenue);
 		            System.debug(System.LoggingLevel.WARN, '___metrics.NMGR='+metrics.NMGR);
 		            metrics.NMNSR = getNMNSRC(totalCostMetrics.NetMargin, metrics.NetServiceRevenue);
 		            System.debug(System.LoggingLevel.WARN, '___metrics.NMNSR='+metrics.NMNSR); 
-		            System.debug(System.LoggingLevel.WARN, '___totalRevenue='+totalRevenueMetrics.TotalRevenue+
+		            System.debug(System.LoggingLevel.WARN, '___metrics.totalRevenue='+totalRevenueMetrics.TotalRevenue+
 		            	', totalNonLabor='+totalNonLaborMetrics.TotalNonLabor+', totalLabor='+ totalLaborMetrics.TotalLabor);
 		            metrics.LaborMult = getLaborMult(totalRevenueMetrics.TotalRevenue, totalNonLaborMetrics.TotalNonLabor, totalLaborMetrics.TotalLabor);
 		            System.debug(System.LoggingLevel.WARN, '___metrics.LaborMult='+metrics.LaborMult); 
@@ -1609,7 +1616,7 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
 		            metrics.Overhead = funcBurdenedCostsMetrics.Overhead;
 				}
 				
-				if (funcBurdenedCostsLaborMetrics != null && funcBurdenedCostsHoursMetrics != null) {
+				if (funcBurdenedCostsLaborMetrics != null || funcBurdenedCostsHoursMetrics != null) {
 		            metrics.Labor = funcBurdenedCostsLaborMetrics.Labor;
 		            metrics.Hours = funcBurdenedCostsHoursMetrics.Hours;
 				}
@@ -1629,7 +1636,7 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
 	        for (AggregateResult ar : arList) {
 	            plReportCategorySet.add((String) ar.get('PLReportCategory__c'));
 	        }
-			System.debug(System.LoggingLevel.WARN, '___plReportCategorySet='+plReportCategorySet);
+			//System.debug(System.LoggingLevel.WARN, '___plReportCategorySet='+plReportCategorySet);
 		}
         return plReportCategorySet;
     }
