@@ -79,19 +79,30 @@
     	function setInner(variable)
         {
             var selected = variable.value;
-            if(selected == "No" || selected == "False")
-            {
+            if(selected == "No" || selected == "False"){
                 document.getElementById("j_id0:j_id4:j_id8:Staff:1").checked = true;
                 document.getElementById("j_id0:j_id4:j_id8:Expert:1").checked = true;
                 document.getElementById("j_id0:j_id4:j_id8:JVInvolve:1").checked = true;
                 document.getElementById("j_id0:j_id4:j_id8:PMService:1").checked = true;
                 document.getElementById("j_id0:j_id4:j_id8:RFP:1").checked = true;
-                
-                //StaffAugment.value = 'False';
-                
             }
-            
-        }  
+        }
+    
+  		function setOuter(variable){
+            var selected = variable.value;
+            if(selected == "Yes" || selected == "True"){
+                document.getElementById("j_id0:j_id4:j_id8:COI:0").checked = true;
+            }
+            if(selected == "No" || selected == "False"){
+                if(document.getElementById("j_id0:j_id4:j_id8:Staff:1").checked
+                  && document.getElementById("j_id0:j_id4:j_id8:Expert:1").checked
+                  && document.getElementById("j_id0:j_id4:j_id8:JVInvolve:1").checked
+                  && document.getElementById("j_id0:j_id4:j_id8:PMService:1").checked
+                  && document.getElementById("j_id0:j_id4:j_id8:RFP:1").checked){
+                    document.getElementById("j_id0:j_id4:j_id8:COI:1").checked = true;
+                }
+            }
+        }
     </script>
 	<apex:sectionHeader title="Market Assessment" subtitle="Editing {!MarketAssessment__c.Name}" />
 	<div class="customHelpText">
@@ -274,7 +285,7 @@
 									<tr >
 										<td class="padded">Expert Witness or Litigation Support.</td>
 										<td class="padded">
-											<apex:selectRadio value="{!MarketAssessment__c.ExpertWitnessorLitigationSupport__c}" id="Expert">
+											<apex:selectRadio value="{!MarketAssessment__c.ExpertWitnessorLitigationSupport__c}" id="Expert" onchange="setOuter(this)">
 								            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
 								            </apex:selectRadio>
 					             		</td>
@@ -282,7 +293,7 @@
 									<tr >
 										<td  class="padded">JV Involvement.</td>
 										<td  class="padded">
-											<apex:selectRadio value="{!MarketAssessment__c.JVinvolvement__c}" id="JVInvolve">
+											<apex:selectRadio value="{!MarketAssessment__c.JVinvolvement__c}" id="JVInvolve" onchange="setOuter(this)">
 								            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
 								            </apex:selectRadio>
 					             		</td>
@@ -290,7 +301,7 @@
 									<tr>
 										<td class="padded">Program Management Services.</td>
 										<td class="padded">
-											<apex:selectRadio value="{!MarketAssessment__c.ProgramManagementServices__c}" id="PMService">
+											<apex:selectRadio value="{!MarketAssessment__c.ProgramManagementServices__c}" id="PMService" onchange="setOuter(this)">
 								            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
 								            </apex:selectRadio>
 					             		</td>
@@ -298,7 +309,7 @@
 									<tr>
 										<td class="padded">RFP Development Services.</td>
 										<td class="padded">
-											<apex:selectRadio value="{!MarketAssessment__c.RFPDevelopmentServices__c}" id="RFP">
+											<apex:selectRadio value="{!MarketAssessment__c.RFPDevelopmentServices__c}" id="RFP" onchange="setOuter(this)">
 								            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
 								            </apex:selectRadio>
 					             		</td>
@@ -307,9 +318,9 @@
                                         <apex:actionRegion >
 										<td class="padded">Staff Augmentation or embedded workforce.</td>
 										<td class="padded">
-											<apex:selectRadio value="{!MarketAssessment__c.StaffAugmentationorembeddedworkforce__c}" id="Staff">
+											<apex:selectRadio value="{!MarketAssessment__c.StaffAugmentationorembeddedworkforce__c}" id="Staff" onchange="setOuter(this)">
 								            	<apex:selectOptions value="{!lAnswerValuesBoolean}"/>
-                                                
+                                                <apex:actionSupport event="onchange"/>
 								            </apex:selectRadio>
 					             		</td>
                                         </apex:actionRegion>
@@ -322,8 +333,8 @@
                             <apex:actionRegion >
                             <td class="cell" valign="top">
                                 <!--<apex:selectRadio value="{!MarketAssessment__c.Potentialconflictofinterestissues__c}" onselect="setInner(this)">-->
-                                <apex:selectRadio value="{!MarketAssessment__c.Potentialconflictofinterestissues__c}" onchange="setInner(this)">
-                                    <apex:selectOptions value="{!lAnswerValuesBoolean}"/>
+                                <apex:selectRadio value="{!MarketAssessment__c.Potentialconflictofinterestissues__c}" onchange="setInner(this)" id="COI">
+                                    <apex:selectOptions value="{!lAnswerValuesBoolean}" />
                                     <!--<apex:actionSupport event="onchange" action="{!DefaultChildToNo}" reRender="if({!MarketAssessment__c.Potentialconflictofinterestissues__c=='False'},Inner,Outer)"/>-->
                                     <apex:actionSupport event="onchange"/>
                                     <!--<apex:actionSupport event="onchange" action="{!DefaultChildToNo}" reRender="Inner"/>-->
