@@ -84,7 +84,7 @@
         }
     </style>
     
-    <apex:sectionHeader title="Contingency Details"/>  
+    <apex:sectionHeader subtitle="Contingency Details" title="All values shown in : {!budgetLabourWrapper.projectCurrency}"/>  
 
     <c:ECO_ModalDialog width="600" padding="20px 20px 20px 20px" name="modalDialog0">
         <c:ECO_AddContingency budgetHeader="{!BudgetHeader__c.id}" />
@@ -95,11 +95,22 @@
     <table style="width:100%" cellpadding="0" cellspacing="0">
         <tr>
             <td></td>
-            <td>
+            <td style="vertical-align:top;">
                 <table class="rowHeader" cellpadding="0" cellspacing="0">
                     <thead>
-                        <tr><th>All values shown in : {!projectCurrency}</th></tr>
                         <tr><th>
+                                        <apex:commandButton value="<<" action="{!pageFirst}" title="First Page" alt="First Page" disabled="{!!enablePageFirst}" style="width:30px;margin-bottom:5px;"/>
+                                        <apex:commandButton value="<" action="{!pagePrevious}" title="Previous Page" alt="Previous Page" disabled="{!!enablePagePrevious}" style="width:30px;"/>
+
+                                        <span style="min-width:5px;">&nbsp;</span>
+                                        Page {!currentPage + 1} of {!lastPage + 1}
+                                        <span style="min-width:5px;">&nbsp;</span>
+
+                                        <apex:commandButton value=">" action="{!pageNext}" title="Next Page" alt="Next Page" disabled="{!!enablePageNext}" style="width:30px;"/>
+                                        <apex:commandButton value=">>" action="{!pageLast}" title="Last Page" alt="Last Page" disabled="{!!enablePageLast}" style="width:30px;"/>
+
+                                        <br/>
+
                             <apex:commandButton value="Save" action="{!save}"/>
                             <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/>
                         </th></tr>
@@ -284,18 +295,26 @@
     <table>
         <tr><td>&nbsp;</td></tr>
         <tr class="taskDetailHeader">
-            <td class="purpleHeading">Per Risk Register</td>
+            <td class="purpleHeading">Total Mitigation Cost (from the Risk Register)</td>
             <td class="lightPurpleHeading">
                 <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                        <apex:param value="{!totalRisk}" />
+                        <apex:param value="{!totalMitigationCost}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr class="taskDetailHeader">
+            <td class="purpleHeading">Total Post Mitigation Contingency (from the Risk Register)</td>
+            <td class="lightPurpleHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!totalPostMitigationCost}" />
                 </apex:outputText>
             </td>
         </tr>
         <tr class="taskDetailHeader">
             <td class="purpleHeading">Variance from Budget</td>
-            <td class="{!IF(totalRisk<totalBudgetContingencies,'redHeading','lightPurpleHeading')}">
+            <td class="{!IF(totalPostMitigationCost<totalBudgetContingencies,'redHeading','lightPurpleHeading')}">
                 <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                        <apex:param value="{!totalRisk-totalBudgetContingencies}" />
+                        <apex:param value="{!totalPostMitigationCost - totalBudgetContingencies}" />
                 </apex:outputText>
            </td>
         </tr>

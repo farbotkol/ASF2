@@ -93,10 +93,7 @@
         }
     </style>
 
-    <apex:sectionHeader title="Expenses Details"/>  
-
-    <p>All values shown in {!BudgetHeader__c.Project__r.ProjectFunctionalCurrencyCode__c}</p>
-
+    <apex:sectionHeader subtitle="Expenses Details" title="All values shown in : {!budgetLabourWrapper.projectCurrency}"/>  
 
     <c:ECO_ModalDialog width="600" padding="20px 20px 20px 20px" name="modalDialog0">
         <c:ECO_AddODC budgetHeader="{!BudgetHeader__c.id}" /> 
@@ -108,10 +105,22 @@
 
     <table style="width:100%" cellpadding="0" cellspacing="0">
         <tr>
-            <td>
+            <td style="vertical-align:top;">
                 <table class="rowHeader" cellpadding="0" cellspacing="0">
                     <thead>
                         <tr><th>
+                                        <apex:commandButton value="<<" action="{!pageFirst}" title="First Page" alt="First Page" disabled="{!!enablePageFirst}" style="width:30px;margin-bottom:5px;"/>
+                                        <apex:commandButton value="<" action="{!pagePrevious}" title="Previous Page" alt="Previous Page" disabled="{!!enablePagePrevious}" style="width:30px;"/>
+
+                                        <span style="min-width:5px;">&nbsp;</span>
+                                        Page {!currentPage + 1} of {!lastPage + 1}
+                                        <span style="min-width:5px;">&nbsp;</span>
+
+                                        <apex:commandButton value=">" action="{!pageNext}" title="Next Page" alt="Next Page" disabled="{!!enablePageNext}" style="width:30px;"/>
+                                        <apex:commandButton value=">>" action="{!pageLast}" title="Last Page" alt="Last Page" disabled="{!!enablePageLast}" style="width:30px;"/>
+
+                                        <br/>
+
                             <apex:commandButton value="Save" action="{!save}"/>
                             <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/>
                         </th></tr>
@@ -151,8 +160,8 @@
             <td class="resourceColumn">
                 <table class="laborDetail" cellpadding="0" cellspacing="0">
                     <thead>
-                        <tr><th colspan="2" class="blueHeading">{!budgetLabour.resourceType}</th></tr>
-                        <tr><th colspan="2" class="blueHeading">
+                        <tr><th colspan="3" class="blueHeading">{!budgetLabour.resourceType}</th></tr>
+                        <tr><th colspan="3" class="blueHeading">
                             <apex:commandLink title="Clone" action="{!cloneResource}">
                                 <apex:param name="budgetSubId" value="{!budgetLabour.oBudgetResource.Id}"/>
                                 <apex:image value="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'clone.png')}" width="12" style="margin-right: 8px;" />
@@ -162,8 +171,8 @@
                                 <apex:image value="{!URLFOR($Resource.ECO_CustomGraphicAssets, 'trash.png')}" width="12" />
                             </apex:commandLink>
                         </th></tr>
-                        <tr><td colspan="2" >{!budgetLabour.columnHeader}</td></tr>
-                        <tr><td colspan="2" >
+                        <tr><td colspan="3" >{!budgetLabour.columnHeader}</td></tr>
+                        <tr><td colspan="3" >
                             <apex:selectList value="{!budgetLabour.expenditureType}" multiselect="false" size="1">
                                 <apex:selectOptions value="{!expenditureTypes}" />
                             </apex:selectList>
@@ -171,26 +180,39 @@
                     </thead>
                     <tbody >
                         <tr>
-                            <td width="50%" >
+                            <td width="33.33%" >
                                 <apex:selectList value="{!budgetLabour.costCalcType}" size="1" multiselect="false" onchange="rerender();">
                                     <apex:selectOptions value="{!unitTypes}" />
                                 </apex:selectList>
                             </td>
-                            <td  width="50%" class="tableInputs">
+                            <td  width="33.33%" class="tableInputs">
                                 <apex:inputCheckbox value="{!budgetLabour.IsQuoted}" label="Quoted" /> Quoted
                             </td>
+                            <td width="33.33%" class="tableInputs">
+                                            <apex:selectList value="{!budgetLabour.marginType}" size="1">
+                                                <apex:selectOption itemValue="Amount" itemLabel="Amount" />
+                                                <apex:selectOption itemValue="Percent" itemLabel="Percent" />
+                                                <apex:actionSupport id="marginType" event="onchange" action="{!calculateRevenue}" />
+                                            </apex:selectList>
+                            </td>
                         </tr>
                         <tr>
-                            <td width="50%" class="tableInputs">
+                            <td width="33.33%" class="tableInputs">
                                 <apex:inputText value="{!budgetLabour.raw}" styleClass="raw{!budgetLabour.oBudgetResource.id}" rendered="{!budgetLabour.costCalcType == 'Each'}" size="10" />
                             </td>
-                            <td width="50%" class="tableInputs"><apex:inputCheckbox value="{!budgetLabour.IsEstimated}" label="Estimated" /> Estimated</td>
+                            <td width="33.33%" class="tableInputs"><apex:inputCheckbox value="{!budgetLabour.IsEstimated}" label="Estimated" /> Estimated</td>
+                            <td width="33.33%" class="tableInputs">&nbsp;</td>
                         </tr>
                         <tr>
-                            <td width="50%" class="lastCell">
+                            <td width="33.33%" class="lastCell">
                                 <apex:inputText value="{!budgetLabour.billRateOrMarkup}" size="10" />
                             </td>
-                            <td width="50%" class="lastCell"><apex:inputCheckbox value="{!budgetLabour.IsBillable}" label="Billable" /> Billable</td>
+                            <td width="33.33%" class="lastCell"><apex:inputCheckbox value="{!budgetLabour.IsBillable}" label="Billable" /> Billable</td>
+                            <td width="33.33%" class="lastCell">
+                                <apex:outputPanel id="billRateOrMarkup">
+                                    <apex:inputText value="{!budgetLabour.billRateOrMarkup}" rendered="{!budgetLabour.marginType == 'Percent'}"/>
+                                </apex:outputPanel> 
+                            </td>
                         </tr>
                         <!--tr><td class="lightBlueHeading bold">{!budgetLabour.costRate}</td></tr>
                         <tr><td class="tableInputs"><apex:inputText value="{!budgetLabour.raw}"/></td></tr>
@@ -222,8 +244,9 @@
             <td class="lightBlueHeading bold">
                 <table width="100%">
                     <tr>
-                        <td width="50%">Quantity</td>
-                        <td width="50%">Cost</td>        
+                        <td width="33%">Quantity</td>
+                        <td width="33%">Cost</td>
+                        <td width="33%">Revenue</td>          
                     </tr>
                 </table>
             </td>
@@ -240,21 +263,26 @@
                 <table width="100%">
                     <tr>
                         <apex:outputPanel layout="none" rendered="{!budgetLabour.costCalcType == 'Each'}">
-                            <td width="50%">{!budgetLabour.totalQuantityByPerson}</td>
-                            <td width="50%" class="lightBlueHeading">
-				                <apex:outputText value="{0, number, ###,###,###,##0.00}">
-				                    <apex:param value="{!budgetLabour.totalQuantityByPerson * budgetLabour.raw}" />
-				                </apex:outputText>
-                            </td>
-                        </apex:outputPanel>
-                        <apex:outputPanel layout="none" rendered="{!budgetLabour.costCalcType == 'Amount'}">
-                            <td width="50%">&nbsp;</td>
-                            <td width="50%">
+                            <td width="33%">{!budgetLabour.totalQuantityByPerson}</td>
+                            <td width="33%" class="lightBlueHeading">
 				                <apex:outputText value="{0, number, ###,###,###,##0.00}">
 				                    <apex:param value="{!budgetLabour.totalCostByPerson}" />
 				                </apex:outputText>
                             </td>
                         </apex:outputPanel>
+                        <apex:outputPanel layout="none" rendered="{!budgetLabour.costCalcType == 'Amount'}">
+                            <td width="33%">&nbsp;</td>
+                            <td width="33%">
+				                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+				                    <apex:param value="{!budgetLabour.totalCostByPerson}" />
+				                </apex:outputText>
+                            </td>
+                        </apex:outputPanel>
+                            <td width="33%" class="lightBlueHeading">
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                    <apex:param value="{!budgetLabour.totalRevenueByPerson}" />
+                                </apex:outputText>
+                            </td>
                     </tr>
                 </table>
             </td>
@@ -287,7 +315,7 @@
                 <td class="detailRow">
                     <table cellpadding="0" cellspacing="0" width="100%">
                         <tr>
-                            <td width="50%" class="{!IF(budgetLabour.costCalcType == 'Amount' || budgetTask.children.size > 0, 'lightBlueHeading', '')}">
+                            <td width="33.33%" class="{!IF(budgetLabour.costCalcType == 'Amount' || budgetTask.children.size > 0, 'lightBlueHeading', '')}">
                                 <apex:outputPanel layout="none" rendered="{!budgetLabour.costCalcType == 'Each'}">
                                     <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c}" rendered="{!budgetTask.children.size == 0}" size="10" />
                                     <apex:outputText value="{!budgetLabourWrapper.mapTotalQuantityByODCDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}" rendered="{!budgetTask.children.size > 0}" />
@@ -296,7 +324,7 @@
                                     &nbsp;
                                 </apex:outputPanel>
                             </td>
-                            <td width="50%" class="{!IF(budgetLabour.costCalcType == 'Each' || budgetTask.children.size > 0, 'lightBlueHeading', '')}">
+                            <td width="33.33%" class="{!IF(budgetLabour.costCalcType == 'Each' || budgetTask.children.size > 0, 'lightBlueHeading', '')}">
                                 <apex:outputPanel layout="none" rendered="{!budgetLabour.costCalcType == 'Amount'}">
                                     <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c}" rendered="{!budgetTask.children.size == 0}" size="10"/>
                                     <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
@@ -307,6 +335,17 @@
                                     <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].TotalComputedCost__c}" rendered="{!budgetTask.children.size == 0}" />
                                     <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
                                         <apex:param value="{!budgetLabourWrapper.mapTotalComputedCostByODCDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}"/>
+                                    </apex:outputText>
+                                </apex:outputPanel>
+                            </td>
+                            <td width="33.33%">
+                                <apex:outputPanel id="revenueColumn" styleClass="numAlign" >
+                                    <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalRevenue__c}" rendered="{!budgetTask.children.size == 0 && budgetLabour.marginType == 'Amount'}" />
+                                    <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size == 0 && budgetLabour.marginType == 'Percent'}">
+                                        <apex:param value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].CalculatedRevenue__c}" />
+                                    </apex:outputText>
+                                    <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
+                                        <apex:param value="{!budgetLabourWrapper.mapTotalRevenueBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}" />
                                     </apex:outputText>
                                 </apex:outputPanel>
                             </td>

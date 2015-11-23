@@ -1,10 +1,22 @@
 public with sharing class ECO_BudgetLabourDetailController {
+	public static final Integer PAGE_SIZE = 5;
+
 	public Id budgetHeaderId {get;set;}
     
     public ECO_DTO_BudgetLabourWrapper budgetLabourWrapper{get; set;}
 
     public ECO_DTO_BudgetTask totalRow {get; set;}
     
+    public Integer currentPage {get; set;}
+    public Integer lastPage {get; set;}
+
+    public Integer totalRecords {get; set;}
+
+    public Boolean enablePageFirst {get; set;}
+    public Boolean enablePagePrevious {get; set;}
+    public Boolean enablePageNext {get; set;}
+    public Boolean enablePageLast {get; set;}
+
     public ECO_BudgetLabourDetailController (ApexPages.StandardController con) {
 		budgetHeaderId = con.getId();
         System.debug('budgetHeaderId: ' + budgetHeaderId);
@@ -13,6 +25,73 @@ public with sharing class ECO_BudgetLabourDetailController {
         budgetLabourWrapper = new ECO_DTO_BudgetLabourWrapper(budgetHeaderId, 'Labor/Person');
         
         totalRow = ECO_BudgetTaskService.getTotalRow(budgetLabourWrapper.dtoBudgetTasks);
+
+        initPage();
+    }
+
+    private void initPage() {
+        currentPage = 0;
+
+        if (ApexPages.currentPage().getParameters().get('pg') != null)
+        	currentPage = Integer.valueOf(ApexPages.currentPage().getParameters().get('pg'));
+
+        totalRecords = budgetLabourWrapper.dtoBudgetLabourDetails.size();
+
+        lastPage = (totalRecords - 1) / PAGE_SIZE;
+        
+        if (lastPage < 0)
+        	lastPage = 0;
+
+		List<ECO_DTO_BudgetLabourDetail> newdtoBudgetLabourDetails = new List<ECO_DTO_BudgetLabourDetail>();
+
+		Integer i = currentPage * PAGE_SIZE;
+		
+		while ((i < totalRecords) && (newdtoBudgetLabourDetails.size() < PAGE_SIZE)) {
+			newdtoBudgetLabourDetails.add(budgetLabourWrapper.dtoBudgetLabourDetails.get(i));
+			
+			i++;
+		}
+
+		budgetLabourWrapper.dtoBudgetLabourDetails = newdtoBudgetLabourDetails;
+
+		enablePageFirst = currentPage > 0;
+		enablePagePrevious = currentPage > 0;
+		enablePageNext = currentPage < lastPage;
+		enablePageLast  = currentPage < lastPage;
+    }
+
+    public PageReference movePage() {
+		PageReference pageReference = new PageReference('/apex/ECO_BudgetLabourDetail');
+        
+        pageReference.getParameters().put('id', budgetHeaderId);
+        pageReference.getParameters().put('pg', String.valueOf(currentPage));
+		pageReference.setRedirect(true);
+        
+        return pageReference;
+    }
+
+    public PageReference pageFirst() {
+    	currentPage = 0;
+
+    	return movePage();
+    }
+
+    public PageReference pagePrevious() {
+    	currentPage--;
+
+    	return movePage();
+    }
+
+    public PageReference pageNext() {
+    	currentPage++;
+
+    	return movePage();
+    }
+
+    public PageReference pageLast() {
+    	currentPage = lastPage;
+
+    	return movePage();
     }
     
     public PageReference cloneResource () {
