@@ -556,6 +556,9 @@ public with sharing class ECO_ProjectSummaryController {
 	    		if(member.StartDate__c == null){
 	    			validationMsgForKeyMember += checkForEmpty('', teamMemberStartDate);
 	    		}
+
+	    		if(member.StartDate__c > project.pse__Start_Date__c && project.pse__Stage__c == 'Planning')
+	    			validationMsgForKeyMember += 'The key member start date is after the start of the project.';
 	    		/*
 	    		if(member.EndDate__c == null){
 	    			validationMsgForKeyMember += checkForEmpty('', teamMemberEndDate);
@@ -1230,7 +1233,7 @@ public with sharing class ECO_ProjectSummaryController {
 
     
     public void doRequest(){
-
+    	allowRequestSubmit = false;
     }
 
 

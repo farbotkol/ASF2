@@ -875,7 +875,7 @@
                             <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
                         </apex:outputPanel>
                     </apex:outputPanel>
-                    
+
                     <apex:outputPanel rendered="{!projstatus.RequestedProjectStatus__c == 'Execution'}">
                         <apex:outputLabel value="Project Re-Open Change Notes" styleclass="dmeOutput"/><br/>
                         <apex:outputPanel >           
@@ -883,6 +883,9 @@
                             <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
                         </apex:outputPanel>
                     </apex:outputPanel>
+
+                    
+
 
                     <apex:outputPanel rendered="{!projstatus.RequestedProjectStatus__c == 'On Hold'}">
                     <apex:pageBlockTable value="{!ChangedProjectClosure}" var="onHold">
@@ -902,7 +905,16 @@
                         <apex:inputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
                         <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
                     </apex:outputPanel>
-                    </apex:outputPanel>                 
+                    </apex:outputPanel>  
+
+                    <apex:outputPanel rendered="{!changeManager.IsProjectRestart__c}">
+                        <apex:outputLabel value="Project Restart Notes" styleclass="dmeOutput"/><br/>
+                        <apex:outputPanel >           
+                            <apex:inputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}" required="true"/>
+                            <apex:outputField value="{!changeManager.IntExtProjectClosureComments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
+                        </apex:outputPanel>
+                    </apex:outputPanel>
+
                 </apex:outputPanel>  
                        
             </apex:pageBlockSection>    
@@ -1554,7 +1566,7 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainCommR
 </apex:pageBlock>
 </apex:outputPanel>
 </apex:form>
-<apex:relatedList list="ProcessSteps"  id="approval" rendered="{!ShowApprovalProcessList && (($User.IsValidOracleToken__c && (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c || changeManager.IntExtClassifications__c)) || (NOT(changeManager.IntExtKeyMembers__c) && NOT(changeManager.IntExtProjectTasks__c) && NOT(changeManager.IntExtCustomers__c) && NOT(changeManager.IntExtProjectClosure__c) && NOT(changeManager.IntExtProjectOnHold__c) && NOT(changeManager.IntExtClassifications__c)))}"></apex:relatedList>
+<apex:relatedList list="ProcessSteps" id="approval"></apex:relatedList>
 <!--<apex:relatedList list="ProcessSteps"  id="approval" />-->
 <apex:relatedList list="CombinedAttachments" rendered="{!changeManager.RecordType.Name == 'PM Handover'}"/>
 <apex:relatedList list="Project_Snapshots__r" rendered="{!changeManager.RecordType.Name == 'PM Handover'}"/>

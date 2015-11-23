@@ -62,7 +62,7 @@ global virtual class ECO_AgreementController {
     public string testTabId {get; set;}
 
     public String primeScopeText {get; set;}
-    
+    public Integer contractReviewCount {get; set;}
 
     public class RelatedAgreement
     {
@@ -126,8 +126,17 @@ global virtual class ECO_AgreementController {
         } 
 
         populateRelatedAgreementObjects(); 
-        getPrimeScopeText();    
+        getPrimeScopeText(); 
+        contractReviewCount = calculateContractReviewCount();    
     }
+
+    private Integer calculateContractReviewCount()
+    {
+        list<Contract_Review__c> contractReviews = [select Id from Contract_Review__c where Agreement__c = :agreement.Id];
+
+        return contractReviews.size();
+    }
+
 
     public PageReference initAgreementScopeChanged()
     {
@@ -180,7 +189,31 @@ global virtual class ECO_AgreementController {
 
     public void primeScopeChangedApex()
     {
-        update agreement;
+        if(agreement.Id != null)
+        {
+            try
+            {
+                update agreement;
+            }
+            catch(Exception e)
+            {
+                ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Please enter all the required fields before changing scope.');
+                ApexPages.addMessage(oPageMessage);
+            }
+        }
+        else
+        {            
+            try
+            {
+                insert agreement;
+            }
+            catch(Exception e)
+            {
+                ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Please enter all the required fields before changing scope.');
+                ApexPages.addMessage(oPageMessage); 
+            }
+
+        }
 
         getPrimeScopeText();
 
@@ -265,7 +298,13 @@ global virtual class ECO_AgreementController {
         list<ProjectAgreement__c> projectAgreements = [select Id, Project__c from ProjectAgreement__c where Agreement__c = :agreement.Id];
 
         if(!projectAgreements.isEmpty())
-            return new PageReference('/apex/ECO_ProjectAgreement?ProjectId=' + projectAgreements[0].Project__c);
+        {
+            PageReference pageRef = new PageReference('/apex/ECO_ProjectAgreement');
+            pageRef.getParameters().put('retURL', '/' + projectAgreements[0].Project__c);
+            pageRef.getParameters().put('ProjectId', + projectAgreements[0].Project__c);
+            return pageRef;
+            //return new PageReference('/apex/ECO_ProjectAgreement?ProjectId=' + projectAgreements[0].Project__c + '&returl=/' + projectAgreements[0].Project__c);
+        }
         return new PageReference('/');
     }
 
@@ -963,7 +1002,9 @@ global virtual class ECO_AgreementController {
     public PageReference save()
     {
         agreement.CurrencyIsoCode = agreement.FundingCurrencyCode__c; 
-        project = [select Id, Name, EstimatedContractValue__c, pse__Stage__c, EnableTopTaskCustomerFlag__c, EcoSystemReferenceNumber__c, OracleProjectnumber__c, pse__Project_Manager__c from pse__Proj__c where Id = :agreement.Project__c limit 1];  
+
+        if(agreement.RecordType.Name != 'Prime (MSA)')
+            project = [select Id, Name, EstimatedContractValue__c, pse__Stage__c, EnableTopTaskCustomerFlag__c, EcoSystemReferenceNumber__c, OracleProjectnumber__c, pse__Project_Manager__c from pse__Proj__c where Id = :agreement.Project__c limit 1];  
         
         if(agreement.Amount__c <= 0)
         {

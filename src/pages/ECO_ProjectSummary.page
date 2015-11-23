@@ -31,6 +31,15 @@
 
 	<script type='text/javascript'>
 
+    function disableAfterSubmit(id) {
+        var toDisable = document.getElementById( id );
+        toDisable.disabled = 'disabled';
+        // Use the Salesforce CSS style to make the button appear disabled
+        toDisable.className = 'btnDisabled';
+        //toDisable.value = "Saving..."
+    }
+
+
     function closeAuthenticationModal(){
         closeModal('modalDialogOracleLogin');
         closeAuthenticationWindow();
@@ -308,7 +317,7 @@
 			<!--
 			<apex:commandButton value="{!btnValue}" action="{!doRequest}" onclick="initiateOracleProjectSyncRequest_JS();" reRender="opTemp" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber}"/>
 			-->
-			<apex:commandButton value="{!btnValue}" action="{!doRequest}" onclick="numberRequest_Step1_start_JS(); return false;" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber && ($User.IsValidOracleToken__c) && allowRequestSubmit}"/>
+			<apex:commandButton value="{!btnValue}" onclick="disableAfterSubmit(this.id); numberRequest_Step1_start_JS(); return false;" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber && ($User.IsValidOracleToken__c) && allowRequestSubmit}"/>
 
 			<apex:commandButton value="Send Project Sync Request" onclick="doSyncStep(0); return false;"  
 			rendered="{!!isProjectNumber && ($User.IsValidOracleToken__c) && allowRequestSubmit}" disabled="{!!allowRequestSubmit}" id="btnSendNumRequest"/>
