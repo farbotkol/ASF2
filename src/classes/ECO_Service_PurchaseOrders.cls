@@ -560,7 +560,7 @@ public without sharing class ECO_Service_PurchaseOrders{
 																		VendorSite__r.Country__c,
 																		VendorSite__r.PostalCode__c,
 																		FFPOId__c,
-																		Agreement__r.VendorName__r.VendorName__c,
+																		Agreement__r.VendorSite__r.AccountName__c,
 																		Agreement__r.Name																		
 																FROM POHeader__c
 																WHERE Id = :sPurchaseOrderId]);
