@@ -488,11 +488,11 @@ public with sharing class ECO_StakeholdersController
 		if(queryContactName != null && queryContactName != ''){
 			if(queryContactName.trim().contains(' ')){
 				List<String> nameSplit = queryContactName.trim().split(' ');
-				firstName = nameSplit[0];
-				lastName = nameSplit[nameSplit.size() - 1];
+				firstName = String.escapeSingleQuotes(nameSplit[0].replace(',', ''));
+				lastName = String.escapeSingleQuotes(nameSplit[nameSplit.size() - 1].replace(',', ''));
 			}
 			else{
-				firstName = queryContactName;
+				firstName = String.escapeSingleQuotes(queryContactName);
 			}
 		}
 		if(queryType == 'Delegate'){
@@ -587,7 +587,8 @@ public with sharing class ECO_StakeholdersController
 					contactQuery += ' And (FirstName Like \'' + firstName + '%\' OR LastName Like \'' + firstName + '%\')';
 				}
 				else{
-					contactQuery += ' And (FirstName Like \'' + firstName + '%\' AND LastName Like \'' + lastName + '%\')';
+					contactQuery += ' And ((FirstName Like \'' + firstName + '%\' AND LastName Like \'' + lastName + '%\')';
+					contactQuery += ' OR (FirstName Like \'' + lastName + '%\' AND LastName Like \'' + firstName + '%\'))';
 				}
 			}
 		}
