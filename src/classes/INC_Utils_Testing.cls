@@ -154,7 +154,7 @@ public without sharing class INC_Utils_Testing {
         oIncentiveProject.ApprovedCostBudget__c = 1483925;
         oIncentiveProject.BIEE__c = 66544;
         oIncentiveProject.BilledAR__c = 82439;
-        oIncentiveProject.BusinessLineDescription__c = 'DP&E';
+        oIncentiveProject.EndMarket__c = 'DP&E';
         //oIncentiveProject.ChangeRequest__c = 'a5xe00000008SoPAAU';
         oIncentiveProject.ContractType__c = 'T&M (with Cap)';
         //oIncentiveProject.ContractTypeShortName__c = 'Fixed PriceTime & Material';

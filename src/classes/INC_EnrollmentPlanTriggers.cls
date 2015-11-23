@@ -423,7 +423,7 @@ public with sharing class INC_EnrollmentPlanTriggers {
     	System.Debug(logginglevel.error,'mapOld: ' + mapold);
     	for(EnrollmentPlan__c EP: mapNew.Values()){
     		if((EP.EnrollmentStatus__c == 'Enrolled' && mapOld.get(EP.ID).EnrollmentStatus__c != 'Enrolled')){
-    			if(EP.ApplicationType__c=='ENR' || (EP.ApplicationType__c == 'CCR' && EP.IncentivePlanContractType__c == 'Fixed Price')){
+    			if(EP.ApplicationType__c=='ENR'){// || (EP.ApplicationType__c == 'CCR' && EP.IncentivePlanContractType__c == 'Fixed Price')){
     				setReQueryPlans.add(EP.ID);
     			}
     		}

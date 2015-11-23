@@ -73,7 +73,7 @@ private class INC_Matching_Service_Test
 		RoutingMember__c DTWAdminActualWater = INC_Utils_Testing.createRoutingMemberRules(mUsers).get('LA Metro');
 		DTWAdminActualWater.GeographyDescription__c = Org2.GeographyName__c;
 		DTWAdminActualWater.RegionDescription__c = Org2.Region__c;
-		DTWAdminActualWater.BusinessLineDescription__c = Org2.BusinessLineName__c;
+		DTWAdminActualWater.EndMarket__c = Org2.BusinessLineName__c;
 		DTWAdminActualWater.DistrictDescription__c = Org2.District__c;
 		DTWAdminActualWater.DTW_Approver_Group__c = 'Southeast';
 		DTWAdminActualWater.Approver1__c = DTWAdminWater.ID;
@@ -83,7 +83,7 @@ private class INC_Matching_Service_Test
 		RoutingMember__c  TestingRouting = INC_Utils_Testing.createRoutingMemberRules(mUsers).get('LA Metro');
 		TestingRouting.GeographyDescription__c = Org1.GeographyName__c;
 		TestingRouting.RegionDescription__c = Org1.Region__c;
-		TestingRouting.BusinessLineDescription__c = Org1.BusinessLineName__c;
+		TestingRouting.EndMarket__c = Org1.BusinessLineName__c;
 		TestingRouting.DistrictDescription__c = Org1.District__c;
 		TestingRouting.DTW_Approver_Group__c = 'Southeast';
 		TestingRouting.Approver1__c = DTWAdminTest.ID;
@@ -99,7 +99,7 @@ private class INC_Matching_Service_Test
 		IncentiveProject__c WaterProject = INC_Utils_Testing.createIncentiveProject();
 		WaterProject.GeographyDescription__c = DTWAdminActualWater.GeographyDescription__c;
 		WaterProject.RegionDescription__c = DTWAdminActualWater.RegionDescription__c;
-		WaterProject.BusinessLineDescription__c = DTWAdminActualWater.BusinessLineDescription__c;
+		WaterProject.EndMarket__c = DTWAdminActualWater.EndMarket__c;
 		WaterProject.DistrictDescription__c = DTWAdminActualWater.DistrictDescription__c;
 		WaterProject.OrgCarryingOutProject__c = Org2.Name;
 		IncentiveProject__c WaterProject2;
@@ -207,7 +207,7 @@ private class INC_Matching_Service_Test
 		lRouting.add(DefaultRout);
 		RoutingMember__c DTWAdminActualWater = INC_Utils_Testing.CreateRoutingMember(DTWAdminWater);
 		DTWAdminActualWater.GeographyDescription__c = Org2.GeographyName__c;
-		DTWAdminActualWater.BusinessLineDescription__c = Org2.BusinessLineName__c;
+		DTWAdminActualWater.EndMarket__c = Org2.BusinessLineName__c;
 		DTWAdminActualWater.DistrictDescription__c = Org2.District__c;
 	
 		lRouting.Add(DTWAdminActualWater);
@@ -222,7 +222,7 @@ private class INC_Matching_Service_Test
 		RoutingMember__c  TestingRouting = INC_Utils_Testing.createRoutingMember(DTWAdminTest);
 		TestingRouting.GeographyDescription__c = Org1.GeographyName__c;
 		TestingRouting.RegionDescription__c = Org1.Region__c;
-		TestingRouting.BusinessLineDescription__c = Org1.BusinessLineName__c;
+		TestingRouting.EndMarket__c = Org1.BusinessLineName__c;
 		TestingRouting.DistrictDescription__c = Org1.District__c;
 		
 		RoutingMember__c GlobalDefault = INC_Utils_Testing.createRoutingMember(DTWAdminTest);
@@ -235,14 +235,14 @@ private class INC_Matching_Service_Test
 		IncentiveProject__c WaterProject = INC_Utils_Testing.createIncentiveProject();
 		WaterProject.GeographyDescription__c = DTWAdminActualWater.GeographyDescription__c;
 		WaterProject.RegionDescription__c = DTWAdminActualWater.RegionDescription__c;
-		WaterProject.BusinessLineDescription__c = DTWAdminActualWater.BusinessLineDescription__c;
+		WaterProject.EndMarket__c = DTWAdminActualWater.EndMarket__c;
 		WaterProject.DistrictDescription__c = DTWAdminActualWater.DistrictDescription__c;
 		WaterProject.OrgCarryingOutProject__c = Org2.Name;
 	
 		IncentiveProject__c TestProject = INC_Utils_Testing.createIncentiveProject();
 		TestProject.GeographyDescription__c = TestingRouting.GeographyDescription__c;
 		TestProject.RegionDescription__c = TestingRouting.RegionDescription__c;
-		TestProject.BusinessLineDescription__c = TestingRouting.BusinessLineDescription__c;
+		TestProject.EndMarket__c = TestingRouting.EndMarket__c;
 		TestProject.DistrictDescription__c = TestingRouting.DistrictDescription__c;
 		TestProject.OrgCarryingOutProject__c = Org1.Name;
 
@@ -334,7 +334,7 @@ private class INC_Matching_Service_Test
 		RoutingMember__c DTWAdminActualWater = INC_Utils_Testing.CreateRoutingMember(DTWAdminWater);
 		DTWAdminActualWater.GeographyDescription__c = Org2.GeographyName__c;
 		DTWAdminActualWater.RegionDescription__c = Org2.Region__c;
-		DTWAdminActualWater.BusinessLineDescription__c = Org2.BusinessLineName__c;
+		DTWAdminActualWater.EndMarket__c = Org2.BusinessLineName__c;
 		DTWAdminActualWater.DistrictDescription__c = Org2.District__c;
 		DTWAdminActualWater.DTW_Approver_Group__c = 'Southeast';
 	
@@ -343,7 +343,7 @@ private class INC_Matching_Service_Test
 		RoutingMember__c  TestingRouting = INC_Utils_Testing.createRoutingMember(DTWAdminTest);
 		TestingRouting.GeographyDescription__c = Org1.GeographyName__c;
 		TestingRouting.RegionDescription__c = Org1.Region__c;
-		TestingRouting.BusinessLineDescription__c = Org1.BusinessLineName__c;
+		TestingRouting.EndMarket__c = Org1.BusinessLineName__c;
 		TestingRouting.DistrictDescription__c = Org1.District__c;
 		TestingRouting.GlobalDefault__c = true;
 
@@ -356,13 +356,13 @@ private class INC_Matching_Service_Test
 			RoutingMember__c rt = new RoutingMember__c();
 			rt.GeographyDescription__c = Org2.GeographyName__c;
 			rt.RegionDescription__c = Org2.Region__c;
-			rt.BusinessLineDescription__c = Org2.BusinessLineName__c + String.ValueOf(i);
+			rt.EndMarket__c = Org2.BusinessLineName__c + String.ValueOf(i);
 			rt.DistrictDescription__c = Org2.District__c;
 			rt.DTW_Approver_Group__c = 'Southeast';
 			RoutingMember__c rt2 = new RoutingMember__c();
 			rt2.GeographyDescription__c = Org1.GeographyName__c;
 			rt2.RegionDescription__c = Org1.Region__c;
-			rt2.BusinessLineDescription__c = Org1.BusinessLineName__c + String.ValueOf(i);
+			rt2.EndMarket__c = Org1.BusinessLineName__c + String.ValueOf(i);
 			rt2.DistrictDescription__c = Org1.District__c;
 			rt2.DTW_Approver_Group__c = 'Southeast';
 			listBulkRouting.add(rt);
@@ -377,7 +377,7 @@ private class INC_Matching_Service_Test
 			WaterProject.Name = WaterProject.Name + String.valueOf(i);
 			WaterProject.GeographyDescription__c = DTWAdminActualWater.GeographyDescription__c;
 			WaterProject.RegionDescription__c = DTWAdminActualWater.RegionDescription__c;
-			WaterProject.BusinessLineDescription__c = DTWAdminActualWater.BusinessLineDescription__c;
+			WaterProject.EndMarket__c = DTWAdminActualWater.EndMarket__c;
 			WaterProject.DistrictDescription__c = DTWAdminActualWater.DistrictDescription__c;
 			WaterProject.OrgCarryingOutProject__c = Org2.Name;
 			lInserts.add(WaterProject);

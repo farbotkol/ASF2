@@ -17,6 +17,16 @@
         <template>DTW_Project_Incentives/Approver_employment_status_has_changed</template>
     </alerts>
     <alerts>
+        <fullName>Notification_of_Approaching_IP_Scheduled_Finish_Date</fullName>
+        <description>Notification of Approaching IP Scheduled Finish Date</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>DTW_Project_Incentives/Notification_of_Approaching_IP_Scheduled_Finish_Date</template>
+    </alerts>
+    <alerts>
         <fullName>Notify_AP1_of_budget_change_significantly_impacting_baseline_FP_plan_only</fullName>
         <description>16Notify AP1 of budget change significantly impacting baseline (FP plan only)</description>
         <protected>false</protected>
@@ -290,11 +300,8 @@
     </alerts>
     <alerts>
         <fullName>Prepayment_Alert_to_Approver_1_and_PM</fullName>
-        <description>Prepayment Alert to Approver 1 and PM</description>
+        <description>Prepayment Alert to Approver 1</description>
         <protected>false</protected>
-        <recipients>
-            <type>owner</type>
-        </recipients>
         <recipients>
             <field>Approver1__c</field>
             <type>userLookup</type>
@@ -1143,7 +1150,7 @@ TEXT(ApplicationType__c)&amp;Application_Version__c&amp;(MID(Name,4,80))</descri
     <fieldUpdates>
         <fullName>DTW_T_M_DPE_Adjustments</fullName>
         <field>DPEAdjustment__c</field>
-        <formula>DPEBudgetAdjustment__c</formula>
+        <formula>DPEBudgetAdjustment__c+AdminDPEOverride__c</formula>
         <name>DTW T&amp;M DPE Adjustments</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
@@ -1152,7 +1159,7 @@ TEXT(ApplicationType__c)&amp;Application_Version__c&amp;(MID(Name,4,80))</descri
     <fieldUpdates>
         <fullName>DTW_T_M_NSR_Adjustments</fullName>
         <field>NSRAdjustment__c</field>
-        <formula>TotalNSRManagementAdjustment__c</formula>
+        <formula>TotalNSRManagementAdjustment__c+AdminNSROverride__c</formula>
         <name>DTW T&amp;M NSR Adjustments</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
@@ -1286,6 +1293,24 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <name>Rejection Date</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_30_Day_Email_Flag</fullName>
+        <field>X30_Day_Email_Sent__c</field>
+        <literalValue>1</literalValue>
+        <name>Set 30-Day Email Flag</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_60_Day_Email_Flag</fullName>
+        <field>X60_Day_Email_Sent__c</field>
+        <literalValue>1</literalValue>
+        <name>Set 60-Day Email Flag</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
@@ -1512,6 +1537,25 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Set_Prepayment_Email_Sent_Flag</fullName>
+        <field>PrepaymentEmailSent__c</field>
+        <literalValue>1</literalValue>
+        <name>Set Prepayment Email Sent Flag</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_Scheduled_Finish_Date_Stamp</fullName>
+        <description>Sets ScheduledFinishDateStamp__c with the Scheduled Finish Date on the Incentive Project when an EA changed to Enrolled.</description>
+        <field>ScheduledFinishDateStamp__c</field>
+        <formula>ScheduledFinishDate__c</formula>
+        <name>Set Scheduled Finish Date Stamp</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Set_Status_to_Pending_PM_Action</fullName>
         <field>EnrollmentStatus__c</field>
         <literalValue>Pending PM Action</literalValue>
@@ -1568,6 +1612,36 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
         <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Unset_30_Day_Email_Flag</fullName>
+        <field>X30_Day_Email_Sent__c</field>
+        <literalValue>0</literalValue>
+        <name>Unset 30-Day Email Flag</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Unset_60_Day_Email_Flag</fullName>
+        <field>X60_Day_Email_Sent__c</field>
+        <literalValue>0</literalValue>
+        <name>Unset 60-Day Email Flag</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Unset_Prepayment_Email_Sent_Flag</fullName>
+        <field>PrepaymentEmailSent__c</field>
+        <literalValue>0</literalValue>
+        <name>Unset Prepayment Email Sent Flag</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>X60_Days_Closed_set_to_No</fullName>
@@ -2129,7 +2203,7 @@ NOT(ISNULL( Approver1__c ))
         <criteriaItems>
             <field>EnrollmentPlan__c.ApplicationType__c</field>
             <operation>equals</operation>
-            <value>ENR,CCR</value>
+            <value>ENR</value>
         </criteriaItems>
         <description>When the Enrollment Application is first Created, or Enrolled, capture the FORECAST financial metrics from the Incentive Project</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
@@ -2174,7 +2248,7 @@ NOT(ISNULL( Approver1__c ))
         <criteriaItems>
             <field>EnrollmentPlan__c.ApplicationType__c</field>
             <operation>equals</operation>
-            <value>ENR,CCR</value>
+            <value>ENR</value>
         </criteriaItems>
         <description>When the Enrollment Application is first Created, or Enrolled, capture the FORECAST financial metrics from the Incentive Project</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
@@ -2245,6 +2319,74 @@ ISCHANGED( NSRAdjustment__c  )
         </criteriaItems>
         <description>US-01142: create WFR to populate a Name field that will be unique.  This name must also populate the standard name field, Create a counter that increments within an Incentive Project so that an applicaion version number can be included in the Application</description>
         <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>DTW - 30-Day Notification of Approaching IP Scheduled Finish Date</fullName>
+        <active>false</active>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
+            <operation>equals</operation>
+            <value>Enrolled</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.X30_Day_Email_Sent__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.ScheduledFinishDateStamp__c</field>
+            <operation>greaterThan</operation>
+            <value>TODAY</value>
+        </criteriaItems>
+        <description>Schedules a notification for 30 days before the scheduled finish date when status = &apos;Enrolled&apos;.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>Notification_of_Approaching_IP_Scheduled_Finish_Date</name>
+                <type>Alert</type>
+            </actions>
+            <actions>
+                <name>Set_30_Day_Email_Flag</name>
+                <type>FieldUpdate</type>
+            </actions>
+            <offsetFromField>EnrollmentPlan__c.ScheduledFinishDateStamp__c</offsetFromField>
+            <timeLength>-30</timeLength>
+            <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
+    </rules>
+    <rules>
+        <fullName>DTW - 60-Day Notification of Approaching IP Scheduled Finish Date</fullName>
+        <active>false</active>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
+            <operation>equals</operation>
+            <value>Enrolled</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.X60_Day_Email_Sent__c</field>
+            <operation>equals</operation>
+            <value>False</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.ScheduledFinishDateStamp__c</field>
+            <operation>greaterThan</operation>
+            <value>TODAY</value>
+        </criteriaItems>
+        <description>Schedules a notification for 60 days before the scheduled finish date when status = &apos;Enrolled&apos;.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+        <workflowTimeTriggers>
+            <actions>
+                <name>Notification_of_Approaching_IP_Scheduled_Finish_Date</name>
+                <type>Alert</type>
+            </actions>
+            <actions>
+                <name>Set_60_Day_Email_Flag</name>
+                <type>FieldUpdate</type>
+            </actions>
+            <offsetFromField>EnrollmentPlan__c.ScheduledFinishDateStamp__c</offsetFromField>
+            <timeLength>-60</timeLength>
+            <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
+        </workflowTimeTriggers>
     </rules>
     <rules>
         <fullName>DTW Ready to Submit App</fullName>
@@ -2611,26 +2753,34 @@ ispickval(EPChanged__c,&quot;Yes&quot;))</formula>
     </rules>
     <rules>
         <fullName>Prepayment Alert to Approver 1 and PM</fullName>
-        <active>true</active>
+        <active>false</active>
         <criteriaItems>
             <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
             <operation>equals</operation>
             <value>Enrolled</value>
         </criteriaItems>
         <criteriaItems>
-            <field>EnrollmentPlan__c.EstimatedIncentivePoolEAC__c</field>
-            <operation>greaterThan</operation>
-            <value>USD 0</value>
+            <field>EnrollmentPlan__c.PrepaymentEmailSent__c</field>
+            <operation>equals</operation>
+            <value>False</value>
         </criteriaItems>
-        <description>Project is Enrolled, scheduled end date is less than 30 days from TODAY
-Project is in the money and forecasting an incentive. &quot;in the money&quot; defined as a positive value in the field &quot;EstimatedIncPoolEAC__c&quot;</description>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.ScheduledFinishDateStamp__c</field>
+            <operation>greaterThan</operation>
+            <value>TODAY</value>
+        </criteriaItems>
+        <description>Send email notification to Approver 1 x days before Scheduled End Date.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
         <workflowTimeTriggers>
             <actions>
                 <name>Prepayment_Alert_to_Approver_1_and_PM</name>
                 <type>Alert</type>
             </actions>
-            <offsetFromField>EnrollmentPlan__c.ScheduledFinishDate__c</offsetFromField>
+            <actions>
+                <name>Set_Prepayment_Email_Sent_Flag</name>
+                <type>FieldUpdate</type>
+            </actions>
+            <offsetFromField>EnrollmentPlan__c.ScheduledFinishDateStamp__c</offsetFromField>
             <timeLength>-30</timeLength>
             <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
         </workflowTimeTriggers>
@@ -2721,5 +2871,48 @@ CONTAINS( GMEACChangeAlert__c , &quot;YES&quot;)
             <timeLength>-10</timeLength>
             <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
         </workflowTimeTriggers>
+    </rules>
+    <rules>
+        <fullName>Unset 30 Day Email Flag</fullName>
+        <actions>
+            <name>Unset_30_Day_Email_Flag</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Unset the 30-Day Email Flag if the Project finish date has changed.</description>
+        <formula>and( 
+ischanged( ScheduledFinishDateStamp__c ), 
+
+ScheduledFinishDateStamp__c-Today()&gt;30 
+)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Unset 60 Day Email Flag</fullName>
+        <actions>
+            <name>Unset_60_Day_Email_Flag</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Unset the 60-Day Email Flag if the Project finish date has changed and the new date is more than 60 days out.</description>
+        <formula>and( 
+ischanged(ScheduledFinishDateStamp__c), 
+ScheduledFinishDateStamp__c-Today()&gt;60 
+
+)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Unset Prepayment Email Sent Flag</fullName>
+        <actions>
+            <name>Unset_Prepayment_Email_Sent_Flag</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <formula>and(
+ischanged(ScheduledFinishDateStamp__c),
+
+ScheduledFinishDateStamp__c&gt;PRIORVALUE(ScheduledFinishDateStamp__c))</formula>
+        <triggerType>onAllChanges</triggerType>
     </rules>
 </Workflow>

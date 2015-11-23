@@ -92,7 +92,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                                                         , GeographyDescription__c
                                                         , DistrictDescription__c
                                                         , RegionDescription__c
-                                                        , BusinessLineDescription__c
+                                                        , EndMarket__c
                                                         , LegalEntityDescription__c
                                                         , CurrencyIsoCode
                                                         , RoutingMemberRule__c
@@ -271,7 +271,7 @@ public without sharing class INC_Service_EnrollmentPlan {
         ID RoutingMemberID = currentPlan.IncentiveProject__r.RoutingMemberRule__c;
         List<RoutingMember__c> lMembers = [Select Id
                         , Name
-                        , BusinessLineDescription__c
+                        //, EndMarket__c
                         , GeographyDescription__c
                         , LegalEntityDescription__c
                         , RegionDescription__c
@@ -283,10 +283,12 @@ public without sharing class INC_Service_EnrollmentPlan {
                         , GlobalDefault__c
                         , OwnerID
                     From RoutingMember__c where id =: RoutingMemberID];
-        oEnroll.Approver1__c = lMembers[0].Approver1__c;
-        oEnroll.Approver2__c = lMembers[0].Approver2__c;
-        oEnroll.Approver3__c = lMembers[0].Approver3__c;
-        oEnroll.DTWAdmin__c = lMembers[0].DTWAdmin__c;
+        if(lMembers !=null && lMembers.size() > 0){
+          oEnroll.Approver1__c = lMembers[0].Approver1__c;
+          oEnroll.Approver2__c = lMembers[0].Approver2__c;
+          oEnroll.Approver3__c = lMembers[0].Approver3__c;
+          oEnroll.DTWAdmin__c = lMembers[0].DTWAdmin__c;
+        }
       }
       /*if(RT == requestType.CHANGE && oEnroll.IncentivePlan__r.ContractType__c == 'Time & Material'){
         oEnroll.GrossRevenueAdjustment__c = null;
@@ -542,6 +544,9 @@ public without sharing class INC_Service_EnrollmentPlan {
         try{
             update lUpdates;
         }catch(Exception e){
+            for(IncentiveProject__c ip: lUpdates){
+              IP.AddError(e.getMessage());
+            }
             system.debug(logginglevel.error,'Handling Exception:  '+e.getMessage());
             Database.rollBack(sp);
             bReturn = false;
