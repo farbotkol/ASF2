@@ -41,6 +41,8 @@ public class ECO_Service_ProjectSnapshots {
     private Id primaryOrganizationId;
     private List<Id> projectIds;
 
+	public static Set<String> plReportCategorySet = new Set<String>();
+	        
     Map<Id, FinancialMetrics> originalBudgetHeaderMap;
     Map<Id, FinancialMetrics> approvedBudgetHeaderMap;
     Map<Id, DateTime> lastUpdatedBudgetDateMap;
@@ -260,11 +262,12 @@ public class ECO_Service_ProjectSnapshots {
                 billingMetricsAR91to180Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_91to180);
                 billingMetricsAR181PlusMap = getBillingMetricsAR181PlusMap(projectIds);
 
+				// Note: Unbilled calculations are in reverse order
+				unbilledMetricsAR181PlusMap = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_181Plus);
+				unbilledMetricsAR91to180Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_91to180);
+				unbilledMetricsAR61to90Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_61to90);
+				unbilledMetricsAR31to60Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_31to60);
 				unbilledMetricsAR0to30Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_0to30);
-                unbilledMetricsAR31to60Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_31to60);
-                unbilledMetricsAR61to90Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_61to90);
-                unbilledMetricsAR91to180Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_91to180);
-                unbilledMetricsAR181PlusMap = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_181Plus);
                 
 	            ProjectSnapshot__c snapshot;
 	            
@@ -294,6 +297,7 @@ public class ECO_Service_ProjectSnapshots {
     			totalCostITD3MonthsAgoMetricsMap = getTotalCostITD3MonthsAgoMap(projectIds);
 
                 billingMetricsARMap = getBillingMetricsARMap(projectIds, itdActualFinancialMetricsMap);
+                System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap 1='+billingMetricsARMap);
                 
                 populateFutureSpendMaps(projectIds);
                 
@@ -404,13 +408,13 @@ public class ECO_Service_ProjectSnapshots {
 	                    snapshot.UnbilledTotal__c = billingMetricsAR.TotalUnbilled;
                     }
                     
-					// Unbilled Metrics
-					snapshot.Unbilled0to30__c = unbilledMetricsAR0to30Map.get(project.Id);
-					snapshot.Unbilled31to60__c = unbilledMetricsAR31to60Map.get(project.Id);
-                    snapshot.Unbilled61to90__c = unbilledMetricsAR61to90Map.get(project.Id);
-                    snapshot.Unbilled91to180__c = unbilledMetricsAR91to180Map.get(project.Id);
+					// Unbilled Metrics	
                     snapshot.Unbilled181Plus__c = unbilledMetricsAR181PlusMap.get(project.Id);
-      
+      				snapshot.Unbilled91to180__c = unbilledMetricsAR91to180Map.get(project.Id);
+      				snapshot.Unbilled61to90__c = unbilledMetricsAR61to90Map.get(project.Id);
+      				snapshot.Unbilled31to60__c = unbilledMetricsAR31to60Map.get(project.Id);
+                    snapshot.Unbilled0to30__c = unbilledMetricsAR0to30Map.get(project.Id);
+				    
       				// Future Spend
       				snapshot = getFutureSpendInformation(snapshot);
       				
@@ -491,9 +495,14 @@ public class ECO_Service_ProjectSnapshots {
         Map<Id, BillingMetrics> billingMetricsMap = new Map<Id, BillingMetrics>();
         BillingMetrics billingMetrics;
         try {
-            for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled, SUM(RetentionAmount__c) totalRetention
+            /**ERROR: SOQL "cuts off" after FROM Billing__c: for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled, SUM(RetentionAmount__c) totalRetention
                             FROM Billing__c WHERE ProjectNumber__c IN :projectIds GROUP BY ProjectNumber__c])
-            {
+            */
+            String query = 'SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled, SUM(RetentionAmount__c) totalRetention'+
+            	' FROM Billing__c WHERE ProjectNumber__c IN :projectIds GROUP BY ProjectNumber__c';
+            
+            List<AggregateResult> results = database.query(query); 
+            for (AggregateResult ar : results) {      
             	Decimal totalBilledValue = (Decimal) ar.get('totalBilled');
                 if (totalBilledValue != null)
                 {   
@@ -504,7 +513,7 @@ public class ECO_Service_ProjectSnapshots {
 	                    FinancialMetrics itdFM = itdActualFinancialMetricsMap.get(projId);
 	                    if (itdFM != null) {
 		                    Decimal totalRevenue = itdFM.TotalRevenue;
-		                    System.debug(System.LoggingLevel.WARN, '___totalRevenue='+totalRevenue);
+		                    System.debug(System.LoggingLevel.WARN, '___itdFM totalRevenue='+totalRevenue);
 		                    if (totalBilledValue != null) {
 		                        billingMetrics.BilledAR = (Decimal)ar.get('totalBilled');   
 		                    }
@@ -514,6 +523,7 @@ public class ECO_Service_ProjectSnapshots {
 		                        billingMetrics.BIEE = totalRevenue - billingMetrics.BilledAR;
 		                    }
 		                    billingMetricsMap.put(projId, billingMetrics);
+		                    System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap='+billingMetricsARMap);
 	                    }
                 	}
                 }
@@ -587,18 +597,22 @@ public class ECO_Service_ProjectSnapshots {
                 endDate = pSnapshotDate.addDays(-180);
             }
 
+System.debug(System.LoggingLevel.WARN, '___startDate='+startDate+', endDate='+endDate);
             for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled
                             FROM Billing__c WHERE ProjectNumber__c IN :projectIds AND
                             InvoiceDate__c <= :startDate AND InvoiceDate__c >= :endDate 
                             GROUP BY ProjectNumber__c])
             {
+            	Id projId = (Id) ar.get('ProjectNumber__c');
                 Decimal totalBilled = (Decimal)ar.get('totalBilled');
-                if (totalBilled != null)
+System.debug(System.LoggingLevel.WARN, '___projId='+projId+', totalBilled='+totalBilled);
+                if (totalBilled == null)
                 {
-                    Id projId = (Id) ar.get('ProjectNumber__c');
-                    billingMetricsMap.put(projId, totalBilled);
-                }
+                	totalBilled = 0;
+                }        
+                billingMetricsMap.put(projId, totalBilled);
             }
+System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+billingMetricsMap);
         }
         catch (Exception e) {
             System.debug(e.getStackTraceString());
@@ -636,8 +650,12 @@ public class ECO_Service_ProjectSnapshots {
             	Decimal unbilledValue = 0;
                 Decimal totalRevenue = (Decimal)ar.get('totalRevenue');
                 Id projId = (Id) ar.get('ProjectNumber__c');
-                System.debug(System.LoggingLevel.WARN, '___totalRevenue='+totalRevenue+', projId='+projId);
+                System.debug(System.LoggingLevel.WARN, '___range='+range+', totalRevenue='+totalRevenue+', projId='+projId);
+                System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap='+billingMetricsARMap);
                 if (billingMetricsARMap != null) {
+                	System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap.get(projId)='+billingMetricsARMap.get(projId));
+                	System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap.get(projId).BilledAR='+billingMetricsARMap.get(projId).BilledAR);
+                	
 	                if (range == UNBILLED_181Plus) {
 		                if (totalRevenue != null)
 		                {
@@ -646,6 +664,7 @@ public class ECO_Service_ProjectSnapshots {
 	                	else {
 	                    	unbilledValue = 0 - billingMetricsARMap.get(projId).BilledAR;
 			            }
+			            System.debug(System.LoggingLevel.WARN, '___UNBILLED_181Plus='+unbilledValue);
 	            	}
 	            	else if (range == UNBILLED_91to180) {
 		                if (totalRevenue != null)
@@ -655,6 +674,7 @@ public class ECO_Service_ProjectSnapshots {
 	                	else {
 	                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId)); 
 			            }
+			            System.debug(System.LoggingLevel.WARN, 'UNBILLED_91to180='+unbilledValue);
 	            	}
 	            	else if (range == UNBILLED_61to90) {
 		                if (totalRevenue != null)
@@ -666,6 +686,7 @@ public class ECO_Service_ProjectSnapshots {
 	                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
 	                    		unbilledMetricsAR91to180Map.get(projId)); 
 			            }
+			            System.debug(System.LoggingLevel.WARN, 'UNBILLED_61to90='+unbilledValue);
 	            	}
 	            	else if (range == UNBILLED_31to60) {
 		                if (totalRevenue != null)
@@ -677,6 +698,7 @@ public class ECO_Service_ProjectSnapshots {
 	                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
 	                    		unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId));
 			            }
+			            System.debug(System.LoggingLevel.WARN, 'UNBILLED_31to60='+unbilledValue);
 	            	}
 	            	else if (range == UNBILLED_0to30) {
 		                if (totalRevenue != null)
@@ -688,7 +710,9 @@ public class ECO_Service_ProjectSnapshots {
 	                    	unbilledValue = 0 - (billingMetricsARMap.get(projId).BilledAR + unbilledMetricsAR181PlusMap.get(projId) + 
 	                    		unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId) + unbilledMetricsAR31to60Map.get(projId));
 			            }
+			            System.debug(System.LoggingLevel.WARN, 'UNBILLED_0to30='+unbilledValue);
 	            	}
+	            	System.debug(System.LoggingLevel.WARN, '___unbilledValue='+unbilledValue);
 	            	unbilledMetricsMap.put(projId, unbilledValue);
                 }
             }
@@ -889,7 +913,7 @@ public class ECO_Service_ProjectSnapshots {
         	query += ' GROUP BY ExpenditureItem__r.PLReportCategory__c';
             
             results = database.query(query);
-            Set<String> plReportCategorySet = getPLReportCategories();
+            plReportCategorySet = getPLReportCategories();
 
             for(AggregateResult ar : results)
             {
@@ -947,7 +971,7 @@ public class ECO_Service_ProjectSnapshots {
 
             query += ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__c';
             results = database.query(query);
-            Set<String> plReportCategorySet = getPLReportCategories();
+            plReportCategorySet = getPLReportCategories();
 
             for(AggregateResult ar : results)
             {
@@ -982,7 +1006,7 @@ public class ECO_Service_ProjectSnapshots {
 
             query += ' GROUP BY ExpenditureItem__r.ProjectTask__r.pse__Project__c';
             results = database.query(query);
-            Set<String> plReportCategorySet = getPLReportCategories();
+            plReportCategorySet = getPLReportCategories();
 
             for(AggregateResult ar : results)
             {
@@ -1236,10 +1260,11 @@ public class ECO_Service_ProjectSnapshots {
         return metricsMap;
     }
 
-    @TestVisible private Map<Id, FinancialMetrics> getForecastBudgetHeaderMap(List<Id> projectIds)
+    /*@TestVisible private Map<Id, FinancialMetrics> getForecastBudgetHeaderMap(List<Id> projectIds)
     {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
         try {
+System.debug(System.logginglevel.WARN, '___getForecastBudgetHeaderMap projectIds='+projectIds);
             for (AggregateResult ar : [SELECT Project__c,
             								  SUM(TotalRevenue__c) totalRevenue,
                                               SUM(TotalCost__c) totalCost,
@@ -1268,6 +1293,47 @@ public class ECO_Service_ProjectSnapshots {
                 if (metrics.TotalLabor != 0)
                     metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
             	metricsMap.put((Id)ar.get('Project__c'), metrics);
+System.debug(System.logginglevel.WARN, '___getForecastBudgetHeaderMap metrics='+metrics);
+            }
+        }
+        catch(Exception e) {
+            System.Debug(e.getStackTraceString());
+        }   
+        return metricsMap;
+    }*/
+    @TestVisible private Map<Id, FinancialMetrics> getForecastBudgetHeaderMap(List<Id> projectIds)
+    {
+        Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
+        try {
+            String query = 'SELECT Project__c, SUM(TotalRevenue__c) totalRevenue, SUM(TotalCost__c) totalCost,'+
+            	' SUM(TotalNonLabor__c) totalNonLabor, SUM(TotalLaborAmount__c) totalLabor,'+
+            	' SUM(TotalContingencyAmount__c) totalContingency'+
+               	' FROM BudgetHeader__c'+
+               	' WHERE Project__c IN :projectIds'+
+               	' AND Status__c = \'Forecast\' '+
+               	' GROUP BY Project__c';
+            
+            List<AggregateResult> results = database.query(query);
+            for (AggregateResult ar : results) {
+            	System.debug(System.logginglevel.WARN, '___getForecastBudgetHeaderMap projectId='+(Id)ar.get('Project__c'));
+                FinancialMetrics metrics = new FinancialMetrics();
+                metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
+                metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
+                metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
+                metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));  
+                metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));  
+                    
+                metrics.NetMargin = metrics.TotalRevenue - metrics.TotalCost;
+                metrics.NetServiceRevenue = metrics.TotalRevenue - metrics.TotalNonLabor;
+                
+                if (metrics.TotalRevenue != 0)
+                    metrics.NMGR = ((metrics.TotalRevenue - metrics.TotalCost)/metrics.TotalRevenue) * 100;
+                if (metrics.TotalRevenue - metrics.TotalNonLabor != 0)   
+                    metrics.NMNSR = ((metrics.TotalRevenue - metrics.TotalCost)/(metrics.TotalRevenue - metrics.TotalNonLabor)) * 100;
+                if (metrics.TotalLabor != 0)
+                    metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+            	metricsMap.put((Id)ar.get('Project__c'), metrics);
+				System.debug(System.logginglevel.WARN, '___getForecastBudgetHeaderMap metrics='+metrics);
             }
         }
         catch(Exception e) {
@@ -1280,17 +1346,16 @@ public class ECO_Service_ProjectSnapshots {
     {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
         try {
-            for (AggregateResult ar : [SELECT Project__c,
-            								  SUM(TotalRevenue__c) totalRevenue,
-                                              SUM(TotalCost__c) totalCost,
-                                              SUM(TotalNonLabor__c) totalNonLabor,
-                                              SUM(TotalLaborAmount__c) totalLabor,
-                                              SUM(TotalContingencyAmount__c) totalContingency
-                                        FROM BudgetHeader__c
-                                        WHERE Project__c IN :projectIds
-                                        AND Status__c = 'Estimate'
-                                        GROUP BY Project__c])
-            {
+            String query = 'SELECT Project__c, SUM(TotalRevenue__c) totalRevenue, SUM(TotalCost__c) totalCost,'+
+            	' SUM(TotalNonLabor__c) totalNonLabor,'+
+                ' SUM(TotalLaborAmount__c) totalLabor,'+
+                ' SUM(TotalContingencyAmount__c) totalContingency'+
+                ' FROM BudgetHeader__c'+
+                ' WHERE Project__c IN :projectIds'+
+                ' AND Status__c = \'Estimate\' '+
+                ' GROUP BY Project__c';
+            List<AggregateResult> results = database.query(query);
+            for (AggregateResult ar : results) {
             	FinancialMetrics metrics = new FinancialMetrics();
                 metrics.TotalRevenue = returnMapDecimalValue((Decimal)ar.get('totalRevenue'));
                 metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
@@ -1308,6 +1373,7 @@ public class ECO_Service_ProjectSnapshots {
                 if (metrics.TotalLabor != 0)
                     metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
                 metricsMap.put((Id)ar.get('Project__c'), metrics);
+				System.debug(System.logginglevel.WARN, '___getDraftBudgetHeaderMap metrics='+metrics);
             }
         }
         catch(Exception e) {
@@ -1514,7 +1580,7 @@ public class ECO_Service_ProjectSnapshots {
 	@TestVisible private Map<Id, FinancialMetrics> getProjectActualFinancialsMap(List<Id> projectIds, Date asOfDate)
     {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
-        FinancialMetrics metrics = new FinancialMetrics();
+        FinancialMetrics metrics;
         
         try {
         	Map<Id, FinancialMetrics> totalRevenueMap = getProjectActualFinancialsTotalRevenueMap(projectIds, asOfDate);
@@ -1526,6 +1592,7 @@ public class ECO_Service_ProjectSnapshots {
             Map<Id, FinancialMetrics> funcBurdenedCostsHoursMap = getProjectActualFinancialsCostsHours(projectIds, asOfDate);
             
             for (Id projId : projectIds) {
+            	metrics = new FinancialMetrics();
             	FinancialMetrics totalRevenueMetrics = totalRevenueMap.get(projId);
             	System.debug(System.LoggingLevel.WARN, '___totalRevenueMetrics='+totalRevenueMetrics);
            	 	FinancialMetrics totalCostMetrics = totalCostMap.get(projId);
@@ -1562,6 +1629,7 @@ public class ECO_Service_ProjectSnapshots {
 		            metrics.Labor = funcBurdenedCostsLaborMetrics.Labor;
 		            metrics.Hours = funcBurdenedCostsHoursMetrics.Hours;
 				}
+				metricsMap.put(projId, metrics);
 	        }
         }
         catch(Exception e) {
@@ -1570,12 +1638,15 @@ public class ECO_Service_ProjectSnapshots {
         return metricsMap; 
     }
 
-    @TestVisible private Set<String> getPLReportCategories() {
-        Set<String> plReportCategorySet = new Set<String>();
-        List<ExpenditureType__c> expTypes = [SELECT PLReportCategory__c FROM ExpenditureType__c];
-        for (ExpenditureType__c expType : expTypes) {
-            plReportCategorySet.add(expType.PLReportCategory__c);
-        }
+    @TestVisible private static Set<String> getPLReportCategories() {
+		if (plReportCategorySet.isEmpty()) {
+	        List<AggregateResult> arList = [SELECT PLReportCategory__c FROM ExpenditureType__c 
+	        	 WHERE PLReportCategory__c != Null GROUP BY PLReportCategory__c]; // Distinct values
+	        for (AggregateResult ar : arList) {
+	            plReportCategorySet.add((String) ar.get('PLReportCategory__c'));
+	        }
+			System.debug(System.LoggingLevel.WARN, '___plReportCategorySet='+plReportCategorySet);
+		}
         return plReportCategorySet;
     }
 
@@ -1586,11 +1657,12 @@ public class ECO_Service_ProjectSnapshots {
     */
     @TestVisible private Map<Id, ProjectSnapshot__c> getOriginalOrForecastBudgetCostsMap(List<Id> projectIds,
             Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap) {
-        Set<String> plReportCategorySet = getPLReportCategories();      
+        plReportCategorySet = getPLReportCategories();      
         try {
             List<BudgetAssignment__c> budgetAssignments = 
                 [SELECT OverrideTotalCost__c, TotalComputedCost__c, BudgetResource__r.PLReportCategory__c,
-                    ProjectTask__r.pse__Project__r.Id, BudgetResource__r.BudgetHeader__r.Status__c
+                    ProjectTask__r.pse__Project__r.Id, BudgetResource__r.BudgetHeader__r.Status__c,
+                    BudgetResource__r.BudgetHeader__r.OriginalBudget__c
                  FROM BudgetAssignment__c 
                  WHERE BudgetResource__r.PLReportCategory__c IN :plReportCategorySet
                  AND (BudgetResource__r.BudgetHeader__r.OriginalBudget__c=true
@@ -1602,92 +1674,97 @@ public class ECO_Service_ProjectSnapshots {
                 String PLReportCategory = ba.BudgetResource__r.PLReportCategory__c;
                 Id projId = ba.ProjectTask__r.pse__Project__r.Id;
                 ProjectSnapshot__c snapshot = projectIdToSnapshotMap.get(projId);
-
-                if (ba.BudgetResource__r.BudgetHeader__r.Status__c == 'Forecast') {
-                    if (ba.OverrideTotalCost__c > 0) {
-                        if (PLReportCategory == ODC_Exps) {
-                            snapshot.CostsODCEXPSForecast__c = ba.OverrideTotalCost__c;
-                        }
-                        else if (PLReportCategory == ODC_Subs) {
-                            snapshot.CostsODCSUBSForecast__c = ba.OverrideTotalCost__c;
-                        }
-                        else if (PLReportCategory == ODC_Contingency) {
-                            snapshot.ContingencyForecast__c = ba.OverrideTotalCost__c;
-                        }
-                        else if (PLReportCategory == 'Labor') {
-                            snapshot.LaborForecast__c = ba.OverrideTotalCost__c;
-                        }
-                        else if (PLReportCategory == 'Fringe') {
-                            snapshot.FringeForecast__c = ba.OverrideTotalCost__c;
-                        }
-                        else if (PLReportCategory == 'Overhead') {
-                            snapshot.OverheadForecast__c = ba.OverrideTotalCost__c;
-                        }
-                    }
-                    else {
-                        if (PLReportCategory == ODC_Exps) {
-                            snapshot.CostsODCEXPSForecast__c = ba.TotalComputedCost__c;
-                        }
-                        else if (PLReportCategory == ODC_Subs) {
-                            snapshot.CostsODCSUBSForecast__c = ba.TotalComputedCost__c;
-                        }
-                        else if (PLReportCategory == ODC_Contingency) {
-                            snapshot.ContingencyForecast__c = ba.TotalComputedCost__c;
-                        }
-                        else if (PLReportCategory == 'Labor') {
-                            snapshot.LaborForecast__c = ba.TotalComputedCost__c;
-                        }
-                        else if (PLReportCategory == 'Fringe') {
-                            snapshot.FringeForecast__c = ba.TotalComputedCost__c;
-                        }
-                        else if (PLReportCategory == 'Overhead') {
-                            snapshot.OverheadForecast__c = ba.TotalComputedCost__c;
-                        }
-                    }
+                BudgetHeader__c bHeader = ba.BudgetResource__r.BudgetHeader__r;
+                if (bHeader != null) {
+	                String bStatus = bHeader.status__c;
+	                Boolean origBudget = bHeader.OriginalBudget__c;
+	                
+	                if (bStatus == 'Forecast') {
+	                    if (ba.OverrideTotalCost__c > 0) {
+	                        if (PLReportCategory == ODC_Exps) {
+	                            snapshot.CostsODCEXPSForecast__c = ba.OverrideTotalCost__c;
+	                        }
+	                        else if (PLReportCategory == ODC_Subs) {
+	                            snapshot.CostsODCSUBSForecast__c = ba.OverrideTotalCost__c;
+	                        }
+	                        else if (PLReportCategory == ODC_Contingency) {
+	                            snapshot.ContingencyForecast__c = ba.OverrideTotalCost__c;
+	                        }
+	                        else if (PLReportCategory == 'Labor') {
+	                            snapshot.LaborForecast__c = ba.OverrideTotalCost__c;
+	                        }
+	                        else if (PLReportCategory == 'Fringe') {
+	                            snapshot.FringeForecast__c = ba.OverrideTotalCost__c;
+	                        }
+	                        else if (PLReportCategory == 'Overhead') {
+	                            snapshot.OverheadForecast__c = ba.OverrideTotalCost__c;
+	                        }
+	                    }
+	                    else {
+	                        if (PLReportCategory == ODC_Exps) {
+	                            snapshot.CostsODCEXPSForecast__c = ba.TotalComputedCost__c;
+	                        }
+	                        else if (PLReportCategory == ODC_Subs) {
+	                            snapshot.CostsODCSUBSForecast__c = ba.TotalComputedCost__c;
+	                        }
+	                        else if (PLReportCategory == ODC_Contingency) {
+	                            snapshot.ContingencyForecast__c = ba.TotalComputedCost__c;
+	                        }
+	                        else if (PLReportCategory == 'Labor') {
+	                            snapshot.LaborForecast__c = ba.TotalComputedCost__c;
+	                        }
+	                        else if (PLReportCategory == 'Fringe') {
+	                            snapshot.FringeForecast__c = ba.TotalComputedCost__c;
+	                        }
+	                        else if (PLReportCategory == 'Overhead') {
+	                            snapshot.OverheadForecast__c = ba.TotalComputedCost__c;
+	                        }
+	                    }
+	                }
+	                else if (origBudget) {
+	                    if (PLReportCategory == ODC_Exps) {
+	                        snapshot.CostsODCEXPSBudgetOriginal__c = ba.TotalComputedCost__c;  
+	                    }
+	                    else if (PLReportCategory == ODC_Subs) {
+	                        snapshot.CostsODCSUBSBudgetOriginal__c = ba.TotalComputedCost__c;
+	                    }
+	                    else if (PLReportCategory == ODC_Contingency) {
+	                        snapshot.ContingencyBudgetOriginal__c = ba.TotalComputedCost__c;
+	                    }
+	                    else if (PLReportCategory == 'Labor') {
+	                        snapshot.LaborBudgetOriginal__c = ba.TotalComputedCost__c;
+	                    }
+	                    else if (PLReportCategory == 'Fringe') {
+	                        snapshot.FringeBudgetOriginal__c = ba.TotalComputedCost__c;
+	                    }
+	                    else if (PLReportCategory == 'Overhead') {
+	                        snapshot.OverheadBudgetOriginal__c = ba.TotalComputedCost__c;
+	                    }
+	                }
+	                else if (bStatus == 'Approved'){
+	                	
+	                    if (PLReportCategory == ODC_Exps) {
+	                        snapshot.CostsODCEXPSBudget__c = ba.TotalComputedCost__c;
+	                    }
+	                    else if (PLReportCategory == ODC_Subs) {
+	                        snapshot.CostsODCSUBSBudget__c = ba.TotalComputedCost__c;
+	                    }
+	                    else if (PLReportCategory == ODC_Contingency) {
+	                        snapshot.ContingencyBudget__c = ba.TotalComputedCost__c;
+	                    }
+	                    else if (PLReportCategory == 'Labor') {
+	                        snapshot.LaborBudget__c = ba.TotalComputedCost__c;
+	                    }
+	                    else if (PLReportCategory == 'Fringe') {
+	                        snapshot.FringeBudget__c = ba.TotalComputedCost__c;
+	                    }
+	                    else if (PLReportCategory == 'Overhead') {
+	                        snapshot.OverheadBudget__c = ba.TotalComputedCost__c;
+	                    }
+	                }
+	
+	                projectIdToSnapshotMap.put(projId, snapshot);
                 }
-                else if (ba.BudgetResource__r.BudgetHeader__r.OriginalBudget__c==true) {
-                    if (PLReportCategory == ODC_Exps) {
-                        snapshot.CostsODCEXPSBudgetOriginal__c = ba.TotalComputedCost__c;  
-                    }
-                    else if (PLReportCategory == ODC_Subs) {
-                        snapshot.CostsODCSUBSBudgetOriginal__c = ba.TotalComputedCost__c;
-                    }
-                    else if (PLReportCategory == ODC_Contingency) {
-                        snapshot.ContingencyBudgetOriginal__c = ba.TotalComputedCost__c;
-                    }
-                    else if (PLReportCategory == 'Labor') {
-                        snapshot.LaborBudgetOriginal__c = ba.TotalComputedCost__c;
-                    }
-                    else if (PLReportCategory == 'Fringe') {
-                        snapshot.FringeBudgetOriginal__c = ba.TotalComputedCost__c;
-                    }
-                    else if (PLReportCategory == 'Overhead') {
-                        snapshot.OverheadBudgetOriginal__c = ba.TotalComputedCost__c;
-                    }
-                }
-                else if (ba.BudgetResource__r.BudgetHeader__r.Status__c == 'Approved'){
-                	
-                    if (PLReportCategory == ODC_Exps) {
-                        snapshot.CostsODCEXPSBudget__c = ba.TotalComputedCost__c;
-                    }
-                    else if (PLReportCategory == ODC_Subs) {
-                        snapshot.CostsODCSUBSBudget__c = ba.TotalComputedCost__c;
-                    }
-                    else if (PLReportCategory == ODC_Contingency) {
-                        snapshot.ContingencyBudget__c = ba.TotalComputedCost__c;
-                    }
-                    else if (PLReportCategory == 'Labor') {
-                        snapshot.LaborBudget__c = ba.TotalComputedCost__c;
-                    }
-                    else if (PLReportCategory == 'Fringe') {
-                        snapshot.FringeBudget__c = ba.TotalComputedCost__c;
-                    }
-                    else if (PLReportCategory == 'Overhead') {
-                        snapshot.OverheadBudget__c = ba.TotalComputedCost__c;
-                    }
-                }
-
-                projectIdToSnapshotMap.put(projId, snapshot);
             }
         }
         catch(Exception e) {
