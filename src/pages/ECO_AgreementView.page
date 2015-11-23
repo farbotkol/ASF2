@@ -36,7 +36,7 @@
             margin-left:50%;
             padding-left:20px;
         }
-              	
+                
         .customHelpIcon
         {
             display:inline-block;
@@ -387,7 +387,7 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
                             <apex:actionSupport event="onchange" immediate="false" rerender="primeExecutionDetails"/>
                         </apex:inputField>
@@ -809,7 +809,7 @@
 <!--         <c:ECO_MSAFlyout MSAId="{!agreement.MSAReference__c}" rendered="{!agreement.MSAReference__c != null}" id="primeMSAFlyout"/>  -->     
         <c:ECO_RiskFlyout ProjectId="{!project.Id}" rendered="{!project != null}" PlanElement="" />
         <c:ECO_AssumptionFlyout ProjectId="{!project.Id}" rendered="{!project != null}" PlanElement="" />
-		<c:ECO_ProjectTeamFlyout ProjectId="{!project.Id}" rendered="{!project != null}"  />
+        <c:ECO_ProjectTeamFlyout ProjectId="{!project.Id}" rendered="{!project != null}"  />
     </apex:form>
  
     <!--<apex:relatedList list="ContractReviews__r" rendered="{!mode==''}"/>-->
@@ -854,7 +854,7 @@
         <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
                             <apex:actionSupport event="onchange" immediate="false" rerender="otherExecutionDetails"/>
                         </apex:inputField>
@@ -1317,7 +1317,7 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
                             <apex:actionSupport event="onchange" immediate="false" rerender="intExecutedBy,intExecutedDate"/>
                         </apex:inputField>
@@ -1743,7 +1743,7 @@
         <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
                             <apex:actionSupport event="onchange" immediate="false" rerender="subExecutionDetails"/>
                         </apex:inputField>
@@ -2113,7 +2113,7 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
                             <apex:actionSupport event="onchange" immediate="false" rerender="interimExecutionDetails"/>
                         </apex:inputField>
@@ -2533,7 +2533,7 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
                             <apex:actionSupport event="onchange" immediate="false" rerender="jointExecutionDetails"/>
                         </apex:inputField>
@@ -2860,7 +2860,7 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}" >
                             <apex:actionSupport event="onchange" immediate="false" reRender="taskOrderExecutionDetails" />
                         </apex:inputField>
@@ -3317,11 +3317,11 @@
                                 </apex:outputPanel>         
                         </apex:pageBlockSectionItem> 
                         <apex:pageBlockSectionItem >
-                		  <apex:outputText value="Contract Review Status"/>
-                		  <apex:outputPanel >
-                			<apex:outputText value="{!ContractReviewStatus}" rendered="{!mode == ''}"/> 
-                		  </apex:outputPanel>                                                 
-            			</apex:pageBlockSectionItem> 
+                          <apex:outputText value="Contract Review Status"/>
+                          <apex:outputPanel >
+                            <apex:outputText value="{!ContractReviewStatus}" rendered="{!mode == ''}"/> 
+                          </apex:outputPanel>                                                 
+                        </apex:pageBlockSectionItem> 
 
                          <apex:outputField value="{!agreement.ScopeOfServices__c}" style="width: 400px; height: 40px" rendered="{!mode==''}"/>                            
                     </apex:pageBlockSection>
@@ -3582,8 +3582,8 @@
         
         <apex:pageBlock title="MSA Teaming Partners" rendered="{!mode == ''}">
             <apex:pageBlockButtons location="top">
-            	<!-- <apex:commandButton value="New MSA Team Partner" action="{!createNewMSATeamingPartner}"/>> -->
-             	<apex:commandButton value="New MSA Team Partner" action="{!URLFOR($Action.MSATeamingPartner__c.new, null, ['Agreement__c'=agreement.Id, 'saveURL'='/apex/ECO_AgreementView?Id='&agreement.Id, 'retURL'='/apex/ECO_AgreementView?Id='&agreement.Id])}"/>
+                <!-- <apex:commandButton value="New MSA Team Partner" action="{!createNewMSATeamingPartner}"/>> -->
+                <apex:commandButton value="New MSA Team Partner" action="{!URLFOR($Action.MSATeamingPartner__c.new, null, ['Agreement__c'=agreement.Id, 'saveURL'='/apex/ECO_AgreementView?Id='&agreement.Id, 'retURL'='/apex/ECO_AgreementView?Id='&agreement.Id])}"/>
             </apex:pageBlockButtons>
             <apex:outputPanel rendered="{!msaTeamingPartners.size > 0}">
             <apex:pageBlockTable value="{!msaTeamingPartners}" var="msaTeamingPartner">
@@ -3614,12 +3614,14 @@
                         <th></th>
                         <apex:repeat value="{!billRateController.periods}" var="period">
                             <th class="headerRow"><span>
-                            <apex:outputText value="{0,date,MM/dd/yyyy}' - '">
+<!--                            <apex:outputText value="{0,date,MM/dd/yyyy}' - '">
                                 <apex:param value="{!period.BillRateStart__c}"/>
-                            </apex:outputText>
-                            <apex:outputText value="{0,date,MM/dd/yyyy}">
+                            </apex:outputText>  -->
+                            <c:ECO_DateFormat date="{!period.BillRateStart__c}" /> - 
+<!--                            <apex:outputText value="{0,date,MM/dd/yyyy}">
                                 <apex:param value="{!period.BillRateEnd__c}"/>
-                            </apex:outputText>
+                            </apex:outputText>  -->
+                            <c:ECO_DateFormat date="{!period.BillRateEnd__c}" />
                             </span></th>
                         </apex:repeat>
                     </tr>
@@ -3653,8 +3655,8 @@
                 
         <apex:pageBlock title="Other Direct Costs" rendered="{!mode == ''}">
             <apex:pageBlockButtons location="top">
-            	<!-- <apex:commandButton value="New Other Direct Cost" action="{!URLFOR($Action.OtherDirectCost__c.new, null, ['saveURL'='/apex/ECO_AgreementView?Id='&agreement.Id,'retURL'='/apex/ECO_AgreementView?Id='&agreement.Id, 'CF00Ne0000001Hxnt_lktp'=agreement.Id, 'CF00Ne0000001Hxnt'=agreement.Name])}"/> -->
-				<apex:commandButton value="New Other Direct Cost" action="{!URLFOR($Action.OtherDirectCost__c.new, null, ['Agreement__c'=agreement.Id, 'saveURL'='/apex/ECO_AgreementView?Id='&agreement.Id, 'retURL'='/apex/ECO_AgreementView?Id='&agreement.Id])}"/>
+                <!-- <apex:commandButton value="New Other Direct Cost" action="{!URLFOR($Action.OtherDirectCost__c.new, null, ['saveURL'='/apex/ECO_AgreementView?Id='&agreement.Id,'retURL'='/apex/ECO_AgreementView?Id='&agreement.Id, 'CF00Ne0000001Hxnt_lktp'=agreement.Id, 'CF00Ne0000001Hxnt'=agreement.Name])}"/> -->
+                <apex:commandButton value="New Other Direct Cost" action="{!URLFOR($Action.OtherDirectCost__c.new, null, ['Agreement__c'=agreement.Id, 'saveURL'='/apex/ECO_AgreementView?Id='&agreement.Id, 'retURL'='/apex/ECO_AgreementView?Id='&agreement.Id])}"/>
             </apex:pageBlockButtons>
             <apex:outputPanel rendered="{!otherDirectCosts.size > 0}">
                 <apex:pageBlockTable value="{!otherDirectCosts}" var="otherDirectCost">

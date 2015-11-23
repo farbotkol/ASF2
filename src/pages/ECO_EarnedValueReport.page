@@ -1,7 +1,7 @@
 <apex:page standardController="EarnedValueHeader__c" extensions="ECO_EarnedValueReportController" >
  
 
- 	<script type="text/javascript"
+    <script type="text/javascript"
           src="https://www.google.com/jsapi?autoload={
             'modules':[{
               'name':'visualization',
@@ -15,532 +15,534 @@
 
 
 
-	<script type="text/javascript">
-		j$ = jQuery.noConflict();
+    <script type="text/javascript">
+        j$ = jQuery.noConflict();
 
-		var isAllCheck = false;
+        var isAllCheck = false;
 
-		function checkUncheckAllTasks(){
-			if(isAllCheck == true){
-				j$(".taskCheckbox").prop("checked", false);
-				isAllCheck = false;
-				j$("#lnkCheckAll").html('[ Select All ]');			
-			}else{
-				j$(".taskCheckbox").prop("checked", true);
-				isAllCheck = true;
-				j$("#lnkCheckAll").html('[Unselect All]');	
-			}
-		}
+        function checkUncheckAllTasks(){
+            if(isAllCheck == true){
+                j$(".taskCheckbox").prop("checked", false);
+                isAllCheck = false;
+                j$("#lnkCheckAll").html('[ Select All ]');          
+            }else{
+                j$(".taskCheckbox").prop("checked", true);
+                isAllCheck = true;
+                j$("#lnkCheckAll").html('[Unselect All]');  
+            }
+        }
 
-		var isAllCheckNotifyTaskOwner = false;
+        var isAllCheckNotifyTaskOwner = false;
 
-		function checkUncheckAllNotifyTaskOwner(){
-			if(isAllCheckNotifyTaskOwner == true){
-				j$(".taskNotifyTaskOwner").prop("checked", false);
-				isAllCheckNotifyTaskOwner = false;
-				j$("#lnkCheckAllNotifyTaskOwner").html('Select All');			
-			}else{
-				j$(".taskNotifyTaskOwner").prop("checked", true);
-				isAllCheckNotifyTaskOwner = true;
-				j$("#lnkCheckAllNotifyTaskOwner").html('Unselect All');	
-			}
-		}
+        function checkUncheckAllNotifyTaskOwner(){
+            if(isAllCheckNotifyTaskOwner == true){
+                j$(".taskNotifyTaskOwner").prop("checked", false);
+                isAllCheckNotifyTaskOwner = false;
+                j$("#lnkCheckAllNotifyTaskOwner").html('Select All');           
+            }else{
+                j$(".taskNotifyTaskOwner").prop("checked", true);
+                isAllCheckNotifyTaskOwner = true;
+                j$("#lnkCheckAllNotifyTaskOwner").html('Unselect All'); 
+            }
+        }
 
-		function handleNewReportTypeSelection(reportType){
-			j$("[id*=selectedReportAction]").val(reportType);	
-			if(reportType == 'new'){
-				j$("[id*=evhReportName]").removeAttr('disabled'); 
-				j$("[id*=evhSnapshot]").removeAttr('disabled'); 		
-				j$("[id*=evhExistingReports]").val('');
-				j$("[id*=evhExistingReports]").attr('disabled', 'disabled'); 
-				reloadTasksForProject_JS();
-			}else{
-				j$("[id*=evhReportName]").attr('disabled', 'disabled'); 				
-				j$("[id*=evhSnapshot]").attr('disabled', 'disabled'); 				
-				j$("[id*=evhExistingReports]").removeAttr('disabled'); 
-				clearTasks_JS();
-			}			
-		}
+        function handleNewReportTypeSelection(reportType){
+            j$("[id*=selectedReportAction]").val(reportType);   
+            if(reportType == 'new'){
+                j$("[id*=evhReportName]").removeAttr('disabled'); 
+                j$("[id*=evhSnapshot]").removeAttr('disabled');         
+                j$("[id*=evhExistingReports]").val('');
+                j$("[id*=evhExistingReports]").attr('disabled', 'disabled'); 
+                reloadTasksForProject_JS();
+            }else{
+                j$("[id*=evhReportName]").attr('disabled', 'disabled');                 
+                j$("[id*=evhSnapshot]").attr('disabled', 'disabled');               
+                j$("[id*=evhExistingReports]").removeAttr('disabled'); 
+                clearTasks_JS();
+            }           
+        }
 
-		function handleExistingReportChange(reportId){
-			if(reportId.length > 0){
-				j$("[id*=selectedExistingReportId]").val(reportId); 
-				applySelectedReportToTasks_JS();
-			}else{
-				j$("[id*=evhExistingReports]").val(j$("[id*=selectedExistingReportId]").val());
-			}			
-		}
+        function handleExistingReportChange(reportId){
+            if(reportId.length > 0){
+                j$("[id*=selectedExistingReportId]").val(reportId); 
+                applySelectedReportToTasks_JS();
+            }else{
+                j$("[id*=evhExistingReports]").val(j$("[id*=selectedExistingReportId]").val());
+            }           
+        }
 
-	
-		function handleSnapshotDateChange(snapShotDate){
-			
-			j$("[id*=selectedSnapshotDate]").val(snapShotDate);
-			applySelectedSnapShotToTasks_JS();
-		}
-
-
-		function handleSnapshotDateChangeForNewReport(snapShotDate){			
-			j$("[id*=selectedSnapshotDate]").val(snapShotDate);			
-		}
-
-		
-		// Auto-Grow-TextArea script.
-		// Script copyright (C) 2011 www.cryer.co.uk.
-		// Script is free to use provided this copyright header is included.
-		function AutoGrowTextArea(textField)
-		{
-		  if (textField.clientHeight < textField.scrollHeight)
-		  {
-		    textField.style.height = textField.scrollHeight + "px";
-		    if (textField.clientHeight < textField.scrollHeight)
-		    {
-		      textField.style.height = 
-		        (textField.scrollHeight * 2 - textField.clientHeight) + "px";
-		    }
-		  }
-		}
-
-		function commitChanges(){
-			if(confirm("Are you sure you want to commit your changes? You will not be able to edit it aftwards?")){
-				commitEarnedValueTasksForSnapshot_JS();
-			}
-		}
-
-		function disableSnapshotDateSelect(){
-			j$("[id*=evhSnapshot]").attr('disabled', 'disabled'); 		
-		}
-
-		function enableSnapshotDateSelect(){
-			j$("[id*=evhSnapshot]").removeAttr('disabled'); 		
-		}
-	</script>
-
-	<apex:includeScript value="{!URLFOR($Resource.ECO_jQuery_1_11_2_min_js)}" />
-
- 	<apex:form >
+    
+        function handleSnapshotDateChange(snapShotDate){
+            
+            j$("[id*=selectedSnapshotDate]").val(snapShotDate);
+            applySelectedSnapShotToTasks_JS();
+        }
 
 
- 	 <apex:outputPanel id="setChartJsonJS">
- 		<script type="text/javascript">
-			var chartJson = '{!chartJSON}';		
-			var cpiAndSpiJSON = '{!cpiAndSpiJSON}';		
- 		</script>
- 	</apex:outputPanel>
+        function handleSnapshotDateChangeForNewReport(snapShotDate){            
+            j$("[id*=selectedSnapshotDate]").val(snapShotDate);         
+        }
 
- 	<script type="text/javascript">
- 	
-	 	function reRenderCharts(){	 		
-	 		drawChart();
-			drawCpiAndSpiChart();			
-	 	}
+        
+        // Auto-Grow-TextArea script.
+        // Script copyright (C) 2011 www.cryer.co.uk.
+        // Script is free to use provided this copyright header is included.
+        function AutoGrowTextArea(textField)
+        {
+          if (textField.clientHeight < textField.scrollHeight)
+          {
+            textField.style.height = textField.scrollHeight + "px";
+            if (textField.clientHeight < textField.scrollHeight)
+            {
+              textField.style.height = 
+                (textField.scrollHeight * 2 - textField.clientHeight) + "px";
+            }
+          }
+        }
+
+        function commitChanges(){
+            if(confirm("Are you sure you want to commit your changes? You will not be able to edit it aftwards?")){
+                commitEarnedValueTasksForSnapshot_JS();
+            }
+        }
+
+        function disableSnapshotDateSelect(){
+            j$("[id*=evhSnapshot]").attr('disabled', 'disabled');       
+        }
+
+        function enableSnapshotDateSelect(){
+            j$("[id*=evhSnapshot]").removeAttr('disabled');         
+        }
+    </script>
+
+    <apex:includeScript value="{!URLFOR($Resource.ECO_jQuery_1_11_2_min_js)}" />
+
+    <apex:form >
 
 
-		var isEdit = "{!isEdit}";
-     	if(isEdit === 'true'){
- 			
- 			j$(document).ready(function(){
- 				drawChart();
- 				drawCpiAndSpiChart();
- 			});
-     	}
-	
-     	function drawChart() {	      	
-			
-			var data = new google.visualization.DataTable(JSON.parse(chartJson), 1);
+     <apex:outputPanel id="setChartJsonJS">
+        <script type="text/javascript">
+            var chartJson = '{!chartJSON}';     
+            var cpiAndSpiJSON = '{!cpiAndSpiJSON}';     
+        </script>
+    </apex:outputPanel>
 
-	        var options = {
-	          title: 'Progress',
-	          //curveType: 'function',
-	          legend: { position: 'bottom' },
-	          pointSize: 5
-	        };
+    <script type="text/javascript">
+    
+        function reRenderCharts(){          
+            drawChart();
+            drawCpiAndSpiChart();           
+        }
 
-	        var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
-	        chart.draw(data, options);
+        var isEdit = "{!isEdit}";
+        if(isEdit === 'true'){
+            
+            j$(document).ready(function(){
+                drawChart();
+                drawCpiAndSpiChart();
+            });
+        }
+    
+        function drawChart() {          
+            
+            var data = new google.visualization.DataTable(JSON.parse(chartJson), 1);
 
-  			// a click handler to load the ev snapshot for the selected date
-	        google.visualization.events.addListener(chart, 'select', function() {
-	          	// grab a few details before redirecting
-	          	var selection = chart.getSelection();
-	          	var row = selection[0].row;
-	          	var col = selection[0].column;
-	          	var evsnapshotDate = data.getValue(row, 0);
+            var options = {
+              title: 'Progress',
+              //curveType: 'function',
+              legend: { position: 'bottom' },
+              pointSize: 5
+            };
 
-		        var selectedSnapShotDate = '';
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
 
-		        j$("[id*=evhSnapshot] > option").each(function() {
-		        	
-		        	if(this.value == evsnapshotDate){
-		        		selectedSnapShotDate = this.value;
-		        	}
-		    		
-				});
-		        
-		        if(selectedSnapShotDate.length > 0){		        	
-		        	j$("[id*=evhSnapshot]").val(selectedSnapShotDate);
-		        	handleSnapshotDateChange(j$("[id*=evhSnapshot]").val());
-		        }	
-	        });
-	    }
+            chart.draw(data, options);
 
-	    function drawCpiAndSpiChart(){
-	    	var data = new google.visualization.DataTable(JSON.parse(cpiAndSpiJSON), 1);
+            // a click handler to load the ev snapshot for the selected date
+            google.visualization.events.addListener(chart, 'select', function() {
+                // grab a few details before redirecting
+                var selection = chart.getSelection();
+                var row = selection[0].row;
+                var col = selection[0].column;
+                var evsnapshotDate = data.getValue(row, 0);
 
-	        var options = {
-	          title: 'CPI and SPI',
-	          //curveType: 'function',
-	          legend: { position: 'bottom' },
-	          pointSize: 5
-	        };
+                var selectedSnapShotDate = '';
 
-	        var chart = new google.visualization.LineChart(document.getElementById('cpiAndSpi_chart'));
+                j$("[id*=evhSnapshot] > option").each(function() {
+                    
+                    if(this.value == evsnapshotDate){
+                        selectedSnapShotDate = this.value;
+                    }
+                    
+                });
+                
+                if(selectedSnapShotDate.length > 0){                    
+                    j$("[id*=evhSnapshot]").val(selectedSnapShotDate);
+                    handleSnapshotDateChange(j$("[id*=evhSnapshot]").val());
+                }   
+            });
+        }
 
-	        chart.draw(data, options);
-  			
-	    }
-     	
+        function drawCpiAndSpiChart(){
+            var data = new google.visualization.DataTable(JSON.parse(cpiAndSpiJSON), 1);
+
+            var options = {
+              title: 'CPI and SPI',
+              //curveType: 'function',
+              legend: { position: 'bottom' },
+              pointSize: 5
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('cpiAndSpi_chart'));
+
+            chart.draw(data, options);
+            
+        }
+        
     </script>
 
 
 
-		<apex:actionFunction name="applySelectedReportToTasks_JS" action="{!applySelectedReportToTasks}" rerender="msg,pbtAvailableTasks,evhSnapshot,selectedSnapshotDate" status="statusBar" oncomplete="disableSnapshotDateSelect();"/>
+        <apex:actionFunction name="applySelectedReportToTasks_JS" action="{!applySelectedReportToTasks}" rerender="msg,pbtAvailableTasks,evhSnapshot,selectedSnapshotDate" status="statusBar" oncomplete="disableSnapshotDateSelect();"/>
 
- 		<apex:actionFunction name="reloadTasksForProject_JS" action="{!reloadTasksForProject}" rerender="msg,pbtAvailableTasks" status="statusBar"/>
+        <apex:actionFunction name="reloadTasksForProject_JS" action="{!reloadTasksForProject}" rerender="msg,pbtAvailableTasks" status="statusBar"/>
 
- 		<apex:actionFunction name="clearTasks_JS" action="{!clearTasks}" rerender="msg,pbtAvailableTasks" status="statusBar"/>
+        <apex:actionFunction name="clearTasks_JS" action="{!clearTasks}" rerender="msg,pbtAvailableTasks" status="statusBar"/>
 
- 		<apex:actionFunction name="applySelectedSnapShotToTasks_JS" action="{!applySelectedSnapShotToTasks}" rerender="msg,pbtSnapshotTasks,btnPrevSnapShot,btnNextSnapShot" status="statusBar"/>
+        <apex:actionFunction name="applySelectedSnapShotToTasks_JS" action="{!applySelectedSnapShotToTasks}" rerender="msg,pbtSnapshotTasks,btnPrevSnapShot,btnNextSnapShot" status="statusBar"/>
 
- 		<apex:actionFunction name="commitEarnedValueTasksForSnapshot_JS" action="{!commitEarnedValueTasksForSnapshot}" rerender="msg,pbtSnapshotTasks" status="statusBar"/>
+        <apex:actionFunction name="commitEarnedValueTasksForSnapshot_JS" action="{!commitEarnedValueTasksForSnapshot}" rerender="msg,pbtSnapshotTasks" status="statusBar"/>
 
- 		<apex:actionFunction name="createTasksForNextSnapshotDate_JS" action="{!createTasksForNextSnapshotDate}" rerender="msg" status="statusBar"/>
- 		
+        <apex:actionFunction name="createTasksForNextSnapshotDate_JS" action="{!createTasksForNextSnapshotDate}" rerender="msg" status="statusBar"/>
+        
 
 
- 		<div style="display:none;">
- 			<apex:inputText value="{!selectedBudgetHeaderId}" id="evHeader_BudgetId" />
+        <div style="display:none;">
+            <apex:inputText value="{!selectedBudgetHeaderId}" id="evHeader_BudgetId" />
 
- 			<apex:inputText value="{!selectedReportAction}" id="selectedReportAction" />
+            <apex:inputText value="{!selectedReportAction}" id="selectedReportAction" />
 
- 			<apex:inputText value="{!selectedExistingReportId}" id="selectedExistingReportId" />
+            <apex:inputText value="{!selectedExistingReportId}" id="selectedExistingReportId" />
  
- 			<apex:inputText value="{!selectedSnapshotDate}" id="selectedSnapshotDate" />
- 		</div>
+            <apex:inputText value="{!selectedSnapshotDate}" id="selectedSnapshotDate" />
+        </div>
 
 
- 		<apex:sectionHeader subtitle="Earned Value Report" title="{!project.Name}" >
-			<apex:actionStatus id="statusBar">
-				<apex:facet name="start">
-					<p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Processing...</p>
-				</apex:facet>
-				<apex:facet name="stop">
-				</apex:facet>
-			</apex:actionStatus>
-		</apex:sectionHeader>
+        <apex:sectionHeader subtitle="Earned Value Report" title="{!project.Name}" >
+            <apex:actionStatus id="statusBar">
+                <apex:facet name="start">
+                    <p style="padding-bottom:20px;" class="searchText"><img style="position:relative;top:12px;" src="/img/loading32.gif" /> Processing...</p>
+                </apex:facet>
+                <apex:facet name="stop">
+                </apex:facet>
+            </apex:actionStatus>
+        </apex:sectionHeader>
 
 
- 		<apex:pageMessages id="msg" escape="false"/>
+        <apex:pageMessages id="msg" escape="false"/>
 
- 		<apex:pageBlock rendered="{!hideAll}">
- 			<apex:pageBlockButtons location="top" >
- 				<apex:commandButton value="Return to Project" action="{!returnToProject}" immediate="true"/>
- 			</apex:pageBlockButtons>
- 		</apex:pageBlock>
-
-
- 		<apex:pageBlock rendered="{!if(isEdit == false && hideAll == false, 'true', 'false')}">
-
- 			<apex:pageBlockButtons >
- 				<apex:commandButton value="Begin Report" action="{!CreateReport}" status="statusBar" onclick="enableSnapshotDateSelect();"/>
- 				<apex:commandButton value="Return to Project" action="{!returnToProject}" immediate="true"/>
- 			</apex:pageBlockButtons>
-
- 			<apex:pageBlockSection columns="1" title="Report Information">
- 				<apex:pageBlockSectionItem >
-					<apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.Project__c.Label}" for="evhProject"/>
-					<apex:outputField value="{!project.Name}" id="evhProject" />
- 				</apex:pageBlockSectionItem> 
-
- 		
-
- 				<apex:pageBlockSectionItem >
-					<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.pse__Stage__c.Label}" for="evhProject"/>
-					<apex:outputField value="{!project.pse__Stage__c}" id="evhProject" />
- 				</apex:pageBlockSectionItem> 
-
- 	
- 				<apex:pageBlockSectionItem > 					
-					<apex:outputLabel value="Week of" for="evhAsOfDate"/>
-					<apex:selectList size="1" id="evhSnapshot" value="{!selectedSnapshotDate}" onchange="handleSnapshotDateChangeForNewReport(this.options[this.selectedIndex].value);" >
-						<apex:selectOptions value="{!optEarnedValueSnapshots}"/>
-					</apex:selectList>	
- 				</apex:pageBlockSectionItem> 
-	 				
-
- 				<apex:pageBlockSectionItem > 					
- 					<apex:outputLabel value="Create New Report" for="evhProject"/>
- 					<input type="radio" name="radNewReportChoice" checked="checked" value="new" onchange="handleNewReportTypeSelection('new');"/>
- 				</apex:pageBlockSectionItem>
-
- 				<apex:pageBlockSectionItem >
-					<apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.ReportName__c.Label}" for="evhReportName"/>
-					<apex:inputField value="{!evHeader.ReportName__c}" id="evhReportName" />
- 				</apex:pageBlockSectionItem>
-
- 				<apex:pageBlockSectionItem >					
- 					<apex:outputLabel value="Continue Existing Report" for="evhProject"/>
- 					<input type="radio" name="radNewReportChoice" value="existing" onchange="handleNewReportTypeSelection('existing');" />
- 				</apex:pageBlockSectionItem>
-
- 				<apex:pageBlockSectionItem >
-					<apex:outputLabel value="Existing Reports" for="evhExistingReports"/>
-					<apex:selectList size="1" id="evhExistingReports" onchange="handleExistingReportChange(this.options[this.selectedIndex].value);" disabled="true">
-							<apex:selectOptions value="{!optExistingEVReports}"/>
-					</apex:selectList>
- 				</apex:pageBlockSectionItem>
-
- 			</apex:pageBlockSection>
+        <apex:pageBlock rendered="{!hideAll}">
+            <apex:pageBlockButtons location="top" >
+                <apex:commandButton value="Return to Project" action="{!returnToProject}" immediate="true"/>
+            </apex:pageBlockButtons>
+        </apex:pageBlock>
 
 
- 			<apex:pageBlockSection columns="1" id="pbtAvailableTasks" title="Available Tasks">
+        <apex:pageBlock rendered="{!if(isEdit == false && hideAll == false, 'true', 'false')}">
 
- 				<apex:pageBlockSectionItem >
+            <apex:pageBlockButtons >
+                <apex:commandButton value="Begin Report" action="{!CreateReport}" status="statusBar" onclick="enableSnapshotDateSelect();"/>
+                <apex:commandButton value="Return to Project" action="{!returnToProject}" immediate="true"/>
+            </apex:pageBlockButtons>
 
- 					
-					<apex:pageMessage summary="{!if(selectedReportAction == 'new', 'No tasks currently exist for the project.', 'Choose an existing report to view the tasks to be included.')}" severity="INFO" rendered="{!if(numAvailableTasks == 0, 'true', 'false')}" ></apex:pageMessage>
-				</apex:pageBlockSectionItem>
-				<apex:pageBlockSectionItem >
+            <apex:pageBlockSection columns="1" title="Report Information">
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.Project__c.Label}" for="evhProject"/>
+                    <apex:outputField value="{!project.Name}" id="evhProject" />
+                </apex:pageBlockSectionItem> 
 
- 					<apex:pageBlockTable value="{!availableTasks}" var="taskwrapper"  rendered="{!if(numAvailableTasks > 0, 'true', 'false')}">
- 						<apex:column style="width:80px;">
- 							<apex:facet name="header">
- 								Include in Report <a href="#" onclick="checkUncheckAllTasks();" id="lnkCheckAll">{!if(selectedReportAction == 'new', '[ Select All ]', '')}</a>
- 							</apex:facet>
- 							<apex:inputCheckbox value="{!taskwrapper.isSelected}" styleClass="taskCheckbox" disabled="{!taskWrapper.disableSelect}" />
- 						</apex:column>
+        
 
- 						<apex:column >
- 							<apex:facet name="header">
- 								Task
- 							</apex:facet>
- 							{!taskwrapper.task.Name}
- 						</apex:column>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.pse__Stage__c.Label}" for="evhProject"/>
+                    <apex:outputField value="{!project.pse__Stage__c}" id="evhProject" />
+                </apex:pageBlockSectionItem> 
 
- 						<apex:column >
- 							<apex:facet name="header">
- 								Total Approved Cost from Budget 								
- 							</apex:facet>
- 							{!taskwrapper.task.TotalApprovedCost__c}
- 						</apex:column>
+    
+                <apex:pageBlockSectionItem >                    
+                    <apex:outputLabel value="Week of" for="evhAsOfDate"/>
+                    <apex:selectList size="1" id="evhSnapshot" value="{!selectedSnapshotDate}" onchange="handleSnapshotDateChangeForNewReport(this.options[this.selectedIndex].value);" >
+                        <apex:selectOptions value="{!optEarnedValueSnapshots}"/>
+                    </apex:selectList>  
+                </apex:pageBlockSectionItem> 
+                    
 
- 						<apex:column >
- 							<apex:facet name="header">
- 								{!$ObjectType.pse__Project_Task__c.Fields.ProjectTaskOwner__c.Label}
- 							</apex:facet>
- 							{!taskwrapper.task.ProjectTaskOwner__r.Name}
- 						</apex:column>
+                <apex:pageBlockSectionItem >                    
+                    <apex:outputLabel value="Create New Report" for="evhProject"/>
+                    <input type="radio" name="radNewReportChoice" checked="checked" value="new" onchange="handleNewReportTypeSelection('new');"/>
+                </apex:pageBlockSectionItem>
 
- 						<apex:column >
- 							<apex:facet name="header">
- 								Notify Task Owner On Report Creation? [<a href="#" onclick="checkUncheckAllNotifyTaskOwner();" id="lnkCheckAllNotifyTaskOwner"> Select All </a>]
- 							</apex:facet>
- 							<apex:inputCheckbox value="{!taskWrapper.notifyOwnerOnCreate}" rendered="{!if(taskWrapper.task.ProjectTaskOwner__c != null, 'true', 'false')}" styleClass="taskNotifyTaskOwner"/>
- 						</apex:column>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.ReportName__c.Label}" for="evhReportName"/>
+                    <apex:inputField value="{!evHeader.ReportName__c}" id="evhReportName" />
+                </apex:pageBlockSectionItem>
 
+                <apex:pageBlockSectionItem >                    
+                    <apex:outputLabel value="Continue Existing Report" for="evhProject"/>
+                    <input type="radio" name="radNewReportChoice" value="existing" onchange="handleNewReportTypeSelection('existing');" />
+                </apex:pageBlockSectionItem>
 
- 					</apex:pageBlockTable>
- 				</apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Existing Reports" for="evhExistingReports"/>
+                    <apex:selectList size="1" id="evhExistingReports" onchange="handleExistingReportChange(this.options[this.selectedIndex].value);" disabled="true">
+                            <apex:selectOptions value="{!optExistingEVReports}"/>
+                    </apex:selectList>
+                </apex:pageBlockSectionItem>
 
- 			</apex:pageBlockSection>
-
+            </apex:pageBlockSection>
 
 
- 		
- 		</apex:pageBlock>
+            <apex:pageBlockSection columns="1" id="pbtAvailableTasks" title="Available Tasks">
+
+                <apex:pageBlockSectionItem >
+
+                    
+                    <apex:pageMessage summary="{!if(selectedReportAction == 'new', 'No tasks currently exist for the project.', 'Choose an existing report to view the tasks to be included.')}" severity="INFO" rendered="{!if(numAvailableTasks == 0, 'true', 'false')}" ></apex:pageMessage>
+                </apex:pageBlockSectionItem>
+                <apex:pageBlockSectionItem >
+
+                    <apex:pageBlockTable value="{!availableTasks}" var="taskwrapper"  rendered="{!if(numAvailableTasks > 0, 'true', 'false')}">
+                        <apex:column style="width:80px;">
+                            <apex:facet name="header">
+                                Include in Report <a href="#" onclick="checkUncheckAllTasks();" id="lnkCheckAll">{!if(selectedReportAction == 'new', '[ Select All ]', '')}</a>
+                            </apex:facet>
+                            <apex:inputCheckbox value="{!taskwrapper.isSelected}" styleClass="taskCheckbox" disabled="{!taskWrapper.disableSelect}" />
+                        </apex:column>
+
+                        <apex:column >
+                            <apex:facet name="header">
+                                Task
+                            </apex:facet>
+                            {!taskwrapper.task.Name}
+                        </apex:column>
+
+                        <apex:column >
+                            <apex:facet name="header">
+                                Total Approved Cost from Budget                                 
+                            </apex:facet>
+                            {!taskwrapper.task.TotalApprovedCost__c}
+                        </apex:column>
+
+                        <apex:column >
+                            <apex:facet name="header">
+                                {!$ObjectType.pse__Project_Task__c.Fields.ProjectTaskOwner__c.Label}
+                            </apex:facet>
+                            {!taskwrapper.task.ProjectTaskOwner__r.Name}
+                        </apex:column>
+
+                        <apex:column >
+                            <apex:facet name="header">
+                                Notify Task Owner On Report Creation? [<a href="#" onclick="checkUncheckAllNotifyTaskOwner();" id="lnkCheckAllNotifyTaskOwner"> Select All </a>]
+                            </apex:facet>
+                            <apex:inputCheckbox value="{!taskWrapper.notifyOwnerOnCreate}" rendered="{!if(taskWrapper.task.ProjectTaskOwner__c != null, 'true', 'false')}" styleClass="taskNotifyTaskOwner"/>
+                        </apex:column>
+
+
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
+
+            </apex:pageBlockSection>
 
 
 
- 		<apex:pageBlock rendered="{!isEdit}">
-		
- 			<apex:pageBlockButtons >
- 				<apex:commandButton action="{!saveEarnedValueTasksForSnapshot}" value="Save" reRender="msg,pbtSnapshotTasks,setChartJsonJS" oncomplete="reRenderCharts();"/>
- 				<apex:commandButton value="Commit Changes" onclick="commitChanges(); return false;" />
- 				<apex:commandButton action="{!returnToProject}" value="Return to Project" />
- 			</apex:pageBlockButtons>
-
-			<apex:pageBlockSection columns="1" title="Report Information">
-
-				<apex:pageBlockSectionItem >
-					<apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.ReportName__c.Label}" for="evhReportName"/>
-					<apex:outputField value="{!evHeader.ReportName__c}" id="evhReportName" />
- 				</apex:pageBlockSectionItem> 
-
- 				<apex:pageBlockSectionItem >
-					<apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.Project__c.Label}" for="evhProject"/>
-					<apex:outputField value="{!project.Name}" id="evhProject" />
- 				</apex:pageBlockSectionItem> 
-
- 		
-
- 				<apex:pageBlockSectionItem >
-					<apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.pse__Stage__c.Label}" for="evhProject"/>
-					<apex:outputField value="{!project.pse__Stage__c}" id="evhProject" />
- 				</apex:pageBlockSectionItem> 
-
- 				<apex:pageBlockSectionItem >
-					<apex:outputLabel value="{!$ObjectType.EarnedValueSnapshot__c.Fields.Comments__c.Label}" for="evsComments"/>
-					<apex:inputField value="{!evHeader.Comments__c}" id="evsComments" onkeyup="AutoGrowTextArea(this)" />
- 				</apex:pageBlockSectionItem> 
-
-
- 				<apex:pageBlockSectionItem >
-					<apex:outputLabel value="Week of" for="evhSnapshot"/>
-					<apex:outputPanel >
-						<apex:commandButton id="btnPrevSnapShot" action="{!movePrevSnapShot}" value=" << " reRender="msg,evhSnapshot,selectedSnapshotDate,pbtSnapshotTasks,btnPrevSnapShot,btnNextSnapShot" status="statusBar" disabled="{!!hasPrevSnapShot}" />
-						<apex:selectList size="1" id="evhSnapshot" onchange="handleSnapshotDateChange(this.options[this.selectedIndex].value);" value="{!selectedSnapshotDate}">
-							<apex:selectOptions value="{!optEarnedValueSnapshots}"/>
-						</apex:selectList>
-						<apex:commandButton id="btnNextSnapShot" action="{!moveNextSnapShot}" value=" >> " reRender="msg,evhSnapshot,selectedSnapshotDate,pbtSnapshotTasks,btnPrevSnapShot,btnNextSnapShot" status="statusBar" disabled="{!!hasNextSnapShot}"/>
-					</apex:outputPanel>
-
-
- 				</apex:pageBlockSectionItem> 
-
-			</apex:pageBlockSection>
-
-
-			<apex:pageBlockSection columns="1" id="pbtSnapshotTasks" title="Task Progress">
-
- 				<apex:pageBlockSectionItem >
-					<apex:pageMessage summary="{!noTasksForSnapshotDateMsg}" severity="INFO" rendered="{!if(numAvailableTasks == 0, 'true', 'false')}" escape="false"></apex:pageMessage>
-				</apex:pageBlockSectionItem>
-
-				<apex:pageBlockSectionItem >
- 					<apex:pageBlockTable value="{!availableTasks}" var="taskwrapper"  rendered="{!if(numAvailableTasks > 0, 'true', 'false')}">
-
- 						<apex:column >
- 							<apex:facet name="header">
- 								{!$ObjectType.EarnedValueTask__c.Fields.Committed__c.Label}
- 							</apex:facet>
- 							{!if(taskwrapper.earnedValueTask.Committed__c == true, 'Y','N')}
- 						</apex:column>
- 						<apex:column >
- 							<apex:facet name="header">
- 								{!$ObjectType.pse__Project_Task__c.Fields.FinancialTask__c.Label}
- 							</apex:facet>
- 							{!if(taskwrapper.task.FinancialTask__c == true, 'Y','N')}
- 						</apex:column>
- 						<apex:column >
- 							<apex:facet name="header">
- 								{!$ObjectType.pse__Project_Task__c.Fields.ProjectTaskNumber__c.Label}
- 							</apex:facet>
- 							{!taskwrapper.task.ProjectTaskNumber__c}
- 						</apex:column>
-						<apex:column >
- 							<apex:facet name="header">
- 								{!$ObjectType.pse__Project_Task__c.Fields.Name.Label}
- 							</apex:facet>
- 							{!taskwrapper.task.Name}
- 						</apex:column>		
-
- 						<apex:column >
- 							<apex:facet name="header">
- 								{!$ObjectType.pse__Project_Task__c.Fields.ProjectTaskOwner__c.Label}
- 							</apex:facet>
- 							{!taskwrapper.task.ProjectTaskOwner__r.Name}
- 						</apex:column>				
-
- 						<apex:column style="white-space: nowrap;" >
- 							<apex:facet name="header">
- 								{!$ObjectType.pse__Project_Task__c.Fields.pse__Start_Date__c.Label}
- 							</apex:facet>
- 							<apex:outputText value="{0, date, yyyy-MM-dd}">
-								<apex:param value="{!taskwrapper.task.pse__Start_Date__c}" />											
-							</apex:outputText> 		
- 						</apex:column>
-
- 						<apex:column style="white-space: nowrap;" >
- 							<apex:facet name="header">
- 								{!$ObjectType.pse__Project_Task__c.Fields.pse__End_Date__c.Label}
- 							</apex:facet>
- 							<apex:outputText value="{0, date, yyyy-MM-dd}">
-								<apex:param value="{!taskwrapper.task.pse__End_Date__c}" />											
-							</apex:outputText> 	 							
- 						</apex:column>
+        
+        </apex:pageBlock>
 
 
 
- 						<apex:column >
- 							<apex:facet name="header">
- 								Prior Complete
- 							</apex:facet>
- 								{!taskWrapper.priorComplete}
- 						</apex:column>
+        <apex:pageBlock rendered="{!isEdit}">
+        
+            <apex:pageBlockButtons >
+                <apex:commandButton action="{!saveEarnedValueTasksForSnapshot}" value="Save" reRender="msg,pbtSnapshotTasks,setChartJsonJS" oncomplete="reRenderCharts();"/>
+                <apex:commandButton value="Commit Changes" onclick="commitChanges(); return false;" />
+                <apex:commandButton action="{!returnToProject}" value="Return to Project" />
+            </apex:pageBlockButtons>
+
+            <apex:pageBlockSection columns="1" title="Report Information">
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.ReportName__c.Label}" for="evhReportName"/>
+                    <apex:outputField value="{!evHeader.ReportName__c}" id="evhReportName" />
+                </apex:pageBlockSectionItem> 
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.Project__c.Label}" for="evhProject"/>
+                    <apex:outputField value="{!project.Name}" id="evhProject" />
+                </apex:pageBlockSectionItem> 
+
+        
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.pse__Stage__c.Label}" for="evhProject"/>
+                    <apex:outputField value="{!project.pse__Stage__c}" id="evhProject" />
+                </apex:pageBlockSectionItem> 
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="{!$ObjectType.EarnedValueSnapshot__c.Fields.Comments__c.Label}" for="evsComments"/>
+                    <apex:inputField value="{!evHeader.Comments__c}" id="evsComments" onkeyup="AutoGrowTextArea(this)" />
+                </apex:pageBlockSectionItem> 
+
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Week of" for="evhSnapshot"/>
+                    <apex:outputPanel >
+                        <apex:commandButton id="btnPrevSnapShot" action="{!movePrevSnapShot}" value=" << " reRender="msg,evhSnapshot,selectedSnapshotDate,pbtSnapshotTasks,btnPrevSnapShot,btnNextSnapShot" status="statusBar" disabled="{!!hasPrevSnapShot}" />
+                        <apex:selectList size="1" id="evhSnapshot" onchange="handleSnapshotDateChange(this.options[this.selectedIndex].value);" value="{!selectedSnapshotDate}">
+                            <apex:selectOptions value="{!optEarnedValueSnapshots}"/>
+                        </apex:selectList>
+                        <apex:commandButton id="btnNextSnapShot" action="{!moveNextSnapShot}" value=" >> " reRender="msg,evhSnapshot,selectedSnapshotDate,pbtSnapshotTasks,btnPrevSnapShot,btnNextSnapShot" status="statusBar" disabled="{!!hasNextSnapShot}"/>
+                    </apex:outputPanel>
+
+
+                </apex:pageBlockSectionItem> 
+
+            </apex:pageBlockSection>
+
+
+            <apex:pageBlockSection columns="1" id="pbtSnapshotTasks" title="Task Progress">
+
+                <apex:pageBlockSectionItem >
+                    <apex:pageMessage summary="{!noTasksForSnapshotDateMsg}" severity="INFO" rendered="{!if(numAvailableTasks == 0, 'true', 'false')}" escape="false"></apex:pageMessage>
+                </apex:pageBlockSectionItem>
+
+                <apex:pageBlockSectionItem >
+                    <apex:pageBlockTable value="{!availableTasks}" var="taskwrapper"  rendered="{!if(numAvailableTasks > 0, 'true', 'false')}">
+
+                        <apex:column >
+                            <apex:facet name="header">
+                                {!$ObjectType.EarnedValueTask__c.Fields.Committed__c.Label}
+                            </apex:facet>
+                            {!if(taskwrapper.earnedValueTask.Committed__c == true, 'Y','N')}
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                {!$ObjectType.pse__Project_Task__c.Fields.FinancialTask__c.Label}
+                            </apex:facet>
+                            {!if(taskwrapper.task.FinancialTask__c == true, 'Y','N')}
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                {!$ObjectType.pse__Project_Task__c.Fields.ProjectTaskNumber__c.Label}
+                            </apex:facet>
+                            {!taskwrapper.task.ProjectTaskNumber__c}
+                        </apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                {!$ObjectType.pse__Project_Task__c.Fields.Name.Label}
+                            </apex:facet>
+                            {!taskwrapper.task.Name}
+                        </apex:column>      
+
+                        <apex:column >
+                            <apex:facet name="header">
+                                {!$ObjectType.pse__Project_Task__c.Fields.ProjectTaskOwner__c.Label}
+                            </apex:facet>
+                            {!taskwrapper.task.ProjectTaskOwner__r.Name}
+                        </apex:column>              
+
+                        <apex:column style="white-space: nowrap;" >
+                            <apex:facet name="header">
+                                {!$ObjectType.pse__Project_Task__c.Fields.pse__Start_Date__c.Label}
+                            </apex:facet>
+<!--                            <apex:outputText value="{0, date, yyyy-MM-dd}">
+                                <apex:param value="{!taskwrapper.task.pse__Start_Date__c}" />                                           
+                            </apex:outputText>      -->
+                            <c:ECO_DateFormat date="{!taskwrapper.task.pse__Start_Date__c}" />
+                        </apex:column>
+
+                        <apex:column style="white-space: nowrap;" >
+                            <apex:facet name="header">
+                                {!$ObjectType.pse__Project_Task__c.Fields.pse__End_Date__c.Label}
+                            </apex:facet>
+<!--                            <apex:outputText value="{0, date, yyyy-MM-dd}">
+                                <apex:param value="{!taskwrapper.task.pse__End_Date__c}" />                                         
+                            </apex:outputText> -->
+                            <c:ECO_DateFormat date="{!taskwrapper.task.pse__End_Date__c}" />                             
+                        </apex:column>
+
+
+
+                        <apex:column >
+                            <apex:facet name="header">
+                                Prior Complete
+                            </apex:facet>
+                                {!taskWrapper.priorComplete}
+                        </apex:column>
 
  
- 						<apex:column >
- 							<apex:facet name="header">
- 								{!$ObjectType.EarnedValueTask__c.Fields.PercentComplete__c.Label}
- 							</apex:facet>
- 							<apex:outputPanel >
-							
-								<apex:inputField value="{!taskWrapper.earnedValueTask.PercentComplete__c}" styleClass="{!taskWrapper.earnedValueTask.Id}" rendered="{!if(taskWrapper.canEdit && !taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
-								<apex:outputField value="{!taskWrapper.earnedValueTask.PercentComplete__c}" rendered="{!if(taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
-						
- 							</apex:outputPanel>
- 															
- 						</apex:column>	
+                        <apex:column >
+                            <apex:facet name="header">
+                                {!$ObjectType.EarnedValueTask__c.Fields.PercentComplete__c.Label}
+                            </apex:facet>
+                            <apex:outputPanel >
+                            
+                                <apex:inputField value="{!taskWrapper.earnedValueTask.PercentComplete__c}" styleClass="{!taskWrapper.earnedValueTask.Id}" rendered="{!if(taskWrapper.canEdit && !taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
+                                <apex:outputField value="{!taskWrapper.earnedValueTask.PercentComplete__c}" rendered="{!if(taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
+                        
+                            </apex:outputPanel>
+                                                            
+                        </apex:column>  
 
- 						<apex:column >
- 							X
- 						</apex:column>
+                        <apex:column >
+                            X
+                        </apex:column>
 
- 						<apex:column >
- 							<apex:facet name="header">
- 								Budget
- 							</apex:facet>
- 							{!taskwrapper.task.TotalApprovedCost__c}
- 						</apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                Budget
+                            </apex:facet>
+                            {!taskwrapper.task.TotalApprovedCost__c}
+                        </apex:column>
 
- 						<apex:column >
- 							<apex:facet name="header">
- 								{!$ObjectType.EarnedValueTask__c.Fields.CostAccruals__c.Label}
- 							</apex:facet>
- 							<apex:outputPanel >
-								<apex:inputField value="{!taskWrapper.earnedValueTask.CostAccruals__c}" styleClass="{!taskWrapper.earnedValueTask.Id}" rendered="{!if(taskWrapper.canEdit && !taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
-								<apex:outputField value="{!taskWrapper.earnedValueTask.CostAccruals__c}" rendered="{!if(taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
- 							</apex:outputPanel>					
- 						</apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                {!$ObjectType.EarnedValueTask__c.Fields.CostAccruals__c.Label}
+                            </apex:facet>
+                            <apex:outputPanel >
+                                <apex:inputField value="{!taskWrapper.earnedValueTask.CostAccruals__c}" styleClass="{!taskWrapper.earnedValueTask.Id}" rendered="{!if(taskWrapper.canEdit && !taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
+                                <apex:outputField value="{!taskWrapper.earnedValueTask.CostAccruals__c}" rendered="{!if(taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
+                            </apex:outputPanel>                 
+                        </apex:column>
 
- 						<apex:column >
- 							=
- 						</apex:column>
+                        <apex:column >
+                            =
+                        </apex:column>
 
- 						<apex:column >
- 							<apex:facet name="header">
- 								Earned Value
- 							</apex:facet>
- 							<div class="{!taskWrapper.task.id}">{!taskWrapper.earnedValue}</div>
- 						</apex:column>
+                        <apex:column >
+                            <apex:facet name="header">
+                                Earned Value
+                            </apex:facet>
+                            <div class="{!taskWrapper.task.id}">{!taskWrapper.earnedValue}</div>
+                        </apex:column>
 
- 						<apex:column >
- 							<apex:facet name="header">
- 								{!$ObjectType.EarnedValueTask__c.Fields.Comments__c.Label}
- 							</apex:facet>
+                        <apex:column >
+                            <apex:facet name="header">
+                                {!$ObjectType.EarnedValueTask__c.Fields.Comments__c.Label}
+                            </apex:facet>
 
- 							<apex:outputPanel >
-								<apex:inputField value="{!taskWrapper.earnedValueTask.Comments__c}" onkeyup="AutoGrowTextArea(this)" rendered="{!if(taskWrapper.canEdit && !taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
-								<apex:outputField value="{!taskWrapper.earnedValueTask.Comments__c}" rendered="{!if(taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
- 							</apex:outputPanel>								
- 						</apex:column>
- 			
- 					</apex:pageBlockTable>
- 				</apex:pageBlockSectionItem>
+                            <apex:outputPanel >
+                                <apex:inputField value="{!taskWrapper.earnedValueTask.Comments__c}" onkeyup="AutoGrowTextArea(this)" rendered="{!if(taskWrapper.canEdit && !taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
+                                <apex:outputField value="{!taskWrapper.earnedValueTask.Comments__c}" rendered="{!if(taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
+                            </apex:outputPanel>                             
+                        </apex:column>
+            
+                    </apex:pageBlockTable>
+                </apex:pageBlockSectionItem>
 
- 			</apex:pageBlockSection>
+            </apex:pageBlockSection>
 
- 		</apex:pageBlock>
+        </apex:pageBlock>
 
 
 <!--
@@ -550,22 +552,22 @@ chartJSON = {!chartJSON}
 
 cpiAndSpiJSON = {!cpiAndSpiJSON}
 -->
-	
+    
 
-		<apex:outputPanel id="chart">
-	<table>
-		<tr>
-			<td>
-			<div id="curve_chart" style="width: 900px; height: 500px"></div>
-			</td>
-			<td>
-			<div id="cpiAndSpi_chart" style="width: 900px; height: 500px"></div>
-			</td>
-		</tr>
-	</table>
-		</apex:outputPanel>
- 		 
- 	</apex:form>
+        <apex:outputPanel id="chart">
+    <table>
+        <tr>
+            <td>
+            <div id="curve_chart" style="width: 900px; height: 500px"></div>
+            </td>
+            <td>
+            <div id="cpiAndSpi_chart" style="width: 900px; height: 500px"></div>
+            </td>
+        </tr>
+    </table>
+        </apex:outputPanel>
+         
+    </apex:form>
 
- 	<apex:relatedList list="ProjectProgressGates__r"/> 
+    <apex:relatedList list="ProjectProgressGates__r"/> 
 </apex:page>
