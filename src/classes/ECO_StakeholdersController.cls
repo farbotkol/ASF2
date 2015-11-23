@@ -833,7 +833,9 @@ public with sharing class ECO_StakeholdersController
 				lstSSW[surveyToRefresh].cOptions = new list<SelectOption>();
 				lstSSW[surveyToRefresh].cOptions.add(new SelectOption(' ', '--None--'));
 				for(Contact contact : contacts){
-					lstSSW[surveyToRefresh].cOptions.add(new SelectOption(contact.Id, contact.Name));
+					if(!contact.FirstName.containsIgnoreCase('Payable') && !contact.LastName.containsIgnoreCase('Payable')){
+						lstSSW[surveyToRefresh].cOptions.add(new SelectOption(contact.Id, contact.Name));
+					}
 				}
 			}
 			catch(Exception ex){
