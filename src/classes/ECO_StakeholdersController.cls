@@ -555,7 +555,6 @@ public with sharing class ECO_StakeholdersController
 				delegateQuery += ' (Start_Date__c <= ' + convertStringSOQLString(startDate);
 				delegateQuery += ' AND(End_Date__c = NULL OR End_Date__c >= ' + convertStringSOQLString(startDate) + '))';
 			}
-			system.debug('***delgateQuery ' + delegateQuery);
 			List<Delegate__c> delegates = Database.query(delegateQuery);
 			Set<Id> delegateIds = new Set<Id>();
 			pse__proj__c project = [Select Id, PnLManager__r.pse__Salesforce_User__c, CarryingOutOrganization__r.FAManager__r.pse__Salesforce_User__c, CarryingOutOrganization__c from pse__Proj__c where Id =: oProject.Id];
@@ -593,6 +592,7 @@ public with sharing class ECO_StakeholdersController
 			}
 		}
 		contactQuery += ' AND (NOT person_id__c Like \'%U\')';
+		contactQuery += ' AND pse__Salesforce_User__r.TrackingID__c != null';
 		contactQuery += ' LIMIT 50';
 		queryDelegates = Database.query(contactQuery);		
 		return null;

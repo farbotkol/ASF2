@@ -192,6 +192,7 @@ private class ECO_StakeholdersControllerTest {
 		insert testAccount;
 
 		testUser = ECO_Utils_Testing.createTestUser('Standard User');
+		testUser.TrackingID__c = 'test';
 		insert testUser;
 
 	    //project sites
