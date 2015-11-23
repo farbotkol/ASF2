@@ -1,6 +1,6 @@
 public with sharing class ECO_ReviewMemberManagerController {
 
-	public TechnicalQualityReview__c oTechnicalQualityReview {get;set;}
+  public TechnicalQualityReview__c oTechnicalQualityReview {get;set;}
 
     public list<TQT_Wrapper> lstTQT_Wrapper {get;set;}
     public list<TechnicalQualityTeam__c> lstTQT_Team {get;set;}
@@ -22,14 +22,14 @@ public with sharing class ECO_ReviewMemberManagerController {
     public Id loggedUser {get;set;}
     public Attachment attach {get;set;}
     //public Blob blobFile {get; set;}
-	public String contentType {get; set;}
-	//public String fileName {get; set;}
+  public String contentType {get; set;}
+  //public String fileName {get; set;}
     public Profile sysAdminProfile {get;set;}
     public DeliverableRevision__c devRevision {get;set;}
     
     public ECO_ReviewMemberManagerController(ApexPages.StandardController stdController) {
         this.oTechnicalQualityReview = (TechnicalQualityReview__c)stdController.getRecord();
-		
+    
         tabNmae='tabOne';
         if(oTechnicalQualityReview.Id != null || oTechnicalQualityReview.Id != ''){
             string strSOQL = 'SELECT ';
@@ -50,7 +50,7 @@ public with sharing class ECO_ReviewMemberManagerController {
             System.debug('idTQR:   '+oTechnicalQualityReview.Id);        
             list<TechnicalQualityReview__c> lstTQR = (list<TechnicalQualityReview__c>)Database.query(strSOQL);
             if(lstTQR.size()>0)
-            	oTechnicalQualityReview = lstTQR[0];
+              oTechnicalQualityReview = lstTQR[0];
             bLockFields = oTechnicalQualityReview.Lock_Fields__c;
             System.debug('******DEBUG*******bLockFields:  '+bLockFields);
             System.debug('lstTQR size:   '+lstTQR.size());
@@ -62,7 +62,7 @@ public with sharing class ECO_ReviewMemberManagerController {
         RMAttachmentsMap = new map<id, list<Attachment>>();
         devRevision = new DeliverableRevision__c();
         sysAdminProfile = [Select Id From Profile Where Name = 'System Administrator'];
-		attach = new Attachment();
+    attach = new Attachment();
         if(oTechnicalQualityReview == null){
             ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING,'You have reached this page improperly, please access it from the Deliverables screen.');
             ApexPages.addMessage(oPageMessage);
@@ -78,7 +78,7 @@ public with sharing class ECO_ReviewMemberManagerController {
             if(bLockFields == false &&  (UserInfo.getUserId() == oTechnicalQualityReview.Deliverable__r.DeliverablesOwner__r.pse__Salesforce_User__c 
                || UserInfo.getUserId() == oTechnicalQualityReview.Deliverable__r.Project__r.pse__Project_Manager__r.pse__Salesforce_User__c
                || UserInfo.getProfileId() == sysAdminProfile.Id))
-            	inputFields = true;
+              inputFields = true;
             else
                 inputFields = false;
             loadValues();
@@ -112,15 +112,15 @@ public with sharing class ECO_ReviewMemberManagerController {
                                     General_Description__c,
                                     Originator_Initials__c,
                                     Checker_Initials__c
-                            		,Approved__c
-                            		,Role__c 
-                            		,VerifierNoOutstandingIssues__c
-                            		,VerifierUnresolvedIssues__c
-                            		,CheckerDateTime__c
-                            		,ReviewCompleted__c
-                            		,TechnicalQualityReview__r.Deliverable__r.PracticeArea__c
-                            		,TechnicalQualityTeamMember__r.TechnicalQualityTeamMember__r.Name
-                            		,TechnicalQualityReview__r.DeliverableRevision__r.Review_Completed__c
+                                ,Approved__c
+                                ,Role__c 
+                                ,VerifierNoOutstandingIssues__c
+                                ,VerifierUnresolvedIssues__c
+                                ,CheckerDateTime__c
+                                ,ReviewCompleted__c
+                                ,TechnicalQualityReview__r.Deliverable__r.PracticeArea__c
+                                ,TechnicalQualityTeamMember__r.TechnicalQualityTeamMember__r.Name
+                                ,TechnicalQualityReview__r.DeliverableRevision__r.Review_Completed__c
                             from ReviewMember__c 
                             where TechnicalQualityReview__c =: oTechnicalQualityReview.id];
                             
@@ -129,26 +129,26 @@ public with sharing class ECO_ReviewMemberManagerController {
             if(rm.Role__c == 'Approver')
                 lstReviewApprover_Wrapper.add(new RM_Wrapper(rm));
             else
-            	lstReviewMember_Wrapper.add(new RM_Wrapper(rm));
+              lstReviewMember_Wrapper.add(new RM_Wrapper(rm));
             mapReviewMember.put( rm.TechnicalQualityTeamMember__r.TechnicalQualityTeamMember__c, rm );
             RMAttachmentsMap.put(rm.Id, new list<Attachment>());
         }
-		RMAttachments = [select Id, ParentId, Name from Attachment where ParentId in :lstReviewMembers];
+    RMAttachments = [select Id, ParentId, Name from Attachment where ParentId in :lstReviewMembers];
         for(Attachment RMAttachment: RMAttachments)
             RMAttachmentsMap.get(RMAttachment.ParentId).add(RMAttachment);
         lstTQT_Team = [select id, TechnicalQualityTeamMember__c, Role__c, Status__c, Approved__c, Checker_Date_Time__c, TechnicalQualityTeamMember__r.Name from TechnicalQualityTeam__c where Deliverable__c =: oTechnicalQualityReview.Deliverable__c];
-		System.debug('lstTQT_Team size:   '+lstTQT_Team.size());
+    System.debug('lstTQT_Team size:   '+lstTQT_Team.size());
         for(TechnicalQualityTeam__c TQT: lstTQT_Team){
             if(mapReviewMember.containskey(TQT.TechnicalQualityTeamMember__c)==false ){
                 lstTQT_Wrapper.add(new TQT_Wrapper(TQT));
             }
         }
-		System.debug('lstTQT_Wrapper size'+lstTQT_Wrapper.size());
+    System.debug('lstTQT_Wrapper size'+lstTQT_Wrapper.size());
 
     }
 
     /*public PageReference setDateTimeField(){
-    	TechnicalQualityTeam__c oTQT = new TechnicalQualityTeam__c();
+      TechnicalQualityTeam__c oTQT = new TechnicalQualityTeam__c();
         //oTQT = [Select Id, Checker_Date_Time__c, Approved__c From TechnicalQualityTeam__c where Id = :idTQT];
         System.debug('idTQT:   '+idTQT);
         System.debug('oTQT.Approved__c :   '+oTQT.Approved__c );
@@ -300,8 +300,8 @@ public with sharing class ECO_ReviewMemberManagerController {
                     
             }catch(Exception e){
                 ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while updating Technical Quality Review. Please contact your administrator with the following error: ' + e);
-	            ApexPages.addMessage(oMsg);         
-         	}finally {
+              ApexPages.addMessage(oMsg);         
+           }finally {
                   attach.body = null;
             }
  
@@ -320,17 +320,17 @@ public with sharing class ECO_ReviewMemberManagerController {
             loadValues();
             return null;
         }catch (Exception e) {
-	            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to create technical quality review. Please contact your administrator with the following error: ' + e);
-	            ApexPages.addMessage(oMsg);
-	            return null;
-		}
+              ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to create technical quality review. Please contact your administrator with the following error: ' + e);
+              ApexPages.addMessage(oMsg);
+              return null;
+    }
     }
     public PageReference saveRequest(){
         try{
             System.debug('inside saveRequest');
             upsert oTechnicalQualityReview;
             System.debug('oTechnicalQualityReview deliverable version:   '+oTechnicalQualityReview.DeliverableRevision__c);
-    		list<ReviewMember__c> lstReviewMemberstoInsert = new list<ReviewMember__c>();
+        list<ReviewMember__c> lstReviewMemberstoInsert = new list<ReviewMember__c>();
     
             for(TQT_Wrapper TQTW: lstTQT_Wrapper){
                 if(TQTW.bSelected) {
@@ -350,12 +350,12 @@ public with sharing class ECO_ReviewMemberManagerController {
             loadValues();
             return null;
         }catch (Exception e) {
-	            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to create technical quality review. Please contact your administrator with the following error: ' + e);
-	            ApexPages.addMessage(oMsg);
-	            return null;
-		}
+              ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to create technical quality review. Please contact your administrator with the following error: ' + e);
+              ApexPages.addMessage(oMsg);
+              return null;
     }
-	
+    }
+  
     public PageReference createRMAttachment(){
         PageReference myPage = new PageReference('/p/attach/NoteAttach?pid=' + sRMId2.left(15) + '&parentname=' + sRMName2 + '&retURL=/apex/ECO_ReviewMemberManager?id='+oTechnicalQualityReview.Id+'&sfdc.override=1');
         return myPage;
@@ -385,7 +385,7 @@ public with sharing class ECO_ReviewMemberManagerController {
             } else {
                 bSelected = false;
             }
-			oReviewMember = oRM;
+      oReviewMember = oRM;
         }
     }
 

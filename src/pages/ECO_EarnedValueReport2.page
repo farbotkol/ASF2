@@ -110,6 +110,8 @@
     
     <apex:actionFunction name="commitEarnedValueTasksForSnapshot_JS" action="{!commitEarnedValueTasksForSnapshot}" rerender="rrOnSaveOrCommit,msg" status="statusBar"/>
 
+    <apex:actionFunction name="initPage" action="{!init}" />
+
     <apex:outputPanel id="setChartJsonJS">
         <script type="text/javascript">
             // alert('in setChartJsonJS');
@@ -121,15 +123,16 @@
     <script type="text/javascript">
     
         function reRenderCharts(){
-            drawChart();
-            drawCpiAndSpiChart();   
+            //drawChart();
+            //drawCpiAndSpiChart();   
         }
         
         j$(document).ready(function(){
-            drawChart();
-            drawCpiAndSpiChart();
+            //drawChart();
+            //drawCpiAndSpiChart();
         });
 
+/*
         function drawChart() {          
               var data = new google.visualization.DataTable();
               data.addColumn('string', 'Period Date');
@@ -214,6 +217,7 @@
 
               chart.draw(data, options);
         }
+*/        
         
     </script>
 
@@ -263,12 +267,13 @@
     <apex:pageBlock >
 
         <apex:pageBlockButtons location="top">
+            <apex:commandButton value="Request Task Manager Input" action="{!requestTaskManagerInput}"/>
             <apex:commandButton value="Commit Changes" onclick="commitChanges(); return false;" />
             <apex:commandButton action="{!saveEarnedValueTasksForSnapshot}" value="Save" reRender="msg,rrOnSaveOrCommit,setChartJsonJS" oncomplete="reRenderCharts();"/>
             <apex:commandButton action="{!returnToProject}" value="Return to Project" />
         </apex:pageBlockButtons>
 
-       	<apex:pageMessage id="headerSummaryMessage" severity="info"  escape="false"  summary='
+        <apex:pageMessage id="headerSummaryMessage" severity="info"  escape="false"  summary='
                    Earned value is a tool used to help determine if a project is progressing as planned.  Utilize this tool to compare your project plan against actual work completed and budget spent to date.   To complete and Earned Value report:
                    <br /><br />
                     1.  Select the "Week Of" date for the period you wish to complete the report.<br />
@@ -288,13 +293,15 @@
                     <apex:outputField value="{!project.Name}" id="evhProject" />
                 </apex:pageBlockSectionItem> 
                 
+<!--                
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel value="{!$ObjectType.EarnedValueHeader__c.Fields.ReportName__c.Label}" for="evhReport"/>
                     <apex:outputField value="{!evhRecord.ReportName__c}" id="evhReport" />
                 </apex:pageBlockSectionItem> 
+-->                
                 
                 <apex:pageBlockSectionItem >
-                    <apex:outputLabel value="Week of" for="evhSnapshot"/>
+                    <apex:outputLabel value="Week Ending" for="evhSnapshot"/>
                     <apex:outputPanel >
                         <apex:commandButton id="btnPrevSnapShot" action="{!moveBackwardByAWeek}" value=" << " disabled="{!!hasPrevWeek}" />
                         <apex:selectList size="1" id="evhSnapshot" onchange="handleSnapshotDateChange(this.options[this.selectedIndex].value);" value="{!selectedSnapshotDate}" >
@@ -302,11 +309,20 @@
                         </apex:selectList>
                         <apex:commandButton id="btnNextSnapShot" action="{!moveForwardByAWeek}" value=" >> " disabled="{!!hasNextWeek}" />
                     </apex:outputPanel>
+
+                </apex:pageBlockSectionItem> 
+
+                <apex:pageBlockSectionItem >
+                    <apex:outputLabel value="Filter by Project Task Owner" for="filterProjectTeamMember"/>
+
+                    <apex:selectList value="{!filterProjectTeamMember}" multiselect="false" size="1" id="filterProjectTeamMember" onchange="initPage();">
+                        <apex:selectOptions value="{!projectTeamMembers}" />
+                    </apex:selectList>
                 </apex:pageBlockSectionItem> 
                 
                 <apex:pageBlockSectionItem >
                     <apex:outputLabel value="{!$ObjectType.pse__Proj__c.Fields.EVRulesGuidelines__c.Label}" for="evhRules"/>
-                    <apex:inputField value="{!Project.EVRulesGuidelines__c}" id="evhRules" />
+                    <apex:inputField value="{!Project.EVRulesGuidelines__c}" id="evhRules" style="width:750px;"/>
                 </apex:pageBlockSectionItem> 
             </apex:pageBlockSection>
 
@@ -315,7 +331,8 @@
             <apex:pageBlockTable value="{!availableTasks}" var="taskwrapper"  rendered="{!if(numAvailableTasks > 0, 'true', 'false')}">
             <apex:column >
                 <apex:facet name="header">
-                    {!$ObjectType.pse__Project_Task__c.Fields.FinancialTask__c.Label}
+                    <!-- {!$ObjectType.pse__Project_Task__c.Fields.FinancialTask__c.Label} -->
+                    FT
                 </apex:facet>
                 {!if(taskwrapper.task.FinancialTask__c == true, 'Y','N')}
             </apex:column>
@@ -334,25 +351,28 @@
                 <apex:facet name="header">
                     {!$ObjectType.pse__Project_Task__c.Fields.ProjectTaskOwner__c.Label}
                 </apex:facet>
-                {!BLANKVALUE(taskwrapper.task.ProjectTaskOwner__r.Name, 'Not Assigned')}
+
+                <apex:selectList value="{!taskwrapper.task.ProjectTaskOwner__c}" multiselect="false" size="1">
+                    <apex:selectOptions value="{!projectTeamMembersForAssign}" />
+                </apex:selectList>
+
+<!--                {!BLANKVALUE(taskwrapper.task.ProjectTaskOwner__r.Name, 'Not Assigned')} -->
             </apex:column>              
 
             <apex:column style="white-space: nowrap;" >
                 <apex:facet name="header">
                         {!$ObjectType.pse__Project_Task__c.Fields.pse__Start_Date__c.Label}
                     </apex:facet>
-                    <apex:outputText value="{0, date, yyyy-MM-dd}">
-                    <apex:param value="{!taskwrapper.task.pse__Start_Date__c}" />                                           
-                </apex:outputText>      
+
+                <c:ECO_DateFormat date="{!taskwrapper.task.pse__Start_Date__c}" />
             </apex:column>
 
             <apex:column style="white-space: nowrap;" >
                 <apex:facet name="header">
                     {!$ObjectType.pse__Project_Task__c.Fields.pse__End_Date__c.Label}
                 </apex:facet>
-                <apex:outputText value="{0, date, yyyy-MM-dd}">
-                    <apex:param value="{!taskwrapper.task.pse__End_Date__c}" />                                         
-                </apex:outputText>                              
+
+                <c:ECO_DateFormat date="{!taskwrapper.task.pse__End_Date__c}" />
             </apex:column>
 
             <apex:column headerClass="numericCol" styleClass="numericCol" >
@@ -371,21 +391,34 @@
                         </apex:outputPanel>
                     </apex:facet>
 
-                    <apex:outputPanel >
+                    <apex:outputPanel rendered="{!taskwrapper.task.TotalApprovedCost__c != 0}">
                     <apex:inputField style="width:30px;text-align:right;" value="{!taskWrapper.earnedValueTask.PercentComplete__c}" styleClass="{!taskWrapper.earnedValueTask.Id}" rendered="{!if(taskWrapper.canEdit && !taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/> 
                     <apex:outputField value="{!taskWrapper.earnedValueTask.PercentComplete__c}" rendered="{!if(taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/> &#37;
                     </apex:outputPanel>
                 </apex:column>  
 
             <apex:column width="5px" styleClass="numericCol" >
-                    X
+                    <apex:outputText rendered="{!taskwrapper.task.TotalApprovedCost__c != 0}">X</apex:outputText>
                 </apex:column>
 
             <apex:column headerClass="numericCol" styleClass="numericCol" >
                     <apex:facet name="header">
                         Budget
                     </apex:facet>
-                    <apex:outputText value="${0, number, ###,###,###,###.00}"> <apex:param value="{!taskwrapper.task.TotalApprovedCost__c}"/> </apex:outputText>
+                    <apex:outputText rendered="{!taskwrapper.task.TotalApprovedCost__c != 0}" value="${0, number, ###,###,###,###}"> <apex:param value="{!taskwrapper.task.TotalApprovedCost__c}" /> </apex:outputText>
+                </apex:column>
+
+
+
+            <apex:column width="5px" styleClass="numericCol" >
+                    <apex:outputText rendered="{!taskwrapper.task.TotalApprovedCost__c != 0}">=</apex:outputText>
+                </apex:column>
+
+            <apex:column headerClass="numericCol" styleClass="numericCol" >
+                    <apex:facet name="header">
+                        Earned Value
+                    </apex:facet>
+                    <apex:outputText rendered="{!taskwrapper.task.TotalApprovedCost__c != 0}" value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.earnedValue}"/> </apex:outputText>
                 </apex:column>
 
             <apex:column headerClass="numericCol" styleClass="numericCol" >
@@ -396,21 +429,10 @@
                         </apex:outputPanel>
 
                     </apex:facet>
-                    <apex:outputPanel >
+                    <apex:outputPanel rendered="{!taskwrapper.task.TotalApprovedCost__c != 0}">
                     <apex:inputField style="width:110px;text-align:right;" value="{!taskWrapper.earnedValueTask.CostAccruals__c}" styleClass="{!taskWrapper.earnedValueTask.Id}" rendered="{!if(taskWrapper.canEdit && !taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
                     <apex:outputField value="{!taskWrapper.earnedValueTask.CostAccruals__c}" rendered="{!if(taskWrapper.earnedValueTask.Committed__c, 'true', 'false')}"/>
                     </apex:outputPanel>                 
-                </apex:column>
-
-            <apex:column width="5px" styleClass="numericCol" >
-                    =
-                </apex:column>
-
-            <apex:column headerClass="numericCol" styleClass="numericCol" >
-                    <apex:facet name="header">
-                        Earned Value
-                    </apex:facet>
-                    <apex:outputText value="${0, number, ###,###,###,###.00}"> <apex:param value="{!taskWrapper.earnedValue}"/> </apex:outputText>
                 </apex:column>
 
             <apex:column headerClass="numericCol" styleClass="numericCol" >
@@ -420,7 +442,7 @@
                         </apex:outputPanel>
 
                     </apex:facet>
-                    <apex:outputText value="${0, number, ###,###,###,###.00}"> <apex:param value="{!taskWrapper.task.TotalProjectFunctionalBurdenedCost__c}"/> </apex:outputText>
+                    <apex:outputText rendered="{!taskwrapper.task.TotalApprovedCost__c != 0}" value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.task.TotalProjectFunctionalBurdenedCost__c}"/> </apex:outputText>
                 </apex:column>
 
             <apex:column headerClass="numericCol" styleClass="numericCol" >
@@ -432,7 +454,7 @@
                         
                         
                     </apex:facet>
-                    <apex:outputText value="${0, number, ###,###,###,###.00}"> <apex:param value="{!taskWrapper.earnedValueTask.TrendEAC1__c}"/> </apex:outputText>
+                    <apex:outputText rendered="{!taskwrapper.task.TotalApprovedCost__c != 0}" value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.earnedValueTask.TrendEAC1__c}"/> </apex:outputText>
                     
                 </apex:column>
 
@@ -443,7 +465,7 @@
                             <c:ECO_HelpIcon helpText="{!$ObjectType.EarnedValueTask__c.Fields.TrendEAC2__c.inlineHelpText}" />
                         </apex:outputPanel>
                     </apex:facet>
-                    <apex:outputText value="${0, number, ###,###,###,###.00}"> <apex:param value="{!taskWrapper.earnedValueTask.TrendEAC2__c}"/> </apex:outputText>
+                    <apex:outputText rendered="{!taskwrapper.task.TotalApprovedCost__c != 0}" value="${0, number, ###,###,###,###}"> <apex:param value="{!taskWrapper.earnedValueTask.TrendEAC2__c}"/> </apex:outputText>
                 </apex:column>
 
             <apex:column >
@@ -480,7 +502,11 @@
             </tr>
         </table>
     </apex:outputPanel>
+
+    <c:ECO_ProjectTeamFlyout ProjectId="{!pse__Proj__c.id}" />
          
     </apex:form>
+
+    <c:ECO_EarnedValueFlyout ProjectId="{!pse__Proj__c.id}" />
 
 </apex:page>

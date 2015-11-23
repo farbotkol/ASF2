@@ -119,8 +119,9 @@
     <apex:sectionHeader title="Scope & Packages" subtitle="{!theProject.ProjectSectionHeaderName__c}" />
 
     <apex:outputpanel id="all">
-    <apex:pageMessages />
-    <apex:form >    
+    <apex:form >  
+        
+			<apex:pageMessages id="messages" />        
 
         <!-- Action function for the rerendering -->
         <apex:actionFunction name="saving" action="{!SavePackages}" />
@@ -234,10 +235,11 @@
                 </apex:pageBlockTable>
             </div>
             <div style="text-align:center">
-                <apex:commandButton value="Attach File to Package" action="{!AttachFile}"  reRender="hiddenBlock" >
+                <apex:commandButton value="Attach File to Package" action="{!AttachFile}"  reRender="messages" >
                     <apex:param assignTo="{!sSelectedPackageId}" name="sSelectedPackageId" value="{!oProjectPackage.Id}" />
                     <apex:param assignTo="{!sSelectedPackageName}" name="sSelectedPackageName" value="{!oProjectPackage.PackageTitle__c}" />
                 </apex:commandButton>
+               
             </div>
 
 

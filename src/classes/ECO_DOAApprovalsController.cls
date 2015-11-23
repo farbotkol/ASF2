@@ -9,7 +9,7 @@ public with sharing class ECO_DOAApprovalsController {
     public String doaId {get;set;}
     public Group oGroup {get;set;}
     public ECO_DOAApprovalsController(ApexPages.StandardController stdcontroller) {
-		doaId = ApexPages.currentPage().getParameters().get('Id');
+    doaId = ApexPages.currentPage().getParameters().get('Id');
         init();
     }
     public void init(){
@@ -32,7 +32,7 @@ public with sharing class ECO_DOAApprovalsController {
         lForm = [Select Id, Name, CreatedById, CreatedDate From Form__c Where DOAApprovalRequest__c =: oDOA.Id];
         lDOARegister = [Select Id, EnterpriseDOA__c, DCSsubDOA__c, RiskTitle__c, DOATrigger__c, ApprovalStatus__c From DOARegister__c Where DOAApprovalRequest__c = :oDOA.Id];
         lDOAConditions = [Select Id, Name, CreatedBy__c, Mitigation_Plan__c, CreatedDate From DOAConditions__c Where DOAApprovalRequest__c = :oDOA.Id];
-        lCompliance = [Select Id, Name, ComplianceStatus__c, ComplianceStatusDate__c, ConditionsCompleted__c, ConditionsCompletedDate__c From ComplianceConditionsofApproval__c Where DOAApprovalRequest__c = :oDOA.Id];
+        lCompliance = [Select Id, Name, ComplianceStatus__c, GeneralComments__c, ComplianceStatusDate__c, ConditionsCompleted__c, ConditionsCompletedDate__c From ComplianceConditionsofApproval__c Where DOAApprovalRequest__c = :oDOA.Id];
         System.debug('oDOA id is :'+oDOA.Id);
         User oUser = [Select Id, isDoaAdmin__c From User Where Id = :UserInfo.getUserId()];
         isDOAAdmin = oUser.isDoaAdmin__c;
@@ -157,7 +157,7 @@ public with sharing class ECO_DOAApprovalsController {
             System.debug('inside submitDOA before update:   '+oDOA.Id+'    '+oDOA.AssigntoDoAApprovalQueue__c);
             if(oDOA.AssigntoDoAApprovalQueue__c != true){
                 oDOA.AssigntoDoAApprovalQueue__c = true;
-            	update oDOA;
+              update oDOA;
             }
             System.debug('inside submitDOA after update:   '+oDOA.Id+'    '+oDOA.AssigntoDoAApprovalQueue__c);
             return null;

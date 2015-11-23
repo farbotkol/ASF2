@@ -22,9 +22,9 @@ public with sharing class ECO_DOA_ApprovalRequestController {
     public String selectQuestionnaire {get;set;}
     
     public Integer totalRecs {get;set;}
-	public Integer OffsetSize {get;set;}
-	public Integer LimitSize {get;set;}
-	    
+  public Integer OffsetSize {get;set;}
+  public Integer LimitSize {get;set;}
+      
     public list<SelectOption> types { get; set; }
     
     public DOARegister__c newTrigger {get;set;}
@@ -50,7 +50,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
         setRequestIds = new set<id>();
         totalRecs = 0;
         OffsetSize = 0;
-		LimitSize= 20;
+    LimitSize= 20;
         if (projID != null) {
             this.projectID = projID;
             theProject = [select Id, Name,ProjectNumber__c from pse__Proj__c where Id = :projID];
@@ -67,7 +67,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
             //loadDOAList();
         }
         loadTriggers();
-		loadDOAList();
+    loadDOAList();
         types = new List<SelectOption>();
         types.add(new SelectOption('No', 'No'));
         types.add(new SelectOption('Yes', 'Yes'));        
@@ -86,11 +86,11 @@ public with sharing class ECO_DOA_ApprovalRequestController {
         }
         
         if(projectID != null)
-        	strSOQL += 'ID, DOAApprovalRequest__c, TemplateQuestion__c FROM DOARegister__c WHERE Project__c = \'' + projectID + '\' order by DOAApprovalRequest__c ASC';
-		else
+          strSOQL += 'ID, DOAApprovalRequest__c, TemplateQuestion__c FROM DOARegister__c WHERE Project__c = \'' + projectID + '\' order by DOAApprovalRequest__c ASC';
+    else
             strSOQL += 'ID, DOAApprovalRequest__c, TemplateQuestion__c FROM DOARegister__c WHERE Project__c = null order by DOAApprovalRequest__c ASC';
         //list<DOARegister__c> lstRiskSearch = (list<DOARegister__c>)Database.query(strSOQL);
-		lstRiskSearch = (list<DOARegister__c>)Database.query(strSOQL);
+    lstRiskSearch = (list<DOARegister__c>)Database.query(strSOQL);
         System.debug('lstRiskSearch size: '+lstRiskSearch.size());
         for(DOARegister__c DOAR: lstRiskSearch){
             lstDOATriggers.add(new DOA_TriggerWrapper(DOAR));
@@ -107,7 +107,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
             strSOQL += fsmField.getFieldPath() + ', ';
         }
         if(projectID != null)
-        	strSOQL += 'ID FROM DOAApprovalRequest__c WHERE Project__c = \'' + projectID + '\'';
+          strSOQL += 'ID FROM DOAApprovalRequest__c WHERE Project__c = \'' + projectID + '\'';
         else
             strSOQL += 'ID FROM DOAApprovalRequest__c WHERE Project__c = null';
 
@@ -147,15 +147,15 @@ public with sharing class ECO_DOA_ApprovalRequestController {
             }
             else
                 strSOQL += 'ID FROM TemplateQuestion__c WHERE IsDoATrigger__c = TRUE AND BusinessLinesAvailableTo__c = :selectBusiness AND GeographiesAvailableTo__c = :selectGeography AND QuestionnaireTemplate__r.Name = :selectQuestionnaire ORDER BY QuestionnaireTemplate__c ASC LIMIT :LimitSize OFFSET :OffsetSize';
-        	
+          
         }
         else{
             if(selectQuestionnaire == null){
                 strSOQL += 'ID FROM TemplateQuestion__c WHERE IsNonProjectRelated__c = TRUE AND BusinessLinesAvailableTo__c = :selectBusiness AND GeographiesAvailableTo__c = :selectGeography ORDER BY QuestionnaireTemplate__c ASC LIMIT :LimitSize OFFSET :OffsetSize';
             }
             else
-            	strSOQL += 'ID FROM TemplateQuestion__c WHERE IsNonProjectRelated__c = TRUE AND BusinessLinesAvailableTo__c = :selectBusiness AND GeographiesAvailableTo__c = :selectGeography AND QuestionnaireTemplate__r.Name = :selectQuestionnaire ORDER BY QuestionnaireTemplate__c ASC LIMIT :LimitSize OFFSET :OffsetSize'; 
-    	}
+              strSOQL += 'ID FROM TemplateQuestion__c WHERE IsNonProjectRelated__c = TRUE AND BusinessLinesAvailableTo__c = :selectBusiness AND GeographiesAvailableTo__c = :selectGeography AND QuestionnaireTemplate__r.Name = :selectQuestionnaire ORDER BY QuestionnaireTemplate__c ASC LIMIT :LimitSize OFFSET :OffsetSize'; 
+      }
         
         lstTemplateQues = (list<TemplateQuestion__c>)Database.query(strSOQL);
         lstTQ = (list<TemplateQuestion__c>)Database.query(strSOQLsort);
@@ -163,7 +163,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
         System.debug('lstTemplateQues.size:  '+lstTemplateQues.size());
         System.debug('totalRecs:  '+totalRecs);
         for(TemplateQuestion__c tq: lstTemplateQues){
-        	if(!setTemplateQuesIds.contains(tq.Id)){
+          if(!setTemplateQuesIds.contains(tq.Id)){
                 lstTemplateQuestions.add(tq);
             }
         }
@@ -206,7 +206,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
             newTrigger.RiskTitle__c = tQuestions.RiskTitle__c;
             newTrigger.TemplateQuestion__c = tQuestions.Id;
             if(projectID != null)
-            	newTrigger.Project__c = projectID;
+              newTrigger.Project__c = projectID;
             
             insert newTrigger;
 
@@ -238,7 +238,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
             businessOptions.add(new SelectOption(valueBusiness.getLabel(), valueBusiness.getValue()));
         }       
         return businessOptions;
-	}
+  }
     
     public List<selectOption> getGeographies()
     {
@@ -253,8 +253,8 @@ public with sharing class ECO_DOA_ApprovalRequestController {
             options.add(new SelectOption(f.getLabel(), f.getValue()));
         }       
         return options;
-	}
-	
+  }
+  
     public List<selectOption> getQuestionnaires()
     {
         System.debug('inside getQuestionnaires');
@@ -276,7 +276,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
             options.add(new SelectOption(QuesName, QuesName));
         }
         return options;
-	}
+  }
     
     public PageReference searchQuestionnaire(){
         System.debug('selectBusiness   '+selectBusiness);
@@ -298,7 +298,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
             lstTemplateQues = new List<TemplateQuestion__c>();
             loadTriggers();
             loadDOAList();
-        	return null;
+          return null;
             
         }catch (Exception e) {
             ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to add a DOA Trigger. Please contact your administrator with the following error: ' + e);
@@ -340,7 +340,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
         }
 
         if(found){
-            return new pagereference('/apex/ECO_DOA_ApprovalRequestCreation');
+            return new pagereference('/apex/ECO_DOA_ApprovalRequestCreation?projectId');
         } else {
             ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Cannot make a request without selecting DOA Triggers.');
             ApexPages.addMessage(oMsg);         
@@ -357,19 +357,19 @@ public with sharing class ECO_DOA_ApprovalRequestController {
 
     public pagereference createRequest(){
         list<recordtype> lstDOART = new List<recordtype>();
-		if(projectId != null)
-        	lstDOART = [select id, name from recordtype where sObjectType='DOAApprovalRequest__c' and DeveloperName ='DOACreate'];
-		else
-			lstDOART = [select id, name from recordtype where sObjectType='DOAApprovalRequest__c' and DeveloperName ='NonEcosystemCreate'];            
+    if(projectId != null)
+          lstDOART = [select id, name from recordtype where sObjectType='DOAApprovalRequest__c' and DeveloperName ='DOACreate'];
+    else
+      lstDOART = [select id, name from recordtype where sObjectType='DOAApprovalRequest__c' and DeveloperName ='NonEcosystemCreate'];            
         
         DOAApprovalRequest__c oNewDOA = new DOAApprovalRequest__c();
         
         oNewDOA.recordtypeid = lstDOART[0].id;
         oNewDOA.ApprovalStatus__c = 'Unapproved';
         if(projectID!= null)
-        	oNewDOA.Project__c = projectID;
+          oNewDOA.Project__c = projectID;
         Savepoint oSavePoint = Database.setSavepoint();
-		
+    
         
         try {
             insert oNewDOA;
@@ -444,9 +444,9 @@ public with sharing class ECO_DOA_ApprovalRequestController {
         //return new pagereference('/'+ oNewDOA.id +'/e?retURL=/'+ oNewDOA.id);
         if(questionThree == 'Yes')
             //return new pagereference('/'+ newForm2.id +'/e?retURL=/'+ oNewDOA.id);
-        	return new pagereference('/'+oNewDOA.id);
+          return new pagereference('/'+oNewDOA.id);
         else
-        	return new pagereference('/'+ lstFormsToInsert[0].id +'/e?retURL=/'+ oNewDOA.id);
+          return new pagereference('/'+ lstFormsToInsert[0].id +'/e?retURL=/'+ oNewDOA.id);
     }
 
     public pagereference stub(){
@@ -519,7 +519,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
             lstDOARegister = new List<DOARegister__c>();
             if(lstTemplateQues.size()>0){
                 for(TemplateQuestion__c oQuestion : lstTemplateQues){
-            		newTrigger = new DOARegister__c();
+                newTrigger = new DOARegister__c();
                     newTrigger.DOATrigger__c = oQuestion.Question__c;
                     newTrigger.DCSsubDOA__c = oQuestion.DCSSubDOA__c;
                     //newTrigger.Questionnaire__c = oQuestion.QuestionnaireTemplate__c;
@@ -532,9 +532,9 @@ public with sharing class ECO_DOA_ApprovalRequestController {
                     count++;
                     newTrigger = new DOARegister__c();
                 
-        		}
+            }
                 if(lstDOARegister.size()>0)
-                	insert lstDOARegister;
+                  insert lstDOARegister;
                 loadTriggers();
             }
             System.debug('count:   '+count);

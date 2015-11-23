@@ -188,7 +188,7 @@ private class ECO_DelegateManagerEditControllerTest {
 		insert projectMembers;
 
 		
-		ECO_Delegate_Limits__c delegateLimitSettings = ECO_Delegate_Limits__c.getOrgDefaults();
+		ECO_Delegate_Limit__c delegateLimitSettings = ECO_Delegate_Limit__c.getOrgDefaults();
 		delegateLimitSettings.age_Change_in_Forecast_Net_Margin__c = 5;
 		delegateLimitSettings.Agreement_Amount__c = 1000;
 		delegateLimitSettings.Agreement_Amount_lt__c = 100;

@@ -1,0 +1,96 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>EcoProjectReviewApprovedRejected</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <description>Eco Project Review Approved/Rejected</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoProjecReviewApprovedRejected</template>
+    </alerts>
+    <alerts>
+        <fullName>EcoProjectReviewRecalled</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <description>Eco Project Review Recalled</description>
+        <protected>false</protected>
+        <recipients>
+            <type>creator</type>
+        </recipients>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoProjectReviewRecalled</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>ECOStatusUpdate</fullName>
+        <field>Status__c</field>
+        <literalValue>Submitted</literalValue>
+        <name>ECOSetProjectReviewStatusToSubmitted</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>EcoProjectReviewRecalled</fullName>
+        <field>Status__c</field>
+        <literalValue>Assessing</literalValue>
+        <name>Eco Project Review Recalled</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>EcoProjectReviewRejected</fullName>
+        <field>Status__c</field>
+        <literalValue>Rejected</literalValue>
+        <name>EcoProjectReviewRejected</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>EcoSetProjectReviewStatusToCompleted</fullName>
+        <field>Status__c</field>
+        <literalValue>Completed</literalValue>
+        <name>EcoSetProjectReviewStatusToCompleted</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Update_To_Approved</fullName>
+        <field>Status__c</field>
+        <literalValue>Approved</literalValue>
+        <name>EcoSetProjectReviewStatusToApproved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <rules>
+        <fullName>Eco Set Project Review Status</fullName>
+        <actions>
+            <name>EcoSetProjectReviewStatusToCompleted</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>ProjectReview__c.CompletedDate__c</field>
+            <operation>lessOrEqual</operation>
+            <value>TODAY</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>ProjectReview__c.RecordTypeId</field>
+            <operation>notEqual</operation>
+            <value>Monthly Project Review,Project Performance Review</value>
+        </criteriaItems>
+        <description>Sets the project review status for monthly project and project performance review</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+</Workflow>

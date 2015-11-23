@@ -414,6 +414,21 @@ S = Successful</description>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>Project Site</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Project_Site__c.Site__r.VendorInactiveDate__c</field>
+                <operation>notEqual</operation>
+                <value></value>
+            </filterItems>
+            <filterItems>
+                <field>Project_Site__c.CustomerAccountStatus__c</field>
+                <operation>equals</operation>
+                <value>True</value>
+            </filterItems>
+            <infoMessage>Displays only active sites.</infoMessage>
+            <isOptional>true</isOptional>
+        </lookupFilter>
         <referenceTo>Project_Site__c</referenceTo>
         <relationshipLabel>Purchase Orders</relationshipLabel>
         <relationshipName>Purchase_Orders</relationshipName>
@@ -462,6 +477,15 @@ S = Successful</description>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>Requestor</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Contact.OracleContactID__c</field>
+                <operation>notEqual</operation>
+                <value></value>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
         <referenceTo>Contact</referenceTo>
         <relationshipLabel>Purchase Orders</relationshipLabel>
         <relationshipName>Purchase_Orders</relationshipName>
@@ -548,6 +572,22 @@ S = Successful</description>
         <deleteConstraint>SetNull</deleteConstraint>
         <externalId>false</externalId>
         <label>Vendor</label>
+        <lookupFilter>
+            <active>true</active>
+            <booleanFilter>1 OR 2</booleanFilter>
+            <filterItems>
+                <field>VendorSite__c.Site__r.VendorInactiveDate__c</field>
+                <operation>notEqual</operation>
+                <value></value>
+            </filterItems>
+            <filterItems>
+                <field>VendorSite__c.Site__r.VendorInactiveDate__c</field>
+                <operation>greaterThan</operation>
+                <valueField>VendorSite__c.Site__r.Today__c</valueField>
+            </filterItems>
+            <infoMessage>Displays only active vendor sites.</infoMessage>
+            <isOptional>true</isOptional>
+        </lookupFilter>
         <referenceTo>VendorSite__c</referenceTo>
         <relationshipLabel>Purchase Orders</relationshipLabel>
         <relationshipName>Purchase_Orders</relationshipName>

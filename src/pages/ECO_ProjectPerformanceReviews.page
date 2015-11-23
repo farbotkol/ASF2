@@ -211,6 +211,11 @@
 
 					<apex:outputPanel id="KPIResults" rendered="{!isPerfReview}">
 						<apex:pageBlockSection title="KPI Results" columns="1" collapsible="false" >
+						<apex:outputPanel>
+						<b>KPI Status</b><br/><br/>
+						<apex:image height="20px" width="20px" value="{!$Resource.RedCircle}" />Exceedence<br/><br/>
+						<apex:image height="20px" width="20px" value="{!$Resource.greenStar}" />No Exceedence<br/><br/>
+						</apex:outputPanel>
 							<apex:pageBlockTable value="{!lKPI_Results}" var="item" width="100%" id="KPITable" columnsWidth="20%,30%,10%,20%,20%">
 								<apex:column >
 									<apex:facet name="header">KPI</apex:facet>
@@ -223,7 +228,7 @@
 								<apex:column ><!-- styleClass="{!item.Evaluation_Result__c}"-->
 									<apex:facet name="header">Status</apex:facet>
 									<!--<apex:outputText value="{!item.Evaluation_Result__c}" />-->
-									<apex:image height="30px" width="30px" value="{!IF(item.Evaluation_Result__c, $Resource.redTriangle, $Resource.greenStar)}" />
+									<apex:image height="20px" width="20px" value="{!IF(item.Evaluation_Result__c, $Resource.RedCircle, $Resource.greenStar)}" />
 								</apex:column> 
 								<apex:column >
 									<apex:facet name="header">Alert</apex:facet>

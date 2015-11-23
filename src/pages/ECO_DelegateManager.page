@@ -36,6 +36,7 @@
 		 })
 	}
 
+	//adds the contactId into the url on page reload
 	function addURLParameters(){
 		var contactId = '{!contact.Id}';
 		if(contactId != ''){
@@ -44,6 +45,34 @@
 				window.history.replaceState('', 'contactId', currentURL+'?contactId={!contact.Id}');
 		}
 	}
+
+	//selects the opposite of what is selected by default in the bypass radio button lists
+	function resetRadioSelects(yesOrNo){
+		$x('.selectRadio input:radio').each(function(index){
+			if($x(this).val() == yesOrNo){
+				$x(this).prop('checked', true);
+			}
+			else{
+				$x(this).prop('checked', false);
+			}
+		});
+	}
+
+	//sets the limit input field to the associated maximum allowed
+	function setLimitsToSettings(){
+		$x('.maximumColumn').each(function(index){
+			var value = $x(this).children().text();
+			if(value.indexOf(' ') >= 0){
+				var valueArray = value.split(' ');
+				value = valueArray[1];
+			}
+			value = value.replace(/,/g, '');
+			value = value.replace(/%/g, '');
+			var numberValue = parseInt(value);
+			$x(this).parent().find('.limitInput').val(numberValue)
+		});
+	}
+
 </script>
 <style>
 	.limitTable{
@@ -95,13 +124,13 @@
 						<apex:inputField value="{!delegate.Start_Date__c}" required="true" />
 						<apex:inputField value="{!delegate.End_Date__c}" />
 					</apex:pageBlockSection>
-					<apex:outputPanel rendered="{!AND(canEdit, currentRecordType == 'Key Roles')}">
+					<apex:outputPanel id="panelKeyRoles" rendered="{!AND(canEdit, currentRecordType == 'Key Roles')}">
 						<fieldset>
 						<legend>Delegation Limits</legend>
 							<table class="limitTable">
 								<tr>
 									<th>Criteria</th>
-									<th>Delegation Limit</th>
+									<th>Delegation Limit <span class="btn" onclick="setLimitsToSettings()">Set to Maximum</span></th>
 									<th>Maximum Delegatable</th>
 									<th>Bypass Delegate?</th>
 								</tr>
@@ -110,10 +139,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Agreement_Amount_estimated__c.label}" />
 									</td>
 									<td class="limitColumn">
-										Greater Than&nbsp;<apex:inputField value="{!delegate.Agreement_Amount_estimated__c}" />&nbsp;{!currentCurrency}
+										Greater Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.Agreement_Amount_estimated__c}" />&nbsp;{!currentCurrency}
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.Agreement_Amount__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.Agreement_Amount__c}" />
 									</td>
 									<td>
 										<apex:selectRadio value="{!agreementAmountBypass}" styleClass="selectRadio">
@@ -126,10 +155,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Agreement_Amount_estimated_lt__c.label}" />
 									</td>
 									<td class="limitColumn" style="padding-left:15px;">
-										Less Than&nbsp;<apex:inputField value="{!delegate.Agreement_Amount_estimated_lt__c}" />&nbsp;{!currentCurrency}
+										Less Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.Agreement_Amount_estimated_lt__c}" />&nbsp;{!currentCurrency}
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.Agreement_Amount_lt__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.Agreement_Amount_lt__c}"  />
 									</td>
 									<td>
 										<apex:selectRadio value="{!agreementAmountBypassLT}" styleClass="selectRadio">
@@ -142,10 +171,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Project_Revenue_Budget__c.label}" escape="false" />
 									</td>
 									<td class="limitColumn">
-										Greater Than&nbsp;<apex:inputField value="{!delegate.Project_Revenue_Budget__c}" />&nbsp;{!currentCurrency}
+										Greater Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.Project_Revenue_Budget__c}" />&nbsp;{!currentCurrency}
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.Project_Revenue_Budget__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.Project_Revenue_Budget__c}"  />
 									</td>
 									<td>
 										<apex:selectRadio value="{!projectRevenueBudgetBypass}" styleClass="selectRadio">
@@ -158,10 +187,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Project_Revenue_Budget_lt__c.label}" />
 									</td>
 									<td class="limitColumn" style="padding-left:15px;">
-										Less Than&nbsp;<apex:inputField value="{!delegate.Project_Revenue_Budget_lt__c}" />&nbsp;{!currentCurrency}
+										Less Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.Project_Revenue_Budget_lt__c}" />&nbsp;{!currentCurrency}
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.Project_Revenue_Budget_lt__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.Project_Revenue_Budget_lt__c}"  />
 									</td>
 									<td>
 										<apex:selectRadio value="{!projectRevenueBudgetBypassLT}" styleClass="selectRadio">
@@ -174,10 +203,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Backlog_Value__c.label}" />
 									</td>
 									<td class="limitColumn">
-										Greater Than&nbsp;<apex:inputField value="{!delegate.Backlog_Value__c}" />&nbsp;{!currentCurrency}
+										Greater Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.Backlog_Value__c}" />&nbsp;{!currentCurrency}
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.Backlog_Value__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.Backlog_Value__c}" />
 									</td>
 									<td>
 										<apex:selectRadio value="{!backlogValueBypass}" styleClass="selectRadio">
@@ -190,10 +219,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Backlog_Value_lt__c.label}" />
 									</td>
 									<td class="limitColumn" style="padding-left:15px;">
-										Less Than&nbsp;<apex:inputField value="{!delegate.Backlog_Value_lt__c}" />&nbsp;{!currentCurrency}
+										Less Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.Backlog_Value_lt__c}" />&nbsp;{!currentCurrency}
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.Backlog_Value_lt__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.Backlog_Value_lt__c}"  />
 									</td>
 									<td>
 										<apex:selectRadio value="{!backlogValueBypassLT}" styleClass="selectRadio">
@@ -206,10 +235,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Project_Net_Margin_Value__c.label}" />
 									</td>
 									<td class="limitColumn">
-										Greater Than&nbsp;<apex:inputField value="{!delegate.Project_Net_Margin_Value__c}" />&nbsp;{!currentCurrency}
+										Greater Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.Project_Net_Margin_Value__c}" />&nbsp;{!currentCurrency}
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.Project_Net_Margin_Value__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.Project_Net_Margin_Value__c}" />
 									</td>
 									<td>
 										<apex:selectRadio value="{!projectNetMarginValueBypass}" styleClass="selectRadio">
@@ -222,10 +251,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Project_Net_Margin_Value_lt__c.label}" />
 									</td>
 									<td class="limitColumn" style="padding-left:15px;">
-										Less Than&nbsp;<apex:inputField value="{!delegate.Project_Net_Margin_Value_lt__c}" />&nbsp;{!currentCurrency}
+										Less Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.Project_Net_Margin_Value_lt__c}" />&nbsp;{!currentCurrency}
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.Project_Net_Margin_Value_lt__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.Project_Net_Margin_Value_lt__c}" />
 									</td>
 									<td>
 										<apex:selectRadio value="{!projectNetMarginValueBypassLT}" styleClass="selectRadio">
@@ -238,10 +267,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Project_Net_Margin_age_of_NSR__c.label}" />
 									</td>
 									<td class="limitColumn">
-										Greater Than&nbsp;<apex:inputField value="{!delegate.Project_Net_Margin_age_of_NSR__c}" />&nbsp;&#37;
+										Greater Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.Project_Net_Margin_age_of_NSR__c}" />&nbsp;&#37;
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.Project_Net_Margin_age_of_NSR__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.Project_Net_Margin_age_of_NSR__c}" />
 									</td>
 									<td>
 										<apex:selectRadio value="{!projectNetMarginNSRBypass}" styleClass="selectRadio">
@@ -254,10 +283,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Project_Net_Margin_age_of_NSR_lt__c.label}" />
 									</td>
 									<td class="limitColumn" style="padding-left:15px;">
-										Less Than&nbsp;<apex:inputField value="{!delegate.Project_Net_Margin_age_of_NSR_lt__c}" />&nbsp;&#37;
+										Less Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.Project_Net_Margin_age_of_NSR_lt__c}" />&nbsp;&#37;
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.Project_Net_Margin_age_of_NSR_lt__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.Project_Net_Margin_age_of_NSR_lt__c}" />
 									</td>
 									<td>
 										<apex:selectRadio value="{!projectNetMarginNSRBypassLT}" styleClass="selectRadio">
@@ -270,10 +299,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.age_Change_in_Forecast_Net_Margin__c.label}" />
 									</td>
 									<td class="limitColumn">
-										Greater Than&nbsp;<apex:inputField value="{!delegate.age_Change_in_Forecast_Net_Margin__c}" />&nbsp;&#37;
+										Greater Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.age_Change_in_Forecast_Net_Margin__c}" />&nbsp;&#37;
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.age_Change_in_Forecast_Net_Margin__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.age_Change_in_Forecast_Net_Margin__c}" />
 									</td>
 									<td>
 										<apex:selectRadio value="{!percentageChangeInForecastBypass}" styleClass="selectRadio">
@@ -286,10 +315,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.age_Change_in_Forecast_Net_Margin_lt__c.label}" />
 									</td>
 									<td class="limitColumn" style="padding-left:15px;">
-										Less Than&nbsp;<apex:inputField value="{!delegate.age_Change_in_Forecast_Net_Margin_lt__c}" />&nbsp;&#37;
+										Less Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.age_Change_in_Forecast_Net_Margin_lt__c}" />&nbsp;&#37;
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.age_Change_in_Forecast_Net_Margin_lt__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.age_Change_in_Forecast_Net_Margin_lt__c}" />
 									</td>
 									<td>
 										<apex:selectRadio value="{!percentageChangeInForecastBypassLT}" styleClass="selectRadio">
@@ -302,10 +331,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Value_change_in_Forecast_Net_Margin__c.label}" />
 									</td>
 									<td class="limitColumn">
-										Greater Than&nbsp;<apex:inputField value="{!delegate.Value_change_in_Forecast_Net_Margin__c}" />&nbsp;{!currentCurrency}
+										Greater Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.Value_change_in_Forecast_Net_Margin__c}" />&nbsp;{!currentCurrency}
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.Value_Change_In_Forecast_Net_Margin__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.Value_Change_In_Forecast_Net_Margin__c}" />
 									</td>
 									<td>
 										<apex:selectRadio value="{!valueChangeInForecastNetMarginBypass}" styleClass="selectRadio">
@@ -318,10 +347,10 @@
 										<apex:outputLabel styleClass="limitsLabel" value="{!$ObjectType.Delegate__c.fields.Value_change_in_Forecast_Net_Margin_lt__c.label}" />
 									</td>
 									<td class="limitColumn" style="padding-left:15px;">
-										Less Than&nbsp;<apex:inputField value="{!delegate.Value_change_in_Forecast_Net_Margin_lt__c}" />&nbsp;{!currentCurrency}
+										Less Than&nbsp;<apex:inputField styleClass="limitInput" value="{!delegate.Value_change_in_Forecast_Net_Margin_lt__c}" />&nbsp;{!currentCurrency}
 									</td>
-									<td>
-										<apex:outputField value="{!delegateLimitSettings.Value_change_in_Forecast_Net_Margin_lt__c}" styleClass="maximumColumn" />
+									<td class="maximumColumn">
+										<apex:outputField value="{!delegateLimitSettings.Value_change_in_Forecast_Net_Margin_lt__c}" />
 									</td>
 									<td>
 										<apex:selectRadio value="{!valueChangeInForecastNetMarginBypassLT}" styleClass="selectRadio">
@@ -391,6 +420,12 @@
 										</apex:selectRadio>
 									</td>
 								</tr>
+								<tfoot>
+									<td colspan="4" align="right">
+										<apex:commandButton onclick="resetRadioSelects('Yes')" reRender="panelKeyRoles" action="{!setDefaultBypassDefaults}" rendered="{!userPreferences.Default_Delegate_Bypass_to_No__c}" value="Set Bypass Defaults to Yes" immediate="true" />
+										<apex:commandButton onclick="resetRadioSelects('No')" reRender="panelKeyRoles" action="{!setDefaultBypassDefaults}" rendered="{!NOT(userPreferences.Default_Delegate_Bypass_to_No__c)}" value="Set Bypass Defaults to No" immediate="true" />
+									</td>
+								</tfoot>
 							</table>
 						</fieldset>
 					</apex:outputPanel>
@@ -423,7 +458,7 @@
 						<apex:inputField value="{!delegate.Delegate__c}" required="true" />
 						<apex:pageBlockSectionItem />
 						<apex:inputField value="{!delegate.Start_Date__c}" required="true" />
-						<apex:inputField value="{!delegate.End_Date__c}" />
+						<apex:inputField value="{!delegate.End_Date__c}" required="true" />
 						<apex:outputField value="{!delegate.RecordTypeId}" />
 					</apex:pageBlockSection>
 				</apex:tab>
@@ -448,7 +483,7 @@
 					</apex:pageBlockSection>
 				</apex:tab>
 			</apex:tabPanel>
-			<apex:pageBlockTable value="{!contact.Delegates1__r}" id="delegateTable" var="delegate" rendered="{!AND(NOT(ISNULL(contact.Delegates1__r)), contact.Delegates1__r.size > 0)}">
+			<apex:pageBlockTable value="{!delegates}" id="delegateTable" var="delegate" rendered="{!AND(NOT(ISNULL(delegates)), delegates.size > 0)}">
 				<apex:column headerValue="Action" rendered="{!OR(AND(canEdit, currentRecordType != 'Alternate'), canCreateAlternate)}">
 					<apex:outputLink value="/{!delegate.Id}" rendered="{!currentRecordType == 'Administrator Override'}">View</apex:outputLink>&nbsp;
 					<apex:outputLink value="/{!delegate.Id}/e?retURL=%2fapex%2fECO_DelegateManager?contactId={!contact.Id}">Edit</apex:outputLink>
@@ -467,7 +502,7 @@
 				</apex:column>
 				<apex:column value="{!delegate.LastModifiedDate}" />
 			</apex:pageBlockTable>
-			<apex:pageBlockSection showHeader="false" columns="1" rendered="{!OR(ISNULL(contact.Delegates1__r), contact.Delegates1__r.size < 1)}">
+			<apex:pageBlockSection showHeader="false" columns="1" rendered="{!OR(ISNULL(delegates), delegates.size < 1)}">
 				<apex:outputText >
 					<p>This contact does not have any delegates currently assigned for {!currentRecordType}</p>
 				</apex:outputText>

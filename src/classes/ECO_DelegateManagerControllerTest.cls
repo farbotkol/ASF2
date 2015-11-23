@@ -40,6 +40,8 @@ private class ECO_DelegateManagerControllerTest {
 		system.assertEquals(UserInfo.getDefaultCurrency(), controller.currentCurrency);
 		system.assertEquals(2, controller.yesNoOptions.size());
 		system.assertEquals('/' + testContact.Id, controller.backToContact().getUrl());
+		controller.setDefaultBypassDefaults();
+		system.assertEquals(true, ECO_Delegate_User_Preferences__c.getInstance(UserInfo.getUserId()).Default_Delegate_Bypass_to_No__c);
 	}
 
 	
@@ -127,7 +129,7 @@ private class ECO_DelegateManagerControllerTest {
 
 			ECO_DelegateManagerController controller = new ECO_DelegateManagerController(new ApexPages.StandardController(new Delegate__c()));
 			controller.delegate.Agreement_Amount_estimated__c = 5000;
-			controller.delegate.Agreement_Amount_estimated_lt__c = 100;
+			controller.delegate.Agreement_Amount_estimated_lt__c = 50;
 			controller.delegate.Project_Revenue_Budget__c = 5000;
 			controller.delegate.Project_Revenue_Budget_lt__c = 100;
 			controller.delegate.Backlog_Value__c = 5000;
@@ -201,6 +203,7 @@ private class ECO_DelegateManagerControllerTest {
 			controller.projectNetMarginNSRBypass = 'No';
 			controller.percentageChangeInForecastBypass = 'No';
 			controller.valueChangeInForecastNetMarginBypass = 'No';
+			controller.agreementAmountBypassLT = 'No';
 			controller.projectRevenueBudgetBypassLT = 'No';
 			controller.backlogValueBypassLT = 'No';
 			controller.projectNetMarginValueBypassLT = 'No';
@@ -217,7 +220,7 @@ private class ECO_DelegateManagerControllerTest {
 			controller.delegate.Delegate__c = testContact2.Id;
 			controller.delegate.Key_Member_Role__c = 'Project Manager';
 			controller.delegate.Start_Date__c = Date.today().addDays(20);
-			ECO_Delegate_Limits__c delegateLimitSettings = ECO_Delegate_Limits__c.getOrgDefaults();
+			ECO_Delegate_Limit__c delegateLimitSettings = ECO_Delegate_Limit__c.getOrgDefaults();
 			controller.owningOrganizations[0].checked = true;
 			controller.addNewDelegate();
 			system.assertEquals(0, controller.contact.Delegates__r.size());
@@ -246,11 +249,23 @@ private class ECO_DelegateManagerControllerTest {
 			controller = new ECO_DelegateManagerController(new ApexPages.StandardController(new Delegate__c()));
 			RecordType alternateRecordType = [Select Id from RecordType where sObjectType = 'Delegate__c' and Name = 'Administrator Override'];
 			controller.delegate.recordTypeId = alternateRecordType.Id;
+			controller.currentRecordType = 'Administrator Override';
 			controller.delegate.Delegate__c = testContact.Id;
 			controller.delegate.Start_Date__c = date.today();
 			controller.attachment = new Attachment(Name = 'Test', body = blob.valueOf('test attachment'));    
        		controller.addNewDelegate();
        		system.assertEquals(0, controller.contact.Delegates__r.size());
+       		alternateRecordType = [Select Id from RecordType where sObjectType = 'Delegate__c' and Name = 'Vacation'];
+			controller.delegate.recordTypeId = alternateRecordType.Id;
+			controller.currentRecordType = 'Vacation';
+			controller.delegate.Delegate__c = testContact.Id;
+			controller.delegate.Start_Date__c = date.today().addDays(61);
+			controller.delegate.End_Date__c = date.today();
+			controller.addNewDelegate();
+			controller.delegate.Start_Date__c = date.today();
+			controller.delegate.End_Date__c = date.today().addDays(61);
+			controller.addNewDelegate();
+
 		}
 	}
 
@@ -322,7 +337,7 @@ private class ECO_DelegateManagerControllerTest {
 		insert projectMembers;
 
 		
-		ECO_Delegate_Limits__c delegateLimitSettings = ECO_Delegate_Limits__c.getOrgDefaults();
+		ECO_Delegate_Limit__c delegateLimitSettings = ECO_Delegate_Limit__c.getOrgDefaults();
 		delegateLimitSettings.age_Change_in_Forecast_Net_Margin__c = 5;
 		delegateLimitSettings.Agreement_Amount__c = 1000;
 		delegateLimitSettings.Agreement_Amount_lt__c = 100;

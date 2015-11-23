@@ -258,7 +258,13 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 					update currentPOLineItem;
 				}
 
-				
+                // Sanchivan: Added code to set the Status to Pending if a PO Line Item is added or edited.
+                // Bug 1645
+				POHeader__c poHeader = [SELECT Id, Status__c FROM POHeader__c WHERE Id = :currentPOLineItem.POHeader__c];
+                if(poHeader.Status__c == 'APPROVED') {
+                    poHeader.Status__c = 'UNAPPROVED';                
+                	update poHeader;                    
+                }                
 			}	
 			pageRef = returnToPurchaseOrder();
 		}catch(Exception e){

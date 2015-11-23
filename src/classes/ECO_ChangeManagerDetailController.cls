@@ -42,7 +42,6 @@ public class ECO_ChangeManagerDetailController {
     public List<syncHistoryHelper> requestFailures {get; private set;}
 
 
-
     public ECO_ChangeManagerDetailController(ApexPages.StandardController controller)
     {
         //changeManager = (ChangeManager__c)controller.getRecord();
@@ -102,45 +101,21 @@ public class ECO_ChangeManagerDetailController {
         if((changeManager.IsExecutionApprovalChange__c || changeManager.IsExternalChange__c || changeManager.IsInternalChange__c) 
                   && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed'))
             needOracleLogin = true;    
-//        {
-//            needOracleLogin = !ECO_Service_Authentication.authenticateOracleToken(UserInfo.getUserId());
-//            if(needOracleLogin)
-//            {
-//                ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.WARNING, 'Your Oracle Token has expired and you are required to login to Oracle before Approving the Approval Process.  Please click the Login button and enter your Oracle credentials.');
-//                ApexPages.addMessage(oPageMessage);
-//            }
-//        }
 
         project = [select Id, Name, EcoSystemReferenceNumber__c, OracleProjectnumber__c  from pse__Proj__c where Id = :changeManager.Project__c limit 1];            
 
         if(changeManager.IsExecutionApprovalChange__c )
             populateInitialBudgetsForExecution(); 
-        //if(changeManager.ApprovalStatus__c == 'Sync Approved')
-        //{
-        //    isSubmitted = true;
-        //    synchronizeProject(changeManager.Project__c);
-
-        //}       
-        //else
-        //{       
-        if(changeManager.ProjectApprover__c == null)
+       
+        if(changeManager.ApprovalStatus__c != 'Submitted' && changeManager.ApprovalStatus__c != 'Approved')
         {
             changeManager.ProjectApprover__c = ECO_Service_ProjectTeam.getActiveProjectApproverId(changeManager.Project__c); //populateProjectApprover();
+            changeManager.ProjectAccountantApprover__c = ECO_Service_ProjectTeam.populateProjectAccountant(changeManager.Project__c);
+            changeManager.FinanceApprover__c = ECO_Service_ProjectTeam.populateProjectFinanceLead(changeManager.Project__c);  
             update changeManager;
         }
      
-        if(changeManager.ProjectAccountantApprover__c == null)
-        {
-            changeManager.ProjectAccountantApprover__c = ECO_Service_ProjectTeam.populateProjectAccountant(changeManager.Project__c);
-            update changeManager;
-        }
-            
-        if(changeManager.FinanceApprover__c == null)
-        {
-            changeManager.FinanceApprover__c = ECO_Service_ProjectTeam.populateProjectFinanceLead(changeManager.Project__c);  
-            update changeManager;
-        }                      
-
+                
         if(changeManager.OutgoingPM__c == null)
             changeManager.OutgoingPM__c = changeManager.ProjectManagerId__c;
 
@@ -161,27 +136,18 @@ public class ECO_ChangeManagerDetailController {
             changeManagerSubmittedIds = ECO_Service_ChangeManager.getChangeManagerSubmittedIds(project.Id); 
         }
             
-            //performValidations();
-
         ECO_ProjectSummaryController projectSummaryController2 = new ECO_ProjectSummaryController();
     
         projectSynchMessages = '';
         projectSynchMessages += projectSummaryController2.projectMsg;
-        //if(changeManager.IntExtSchedule__c)
-        //{
-            projectSynchMessages += projectSummaryController2.taskMsg;
-            invalidTasks = projectSummaryController2.invalidTasks;
-        //}
-        //if(changeManager.IntExtKeyMembers__c)
-        //{
-            projectSynchMessages += projectSummaryController2.keyMemberMsg;
-            invalidKeyMembers = projectSummaryController2.invalidKeyMembers;
-        //}
-        //if(changeManager.IntExtCustomers__c)
-        //{
-            projectSynchMessages += projectSummaryController2.customersMsg; 
-            invalidCustomers = projectSummaryController2.invalidCustomers; 
-        //}
+        
+        projectSynchMessages += projectSummaryController2.taskMsg;
+        invalidTasks = projectSummaryController2.invalidTasks;
+        projectSynchMessages += projectSummaryController2.keyMemberMsg;
+        invalidKeyMembers = projectSummaryController2.invalidKeyMembers;
+ 
+        projectSynchMessages += projectSummaryController2.customersMsg; 
+        invalidCustomers = projectSummaryController2.invalidCustomers; 
 
         if(changeManager.IntExtContractManagement__c)
             projectSynchMessages += validateAgreements();
@@ -205,8 +171,6 @@ public class ECO_ChangeManagerDetailController {
         return null;
     }
     
-
-
     public void checkIfSyncHasBeenProcessed()
     {
         pollMessageQueue = true;
@@ -235,12 +199,6 @@ public class ECO_ChangeManagerDetailController {
             pollingMessageQueueMsg = 'Checking if project sync has been processed in <span id="pollingTimer">10</span> seconds...';
         }
     }    
-
-    private void validateChangeManager()
-    {
-
-
-    }
 
     public PageReference returnToProjectChanges()
     {
@@ -308,14 +266,7 @@ public class ECO_ChangeManagerDetailController {
     	PageReference closureRequest = new PageReference('/apex/ECO_CloseoutProjectApprovalPhase?Id='+changeManager.Project__c);        
         closureRequest.getParameters().put('nooverride', '1');
         return closureRequest;
-    }
-    
-    
-
-    private void performValidations()
-    {
-
-    }   
+    } 
 
     private String validateAgreements()
     {
@@ -362,47 +313,12 @@ public class ECO_ChangeManagerDetailController {
     	return changeManager;
     }
     
-    //private Id populateProjectApprover()
-    //{
-    //	list<ProjectTeamMember__c> teamMembers = [select Id, User__c, Contact__r.pse__Salesforce_User__c from ProjectTeamMember__c where ProjectRole__r.Name = 'Project Approver' and Project__c = :changeManager.Project__c and Active__c = true];
-	//	if(!teamMembers.isEmpty())
-	//	{
-	//		return teamMembers[0].Contact__r.pse__Salesforce_User__c;
-	//	}
-    //	return null;
-    //}
-    
-    //private Id populateProjectAccountant()
-    //{
-    //	list<ProjectTeamMember__c> teamMembers = [select Id, User__c, Contact__r.pse__Salesforce_User__c from ProjectTeamMember__c where ProjectRole__r.Name = 'Project Accountant' and Project__c = :changeManager.Project__c and Active__c = true];
-	//	if(!teamMembers.isEmpty())
-	//	{
-	//		return teamMembers[0].Contact__r.pse__Salesforce_User__c;
-	//	}
-    //	return null;
-    //}
-    
-    //private Id populateProjectFinanceLead()
-    //{
-    //	list<ProjectTeamMember__c> teamMembers = [select Id, User__c, Contact__r.pse__Salesforce_User__c from ProjectTeamMember__c where ProjectRole__r.Name = 'Finance Lead' and Project__c = :changeManager.Project__c and Active__c = true];
-	//	if(!teamMembers.isEmpty())
-	//	{
-	//		return teamMembers[0].Contact__r.pse__Salesforce_User__c;
-	//	}
-    //	return null;
-    //}
-    
     public PageReference createNewChangeManager()
     {
         PageReference returnPR;
         
         recordTypeId = ApexPages.currentPage().getParameters().get('RecordType'); 
         return null;
-    }
-    
-    public ECO_ChangeManagerDetailController()
-    {
-        
     }
     
     public list<pse__Proj__c> getChangedProject()
@@ -742,51 +658,22 @@ public class ECO_ChangeManagerDetailController {
             return null;            
         }
 
-        //if(results != ''){
-        //    ApexPages.addMessages(new ApexPages.Message(ApexPages.Severity.ERROR, results.replace('&quot;', '"')));
-        //    mode = 'Edit';
-        //    return null;
-        //}
-
    		mode = '';
-
-       /* ECO_ProjectSummaryController projectSummaryController2 = new ECO_ProjectSummaryController();
-    
-        projectSynchMessages = '';
-        projectSynchMessages += projectSummaryController2.projectMsg;
-        if(changeManager.IntExtSchedule__c)
-        {
-            projectSynchMessages += projectSummaryController2.taskMsg;
-            invalidTasks = projectSummaryController2.invalidTasks;
-        }
-        if(changeManager.IntExtKeyMembers__c)
-        {
-            projectSynchMessages += projectSummaryController2.keyMemberMsg;
-            invalidKeyMembers = projectSummaryController2.invalidKeyMembers;
-        }
-        if(changeManager.IntExtCustomers__c)
-        {
-            projectSynchMessages += projectSummaryController2.customersMsg; 
-            invalidCustomers = projectSummaryController2.invalidCustomers; 
-        }
-
-        if(changeManager.IntExtContractManagement__c)
-            projectSynchMessages += validateAgreements();
-
-        if(projectSynchMessages != '' && projectSynchMessages != null)
-            projectSynchMessages = '<ol>' + projectSynchMessages + '</ol>';*/   
 
         if(changeManager.IsPMHandoverChange__c)
             return new PageReference('/' + changeManager.Id);
 
-   		return null;
+   		return new PageReference('/' + changeManager.Id);
     }
     
     public PageReference takeProjectSnapshot()
     {
-    	ECO_Service_ProjectSnapshots snapshotService = new ECO_Service_ProjectSnapshots(changeManager.Project__c);
-    	ProjectSnapshot__c snapshot = snapshotService.getProjectSnapshot();
-    	snapshot.ChangeManager__c = changeManager.Id;
+    	//ECO_Service_ProjectSnapshots snapshotService = new ECO_Service_ProjectSnapshots(changeManager.Project__c);
+    	//ProjectSnapshot__c snapshot = snapshotService.getProjectSnapshot();
+    	//snapshot.ChangeManager__c = changeManager.Id;
+        //snapshot.Project__c = changeManager.Project__c;
+
+        //insert snapshot;
     	
     	return null;
     }

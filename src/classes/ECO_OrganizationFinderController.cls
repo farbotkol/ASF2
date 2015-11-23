@@ -461,6 +461,13 @@ public with sharing class ECO_OrganizationFinderController {
     }
 
     public PageReference SelectSecondary(){
+
+        if(oProject.CarryingOutOrganization__c == sSelectedOrganizationId && oProject.OracleSyncStatus__c=='S' ){
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Cannot set Primary Org as Secondary'));
+            return null;
+        }
+
+
         Savepoint oSavePoint = Database.setSavepoint();
 
         //Check if entry already exists

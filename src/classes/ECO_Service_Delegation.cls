@@ -216,7 +216,7 @@ public with sharing class ECO_Service_Delegation {
 
     private static list<change> checkLimits(list<change> lstChanges){
 
-        ECO_Delegate_Limits__c delLimits = ECO_Delegate_Limits__c.getOrgDefaults();
+        ECO_Delegate_Limit__c delLimits = ECO_Delegate_Limit__c.getOrgDefaults();
         list<change> lstCheckableChanges = new  list<change>();
         list<change> lstNeedsEscalaction = new list<change>();
 

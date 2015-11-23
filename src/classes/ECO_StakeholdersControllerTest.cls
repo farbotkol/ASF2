@@ -29,7 +29,7 @@ private class ECO_StakeholdersControllerTest {
 		testContact.pse__Is_Resource_Active__c = false;
 		update testContact;
 		stakeHolderController.initStakeHolders(project);
-		system.assertEquals(0, stakeHolderController.lInactiveMembersTeam.size());
+		system.assertEquals(1, stakeHolderController.lInactiveMembersTeam.size());
 		system.assertEquals(new PageReference('/' + project.Id).getUrl(), stakeHolderController.ReturnToProject().getUrl());
 	}
 	
@@ -67,7 +67,7 @@ private class ECO_StakeholdersControllerTest {
 		PageReference pg = Page.ECO_Stakeholders;
 		Test.setCurrentPage(pg);
 		pg.getParameters().put('Id', project.id);
-		pg.getParameters().put('contactName', testUser.FirstName);
+		pg.getParameters().put('contactName', testUser.FirstName + ' ' + testUser.LastName);
 		pg.getParameters().put('selectedRole', 'Project Manager');
 		pg.getParameters().put('startDate', Date.today().format());
 		ApexPages.StandardController standardController = new ApexPages.StandardController(project);
@@ -162,6 +162,7 @@ private class ECO_StakeholdersControllerTest {
 		ECO_StakeholdersController stakeHolderController = new ECO_StakeholdersController(standardController);
 		stakeHolderController.recordObjectType = 'MembersTeam';
 		stakeHolderController.addRecord();
+		pg.getParameters().put('teamMemberToRemove', '0');
 		stakeHolderController.removeRecord();
 		system.assertEquals(5, stakeHolderController.lActiveMembersKey.size());
 		stakeHolderController.recordObjectType = 'Stakeholder__c';
@@ -191,6 +192,7 @@ private class ECO_StakeholdersControllerTest {
 		insert testAccount;
 
 		testUser = ECO_Utils_Testing.createTestUser('Standard User');
+		testUser.TrackingID__c = 'test';
 		insert testUser;
 
 	    //project sites
@@ -227,10 +229,14 @@ private class ECO_StakeholdersControllerTest {
 		projectRoles.add(new ProjectRole__c(Name = 'Project Approver', Type__c = 'Key Member', Active__c = true));
 		projectRoles.add(new ProjectRole__c(Name = 'Resilience Director', Type__c = 'Key Member', Active__c = true));
 		projectRoles.add(new ProjectRole__c(Name = 'Project Worker', Active__c = true));
+		projectRoles.add(new ProjectRole__c(Name = 'Finance Lead', Type__c = 'Key Member', Active__c = true));
 		insert projectRoles;
 
-		project = new pse__Proj__c(CarryingOutOrganization__c = organizationString.Id, pse__Account__c = testAccount.Id, pse__Start_Date__c = Date.today().addDays(30), pse__End_Date__c = Date.today().addDays(60));
-	    insert project;
+		List<pse__Proj__c> projects = new List<pse__Proj__c>();
+		projects.add(new pse__Proj__c(CarryingOutOrganization__c = organizationString.Id, pse__Account__c = testAccount.Id, pse__Start_Date__c = Date.today().addDays(30), pse__End_Date__c = Date.today().addDays(60)));
+		projects.add(new pse__Proj__c(CarryingOutOrganization__c = organizationString.Id, pse__Account__c = testAccount.Id, pse__Start_Date__c = Date.today().addDays(-30), pse__End_Date__c = Date.today().addDays(-1)));
+		insert projects;
+		project = projects[0];
 
 		Project_Site__c testProjectSite = new Project_Site__c();
 		
@@ -247,7 +253,9 @@ private class ECO_StakeholdersControllerTest {
 		projectMembers.add(new ProjectTeamMember__c(Project__c = project.Id, CurrencyIsoCode = 'USD', ProjectRole__c = projectRoles[0].Id, Contact__c = testContact.Id, StartDate__c = Date.today(), EndDate__c = Date.today().addDays(1)));
 		projectMembers.add(new ProjectTeamMember__c(Project__c = project.Id, CurrencyIsoCode = 'USD', ProjectRole__c = projectRoles[1].Id, Contact__c = testContact.Id, StartDate__c = Date.today().addDays(2), EndDate__c = Date.today().addDays(3)));
 		projectMembers.add(new ProjectTeamMember__c(Project__c = project.Id, CurrencyIsoCode = 'USD', ProjectRole__c = projectRoles[3].Id, Contact__c = testContact.Id, StartDate__c = Date.today().addDays(4), EndDate__c = Date.today().addDays(5)));
-		projectMembers.add(new ProjectTeamMember__c(Project__c = project.Id, CurrencyIsoCode = 'USD', ProjectRole__c = projectRoles[1].Id, Contact__c = testContact.Id, StartDate__c = Date.today().addDays(5), EndDate__c = Date.today().addDays(6)));
+		projectMembers.add(new ProjectTeamMember__c(Project__c = project.Id, CurrencyIsoCode = 'USD', ProjectRole__c = projectRoles[5].Id, Contact__c = testContact.Id, StartDate__c = Date.today().addDays(5), EndDate__c = Date.today().addDays(6)));
+		projectMembers.add(new ProjectTeamMember__c(Project__c = project.Id, CurrencyIsoCode = 'USD', ProjectRole__c = projectRoles[4].Id, Contact__c = testContact.Id, StartDate__c = Date.today(), Is_Active__c = true));
+		projectMembers.add(new ProjectTeamMember__c(Project__c = projects[1].Id, CurrencyIsoCode = 'USD', ProjectRole__c = projectRoles[1].Id, Contact__c = testContact.Id, StartDate__c = Date.today().addDays(-30)));
 		insert projectMembers;
 
 		SurveySchedule__c surveySchedule = new SurveySchedule__c(Account__c = testAccount.Id, Client__c = testSite.Id, Contact__c = testContact.Id, Project__c = project.Id, ScheduledDate__c = Date.today().addDays(10));

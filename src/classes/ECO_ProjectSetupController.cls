@@ -33,6 +33,7 @@ public with sharing class ECO_ProjectSetupController {
     public OrganizationString__c oPrimaryOrganization {get; set;}
 
     public id idSiteID {get;set;}
+    public integer iSiteRowDelete {get;set;}
     public id sSelectedOpportunityId {get;set;}
     public string strSearchResults {get;set;}
     public string sOrganizationName {get; set;}
@@ -88,6 +89,9 @@ public with sharing class ECO_ProjectSetupController {
     private static integer orgMoreLIMIT = 200;
 
     public boolean tab2enabled {get;set;}
+
+    public List<SelectOption> opportunityRecType {get;set;}
+    public string idSelectedOppRecType {get;set;}
 
 
     /* Custom classes to facilitate this controller */
@@ -147,6 +151,10 @@ public with sharing class ECO_ProjectSetupController {
         public string id {get;set;}
         public string acctName {get;set;}
         public string oppName {get;set;}
+        public string oppNumber {get;set;}
+        public string stage {get;set;}
+        public string type {get;set;}
+        public string value {get;set;}
         public string capManager {get;set;}
         public string createdDate {get;set;}
     }
@@ -274,6 +282,15 @@ public with sharing class ECO_ProjectSetupController {
 
         oppName = null;
 
+        opportunityRecType = new List<SelectOption>();
+
+        opportunityRecType.add(new SelectOption('', 'None'));
+        for(recordtype r:[select id, name from recordtype where SobjectType = 'Opportunity']){
+            opportunityRecType.add(new SelectOption(r.id, r.name));
+        }        
+
+        idSelectedOppRecType = null;
+
         SearchOrganizations();
         SearchUserOrganization();
     }
@@ -338,15 +355,15 @@ public with sharing class ECO_ProjectSetupController {
         }
         
         if(bSearchOutsideUserOrg){
-            strSOQL += ' LIMIT ' + sSiteLimit;
+            strSOQL += ' ORDER BY Account__r.name ASC LIMIT ' + sSiteLimit;
         } else {
 
             string userOrgID = userOrg.OUID__c;
 
             if(boolAtLeastOne){
-                strSOQL += ' AND OUID__c =: userOrgID  LIMIT ' + sSiteLimit;
+                strSOQL += ' AND OUID__c =: userOrgID ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
             } else {
-                strSOQL += ' WHERE OUID__c =: userOrgID  LIMIT ' + sSiteLimit;
+                strSOQL += ' WHERE OUID__c =: userOrgID ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
             }
         }
 
@@ -405,6 +422,12 @@ public with sharing class ECO_ProjectSetupController {
 
         return null;        
     }
+
+    public PageReference RemoveSite(){
+        lstSites.remove(iSiteRowDelete);
+        return null;
+    }
+
 
     public PageReference SelectSite(){
 
@@ -538,6 +561,13 @@ public with sharing class ECO_ProjectSetupController {
     }
 
     public PageReference SkipOpportunity(){
+
+        if(idSelectedOppRecType == '' ||idSelectedOppRecType == null ){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'You must select recordtype for automatic opportunity creation.');
+            ApexPages.addMessage(oMsg);  
+            return null;             
+        }
+
         oProject.pse__Opportunity__c = null;
         oProject.name = null;
         oppName = null;
@@ -1233,6 +1263,7 @@ public with sharing class ECO_ProjectSetupController {
         oOpportunityToInsert.accountid = oPrimaryEnd.osite.Account__c;
         oOpportunityToInsert.TO_Procurement_Method__c = 'Competitive Task Orders';
         oOpportunityToInsert.Capture_Manager_User__c = UserInfo.getUserId();
+        oOpportunityToInsert.recordtypeid = idSelectedOppRecType;
 
         insert oOpportunityToInsert;
 

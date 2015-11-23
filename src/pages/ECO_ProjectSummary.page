@@ -31,6 +31,15 @@
 
 	<script type='text/javascript'>
 
+    function disableAfterSubmit(id) {
+        var toDisable = document.getElementById( id );
+        toDisable.disabled = 'disabled';
+        // Use the Salesforce CSS style to make the button appear disabled
+        toDisable.className = 'btnDisabled';
+        //toDisable.value = "Saving..."
+    }
+
+
     function closeAuthenticationModal(){
         closeModal('modalDialogOracleLogin');
         closeAuthenticationWindow();
@@ -247,9 +256,9 @@
         <apex:actionFunction action="{!checkIfSyncHasBeenProcessed}" name="checkIfSyncHasBeenProcessed_JS" reRender="msgPollingTop,msgPollingBottom,syncHistorySection" oncomplete="doMessageQueuePolling();"/>
 
         
-        <apex:actionFunction action="{!syncRequest_Step1_start}" name="numberRequest_Step1_start_JS" oncomplete="numberRequest_Step1_complete_JS();" reRender="msgPanel,msgPanelBottom,msgPollingTop,msgPollingBottom" status="statusBar"/>	
+        <apex:actionFunction action="{!syncRequest_Step1_start}" name="numberRequest_Step1_start_JS" oncomplete="numberRequest_Step1_complete_JS();" reRender="msgPanel,msgPanelBottom,msgPollingTop,msgPollingBottom,pbButtons,btnSendNumRequest" status="statusBar"/>	
 
-        <apex:actionFunction action="{!syncRequest_Step1_complete}" name="numberRequest_Step1_complete_JS" oncomplete="sendProjectNumberRequest_start_JS();" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
+        <apex:actionFunction action="{!syncRequest_Step1_complete}" name="numberRequest_Step1_complete_JS" oncomplete="sendProjectNumberRequest_start_JS();" reRender="msgPanel,msgPanelBottom,pbButtons,btnSendNumRequest" status="statusBar"/>
 
         <apex:actionFunction action="{!sendProjectNumberRequest_start}" name="sendProjectNumberRequest_start_JS" oncomplete="sendProjectNumberRequest_complete_JS();" reRender="msgPanel,msgPanelBottom,msgPollingTop,msgPollingBottom" status="statusBar"/>
 
@@ -303,15 +312,15 @@
 		</apex:outputPanel>
 
 		<apex:pageBlock >
-		<apex:pageBlockButtons >
+		<apex:pageBlockButtons id="pbButtons">
 
 			<!--
 			<apex:commandButton value="{!btnValue}" action="{!doRequest}" onclick="initiateOracleProjectSyncRequest_JS();" reRender="opTemp" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber}"/>
 			-->
-			<apex:commandButton value="{!btnValue}" action="{!doRequest}" onclick="numberRequest_Step1_start_JS(); return false;" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber && ($User.IsValidOracleToken__c) && allowRequestSubmit}"/>
+			<apex:commandButton value="{!btnValue}" onclick="disableAfterSubmit(this.id); numberRequest_Step1_start_JS(); return false;" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber && ($User.IsValidOracleToken__c) && allowRequestSubmit}"/>
 
 			<apex:commandButton value="Send Project Sync Request" onclick="doSyncStep(0); return false;"  
-			rendered="{!!isProjectNumber && ($User.IsValidOracleToken__c) && allowRequestSubmit}" disabled="{!!allowRequestSubmit}"/>
+			rendered="{!!isProjectNumber && ($User.IsValidOracleToken__c) && allowRequestSubmit}" disabled="{!!allowRequestSubmit}" id="btnSendNumRequest"/>
 			<apex:commandButton value="Save" action="{!updateProject}" status="statusBar"/>
 			<apex:commandButton value="Return to Project" action="{!returnToProject}" />
 			<apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;"
@@ -874,15 +883,17 @@
 										</apex:column>
 										<apex:column >
 											<apex:facet name="header">{!$ObjectType.ProjectTeamMember__c.Fields.StartDate__c.Label}</apex:facet>
-											<apex:outputText value="{0, date, yyyy-MM-dd}">
+<!--											<apex:outputText value="{0, date, yyyy-MM-dd}">
 												<apex:param value="{!keyMember.StartDate__c}" />											
-											</apex:outputText>
+											</apex:outputText> -->
+											<c:ECO_DateFormat date="{!keyMember.StartDate__c}" />
 										</apex:column>
 										<apex:column >
 											<apex:facet name="header">{!$ObjectType.ProjectTeamMember__c.Fields.EndDate__c.Label}</apex:facet>
-											<apex:outputText value="{0, date, yyyy-MM-dd}">
+<!--											<apex:outputText value="{0, date, yyyy-MM-dd}">
 												<apex:param value="{!keyMember.EndDate__c}" />											
-											</apex:outputText>											
+											</apex:outputText>	-->
+											<c:ECO_DateFormat date="{!keyMember.EndDate__c}" />
 										</apex:column>
 									</apex:pageBlockTable>
 								</apex:tab>
@@ -961,15 +972,17 @@
 							
 										<apex:column >
 											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.pse__Start_Date__c.Label}</apex:facet>
-											<apex:outputText value="{0, date, yyyy-MM-dd}">
+<!--											<apex:outputText value="{0, date, yyyy-MM-dd}">
 												<apex:param value="{!task.pse__Start_Date__c}" />											
-											</apex:outputText>												
+											</apex:outputText>	-->
+											<c:ECO_DateFormat date="{!task.pse__Start_Date__c}" />
 										</apex:column>
 										<apex:column >
 											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.pse__End_Date__c.Label}</apex:facet>
-											<apex:outputText value="{0, date, yyyy-MM-dd}">
+<!--											<apex:outputText value="{0, date, yyyy-MM-dd}">
 												<apex:param value="{!task.pse__End_Date__c}" />											
-											</apex:outputText>												
+											</apex:outputText>	-->
+											<c:ECO_DateFormat date="{!task.pse__End_Date__c}" />
 										</apex:column>
 										<apex:column >
 											<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.IsBillable__c.Label}</apex:facet>

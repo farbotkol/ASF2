@@ -14,7 +14,7 @@ public with sharing class ECO_ProjectTaskTriggers {
 		
 		List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
 		
-		for (pse__Proj__c project : projects) {
+		for (pse__Proj__c project : projects) { 
 			Date newStartDate = null;
 			Date newEndDate = null;
 
@@ -561,22 +561,37 @@ public with sharing class ECO_ProjectTaskTriggers {
 	
 	public static void calculateFiscalMonths(list<pse__Project_Task__c> projectTasks)
 	{
+         list<date> enddatelist = new list<date>();
+        for (pse__Project_Task__c ba : projectTasks){
+             if (ba.pse__End_Date__c != null){ 
+                 
+                 enddatelist.add((ba.pse__End_Date__c).addmonths(2));
+                 enddatelist.add((ba.pse__End_Date__c).addmonths(-3));
+             }
+        }
+        system.debug('enddatelist----'+enddatelist);
+         List<pse__Time_Period__c> timePeriods  = new  List<pse__Time_Period__c>();
+        if(enddatelist.size()>0)
+        {
 		// Time period
-		List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
+          timePeriods = ECO_Utils_Date.calcTimePeriods(enddatelist,'Month');
+        // Time period
+       // List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
 		
-		for (pse__Project_Task__c pt : projectTasks){	
-			if (pt.pse__End_Date__c != null){									
-				for (Integer i = 0; i < timePeriods.size(); i++){
-					if (pt.pse__End_Date__c <= timePeriods[i].pse__End_Date__c  &&
-						pt.pse__End_Date__c >= timePeriods[i].pse__Start_Date__c){
-						pt.EndDateFiscalMonth__c = timePeriods[i].TimePeriodCode__c;
-						if (i > 0){
-							pt.EndDatePreviousFiscalMonth__c = timePeriods[i-1].TimePeriodCode__c;
-						}
-					}
+		pse__Time_Period__c fm = null;
+		for (pse__Project_Task__c pt : projectTasks){
+			if (pt.pse__End_Date__c != null){	
+				fm = ECO_Utils_Date.getFiscalPeriod(pt.pse__End_Date__c, 0, timePeriods);  
+				if (fm != null){
+					pt.EndDateFiscalMonth__c = fm.TimePeriodCode__c;
+				}
+				
+				fm = ECO_Utils_Date.getFiscalPeriod(pt.pse__End_Date__c, 1, timePeriods);  
+				if (fm != null){
+					pt.EndDatePreviousFiscalMonth__c = fm.TimePeriodCode__c;
 				}
 			}
 		}
 	}
-	
+    }
 }

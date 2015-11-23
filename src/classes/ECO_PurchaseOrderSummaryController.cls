@@ -1,4 +1,4 @@
-public with sharing class ECO_PurchaseOrderSummaryController{
+public without sharing class ECO_PurchaseOrderSummaryController{
 
 	public class POException extends Exception {}
 
@@ -15,7 +15,7 @@ public with sharing class ECO_PurchaseOrderSummaryController{
  
     private DateTime lastSync;
 
-    private List<POLineItem__c> poLineItems;
+    public List<POLineItem__c> poLineItems{get; set;}
     public List<nonSyncItem> invalidPOLineItems {get;set;}
     public List<POLineItem__c> validPOLineItems {get;set;}
 
@@ -77,7 +77,8 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 	public String taskFilter {get;set;}
 	public Boolean noSearchResults {get; private set;}
 	public List<pse__Project_Task__c> projectTasks {get; private set;}
-	public list<POcommitment__c> poCommitments {get; set;}
+	// Sanchivan : Removed as per VSO Bug 2106
+	//public list<POcommitment__c> poCommitments {get; set;}
 	
 	private ApexPAges.StandardsetController setCon;
 	private final Integer pagingResultSize = 10;
@@ -131,6 +132,8 @@ public with sharing class ECO_PurchaseOrderSummaryController{
     public Boolean isApprovedDoSyncNow {get; private set;}
     
     public Decimal totalPurchaseOrderLineAmount{get; private set;}
+    public Decimal totalAllocatedAmount{get; private set;}
+    public Decimal totalRemainingAmount{get; private set;}
 
     public ECO_PurchaseOrderSummaryController(ApexPages.StandardController stdController) {
         
@@ -214,8 +217,8 @@ public with sharing class ECO_PurchaseOrderSummaryController{
     		savePOBtnValue = 'Save Purchase Order';
     		poHeader = ECO_Service_PurchaseOrders.GetPurchaseOrder(purchaseOrderId);
 
-    		if(!String.isEmpty(poHeader.Agreement__r.VendorName__r.VendorName__c)) {
-				agreementIdentifier = poHeader.Agreement__r.VendorName__r.VendorName__c + ' ' +  poHeader.Agreement__r.Name;		
+    		if(!String.isEmpty(poHeader.Agreement__r.VendorSite__r.AccountName__c)) {
+				agreementIdentifier = poHeader.Agreement__r.VendorSite__r.AccountName__c + ' ' +  poHeader.Agreement__r.Name;		
     		}else {
 				agreementIdentifier = poHeader.Agreement__r.Name;
     		}
@@ -320,12 +323,19 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 
 		    validatedAndDisplayWarnings();
 
-		    List<POStatus__c> poStatuses = ECO_Service_PurchaseOrders.GetPurchaseOrderStatuses(purchaseOrderId);
-		    if(!poStatuses.isEmpty()){
-		    	poStatus = poStatuses.get(0);
+		    poStatusList = ECO_Service_PurchaseOrders.GetPurchaseOrderStatuses(purchaseOrderId);
+		    if(!poStatusList.isEmpty()){
+		    	poStatus = poStatusList.get(0);
 		    }
+            totalAllocatedAmount = 0.0;
+            totalRemainingAmount = 0.0;
             
-            poStatusList = ECO_Service_PurchaseOrders.GetPurchaseOrderStatuses(purchaseOrderId);
+            for(POStatus__c poStatus : poStatusList) {
+                if(poStatus.APTotalAmount__c != Null)
+                    totalAllocatedAmount = totalAllocatedAmount + poStatus.APTotalAmount__c;
+            }
+            
+            totalRemainingAmount = totalPurchaseOrderLineAmount - totalAllocatedAmount;
 	    }
 	    //allowRequestSubmit = true;	
 	    //numValidPOLineItems = validPOLineItems.size();
@@ -342,14 +352,16 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 	    	canEditHeader = true;
 	    }
 	    
-	    poCommitments = getPOCommitmentsForProject();
+        // Sanchivan : Removed as per VSO Bug 2106
+	    // poCommitments = getPOCommitmentsForProject();
     }
     
-    private list<POcommitment__c> getPOCommitmentsForProject() {
+    // Sanchivan : Removed as per VSO Bug 2106
+    /*private list<POcommitment__c> getPOCommitmentsForProject() {
     	list<POcommitment__c> poCommits = [select Id, Name, ExpenditureType__c, PODate__c, PONumber__c, POLine__c, POLineStatus__c, SupplierID__c, SupplierName__c, SupplierNumber__c, POLineAmount__c, POAmountBilled__c from POcommitment__c where ProjectNumber__c = :poHeader.Project__c order by PODate__c, PONumber__c, POLine__c];
    		
    		return poCommits;
-    }
+    }*/
 
     public Boolean isDebugEnabled() {
     	Boolean result = false;
@@ -371,6 +383,7 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 	
 
     public void getDefaultPaymentTermsForVendor(){
+        System.debug('---Entering getDefaultPaymentTermsForVendor');
     	if(!vendorSites.isEmpty() && selectedVendorId !=''){
     		for(VendorSite__c projSite : vendorSites){
     			if(projSite.Id == selectedVendorId){
@@ -379,6 +392,8 @@ public with sharing class ECO_PurchaseOrderSummaryController{
     			}
     		}
     	}
+        optAgreements = getProjectAgreements();
+        System.debug('---Exiting getDefaultPaymentTermsForVendor');
     }
 
     
@@ -418,7 +433,6 @@ public with sharing class ECO_PurchaseOrderSummaryController{
     
     	if(!vendorSites.isEmpty()){
     		for(VendorSite__c psite : vendorSites){   			
-
     			results.add(new SelectOption(String.valueOf(psite.Id), psite.AccountName__c));
     		}
 
@@ -430,33 +444,33 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 
 	private List<SelectOption> getProjectAgreements(){
     	List<SelectOption> results = new List<SelectOption>();
-
-    	List<Agreement__c> projectAgreements = [SELECT Id, 
+		System.debug('---Entering getProjectAgreements: ' + selProjectSiteId);
+    	List<Agreement__c> projectAgreements = [SELECT
+                                                	Id, 
     												Name,    
-    												VendorName__r.VendorName__c												
-    											FROM Agreement__c
-    											WHERE Project__c = :projectId];
+    												VendorSite__r.AccountName__c,
+                                                	AgreementNumber__c
+    											FROM
+                                                	Agreement__c
+    											WHERE
+                                                	Project__c = :projectId AND VendorSite__c =: selProjectSiteId];
 
     	results.add(new SelectOption('', '-- Choose Agreement --'));											
 
     	if(!projectAgreements.isEmpty()){
     		for(Agreement__c agreement : projectAgreements){
     			String vendorName = '';
-    			if(!String.isEmpty(agreement.VendorName__r.VendorName__c)){
-    				vendorName = agreement.VendorName__r.VendorName__c + ' ';
+    			if(!String.isEmpty(agreement.VendorSite__r.AccountName__c)){
+    				vendorName = agreement.VendorSite__r.AccountName__c + ' ';
     			}
-    			String agreementIdentifier =  vendorName + agreement.Name;
+    			String agreementIdentifier =  vendorName + agreement.AgreementNumber__c;
 
     			results.add(new SelectOption(String.valueOf(agreement.Id), agreementIdentifier));
     		}
-
-    	}
-
-    	
-
+        }
+        System.debug('---Exiting getProjectAgreements');
     	return results;
     }
-
 
     private Id checkForUrlIdParam(String param){
 		Id result = null;
@@ -572,7 +586,7 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 			if(!projectManagers.isEmpty()){
 				poHeader.ProjectManager__c = projectManagers.get(0).Contact__r.pse__Salesforce_User__c;
 
-				poHeader.ProjectManager__c = projectManagers.get(0).Contact__r.User__c;
+				//poHeader.ProjectManager__c = projectManagers.get(0).Contact__r.User__c;
 			}
 			
 			if(hasSyncHistory && !syncHistory.isEmpty()){
@@ -988,14 +1002,11 @@ public with sharing class ECO_PurchaseOrderSummaryController{
     	public String validationErrorMessage{get;set;}
     }
 
-
-
     public String validatePOLineItems(){
     	String results = '';
     	poLineItems = ECO_Service_PurchaseOrders.GetPurchaseOrderLineItems(purchaseOrderId);
     	validPOLineItems = new List<POLineItem__c>();
     	invalidPOLineItems = new List<nonSyncItem>();
-
     	
     	String poLineItemTask = Schema.SobjectType.POLineItem__c.fields.ProjectTask__c.label;
     		
@@ -1032,7 +1043,7 @@ public with sharing class ECO_PurchaseOrderSummaryController{
 		validPOLineItemLimitMsg = '(' +numValidPOLineItems + ' records)';
         
         totalPurchaseOrderLineAmount = 0.0;
-        for(POLineItem__c lineItem : validPOLineItems) {
+        for(POLineItem__c lineItem : poLineItems) {
             if(lineItem.Amount__c != null) {
                 totalPurchaseOrderLineAmount =  totalPurchaseOrderLineAmount + lineItem.Amount__c;
             }            
@@ -1203,6 +1214,12 @@ public with sharing class ECO_PurchaseOrderSummaryController{
     	}
 
     }
-
-
+    
+    public PageReference deletePurchaseOrder() {
+        delete poHeader;
+        
+        PageReference pageRef = new PageReference('/' + projectId);
+    	pageRef.setRedirect(true);
+    	return pageRef;
+    }
 }

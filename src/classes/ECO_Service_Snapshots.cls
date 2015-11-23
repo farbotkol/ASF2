@@ -2,7 +2,7 @@ public with sharing class ECO_Service_Snapshots {
 	private static Date epoch;
 
 	static {
-		epoch = Date.newInstance(1900, 1, 7);  // a known Sunday, definitely in the past
+		epoch = Date.newInstance(1900, 1, 6);  // a known Sunday, definitely in the past
 	}
 
 	public static Integer getDayOfWeek(Date dDate) {

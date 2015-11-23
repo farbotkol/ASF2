@@ -269,9 +269,9 @@
 									</apex:facet>
 									<apex:column >
 										<apex:facet name="header">Action</apex:facet>
-										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '', '{!item.previousDate}'));return false;" rendered="{!AND(AND(ISNULL(item.oPTM.Contact__c), AND(AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate')), item.canEdit)}">Select</apex:outputLink>
-										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '{!item.oPTM.Id}', '{!item.oPTM.StartDate__c}'));return false;" rendered="{!AND(AND(ISNULL(item.oPTM.EndDate__c), AND(NOT(ISNULL(item.oPTM.Contact__c)), AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate')), item.canEdit)}">Replace</apex:outputLink>
-										<apex:outputPanel layout="none" rendered="{!AND(AND(NOT(ISNULL(item.oPTM.Contact__c)), AND(AND(item.RoleName != 'Project Approver 2', item.RoleName != 'Finance Lead'), item.RoleName != 'CFO or Delegate')), item.canEdit)}">
+										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '', '{!item.previousDate}'));return false;" rendered="{!AND(ISNULL(item.oPTM.Contact__c), item.canEdit)}">Select</apex:outputLink>
+										<apex:outputLink onclick="openModal('modalDialogAddProjectMember', setRole('{!item.RoleName}', '{!item.oPTM.Id}', '{!item.oPTM.StartDate__c}'));return false;" rendered="{!AND(AND(AND(ISNULL(item.oPTM.EndDate__c), NOT(ISNULL(item.oPTM.Contact__c))), item.canEdit), item.RoleName != 'Deputy Project Manager')}">Replace</apex:outputLink>
+										<apex:outputPanel layout="none" rendered="{!AND(NOT(ISNULL(item.oPTM.Contact__c)), item.canEdit)}">
 											&nbsp;
 											<apex:outputLink value="/{!item.oPTM.Id}/e?retURL={!returnURL}">Edit</apex:outputLink>
 										</apex:outputPanel>
@@ -348,7 +348,7 @@
 						<apex:outputPanel id="ProjectTeamTable">
 						<apex:tabPanel switchType="client" selectedTab="ActiveTeamMember">
 							<apex:tab id="activeTeamMember" label="Active Team Members" name="ActiveTeamMember">
-
+								<apex:variable var="teamMemberCounter" value="{!0}"/>
 								<apex:pageBlockTable value="{!lMembersTeam}" var="item" width="100%" columnsWidth="60px">
 									<apex:facet name="footer">
 										<apex:commandLink action="{!addRecord}" value="Add New Team Member" rerender="ProjectTeamTable" status="teamStatus">
@@ -359,7 +359,7 @@
 										<apex:facet name="header">Actions</apex:facet>
 										<apex:commandLink action="{!removeRecord}" value="Remove" rerender="ProjectTeamTable" status="teamStatus">
 											<apex:param name="object" value="MembersTeam" assignTo="{!recordObjectType}" />
-											<apex:param name="objID" value="{!item.oPTM.Id}" assignTo="{!recordObjectId}" />
+											<apex:param name="teamMemberToRemove" value="{!teamMemberCounter}" />
 										</apex:commandLink>
 									</apex:column>
 									<apex:column >
@@ -399,19 +399,17 @@
 							<apex:tab id="inactiveTeamMember" label="Inactive Team Members" name="inActiveTeamMember">
 								<apex:pageMessage severity="info" rendered="{!if(lInactiveMembersTeam.size = 0, true, false)}" summary="No inactive users have been found." />
 								<apex:pageBlockTable value="{!lInactiveMembersTeam}" rendered="{!if(lInactiveMembersTeam.size = 0, false, true)}" var="item" width="100%" columnsWidth="60px">
-									<apex:column >
+									<apex:column style="width:10%" >
 										<apex:facet name="header">Role Type</apex:facet>
-										<apex:selectList size="1" multiselect="false" value="{!item.RoleID}">
-											<apex:selectOptions value="{!item.lTeamRoleTypes}" />
-										</apex:selectList>
+										<apex:outputLabel value="{!item.RoleName}" />
 									</apex:column>
 									<apex:column >
 										<apex:facet name="header">Name</apex:facet>
-										<apex:inputField value="{!item.oPTM.Contact__c}" />
+										<apex:outputField value="{!item.oPTM.Contact__c}" />
 									</apex:column>
 									<apex:column >
 										<apex:facet name="header">Project Role Title</apex:facet>
-										<apex:inputField value="{!item.oPTM.ProjectRoleTitle__c}" />
+										<apex:outputField value="{!item.oPTM.ProjectRoleTitle__c}" />
 									</apex:column>
 									<apex:column >
 										<apex:facet name="header">Phone</apex:facet>
@@ -434,7 +432,7 @@
     <apex:pageBlock >
     	
 		<apex:facet name="header">
-			<apex:outputPanel>
+			<apex:outputPanel >
 				<h2 class="mainTitle">
 				Stakeholders
 				</h2><c:ECO_HelpIcon helpText="An individual, group or organization who has interests that may be positively or negatively affected by the performance or completion of the project or may exert influence over the project, its deliverables or its team members. 
@@ -551,7 +549,7 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 				<apex:pageBlock title="Communication Activities">
                     <apex:pageBlockButtons location="top">
                         <apex:outputLink style="text-decoration:none;padding:4px;" styleClass="btn" value="mailto:?subject=AECOM Project Update {!TODAY()} - {!pse__Proj__c.Name} ({!pse__Proj__c.ProjectNumber__c})&body=Dear%20%3CENTER CLIENT NAME%3E%20%2C%0A%0APlease%20find%20below%20our%20weekly%20update%20on%20TestingProgBarv1%20(PR-026253)%0A%0AKey%20items%20we%20worked%20on%20this%20week%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0AOngoing%20key%20items%20that%20we%20are%20working%20on%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0AOutstanding%20Items%2FIssues%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0ASafety%20Update%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0ARegards%2C">
-                            Send Client Progress Report
+                            Send Client Project Update
                         </apex:outputLink>
                     </apex:pageBlockButtons>
                     <apex:pageBlockSection columns="1" collapsible="false" id="pbsCommunication">
@@ -618,8 +616,8 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 				<apex:outputPanel id="survey" >
 				<apex:pageBlock title="Project Survey Requests">
 					<apex:pageBlockButtons location="bottom">
-						<apex:commandButton action="{!ReturnToProject}" value="Return to Project" />
 						<apex:commandButton action="{!SaveAll}" value="Save" rerender="pgMessages,ActiveKeysTable,InactiveKeysTable,ProjectTeamTable,VendorSubTable,StakeholderTable,CommTable" onClick="this.disabled = true;"/><!-- onComplete="location.reload()" -->
+						<apex:commandButton action="{!ReturnToProject}" value="Return to Project" />
 					</apex:pageBlockButtons>
 				
 					<apex:pageBlockSection columns="1" collapsible="false" id="pbSurveySchedule">

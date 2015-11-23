@@ -17,6 +17,33 @@ public with sharing class ECO_BudgetQuestionnaireController {
 	private Transient Attachment budgetQuestionnaireAttachment;
 	public String overrideBudgetQuestionnaireName  {get;set;}
 	public map<Id, Attachment> attachmentsMap {get; set;}	
+    
+    public Decimal defaulLabourMultiplier{
+        get {
+            return theProject.DefaultUpliftLabor__c/100;
+        }
+        set {
+            theProject.DefaultUpliftLabor__c = value*100;
+        }
+    }
+    
+    public Decimal defaulSubsMultiplier{
+        get {
+            return theProject.DefaultUpliftSubs__c/100;
+        }
+        set {
+            theProject.DefaultUpliftSubs__c = value*100;
+        }
+    }
+    
+    public Decimal defaulODCMultiplier{
+        get {
+            return theProject.DefaultUpliftODCs__c/100;
+        }
+        set {
+            theProject.DefaultUpliftODCs__c = value*100;
+        }
+    }
 		
 	public ECO_BudgetQuestionnaireController (ApexPages.StandardController con) {
 		theProject = ECO_Service_Projects.getProjectById(con.getId());

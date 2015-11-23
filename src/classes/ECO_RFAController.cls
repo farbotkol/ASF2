@@ -54,11 +54,13 @@ public with sharing class ECO_RFAController {
             strSOQL += fsmField.getFieldPath() + ', ';
         }
         
-        strSOQL += 'ID, DOAApprovalRequest__c, ReasonForRequest__c, ProposedReviewCategoryChange__c, DOAApprovalRequest__r.RecordType.DeveloperName, JustificationReviewCategoryChange__c, NonProjectRelatedMatters__c, Projid__c, Business_Group__c, OwningOrganization__c, ProjectNameSubject__c, OpportunityNumber__c, OracleProjectNumber__c FROM Form__c WHERE id=: formid';
+        strSOQL += 'ID, DOAApprovalRequest__c, ReasonForRequest__c, ProposedReviewCategoryChange__c, DOAApprovalRequest__r.RecordType.DeveloperName, DOAApprovalRequest__r.Project__r.CarryingOutOrganization__c, JustificationReviewCategoryChange__c, NonProjectRelatedMatters__c, Projid__c, Business_Group__c, OwningOrganization__c, ProjectNameSubject__c, OpportunityNumber__c, OracleProjectNumber__c FROM Form__c WHERE id=: formid';
 
         list<Form__c> lstform = (list<Form__c>)Database.query(strSOQL);
 		oForm = lstform[0];
-		
+        if(oForm.OwningOrganization__c == '' || oForm.OwningOrganization__c == null)
+			oForm.OwningOrganization__c = oForm.DOAApprovalRequest__r.Project__r.CarryingOutOrganization__c;
+        System.debug('Owning org:::::'+oForm.DOAApprovalRequest__r.Project__r.CarryingOutOrganization__c);
         proj = new pse__Proj__c();
         loadDoaMatters();
         doaRecordType = oForm.DOAApprovalRequest__r.RecordType.DeveloperName;

@@ -302,7 +302,7 @@
             <a href="#" onmouseover="GNGdisp('GoNoGoButtons')"><div>R&amp;M<br/>Assessment<br/>for Go / No Go</div></a>
         </li>
         <li class="{!rmAssessDecisionStatus} decission2">
-            <a href="#" title="Approval of the Go/No Go recommendation to proceed  with incurring overhead costs (e.g., business development) to prepare a bid  document in reponse to a client's arequest for proposal or brief.  Several iterations of the Go/No Go process may occur at this stage.">
+            <a href="#" title="Approval of the Go/No Go recommendation to proceed  with incurring overhead costs (e.g., business development) to prepare a bid  document in response to a client's request for proposal or brief.  Several iterations of the Go/No Go process may occur at this stage.">
                 <div>Go/No Go</div></a>
         </li>
         <li class="{!preliminaryProjectPlan} activeHover">
@@ -401,8 +401,8 @@
         <div id= "PlanApprovalButtons" class="buttonGroup" style="display: none;">
             <ul>
                 <li class="{!planApprovalStatus}">
-                    <apex:commandlink action="{!submitPlanApproval}" value="Submit Plan for Approval" target="_blank" rendered="{!IF(OR(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'NotStarted',pse__Proj__c.ProgBarPrelimPlanApproval__c = 'Rejected'),true,false)}"/>
-                    <apex:commandlink action="{!submitPlanApprovalDummy}" value="Submit Plan for Approval" onclick="return confirm('Plan already submitted for approval');" rendered="{!NOT(IF(OR(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'NotStarted',pse__Proj__c.ProgBarPrelimPlanApproval__c = 'Rejected'),true,false))}"/>
+                    <apex:commandlink action="{!submitPlanApproval}" value="Submit Plan for Approval" target="_blank" rendered="{!IF(NOT(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'Submitted'),true,false)}"/>
+                    <apex:commandlink action="{!submitPlanApprovalDummy}" value="Submit Plan for Approval" onclick="return confirm('Plan already submitted for approval');" rendered="{!IF(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'Submitted',true,false)}"/>
                 </li>
                 <li class="{!doaManagerStatus}"><a href="/apex/ECO_DOA_ApprovalRequest?projectID={!pse__Proj__c.Id }" target="_parent"><span>DoA Manager</span></a></li>
                 <li class="{!healthyStartStatus}"><apex:commandLink action="{!healthyStartClicked}" target="_parent" value="Healthy Start" /></li>

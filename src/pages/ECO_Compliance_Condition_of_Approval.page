@@ -1,0 +1,34 @@
+<apex:page showHeader="true" sidebar="true" standardController="ComplianceConditionsofApproval__c" extensions="ECO_ComplianceController">
+	<apex:form >
+        <apex:sectionheader title="Conditions of Approval Compliance" subtitle="{!oCompliance.Name}" id="secHeader"/>
+        <apex:pagemessages />
+    	<apex:pageBlock >
+            <apex:pageBlockButtons location="top" rendered="{!isDOAAdmin}">
+            	<apex:commandButton action="{!saveCompliance}" value="Save" />
+                <apex:commandButton action="{!delete}" value="Delete" />
+                <apex:commandButton action="{!URLFOR($Action.ComplianceConditionsofApproval__c.delete,oCompliance.id,[retURL=oCompliance.DOAApprovalRequest__c])}" value="Delete" id="deleteButton"  rendered="{!isDOAAdmin}"/>
+                <apex:commandButton action="/{!oCompliance.DOAApprovalRequest__c}" value="Back to DOA Approval" rendered="{!IF(oCompliance.DOAApprovalRequest__c != null, true, false)}"/>
+            </apex:pageBlockButtons>
+            <apex:pageBlockButtons location="top" rendered="{!NOT(isDOAAdmin)}">
+            	<apex:commandButton action="/{!oCompliance.DOAApprovalRequest__c}" value="Back to DOA Approval" rendered="{!IF(oCompliance.DOAApprovalRequest__c != null, true, false)}"/>
+            </apex:pageBlockButtons>
+        	<apex:pageBlockSection rendered="{!isDOAAdmin}">
+            	<apex:inputField value="{!oCompliance.ComplianceStatus__c}"/>
+                <apex:inputField value="{!oCompliance.ConditionsCompleted__c}"/>
+                <apex:inputField value="{!oCompliance.ComplianceStatusDate__c}"/>
+                <apex:inputField value="{!oCompliance.ConditionsCompletedDate__c}"/>
+                
+            </apex:pageBlockSection>
+            <apex:pageBlockSection columns="1" rendered="{!isDOAAdmin}">
+            	<apex:inputField value="{!oCompliance.GeneralComments__c}" style="Width:75%;Height:120px"/>
+            </apex:pageBlockSection>
+            <apex:pageBlockSection rendered="{!NOT(isDOAAdmin)}">
+            	<apex:outputField value="{!oCompliance.ComplianceStatus__c}"/>
+                <apex:outputField value="{!oCompliance.ConditionsCompleted__c}"/>
+                <apex:outputField value="{!oCompliance.ComplianceStatusDate__c}"/>
+                <apex:outputField value="{!oCompliance.ConditionsCompletedDate__c}"/>
+                <apex:outputField value="{!oCompliance.GeneralComments__c}"/>
+            </apex:pageBlockSection>
+        </apex:pageBlock>
+    </apex:form> 
+</apex:page>

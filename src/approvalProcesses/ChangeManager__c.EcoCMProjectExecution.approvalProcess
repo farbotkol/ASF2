@@ -16,13 +16,28 @@
         <allowDelegate>false</allowDelegate>
         <assignedApprover>
             <approver>
+                <name>ProjectAccountantApprover__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <label>Project Accountant</label>
+        <name>ProjectAccountant</name>
+    </approvalStep>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
                 <name>ProjectApprover__c</name>
                 <type>relatedUserField</type>
             </approver>
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
         </assignedApprover>
-        <label>EcoProjectApprover</label>
-        <name>EcoProjectApprover</name>
+        <label>Project Approver</label>
+        <name>ProjectApprover</name>
+        <rejectBehavior>
+            <type>RejectRequest</type>
+        </rejectBehavior>
     </approvalStep>
     <enableMobileDeviceAccess>true</enableMobileDeviceAccess>
     <entryCriteria>
@@ -46,10 +61,6 @@
     <finalRejectionActions>
         <action>
             <name>EcoSetApprovalStatusToRejected</name>
-            <type>FieldUpdate</type>
-        </action>
-        <action>
-            <name>EcoSetOracleSyncStatusToApproved</name>
             <type>FieldUpdate</type>
         </action>
         <action>

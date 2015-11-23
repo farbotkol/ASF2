@@ -173,6 +173,10 @@ public class ECO_DeliverableTriggers {
         Boolean proceed = false;
         Id devOwner = null;
 		list<ProjectTeamMember__c> lAddTeamMembers = new list<ProjectTeamMember__c>();
+        list<ProjectTeamMember__c> lUpdateTeamMembers = new list<ProjectTeamMember__c>();
+        list<TechnicalQualityTeam__c> lUpdateMembers = new list<TechnicalQualityTeam__c>();
+        list<TechnicalQualityTeam__c> lAddMembers = new list<TechnicalQualityTeam__c>();
+        
 		for(Deliverable__c oDeliverable: mapNew.values()){
 			
             if((oDeliverable.DeliverablesOwner__c != null || oDeliverable.DeliverablesOwner__c != '')
@@ -194,35 +198,56 @@ public class ECO_DeliverableTriggers {
             System.Debug(logginglevel.error,'mapDeliverablebyProject: ' + mapDeliverablebyProject);
             set<id> setProjects = new set<id>();
             setProjects.addAll(mapProjectIdByDeliverable.Values());
-            
-            list<pse__Proj__c> listProjects = ECO_Service_Projects.getProjectByIDs(setProjects);
-            list<TechnicalQualityTeam__c> lAddMembers = new list<TechnicalQualityTeam__c>();
+            list<pse__Proj__c> listProjects = new List<pse__Proj__c> ( ECO_Service_Projects.getProjectByIDs(setProjects));  
             System.Debug(logginglevel.error,'ListProjects: ' + listProjects);
             map<id,id> mapUserIdByContact = new map<id,id>();
-            //ProjectTeamMember__c pTM = [Select Id From ProjectTeamMember__c Where Contact__c = :];
             for(Contact c: [select ID, pse__Salesforce_User__c from Contact where id =: setContactID]){
                 mapUserIdByContact.put(c.id,c.pse__Salesforce_User__c);
             }
     		ProjectRole__c role = [Select Id, Name From ProjectRole__c Where Name = 'Deliverable Owner'];
+            //ProjectRole__c roleInactive = [Select Id, Name From ProjectRole__c Where Name = 'Inactive Deliverable Owner'];
             for(Deliverable__c oDev : mapNew.values()){
                 devOwner = oDev.DeliverablesOwner__c;
                 System.debug('oDev.DeliverablesOwner__c:  '+devOwner);
                if(devOwner != null || devOwner != ''){
                    System.debug('oDev.DeliverablesOwner__c:   '+oDev.DeliverablesOwner__c);
                    System.Debug(logginglevel.error,'adding member: ');
-                   //ProjectTeamMember__c pTM = new ProjectTeamMember__c();
-                   ProjectTeamMember__c[] pTM = [Select Id From ProjectTeamMember__c Where Contact__c = :oDev.DeliverablesOwner__c AND ProjectRole__c = :role.Id];
+                   //ProjectTeamMember__c[] pTM = [Select Id From ProjectTeamMember__c Where Contact__c = :oDev.DeliverablesOwner__c AND ProjectRole__c = :role.Id];
+                   ProjectTeamMember__c[] pTM = [Select Id, Contact__c From ProjectTeamMember__c Where Contact__c = :mapOld.get(oDev.Id).DeliverablesOwner__c AND Project__c = :oDev.Project__c AND ProjectRole__c = :role.Id];
+                   TechnicalQualityTeam__c[] tqt = [Select Id, TechnicalQualityTeamMember__c From TechnicalQualityTeam__c Where Deliverable__c = :oDev.ID AND Role__c = 'Deliverable Owner'];
+                  
                    lAddMembers.add(New TechnicalQualityTeam__c(Role__c = 'Deliverable Owner',
-                                                               //TechnicalQualityTeamMember__c = oDev.DeliverablesOwner__c,
-                                                               TechnicalQualityTeamMember__c = mapUserIdByContact.get(oDev.DeliverablesOwner__c),
-                                                               RequiredDate__c = System.Today(),
-                                                               Deliverable__c = oDev.ID));
-                   if(pTM.size() == 0){
-                       lAddTeamMembers.add(new ProjectTeamMember__c(Project__c = oDev.Project__c,
+                                                                   //TechnicalQualityTeamMember__c = oDev.DeliverablesOwner__c,
+                                                                   TechnicalQualityTeamMember__c = mapUserIdByContact.get(oDev.DeliverablesOwner__c),
+                                                                   RequiredDate__c = System.Today(),
+                                                                   Deliverable__c = oDev.ID));
+                   if(tqt.size() > 0){
+                       //tqt[0].TechnicalQualityTeamMember__c = mapUserIdByContact.get(oDev.DeliverablesOwner__c);
+                       for(TechnicalQualityTeam__c oTQT : tqt){
+                           oTQT.Role__c = 'Inactive Deliverable Owner';
+                           
+                           lUpdateMembers.add(oTQT);
+                           System.debug('oTQTid::::'+oTQT.Id+' ::::oTQT role:'+oTQT.Role__c);
+                       }
+                       
+                   }
+                       
+                   
+                  lAddTeamMembers.add(new ProjectTeamMember__c(Project__c = oDev.Project__c,
                                                                     Contact__c = oDev.DeliverablesOwner__c,
                                                                     ProjectRole__c = role.Id,
                                                                     RecordTypeID = ECO_Utils_Meta.getRecordTypeId(ProjectTeamMember__c.sObjectType,'Team Member')));
+                   
+                   if(pTM.size() >= 0){
+                       for(ProjectTeamMember__c oPTM : pTM){
+                           oPTM.EndDate__c = Date.today();
+                           oPTM.Is_Active__c = false;
+                           //oPTM.ProjectRole__c = roleInactive.Id;
+                           lUpdateTeamMembers.add(oPTM);
+                           //System.debug('roleInactive.Id::::'+roleInactive.Id+':::::oPTMId:'+oPTM.Id+':::oPTM Role:'+oPTM.ProjectRole__c);
+                       }
                    }
+                       
                }	
             }
            
@@ -235,6 +260,10 @@ public class ECO_DeliverableTriggers {
                 	insert lAddMembers;
                 if(lAddTeamMembers != null && lAddTeamMembers.size() > 0)
                 	insert lAddTeamMembers;
+                if(lUpdateTeamMembers != null && lUpdateTeamMembers.size()>0)
+                    update lUpdateTeamMembers;
+                if(lUpdateMembers != null && lUpdateMembers.size()>0)
+                    update lUpdateMembers;
             }catch(Exception e){
                 System.Debug(logginglevel.error,' error: ' + e.getMessage() + ' : ' + e.getStackTraceString());
                 Database.rollback(sp);

@@ -128,11 +128,24 @@ public class ECO_ChangeManagerTriggerHandler {
 			handleProjectRisksChangeManagerApproval(changeManager);
 			handleProjectSubsVendorsChangeManagerApproval(changeManager);
 			handleProjectStakeholderCommChangeManagerApproval(changeManager);
+			handleProjectUpdatRelatedOpportunity(changeManager);
 		}
 	}
 
 	
+	public static void handleProjectUpdatRelatedOpportunity(ChangeManager__c changeManager)
+	{
+		list<pse__Proj__c> project = [select Id, pse__Opportunity__c from pse__Proj__c where Id = :changeManager.Project__c];
 
+		list<Opportunity> opportunity;
+
+		if(project[0].pse__Opportunity__c != null)
+		{
+			opportunity = [select Id, StageName from Opportunity where Id = :project[0].pse__Opportunity__c];
+			opportunity[0].StageName = '6 Contracted/Booked/Won';
+			update opportunity[0];
+		}		
+	}
 	
 	/*public static void synchronizeProject(String messageQueueId, Id projectId)
 	{
@@ -739,6 +752,19 @@ public class ECO_ChangeManagerTriggerHandler {
 				//if(project.ScheduledOnHoldDate__c <= Date.today())
 				project.pse__Stage__c = 'Execution';	
 			}
+
+			else if(project.RequestedProjectStatus__c == 'Execution' && changeManager.IsProjectReOpen__c == true)
+			{
+				Id recordTypeId2 = [select Id from RecordType where DeveloperName = 'CustomerProjectSynced' limit 1].Id;
+
+				project.CMProjectClosureIsChanged__c = false;
+				project.CMProjectClosureIsApproved__c = false;
+				project.RecordTypeId = recordTypeId2;
+				//project.CMProjectOnHoldIsChanged__c = false;	
+
+				//if(project.ScheduledOnHoldDate__c <= Date.today())
+				project.pse__Stage__c = 'Execution';	
+			}			
 				
 			update project;		
 		}

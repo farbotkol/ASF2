@@ -1,8 +1,8 @@
 public with sharing class ECO_ComplianceCreateController {
-	public ComplianceConditionsofApproval__c oCompliance {get;set;}
+  public ComplianceConditionsofApproval__c oCompliance {get;set;}
     public Id DoaApprovalId {get;set;}
     public ECO_ComplianceCreateController(ApexPages.StandardController stdController) {
-		this.oCompliance = (ComplianceConditionsofApproval__c)stdController.getRecord();
+    this.oCompliance = (ComplianceConditionsofApproval__c)stdController.getRecord();
         DoaApprovalId = ApexPages.currentPage().getParameters().get('doaId');
     }
     public PageReference init(){

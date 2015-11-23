@@ -7,6 +7,13 @@ public with sharing class ECO_ClassificationEditorController {
 		public FieldSetMember fsm { get; set; }
 		public Boolean isRequired { get; set; }
 	}
+
+    public PageReference SaveClassification() {
+
+		update oProject;
+
+        return null;
+    } 
 	
     public ECO_ClassificationEditorController(ApexPages.StandardController stdController) {
         List<String> lClassificationPathNames = new List<String>();
