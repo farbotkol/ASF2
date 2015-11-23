@@ -154,7 +154,23 @@
 
 
 		<apex:pageMessages id="messages" />		
-		<apex:pageBlock >
+		
+		<apex:outputPanel id="noGoStartup" rendered="{!pse__Proj__c.pse__Stage__c == 'No-Go'  || pse__Proj__c.pse__Stage__c == 'Canceled by Client'}">
+			<apex:pageBlock>
+				<apex:pageBlockButtons>
+					<apex:commandButton value="Submit Project for Planning" action="{!createChangeManagementPlanning}" />
+					<apex:commandButton value="Return to Project" action="{!back}" immediate="true" />
+				</apex:pageBlockButtons>
+				<apex:pageBlockSection columns="1" collapsible="false">
+					<apex:inputField value="{!oProject.ProjectClosureNotes__c}"/>
+				</apex:pageBlockSection>
+
+			</apex:pageBlock>
+
+		</apex:outputPanel>		
+
+
+		<apex:pageBlock rendered="{!pse__Proj__c.pse__Stage__c != 'No-Go' && pse__Proj__c.pse__Stage__c != 'Canceled by Client'}" >
 
 			<apex:pageBlockButtons location="top">
 				<apex:commandButton value="Save" action="{!closesave}" />

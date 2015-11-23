@@ -24,7 +24,12 @@ public class ECO_MSAProjectSnapshotController {
 			projectIds.add(agreement.Project__c);
 		
 		ECO_Service_ProjectSnapshots snapshotService = new ECO_Service_ProjectSnapshots(projectIds);
-		projectSnapshot =  snapshotService.getProjectSnapshot();			
+		projectSnapshot =  snapshotService.getProjectSnapshot(Datetime.Now());	
+        if(projectSnapshot == null)
+        {
+            ApexPages.Message msg = new ApexPages.Message(ApexPages.Severity.ERROR, 'There was an error generating an MSA Snapshot');
+            ApexPages.addMessage(msg);	
+        }
 	}	
 	
 	public PageReference ReturnToMSA()

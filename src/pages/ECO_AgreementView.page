@@ -293,7 +293,8 @@
     </apex:outputPanel>
 
     <apex:outputPanel rendered="{!agreementRecordType =='Prime (MSA)'}">
-        <apex:sectionHeader title="{!'Master Services Agreement ' + mode}" subtitle="{!agreement.ContractTitle__c}({!agreement.AgreementNumber__c})"/>
+        <apex:sectionHeader title="Prime (MSA) Edit" subtitle="{!Agreement__c.SectionHeaderSubtitle__c}" rendered="{!mode!= ''}"/>
+        <apex:sectionHeader title="{!'Master Services Agreement'}" subtitle="{!agreement.ContractTitle__c}({!agreement.AgreementNumber__c})" rendered="{!mode = ''}"/>
     </apex:outputPanel>
 
     <apex:outputPanel rendered="{!agreementRecordType !='Prime (MSA)'}">
@@ -362,7 +363,7 @@
             <apex:commandButton value="Return To Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
@@ -830,7 +831,7 @@
             <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
     <apex:pageBlockSection >
@@ -1295,7 +1296,7 @@
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
@@ -1718,7 +1719,7 @@
 
             <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}"/> 
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
@@ -2088,7 +2089,7 @@
             <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}"  immediate="true"/>  
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
@@ -2508,7 +2509,7 @@
             <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}"  immediate="true"/>  
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
@@ -2587,9 +2588,9 @@
         <apex:pageBlockSection title="Contract Details" collapsible="false">  
 
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.JointVenturePartner__c.inlineHelpText}">
-                <apex:outputText value="Joint Venture Parnter"/>
+                <apex:outputText value="Joint Venture Partner"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.JointVenturePartner__c}" rendered="{!mode != ''}"/>
+                    <apex:inputField value="{!agreement.JointVenturePartner__c}" rendered="{!mode != ''}" required="true"/>
                     <apex:outputField value="{!agreement.JointVenturePartner__c}" rendered="{!mode == ''}"/>
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>               
@@ -2838,7 +2839,7 @@
             <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>                       
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
 
@@ -3047,8 +3048,7 @@
             <apex:outputText value="Total Approved Revenue Limit"/>
             <apex:outputPanel id="totalApprovedRevenueLimit">
                 <apex:outputPanel >
-                        <apex:inputField value="{!agreement.TotalApprovedRevenueLimit__c}" rendered="{!mode != '' && agreement.AgreementStatus__c != 'Executed'}" required="true" />
-                        <apex:inputField value="{!agreement.TotalApprovedRevenueLimit__c}" rendered="{!mode != '' && agreement.AgreementStatus__c == 'Executed'}" required="true" />
+                        <apex:inputField value="{!agreement.TotalApprovedRevenueLimit__c}" rendered="{!mode != ''}" />
                     <apex:outputField value="{!agreement.TotalApprovedRevenueLimit__c}" rendered="{!mode == ''}"/>
                 </apex:outputPanel>
             </apex:outputPanel>
@@ -3261,7 +3261,7 @@
                 <apex:commandButton value="Save" action="{!save}" rendered="{!mode !=''}"/>
                 <apex:commandButton value="Edit" action="{!editAgreement}" rendered="{!mode ==''}" />
                 <apex:commandButton value="Segmentation" action="{!launchSegmentationQuestionnaire}" rendered="{!mode == ''}" />
-                <apex:commandButton value="MSA Project Portfolio" action="{!msaProjectSnapshot}" rendered="{!mode == ''}" />
+                <apex:commandButton value="MSA Project Portfolio" action="{!msaProjectSnapshot}" rendered="{!mode == '' && relAgreements.size > 0}" />
                 <apex:commandButton value="Return To MSA" action="{!cancel}" rendered="{!mode =='Edit'}"/>             
             </apex:pageBlockButtons>
 
