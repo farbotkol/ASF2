@@ -372,7 +372,8 @@
                 <li class="{!locationsResilienceStatus}"><a href="/apex/ECO_Resilience?id={!pse__Proj__c.id}" target="_parent"><span>Locations &amp; Resilience</span></a></li>
                 <li class="{!rmAssessStatus}"><a href="/apex/ECO_RMAChooser?id={!pse__Proj__c.id}" target="_parent" ><span>R &amp; M Assessment</span></a></li>
                 <li class="{!doaManagerStatus}"><a href="/apex/ECO_DOA_ApprovalRequest?projectID={!pse__Proj__c.Id }" target="_parent"><span>DoA Manager</span></a></li>
-                <li class="{!agreementStatus}"><a href="/apex/ECO_ProjectAgreement?CF00Ne0000001Hha5={!pse__Proj__c.Name}&CF00Ne0000001Hha5_lkid={!pse__Proj__c.Id}&saveURL=%2F{!pse__Proj__c.Id}&scontrolCaching=1&retURL=%2F{!pse__Proj__c.Id}&sfdc.override=1" target="_parent"><span>Agreements</span></a></li>
+                <!--<li class="{!agreementStatus}"><a href="/apex/ECO_ProjectAgreement?CF00Ne0000001Hha5={!pse__Proj__c.Name}&CF00Ne0000001Hha5_lkid={!pse__Proj__c.Id}&saveURL=%2F{!pse__Proj__c.Id}&scontrolCaching=1&retURL=%2F{!pse__Proj__c.Id}&sfdc.override=1" target="_parent"><span>Agreements</span></a></li>-->
+                <li class="{!agreementStatus}"><a href="/apex/ECO_ProjectAgreement?ProjectId={!pse__Proj__c.Id}&saveURL=%2F{!pse__Proj__c.Id}&scontrolCaching=1&retURL=%2F{!pse__Proj__c.Id}&sfdc.override=1" target="_parent"><span>Agreements</span></a></li>
             </ul>
         </div>
         <div id="ReviseProjButtons" class="buttonGroup" style="display: none;">
@@ -392,7 +393,8 @@
 				<li class="{!projTeamStakeStatus}"><a href="/apex/ECO_Stakeholders?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Project Team &amp; Stake</span></a></li>
 				<li class="{!rmAssessStatus}" ><a href="/apex/ECO_RMAChooser?id={!pse__Proj__c.id}" target="_parent"><span>R &amp; M Assessment</span></a></li>
                 <li class="{!locationsResilienceStatus}"><a href="/apex/ECO_Resilience?id={!pse__Proj__c.id}" target="_parent" ><span>Locations &amp; Resilience</span></a></li>
-                <li class="{!agreementStatus}"><a href="/apex/ECO_ProjectAgreement?CF00Ne0000001Hha5={!pse__Proj__c.Name}&CF00Ne0000001Hha5_lkid={!pse__Proj__c.Id}&saveURL=%2F{!pse__Proj__c.Id}&scontrolCaching=1&retURL=%2F{!pse__Proj__c.Id}&sfdc.override=1" target="_parent"><span>Agreements</span></a></li>
+                <!--<li class="{!agreementStatus}"><a href="/apex/ECO_ProjectAgreement?CF00Ne0000001Hha5={!pse__Proj__c.Name}&CF00Ne0000001Hha5_lkid={!pse__Proj__c.Id}&saveURL=%2F{!pse__Proj__c.Id}&scontrolCaching=1&retURL=%2F{!pse__Proj__c.Id}&sfdc.override=1" target="_parent"><span>Agreements</span></a></li>-->
+                <li class="{!agreementStatus}"><a href="/apex/ECO_ProjectAgreement?ProjectId={!pse__Proj__c.Id}&saveURL=%2F{!pse__Proj__c.Id}&scontrolCaching=1&retURL=%2F{!pse__Proj__c.Id}&sfdc.override=1" target="_parent"><span>Agreements</span></a></li>
                 <li class="{!subsVendorStatus}"><a href="/apex/ECO_SubsVendors?scontrolCaching=1&id={!pse__Proj__c.id}" target="_parent"><span>Subs/Vendors</span></a></li>
                 <li class="{!reviewMeetingStatus}"><a href="/apex/ECO_ProjectReviewRecordType?Id={!pse__Proj__c.id}" target="_parent"><span>Reviews/Meetings</span></a></li>
                 <li class="{!assumptionStatus}"><a href="/apex/ECO_AssumptionRegister?projectId={!pse__Proj__c.id}" target="_parent"><span>Assumptions</span></a></li>
@@ -401,7 +403,7 @@
         <div id= "PlanApprovalButtons" class="buttonGroup" style="display: none;">
             <ul>
                 <li class="{!planApprovalStatus}">
-                    <apex:commandlink action="{!submitPlanApproval}" value="Submit Plan for Approval" target="_blank" rendered="{!IF(NOT(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'Submitted'),true,false)}"/>
+                    <apex:commandlink action="{!submitPlanApproval}" value="Submit Plan for Approval" target="_blank" rendered="{!IF(NOT(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'Submitted'),true,false)}" />
                     <apex:commandlink action="{!submitPlanApprovalDummy}" value="Submit Plan for Approval" onclick="return confirm('Plan already submitted for approval');" rendered="{!IF(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'Submitted',true,false)}"/>
                 </li>
                 <li class="{!doaManagerStatus}"><a href="/apex/ECO_DOA_ApprovalRequest?projectID={!pse__Proj__c.Id }" target="_parent"><span>DoA Manager</span></a></li>
@@ -416,7 +418,8 @@
         </div>
         <div id= "ContractReviewButtons" class="buttonGroup" style="display: none;">
             <ul>
-                <li class="{!agreementStatus}"><a href="/apex/ECO_ProjectAgreement?CF00Ne0000001Hha5={!pse__Proj__c.Name}&CF00Ne0000001Hha5_lkid={!pse__Proj__c.Id}&saveURL=%2F{!pse__Proj__c.Id}&scontrolCaching=1&retURL=%2F{!pse__Proj__c.Id}&sfdc.override=1" target="_parent"><span>Agreements</span></a></li>
+                <!--<li class="{!agreementStatus}"><a href="/apex/ECO_ProjectAgreement?CF00Ne0000001Hha5={!pse__Proj__c.Name}&CF00Ne0000001Hha5_lkid={!pse__Proj__c.Id}&saveURL=%2F{!pse__Proj__c.Id}&scontrolCaching=1&retURL=%2F{!pse__Proj__c.Id}&sfdc.override=1" target="_parent"><span>Agreements</span></a></li>-->
+                <li class="{!agreementStatus}"><a href="/apex/ECO_ProjectAgreement?ProjectId={!pse__Proj__c.Id}&saveURL=%2F{!pse__Proj__c.Id}&scontrolCaching=1&retURL=%2F{!pse__Proj__c.Id}&sfdc.override=1" target="_parent"><span>Agreements</span></a></li>
                 <li class="{!doaManagerStatus}"><a href="/apex/ECO_DOA_ApprovalRequest?projectID={!pse__Proj__c.Id }" target="_parent"><span>DoA Manager</span></a></li>
             </ul>
         </div>
