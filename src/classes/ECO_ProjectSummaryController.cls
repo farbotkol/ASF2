@@ -294,9 +294,12 @@ public with sharing class ECO_ProjectSummaryController {
     {
         String username = ApexPages.currentPage().getParameters().get('username');
         String password = ApexPages.currentPage().getParameters().get('password');
-        //authenticationResult = 'SUCCESS';
-        //CHUNGDL/DEV12ORACLE
-        authenticationResult = ECO_Service_Authentication.TestProxy('https://ecodev.aecom.com/OA_HTML/jsp/fnd/PicDisconnSF.jsp', 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + password);
+
+        ECO_IntegrationEndpoints__c cs;
+        cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
+        String endPointUrl = cs.EndPointUrl__c;
+
+        authenticationResult = ECO_Service_Authentication.TestProxy(endPointUrl, 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + password);
 
         return null;
     }
@@ -1150,14 +1153,12 @@ public with sharing class ECO_ProjectSummaryController {
     	if(isProjectNumber)
     	{
     		cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
-	    	//url = cs.EndPointUrl__c + '&MESSAGE_TYPE=' + msgType;
-	    	url = cs.EndPointUrl__c + user.ShaKey__c + '&MESSAGE_TYPE=' + msgType;
+	    	url = cs.EndPointUrl__c + '?PICAction=SalesIntegration&ebizId=' + user.ShaKey__c + '&MESSAGE_TYPE=' + msgType;
     	}
 	    else
 	    {
 	    	cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
-	    	//url = cs.EndPointUrl__c + '&MESSAGE_TYPE=' + msgType;
-	    	url = cs.EndPointUrl__c + user.ShaKey__c + '&MESSAGE_TYPE=' + msgType;
+	    	url = cs.EndPointUrl__c + '?PICAction=SalesIntegration&ebizId=' + user.ShaKey__c + '&MESSAGE_TYPE=' + msgType;
 	    }
 		//String url = 'https://ecodev.aecom.com/OA_HTML/jsp/fnd/xxpic/apps/PicDisconn.jsp?PICAction=SalesIntegration&ebizId=X123456&MESSAGE_TYPE=' + msgType;
 

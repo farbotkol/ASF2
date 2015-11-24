@@ -164,9 +164,13 @@ public class ECO_ChangeManagerDetailController {
     {
         String username = ApexPages.currentPage().getParameters().get('username');
         String password = ApexPages.currentPage().getParameters().get('password');
-        //authenticationResult = 'SUCCESS';
-        //CHUNGDL/DEV12ORACLE
-        authenticationResult = ECO_Service_Authentication.TestProxy('https://ecodev.aecom.com/OA_HTML/jsp/fnd/PicDisconnSF.jsp', 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + password);
+
+        ECO_IntegrationEndpoints__c cs;
+        cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
+
+        String endPointUrl = cs.EndPointUrl__c;
+        authenticationResult = ECO_Service_Authentication.TestProxy(endPointUrl, 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + password);
+        //authenticationResult = ECO_Service_Authentication.TestProxy('https://ecodev.aecom.com/OA_HTML/jsp/fnd/PicDisconnSF.jsp', 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + password);
 
         return null;
     }
