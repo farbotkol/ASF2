@@ -5,7 +5,11 @@ Purpose: To provide extended controller capabilities for the Project Scope Page
 ***/
 public virtual with sharing class ECO_ProjectScopeController extends ECO_PageControllerBase 
 { 
-
+public String errorLevel {get; set;}
+public String messageName {get; set;}
+    
+    
+    
     private final Packages__c oPackage;
     public integer packageCount;
     public boolean scrolltobottom {get;set;}
@@ -23,10 +27,16 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
     public string sSelectedPackageId {get; set;}
     public string sSelectedPackageName {get; set;}
     public boolean booNewProjectInPlay {get;set;}
-    public boolean booUtilizeBMI {get;set;}
+    public string UtilizeBMI {get;set;}
     public pse__Proj__c theProject {get; set;}
 
     public integer selectedTab {get;set;}
+    
+    public void showMessage() {
+      if(errorLevel == 'WARNING') {
+        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Warning, messageName));
+      }
+    }    
 
     /* Leverages parent project information to determine and pull all sibling packages */
     private void SearchPackages(){
@@ -66,6 +76,25 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
                     }
                     
                     oProjectPackage = oSearchPackage;
+                    
+                    system.debug( ' oProjectPackage BIM ' + oProjectPackage.Utilize_BMI_Technology__c );
+                    
+                    if( oProjectPackage.Utilize_BMI_Technology__c == true )
+                    {
+                        UtilizeBMI = 'true';
+                    }
+                    else
+                    if( oProjectPackage.Utilize_BMI_Technology__c == false )
+                    {
+                        UtilizeBMI = 'false';
+                    } 
+                    else
+                    {
+                        UtilizeBMI = 'null';
+                    } 
+                    
+                    system.debug( 'UtilizeBMI ' + UtilizeBMI );
+                    
                 } else {
                     lstPackages.add(oSearchPackage);
                     lstScopeOptions.add(new SelectOption(oSearchPackage.id, oSearchPackage.PackageTitle__c));
@@ -80,13 +109,13 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
             oProjectPackage.Scope__c = sProjectId;
             oProjectPackage.PackageTitle__c = 'Project Scope';
             oProjectPackage.Type__c = 'Project';
+            
+            UtilizeBMI = '';
         }
     }
     
     public PageReference DeleteSelectedScope()
     {
-    	//String scopePackageId = Apexpages.currentPage().getParameters().get('scopePackageId');
-    	
     	System.Debug('BrentBrentBrent' + sSelectedPackageId);
 
     	list<Packages__c> scope = [select Id from Packages__c where Id = :sSelectedPackageId];
@@ -212,12 +241,13 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
         return newpage;
     }
 
-
     public PageReference AttachFile(){
+        
         list<Packages__c> lstPackagesToInsert = new list<Packages__c>();
-
         lstPackagesToInsert.addAll(lstPackages);
         lstPackagesToInsert.add(oProjectPackage);
+        
+        system.debug( 'lstPackagesToInsert ' + lstPackagesToInsert );
 
         /*try {
             upsert lstPackagesToInsert;
@@ -234,7 +264,10 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
                 ApexPages.addMessage(oMsg);
                 return null;
             }
-        }    
+        }  
+        
+        system.debug( 'sSelectedPackageId ' + sSelectedPackageId );
+		
 
         scrolltobottom = false;
 
@@ -258,6 +291,7 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
     /* Default Constructor */
     public ECO_ProjectScopeController() {
         this(ApexPages.currentPage().getParameters().get('projectId'));
+                 
     }
     
     /* Constructor - refactored by Sujit to support doc gen code reuse */
@@ -269,7 +303,7 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
             ApexPages.addMessage(oPageMessage);
             return;
         }
-        theProject = [select Id, Name, ProjectSectionHeaderName__c, pse__Stage__c, ProjectNumber__c from pse__Proj__c where Id = :sProjectId limit 1];
+        theProject = [select Id, Name, ProjectSectionHeaderName__c, pse__Stage__c, pse__Project_ID__c, ProjectNumber__c from pse__Proj__c where Id = :sProjectId limit 1];
  
         scrolltobottom = false;
         lstPackages = new list<Packages__c>();
@@ -279,11 +313,16 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
         lstMapUnassignedDeliverables = new map<string, list<DeliverableWrapper>>();
         //lstUnassignedDeliverables = new list<DeliverableWrapper>();
         lstScopeOptions = new list<SelectOption>();
-        booNewProjectInPlay = false;
+        booNewProjectInPlay = false;          
 
         SearchPackages();
         SearchRisk();
         SearchDeliverables();
+        //SaveFirstPackages() ;
+        
+        //update oProjectPackage;
+        //
+
     }
 
     /* Method to handle adding new packages to the project */
@@ -306,12 +345,36 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
 
         return null;
     }
+    
+    /* Bulk saves all packages */
+    Public PageReference SaveFirstPackages() {
+        list<Packages__c> lstPackagesToInsert = new list<Packages__c>();
 
+        system.debug('SaveFirstPackages ' + UtilizeBMI );
+
+        //oProjectPackage.Utilize_BMI_Technology__c = true;
+        
+        //lstPackagesToInsert.addAll(lstPackages);
+        lstPackagesToInsert.add(oProjectPackage); 
+        
+        try {
+            upsert lstPackagesToInsert;
+        } catch (Exception e) {
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to save packages: ' + e);
+            ApexPages.addMessage(oMsg);
+            return null;
+        }          
+        
+        return null;    
+    }
+    
     /* Bulk saves all packages */
     Public PageReference SavePackages() {
-
-        list<Packages__c> lstPackagesToInsert = new list<Packages__c>();
+		//return null;
         
+        list<Packages__c> lstPackagesToInsert = new list<Packages__c>();
+        system.debug('SavePackages ' + UtilizeBMI );
+                
         lstPackagesToInsert.addAll(lstPackages);
         lstPackagesToInsert.add(oProjectPackage);
 
@@ -364,7 +427,6 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
         return null;
     }
 
-
     public class DeliverableWrapper{
         public boolean booSelected {get;set;}
         public Deliverable__c oDeliverable {get;set;}
@@ -391,5 +453,30 @@ public virtual with sharing class ECO_ProjectScopeController extends ECO_PageCon
         options.add(new SelectOption('true','Yes')); 
         options.add(new SelectOption('false','No')); 
         return options; 
-    }   
+    } 
+    
+ 	public PageReference checkBIMChoice() {
+
+        system.debug( 'checkBIMChoice getYesNo => ' + UtilizeBMI );
+        
+        if( UtilizeBMI == 'true' )       
+        	oProjectPackage.Utilize_BMI_Technology__c = true;
+		else
+        if( UtilizeBMI == 'false' )       
+        	oProjectPackage.Utilize_BMI_Technology__c = false;
+        
+        return null;
+    }    
+    
+	public List<SelectOption> getYesNoBIM() {
+        List<SelectOption> options = new List<SelectOption>(); 
+        options.add(new SelectOption('true','Yes')); 
+        options.add(new SelectOption('false','No')); 
+        //options.add(new SelectOption('null','')); 
+
+        //SelectOption op = new SelectOption('false','No');        
+		//op.        
+
+        return options; 
+    }     
 }

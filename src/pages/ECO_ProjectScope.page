@@ -2,6 +2,33 @@
     <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
     <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
 
+    <style> 
+#rcorners1 {
+    border-radius: 2px;
+    background: #73AD21;
+    padding: 20px; 
+    width: 200px;
+    height: 150px;    
+}
+
+.rcorners2 {
+    border-radius: 2px;
+    border: 4px solid #EE2421;
+    padding: 2px; 
+    width: 420px;
+    height: 19px;    
+}
+
+#rcorners3 {
+    border-radius: 25px;
+    background: url(paper.gif);
+    background-position: left top;
+    background-repeat: repeat;
+    padding: 20px; 
+    width: 200px;
+    height: 150px;    
+}
+</style>
     <style>
 
         /* CUSTOM HELP / GUIDANCE TEXT BOX 
@@ -85,21 +112,45 @@
             background-color: #A2D3F1;
         }
     </style>
-
-
+  
     <script>
     function setVar(){
+
         $l = jQuery.noConflict();
         var selectedTab = $l('#tabs').tabs('option','active');
+        
         $l('[id$=myHiddenField]').val(selectedTab);
-        saving();
+        
+        var elemVal = document.getElementById('j_id0:j_id5:j_id61:j_id66:j_id67:j_id71:j_id72:BMISelect:0').value;
+        var elemVal1 = document.getElementById('j_id0:j_id5:j_id61:j_id66:j_id67:j_id71:j_id72:BMISelect:1').value;
+        var elemValSelYes = document.getElementById('j_id0:j_id5:j_id61:j_id66:j_id67:j_id71:j_id72:BMISelect:0').checked;   
+        var elemValSelNo = document.getElementById('j_id0:j_id5:j_id61:j_id66:j_id67:j_id71:j_id72:BMISelect:1').checked; 
+        
+        //alert( ' elemValSelYes ' + elemValSelYes + ' elemValSelNo ' + elemValSelNo );
+        
+        if( elemValSelYes == false && elemValSelNo == false )
+		{
+			document.getElementById('BMI_Error').style.display = "inline"; 	
+            document.getElementById('myErrorBody').style.display = "inline"; 	
+            
+            //showMessage('WARNING', 'This would be really cool indeed!');
+            //alert('Line 135');
+            return;
+		}            
+        else
+		{
+			document.getElementById('BMI_Error').style.display = "none"; 	        
+        	saving();
+        }            
+
+        return;
     }
 
 	function handleScopeDelete(selectedScope)
 	{
-
 		deleteScope(selectedScope);
 	}
+    
 	function setInner(variable)
         {
             var selected = variable.value;
@@ -111,29 +162,30 @@
             {
                 document.getElementById("j_id0:j_id31:j_id36:j_id41:j_id42:j_id46:j_id47:YesMessage").style.display = 'none';
             }
-            
         }  
     
     </script>
 
     <apex:sectionHeader title="Scope & Packages" subtitle="{!theProject.ProjectSectionHeaderName__c}" />
-
+    
     <apex:outputpanel id="all">
     <apex:form >  
-        
-			<apex:pageMessages id="messages" />        
+        <apex:pageMessages id="messages" />
 
         <!-- Action function for the rerendering -->
         <apex:actionFunction name="saving" action="{!SavePackages}" />
-
         <apex:inputHidden value="{!selectedTab}" id="myHiddenField"/>
 
         <div style="visibility: hidden;">
         <apex:inputField value="{!oProjectPackage.Scope__c}" style="visibility: hidden;" />
         </div>
+        
+        <div id="myErrorBody" class="rcorners2" style="display: none;">Please choose Yes or No for BIM  before Saving.</div>
 
-       <apex:pageMessage id="headerSummaryMessage" severity="info"  escape="false"  summary="
+       <apex:pageMessage id="headerSummaryMessage1" severity="info"  escape="false"  summary="
                 Provide a brief summary of the overall scope of work and proposed approach for the project.  Detailed scope packages may be added if additional detail or delineation of AECOMs services is required.  Scope packages may include specific project activities or tasks, phases of work, interdisciplinary deliverables, change orders or variations, or packages “owned” by another organization to support an intercompany agreement.  Enough detail should be provided to support development of the schedule, required resources and cost estimate.   It is best practice to also capture any risks or assumptions identified during development of the project scope and approach." />
+
+        <apex:pageMessage id="headerSummaryMessage" severity="info"  escape="false"  summary="Provide a Zbrief summary of the overall scope of work <a href=www.cnn.com>cnn</a>" />
 
         <apex:pageBlock title="Project Scope" mode="edit">
 
@@ -143,7 +195,6 @@
                 <apex:commandButton onclick="setVar(); return false;" value="Save"/>
                 <apex:commandButton action="{!Cancel}" value="Return to Project"/>
             </apex:pageBlockButtons>
-
             <c:Tabpanel >
             <c:Tab title="{!oProjectPackage.PackageTitle__c}">
             <!-- Project Scope Section -->
@@ -151,7 +202,9 @@
                 <apex:outputText value="{!oProjectPackage.PackageTitle__c}" />
                 <apex:inputField id="first" value="{!oProjectPackage.Scope_Owner__c}" />
                 <apex:inputField value="{!oProjectPackage.Status__c}" />
-                <apex:inputField value="{!oProjectPackage.CancelledReason__c}" rendered="{!if(theProject.pse__Stage__c = 'Approved', true, false)}"/>
+				
+				<apex:inputField id="CancelReason" value="{!oProjectPackage.CancelledReason__c}" rendered="{!theProject.pse__Stage__c = 'Execution'}" /> 
+                
             </apex:pageBlockSection>
             <apex:pageBlockSection columns="1"  >
                 <apex:pageblockSectionItem helpText="{!$ObjectType.Packages__c.Fields.Scope_Details__c.inlineHelpText}"  >
@@ -163,38 +216,60 @@
                 <apex:pageblockSectionItem helpText="{!$ObjectType.Packages__c.Fields.Scope_Approach__c.inlineHelptext}" >
                     <apex:outputText value="{!$ObjectType.Packages__c.Fields.Scope_Approach__c.Label}" />
                     <apex:inputField value="{!oProjectPackage.Scope_Approach__c}" />
-                </apex:pageblockSectionItem>
-            
+                </apex:pageblockSectionItem>            
             </apex:pageBlockSection>
             
             <br /><br />
             <div style="font-weight:bold;padding:20px 10px 4px 10px;">BIM</div>
-            <apex:actionRegion immediate="true">
+            <apex:actionRegion immediate="true">                 
                 <div style="padding:10px">
                     <apex:panelgrid columns="4" style="float:left;">
                     This project will use Digital Production Tools, or manage information in a common Data Environment.
                     <!--<c:ECO_HelpIcon helpText="{!$ObjectType.Packages__c.fields.Utilize_BMI_Technology__c.inlineHelpText}" />-->
                     &nbsp;&nbsp;
                     <!--<apex:selectRadio value="{!oProjectPackage.Utilize_BMI_Technology__c}" onchange="setInner(this)" >-->
-                     	 <apex:selectRadio value="{!oProjectPackage.Utilize_BMI_Technology__c}" >
-                            <apex:selectOptions value="{!yesNo}"/>
-                            <apex:actionSupport event="onchange" reRender="Panel"/>
+
+                     	 <apex:selectRadio value="{!UtilizeBMI}" Id="BMISelect"  required="true">
+                            <apex:selectOptions value="{!yesNoBIM}"/>
+                            <apex:actionSupport event="onchange" reRender="Panel" action="{!checkBIMChoice}" />
+                             
+                            <!-- <apex:commandButton value="Test" action="{!test}" rerender="out" status="status"/> -->
+                             
                          </apex:selectRadio>
                     </apex:panelgrid>
+                    <br/>
                 </div>
+                <div style="padding:10px">
+                    <p id='BMI_Error' class="rcorners2" style="display:none;">
+						Please choose Yes or No for BIM  before Saving.
+                    </p>  
+                </div>   
                 <div style="padding:10px">
                    <br/>
                    <apex:outputPanel id="Panel" >
-                       <apex:outputPanel id="YesMessage" rendered="{!if(oProjectPackage.Utilize_BMI_Technology__c, true, false)}" >
-                           <apex:pageMessage severity="info" summary="Projects utilizing BIM will need to provide additional data to determine if a BIM Health Start Review is required. Complete the BIM intake form for review by your Geography Director." />
+                       <apex:outputPanel id="YesMessage" rendered="{!if((UtilizeBMI=='true'), true, false)}" >
+                    
+                        <div class="customHelpText">
+                            <div class="customHelpBody">
+                                Projects answering YES will need to provide additional 
+                                                                                      data to determine if a BIM Healthy Start review is required.  
+                                                                                      Initiate a BIM Healthy Start screening using the button below.  
+                                                                                      Screening results will be provided when you submit the form.  
+                                                                                      For more information on BIM Healthy Start, see the
+                                <a href = "http://sharepoint.aecom">BIM Healthy Start overview page</a>
+                            </div>
+    					</div>
+                           
+				       	<div style="padding:10px">
+                			<apex:outputLink styleClass="btn" style="text-decoration:none" value="https://jonanunson.typeform.com/to/Fovnuf?EpMId={!theProject.pse__Project_ID__c}" target="_blank">Initiate BIM Healthy Start Screening</apex:outputLink>
+            			</div>                           
+
                        </apex:outputPanel>
+                       
                    </apex:outputPanel>
                    
                 </div>     
             </apex:actionRegion>
-            <div style="padding:10px">
-                <apex:outputLink styleClass="btn" style="text-decoration:none" value="https://jonanunson.typeform.com/to/Fovnuf" target="_blank">BIM intake form</apex:outputLink>
-            </div>
             
             <div style="font-weight:bold;padding:20px 10px 4px 10px;">Safety in Design</div>
             <apex:actionRegion immediate="true">
@@ -238,17 +313,14 @@
                 <apex:commandButton value="Attach File to Package" action="{!AttachFile}"  reRender="messages" >
                     <apex:param assignTo="{!sSelectedPackageId}" name="sSelectedPackageId" value="{!oProjectPackage.Id}" />
                     <apex:param assignTo="{!sSelectedPackageName}" name="sSelectedPackageName" value="{!oProjectPackage.PackageTitle__c}" />
-                </apex:commandButton>
-               
+                </apex:commandButton>              
             </div>
-
 
             <apex:outputPanel rendered="{!IF(oProjectPackage.Id ==null, false, true)}">
 
             <apex:variable value="{!lstMapAssignedDeliverables[oProjectPackage.Id]}"  var="myMap" />
 
             <apex:outputPanel >
-
 
                 <div style="font-weight:bold;padding:20px 10px 4px 10px;">
                 <apex:pageMessage severity="info" summary="Deliverables cannot be assigned until all packages are saved" rendered="{!booNewProjectInPlay}" />
@@ -260,7 +332,6 @@
                                     <c:ECO_HelpIcon helpText="A list of Project Deliverables will appear here once added to the project.  Select the Scope Package to which the deliverable belongs to add the deliverable to that scope package." />
                     </apex:outputPanel>
                     <apex:pageblocksection columns="1" collapsible="false" >
-
                         
                         <apex:outputText Value="No Results Were Found." rendered="{!IF(myMap.size > 0, false, true)}" />
 
@@ -287,7 +358,6 @@
             </apex:outputPanel>
             </apex:outputPanel>
 
-
             </c:Tab>
             <!-- Scope Package Section -->
             <apex:repeat value="{!lstPackages}" var="ScopePackage">
@@ -301,12 +371,11 @@
                 <apex:commandButton rendered="{!theProject.pse__Stage__c =='Planning' ||  theProject.pse__Stage__c == 'Pending Go/No Go'  && ScopePackage.PackageTitle__c !=''}" onclick="deleteScope('{!ScopePackage.Id}'); return false;" value="Delete Package"  />
                 </div>
 
-                <apex:pageBlockSection title="{!IF(ScopePackage.PackageTitle__c=='', 'New Scope Package', ScopePackage.PackageTitle__c)} "  columns="2"  collapsible="false">
-    
+                <apex:pageBlockSection title="{!IF(ScopePackage.PackageTitle__c=='', 'New Scope Package', ScopePackage.PackageTitle__c)} "  columns="2"  collapsible="false">    
                     <apex:inputField value="{!ScopePackage.PackageTitle__c}" required="true" />
                     <apex:inputField value="{!ScopePackage.Scope_Owner__c}" />
                     <apex:inputField value="{!ScopePackage.Status__c}" />
-                    <apex:inputField value="{!ScopePackage.CancelledReason__c}" />
+					<apex:inputField value="{!oProjectPackage.CancelledReason__c}" rendered="{!theProject.pse__Stage__c = 'Execution'}" /> 
                 </apex:pageBlockSection>
                 <apex:pageBlockSection columns="1">
                     <apex:pageblockSectionItem helpText="{!$ObjectType.Packages__c.Fields.Scope_Details__c.inlineHelpText}">
@@ -314,7 +383,6 @@
                         <apex:inputField value="{!ScopePackage.Scope_Details__c}" />
                     </apex:pageblockSectionItem>
                 </apex:pageBlockSection>
-
 
                 <br />
                 <apex:pageBlockSection columns="1">
@@ -324,7 +392,6 @@
                     </apex:pageblockSectionItem>
                 </apex:pageBlockSection>
                 <br /><br />
-
 
                 <div style="font-weight:bold;padding:20px 10px 20px 10px;">Package Attachments</div>
                 <apex:outputPanel rendered="{!ScopePackage.Attachments.size == 0}" layout="block" style="padding:10px">
@@ -413,6 +480,7 @@
         <script type="text/javascript">
             $k = jQuery.noConflict();
             $k("#tabs").tabs({active: {!selectedTab}});
+
         </script>
     </apex:outputPanel>
 </apex:page>
