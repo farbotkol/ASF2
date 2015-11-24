@@ -269,6 +269,7 @@ public class ECO_Service_ProjectSnapshots {
 				ytdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, yearStartDate); 
 
                 billingMetricsAR0to30Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_0to30);
+                System.debug(System.LoggingLevel.WARN, '___billingMetricsAR0to30Map='+billingMetricsAR0to30Map);
                 billingMetricsAR31to60Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_31to60);
                 billingMetricsAR61to90Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_61to90);
                 billingMetricsAR91to180Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_91to180);
@@ -296,6 +297,16 @@ public class ECO_Service_ProjectSnapshots {
 	                snapshot.ProjectNumber__c = project.OracleProjectNumber__c;
 	                snapshot.ProjectStartDate__c = project.pse__Start_Date__c;
 	                snapshot.ProjectEndDate__c = project.pse__End_Date__c;
+	                snapshot.AR0to30__c = 0;
+	                snapshot.AR31to60__c = 0;
+	                snapshot.AR61to90__c = 0;
+	                snapshot.AR91to180__c = 0;
+	                snapshot.AR181Plus__c = 0;
+	                snapshot.Unbilled181Plus__c = 0;
+	                snapshot.Unbilled91to180__c = 0;
+      				snapshot.Unbilled61to90__c = 0;
+      				snapshot.Unbilled31to60__c = 0;
+                    snapshot.Unbilled0to30__c = 0;
 	                snapshot.Project__c = project.Id;
 	                projIdToSnapshotMap.put(project.Id, snapshot);
 	            }
@@ -407,14 +418,29 @@ public class ECO_Service_ProjectSnapshots {
 	                snapshot = getYtdActualFinancialMetricsMapInformation(ytdFinancialMetrics, snapshot, yearStartDate);
 	                
                     // Billing Metrics
+                    System.debug(System.LoggingLevel.WARN, '___createProjectSnapshots: billingMetricsARMap='+billingMetricsARMap);
                     BillingMetrics billingMetricsAR = billingMetricsARMap.get(project.Id);
                     if (billingMetricsAR != null) {
 	                    snapshot = getBillingMetricsARMapInformation(billingMetricsAR, snapshot);
-	                    snapshot.AR0to30__c = billingMetricsAR0to30Map.get(project.Id);
-	                    snapshot.AR31to60__c = billingMetricsAR31to60Map.get(project.Id);
-	                    snapshot.AR61to90__c = billingMetricsAR61to90Map.get(project.Id);
-	                    snapshot.AR91to180__c = billingMetricsAR91to180Map.get(project.Id);
-	                    snapshot.AR181Plus__c = billingMetricsAR181PlusMap.get(project.Id);
+	                    if (billingMetricsAR0to30Map.containsKey(project.Id)) {
+	                    	snapshot.AR0to30__c = billingMetricsAR0to30Map.get(project.Id);
+	                    }
+	                    
+	                    if (billingMetricsAR31to60Map.containsKey(project.Id)) {
+	                    	snapshot.AR31to60__c = billingMetricsAR31to60Map.get(project.Id);
+	                    }
+	                    
+	                    if (billingMetricsAR61to90Map.containsKey(project.Id)) {
+	                    	snapshot.AR61to90__c = billingMetricsAR61to90Map.get(project.Id);
+	                    }
+	                    
+	                    if (billingMetricsAR91to180Map.containsKey(project.Id)) {
+	                    	snapshot.AR91to180__c = billingMetricsAR91to180Map.get(project.Id);
+	                    }
+	                    
+	                    if (billingMetricsAR181PlusMap.containsKey(project.Id)) {
+	                    	snapshot.AR181Plus__c = billingMetricsAR181PlusMap.get(project.Id);
+	                    }
 	                    
 	                    snapshot.ARTotal__c = billingMetricsAR.BilledAR;
 	                    snapshot.ARRetention__c = billingMetricsAR.Retention;
@@ -423,15 +449,30 @@ public class ECO_Service_ProjectSnapshots {
                     }
                     
 					// Unbilled Metrics	
-                    snapshot.Unbilled181Plus__c = unbilledMetricsAR181PlusMap.get(project.Id);
-      				snapshot.Unbilled91to180__c = unbilledMetricsAR91to180Map.get(project.Id);
-      				snapshot.Unbilled61to90__c = unbilledMetricsAR61to90Map.get(project.Id);
-      				snapshot.Unbilled31to60__c = unbilledMetricsAR31to60Map.get(project.Id);
-                    snapshot.Unbilled0to30__c = unbilledMetricsAR0to30Map.get(project.Id);
+					if (unbilledMetricsAR181PlusMap.containsKey(project.Id)) {
+                    	snapshot.Unbilled181Plus__c = unbilledMetricsAR181PlusMap.get(project.Id);
+					}
+					
+					if (unbilledMetricsAR91to180Map.containsKey(project.Id)) {
+      					snapshot.Unbilled91to180__c = unbilledMetricsAR91to180Map.get(project.Id);
+					}
+					
+					if (unbilledMetricsAR61to90Map.containsKey(project.Id)) {
+      					snapshot.Unbilled61to90__c = unbilledMetricsAR61to90Map.get(project.Id);
+					}
+					
+					if (unbilledMetricsAR31to60Map.containsKey(project.Id)) {
+      					snapshot.Unbilled31to60__c = unbilledMetricsAR31to60Map.get(project.Id);
+					}
+					
+					if (unbilledMetricsAR0to30Map.containsKey(project.Id)) {
+                    	snapshot.Unbilled0to30__c = unbilledMetricsAR0to30Map.get(project.Id);
+					}
 				    
       				// Future Spend
       				snapshot = getFutureSpendInformation(snapshot);
       				
+	                System.debug(System.LoggingLevel.WARN, '___createProjectSnapshots: snapshot='+snapshot);
 	                snapshotList.add(snapshot);
 	            }   
 	        }
@@ -510,6 +551,8 @@ public class ECO_Service_ProjectSnapshots {
         Map<Id, BillingMetrics> billingMetricsMap = new Map<Id, BillingMetrics>();
         BillingMetrics billingMetrics;
         try {
+        	System.debug(System.LoggingLevel.WARN, '___itdActualFinancialMetricsMap='+itdActualFinancialMetricsMap);
+        	
             /**ERROR: SOQL "cuts off" after FROM Billing__c: for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled, SUM(RetentionAmount__c) totalRetention
                             FROM Billing__c WHERE ProjectNumber__c IN :projectIds GROUP BY ProjectNumber__c])
             */
@@ -538,7 +581,7 @@ public class ECO_Service_ProjectSnapshots {
 		                        billingMetrics.BIEE = totalRevenue - billingMetrics.BilledAR;
 		                    }
 		                    billingMetricsMap.put(projId, billingMetrics);
-		                    System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap='+billingMetricsARMap);
+		                    System.debug(System.LoggingLevel.WARN, '___billingMetricsMap='+billingMetricsMap);
 	                    }
                 	}
                 }
@@ -656,6 +699,7 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
             else if (range == UNBILLED_181Plus) {
                 startDate = pSnapshotDate.addDays(-180);
             }
+            System.debug(System.LoggingLevel.WARN, '___getUnbilledMetricsARDateRangeMap: range='+range+', startDate='+startDate+', projectIds='+projectIds);
             
         	for (AggregateResult ar: [SELECT ProjectNumber__c, SUM(Amount__c) totalRevenue
                             FROM Revenue__c WHERE ProjectNumber__c IN :projectIds
@@ -666,11 +710,8 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
                 Decimal totalRevenue = (Decimal)ar.get('totalRevenue');
                 Id projId = (Id) ar.get('ProjectNumber__c');
                 System.debug(System.LoggingLevel.WARN, '___range='+range+', totalRevenue='+totalRevenue+', projId='+projId);
-                System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap='+billingMetricsARMap);
                 if (billingMetricsARMap != null) {
-                	System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap.get(projId)='+billingMetricsARMap.get(projId));
-                	System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap.get(projId).BilledAR='+billingMetricsARMap.get(projId).BilledAR);
-                	
+                	System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap='+billingMetricsARMap);
 	                if (range == UNBILLED_181Plus) {
 		                if (totalRevenue != null)
 		                {
@@ -1585,8 +1626,7 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
             for (Id projId : projectIds) {
             	metrics = new FinancialMetrics();
             	FinancialMetrics totalRevenueMetrics = totalRevenueMap.get(projId);
-            	System.debug(System.LoggingLevel.WARN, '___totalRevenueMetrics='+totalRevenueMetrics);
-           	 	FinancialMetrics totalCostMetrics = totalCostMap.get(projId);
+            	FinancialMetrics totalCostMetrics = totalCostMap.get(projId);
            	 	FinancialMetrics totalLaborMetrics = totalLaborMap.get(projId);
            	 	FinancialMetrics totalNonLaborMetrics = totalNonLaborMap.get(projId);
 				
@@ -1594,20 +1634,30 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
            	 	FinancialMetrics funcBurdenedCostsLaborMetrics = funcBurdenedCostsLaborMap.get(projId);
            	 	FinancialMetrics funcBurdenedCostsHoursMetrics = funcBurdenedCostsHoursMap.get(projId);
 
-				if (totalRevenueMetrics != null || totalCostMetrics != null ||
-						totalLaborMetrics != null || totalNonLaborMetrics != null) {	
+if (totalRevenueMetrics != null) {
+	metrics.totalRevenue = totalRevenueMetrics.totalRevenue;
+}
+
+				if (totalRevenueMetrics != null && totalNonLaborMetrics != null) {	
 		            metrics.NetServiceRevenue = getNetService(totalRevenueMetrics.TotalRevenue, totalNonLaborMetrics.TotalNonLabor); 
-		            System.debug(System.LoggingLevel.WARN, '___metrics.NetServiceRevenue='+metrics.NetServiceRevenue);
+					System.debug(System.LoggingLevel.WARN, '___metrics.NetServiceRevenue='+metrics.NetServiceRevenue);
+				}
+				
+				if (totalRevenueMetrics != null && totalCostMetrics != null) {
 		            metrics.NMGR = getNMGR(totalCostMetrics.NetMargin, totalRevenueMetrics.TotalRevenue);
 		            System.debug(System.LoggingLevel.WARN, '___metrics.NMGR='+metrics.NMGR);
+            	}
+            	
+            	if (totalCostMetrics != null) {
 		            metrics.NMNSR = getNMNSRC(totalCostMetrics.NetMargin, metrics.NetServiceRevenue);
-		            System.debug(System.LoggingLevel.WARN, '___metrics.NMNSR='+metrics.NMNSR); 
-		            System.debug(System.LoggingLevel.WARN, '___metrics.totalRevenue='+totalRevenueMetrics.TotalRevenue+
-		            	', totalNonLabor='+totalNonLaborMetrics.TotalNonLabor+', totalLabor='+ totalLaborMetrics.TotalLabor);
+		            System.debug(System.LoggingLevel.WARN, '___metrics.NMNSR='+metrics.NMNSR);
+            	}
+            	
+		        if (totalRevenueMetrics != null && totalLaborMetrics != null && totalNonLaborMetrics != null) {   
 		            metrics.LaborMult = getLaborMult(totalRevenueMetrics.TotalRevenue, totalNonLaborMetrics.TotalNonLabor, totalLaborMetrics.TotalLabor);
 		            System.debug(System.LoggingLevel.WARN, '___metrics.LaborMult='+metrics.LaborMult); 
 				}
-
+				
 				if (funcBurdenedCostsMetrics != null) {
 		            metrics.CostsODCEXPS = funcBurdenedCostsMetrics.CostsODCEXPS;
 		            metrics.CostsODCSUBS = funcBurdenedCostsMetrics.CostsODCSUBS;
@@ -1616,8 +1666,11 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
 		            metrics.Overhead = funcBurdenedCostsMetrics.Overhead;
 				}
 				
-				if (funcBurdenedCostsLaborMetrics != null || funcBurdenedCostsHoursMetrics != null) {
+				if (funcBurdenedCostsLaborMetrics != null) {
 		            metrics.Labor = funcBurdenedCostsLaborMetrics.Labor;
+				}
+				
+				if (funcBurdenedCostsHoursMetrics != null) {
 		            metrics.Hours = funcBurdenedCostsHoursMetrics.Hours;
 				}
 				metricsMap.put(projId, metrics);
@@ -1867,7 +1920,12 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
     private Decimal getNetService(Decimal revenue, Decimal nonLabor)
     {
     	System.debug(System.LoggingLevel.WARN, '___getNetService: revenue='+revenue+', nonLabor='+nonLabor);
-        return revenue - nonLabor;
+        if (revenue != null && nonLabor != null) {
+        	return revenue - nonLabor;
+        }
+        else {
+        	return 0;
+        }
     }
     
     private Decimal getNMGR(Decimal netMargin, Decimal revenue)
