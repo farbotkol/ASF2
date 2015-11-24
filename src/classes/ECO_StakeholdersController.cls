@@ -829,13 +829,11 @@ public with sharing class ECO_StakeholdersController
 			Integer surveyToRefresh = Integer.valueOf(ApexPages.currentPage().getParameters().get('surveyToRefresh'));
 			try{
 				Site__c site = [Select Id, Account__c from Site__c where Id =: lstSSW[surveyToRefresh].ss.Client__c];
-				List<Contact> contacts = [Select Id, Name from Contact where AccountId =: site.Account__c order by Name];
+				List<Contact> contacts = [Select Id, Name from Contact where AccountId =: site.Account__c and (not FirstName Like '%payable%') AND (not LastName Like '%payable%') order by Name];
 				lstSSW[surveyToRefresh].cOptions = new list<SelectOption>();
-				lstSSW[surveyToRefresh].cOptions.add(new SelectOption(' ', '--None--'));
+				lstSSW[surveyToRefresh].cOptions.add(new SelectOption('&nbsp;', '--None--'));
 				for(Contact contact : contacts){
-					if(!contact.FirstName.containsIgnoreCase('Payable') && !contact.LastName.containsIgnoreCase('Payable')){
-						lstSSW[surveyToRefresh].cOptions.add(new SelectOption(contact.Id, contact.Name));
-					}
+					lstSSW[surveyToRefresh].cOptions.add(new SelectOption(contact.Id, contact.Name));
 				}
 			}
 			catch(Exception ex){
@@ -964,7 +962,7 @@ public with sharing class ECO_StakeholdersController
             cOptions = new list<SelectOption>();
             if(contacts != null){
             	cOptions = new list<SelectOption>();
-				cOptions.add(new SelectOption(' ', '--None--'));
+            	cOptions.add(new SelectOption('&nbsp;', '--None--'));
 				for(Contact contact : contacts){
 					cOptions.add(new SelectOption(contact.Id, contact.Name));
 				}

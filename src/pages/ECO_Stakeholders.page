@@ -233,6 +233,12 @@
 	    	showDropDown: true
 		});
 	}
+
+	function setVal(element){
+		if($x(element).val().contains('&nbsp')){
+			$x(element).val('');
+		}
+	}
 	</script>
 	
 	<apex:form id="topForm">
@@ -616,7 +622,7 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 				<apex:outputPanel id="survey" >
 				<apex:pageBlock title="Project Survey Requests">
 					<apex:pageBlockButtons location="bottom">
-						<apex:commandButton action="{!SaveAll}" value="Save" rerender="pgMessages,ActiveKeysTable,InactiveKeysTable,ProjectTeamTable,VendorSubTable,StakeholderTable,CommTable" onClick="this.disabled = true;"/><!-- onComplete="location.reload()" -->
+						<apex:commandButton action="{!SaveAll}" value="Save" rerender="pgMessages,ActiveKeysTable,InactiveKeysTable,ProjectTeamTable,VendorSubTable,StakeholderTable,CommTable"  onClick="this.disabled = true;"/><!-- onComplete="location.reload()" -->
 						<apex:commandButton action="{!ReturnToProject}" value="Return to Project" />
 					</apex:pageBlockButtons>
 				
@@ -641,7 +647,10 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 							</apex:column>
 							<apex:column >
 								<apex:facet name="header">Scheduled Date</apex:facet>
-								<apex:inputField value="{!item.ss.ScheduledDate__c}" />
+								    <apex:outputpanel layout="block" styleClass="requiredInput">
+                    				<apex:outputpanel layout="block" styleClass="requiredBlock" />
+                    					<apex:inputField value="{!item.ss.ScheduledDate__c}" />
+                    				</apex:outputpanel>
 							</apex:column>
 							<apex:column >
 								<apex:facet name="header">Comments</apex:facet>
@@ -656,19 +665,11 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 	                            </apex:selectList>	
 	                        </apex:column>		
                             <apex:column headerValue="Contact" style="min-width:150px">
-
-                            	<!--<apex:inputField value="{!item.ss.Contact__c}" />
-                            	<span style="visibility: hidden;">
-                            	<apex:inputField value="{!item.ss.Site_Account__c}" />
-                            	</span>-->
                             	<apex:outputPanel layout="inline" id="contactSelect">
-	                           		<apex:selectList value="{!item.ss.Contact__c}" styleClass="contactSelector" multiselect="false" size="1" rendered="{!item.cOptions.size > 0}" id="contactSelectList">
+                            		<apex:selectList value="{!item.ss.Contact__c}" styleClass="contactSelector" multiselect="false" size="1" rendered="{!item.cOptions.size > 0}" id="contactSelectList" onchange="setVal(this)">
 		                                <apex:selectOptions value="{!item.cOptions}"></apex:selectoptions>     
-		                            </apex:selectList>	
+		                            </apex:selectList>
 	                          	</apex:outputPanel>
-								<!--<c:Typeahead object="Contact" destinationForSelectedId="contactid" filterClause="accountid = {!item.accountId}" />   
-								<apex:inputHidden id="contactid" value="{!item.ss.Contact__c}" />-->
-
 	                        </apex:column>	
 
 
