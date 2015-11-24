@@ -20,6 +20,8 @@ public class ECO_RiskRegisterListController {
             if(oBH.Status__c == 'Forecast')
                 totalForecastCost = totalForecastCost + oBH.TotalContingencyAmount__c;
         }
+        totalApprovedCost = totalApprovedCost.setScale(2);
+        totalForecastCost = totalForecastCost.setScale(2);
     }
     public PageReference returnProj(){
         return new PageReference('/' + thisProject.Id);
@@ -46,6 +48,7 @@ public class ECO_RiskRegisterListController {
             if(oRisk.CurrentStatus__c != 'Expired' && oRisk.CurrentStatus__c != 'Cancelled')
             	totalPostMitigation = totalPostMitigation + oRisk.PostmitigationContingencyTotal__c;
         }
+        totalPostMitigation = totalPostMitigation.setScale(2);
         System.debug('riskList.size:  '+riskList.size());
         System.debug('thisProject.Id:  '+thisProject.Id);
         return riskList;
