@@ -690,6 +690,16 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>CostInceptionto3MonthsAgo__c</fullName>
+        <externalId>false</externalId>
+        <label>Cost Inception to 3 Months Ago</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>CostMonthToDate__c</fullName>
         <externalId>false</externalId>
         <label>Cost Month To Date</label>
@@ -720,6 +730,18 @@
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>CostVariance__c</fullName>
+        <externalId>false</externalId>
+        <formula>EarnedValueActualSpend__c - EarnedValuePlannedValue__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cost Variance</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>CostYearToDate__c</fullName>
@@ -1992,7 +2014,7 @@
         <fullName>LostMarginETC__c</fullName>
         <description>LostMarginForecast__c -  LostMarginITD__c</description>
         <externalId>false</externalId>
-        <formula>LostMarginForecast__c -  LostMarginITD__c</formula>
+        <formula>LostMarginForecast__c - LostMarginITD__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Lost Margin ETC</label>
         <precision>18</precision>
@@ -2003,15 +2025,38 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LostMarginForecastDelta__c</fullName>
+        <externalId>false</externalId>
+        <formula>LostMarginForecast__c - LostMarginForecastPrevME__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Lost Margin Forecast Delta</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>LostMarginForecastPrevME__c</fullName>
+        <externalId>false</externalId>
+        <label>Lost Margin Forecast Prev. ME</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>LostMarginForecast__c</fullName>
         <externalId>false</externalId>
+        <formula>(( NMNSRForecast__c -  NMNSRBudget__c ) *  NetServiceForecast__c ) /100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Lost Margin Forecast</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>LostMarginITD__c</fullName>
@@ -2968,6 +3013,8 @@
     <fields>
         <fullName>RunRateAverageCost__c</fullName>
         <externalId>false</externalId>
+        <formula>( CostITD__c -  CostInceptionto3MonthsAgo__c ) / 3</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Run Rate Average Cost</label>
         <precision>18</precision>
         <required>false</required>
@@ -3298,24 +3345,26 @@
     <fields>
         <fullName>SurMarginITD__c</fullName>
         <externalId>false</externalId>
-        <label>SurMarginITD</label>
+        <formula>((NMNSRITD__c - NMNSRBudget__c) * NetServiceITD__c)/100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Surplus Margin ITD</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>SurMarginMonthToDate__c</fullName>
         <externalId>false</externalId>
-        <label>SurMarginMonthToDate</label>
+        <formula>((NMNSRMonthToDate__c - NMNSRBudget__c) * NetServiceMonthToDate__c)/100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Surplus Margin Month To Date</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>SurMarginUnapproved__c</fullName>
@@ -3331,13 +3380,14 @@
     <fields>
         <fullName>SurMarginYearToDate__c</fullName>
         <externalId>false</externalId>
-        <label>SurMarginYearToDate</label>
+        <formula>((NMNSRYearToDate__c - NMNSRBudget__c) * NetServiceYearToDate__c)/100</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Surplus Margin Year To Date</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>Time_Period__c</fullName>
@@ -3577,6 +3627,17 @@
         <type>Currency</type>
     </fields>
     <label>Project Snapshot</label>
+    <listViews>
+        <fullName>All</fullName>
+        <columns>AR__c</columns>
+        <columns>ARBIEE__c</columns>
+        <columns>ARRetention__c</columns>
+        <columns>ARTotal__c</columns>
+        <columns>CREATED_DATE</columns>
+        <filterScope>Everything</filterScope>
+        <label>All</label>
+        <language>en_US</language>
+    </listViews>
     <nameField>
         <label>Project Snapshot Name</label>
         <type>Text</type>

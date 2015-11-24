@@ -19,6 +19,17 @@
         <template>EcoSystem_Templates/EcoCMClosureApprovalRecalled</template>
     </alerts>
     <alerts>
+        <fullName>EcoCMExecutionApprovedReject</fullName>
+        <ccEmails>bjacobi@centerstance.com</ccEmails>
+        <description>EcoCMExecutionRejectedRecalled</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoCMExecutionApprovalApprovedRejected</template>
+    </alerts>
+    <alerts>
         <fullName>EcoCMOnHoldApprovalApprovedRej</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>

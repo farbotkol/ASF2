@@ -3623,7 +3623,7 @@
     <fields>
         <fullName>CostBudgetVariance__c</fullName>
         <externalId>false</externalId>
-        <formula>0.00</formula>
+        <formula>TotalApprovedCost__c - CostBudgetOriginal__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Cost Budget Variance</label>
         <precision>18</precision>
@@ -3662,7 +3662,7 @@
     <fields>
         <fullName>CostForecastVariance__c</fullName>
         <externalId>false</externalId>
-        <formula>0.00</formula>
+        <formula>TotalForecastCostPrevME__c - TotalProjectFunctionalBurdenedCost__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Cost Forecast Variance</label>
         <precision>18</precision>
@@ -4152,7 +4152,7 @@ S = Successful</inlineHelpText>
         <fullName>ProjectNumber__c</fullName>
         <description>Oracle Project Number</description>
         <externalId>false</externalId>
-        <formula>pse__Project__r.OracleProjectnumber__c</formula>
+        <formula>pse__Project__r.ProjectNumber__c</formula>
         <label>Project Number</label>
         <required>false</required>
         <trackHistory>false</trackHistory>
@@ -4365,6 +4365,8 @@ S = Successful</inlineHelpText>
     <fields>
         <fullName>ThreeMonthAverageBurnRate__c</fullName>
         <externalId>false</externalId>
+        <formula>(TotalProjectFunctionalBurdenedCost__c - CostITD3FiscalMonthEndsAgo__c)/3</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Three-Month Average Burn Rate</label>
         <precision>18</precision>
         <required>false</required>
@@ -5580,6 +5582,12 @@ ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Execution&quot;)))</errorCondition
         <description>All tasks that are parents of a Financial task must be Financial</description>
         <errorConditionFormula>IF( AND(NOT(ISNULL(pse__Parent_Task__c)), FinancialTask__c),IF( pse__Parent_Task__r.FinancialTask__c == false,true,false),false)</errorConditionFormula>
         <errorMessage>All tasks that are parents of a Financial task must be Financial</errorMessage>
+    </validationRules>
+    <validationRules>
+        <fullName>Prevent_Fin_Task_when_Oracle_synced</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(OR(ISPICKVAL(pse__Parent_Task__r.OracleSyncStatus__c,&quot;P&quot;),ISPICKVAL(pse__Parent_Task__r.OracleSyncStatus__c,&quot;S&quot;)), NOT(ISNULL(pse__Parent_Task__c )), FinancialTask__c = true, IsChargeable__c = true, ISNEW())</errorConditionFormula>
+        <errorMessage>Financial and Chargeable Child Task can not be created if parent has been synced to Oracle.</errorMessage>
     </validationRules>
     <validationRules>
         <fullName>ProjTaskName_CanOnlyHave20Characters</fullName>
