@@ -1,0 +1,105 @@
+<apex:component >
+
+<script type="text/ng-template" id="navigation-bar-directive.html">
+    <nav class="navbar navbar-default customNavbar">
+        <div class="container-fluid navbarBackground">
+            <div class="navbar-header" style="width:100%">
+                <a class="navbar-brand navbarText" href="#" ng-bind="crtl.pageTitle + ctrl.ProjectNumber + ' - ' + ctrl.ProjectName"></a> 
+                <div style="float:right;display:inline;">
+
+                    <div>
+                        <div>
+                            <br />
+                            <select ng-model="ctrl.data.singleSelect" ng-change="ctrl.selected()">
+
+                                <option value="/{{ctrl.ProjectId}">Project Command Console</option>
+                                <option value="/apex/eco_pmd_projectdashboard?id={{ctrl.ProjectId}}">Project Dashboard</option>
+                                <option value="/apex/eco_pmd_financialdashboard?id={{ctrl.ProjectId}}">Financial Dashboard</option>
+                                <option value="/apex/eco_pmd_tasksummaryreport?id={{ctrl.ProjectId}}">Task Summary</option>
+                                <option value="/apex/eco_pmd_earnedvaluedetail?id={{ctrl.ProjectId}}">Earned Value Detail</option>
+                                <option value="/apex/eco_pmd_costdetail_labourhours?id={{ctrl.ProjectId}}">Cost Detail - Labour Hours</option>
+                                <option value="/apex/eco_pmd_costdetail_labourcost?id={{ctrl.ProjectId}}">Cost Detail - Labour Costs</option>
+                                <option value="/apex/eco_pmd_costdetail_odcexpenses?id={{ctrl.ProjectId}}">Cost Detail - ODC Expenses</option>
+                                <option value="/apex/eco_pmd_costdetail_odcsubs?id={{ctrl.ProjectId}}">Cost Detail - ODC Subs</option>
+                                <option value="/apex/eco_pmd_accountsreceivablereport?id={{ctrl.ProjectId}}">Billing &amp; A/R</option>
+                                <option value="/apex/eco_pmd_RevenueDetails?id={{ctrl.ProjectId}}">Revenue Details</option>
+                                <option value="/apex/eco_pmd_TrendAnalysis?id={{ctrl.ProjectId}}">Snapshot Trend Analysis</option>
+                                <option value="/apex/eco_pmd_CommitmentsReport?id={{ctrl.ProjectId}}">x-Commitments</option>
+
+                            </select>
+                        </div>
+
+
+                    </div> 
+
+                </div>
+            </div>
+        </div>
+    </nav>
+</script>
+
+<script id="components/NavigationBar/navigation-bar.directive.js">
+    (function() {
+        'use strict';
+
+        angular
+        .module('components')
+        .directive('navigationBar', navigationBar);
+
+        navigationBar.$inject = [];
+
+        function navigationBar() {
+            var directive =  {
+                restrict            : 'EA',
+                controller          : NavigationBarController,
+                controllerAs        : 'ctrl',
+                bindToController    : true,
+                templateUrl         : 'navigation-bar-directive.html',
+                scope               : {
+                    pageTitle    : '@',
+                    projectName  : '@',
+                    projectId    : '@'
+                }
+            };
+
+            return directive;
+        }
+
+        angular
+        .module('components')
+        .controller('NavigationBarController', NavigationBarController);
+
+        NavigationBarController.$inject = [];
+
+        function NavigationBarController() {
+            var vm = this;
+            vm.pageTitle="Page Title Default"
+
+            vm.data = {singleSelect: null};
+
+            vm.status = {
+                isopen: false
+            };
+
+            vm.toggled = function(open) {
+                console.log('Dropdown is now: ', open);
+            };
+
+            vm.toggleDropdown = function(ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                ev.status.isopen = !ev.status.isopen;
+            };
+
+            vm.selected = function(){
+                console.log(vm.data.singleSelect);
+                location.replace(vm.data.singleSelect);
+              // var redirectWindow = window.open($scope.data.singleSelect, '_blank');
+              // redirectWindow.location;
+
+            };
+        }
+    })();
+</script>
+
+</apex:component>

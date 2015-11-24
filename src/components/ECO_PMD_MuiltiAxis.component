@@ -1,0 +1,144 @@
+<apex:component controller="ECO_PMD_MultiAxis_Controller">
+	<apex:attribute name="projectId" description="Project Number" type="String" required="true" /> 
+	
+    <apex:includeScript value="{!URLFOR($Resource.KendoUi, 'KendoUi/js/jquery.min.js')}"/>
+     <apex:includeScript value="{!URLFOR($Resource.KendoUi, 'KendoUi/js/kendo.all.min.js')}"/>
+     <apex:stylesheet value="{!URLFOR($Resource.KendoUi, 'KendoUi/style/kendo.common.min.css')}" /> 
+    <apex:stylesheet value="{!URLFOR($Resource.KendoUi, 'KendoUi/style/kendo.default.min.css')}" /> 
+
+ 
+    
+    <div class="panel panel-default dashbox">
+        <div class="panel-heading">
+       		Financial Summary
+        </div>
+         <table class='tdcenter' width='100%'>
+        	<tr><td><font size='5'>52.2%</font></td><td><font size='5'>88k</font></td><td><font size='5'>85</font></td></tr>  
+            <tr><td>GM / NSR</td><td>DTW Accrual ($)</td><td>DSO Days</td></tr> 
+        </table>
+
+		<div class="panel-body" >
+		
+        
+        <div id="example">
+        <div class="demo-section k-content">
+                           <div id="chart" width='100%'></div>
+        </div>
+
+        <script>
+       		function getFormattedDate(input) {
+                
+				var d = new Date(input);
+               
+                var m =d.getMonth();
+                
+                var y =d.getYear().toString();
+                var arr = new Array( "Jan", "Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec");
+                
+                var date = arr[m] + "-" + y.substr(y.length-2);
+                return date;           
+            }
+                        
+            function createChart() {
+                $("#chart").kendoChart({
+	                    
+    			    resizable: true,
+                    chartArea: {
+                        height: 250
+                    },
+                    legend: {
+                        position: "top"
+                    },
+                    series: [{
+                        type: "column",
+                        data: CostMonthToDateData,
+                        stack: false,
+                        name: "Cost Plan MTD",
+                        color: "#99CCFF",
+                        axis: "MTD"
+                    }, {
+                        type: "column",
+                        data: CostYearToDateData,
+                        stack: false,
+                        name: "Cost MTD",
+                        color: "#FF9933",
+                        axis: "MTD"
+                    }, {
+                        type: "line",
+                        data: CostITDData,
+                        name: "Cost Plan ITD",
+                        color: "#99CC00",
+                         axis: "ITD"
+                    }, {
+                        type: "line",
+                        data: NMNSRITDDate,
+                        name: "Cost ITD",
+                        color: "#CC33FF",
+                        axis: "ITD"
+                    }],
+                    valueAxes: [{
+                        name: "MTD",
+                        title: { text: "MTD - USD" }//,
+                        // min: 0,
+                        //max: 161,
+                        //majorUnit: 32
+                    },{
+                        name: "ITD",
+                        title: { text: "ITD - USD" }//,
+                        //min: 0,
+                        //max: 100
+                    }],
+                    categoryAxis: {
+                        //categories: ["Mon", "Tue", "Wed", "Thu", "Fri"],
+                        categories: categoryData,
+                        axisCrossingValues: [0,  10]
+                    },
+                    tooltip: {
+                        visible: true,
+                        format: "{0}%",
+                        template: "#= series.name #: #= value #"
+                	}
+                });
+            }
+    
+            var CostITDData = [];
+            var CostMonthToDateData = [];
+            var CostYearToDateData = [];
+            var NMNSRITDDate = [];
+            var categoryData = [];
+            ECO_PMD_MultiAxis_Controller.ProjectSnapshot(
+                '{!projectId}', 
+                function(result, event){
+        			if(event.status) {
+                        
+                        $.each(result, function(di, de) {
+     
+                          	CostITDData.push(de.CostITD__c);
+                            CostMonthToDateData.push(de.CostMonthToDate__c);
+                            CostYearToDateData.push(de.CostYearToDate__c);
+                            NMNSRITDDate.push(de.CostITD__c + 1000);
+                            categoryData.push(getFormattedDate(de.SnapshotDate__c));                                
+                        });
+                        $(document).ready(createChart);
+            			$(document).bind("kendo:skinChange", createChart);
+                    }
+                }
+            );
+            
+          
+        </script>
+</div>
+ </div>
+ <div class="panel-heading">
+        <a data-toggle="collapse" href="#collapseMA"><span class="glyphicon glyphicon-menu-down">More Info</span></a>
+    </div>
+    <div id="collapseMA" class="panel-collapse collapse">
+      <ul class="list-group">
+        <li class="list-group-item">Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean ac ultrices magna. Curabitur ac feugiat lectus. Pellentesque lobortis nec risus ut ultricies. Maecenas sagittis eu velit ac porttitor. Aliquam dui magna, vehicula eget lectus ac, semper sagittis nisl. Donec fermentum sapien at purus imperdiet elementum. Maecenas tincidunt mauris ut posuere blandit. Nulla iaculis urna purus, eu rutrum risus pulvinar et. Phasellus pellentesque facilisis elit eget condimentum. Donec ultricies odio erat, vel iaculis leo blandit quis. Aenean at mauris id ipsum vehicula vulputate vel quis turpis. Quisque viverra risus id odio porta varius. Cras id vestibulum risus, a ullamcorper quam. Donec sagittis id quam vel sagittis. </li>
+      </ul>
+      
+    </div>
+</div>
+
+
+</apex:component>

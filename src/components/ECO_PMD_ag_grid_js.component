@@ -1,0 +1,1224 @@
+<apex:component >
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.0.1/faker.min.js"></script>
+
+<script id="app.js">
+    (function () {
+        "use strict";
+
+        /**
+         * @ngdoc module
+         * @name ecopmd
+         *
+         * @requires components
+         * @requires services
+         * @requires agGrid
+         * @requires ui.bootstrap
+         * @requires pikaday
+         *
+         * @description
+         * Main application module
+         */
+        angular
+            .module('ecopmd', [
+                // Angular modules
+                'agGrid',
+
+                // custom modules
+                'components',
+                'services',
+
+                // 3rd Party modules
+                'twygmbh.auto-height',
+             ]);
+
+        /**
+         * @ngdoc overview
+         *
+         * @name components
+         *
+         * @description
+         * base components module
+         */
+        angular
+            .module('components', []);
+
+        /**
+         * @ngdoc overview
+         *
+         * @name services
+         *
+         * @description
+         * base service module
+         */
+        angular
+            .module('services', []);
+    })();
+</script>
+
+<script id="services/PubSub/pub-sub-service.js">
+    (function() {
+        'use strict';
+
+        /**
+         * @ngdoc service
+         *
+         * @name services.service:PubSub
+         *
+         * @requires https://docs.angularjs.org/api/ng/service/$timeout
+         * @requires https://docs.angularjs.org/api/ng/service/$log
+         *
+         * @description
+         * service that handles pub/sub event emitting/subscribing
+         */
+        angular
+            .module('services')
+            .factory('PubSub', PubSub);
+
+        PubSub.$inject = ['$timeout', '$log'];
+
+        function PubSub($timeout, $log) {
+            /**
+             * @ngdoc property
+             *
+             * @name service
+             *
+             * @propertyOf services.service:PubSub
+             *
+             * @description
+             * public service interface
+             *
+             * <pre>{
+             *      topics          : Object,
+             *      subUid          : Number,
+             *      subscribe       : PubSub.subscribe,
+             *      subscribeOnce   : PubSub.subscribeOnce,
+             *      publish         : PubSub.publish,
+             *      unsubscribe     : PubSub.unsubscribe
+             * } </pre>
+             */
+            var service = {
+                topics          : {},                   // storage for topics that can be broadcast or listened to
+                subUid          : -1,                   // a topic identifier
+                subscribe       : subscribe,
+                subscribeOnce   : subscribeOnce,
+                publish         : publish,
+                unsubscribe     : unsubscribe
+            };
+
+            return service;
+
+            /**
+             * @ngdoc method
+             *
+             * @name subscribe
+             *
+             * @methodOf services.service:PubSub
+             *
+             * @param {String} topic topic name.
+             * @param {Function} callback callback function to execute on event.
+             * @param {Boolean} once checks if event will be triggered only one time (optional).
+             *
+             * @description
+             * subscribe to events of interest with a specific topic name and a
+             * callback function, to be executed when the topic/event is observed
+             *
+             * @returns {number} identifier for subscription
+             */
+            function subscribe(topic, callback, once) {
+                var token   = service.subUid += 1,
+                    obj     = {};
+
+                if(!service.topics[topic]) {
+                    service.topics[topic] = [];
+                }
+
+                obj.token       = token;
+                obj.callback    = callback;
+                obj.once        = !!once;
+
+                service.topics[topic].push(obj);
+
+                return token;
+            }
+
+            /**
+             * @ngdoc method
+             *
+             * @name subscribeOnce
+             *
+             * @methodOf services.service:PubSub
+             *
+             * @param {String} topic topic name
+             * @param {Function} callback callback function to execute on event
+             *
+             * @description
+             * subscribe to events of interest setting a flag indicating the event will be published only one time
+             */
+
+            function subscribeOnce(topic, callback) {
+                service.subscribe(topic, callback, true);
+            }
+
+            /**
+             * @ngdoc method
+             *
+             * @name publish
+             *
+             * @methodOf services.service:PubSub
+             *
+             * @param {String} topic topic name.
+             * @param {Object || Array} args the data to be passed.
+             *
+             * @description
+             * publish or broadcast events of interest with a specific topic name and arguments such as the data to pass along.
+             *
+             * @returns {Boolean} true if topic exists and event is published.
+             */
+            function publish(topic, args) {
+                var subscribers,
+                    len;
+
+                if(!service.topics[topic]) {
+                    return false;
+                }
+
+                $timeout(function() {
+                    subscribers = service.topics[topic];
+                    len         = subscribers ? subscribers.length : 0;
+
+                    while(len) {
+                        len -= 1;
+
+                        subscribers[len].callback(topic, args);
+
+                        // unsubscribe from event based on tokenized reference,
+                        // if subscriber's property once is set to true.
+                        if(subscribers[len].once) {
+                            service.unsubscribe(subscribers[len].token);
+                        }
+                    }
+                }, 0);
+
+                return true;
+            }
+
+            /**
+             * @ngdoc method
+             *
+             * @name unsubscribe
+             *
+             * @methodOf services.service:PubSub
+             *
+             * @param {Number} t topic name or token reference
+             *
+             * @description
+             * unsubscribe from a specific topic based on the topic name or based on a tokenized reference to the subscription.
+             */
+            function unsubscribe(t) {
+                var prop,
+                    len,
+                    tf = false;
+
+                for(prop in service.topics) {
+                    if(service.topics.hasOwnProperty(prop)) {
+                        if(service.topics[prop]) {
+                            len = service.topics[prop].length;
+
+                            while(len) {
+                                len -= 1;
+
+                                // if t is a tokenized reference to the subscription.
+                                // removes one subscription from the array.
+                                if(service.topics[prop][len].token === t) {
+                                    service.topics[prop].splice(len, 1);
+                                    return t;
+                                }
+
+                                // if t is the event type.
+                                // removes all the subscriptions that match the event type.
+                                if(prop === t) {
+                                    service.topics[prop].splice(len, 1);
+                                    tf = true;
+                                }
+                            }
+
+                            if(tf) {
+                                return t;
+                            }
+                        }
+                    }
+                }
+
+                return false;
+            }
+        }
+    })();
+</script>
+
+<script id="eco.pmd.earnedvalue.earnedValueData">
+    (function() {
+        'use strict';
+
+        // DEPENDS ON ECO_PMD_EarnedValueDetail_Controller.EarnedValueTable
+
+        angular
+            .module('services')
+            .service('earnedValueDataMock', earnedValueDataMock);
+        
+        angular
+            .module('services')
+            .service('earnedValueData', earnedValueData);
+
+       // earnedValueData.$inject = ['faker'];
+       // earnedValueDataMock.$inject = ['faker'];
+
+        function taskOutlineDataProcessor(){
+
+            function makeIterator(arrayParam){
+                var nextIndex = 0;
+                var array = arrayParam;
+                function isDone(){
+                    return nextIndex < array.length;
+                }
+                return {
+                   next: function(){
+                       return isDone() ?
+                           {value: array[nextIndex++], done: false} :
+                           {done: true};
+                   },
+                   current: function(){
+                        return isDone() ? 
+                            {value: array[nextIndex], done: false} :
+                            {done: true};
+                   }
+                };
+            }
+
+            function tasksToTree(peers,iter){
+                var node;
+                while (!iter.current().done) {
+                    if (peers.length == 0) {
+                        peers.push({group:false, data:iter.next().value});
+                    } else {
+                        node = peers[peers.length-1];
+                        if (iter.current().value.taskLevel > node.data.taskLevel) {
+                            node.group = true;
+                            node.expanded= true;
+                            node.children=[];
+                            tasksToTree(node.children,iter);
+                        } else if (iter.current().value.taskLevel == node.data.taskLevel) {
+                            peers.push({group:false, data:iter.next().value});
+                        } else { return; }   
+                    }
+                }
+                return peers;
+            }
+
+            function unflatten(arr) {
+              var tree = [],
+                  mappedArr = {},
+                  arrElem,
+                  mappedElem;
+
+              // First map the nodes of the array to an object -> create a hash table.
+              for(var i = 0, len = arr.length; i < len; i++) {
+                arrElem = arr[i];
+                mappedArr[arrElem.id] = arrElem;
+                mappedArr[arrElem.id]['children'] = [];
+              }
+
+
+              for (var id in mappedArr) {
+                if (mappedArr.hasOwnProperty(id)) {
+                  mappedElem = mappedArr[id];
+                  // If the element is not at the root level, add it to its parent array of children.
+                  if (mappedElem.parentid) {
+                    mappedArr[mappedElem['parentid']]['group']=true;
+                    mappedArr[mappedElem['parentid']]['expanded']=true;
+                    mappedArr[mappedElem['parentid']]['children'].push(mappedElem);
+                  }
+                  // If the element is at the root level, add it to first level elements array.
+                  else {
+                    tree.push(mappedElem);
+                  }
+                }
+              }
+              return tree;
+            }
+
+            return {
+                makeIterator:makeIterator,
+                tasksToTree: tasksToTree,
+                unflatten: unflatten
+            };
+        }
+ 
+        function earnedValueData() {
+            
+            function loadData(vm,callback){
+                ECO_PMD_EarnedValueDetail_Controller.EarnedValueTable(
+                  vm.projectId,
+                  function(result, event){
+
+                    if(event.status){
+                        callback(vm, mapSFDCResults(result));
+                    }
+                });
+            }
+
+            function mapSFDCResults(result) {
+                // assumes result is an array of objects
+                var data =[];
+                angular.forEach(result, function (val, key) {
+                  this.push(mapSFDCItem(val, key));
+                },data);
+                var rowData = [];
+                var outliner = taskOutlineDataProcessor();
+                rowData = outliner.unflatten(data);
+                return rowData;
+            }
+
+             function mapSFDCItem(val, key) {
+                    
+                    //TODO -- Put a breakpoint here -- map the values from live per the MOCK object
+                    // Test on Jake's project id=a32e00000005NMaAAM
+                    
+                    var fake = {};
+                    fake.CostBudgetOriginal__c = (10*faker.finance.amount());
+                    fake.TotalApprovedCost__c = fake.CostBudgetOriginal__c * (1+(faker.random.number(1000)/4000));
+                    fake.PercentComplete__c = (faker.random.number(1000)/1000);
+                    fake.EarnedValue__c = fake.TotalApprovedCost__c * fake.PercentComplete__c;
+                    fake.TotalProjectFunctionalBurdenedCost__c = fake.EarnedValue__c * (0.85+(faker.random.number(1000)/4000));
+                    fake.CPI__c = 1;
+                    fake.SPI__c = 1;
+                    fake.ScheduleVariance__c = 0;
+                    fake.CostForecastTrend__c = fake.TotalApprovedCost__c;
+                    fake.CostForecastVariance__c = fake.TotalApprovedCost__c - fake.CostForecastTrend__c;
+                    fake.Duration__c = 365;
+                    fake.percentSpentITD = (fake.TotalApprovedCost__c - fake.EarnedValue__c)/fake.TotalApprovedCost__c;
+                    fake.plannedCost = fake.EarnedValue__c;
+                    fake.costVariance = 0;
+                    // for TaskSummary
+                    fake.EAC = fake.TotalApprovedCost__c;
+                    fake.ETC = fake.EAC - fake.TotalProjectFunctionalBurdenedCost__c
+                    fake.burnAvg = fake.CostBudgetOriginal__c / 12;
+                    fake.burnETC = fake.TotalProjectFunctionalBurdenedCost__c + (fake.burnAvg * 4)
+                    fake.burnDur = (fake.ETC/fake.burnAvg);
+                    fake.approvedStart = faker.date.past();
+                    fake.approvedEnd = faker.date.future();
+                    fake.forecastStart = faker.date.past();
+                    fake.forecastEnd = faker.date.future();
+                    fake.costMTD = fake.burnAvg;
+                    fake.approvedNmnsr = fake.TotalApprovedCost__c * (faker.random.number(1000)/4000);
+                    fake.approvedRevenue = fake.TotalApprovedCost__c + fake.approvedNmnsr;
+
+                    var task = (val.ProjectTaskNumber__c||'')
+                    , taskDisplay = (task!=''?task+' - ' : '')+val.Name;
+
+                    var result = {
+                      id:val.Id,parentid:val.pse__Parent_Task__c, group:false, expanded:false, 
+                      data:{
+                          Id                                        : val.Id
+                        , ProjectTaskNumber__c                      : task
+                        , Name                                      : val.Name
+                        , pse__Order__c                             : val.pse__Order__c
+                        , pse__Hierarchy_Depth__c                   : val.pse__Hierarchy_Depth__c
+                        , IsChargeable__c                           : val.IsChargeable__c
+                        , IsBillable__c                             : val.IsBillable__c
+                        , IsTopLevelTask__c                         : val.IsTopLevelTask__c
+                        , FinancialTask__c                          : val.FinancialTask__c
+                        , pse__Parent_Task__r_Name                  : ''  /* d[] */
+                        , pse__Parent_Task__r_Id                    : val.pse__Parent_Task__c
+                        , CostBudgetOriginal__c                     : fake.CostBudgetOriginal__c
+                        , CostBudgetVariance__c                     : fake.CostBudgetVariance__c
+                        , TotalApprovedCost__c                      : fake.TotalApprovedCost__c
+                        , TotalProjectFunctionalBurdenedCost__c     : fake.TotalProjectFunctionalBurdenedCost__c
+                        , EarnedValue__c                            : fake.EarnedValue__c
+                        , PercentComplete__c                        : fake.PercentComplete__c
+                        , CPI__c                                    : fake.CPI__c
+                        , SPI__c                                    : fake.SPI__c
+                        , ScheduleVariance__c                       : fake.ScheduleVariance__c
+                        , CostForecastTrend__c                      : fake.CostForecastTrend__c
+                        , CostForecastVariance__c                   : fake.CostForecastVariance__c
+                        , Duration__c                               : fake.Duration__c
+                        , taskDisplay                               : taskDisplay
+                        , percentSpentITD                           : fake.percentSpentITD
+                        , plannedCost                               : fake.plannedCost
+                        , costVariance                              : fake.costVariance
+                        , EAC                                       : fake.EAC
+                        , ETC                                       : fake.ETC
+                        , burnAvg                                   : fake.burnAvg
+                        , burnETC                                   : fake.burnETC
+                        , burnDur                                   : fake.burnDur
+                        , approvedStart                             : fake.approvedStart
+                        , approvedEnd                               : fake.approvedEnd
+                        , approvedStart                             : fake.forecastStart
+                        , forecastEnd                               : fake.forecastEnd
+                        , costMTD                                   : fake.costMTD
+                        , approvedNmnsr                             : fake.Nmnsr
+                        , approvedRevenue                           : fake.approvedRevenue
+                     }
+                    };
+                    return result;
+                };
+
+            return { 
+                getData: loadData
+            };
+        }
+
+        function earnedValueDataMock() {
+
+            function loadData() {
+                
+                function generateRecord(d){
+                    var result= {
+                      id:d[2],parentid:d[4], group:false, expanded:false, 
+                      data:{
+                          Id                                        : d[2]
+                        , ProjectTaskNumber__c                      : d[1]
+                        , Name                                      : d[0]
+                        , pse__Order__c                             : d[5]
+                        , pse__Hierarchy_Depth__c                   : d[3]
+                        , IsChargeable__c                           : (d[7]=="Y")
+                        , IsBillable__c                             : true
+                        , IsTopLevelTask__c                         : true
+                        , FinancialTask__c                          : d[6]
+                        , pse__Parent_Task__r_Name                  : ''  /* d[] */
+                        , pse__Parent_Task__r_Id                    : d[4]
+                        , CostBudgetOriginal__c                     : d[9]
+                        , CostBudgetVariance__c                     : d[10]
+                        , TotalApprovedCost__c                      : d[11]
+                        , TotalProjectFunctionalBurdenedCost__c     : d[13]
+                        , EarnedValue__c                            : d[16]
+                        , PercentComplete__c                        : d[15]
+                        , CPI__c                                    : d[18]
+                        , SPI__c                                    : d[19]
+                        , ScheduleVariance__c                       : d[21]
+                        , CostForecastTrend__c                      : d[22]
+                        , CostForecastVariance__c                   : d[24]
+                        , Duration__c                               : d[12]
+                        , taskDisplay : (d[1] + " - " + d[0])
+                        , percentSpentITD : (d[13]/d[11])
+                        , plannedCost : d[16] /* WRONG */
+                        , costVariance : d[16] - d[13] /* WRONG*/
+                        , eac : d[11] /* WRONG */
+                     }
+                    };
+                    return result;
+                };
+                var modelData = 
+                   [                    
+                    ["1    Task 1 (not chargeable)" ,"1"    ,"abc0" ,0  ,"" ,0  ,"Y"    ,"N"    ,"N"    ,300000 ,"" ,300000 ,365    ,175000 ,0.583333333333333  ,0.416666666666667  ,125000 ,150000 ,1.4    ,0.833333333333333  ,25000  ,73 ,"" ,"" ,"" ]
+                    ,["1.1 Subtask 1.1 (chargeable)"    ,"1.1"  ,"abc2" ,1  ,"abc0" ,0  ,"Y"    ,"Y"    ,"Y"    ,150000 ,"" ,150000 ,180    ,100000 ,0.666666666666667  ,0.5    ,75000  ,112500 ,1.33333333333333   ,0.666666666666667  ,-12500 ,90 ,"" ,"" ,"" ]
+                    ,["1.2 Subtask 1.2 (chargeable)"    ,"1.2"  ,"abc1" ,1  ,"abc0" ,1  ,"Y"    ,"Y"    ,"N"    ,150000 ,"" ,150000 ,300    ,75000  ,0.5    ,0.333333333333333  ,50000  ,37500  ,1.5    ,1.33333333333333   ,37500  ,-75    ,"" ,"" ,"" ]
+                    ,["1.2.1  Subtask 1.2.1 (not chargeable)"   ,"1.2.1"    ,"abc4" ,2  ,"abc1" ,0  ,"N"    ,"N"    ,"Y"    ,100000 ,"" ,100000 ,90 ,"" ,"" ,0.25   ,25000  ,25000  ,x  ,1  ,x  ,0  ,"" ,"" ,"" ]
+                    ,["1.2.2 Subtask 1.2.2 (not chargeable)"    ,"1.2.2"    ,"abc3" ,2  ,"abc1" ,1  ,"N"    ,"N"    ,"Y"    ,50000  ,"" ,50000  ,20 ,"" ,"" ,0.5    ,25000  ,12500  ,x  ,2  ,x  ,-10    ,"" ,"" ,"" ]
+                    ,["2   Task 2 (chargeable)" ,"2"    ,"abc5" ,0  ,"" ,1  ,"Y"    ,"Y"    ,"Y"    ,50000  ,"" ,50000  ,365    ,35000  ,0.7    ,0.5    ,25000  ,25000  ,1.4    ,1  ,10000  ,0  ,"" ,"" ,"" ]
+                    ]
+                    ;
+                var res = [];
+                modelData.forEach(function (d) {
+                    res.push( generateRecord(d) );
+                });
+                return res;
+            }
+            
+            function getData(vm, callback) {
+               var data = loadData();
+                var rowData = [];
+                var outliner = taskOutlineDataProcessor();
+                //var vmd = outliner.makeIterator(data);
+                //outliner.tasksToTree(rowData,vmd);
+                rowData = outliner.unflatten(data);
+                callback(vm,rowData);
+            }
+
+            return {
+                getData: getData
+            };
+        }
+     }());
+</script>
+
+<script id="services/TaskSummary/task-summary.service.js">
+    (function() {
+        'use strict';
+
+        /**
+         * @ngdoc service
+         *
+         * @name services.service:TaskSummary
+         *
+         * @requires https://docs.angularjs.org/api/ng/service/$timeout
+         * @requires https://docs.angularjs.org/api/ng/service/$q
+         *
+         * @description
+         * service that handles communication with salesforce ECO_PMD_Top10TaskSummary_Controller 
+         */
+        angular
+            .module('services')
+            .factory('TaskSummary', TaskSummary);
+
+        TaskSummary.$inject = ['$timeout', '$filter', '$q', 'PubSub', 'earnedValueData'];
+
+        function TaskSummary($timeout, $filter, $q, PubSub, earnedValueDataSource) {
+
+            /**
+             * @ngdoc property
+             *
+             * @name service
+             *
+             * @propertyOf services.service:PubSub
+             *
+             * @description
+             * public service interface
+             *
+             * <pre>{
+             *      topEmployees            : Object,
+             *      getTaskSummary     : TaskSummary.taskSummary
+             * } </pre>
+             */
+            var service = {
+                taskSummary        : [], 
+                getTaskSummary     : getTaskSummary
+            };
+
+            return service;
+
+            /**
+             * @ngdoc method
+             *
+             * @name subscribeOnce
+             *
+             * @methodOf services.service:PubSub
+             *
+             * @param {String} projectId Salesforce Project ID
+             *
+             * @description
+             * Retrieves all data necessary to populate the TaskSummary Dashboard panel
+             */
+            function getTaskSummary(vm) {
+                var listDeferred = $q.defer();
+
+                var provider = earnedValueDataSource;
+
+                provider.getData(vm, function(vm,data){
+                    service.taskSummary = data ; //result;
+                    PubSub.publish('get-task-summarys', service.taskSummary);
+                    // console.log('service.taskSummary', service.taskSummary);
+                    vm.data = vm.data || data;
+                    vm.gridOptions.api.setRowData(vm.data);
+                });
+
+               /*ECO_PMD_EarnedValueDetail_Controller.EarnedValueTable(
+                  projectId,
+                  function(result, event){
+                    if(event.status) {
+                        // set data
+                        service.taskSummary = result;
+                        PubSub.publish('get-task-summarys', service.taskSummary);
+
+                        console.log('service.taskSummary', service.taskSummary);
+                    }
+                  });
+                */
+
+                return listDeferred.promise;
+            }
+
+        }
+    })();
+</script>
+
+<script type="text/ng-template" id="task-summary-report.directive.html">
+    <style type="text/css">
+        .ag-header-cell-text {
+            white-space: normal;
+        }
+        .bs .btn {
+            padding: 4px;
+        }
+        .bs .row {
+            display: table;
+            width: 100%;
+        }
+    </style>
+    <div class="row">
+    <div class="col-md-6 lead" ng-bind="::ctrl.projectName"></div>
+        <div class="col-md-2">
+            <input type="text" class="form-control ng-pristine ng-untouched ng-valid" ng-model="vm.gridOptions.quickFilterText" placeholder="filter...">
+        </div>
+        <div class="col-md-4">
+            <button class="btn btn-info" ng-click="ctrl.toggleColumnGroups(true)">Expand All Columns</button>
+            <button class="btn btn-info" ng-click="ctrl.toggleColumnGroups(false)">Collapse All Columns</button>
+            <button class="btn btn-primary" ng-click="ctrl.toggleToolPanel()" ng-bind="ctrl.showToolPanel ? 'Hide Tool Panel' : 'Show Tool Panel'"></button>
+        </div>
+    </div>
+    <div>
+        <p>
+            <span ng-bind="'Total Records ' + ctrl.gridOptions.api.getModel().getVirtualRowCount()"></span>
+        </p>
+    </div>
+    <div ag-grid="ctrl.gridOptions" style="width:100%;" class="ag-fresh" auto-height="yes" additional-height="50" />
+</script>
+
+<script id="components/TaskSummaryReport/task-summary-report-directive.js">
+    (function() {
+        'use strict';
+
+        /**
+         * @ngdoc directive
+         *
+         * @name components.directive:taskSummaryReport
+         *
+         * @scope
+         *
+         * @restrict E
+         *
+         * @param {Object} date prepopulate the datepicker with a date using this value
+         * @param {String} fieldName label for the datepicker to help identify it better from consuming components
+         *
+         * @description
+         * Implementation of taskSummaryReport component. Used for start/end date selection for snapshots. Uses Pikaday
+         * for date selection functionality.
+         */
+         angular
+            .module('components')
+            .directive('taskSummaryReport', taskSummaryReport);
+
+         taskSummaryReport.$inject = [];
+
+         function taskSummaryReport() {
+            var directive =  {
+                restrict            : 'EA',
+                controller          : TaskSummaryReportController,
+                controllerAs        : 'ctrl',
+                bindToController    : true,
+                templateUrl         : 'task-summary-report.directive.html',
+                link                : linkFunc,
+                scope               : {
+                    projectName  : '@',
+                    projectId    : '@'
+                }
+            };
+
+            return directive;
+
+            /**
+             * @ngdoc method
+             *
+             * @name linkFunc
+             *
+             * @methodOf components.directive:taskSummaryReport
+             *
+             * @param {Object} scope component scope
+             * @param {Object} el DOM element reference for component template
+             * @param {Object} attr DOM attribute reference
+             * @param {Object} ctrl component controller reference
+             *
+             * @description
+             * Link Function declaration/implementation for taskSummaryReport component. Wires up datepicker
+             * to open when calendar icon is clicked.
+             */
+             function linkFunc(scope, el, attr, ctrl) {
+
+             }
+         }
+
+        /**
+         * @ngdoc controller
+         *
+         * @name components.controller:TaskSummaryReportController
+         *
+         * @requires $filter
+         * @requires accountsReceivableDataMock
+         *
+         * @description
+         * Controller declaration/implementation for components.taskSummaryReport directive
+         */
+         angular
+            .module('components')
+            .controller('TaskSummaryReportController', TaskSummaryReportController);
+
+         TaskSummaryReportController.$inject = ['TaskSummary', 'PubSub', '$timeout', '$filter'];
+
+         function TaskSummaryReportController(TaskSummary, PubSub, $timeout, $filter) {
+            var vm = this;
+
+            var columnDefs = [
+                {headerName: "Task", field: "taskDisplay", headerGroup: 'Task Data', width:250
+                , valueGetter:groupValueGetter, cellRenderer: {renderer: 'group', innerRenderer:function(params){return params.data.taskDisplay;}}},
+                {headerName: "Orig Budget", field: "approvedRevenue", headerGroup: 'Revenue', headerGroupShow:'open',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 90},
+                {headerName: "Changes", field: "FPOBalance", headerGroup: 'Revenue', headerGroupShow:'open',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 120},
+                {headerName: "Current Budget", field: "approvedRevenue", headerGroup: 'Revenue', headerGroupShow:'',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 120},
+                {headerName: "Orig Budget", field: "ExpenditureType__c", headerGroup: 'Net Margin', headerGroupShow:'open',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 90},
+                {headerName: "Changes", field: "CurrencyIsoCode", headerGroup: 'Net Margin', headerGroupShow:'open',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 110},
+                {headerName: "Current Budget", field: "approvedNmnsr", headerGroup: 'Net Margin', headerGroupShow:'',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 110},
+                {headerName: "Orig Budget", field: "CostBudgetOriginal__c", headerGroup: 'Cost', headerGroupShow:'open',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "Changes", field: "FPOBalance", headerGroup: 'Cost', headerGroupShow:'open', width: 100},
+                {headerName: "Current Budget", field: "TotalApprovedCost__c", headerGroup: 'Cost', headerGroupShow:'',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "Prev MTD", field: "costMTD", headerGroup: 'Cost', headerGroupShow:'open',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "MTD", field: "costMTD", headerGroup: 'Cost', headerGroupShow:'',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "ITD", field: "TotalProjectFunctionalBurdenedCost__c", headerGroup: 'Cost', headerGroupShow:'',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "ETC", field: "ETC", headerGroup: 'Cost', headerGroupShow:'',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "EAC", field: "EAC", headerGroup: 'Cost', headerGroupShow:'',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "Prev EAC", field: "EAC", headerGroup: 'Cost', headerGroupShow:'open',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "EAC Change", field: "FPOBalance", headerGroup: 'Cost', headerGroupShow:'open',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "EAC Trend", field: "FPOBalance", headerGroup: 'Cost', headerGroupShow:'open',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "% Comp", field: "PercentComplete__c", headerGroup: 'Earned Value', headerGroupShow:'',
+                cellRenderer: percentCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "EV", field: "EarnedValue__C", headerGroup: 'Earned Value', headerGroupShow:'open',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "CPI", field: "CPI__c", headerGroup: 'Earned Value', headerGroupShow:'open',
+                cellRenderer: numberCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "Start", field: "approvedStart", headerGroup: 'Approved', headerGroupShow:'open',
+                cellRenderer: dateCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "Finish", field: "approvedEnd", headerGroup: 'Approved', headerGroupShow:'',
+                cellRenderer: dateCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "Start", field: "forecastStart", headerGroup: 'Forecast', headerGroupShow:'open',
+                cellRenderer: dateCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "Finish", field: "forecastEnd", headerGroup: 'Forecast', headerGroupShow:'',
+                cellRenderer: dateCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "3 mo Avg Burn", field: "burnAvg", headerGroup: 'Burn Rate', headerGroupShow:'',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "ETC Cost/ 3 mo Avg Burn", field: "burnETC", headerGroup: 'Burn Rate', headerGroupShow:'open',
+                cellRenderer: currencyCellRenderer, cellStyle: cellStyler,  width: 100},
+                {headerName: "Remain Dur (mths)", field: "burnDur", headerGroup: 'Burn Rate', headerGroupShow:'open',
+                cellRenderer: numberCellRenderer, cellStyle: cellStyler,  width: 100}
+            ];
+
+             // Discover the column groups
+           var colGroups = [];
+           angular.forEach(columnDefs, function(value, key) {
+              if(value.headerGroup && (colGroups.indexOf(value.headerGroup)<0)) this.push(value.headerGroup);
+           }, colGroups);
+           vm.columnGroups = colGroups;
+
+            /**
+             * @ngdoc property
+             *
+             * @name numberWidth
+             *
+             * @methodOf components.controller:CommitmentReportController
+             *
+             * @description
+             * number width placeholder
+             */
+            var numberWidth = 90;
+
+            /**
+             * @ngdoc property
+             *
+             * @name dateWidth
+             *
+             * @methodOf components.controller:CommitmentReportController
+             *
+             * @description
+             * date width placeholder
+             */
+            var dateWidth = 75;
+
+            /**
+             * @ngdoc property
+             *
+             * @name showToolPanel
+             *
+             * @methodOf components.controller:CommitmentReportController
+             *
+             * @description
+             * toggle placeholder for toolpanel
+             */
+            vm.showToolPanel = false;
+
+            /**
+             * @ngdoc property
+             *
+             * @name projectTitle
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * Id for project.
+             */
+             vm.projectTitle = '';
+
+            /**
+             * @ngdoc property
+             *
+             * @name projectId
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * Id for project.
+             */
+             vm.projectId = '';
+
+            /**
+             * @ngdoc property
+             *
+             * @name projectName
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * Name of tht project.
+             */
+             vm.projectName = '';
+
+            /**
+             * @ngdoc property
+             *
+             * @name showToolPanel
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * Used to toggle the tool panel.
+             */
+            vm.showToolPanel = true;
+
+            /**
+             * @ngdoc property
+             *
+             * @name gridOptions
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * Options used in the UI grid.
+             */
+            vm.gridOptions = {
+                columnDefs: columnDefs,
+                enableFilter: true,
+                enableSorting: true,
+                toolPanelSuppressValues: true,
+                showToolPanel: vm.showToolPanel,
+                headerHeight: 85,
+                groupHeaders: true,
+                pinnedColumnCount: 1,
+                rowsAlreadyGrouped: true,
+                icons: {
+                    groupExpanded: '<i class="fa fa-minus-square-o"/>',
+                    groupContracted: '<i class="fa fa-plus-square-o"/>'
+                }
+            };
+           
+            /**
+             * @ngdoc method
+             *
+             * @name groupValueGetter
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * initialization method for the component
+             */
+           function groupValueGetter(params) {
+                return params.data.taskDisplay;
+           }
+           /**
+             * @ngdoc method
+             *
+             * @name currencyCellRenderer
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * initialization method for the component
+             */
+            function currencyCellRenderer(params) {
+                var showInThousands = false;
+               return (typeof params.value === 'number')?$filter('number')(params.value/(showInThousands?1000:1), 2):params.value;
+           }
+           
+           /**
+             * @ngdoc method
+             *
+             * @name integerCellRenderer
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * initialization method for the component
+             */
+            function integerCellRenderer(params) {
+               return (typeof params.value === 'number')?$filter('number')(params.value, 0):params.value;
+           }
+           
+           /**
+             * @ngdoc method
+             *
+             * @name percentCellRenderer
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * initialization method for the component
+             */
+            function percentCellRenderer(params) {
+               return (typeof params.value === 'number')?$filter('number')(params.value*100, 0)+"%":params.value;
+           }
+            /**
+             * @ngdoc method
+             *
+             * @name dateCellRenderer
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * initialization method for the component
+             */
+             var dateCellRenderer = function (params) {
+               return $filter('date')(params.value, 'shortDate');
+           };
+
+            /**
+             * @ngdoc method
+             *
+             * @name numberCellRenderer
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * initialization method for the component
+             */
+             var numberCellRenderer = function (params) {
+               return $filter('number')(params.value, 2);
+           };
+
+            /**
+             * @ngdoc method
+             *
+             * @name cellStyler
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * initialization method for the component
+             */
+             var cellStyler = function (params) {
+               var result = {};
+               if (typeof params.value === 'number' || params.value instanceof Date) {
+                   result['text-align'] = 'right';
+               }
+               return result;
+           };
+
+            /**
+             * @ngdoc method
+             *
+             * @name activate
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * initialization method for the component
+             */
+             vm.toggleToolPanel = function (ev) {
+               vm.showToolPanel = !vm.showToolPanel;
+               vm.gridOptions.api.showToolPanel(vm.showToolPanel);
+           };
+
+            /**
+             * @ngdoc method
+             *
+             * @name activate
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * initialization method for the component
+             */
+            vm.toggleColumnGroups = function (expand) {
+               vm.columnGroups.forEach(function (name) {
+                   var group = vm.gridOptions.columnApi.getColumnGroup(name);
+                   vm.gridOptions.columnApi.columnGroupOpened(group, expand);
+               });
+            };
+
+            vm.onBtExport = function() {
+                var params = {
+                    skipHeader: vm.skipHeader === true,
+                    skipFooters: vm.skipFooters === true,
+                    skipGroups: vm.skipGroups === true,
+                    fileName: vm.fileName
+                };
+
+                if (vm.customHeader) {
+                    params.customHeader = '[[[ This ia s sample custom header - so meta data maybe?? ]]]\n';
+                }
+                if (vm.customFooter) {
+                    params.customFooter = '[[[ This ia s sample custom footer - maybe a summary line here?? ]]]\n';
+                }
+
+                vm.gridOptions.api.exportDataAsCsv(params);
+            };
+
+            /**
+             * @ngdoc method
+             *
+             * @name formatCommitments
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @param {String} message Message received as result of a PUBLISH command issued by another client
+             * @param {String} answer Passed back from PUBLISH command.
+             *
+             * @description
+             * Formates the data for use in the UI
+             */
+             var formatTaskSummarys = function(message, data) {
+                var angularUIGrid = data;
+
+                vm.gridOptions.api.setRowData(angularUIGrid);
+                // console.log(angularUIGrid);
+            };
+
+            /**
+             * @ngdoc method
+             *
+             * @name activate
+             *
+             * @methodOf components.controller:TaskSummaryReportController
+             *
+             * @description
+             * initialization method for the component
+             */
+             var activate = function() {
+                $timeout(function() {
+                    // set subscribe method
+                    // connect to get-task-summarys service and pass project id
+                    PubSub.subscribe('get-task-summarys', formatTaskSummarys); 
+                    TaskSummary.getTaskSummary(vm); 
+                }, 0);
+            };
+
+            activate();
+        }
+    })();
+</script>
+
+<script src="{!$Resource.ECO_PMD_twygmbh_auto_height}"></script>
+
+
+<script type="text/ng-template" id="navigation-bar-directive.html">
+    <nav class="navbar navbar-default customNavbar">
+        <div class="container-fluid navbarBackground">
+            <div class="navbar-header" style="width:100%">
+                <a class="navbar-brand navbarText" href="#" ng-bind="crtl.pageTitle + ctrl.ProjectNumber + ' - ' + ctrl.ProjectName"></a> 
+                <div style="float:right;display:inline;">
+
+                    <div>
+                        <div>
+                            <br />
+                            <select ng-model="ctrl.data.singleSelect" ng-change="ctrl.selected()">
+
+                                <option value="/{{ctrl.ProjectId}">Project Command Console</option>
+                                <option value="/apex/eco_pmd_projectdashboard?id={{ctrl.ProjectId}}">Project Dashboard</option>
+                                <option value="/apex/eco_pmd_financialdashboard?id={{ctrl.ProjectId}}">Financial Dashboard</option>
+                                <option value="/apex/eco_pmd_tasksummaryreport?id={{ctrl.ProjectId}}">Task Summary</option>
+                                <option value="/apex/eco_pmd_earnedvaluedetail?id={{ctrl.ProjectId}}">Earned Value Detail</option>
+                                <option value="/apex/eco_pmd_costdetail_labourhours?id={{ctrl.ProjectId}}">Cost Detail - Labour Hours</option>
+                                <option value="/apex/eco_pmd_costdetail_labourcost?id={{ctrl.ProjectId}}">Cost Detail - Labour Costs</option>
+                                <option value="/apex/eco_pmd_costdetail_odcexpenses?id={{ctrl.ProjectId}}">Cost Detail - ODC Expenses</option>
+                                <option value="/apex/eco_pmd_costdetail_odcsubs?id={{ctrl.ProjectId}}">Cost Detail - ODC Subs</option>
+                                <option value="/apex/eco_pmd_accountsreceivablereport?id={{ctrl.ProjectId}}">Billing &amp; A/R</option>
+                                <option value="/apex/eco_pmd_RevenueDetails?id={{ctrl.ProjectId}}">Revenue Details</option>
+                                <option value="/apex/eco_pmd_TrendAnalysis?id={{ctrl.ProjectId}}">Snapshot Trend Analysis</option>
+                                <option value="/apex/eco_pmd_CommitmentsReport?id={{ctrl.ProjectId}}">x-Commitments</option>
+
+                            </select>
+                        </div>
+
+
+                    </div> 
+
+                </div>
+            </div>
+        </div>
+    </nav>
+</script>
+
+<script id="components/NavigationBar/navigation-bar.directive.js">
+    (function() {
+        'use strict';
+
+        angular
+        .module('components')
+        .directive('navigationBar', navigationBar);
+
+        navigationBar.$inject = [];
+
+        function navigationBar() {
+            var directive =  {
+                restrict            : 'EA',
+                controller          : NavigationBarController,
+                controllerAs        : 'ctrl',
+                bindToController    : true,
+                templateUrl         : 'navigation-bar-directive.html',
+                scope               : {
+                    pageTitle    : '@',
+                    projectName  : '@',
+                    projectId    : '@'
+                }
+            };
+
+            return directive;
+        }
+
+        angular
+        .module('components')
+        .controller('NavigationBarController', NavigationBarController);
+
+        NavigationBarController.$inject = [];
+
+        function NavigationBarController() {
+            var vm = this;
+            
+            vm.data = {singleSelect: null};
+
+            vm.status = {
+                isopen: false
+            };
+
+            vm.toggled = function(open) {
+                console.log('Dropdown is now: ', open);
+            };
+
+            vm.toggleDropdown = function(ev) {
+                ev.preventDefault();
+                ev.stopPropagation();
+                ev.status.isopen = !ev.status.isopen;
+            };
+
+            vm.selected = function(){
+                console.log(vm.data.singleSelect);
+                location.replace(vm.data.singleSelect);
+              // var redirectWindow = window.open($scope.data.singleSelect, '_blank');
+              // redirectWindow.location;
+
+            };
+        }
+    })();
+</script>
+
+</apex:component>

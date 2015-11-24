@@ -365,8 +365,10 @@ public class ECO_Service_ProjectSnapshots {
 	                snapshot = getApprovedBudgetHeaderMapInformation(approvedBudgetFinancialMetrics, snapshot);
 	                
 	                //LastUpdated Budget
-	                snapshot.LastUpdatedBudget__c = lastUpdatedBudgetDateMap.get(project.Id);
-				
+	                if (lastUpdatedBudgetDateMap != null) {
+	                	snapshot.LastUpdatedBudget__c = lastUpdatedBudgetDateMap.get(project.Id);
+	                }
+	                
 	                //Forecast Budget
 	                FinancialMetrics forecastBudgetFinancialMetrics = forecastBudgetHeaderMap.get(project.Id);
 	                snapshot = getForecastBudgetHeaderMapInformation(forecastBudgetFinancialMetrics, snapshot);
@@ -765,17 +767,15 @@ System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+bil
     	Map<Id, DateTime> lastUpdatedBudgetDateMap = new Map<Id, DateTime>();
         List<BudgetHeader__c> budgets = [SELECT Project__c, LastModifiedDate FROM BudgetHeader__c 
         								 WHERE Project__c IN :projectIds
-                                         AND Status__c = 'Approved' ORDER BY LastModifiedDate desc];
+                                         AND Status__c = 'Approved' ORDER BY LastModifiedDate DESC];
         
         if (budgets.size() > 0) {
         	for (BudgetHeader__c bh : budgets) {
         		lastUpdatedBudgetDateMap.put(bh.Project__c, bh.LastModifiedDate);
         	}
-        	return lastUpdatedBudgetDateMap;
+        	System.debug(System.LoggingLevel.WARN, '___lastUpdatedBudgetDateMap='+lastUpdatedBudgetDateMap);
         }
-        else {
-        	return null;
-        }
+		return lastUpdatedBudgetDateMap;
     }
 
     @TestVisible private Map<String, pse__Time_Period__c> getTimePeriodMap() {
