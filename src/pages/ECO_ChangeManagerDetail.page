@@ -158,9 +158,9 @@
 
      <apex:actionFunction name="refreshChangeManager_JS" action="{!RefreshChangeManager}" reRender="executionApproval2,executionApproval,pb1"/>
 
-    <apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Approving the Approval Process. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && projectSynchMessages == '' && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Submitted') && changeManager.IsExecutionApprovalChange__c}"/>
+    <apex:pageMessage detail="Your Oracle Login has expired.  If you are an Approver of the Approval Process you are required to login to Oracle. Please click the Login to Oracle button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && projectSynchMessages == '' && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Submitted') && changeManager.IsExecutionApprovalChange__c}"/>
 
-    <apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Approving the Approval Process. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed') && 
+    <apex:pageMessage detail="Your Oracle Login has expired.  If you an Approver of the Approval Process  you are required to login to Oracle. Please click the Login to Oracle button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed') && 
                 (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c || changeManager.IntExtClassifications__c) && NOT(changeManager.IsExecutionApprovalChange__c)}"/>
 
     
@@ -197,9 +197,9 @@
                 <apex:commandButton value="Return to Project" action="{!returnToProject}" rendered="{!mode == ''}" />
                 <apex:commandButton value="Return to Project Changes" action="{!returnToProjectChanges}" rendered="{!mode == ''}" />
                 <apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" rendered="{!NOT($User.IsValidOracleToken__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed') && 
-                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c || changeManager.IntExtClassifications__c)}"/>
+                (changeManager.IntExtKeyMembers__c || changeManager.IntExtProjectTasks__c || changeManager.IntExtCustomers__c || changeManager.IntExtProjectClosure__c || changeManager.IntExtClassifications__c || changeManager.IntExtProjectOnHold__c)}"/>
                  <apex:commandButton value="Submit for Approval" action="{!SubmitForApproval}" id="Submit_for_Approval" rendered="{!(changeManager.ApprovalStatus__c == null || changeManager.ApprovalStatus__c == '' || changeManager.ApprovalStatus__c == 'Rejected') && projectSynchMessages == '' && mode == ''}"/>
-                 <apex:commandButton value="Synchronize Project" rendered="{!changeManager.OracleApprovalSyncStatus__c == 'Failed'}" action="{!SynchronizeProject}" />
+                 <apex:commandButton value="Synchronize Project" rendered="{!changeManager.OracleApprovalSyncStatus__c == 'Failed' && $User.IsValidOracleToken__c}" action="{!SynchronizeProject}" />
             </apex:pageBlockButtons>
             <div class="customHelpText">
                 <div class="customHelpBody">
@@ -932,7 +932,7 @@
                 	<apex:commandButton value="Return to Project" action="{!returnToProject}" immediate="true"/>
                     <apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" rendered="{!NOT($User.IsValidOracleToken__c) && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed')}"/>
                     <apex:commandButton value="Submit for Approval" action="{!SubmitForApproval}" id="Submit_for_Approval" rendered="{!(changeManager.ApprovalStatus__c == null || changeManager.ApprovalStatus__c == '' || changeManager.ApprovalStatus__c == 'Rejected') && projectSynchMessages == ''}"/>
-                    <apex:commandButton value="Synchronize Project" rendered="{!changeManager.OracleApprovalSyncStatus__c == 'Failed'}" action="{!SynchronizeProject}" id="SynchronizeProjectButton"/>                  
+                    <apex:commandButton value="Synchronize Project" rendered="{!changeManager.OracleApprovalSyncStatus__c == 'Failed' && $User.IsValidOracleToken__c}" action="{!SynchronizeProject}" id="SynchronizeProjectButton"/>                  
                     <!--<apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" />-->
             	</apex:pageBlockButtons>  
 
