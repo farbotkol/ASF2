@@ -409,7 +409,7 @@
                                                                         </apex:inputCheckbox>
                                                                     </apex:column>
                                                                     <apex:column headerValue="Billing Contact">
-                                                                        <apex:selectList value="{!Site.billingContact}" disabled="{!NOT(Site.booIsBilling)}">
+                                                                        <apex:selectList size="1" value="{!Site.billingContact}" disabled="{!NOT(Site.booIsBilling)}">
                                                                             <apex:selectOptions value="{!Site.contacts}"></apex:selectoptions>
                                                                         </apex:selectList>
                                                                     </apex:column>
@@ -618,12 +618,7 @@
                                     </div>
                                     </apex:outputPanel>
                                     <BR /><BR />
-                                    <div class="customHelpText">
-                                        <div class="customHelpBody">
-                                            Note: If no opportunity is selected, one will be automatically created.
-                                        </div>
-                                    </div>                                      
-                                <BR /><BR /><BR />
+
                                 </apex:actionRegion>
                             <!--</apex:outputPanel> -->
                             </apex:tab>
@@ -747,10 +742,10 @@ Please review your selection of Primary Organisation {!oPrimaryOrganization.Depa
                                                                 <apex:pageBlockTable value="{!lSelectedOrganizations}" var="organization">
                                                                     <apex:column >
                                                                         <apex:facet name="header">Action</apex:facet>
-                                                                        <apex:commandLink action="{!SelectPrimary}" value="Make Primary" rerender="messages, searchSection, buttons" status="selectStatus">
+                                                                        <apex:commandLink action="{!SelectPrimary}" value="Make Primary" rendered="{!not(organization.strType = 'Primary')}" rerender="messages, searchSection, buttons" status="selectStatus">
                                                                             <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.oOrganization.Id}" />
                                                                         </apex:commandLink>&nbsp;&nbsp;
-                                                                        <apex:commandLink action="{!RemoveEntry}" value="Remove" rerender="messages, searchSection, buttons" status="selectStatus">
+                                                                        <apex:commandLink action="{!RemoveEntry}" value="Remove" rendered="{!not(organization.strType = 'Primary')}" rerender="messages, searchSection, buttons" status="selectStatus">
                                                                             <apex:param assignTo="{!sSelectedOrganizationId}" name="OrganizationId" value="{!organization.oOrganization.Id}" />
                                                                         </apex:commandLink>
                                                                     </apex:column>

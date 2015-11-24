@@ -581,7 +581,7 @@ public with sharing class ECO_ProjectSetupController {
 
         for (SiteWrapper oSiteWrapper: lstSites) {
             if(oSiteWrapper.booIsBilling && oSiteWrapper.billingContact == null){
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'You must select a client for each billing client.');
+                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'You must select a contact for each billing client.');
                 ApexPages.addMessage(oMsg);  
                 return null; 
             }
@@ -903,7 +903,7 @@ public with sharing class ECO_ProjectSetupController {
 
     public boolean isValid()
     {
-        boolean bIsValid = false;
+        boolean bIsValid = true;
         boolean noEmptyCB = true;
         Decimal dTotal = 0;
         Decimal dSiteTotal = 0;
@@ -928,26 +928,31 @@ public with sharing class ECO_ProjectSetupController {
         {
             ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'All selected sites must have a billing contact');
             ApexPages.addMessage(oPageMessage);
-        } else {
-            bIsValid = true;            
+            bIsValid = false;
         }
 
         if(dSiteTotal != 100)
         {
             ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Sites does not total 100%.');
             ApexPages.addMessage(oPageMessage);
-        } else {
-            bIsValid = true;
-        }
+            bIsValid = false;
+        } 
 
         if(dTotal != 100)
         {
             ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Organizations does not total 100%.');
             ApexPages.addMessage(oPageMessage);
-        } else {
-            bIsValid = true;
+            bIsValid = false;
         }
+        
+        if(oPrimaryOrganization == null){
+            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'Primary Organization has not been selected.');
+            ApexPages.addMessage(oPageMessage);    
+            bIsValid = false;        
+        }
+
         return bIsValid;
+
     }
     
     public PageReference ProjectDetailNext(){

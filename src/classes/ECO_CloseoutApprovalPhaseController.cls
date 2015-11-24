@@ -245,11 +245,18 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
             returnvalue = false;         
         }
 
-        for(QuestionnaireSet__c qs: [select id, name, ApprovalStatus__c  from QuestionnaireSet__c where ApprovalStatus__c != 'Approved'  and Project__c =: oproject.id]){
+        list<QuestionnaireSet__c> lstQS = [select id, name, ApprovalStatus__c  from QuestionnaireSet__c where Project__c =: oproject.id ORDER BY createddate desc];
+        if(lstQS.size() == 0 ||  lstQS[0].ApprovalStatus__c != 'Approved'){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Latest Risk and Market Assessment must be approved.');
+            ApexPages.addMessage(oMsg);     
+            returnvalue = false;               
+        }
+
+        /*for(QuestionnaireSet__c qs: [select id, name, ApprovalStatus__c  from QuestionnaireSet__c where ApprovalStatus__c != 'Approved'  and Project__c =: oproject.id ORDERED BY createddate desc]){
             ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Risk and Market Assessment Found - ' + qs.name + ' - ' + qs.ApprovalStatus__c + '.');
             ApexPages.addMessage(oMsg);     
             returnvalue = false;         
-        }
+        }*/
 
         for(ExportControl__c ec: [select id, name, ApprovalStatus__c  from ExportControl__c where ApprovalStatus__c != 'Approved'  and Project__c =: oproject.id]){
             ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Export Control Found - ' + ec.name + ' - ' + ec.ApprovalStatus__c + '.');
