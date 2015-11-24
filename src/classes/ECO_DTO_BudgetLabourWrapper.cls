@@ -19,10 +19,13 @@ public class ECO_DTO_BudgetLabourWrapper {
     
     public  Map<String, EACTotals> mapEACTotalsByLaborDetailAndTask {get; set;}
 
+    public Map<Id, LaborRates> mapLaborRatesByResourceId {get; set;}
+
     public  EACTotals grandTotals { get; set;}
 
     public Id budgetHeaderId {get; set;}
 
+    public String projectCurrency {get; set;}
     public Integer getTotalLaborHours{
         get{return (Integer)calculateBudgetLabourTotals('TotalHours__c');}
     }
@@ -122,10 +125,10 @@ public class ECO_DTO_BudgetLabourWrapper {
         calculateTopLevelTasksTotalRevenueForSubPerson();      
         calculateTopLevelTasksTotalQuantityForODCResource();
         calculateTopLevelTasksTotalComputedCostForODCResource();
-
+        
 //        calculateGrandTotal();
     }
-    
+
     public static List<BudgetResource__c> budgetResourceSelector(Id budgetHeaderId, String resourceType) {
       List<BudgetResource__c> budgetResources = [SELECT
                                                       Id,
@@ -200,9 +203,11 @@ public class ECO_DTO_BudgetLabourWrapper {
     }
     
     public void reset(List<BudgetResource__c> budgetResources) {
+        BudgetHeader__c budgetHeader = [Select Id, Project__c, Project__r.ProjectFunctionalCurrencyCode__c From BudgetHeader__c Where Id = :budgetHeaderId];
+
+        projectCurrency = budgetHeader.Project__r.ProjectFunctionalCurrencyCode__c;
         dtoBudgetLabourDetails = new List<ECO_DTO_BudgetLabourDetail>();
         
-
         for(BudgetResource__c budgetResource : budgetResources) {
           system.debug(LoggingLevel.INFO, '# of BudgetAssignments__r: ' + budgetResource.BudgetAssignments__r.size());
           ECO_DTO_BudgetLabourDetail dtoBudgetLabourDetail = new ECO_DTO_BudgetLabourDetail(budgetResource, budgetResource.BudgetAssignments__r);
@@ -224,6 +229,18 @@ public class ECO_DTO_BudgetLabourWrapper {
         calculateTopLevelTasksTotalQuantityForODCResource();
         calculateTopLevelTasksTotalComputedCostForODCResource();
         calculateTopLevelTasksEACForLaborPerson();
+
+        calculateRates();
+    }
+
+    public void calculateRates() {
+      mapLaborRatesByResourceId = new Map<Id, LaborRates>();
+        for(ECO_DTO_BudgetLabourDetail labour : dtoBudgetLabourDetails) {
+          EACTotals colTotals = mapEACTotalsByLaborDetailAndTask.get('' + labour.oBudgetResource.Id + 'Total');
+
+          mapLaborRatesByResourceId.put(labour.oBudgetResource.Id, new LaborRates(colTotals));
+
+        }
     }
 
     public void calculateTopLevelTasksEACForLaborPerson() {
@@ -375,6 +392,10 @@ public class ECO_DTO_BudgetLabourWrapper {
                     budgetAssignment.BudgetResource__c = dtoBudgetLabourDetail.oBudgetResource.Id;
                     budgetAssignment.Quantity__c = 0;
                     budgetAssignment.EACActualQuantity__c = 0;
+                    
+                    budgetAssignment.EACApprovedQuantity__c = 0;
+                    budgetAssignment.EACForecastQuantity__c = 0;
+
                     budgetAssignment.EACActualCost__c = 0.0;
                     budgetAssignment.EACApprovedTotalCost__c = 0.0;
                     budgetAssignment.EACForecastTotalCost__c = 0.0;
@@ -395,6 +416,38 @@ public class ECO_DTO_BudgetLabourWrapper {
                 dtoBudgetLabourDetails.remove(i);
             }
         }
+    }
+
+    public class LaborRates {
+      public Decimal EACActualRate { get; set;}
+      public Decimal EACApprovedRate {get; set; }
+      public Decimal EACCurrentForecastRate {get; set; }
+      public Decimal ETCRate { get; set;}
+      public Decimal RevisedForecastRate {get; set; }
+
+      public LaborRates(EACTotals colTotals) {
+        if (colTotals == null) return;
+
+        this.EACActualRate = calcRate(colTotals.EACActualCost, colTotals.EACActualQuantity);
+        this.EACApprovedRate = calcRate(colTotals.EACCurrentApprovedCost, colTotals.EACApprovedQuantity); 
+        this.EACCurrentForecastRate = calcRate(colTotals.EACCurrentForecastCost, colTotals.EACForecastQuantity); 
+        this.ETCRate = calcRate(colTotals.EACCurrentForecastCost - colTotals.EACActualCost + colTotals.EACEstimateToComplete,
+                                colTotals.EACForecastQuantity - colTotals.EACActualQuantity + colTotals.Quantity);
+
+        this.RevisedForecastRate = calcRate(colTotals.EACCurrentForecastCost + colTotals.EACEstimateToComplete,
+                                            colTotals.EACForecastQuantity + colTotals.Quantity); 
+      }
+
+      public Decimal calcRate(Decimal cost, Decimal quantity) {
+        Decimal retVal;
+        if(quantity != 0) {
+            retVal = cost / quantity;
+          } else {
+            retVal = 0;
+          }
+
+          return retVal.setScale(2);
+      }
     }
 
     public class EACTotals {
