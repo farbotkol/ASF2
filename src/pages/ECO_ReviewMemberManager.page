@@ -352,9 +352,11 @@
 											<apex:outputField value="{!members.oReviewMember.CheckerDateTime__c}" />
 										</apex:column>
                                         <apex:column Headervalue="Action">
-                                            <apex:commandButton value="Save" action="{!saveReview}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected, NOT(bLockFields))}" reRender="wholePanel, STQT, TQTPB" oncomplete="location.reload();"/>
+                                            <apex:actionRegion >
+                                            <apex:commandButton value="Save" action="{!saveReview}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected, NOT(bLockFields))}"  />
                                             <!--<apex:commandButton value="Submit" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected)}" action="{!submitForApproval}" reRender="wholePanel, STQT" status="approvalstatus"  />
 											<apex:commandButton value="Recall" rendered="{!AND(members.oReviewMember.Status__c == 'Submitted', members.bSelected)}" action="{!killApproval}" reRender="wholePanel, STQT" status="approvalstatus" />-->
+                                        	</apex:actionRegion>
                                         </apex:column>																																																
 									</apex:pageBlockTable>		
 								</apex:outputPanel>
