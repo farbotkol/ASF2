@@ -222,6 +222,18 @@ public with sharing class ECO_RFAController {
 
 	}
     
+    public pageReference returnToDOA(){
+        try{
+            DOAApprovalRequest__c doa = new DOAApprovalRequest__c();
+            doa = [Select Id, ApprovalStatus__c From DOAApprovalRequest__c Where Id = :oForm.DOAApprovalRequest__c];
+            delete doa;
+            return new Pagereference('/apex/ECO_DOA_ApprovalRequest?projectID='+proj.Id);
+        }catch(Exception e){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to return. Please contact your administrator with the following error: ' + e);
+            ApexPages.addMessage(oMsg);
+            return null;
+        }
+    }
 	private void loadTriggers(){
 
         string strSOQL = 'SELECT ';
