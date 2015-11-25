@@ -322,6 +322,8 @@ public with sharing class ECO_ProjectSetupController {
             return null;
         }
 
+        system.debug('** GOT HERE: ' + userOrg.OUID__c);
+
         oSite.Account__r.name = oSiteSearch.name; 
         oSite.City__c = oSiteSearch.city;
         oSite.Country__c = oSiteSearch.country;       
@@ -341,7 +343,7 @@ public with sharing class ECO_ProjectSetupController {
             
             // Only add parameters to the "WhereClause" string if they contain valid values. 
             // NOTE: only strings are supported by this code.
-            if ( recursiveGet(oSite,fsmField.getFieldPath()) != null) {
+            if ( recursiveGet(oSite,fsmField.getFieldPath()) != null && recursiveGet(oSite,fsmField.getFieldPath()) != '') {
                 strWhereClause += fsmField.getFieldPath() + ' LIKE \'%' + recursiveGet(oSite,fsmField.getFieldPath()) + '%\' AND ';
                 boolAtLeastOne = true;
             }
@@ -367,8 +369,13 @@ public with sharing class ECO_ProjectSetupController {
             }
         }
 
+        system.debug('** GOT HERE: ' + strSOQL);
+
         lstSitesSearchResults = (list<Site__c>)Database.query(strSOQL);
         
+        system.debug('** GOT HERE: ' + lstSitesSearchResults.size());
+
+
         IF(lstSitesSearchResults.size() < integer.valueof(siteLessLIMIT)){
             bShowMoreButtonSite = false;
         } else {
