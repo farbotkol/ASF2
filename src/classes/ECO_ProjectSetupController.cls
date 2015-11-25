@@ -322,7 +322,7 @@ public with sharing class ECO_ProjectSetupController {
             return null;
         }
 
-        system.debug('** GOT HERE: ' + userOrg.OUID__c);
+        system.debug('** GOT HERE: ' + userOrg);
 
         oSite.Account__r.name = oSiteSearch.name; 
         oSite.City__c = oSiteSearch.city;
