@@ -69,7 +69,7 @@
             <apex:pageBlockButtons >
                 <apex:commandButton action="{!saveForm}" value="Save" />
                 <!--<apex:commandButton value="Download Form Template" onclick="window.open('{!URLFOR($Resource.DOARFA)}')" />-->
-                <apex:outputLink value="/{!oForm.DOAApprovalRequest__c}" rendered="{!IF(fromVisualforce = null, true, false)}" styleClass="btn" style="text-decoration:none;padding:4px;">Back to DOA Request</apex:outputLink>
+                <apex:commandButton action="{!returnToDOA}" value="Back to DOA Request" rendered="{!IF(fromVisualforce = null, true, false)}" immediate="true"/>
                 <!--<apex:commandButton action="/{!oForm.DOAApprovalRequest__c}" value="Back to DOA Request" rendered="{!IF(fromVisualforce = null, true, false)}"/>-->
 				<apex:commandButton action="/apex/ECO_DOAApprovals?Id={!oForm.DOAApprovalRequest__c}" value="Back to DOA Request" rendered="{!IF(fromVisualforce != null, true, false)}"/>
             </apex:pageBlockButtons>
