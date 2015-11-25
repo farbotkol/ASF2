@@ -29,7 +29,7 @@ public class ECO_Service_ProjectTask{
 			Date threeMonthsAgoFiscalEndDate = getMonthEndDate3FiscalMonthsAgo(timePeriods);
 			Map<String,AggregateResult> ITD3Months = getITD3Months(threeMonthsAgoFiscalEndDate);
 			
-			tasks = [select Id,
+            tasks = [select Id,MetricsDate__c,
 							RevenueBudgetOriginal__c,  // ok
 							RevenueBudgetCurrent__c,  // select TotalRevenue__c from BudgetTask where and BudgetHeader__r.status=approved	
 							CostBudgetOriginal__c, 	 // ok
@@ -58,20 +58,31 @@ public class ECO_Service_ProjectTask{
 			Map<String, AggregateResult> costMTD = getCostMTDInformation(months);
 			
 			for (pse__Project_Task__c pt : tasks){
+                if(originalBudget.containskey(pt.Id))
 				pt.RevenueBudgetOriginal__c = (Decimal) originalBudget.get(pt.Id).get('totalRevenue');
+                if(currentBudget.containskey(pt.Id))
 				pt.RevenueBudgetCurrent__c = (Decimal) currentBudget.get(pt.Id).get('totalRevenue');
+                if(originalBudget.containskey(pt.Id))
 				pt.CostBudgetOriginal__c = (Decimal) originalBudget.get(pt.Id).get('totalCost');
+                if(costMTD.containskey(pt.Id + pt.EndDatePreviousFiscalMonth__c))
+                {
 				pt.CostPrevMTD__c = (Decimal) costMTD.get(pt.Id + pt.EndDatePreviousFiscalMonth__c).get('totalCost');
 				pt.CostMTD__c = (Decimal) costMTD.get(pt.Id + pt.EndDateFiscalMonth__c).get('totalCost');
+                }
+                if(forecastBudget.containskey(pt.Id))
 				pt.TotalForecastCostPrevME__c = (Decimal) forecastBudget.get(pt.Id).get('totalCost');
 				pt.EarnedValue__c = null;
 				pt.CPI__c = null;
 				pt.MonthEndDate3FiscalMonthsAgo__c = threeMonthsAgoFiscalEndDate;
+                 if(ITD3Months.containskey(pt.Id))
 				pt.CostITD3FiscalMonthEndsAgo__c =  (Decimal) ITD3Months.get(pt.Id).get('totalCost');
 				
+                pt.MetricsDate__c = date.today();
+                 
 			} 
 			
 		} catch (Exception e) {
+            system.debug('e---------'+e);
 			System.debug(e.getStackTraceString());
 		}
 		return tasks;
