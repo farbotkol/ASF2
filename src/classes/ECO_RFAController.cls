@@ -77,11 +77,14 @@ public with sharing class ECO_RFAController {
             isNonProjectRelated = true;
         else{
             isNonProjectRelated = false;
-            proj = [Select Id, OpportunityID__c, Name, pse__Project_ID__c, OracleProjectnumber__c From pse__Proj__c Where Id = :oForm.Projid__c] ;
-            projName = proj.Name;
-            opptyId = proj.OpportunityID__c;
-            ecosystem = proj.pse__Project_ID__c;
-            oracleProjNumber = proj.OracleProjectnumber__c;
+            List <pse__Proj__c> projList = new List<pse__Proj__c> ([Select Id, OpportunityID__c, Name, pse__Project_ID__c, OracleProjectnumber__c From pse__Proj__c Where Id = :oForm.Projid__c]);
+            if(projList.size()>0){
+                proj = projList[0];
+                projName = proj.Name;
+                opptyId = proj.OpportunityID__c;
+                ecosystem = proj.pse__Project_ID__c;
+                oracleProjNumber = proj.OracleProjectnumber__c;
+            }
         }
         System.debug('isNonProjectRelated   :'+isNonProjectRelated);
         
