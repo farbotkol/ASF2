@@ -242,7 +242,7 @@ public class ECO_Service_ProjectSnapshots {
 	                FROM pse__Proj__c WHERE Id IN :projectIds];     
          	}
          	catch(Exception e) {
-         		e.getStackTraceString();
+         		System.Debug(e.getStackTraceString());
          	}
 
          	if (projects != null && projects.size() > 0) {
@@ -263,6 +263,8 @@ public class ECO_Service_ProjectSnapshots {
 	        	mtdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, monthStartDate);    
 
 	        	itdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, null);
+                billingMetricsARMap = getBillingMetricsARMap(projectIds, itdActualFinancialMetricsMap);
+                System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap 1='+billingMetricsARMap);
 
 				pse__Time_Period__c yearTP = (pse__Time_Period__c) timePeriodMap.get('Year');
 				Date yearStartDate = yearTP.pse__Start_Date__c;
@@ -271,9 +273,13 @@ public class ECO_Service_ProjectSnapshots {
                 billingMetricsAR0to30Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_0to30);
                 System.debug(System.LoggingLevel.WARN, '___billingMetricsAR0to30Map='+billingMetricsAR0to30Map);
                 billingMetricsAR31to60Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_31to60);
+                System.debug(System.LoggingLevel.WARN, '___billingMetricsAR31to60Map='+billingMetricsAR31to60Map);
                 billingMetricsAR61to90Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_61to90);
+                System.debug(System.LoggingLevel.WARN, '___billingMetricsAR61to90Map='+billingMetricsAR61to90Map);
                 billingMetricsAR91to180Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_91to180);
+                System.debug(System.LoggingLevel.WARN, '___billingMetricsAR91to180Map='+billingMetricsAR91to180Map);
                 billingMetricsAR181PlusMap = getBillingMetricsAR181PlusMap(projectIds);
+                System.debug(System.LoggingLevel.WARN, '___billingMetricsAR181PlusMap='+billingMetricsAR181PlusMap);
 
 				// Note: Unbilled calculations are in reverse order
 				unbilledMetricsAR181PlusMap = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_181Plus);
@@ -318,9 +324,6 @@ public class ECO_Service_ProjectSnapshots {
                 previousFMForecastMap = getPreviousFMForecastMap(projIdToSnapshotMap);
                 
     			totalCostITD3MonthsAgoMetricsMap = getTotalCostITD3MonthsAgoMap(projectIds);
-
-                billingMetricsARMap = getBillingMetricsARMap(projectIds, itdActualFinancialMetricsMap);
-                System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap 1='+billingMetricsARMap);
                 
                 populateFutureSpendMaps(projectIds);
                 
@@ -446,6 +449,8 @@ public class ECO_Service_ProjectSnapshots {
 	                    snapshot.ARRetention__c = billingMetricsAR.Retention;
 	                    snapshot.ARBIEE__c = billingMetricsAR.BIEE;
 	                    snapshot.UnbilledTotal__c = billingMetricsAR.TotalUnbilled;
+	                    
+	                    System.debug(System.LoggingLevel.WARN, '___createProjectSnapshots: Billed snapshot='+snapshot);
                     }
                     
 					// Unbilled Metrics	
