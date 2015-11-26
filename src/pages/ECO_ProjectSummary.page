@@ -294,9 +294,9 @@
 		-->
 
 		<apex:outputPanel id="msgPanel">
- 			<apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before generating a project number. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c) && isProjectNumber && projectHeader.PROJECT_ID == '' && allowRequestSubmit}"/>
+ 			<apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before generating a project number. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT(project.Is_Oracle_Token_Valid__c) && isProjectNumber && projectHeader.PROJECT_ID == '' && allowRequestSubmit}"/>
 			
-			<apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Synching the Project. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT(isProjectNumber) && NOT($User.IsValidOracleToken__c) && allowRequestSubmit}"/> 	
+			<apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Synching the Project. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT(isProjectNumber) && NOT(project.Is_Oracle_Token_Valid__c) && allowRequestSubmit}"/> 	
 
 			<apex:pageMessages id="msg" escape="false"></apex:pageMessages>
 		</apex:outputPanel>
@@ -317,15 +317,15 @@
 			<!--
 			<apex:commandButton value="{!btnValue}" action="{!doRequest}" onclick="initiateOracleProjectSyncRequest_JS();" reRender="opTemp" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber}"/>
 			-->
-			<apex:commandButton value="{!btnValue}" onclick="disableAfterSubmit(this.id); numberRequest_Step1_start_JS(); return false;" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber && ($User.IsValidOracleToken__c) && allowRequestSubmit}"/>
+			<apex:commandButton value="{!btnValue}" onclick="disableAfterSubmit(this.id); numberRequest_Step1_start_JS(); return false;" disabled="{!!allowRequestSubmit}" id="btnSendRequest" rendered="{!isProjectNumber && (project.Is_Oracle_Token_Valid__c) && allowRequestSubmit}"/>
 
 			<apex:commandButton value="Send Project Sync Request" onclick="doSyncStep(0); return false;"  
-			rendered="{!!isProjectNumber && ($User.IsValidOracleToken__c) && allowRequestSubmit}" disabled="{!!allowRequestSubmit}" id="btnSendNumRequest"/>
+			rendered="{!!isProjectNumber && (project.Is_Oracle_Token_Valid__c) && allowRequestSubmit}" disabled="{!!allowRequestSubmit}" id="btnSendNumRequest"/>
 			<apex:commandButton value="Save" action="{!updateProject}" status="statusBar"/>
 			<apex:commandButton value="Return to Project" action="{!returnToProject}" />
 			<apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;"
-			rendered="{!(NOT($User.IsValidOracleToken__c) && isProjectNumber && projectHeader.PROJECT_ID == '' && allowRequestSubmit) || 
-			          (NOT(isProjectNumber) && NOT($User.IsValidOracleToken__c) && allowRequestSubmit)}"/>
+			rendered="{!(NOT(project.Is_Oracle_Token_Valid__c) && isProjectNumber && projectHeader.PROJECT_ID == '' && allowRequestSubmit) || 
+			          (NOT(isProjectNumber) && NOT(project.Is_Oracle_Token_Valid__c) && allowRequestSubmit)}"/>
 		
 		</apex:pageBlockButtons>
 
