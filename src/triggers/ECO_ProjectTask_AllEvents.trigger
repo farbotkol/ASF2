@@ -1,4 +1,13 @@
 trigger ECO_ProjectTask_AllEvents on pse__Project_Task__c (before insert, before update, after insert, after update, before delete) {
+    system.debug('ProjectTask Trigger.new: ' + Trigger.new);
+    
+if(trigger.isUpdate && ECO_ProjectTaskTriggers.hasUpdateRan) {
+
+} else {
+
+    if(trigger.isUpdate) {
+        ECO_ProjectTaskTriggers.hasUpdateRan = true;
+    }
     if (trigger.isBefore) {
         if ((trigger.isInsert) || (trigger.isUpdate)) {
             //ECO_ProjectTaskTriggers.copyCarryingOutToTask(trigger.new);
@@ -55,4 +64,5 @@ trigger ECO_ProjectTask_AllEvents on pse__Project_Task__c (before insert, before
         }
         //Added By Eric Ends Here
     }    
+}
 }

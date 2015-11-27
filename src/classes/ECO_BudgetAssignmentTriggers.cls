@@ -1,6 +1,22 @@
 public without sharing class ECO_BudgetAssignmentTriggers {
 	public static Boolean run = true;
-	
+    
+    public static void setCurrency(List<BudgetAssignment__c> baNew) {
+        if (!run) {
+            return;
+        }
+
+        Id btId = baNew[0].BudgetTask__c;
+        // Get project currency
+        BudgetTask__c budgetTask = [Select Id, BudgetHeader__r.Project__r.CurrencyIsoCode From BudgetTask__c Where Id = :btId];
+
+
+        String projectCurrency = budgetTask.BudgetHeader__r.Project__r.CurrencyIsoCode;
+
+        for (BudgetAssignment__c ba : baNew) {
+            ba.CurrencyIsoCode = projectCurrency;            
+        }
+    }
 	public static void setRateDefaults(List<BudgetAssignment__c> baNew) {
 		if (!run) {
 			return;
