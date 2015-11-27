@@ -50,7 +50,7 @@ public with sharing class ECO_RFAController {
             strSOQL += fsmField.getFieldPath() + ', ';
         }
         
-        strSOQL += 'ID, DOAApprovalRequest__c, ReasonForRequest__c, ProposedReviewCategoryChange__c, DOAApprovalRequest__r.RecordType.DeveloperName, DOAApprovalRequest__r.Project__r.CarryingOutOrganization__c, JustificationReviewCategoryChange__c, NonProjectRelatedMatters__c, Projid__c, Business_Group__c, OwningOrganization__c, ProjectNameSubject__c, OpportunityNumber__c, OracleProjectNumber__c FROM Form__c WHERE id=: formid';
+        strSOQL += 'ID, DOAApprovalRequest__c, Enable_Cancel__c, ReasonForRequest__c, ProposedReviewCategoryChange__c, DOAApprovalRequest__r.RecordType.DeveloperName, DOAApprovalRequest__r.Project__r.CarryingOutOrganization__c, JustificationReviewCategoryChange__c, NonProjectRelatedMatters__c, Projid__c, Business_Group__c, OwningOrganization__c, ProjectNameSubject__c, OpportunityNumber__c, OracleProjectNumber__c FROM Form__c WHERE id=: formid';
         list<Form__c> lstform = (list<Form__c>)Database.query(strSOQL);
         if(lstform.size()>0)
             oForm = lstform[0];
@@ -236,6 +236,19 @@ public with sharing class ECO_RFAController {
             ApexPages.addMessage(oMsg);
             return null;
         }
+    }
+    
+    public pageReference goToDOA(){
+        try{
+            oForm.Enable_Cancel__c = false;
+            update oForm;
+            return new Pagereference('/'+oForm.DOAApprovalRequest__c);
+        }catch(Exception e){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to return. Please contact your administrator with the following error: ' + e);
+            ApexPages.addMessage(oMsg);
+            return null;
+        }
+        
     }
 	private void loadTriggers(){
 

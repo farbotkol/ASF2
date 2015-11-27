@@ -76,31 +76,31 @@
                 <apex:commandButton action="{!submitEnterprise}" value="Submit for Enterprise Approval" rendered="{!isDOAAdmin}"/>
                 <apex:commandButton action="{!submitDCSHub}" value="Submit for DCS Hub Approval" rendered="{!isDOAAdmin}"/>
                 <apex:commandButton action="{!submitAECOMHub}" value="Submit for AECOM Hub Approval" rendered="{!isDOAAdmin}"/>
-                <apex:commandButton action="{!submitDOAQueue}" value="Submit to DoA Approval Queue" rendered="{!NOT(OR(inQueue,IF(oDOA.ApprovalStatus__c != '',true,false)))}"/>
+                <apex:commandButton action="{!submitDOAQueue}" value="Submit to DoA Approval Queue" rendered="{!NOT(inQueue)}"/>
                 <!--<apex:commandButton action="/resource/RiskCommitteeSubmittalTemplate" value="Risk Committee Submittal Template" rendered="{!AND(NOT(inQueue), NOT(isDOAAdmin),oDOA.Enable_RCST_Button__c )}" />-->
-                <apex:outputLink value="{!URLFOR($Resource.RiskCommitteeSubmittalTemplate)}" rendered="{!AND(NOT(OR(inQueue,IF(oDOA.ApprovalStatus__c != '',true,false))), NOT(isDOAAdmin),oDOA.Enable_RCST_Button__c )}" styleClass="btn" style="text-decoration:none;padding:4px;">Risk Committee Submittal Template</apex:outputLink>
-                <apex:commandButton action="/{!oDOA.Project__c}" value="Return to Project" rendered="{!OR(inQueue,IF(oDOA.ApprovalStatus__c != '',true,false))}"/>
+                <apex:outputLink value="{!URLFOR($Resource.RiskCommitteeSubmittalTemplate)}" rendered="{!AND(NOT(inQueue), NOT(isDOAAdmin),oDOA.Enable_RCST_Button__c )}" styleClass="btn" style="text-decoration:none;padding:4px;">Risk Committee Submittal Template</apex:outputLink>
+                <apex:commandButton action="/{!oDOA.Project__c}" value="Return to Project" rendered="{!inQueue}"/>
             </apex:pageBlockButtons>
             <apex:pageBlockSection title="DOA Approval Request Detail" >
                 	<apex:outputField value="{!oDOA.Project__c}" rendered="{!IF(oDOA.Project__c != null, true, false)}"/>
                 	<apex:inputField value="{!oDOA.ProjectNameSubject__c}" rendered="{!IF(oDOA.Project__c != null, false, true)}"/>
-                    <apex:outputField value="{!oDOA.OwnerId}" rendered="{!OR(NOT(isDOAAdmin),inQueue,IF(oDOA.ApprovalStatus__c != '',true,false))}"/>
-                	<apex:inputField value="{!oDOA.OwnerId}" rendered="{!AND(isDOAAdmin,NOT(OR(inQueue,IF(oDOA.ApprovalStatus__c != '',true,false))))}"/>
+                    <apex:outputField value="{!oDOA.OwnerId}" rendered="{!OR(NOT(isDOAAdmin),inQueue)}"/>
+                	<apex:inputField value="{!oDOA.OwnerId}" rendered="{!AND(isDOAAdmin,NOT(inQueue))}"/>
                     <apex:outputField value="{!oDOA.Name}"/>
                     <!--<apex:inputField value="{!oDOA.Requestor__c}" styleClass="hideDropdown" required="true" rendered="{!IF(OR(oDOA.ApprovalStatus__c == 'Submitted', oDOA.ApprovalStatus__c == 'Approved'),false,true)}"/>
                 	<apex:outputField value="{!oDOA.Requestor__c}" styleClass="hideDropdown" rendered="{!IF(OR(oDOA.ApprovalStatus__c == 'Submitted', oDOA.ApprovalStatus__c == 'Approved'),true,false)}"/>-->
-                	<apex:inputField value="{!oDOA.Requestor__c}" styleClass="hideDropdown" required="true" rendered="{!NOT(OR(inQueue,IF(oDOA.ApprovalStatus__c != '',true,false)))}"/>
-                	<apex:outputField value="{!oDOA.Requestor__c}" styleClass="hideDropdown" rendered="{!OR(inQueue,IF(oDOA.ApprovalStatus__c != '',true,false))}"/>
+                	<apex:inputField value="{!oDOA.Requestor__c}" styleClass="hideDropdown" required="true" rendered="{!NOT(inQueue)}"/>
+                	<apex:outputField value="{!oDOA.Requestor__c}" styleClass="hideDropdown" rendered="{!inQueue}"/>
                     <apex:outputField value="{!oDOA.ProjectNumber__c}" rendered="{!IF(oDOA.Project__c != null, true, false)}"/>
-                	<apex:inputField value="{!oDOA.OracleProjectNumber__c}" rendered="{!AND(IF(oDOA.Project__c != null, false, true), NOT(OR(inQueue,IF(oDOA.ApprovalStatus__c != '',true,false))))}"/>
+                	<apex:inputField value="{!oDOA.OracleProjectNumber__c}" rendered="{!AND(IF(oDOA.Project__c != null, false, true), NOT(inQueue))}"/>
                     <apex:outputField value="{!oDOA.EndClientPrimary__c}" rendered="{!IF(oDOA.Project__c != null, true, false)}"/>
                     <apex:outputField value="{!oDOA.BillingClientPrimary__c}" rendered="{!IF(oDOA.Project__c != null, true, false)}"/>
-                    <apex:outputField value="{!oDOA.ApprovalStatus__c}" rendered="{!OR(NOT(isDOAAdmin),inQueue,IF(oDOA.ApprovalStatus__c != '',true,false))}"/>
-                	<apex:inputField value="{!oDOA.ApprovalStatus__c}" rendered="{!AND(isDOAAdmin,NOT(OR(inQueue,IF(oDOA.ApprovalStatus__c != '',true,false))))}"/>
-                    <apex:inputField value="{!oDOA.DateRequired__c}" rendered="{!NOT(OR(inQueue,IF(oDOA.ApprovalStatus__c != '',true,false)))}"/>
-                	<apex:outputField value="{!oDOA.DateRequired__c}" rendered="{!OR(inQueue,IF(oDOA.ApprovalStatus__c != '',true,false))}"/>
+                    <apex:outputField value="{!oDOA.ApprovalStatus__c}" rendered="{!NOT(isDOAAdmin)}"/>
+                	<apex:inputField value="{!oDOA.ApprovalStatus__c}" rendered="{!isDOAAdmin}"/>
+                    <apex:inputField value="{!oDOA.DateRequired__c}" rendered="{!NOT(inQueue)}"/>
+                	<apex:outputField value="{!oDOA.DateRequired__c}" rendered="{!inQueue}"/>
                 	<apex:outputField value="{!oDOA.OpportunityName__c}" rendered="{!IF(oDOA.Project__c != null, true, false)}"/>
-                	<apex:inputField value="{!oDOA.OpportunityNumber__c}" rendered="{!AND(IF(oDOA.Project__c != null, false, true), NOT(OR(inQueue,IF(oDOA.ApprovalStatus__c != '',true,false))))}"/>
+                	<apex:inputField value="{!oDOA.OpportunityNumber__c}" rendered="{!AND(IF(oDOA.Project__c != null, false, true), NOT(inQueue))}"/>
                 	<apex:inputHidden value="{!oDOA.AssigntoDoAApprovalQueue__c}"/>
             </apex:pageBlockSection>
             <!--<apex:pageBlockSection title="Conditions of Approval Compliance" id="ConditionsSection" rendered="{!isDOAAdmin}">

@@ -414,6 +414,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
 
         if(questionOne == 'No'){
             newForm.recordtypeid = mapRecType.get('RFA');
+            newForm.Enable_Cancel__c = true;
             lstFormsToInsert.add(newForm);
         } else if(questionTwo == 'Yes'){
             newForm.recordtypeid = mapRecType.get('ORM Memo');
