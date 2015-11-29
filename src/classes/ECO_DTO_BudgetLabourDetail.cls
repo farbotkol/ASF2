@@ -80,7 +80,15 @@ public class ECO_DTO_BudgetLabourDetail {
     }
     
     public Decimal revenueRate {
-        get{return oBudgetResource.AppliedBillRate__c;}
+        get {
+            if(oBudgetResource.MarginType__c == 'Amount') {
+                return oBudgetResource.AppliedBillRate__c;
+            } else if (oBudgetResource.MarginType__c == 'Percent') {
+                return oBudgetResource.AppliedBillRate__c + oBudgetResource.CostRate__c;
+            }
+
+            return 0.0;
+        }
         private set;
     }
     

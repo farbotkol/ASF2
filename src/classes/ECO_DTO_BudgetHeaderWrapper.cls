@@ -61,6 +61,18 @@ public class ECO_DTO_BudgetHeaderWrapper {
         get{return calculateTotal(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'TotalFeeAmount__c');}
     }
     
+    public Decimal getBudgetTotalContingencyAmount {
+        get{return calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'TotalContingencyAmount__c');}
+    }
+
+    public Decimal getForecastTotalContingencyAmount {
+        get{return calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'TotalContingencyAmount__c');}
+    }
+
+    public Decimal getWorkAtRiskTotalContingencyAmount {
+        get{return calculateTotal(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'TotalContingencyAmount__c');}
+    }
+
     public Decimal getBudgetTotalCost {
         get{return calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'TotalCost__c');}
     }

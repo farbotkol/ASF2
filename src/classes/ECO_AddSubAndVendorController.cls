@@ -59,6 +59,14 @@ public with sharing class ECO_AddSubAndVendorController {
         }
     }
     
+    public PageReference addGenericResource() {
+        BudgetResource__c genericBr = createBudgetResource(null);
+
+        insert genericBr;
+
+        return close();
+    }
+
     public PageReference addExistingResource() {
 		List<BudgetResource__c> budgetResourcestoInsert = new List<BudgetResource__c>();
 
@@ -164,7 +172,7 @@ public with sharing class ECO_AddSubAndVendorController {
         budgetResource.OverrideBillRate__c = theProject.DefaultBillRate__c;
         budgetResource.OverrideUplift__c = theProject.DefaultUpliftSubs__c;
         budgetResource.JobName__c = null;
-        budgetResource.VendorSite__c = vendorSite.id;
+        budgetResource.VendorSite__c = vendorSite == null ? null : vendorSite.id;
         
         return budgetResource;
     }

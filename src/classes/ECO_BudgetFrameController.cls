@@ -48,11 +48,36 @@ public class ECO_BudgetFrameController {
             recordTypeName = [SELECT Id, RecordType.DeveloperName FROM BudgetHeader__c Where Id = :sBudgetHeaderId].RecordType.DeveloperName;
         }
     }
-	
+    
+    public PageReference createSpecificEAC() {
+        return null;
+    }
+    
+    public PageReference createGenericEAC() {
+         System.savePoint oSavePoint = Database.setSavepoint();
+
+        try {
+            Id budgetHeaderId = ECO_BudgetEACService.createGenericECO(sProjectId);
+            
+            PageReference oPageReference = Page.ECO_BudgetHeader;
+            
+            oPageReference.getParameters().put('Id', budgetHeaderId);
+            return oPageReference;
+            
+        } catch (Exception e) {
+            system.debug(Logginglevel.ERROR, 'Handled Exception:  ' + e.getMessage());
+            system.debug(Logginglevel.ERROR, 'Handled Exception.getLineNumber:  ' + e.getLineNumber());
+            Database.rollback(oSavePoint);
+            ApexPages.addMessages(e);
+        }
+
+        return null;
+    } 
+    
     public PageReference createEAC() {
         System.savePoint oSavePoint = Database.setSavepoint();
 
-       	try {
+        try {
             Id budgetHeaderId = ECO_BudgetEACService.createInitECO(sProjectId);
             
             PageReference oPageReference = Page.ECO_BudgetHeader;
@@ -69,8 +94,16 @@ public class ECO_BudgetFrameController {
         
         return null;
     }
-    
+
+   public PageReference createEstimate() {
+        return createBudgetHeader('Estimate');
+    }
+
     public PageReference createChangeOrder(){
+        return createBudgetHeader('Change Order');
+    }
+
+    public PageReference createBudgetHeader(String prefixName){
         System.savePoint oSavePoint = Database.setSavepoint();
 
         BudgetHeader__c oBudgetHeader = new BudgetHeader__c();
@@ -78,15 +111,15 @@ public class ECO_BudgetFrameController {
         try {
             oBudgetHeader.RecordTypeId = ECO_Utils_Meta.getRecordTypeId(BudgetHeader__c.sObjectType, 'Change Order');
             oBudgetHeader.Project__c = sProjectId;
-            oBudgetHeader.Status__c = 'Estimate';
+            oBudgetHeader.Status__c = ECO_DTO_BudgetHeader.STATUS_ESTIMATE;
 
             list<BudgetHeader__c> lBudgetHeader = new list<BudgetHeader__c>([SELECT Id FROM BudgetHeader__c WHERE Project__c = :sProjectId]);
 
-            oBudgetHeader.BudgetName__c = 'Change Order ' + lBudgetHeader.size();
+            oBudgetHeader.BudgetName__c = prefixName + ' ' + lBudgetHeader.size();
 
             insert oBudgetHeader;
         } catch (Exception e) {
-            system.debug('Handled Exception:  '+e.getMessage());
+            system.debug('Handled Exception:  ' + e.getMessage());
             system.debug('Handled Exception.getLineNumber:  '+e.getLineNumber());
             Database.rollback(oSavePoint);
             ApexPages.addMessages(e);
@@ -135,7 +168,7 @@ public class ECO_BudgetFrameController {
 
     public PageReference gotoSetup(){
         PageReference oPageReference = Page.ECO_BudgetQuestionnaire;
-		oPageReference.getParameters().put('retURL', '/apex/ECO_BudgetHeaderSummary?id=' + sProjectId);
+        oPageReference.getParameters().put('retURL', '/apex/ECO_BudgetHeaderSummary?id=' + sProjectId);
         oPageReference.getParameters().put('id', sProjectId);
         
         return oPageReference;
@@ -181,10 +214,10 @@ public class ECO_BudgetFrameController {
 
     public PageReference showSubTab(){
         PageReference oPageReference = Page.ECO_BudgetSubDetail;
-		
+        
         if (recordTypeName == 'EAC') {
             oPageReference = Page.ECO_BudgetSubDetailEAC;
-    	}
+        }
         oPageReference.getParameters().put('id', sBudgetHeaderId);
         
         return oPageReference;
@@ -195,7 +228,7 @@ public class ECO_BudgetFrameController {
 
         if (recordTypeName == 'EAC') {
             oPageReference = Page.ECO_BudgetODCDetailEAC;
-    	}
+        }
         oPageReference.getParameters().put('id', sBudgetHeaderId);
         
         return oPageReference;
