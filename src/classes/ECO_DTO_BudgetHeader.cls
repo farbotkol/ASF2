@@ -8,7 +8,7 @@ public class ECO_DTO_BudgetHeader {
     public static final String STATUS_WORKATRISK = 'Work at Risk';
     public static final String STATUS_ESTIMATE = 'Estimate';
     public static final String STATUS_ARCHIVE = 'Archive';
-    
+
     public String budgetName{
         get {return oBudgetHeader.BudgetName__c;}
         private set;
@@ -120,6 +120,7 @@ public class ECO_DTO_BudgetHeader {
             if(oBudgetHeader.Status__c == STATUS_ARCHIVE) {
                 listOptions.add(new SelectOption('UnArchiveBudget','UnArchive Budget'));
             }
+           
             if(!String.IsEmpty(budgetHeaderChangeManagerMap.get('Internal Change'))) {
                 listOptions.add(new SelectOption('ViewInternalChange','View Forecasted Change'));
             }

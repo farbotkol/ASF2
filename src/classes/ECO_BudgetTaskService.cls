@@ -278,7 +278,7 @@ public with sharing class ECO_BudgetTaskService {
 		BudgetHeader__c oBudgetHeader = new BudgetHeader__c();
         oBudgetHeader.RecordTypeId = ECO_Utils_Meta.getRecordTypeId(BudgetHeader__c.sObjectType, 'EAC');
         oBudgetHeader.Project__c = sProjectId;
-        oBudgetHeader.Status__c = 'Estimate';
+        oBudgetHeader.Status__c = ECO_DTO_BudgetHeader.STATUS_ESTIMATE;
         
         list<BudgetHeader__c> lBudgetHeader = new list<BudgetHeader__c>([SELECT Id FROM BudgetHeader__c WHERE Project__c = :sProjectId]);
         
@@ -633,14 +633,26 @@ public with sharing class ECO_BudgetTaskService {
         return oBudgetHeader.Id;
 	}
 
+
 	public static Decimal sumContingencies(Id  projectId) {
-		AggregateResult arContingency = [Select Sum(TotalContingencyAmount__c) total From BudgetHeader__c Where Project__c = :projectId];
-		return (Decimal)arContingency.get('total');
+		List<BudgetHeader__c> budgetHeaders = [Select TotalContingencyAmount__c, Project__c From BudgetHeader__c Where Project__c = :projectId];
+		Decimal val = 0;
+
+		for(BudgetHeader__c bh : budgetHeaders ) {
+			val += bh.TotalContingencyAmount__c;
+		}
+		return val;
 	}
 
 	public static Decimal sumRiskRegister(Id projectId) {
-		AggregateResult arRisk = [Select Sum(PostmitigationContingencyTotal__c) total From Risk__c Where Project__c = :projectId];
+		List<Risk__c> risks =  [Select PostmitigationContingencyTotal__c, Project__c From Risk__c Where Project__c = :projectId];
 
-		return (Decimal)arRisk.get('total');
+		Decimal val = 0;
+
+		for(Risk__c risk : risks ) {
+			val += risk.PostmitigationContingencyTotal__c;
+		}
+
+		return val;
 	} 
 }

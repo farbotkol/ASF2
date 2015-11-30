@@ -717,8 +717,8 @@ public with sharing class ECO_StakeholdersController
 			}
 		}
 
-		if(startDte < Date.today() || startDte <= endDte){
-			insertReplaceProjectTeamMember.StartDate__c.addError('Effective Date cannot be less than current day or latest date of chosen role');
+		if(startDte <= endDte){
+			insertReplaceProjectTeamMember.StartDate__c.addError('Effective Date cannot be less than the latest date of chosen role');
 			isValid = false;
 		}
 

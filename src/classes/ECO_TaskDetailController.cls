@@ -32,9 +32,12 @@ public class ECO_TaskDetailController
         {    
             list<pse__Project_Task__c> lstProjTaskToUpsert = new list<pse__Project_Task__c>();
             Id idParentTask;
+            Id idTopParentTask;
+
             integer intCount = 0;
             boolean isShowErrorMsg = false;
             boolean NotFinancial = false;
+
             for(TaskDetailWrapper objTDW : lstTaskDetailWrapper)
             {
                 objTDW.objEPT.oprojectTask.WorkTypeName__c = objTDW.strSelectedWorkTypeName;
@@ -66,7 +69,12 @@ public class ECO_TaskDetailController
                     {
                         //Add logic here to filter the Records and assign the Project Id in Subtask's
                         idParentTask = objTDW.objEPT.oprojectTask.Id;
-                        
+                        idTopParentTask = objTDW.objEPT.oprojectTask.pse__Top_level_Parent_Task__c;
+
+                        if (idTopParentTask == null) {
+                            idTopParentTask = idParentTask;
+                        }
+
                         lstProjTaskToUpsert.add(objTDW.objEPT.oprojectTask);
                     }
                     else
@@ -75,10 +83,16 @@ public class ECO_TaskDetailController
                 else
                 {
                     pse__Project_Task__c obj = objTDW.objEPT.oprojectTask;
-                    if(objTDW.strSub_PeerTask == 'Sub Task')
+                    if(objTDW.strSub_PeerTask == 'Sub Task') {
+                        system.debug('ParentTask: ' + idParentTask);
                         obj.pse__Parent_Task__c = idParentTask;
+
+                        obj.pse__Top_level_Parent_Task__c = idTopParentTask;
+                    }
                         
                     obj.pse__Project__c = theProject.Id;
+
+                    system.debug('New project task: ' + obj);
                     lstProjTaskToUpsert.add(obj);
                 }
                 
