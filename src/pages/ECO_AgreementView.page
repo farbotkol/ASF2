@@ -351,6 +351,7 @@
 
     <apex:outputPanel rendered="{!agreementRecordType =='Prime'}" id="primeSection">
     <apex:form > 
+        <apex:inputHidden value="{!Agreement__c.ScopePackage__c}"/>
         <apex:actionFunction id="primeScopeChanged" name="primeScopeChanged" action="{!primeScopeChangedApex}" onComplete="window.location.reload();"/>
         <apex:actionFunction id="changedPrimeAgreementStatus" name="changedPrimeAgreementStatus" rerender="primeExecutionDetails" immediate="true"/>
         <apex:pageBlock mode="{!pageBlockMode}" title="{!'Prime Agreement ' + mode}">
@@ -549,7 +550,7 @@
                 <apex:outputPanel id="primeScopeChanged">
                   <apex:inputField id="pscp1" style="width: 780px" value="{!agreement.ScopeOfServices__c}" rendered="{!mode != '' && agreement.ScopePackage__c == null}"/>               
                     <apex:outputField id="pscp2" style="width: 780px" value="{!agreement.ScopeOfServices__c}" rendered="{!mode == '' && agreement.ScopePackage__c == null}"/>
-                    <apex:outputText id="pscp3" style="width: 780px" value="{!primeScopeText}" rendered="{!agreement.ScopePackage__c != null}"/>
+                    <apex:outputText id="pscp3" style="width: 780px" value="{!primeScopeText}" rendered="{!agreement.ScopePackage__c != null}" escape="false"/>
                 </apex:outputPanel>             
             </apex:pageBlockSectionItem>    
         </apex:pageBlockSection>             
@@ -821,7 +822,7 @@
     <apex:form > 
         <apex:actionFunction id="primeScopeChanged" name="primeScopeChanged" rerender="primeScope"/>
 
-        <apex:pageBlock mode="{!pageBlockMode}" title="{!'Prime Agreement ' + mode}">
+        <apex:pageBlock mode="{!pageBlockMode}" title="{!'Other Agreement ' + mode}">
         <apex:pageBlockButtons >
             <apex:commandLink value="Print Agreement" action="{!printPdf}" styleClass="btn printAgreement" immediate="true" target="_blank" style="text-decoration:none" />
             <apex:commandButton value="Save" action="{!save}" rendered="{!mode != ''}"/>
@@ -846,7 +847,7 @@
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementNumber__c.inlineHelpText}">
             <apex:outputText value="Oracle Agreement No"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.AgreementNumber__c}" rendered="{!mode != ''}"/>
+                <apex:outputField value="{!agreement.AgreementNumber__c}" rendered="{!mode != ''}"/>
                 <apex:outputField value="{!agreement.AgreementNumber__c}" rendered="{!mode == ''}"/>
             </apex:outputPanel>
         </apex:pageBlockSectionItem>  
@@ -1013,7 +1014,7 @@
             <apex:outputPanel id="primeScope">
                 <apex:inputField style="width: 780px" value="{!agreement.ScopeOfServices__c}" rendered="{!mode != '' && agreement.ScopePackage__c == null}"/>               
                 <apex:outputField style="width: 780px" value="{!agreement.ScopeOfServices__c}" rendered="{!mode == '' && agreement.ScopePackage__c == null}"/>
-                <apex:outputField style="width: 780px" value="{!agreement.ScopePackage__r.Scope_Details__c}" rendered="{!agreement.ScopePackage__c != null}"/>
+                <apex:outputField style="width: 780px" value="{!agreement.ScopePackage__r.Scope_Details__c}" rendered="{!agreement.ScopePackage__c != null}" />
                 </apex:outputPanel>             
         </apex:pageBlockSectionItem>    
     </apex:pageBlockSection> 
