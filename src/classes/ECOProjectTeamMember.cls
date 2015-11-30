@@ -1,4 +1,4 @@
-global class ECOProjectTeamMember implements Database.Batchable<sObject>{
+global class ECOProjectTeamMember implements Database.Batchable<sObject>,Database.Stateful,Schedulable{
     
     String query;
     Public list<string> Fiscallist{get;set;}
@@ -192,5 +192,10 @@ global class ECOProjectTeamMember implements Database.Batchable<sObject>{
     
     }
 
+      global void execute(SchedulableContext sc)
+    {
+         ECOProjectTeamMember  b = new ECOProjectTeamMember();
+          database.executebatch(b);
+     }
     
 }
