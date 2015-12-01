@@ -81,13 +81,13 @@
 
 			<apex:pageBlockButtons location="top">
                 <apex:commandButton action="{!savePage}" value="Save" disabled="{!NOT(inputFields)}" status="savestatus" />
-                <apex:commandButton action="{!saveRequest}" value="Submit Review Request" status="savestatus" disabled="{!NOT(inputFields)}"/>
+                <apex:commandButton action="{!saveRequest}" value="Submit Review Request" status="savestatus" disabled="{!OR(NOT(inputFields),IF(lstTQT_Wrapper.size > 0, false, true))}"/>
 				<apex:commandButton action="/{!TechnicalQualityReview__c.Deliverable__c}" value="Return to Deliverable" immediate="true"/>
                 
 			</apex:pageBlockButtons>
 
 			<apex:pageBlockButtons location="bottom">
-                <apex:commandButton action="{!saveRequest}" value="Submit Review Request" status="savestatus" disabled="{!NOT(inputFields)}"/>
+                <apex:commandButton action="{!saveRequest}" value="Submit Review Request" status="savestatus" disabled="{!OR(NOT(inputFields),IF(lstTQT_Wrapper.size > 0, false, true))}"/>
                 <apex:commandButton action="/{!TechnicalQualityReview__c.Deliverable__c}" value="Return to Deliverable" immediate="true"/>
 			</apex:pageBlockButtons>
 

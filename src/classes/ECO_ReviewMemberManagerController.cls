@@ -353,7 +353,8 @@ public with sharing class ECO_ReviewMemberManagerController {
     
             upsert lstReviewMemberstoInsert;
     
-            loadValues();
+            //loadValues();
+            init();
             return null;
         }catch (Exception e) {
 	            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to create technical quality review. Please contact your administrator with the following error: ' + e);
