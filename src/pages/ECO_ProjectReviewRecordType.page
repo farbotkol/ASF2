@@ -39,12 +39,22 @@
             max-width:95%;
         }
 
+
         
     </style>
     <script type="text/javascript">
         function recordTypeSelected(recordType)
         {
             createNewReview(recordType);
+        }
+
+        function disableAfterSubmit(id) {
+            //alert(id);
+            var toDisable = document.getElementById( id );
+            toDisable.disabled = 'disabled';
+            // Use the Salesforce CSS style to make the button appear disabled
+            toDisable.className = 'btnDisabled';
+            //toDisable.value = "Saving..."
         }
     </script>
 <apex:form >
@@ -115,7 +125,7 @@
                     project staff, disciplines or subs, or after projects become reactivated after a significant “on hold” period.  
                 </apex:outputText>
                 </td>
-                <td><apex:commandButton value="Select" onclick="recordTypeSelected('Project Kickoff'); return false;"/></td>
+                <td><apex:commandButton value="Select" onclick="disableAfterSubmit(this.id); recordTypeSelected('Project Kickoff'); return false;" id="btn1"/></td>
             </tr>
             <tr><td width="12%"><apex:outputText value="BIM Healthy Start/Restart"/></td>
                 <td width="83%"><apex:outputText >
@@ -125,7 +135,7 @@
                     This review is required anytime a project is executed or planned to be executed utilizing 
                     BIM technologies (whether contractually required or not).
                 </apex:outputText></td>
-                <td width="5%"><apex:commandButton value="Select" onclick="recordTypeSelected('BIM Healthy Start'); return false;"/></td>
+                <td width="5%"><apex:commandButton value="Select" onclick="disableAfterSubmit(this.id); recordTypeSelected('BIM Healthy Start'); return false;" id="btn2"/></td>
             </tr>
             <tr>
                 <td><apex:outputText value="Healthy Start/Restart"/></td>
@@ -135,7 +145,7 @@
                     is re-planned in an appropriate manner to promote the greatest potential for success during the remainder of its execution. 
                     This review is mandatory for those projects and proposals identified as requiring either a Healthy Start Review or a Healthy Restart Review. 
                 </apex:outputText></td>
-                <td><apex:commandButton value="Select" onclick="recordTypeSelected('Healthy Start/Restart'); return false;"/></td>
+                <td><apex:commandButton value="Select" onclick="disableAfterSubmit(this.id); recordTypeSelected('Healthy Start/Restart'); return false;" id="btn3"/></td>
             </tr>   
             
             <tr>
@@ -144,7 +154,7 @@
                     A financial health check of the project each month, at a minimum, is mandatory for all AECOM projects, regardless of project category.  
                     This review is conducted by the Project Manager and involves assessment of the project against predetermined predictive criteria.  
                     Detailed Project Performance Reviews may be requested for projects that trigger the criteria.</apex:outputText></td>
-                <td><apex:commandButton value="Select" onclick="recordTypeSelected('Monthly Project Review'); return false;"/></td>
+                <td><apex:commandButton value="Select" onclick="disableAfterSubmit(this.id); recordTypeSelected('Monthly Project Review'); return false;" id="btn4"/></td>
             </tr>
             <tr>
                 <td><apex:outputText value="Project Performance Review"/></td>
@@ -157,7 +167,7 @@
                     The Project Manager will be notified if their projects fall into the Tier 1 or Tier 2 criteria and require a review.            
                 </apex:outputText>
                 </td>
-                <td><apex:commandButton value="Select" onclick="recordTypeSelected('Project Performance Review'); return false;"/></td>
+                <td><apex:commandButton value="Select" onclick="disableAfterSubmit(this.id); recordTypeSelected('Project Performance Review'); return false;" id="btn5"/></td>
             </tr>           
             <!--<tr>
                 <td><apex:outputText value="Project Closeout"/></td>
@@ -171,7 +181,7 @@
             <tr>
                 <td><apex:outputText value="Other"/></td>
                 <td><apex:outputText >Any other reviews or meetings identified by the PM, project team or client throughout the life of the project.</apex:outputText></td>
-                <td><apex:commandButton value="Select" onclick="recordTypeSelected('Other'); return false;"></apex:commandButton></td>
+                <td><apex:commandButton value="Select" onclick="disableAfterSubmit(this.id); recordTypeSelected('Other'); return false;" id="btn6"></apex:commandButton></td>
             </tr>       
                     
         </table></apex:outputPanel>
