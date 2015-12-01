@@ -1,0 +1,356 @@
+<apex:page showHeader="false" sidebar="false" standardController="pse__Proj__c" extensions="ECO_PMD_TrendAnalysis_Controller">
+	<apex:includeScript value="{!URLFOR($Resource.angular_1_4_7_min, 'angular.min.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.angular_1_4_7_min, 'i18n/angular-locale_' + LOWER(locale) + '.js')}"/>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.0.1/faker.min.js"></script>
+
+	
+	<div ng-app="ecopmd">
+		<apex:composition template="ECO_PMD_Chrome" >
+
+			<apex:define name="mainContent">
+
+				<div class="ecopmd-ag-wrap">
+					<div ng-controller="trendAnalysisController as ctrl" class="container-fluid">
+						<div class="lead" ng-bind="ctrl.labels.trendAnalysis"></div>
+						<div class="row">
+							<div class="col-md-8"><eco-pmd-trend-analysis-p-and-l data="ctrl.pAndLData" labels="ctrl.labels"/></div>
+						</div>
+						<div class="row">
+							<div class="col-md-8"><eco-pmd-trend-analysis-working-capital data="ctrl.workingCapitalData" labels="ctrl.labels"/></div>
+						</div>
+					</div>
+				</div>
+
+	            <!-- remove if not using broken ecosystem chrome -->
+				<div style="display:none;">
+					<div id="client-care-program" />
+					<div id="technical-practice-networks" />
+					<canvas id="case-incident-rate" /><span id="case-incident-rate-txt" />
+				</div>
+			</apex:define>
+
+			<apex:define name="belowFooter">
+				<script type="text/ng-template" id="eco-pmd-trend-analysis-p-and-l-template" >
+					<div>
+						<style>
+							th {
+								background-color: #00b5e5;
+								color: #fff;
+							}
+						</style>
+
+						<table class="table table-striped table-bordered">
+							<thead>
+								<tr>
+									<th width="275" ng-bind="vm.labels.pAndL"></th>
+									<th ng-repeat="d in vm.data track by d.id" ng-bind="d.glPeriod"></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr class="success">
+									<td ng-bind="vm.labels.grossRevenue"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.grossRevenue|number:0"></td>
+								</tr>
+								<tr>
+									<td ng-bind="vm.labels.odcExpenses"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.odcExpenses|number:0"></td>
+								</tr>
+								<tr>
+									<td ng-bind="vm.labels.odcSubs"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.odcSubs|number:0"></td>
+								</tr>
+								<tr class="success">
+									<td ng-bind="vm.labels.nsr"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.nsr|number:0"></td>
+								</tr>
+								<tr>
+									<td ng-bind="vm.labels.labour"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.labour|number:0"></td>
+								</tr>
+								<tr>
+									<td ng-bind="vm.labels.fringe"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.fringe|number:0"></td>
+								</tr>
+								<tr class="success">
+									<td ng-bind="vm.labels.grossMargin"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.grossMargin|number:0"></td>
+								</tr>
+								<tr>
+									<td ng-bind="vm.labels.overhead"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.overhead|number:0"></td>
+								</tr>
+								<tr class="success">
+									<td ng-bind="vm.labels.netMargin"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.netMargin|number:0"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</script>
+
+				<script type="text/ng-template" id="eco-pmd-trend-analysis-working-capital-template" >
+					<div>
+						<style>
+							th {
+								background-color: #00b5e5;
+							}
+
+							tr.line-below td {
+								border-bottom: 1px solid #aaa !important;
+							}
+						</style>
+
+						<table class="table table-striped table-bordered">
+							<thead>
+								<tr>
+									<th width="275" ng-bind="vm.labels.workingCapital"></th>
+									<th ng-repeat="d in vm.data track by d.id" ng-bind="d.glPeriod"></th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr>
+									<td ng-bind="vm.labels.arUnder90"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.arUnder90|number:0"></td>
+								</tr>
+								<tr>
+									<td ng-bind="vm.labels.ar90to180"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.ar90to180|number:0"></td>
+								</tr>
+								<tr>
+									<td ng-bind="vm.labels.arOver180"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.arOver180|number:0"></td>
+								</tr>
+								<tr>
+									<td ng-bind="vm.labels.arRetention"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.arRetention|number:0"></td>
+								</tr>
+								<tr class="success">
+									<td ng-bind="vm.labels.totalAr"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.totalAr|number:0"></td>
+								</tr>
+								<tr class="line-below">
+									<td ng-bind="vm.labels.arDaysActual"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.arDaysActual|number:0"></td>
+								</tr>
+								<tr>
+									<td ng-bind="vm.labels.unbilledArUnder60"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.unbilledArUnder60|number:0"></td>
+								</tr>
+								<tr>
+									<td ng-bind="vm.labels.unbilledAr60to90"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.unbilledAr60to90|number:0"></td>
+								</tr>
+								<tr>
+									<td ng-bind="vm.labels.unbilledArOver90"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.unbilledArOver90|number:0"></td>
+								</tr>
+								<tr class="success line-below">
+									<td ng-bind="vm.labels.totalUnbilled"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.totalUnbilled|number:0"></td>
+								</tr>
+								<tr>
+									<td ng-bind="vm.labels.unbilledDaysActual"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.unbilledDaysActual|number:0"></td>
+								</tr>
+								<tr class="success">
+									<td ng-bind="vm.labels.totalWorkinCapital"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.totalWorkinCapital|number:0"></td>
+								</tr>
+								<tr>
+									<td ng-bind="vm.labels.dso"></td>
+									<td ng-repeat="d in vm.data track by d.id" class="text-right" ng-bind="d.dso|number:0"></td>
+								</tr>
+							</tbody>
+						</table>
+					</div>
+				</script>
+
+				<script id="trendAnalysisController">
+					(function() {
+						'use strict';
+
+						angular.module('ecopmd', ['ecopmd.trendanalysis', 'ecopmd.navigator']);
+
+						angular.module('ecopmd')
+							.controller('trendAnalysisController', trendAnalysisController);
+
+						trendAnalysisController.$inject = ['$timeout', '$filter'];
+						function trendAnalysisController($timeout, $filter) {
+							var vm = this;
+
+							function loadData() {
+								var projectId = '{!projectId}';
+								Visualforce.remoting.Manager.invokeAction(
+									'{!$RemoteAction.ECO_PMD_TrendAnalysis_Controller.GetSnapshotData}',
+									projectId,
+									function (result, event) {
+										if (event.status) {
+											$timeout(function () {
+												vm.pAndLData = transformPAndL(result);
+												vm.workingCapitalData = transformWorkingCapital(result);
+												console.debug(result);
+											});
+										} else {
+											console.error(event);
+										}
+									},
+									{escape: true});
+							}
+
+							function transformPAndL(data) {
+								return data.map(function (it) {
+									return {
+										id: it.Id,
+										glPeriod: $filter('date')(it.SnapshotDate__c, 'MMM-yyyy'),
+										grossRevenue: it.GrossRevenueITD__c,
+										odcExpenses: it.CostsODCEXPSITD__c,
+										odcSubs: it.CostsODCSUBSITD__c,
+										odcContingency: 0,
+										nsr: it.NetServiceITD__c,
+										labour: it.LaborITD__c,
+										fringe: it.FringeITD__c,
+										grossMargin: it.GrossMarginITD__c,
+										overhead: it.OverheadITD__c,
+										netMargin: it.NetMarginITD__c
+									}
+								}).slice(0, 6);
+							}
+
+							function transformWorkingCapital(data) {
+								return data.map(function (it) {
+									return {
+										id:                     it.Id,
+										glPeriod:               $filter('date')(it.SnapshotDate__c, 'MMM-yyyy'),
+										arUnder90:              it.AR0to90__c,
+										ar90to180:              it.AR91to180__c,
+										arOver180:              it.AR181Plus__c,
+										arRetention:            it.ARRetention__c,
+										totalAr:                it.ARTotal__c,
+										arDaysActual:           it.ARDaysActual__c,
+										unbilledArUnder60:      it.Unbilled0to60__c,
+										unbilledAr60to90:       it.Unbilled61to90__c,
+										unbilledArOver90:       it.Unbilled91Plus__c,
+										unbilledArAdjustments:  0,
+										totalUnbilled:          it.UnbilledTotal__c,
+										unbilledDaysActual:     it.UnbilledDaysActual__c,
+										totalWorkinCapital:     it.TotalWorkingCapital__c,
+										dso:                    it.DSO__c
+									}
+								}).slice(0, 6);
+							}
+
+							function establishLabels() {
+								vm.labels = {
+									// Columns
+									grossRevenue:        '{!$ObjectType.ProjectSnapshot__c.Fields.GrossRevenueITD__c.Label}',
+									odcExpenses:         '{!$ObjectType.ProjectSnapshot__c.Fields.CostsODCEXPSITD__c.Label}',
+									odcSubs:             '{!$ObjectType.ProjectSnapshot__c.Fields.CostsODCSUBSITD__c.Label}',
+									nsr:                 '{!$ObjectType.ProjectSnapshot__c.Fields.NetServiceITD__c.Label}',
+									labour:              '{!$ObjectType.ProjectSnapshot__c.Fields.LaborITD__c.Label}',
+									fringe:              '{!$ObjectType.ProjectSnapshot__c.Fields.FringeITD__c.Label}',
+									grossMargin:         '{!$ObjectType.ProjectSnapshot__c.Fields.GrossMarginITD__c.Label}',
+									overhead:            '{!$ObjectType.ProjectSnapshot__c.Fields.OverheadITD__c.Label}',
+									netMargin:           '{!$ObjectType.ProjectSnapshot__c.Fields.NetMarginITD__c.Label}',
+									arUnder90:           '{!$ObjectType.ProjectSnapshot__c.Fields.AR0to90__c.Label}',
+									ar90to180:           '{!$ObjectType.ProjectSnapshot__c.Fields.AR91to180__c.Label}',
+									arOver180:           '{!$ObjectType.ProjectSnapshot__c.Fields.AR181Plus__c.Label}',
+									arRetention:         '{!$ObjectType.ProjectSnapshot__c.Fields.ARRetention__c.Label}',
+									totalAr:             '{!$ObjectType.ProjectSnapshot__c.Fields.ARTotal__c.Label}',
+									arDaysActual:        '{!$ObjectType.ProjectSnapshot__c.Fields.ARDaysActual__c.Label}',
+									unbilledArUnder60:   '{!$ObjectType.ProjectSnapshot__c.Fields.Unbilled0to60__c.Label}',
+									unbilledAr60to90:    '{!$ObjectType.ProjectSnapshot__c.Fields.Unbilled61to90__c.Label}',
+									unbilledArOver90:    '{!$ObjectType.ProjectSnapshot__c.Fields.Unbilled91Plus__c.Label}',
+									totalUnbilled:       '{!$ObjectType.ProjectSnapshot__c.Fields.UnbilledTotal__c.Label}',
+									unbilledDaysActual:  '{!$ObjectType.ProjectSnapshot__c.Fields.UnbilledDaysActual__c.Label}',
+									totalWorkinCapital:  '{!$ObjectType.ProjectSnapshot__c.Fields.TotalWorkingCapital__c.Label}',
+									dso:                 '{!$ObjectType.ProjectSnapshot__c.Fields.DSO__c.Label}',
+									// Button and other labels
+									trendAnalysis:		 '{!$Label.ECOPMDTrendAnalysis}',
+									pAndL:               '{!$Label.ECOPMDProfitAndLoss}',
+									workingCapital:      '{!$Label.ECOPMDWorkingCapital}'
+								};
+							}
+
+							establishLabels();
+							loadData();
+						}
+					}());
+				</script>
+
+				<script id="eco-pmd-trend-analysis-module">
+					(function() {
+						'use strict';
+
+						var ngModule = angular.module('ecopmd.trendanalysis', []);
+
+						ngModule.service('faker', function() { return window.faker; });
+					}());
+				</script>
+
+				<script id="eco-pmd-trend-analysis-p-and-l-directive">
+					(function() {
+						'use strict';
+
+						angular
+							.module('ecopmd.trendanalysis')
+							.directive('ecoPmdTrendAnalysisPAndL', trendAnalysisPAndL);
+
+						trendAnalysisPAndL.$inject = [];
+						function trendAnalysisPAndL() {
+							return {
+								restrict: 'EA',
+								scope: {
+									projectName: '@',
+									projectId: '@',
+									data: '=',
+									labels: '='
+								},
+								bindToController: true,
+								controllerAs: 'vm',
+								controller: TrendAnalysisPAndLController,
+								template: document.getElementById('eco-pmd-trend-analysis-p-and-l-template').text
+							};
+						}
+
+						TrendAnalysisPAndLController.$inject = [];
+						function TrendAnalysisPAndLController() {
+						}
+					}());
+				</script>
+
+				<script id="eco-pmd-trend-analysis-working-capital-directive">
+					(function() {
+						'use strict';
+
+						angular
+							.module('ecopmd.trendanalysis')
+							.directive('ecoPmdTrendAnalysisWorkingCapital', trendAnalysisWorkingCapital);
+
+						trendAnalysisWorkingCapital.$inject = [];
+						function trendAnalysisWorkingCapital() {
+							return {
+								restrict: 'EA',
+								scope: {
+									projectName: '@',
+									projectId: '@',
+									data: '=',
+									labels: '='
+								},
+								bindToController: true,
+								controllerAs: 'vm',
+								controller: TrendAnalysisWorkingCapitalController,
+								template: document.getElementById('eco-pmd-trend-analysis-working-capital-template').text
+							};
+						}
+
+						TrendAnalysisWorkingCapitalController.$inject = [];
+						function TrendAnalysisWorkingCapitalController() {
+						}
+					}());
+				</script>
+			</apex:define>
+
+		</apex:composition>
+	</div>
+
+</apex:page>

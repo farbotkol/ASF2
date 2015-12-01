@@ -1,0 +1,400 @@
+<apex:page showheader="false" sidebar="false" standardStylesheets="false"
+           standardController="pse__Proj__c" 
+           extensions="ECO_PMD_AccountsReceivable_Controller">
+	<apex:includeScript value="{!URLFOR($Resource.angular_1_4_7_min, 'angular.min.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.angular_1_4_7_min, 'i18n/angular-locale_' + LOWER(locale) + '.js')}"/>
+	<apex:includeScript value="{!URLFOR($Resource.bootstrap_3_3_5_Namespaced, 'ui-bootstrap-tpls-0.14.3.min.js')}" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/ag-grid/2.3.5/ag-grid.min.js"></script>
+	<apex:includeScript value="{!URLFOR($Resource.ECO_PMD_twygmbh_auto_height)}" />
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.0.1/faker.min.js"></script>
+
+	<apex:stylesheet value="{!URLFOR($Resource.bootstrap_3_3_5_Namespaced, 'css-bs/bootstrap.min.css')}" />
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/ag-grid/2.3.5/ag-grid.min.css" rel="stylesheet" type="text/css"></link>
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/ag-grid/2.3.5/theme-fresh.min.css" rel="stylesheet" type="text/css"></link>
+
+	<div ng-app="ecopmd">
+		<apex:composition template="ECO_PMD_Chrome" >
+
+			<apex:define name="mainContent">
+
+				<div class="ecopmd-ag-wrap">
+
+					<div ng-controller="accountsReceivableController as ctrl">
+						<eco-pmd-accounts-receivable-report
+							data="ctrl.billingData"
+							project-id="{!Id}" 
+	                    	project-name="{!pse__Proj__c.ProjectNumber__c} - {!pse__Proj__c.Name}" 
+	                    	labels="ctrl.labels" />
+					</div>
+
+				</div>
+
+	            <!-- remove if not using broken ecosystem chrome -->
+				<div style="display:none;">
+					<div id="client-care-program" />
+					<div id="technical-practice-networks" />
+					<canvas id="case-incident-rate" /><span id="case-incident-rate-txt" />
+				</div>
+			</apex:define>
+		
+			<apex:define name="belowFooter">
+				<script type="text/ng-template" id="eco-pmd-accounts-receivable-report-template">
+					<div class="container-fluid">
+						<style>
+						div.ag-fresh div#borderLayout_eRootPanel div#centerRow div#east {
+							float: left !important;
+						}
+
+						.ag-header-cell-text {
+							white-space: normal;
+						}
+						</style>
+						<div class="row">
+							<div class="col-md-4 lead" ><!--ng-bind="vm.projectName">--></div>
+							<div class="col-md-8">
+								<div class="form-inline pull-right">
+									<input type="text" class="form-control" ng-model="vm.grid.quickFilterText" style="width: 100px;" placeholder="{{vm.labels.filter}}"/ >
+									&nbsp;&nbsp;&nbsp;
+									<button class="btn btn-info" ng-click="vm.toggleColumnGroups(true)" ng-bind="vm.labels.expandAllColumns"></button>
+									<button class="btn btn-info" ng-click="vm.toggleColumnGroups(false)" ng-bind="vm.labels.collapseAllColumns"></button>
+									<button class="btn btn-primary" ng-click="vm.export()" ng-bind="vm.labels.export"></button>
+									<button class="btn btn-primary" ng-click="vm.toggleToolPanel()" ng-bind="vm.showToolPanel ? vm.labels.hideToolPanel : vm.labels.showToolPanel"></button>
+								</div>
+							</div>
+						</div>
+						<div class="clearfix">
+						</div>
+						<div ag-grid="vm.grid" ng-style="{width: vm.showToolPanel ? 'calc(100% + 200px)' : '100%'}" class="ag-fresh" auto-height="yes" additional-height="50" />
+					</div>
+				</script>
+
+				<script id="accountsReceivableController">
+					(function() {
+						'use strict';
+
+						angular.module('ecopmd', ['ecopmd.accountsreceivable', 'ecopmd.navigator']);
+
+						angular.module('ecopmd')
+							.controller('accountsReceivableController', accountsReceivableController);
+
+						accountsReceivableController.$inject = ['$timeout'];
+						function accountsReceivableController($timeout) {
+							var vm = this;
+
+							function loadData() {
+								var projectId = '{!Id}';
+								Visualforce.remoting.Manager.invokeAction(
+									'{!$RemoteAction.ECO_PMD_AccountsReceivable_Controller.GetBillingData}',
+									projectId,
+									function (result, event) {
+										if (event.status) {
+											$timeout(function () { vm.billingData = transformData(result); });
+											console.debug(vm.billingData);
+										} else {
+											console.error(event);
+										}
+									},
+									{escape: true});
+							}
+
+							function transformData(data) {
+								return data.map(function (it) {
+									return {
+										draftInvoiceNumber: it.DraftInvoiceNumber,
+										invoiceDescription: "",
+										customerNumber: it.CustomerNumber,
+										customerName: it.CustomerName,
+										invoiceDate: it.InvoiceDate,
+										billThroughDate: it.BillThroughDate,
+										invoiceCurrency: it.CurrencyIsoCode,
+										invoiceCurrencyPreTaxAmount: it.PreTaxInvoiceAmount,
+										invoiceCurrencyTaxAmount: it.TaxAmount,
+										invoiceCurrencyTotalAmount: it.InvoiceAmount,
+										preTaxAmount: it.ProjectFunctionalPreTaxInvoiceAmount,
+										taxAmount: it.AccountedTaxAmount,
+										totalAmount: it.ProjectFunctionalInvoiceAmount,
+										retention: it.ProjectFunctionalRetentionAmount,
+										amountPaid: it.InvoiceAmount - it.BalanceDue,
+										mostRecentPaymentDate: null,
+										balanceDue: it.BalanceDue,
+										arCurrent: it.AR0to30,
+										ar31to60: it.AR31to60,
+										ar61to90: it.AR61to90,
+										ar91to180: it.AR91to180,
+										arOver180: it.AR181Plus
+									}
+								});
+							}
+
+							function establishLabels() {
+								vm.labels = {
+									// Columns
+									draftInvoiceNumber: '{!$ObjectType.Billing__c.Fields.DraftInvoiceNumber__c.Label}',
+									invoiceDescription: '{!$Label.ECOPMDInvoiceDescription}',
+									customerNumber: '{!$ObjectType.Billing__c.Fields.CustomerNumber__c.Label}',
+									customerName: '{!$Label.ECOPMDCustomerName}',
+									invoiceDate: '{!$ObjectType.Billing__c.Fields.InvoiceDate__c.Label}',
+									billThroughDate: '{!$ObjectType.Billing__c.Fields.BillThroughDate__c.Label}',
+									invoiceCurrency: '{!$Label.ECOPMDInvoiceCurrency}',
+									invoiceCurrencyPreTaxAmount: '{!$ObjectType.Billing__c.Fields.PreTaxInvoiceAmount__c.Label}',
+									invoiceCurrencyTaxAmount: '{!$ObjectType.Billing__c.Fields.TaxAmount__c.Label}',
+									invoiceCurrencyTotalAmount: '{!$ObjectType.Billing__c.Fields.InvoiceAmount__c.Label}',
+									preTaxAmount: '{!$Label.ECOPMDPreTaxInvoiceAmount}',
+									taxAmount: '{!$Label.ECOPMDTaxAmount}',
+									totalAmount: '{!$Label.ECOPMDTotalInvoiceAmount}',
+									retention: '{!$Label.ECOPMDRetention}',
+									amountPaid: '{!$Label.ECOPMDAmountPaid}',
+									mostRecentPaymentDate: '{!$Label.ECOPMDMostRecentPaymentDate}',
+									balanceDue: '{!$ObjectType.Billing__c.Fields.BalanceDue__c.Label}',
+									arCurrent: '{!$ObjectType.Billing__c.Fields.AR0to30__c.Label}',
+									ar31to60: '{!$ObjectType.Billing__c.Fields.AR31to60__c.Label}',
+									ar61to90: '{!$ObjectType.Billing__c.Fields.AR61to90__c.Label}',
+									ar91to180: '{!$ObjectType.Billing__c.Fields.AR91to180__c.Label}',
+									arOver180: '{!$ObjectType.Billing__c.Fields.AR181Plus__c.Label}',
+									// Column Groups
+									invoice: '{!$Label.ECOPMDInvoice}',
+									customer: '{!$Label.ECOPMDCustomer}',
+									dates: '{!$Label.ECOPMDDates}',
+									invoiceCurrency: '{!$Label.ECOPMDInvoiceCurrency}',
+									functionalCurrency: '{!$Label.ECOPMDFunctionalCurrency}',
+									accountsReceivable: '{!$Label.ECOPMDAccountsReceivable}',
+									// Button and other labels
+									filter: '{!$Label.ECOPMDFilter}',
+									export: '{!$Label.ECOPMDExport}',
+									expandAllColumns: '{!$Label.ECOPMDExpandAllColumns}',
+									collapseAllColumns: '{!$Label.ECOPMDCollapseAllColumns}',
+									hideToolPanel: '{!$Label.ECOPMDHideToolPanel}',
+									showToolPanel: '{!$Label.ECOPMDShowToolPanel}',
+									totals: '{!$Label.ECOPMDTotals}'
+								};
+							}
+
+							establishLabels();
+							loadData();
+						}
+					}());
+				</script>
+
+				<script id="eco-pmd-accounts-receivable-report-directive-module">
+					(function() {
+						'use strict';
+
+						var ngModule = angular.module('ecopmd.accountsreceivable', ['agGrid', 'twygmbh.auto-height']);
+
+						ngModule.service('faker', function() { return window.faker; });
+					}());
+				</script>
+
+				<script id="eco-pmd-accounts-receivable-report-directive">
+					(function() {
+						'use strict';
+
+						angular
+							.module('ecopmd.accountsreceivable')
+							.directive('ecoPmdAccountsReceivableReport', accountsReceivableReport);
+
+						accountsReceivableReport.$inject = [];
+						function accountsReceivableReport() {
+							return {
+								restrict: 'EA',
+								scope: {
+									projectName: '@',
+									projectId: '@',
+									data: '=',
+									labels: '='
+								},
+								bindToController: true,
+								controllerAs: 'vm',
+								controller: AccountsReceivableReportController,
+								template: document.getElementById('eco-pmd-accounts-receivable-report-template').text
+							};
+						}
+
+						AccountsReceivableReportController.$inject = ['$filter'];
+						function AccountsReceivableReportController($filter) {
+							var vm = this;
+
+							vm._data = [];
+
+							vm.showToolPanel = true;
+
+							var numberWidth = 110;
+							var dateWidth = 80;
+
+							vm.grid = {
+								columnDefs: [
+									{ field: 'draftInvoiceNumber', headerName: vm.labels.draftInvoiceNumber,
+										headerGroup: vm.labels.invoice, width: 90 },
+									{ field: 'invoiceDescription', headerName: vm.labels.invoiceDescription,
+										headerGroup: vm.labels.invoice, headerGroupShow: 'open', width: 250 },
+									{ field: 'customerNumber', headerName: vm.labels.customerNumber,
+										headerGroup: vm.labels.customer, headerGroupShow: 'open', width: 90 },
+									{ field: 'customerName', headerName: vm.labels.customerName,
+										headerGroup: vm.labels.customer, width: 300 },
+									{ field: 'invoiceDate', headerName: vm.labels.invoiceDate,
+										headerGroup: vm.labels.dates, valueGetter: dateValueGetter, width: dateWidth },
+									{ field: 'billThroughDate', headerName: vm.labels.billThroughDate,
+										valueGetter: dateValueGetter, width: dateWidth,
+										headerGroup: vm.labels.dates, headerGroupShow: 'open' },
+									{ field: 'invoiceCurrency', headerName: vm.labels.invoiceCurrency,
+										headerGroup: vm.labels.invoiceCurrency, width: 75 },
+									{ field: 'invoiceCurrencyPreTaxAmount', headerName: vm.labels.invoiceCurrencyPreTaxAmount,
+										headerGroup: vm.labels.invoiceCurrency, headerGroupShow: 'open', width: numberWidth,
+										cellRenderer: numberCellRenderer, cellStyle: cellStyler },
+									{ field: 'invoiceCurrencyTaxAmount', headerName: vm.labels.invoiceCurrencyTaxAmount,
+										headerGroup: vm.labels.invoiceCurrency, headerGroupShow: 'open', width: numberWidth,
+										cellRenderer: numberCellRenderer, cellStyle: cellStyler },
+									{ field: 'invoiceCurrencyTotalAmount', headerName: vm.labels.invoiceCurrencyTotalAmount,
+										headerGroup: vm.labels.invoiceCurrency, width: numberWidth,
+										cellRenderer: numberCellRenderer, cellStyle: cellStyler },
+									{ field: 'preTaxAmount', headerName: vm.labels.preTaxAmount,
+										headerGroup: vm.labels.functionalCurrency, headerGroupShow: 'open', width: numberWidth,
+										cellRenderer: numberCellRenderer, cellStyle: cellStyler },
+									{ field: 'taxAmount', headerName: vm.labels.taxAmount,
+										headerGroup: vm.labels.functionalCurrency, headerGroupShow: 'open', width: numberWidth,
+										cellRenderer: numberCellRenderer, cellStyle: cellStyler },
+									{ field: 'totalAmount', headerName: vm.labels.totalAmount, headerGroup: vm.labels.functionalCurrency,
+										width: numberWidth, cellRenderer: numberCellRenderer, cellStyle: cellStyler },
+									{ field: 'retention', headerName: vm.labels.retention,
+										headerGroup: vm.labels.functionalCurrency, headerGroupShow: 'open', width: numberWidth,
+										cellRenderer: numberCellRenderer, cellStyle: cellStyler },
+									{ field: 'amountPaid', headerName: vm.labels.amountPaid,
+										headerGroup: vm.labels.functionalCurrency, width: numberWidth,
+										cellRenderer: numberCellRenderer, cellStyle: cellStyler },
+									{ field: 'mostRecentPaymentDate', headerName: vm.labels.mostRecentPaymentDate,
+										headerGroup: vm.labels.accountsReceivable, headerGroupShow: 'open', width: dateWidth+20,
+										valueGetter: dateValueGetter, cellStyle: cellStyler },
+									{ field: 'balanceDue', headerName: vm.labels.balanceDue,
+										headerGroup: vm.labels.accountsReceivable, width: numberWidth,
+										cellRenderer: numberCellRenderer, cellStyle: cellStyler },
+									{ field: 'arCurrent', headerName: vm.labels.arCurrent,
+										headerGroup: vm.labels.accountsReceivable, width: numberWidth,
+										cellRenderer: numberCellRenderer, cellStyle: cellStyler },
+									{ field: 'ar31to60', headerName: vm.labels.ar31to60,
+										headerGroup: vm.labels.accountsReceivable, headerGroupShow: 'open', width: numberWidth,
+										cellRenderer: numberCellRenderer, cellStyle: cellStyler },
+									{ field: 'ar61to90', headerName: vm.labels.ar61to90,
+										headerGroup: vm.labels.accountsReceivable, headerGroupShow: 'open', width: numberWidth,
+										cellRenderer: numberCellRenderer, cellStyle: cellStyler },
+									{ field: 'ar91to180', headerName: vm.labels.ar91to180,
+										headerGroup: vm.labels.accountsReceivable, headerGroupShow: 'open', width: numberWidth,
+										cellRenderer: numberCellRenderer, cellStyle: cellStyler },
+									{ field: 'arOver180', headerName: vm.labels.arOver180,
+										headerGroup: vm.labels.accountsReceivable, headerGroupShow: 'open', width: numberWidth,
+										cellRenderer: numberCellRenderer, cellStyle: cellStyler }
+								],
+								groupAggFields: ['invoiceCurrencyPreTaxAmount',
+									 'invoiceCurrencyTaxAmount',
+									 'invoiceCurrencyTotalAmount',
+									 'preTaxAmount',
+									 'taxAmount',
+									 'totalAmount',
+									 'retention',
+									 'amountPaid',
+									 'balanceDue',
+									 'arCurrent',
+									 'ar31to60',
+									 'ar61to90',
+									 'ar91to180'
+								],
+								headerHeight: 85,
+								groupHeaders: true,
+								pinnedColumnCount: 4,
+								showToolPanel: vm.showToolPanel,
+								toolPanelSuppressValues: true,
+								enableColResize: true,
+								enableSorting: true,
+								enableFilter: true,
+								getRowStyle: function (params) {
+									if (params.node.floating) {
+										return {'font-weight': 'bold'};
+									}
+								},
+								onReady: onReady
+							};
+
+							function dateValueGetter(params) {
+								return $filter('date')(params.data[params.colDef.field], 'shortDate');
+							}
+
+							function numberCellRenderer(params) {
+								return $filter('number')(params.value, 0);
+							}
+
+							function cellStyler(params) {
+								var result = {};
+								if (typeof params.value === 'number' || params.value instanceof Date) {
+									result['text-align'] = 'right';
+								}
+								return result;
+							}
+
+							vm.toggleToolPanel = function () {
+								vm.showToolPanel = !vm.showToolPanel;
+								vm.grid.api.showToolPanel(vm.showToolPanel);
+							};
+
+							vm.toggleColumnGroups = function (expand) {
+								var groups = [vm.labels.invoice, vm.labels.customer, vm.labels.dates, vm.labels.invoiceCurrency, vm.labels.functionalCurrency, vm.labels.accountsReceivable];
+								groups.forEach(function (name) {
+									var group = vm.grid.columnApi.getColumnGroup(name);
+									vm.grid.columnApi.columnGroupOpened(group, expand);
+								});
+							};
+
+							vm.export = function () {
+								var fileName = 'Accounts Receivable Report - ' + vm.projectName + '.csv';
+								console.debug('exporting as', fileName);
+								vm.grid.api.exportDataAsCsv({
+									skipHeader: false,
+									skipFooters: false,
+									skipGroups: false,
+									fileName: fileName
+								});
+							}
+
+							function buildFloatingSummaryRow() {
+								function sum(field) {
+									return function (accumulator, it) { return accumulator + it[field]; };
+								}
+								var summaryRow = {
+									invoiceCurrency: vm.labels.totals,
+									invoiceCurrencyPreTaxAmount: vm.data.reduce(sum('invoiceCurrencyPreTaxAmount'), 0),
+									invoiceCurrencyTaxAmount: vm.data.reduce(sum('invoiceCurrencyTaxAmount'), 0),
+									invoiceCurrencyTotalAmount: vm.data.reduce(sum('invoiceCurrencyTotalAmount'), 0),
+									preTaxAmount: vm.data.reduce(sum('preTaxAmount'), 0),
+									taxAmount: vm.data.reduce(sum('taxAmount'), 0),
+									totalAmount: vm.data.reduce(sum('totalAmount'), 0),
+									retention: vm.data.reduce(sum('retention'), 0),
+									amountPaid: vm.data.reduce(sum('amountPaid'), 0),
+									balanceDue: vm.data.reduce(sum('balanceDue'), 0),
+									arCurrent: vm.data.reduce(sum('arCurrent'), 0),
+									ar31to60: vm.data.reduce(sum('ar31to60'), 0),
+									ar61to90: vm.data.reduce(sum('ar61to90'), 0),
+									ar91to180: vm.data.reduce(sum('ar91to180'), 0)
+								};
+								vm.grid.api.setFloatingBottomRowData([summaryRow]);
+							}
+
+							Object.defineProperty(vm, 'data', {
+								get: function () { return vm._data; },
+								set: function (value) {
+									console.debug('data loaded');
+									vm._data = value;
+									vm.grid.api.setRowData(vm.data);
+									buildFloatingSummaryRow();
+								}
+							});
+
+							function onReady() {
+								console.debug('grid ready');
+								if (vm.data.length > 0) vm.grid.api.setRowData(vm.data);
+							}
+						}
+					}());
+				</script>
+			</apex:define>
+
+		</apex:composition>
+	</div>
+</apex:page>
