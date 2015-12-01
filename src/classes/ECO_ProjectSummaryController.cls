@@ -217,7 +217,7 @@ public with sharing class ECO_ProjectSummaryController {
 				projectHeader = requestDTO.PROJECT_HEADER;
 
 				if(!String.isEmpty(projectHeader.PROJECT_ID)){
-					ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, 'This project has already been assigned the Oracle project ID ' + projectHeader.PROJECT_ID + '. The project can now be synced using the Project Sync feature.'));
+					ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO, 'This project has already been assigned an Oracle Project Number ' + project.OracleProjectnumber__c + '. The project can now be synced using the Project Sync feature.'));
 				
 				}else{
 
