@@ -641,7 +641,7 @@ public with sharing class ECO_StakeholdersController
 				projectTeamMembers.add(projectTeamMember);
 
 				if(existingId != null && existingId != ''){
-					projectTeamMembers.add(new ProjectTeamMember__c(Id = existingId, EndDate__c = convertStringToDate(startDate).addDays(-1)));
+					projectTeamMembers.add(new ProjectTeamMember__c(Id = existingId, EndDate__c = insertReplaceProjectTeamMember.StartDate__c.addDays(-1)));
 				}
 				
 				upsert projectTeamMembers; 
@@ -841,6 +841,14 @@ public with sharing class ECO_StakeholdersController
 			}
 		}
     	return null;
+    }
+
+    //formats the date sent to the proper locale format
+    @RemoteAction
+    public static String formatDate(String currentDate) {
+    	Date newDate = Date.parse(currentDate);
+    	newDate = newDate.addDays(1);
+    	return newDate.format();
     }
 
 	//removes a record from the related lists
