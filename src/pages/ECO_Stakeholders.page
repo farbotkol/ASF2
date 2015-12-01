@@ -362,11 +362,10 @@
 				
 				<apex:pageBlock title="AECOM Team (Delivery/Others)">
 					<apex:pageBlockSection columns="1" collapsible="false">
-						<apex:variable var="teamMemberCounter" value="{!0}"/>
 						<apex:outputPanel id="ProjectTeamTable">
 						<apex:tabPanel switchType="client" selectedTab="ActiveTeamMember">
 							<apex:tab id="activeTeamMember" label="Active Team Members" name="ActiveTeamMember">
-								
+								<apex:variable var="teamMemberCounter" value="{!0}"/>
 								<apex:pageBlockTable value="{!lMembersTeam}" var="item" width="100%" columnsWidth="60px">
 									<apex:facet name="footer">
 										<apex:commandLink action="{!addRecord}" value="Add New Team Member" reRender="ProjectTeamTable" status="teamStatus">
@@ -401,6 +400,7 @@
 									<apex:column >
 										<apex:facet name="header">Email</apex:facet>
 										<apex:outputField value="{!item.oPTM.Email__c}" />
+										<apex:variable var="teamMemberCounter" value="{!teamMemberCounter + 1}"/>
 									</apex:column>
 									<!--<apex:column>
 										<apex:facet name="header">Access Level</apex:facet>
