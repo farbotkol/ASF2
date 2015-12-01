@@ -223,15 +223,6 @@
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
-        <fullName>EcoProgExecutionToNotStarted</fullName>
-        <field>ProgressBarExecutionApproval__c</field>
-        <literalValue>Not Started</literalValue>
-        <name>EcoProgExecutionToNotStarted</name>
-        <notifyAssignee>false</notifyAssignee>
-        <operation>Literal</operation>
-        <protected>false</protected>
-    </fieldUpdates>
-    <fieldUpdates>
         <fullName>EcoSetDistributionRuleToCostWork</fullName>
         <field>DistributionRule__c</field>
         <literalValue>COST/WORK</literalValue>
@@ -288,7 +279,7 @@
     <fieldUpdates>
         <fullName>EcoSetProgPreLimApprovalToNotStarted</fullName>
         <field>ProgBarPrelimPlanApproval__c</field>
-        <literalValue>Not Started</literalValue>
+        <literalValue>NotStarted</literalValue>
         <name>EcoSetProgPreLimApprovalToNotStarted</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>

@@ -96,7 +96,7 @@
     <fieldUpdates>
         <fullName>External_Task_ID</fullName>
         <field>pse__External_Task_ID__c</field>
-        <formula>pse__Project__r.OracleProjectnumber__c + &quot; – &quot; + ProjectTaskNumber__c</formula>
+        <formula>ProjectNumber__c+ &quot; - &quot; +ProjectTaskNumber__c</formula>
         <name>External Task ID</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Formula</operation>
@@ -281,6 +281,7 @@
         <active>true</active>
         <formula>AND(NOT(ISCHANGED(ForecastEndDate__c)),
 ISCHANGED(pse__End_Date__c),
+IsTopLevelTask__c = False, 
 OR(
 ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Planning&quot;),
 ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Pending Go/No Go&quot;)))</formula>
@@ -295,6 +296,7 @@ ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Pending Go/No Go&quot;)))</formula
         <active>true</active>
         <formula>AND(NOT(ISCHANGED(ForecastStartDate__c)),
 ISCHANGED(pse__Start_Date__c),
+IsTopLevelTask__c = False, 
 OR(
 ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Planning&quot;),
 ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Pending Go/No Go&quot;)))</formula>
@@ -559,6 +561,14 @@ ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Pending Go/No Go&quot;)))</formula
         <criteriaItems>
             <field>pse__Project_Task__c.pse__External_Task_ID__c</field>
             <operation>equals</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>pse__Project_Task__c.ProjectNumber__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
+        <criteriaItems>
+            <field>pse__Project_Task__c.ProjectTaskNumber__c</field>
+            <operation>notEqual</operation>
         </criteriaItems>
         <triggerType>onAllChanges</triggerType>
     </rules>
