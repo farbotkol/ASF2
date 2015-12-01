@@ -31,6 +31,8 @@ private class ECO_StakeholdersControllerTest {
 		stakeHolderController.initStakeHolders(project);
 		system.assertEquals(1, stakeHolderController.lInactiveMembersTeam.size());
 		system.assertEquals(new PageReference('/' + project.Id).getUrl(), stakeHolderController.ReturnToProject().getUrl());
+		Date newDate = Date.today();
+		system.assertEquals(newDate.addDays(1).format(), ECO_StakeholdersController.formatDate(newDate.format()));
 	}
 	
 	@isTest static void testAddSaveData() {
@@ -67,7 +69,7 @@ private class ECO_StakeholdersControllerTest {
 		PageReference pg = Page.ECO_Stakeholders;
 		Test.setCurrentPage(pg);
 		pg.getParameters().put('Id', project.id);
-		pg.getParameters().put('contactName', testUser.FirstName + ' ' + testUser.LastName);
+		pg.getParameters().put('contactName', testUser.FirstName + ' ' + testUser.FirstName);
 		pg.getParameters().put('selectedRole', 'Project Manager');
 		pg.getParameters().put('startDate', Date.today().format());
 		ApexPages.StandardController standardController = new ApexPages.StandardController(project);

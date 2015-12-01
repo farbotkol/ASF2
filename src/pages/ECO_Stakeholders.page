@@ -129,6 +129,9 @@
 	<script type="text/javascript">
 	$x(document).ready(function(){
 		initComboBox();
+		$x('.contactSelector').each(function(){
+			setVal(this);
+		})
 	})
 
 	//replaces the Enter key function when the modal is opened
@@ -152,6 +155,7 @@
 		if(existingId != ''){
 			$x('[id$=existingRecordId]').val(existingId);
 			findLatestDates();
+			//findLatestDate($x('[id$=modalProjectRoles]').text().trim());
 		}
 	}
 
@@ -168,10 +172,17 @@
 		$x('[id$=ActiveKeysTable] tr').each(function (i, row){
 			if(currentRole === $x(row).find('[id*="roleColumn"]').text().trim()){
 				if($x(row).find('[id*="roleColumn"]').text().trim() != '' && $x(row).find('[id*="roleColumn"]').text().trim() != null && $x(row).find('[id*="endDateColumn"]').text().trim() === '' && $x(row).find('[id*="startDateColumn"]').text().trim() != ''){
-					var startDate = new Date($x(row).find('[id*="startDateColumn"]').text().trim());
-					console.log('here');
-					startDate.setDate(startDate.getDate() + 1);
-					$x('[id$=queryStartDate]').val(startDate.getMonth() + 1 + '/' + startDate.getDate() + '/' + startDate.getFullYear());
+					ECO_StakeholdersController.formatDate(
+						$x(row).find('[id*="startDateColumn"]').text().trim(),
+						function(result, event){
+							if(event.type == 'exception'){
+								alert('Error retrieving proper date format : ' + event);
+							}
+							else if(event.status){
+								$x('[id$=queryStartDate]').val(result);
+							}
+						}
+					);
 				}
 			}
 		});
@@ -235,7 +246,7 @@
 	}
 
 	function setVal(element){
-		if($x(element).val().contains('&nbsp')){
+		if($x(element).val().indexOf('&nbsp') != -1){
 			$x(element).val('');
 		}
 	}
@@ -351,13 +362,14 @@
 				
 				<apex:pageBlock title="AECOM Team (Delivery/Others)">
 					<apex:pageBlockSection columns="1" collapsible="false">
+						<apex:variable var="teamMemberCounter" value="{!0}"/>
 						<apex:outputPanel id="ProjectTeamTable">
 						<apex:tabPanel switchType="client" selectedTab="ActiveTeamMember">
 							<apex:tab id="activeTeamMember" label="Active Team Members" name="ActiveTeamMember">
-								<apex:variable var="teamMemberCounter" value="{!0}"/>
+								
 								<apex:pageBlockTable value="{!lMembersTeam}" var="item" width="100%" columnsWidth="60px">
 									<apex:facet name="footer">
-										<apex:commandLink action="{!addRecord}" value="Add New Team Member" rerender="ProjectTeamTable" status="teamStatus">
+										<apex:commandLink action="{!addRecord}" value="Add New Team Member" reRender="ProjectTeamTable" status="teamStatus">
 											<apex:param name="object" value="MembersTeam" assignTo="{!recordObjectType}"/>
 										</apex:commandLink>
 									</apex:facet>

@@ -31,7 +31,7 @@ public class ECO_Project_TeamMember_Triggers {
 
 	}
     
-    public static void DeleteSharingForTeamMembers(list<ProjectTeamMember__c> deletedTeamMembers) {
+    public static void DeleteSharingForTeamMembers(list<ProjectTeamMember__c> deletedTeamMembers, Map<Id, ProjectTeamMember__c> oldProjectsTMMap, Map<Id, ProjectTeamMember__c> newProjectsTMMap) {
         
         system.debug( 'deletedTeamMembers size ' + deletedTeamMembers.size() + ' deletedTeamMembers ' + deletedTeamMembers );
         
@@ -40,7 +40,7 @@ public class ECO_Project_TeamMember_Triggers {
         
         for (ProjectTeamMember__c projectTeamMember : deletedTeamMembers) {
             
-            if( projectTeamMember.contact__c != null )
+            if( ( projectTeamMember.Is_Active__c != oldProjectsTMMap.get(projectTeamMember.Id).Is_Active__c ) && ( projectTeamMember.Is_Active__c == false ) )
             {                
             	listCon.add( projectTeamMember.contact__c );
                 listprojectId.add( projectTeamMember.project__c );                
@@ -58,7 +58,7 @@ public class ECO_Project_TeamMember_Triggers {
         
         system.debug( ' listOfSalesforceUserId ' + listOfSalesforceUserId + ' listprojectId ' + listprojectId );
         
-        List<pse__Proj__Share> listProjectShare = [ Select Id From pse__Proj__Share Where UserOrGroupId In :listOfSalesforceUserId and ParentId In :listprojectId ];
+        List<pse__Proj__Share> listProjectShare = [ Select Id From pse__Proj__Share Where RowCause = 'Manual' AND UserOrGroupId In :listOfSalesforceUserId and ParentId In :listprojectId ];
         
         system.debug( 'listProjectShare ' + listProjectShare.size() + ' listProjectShare ' + listProjectShare );
         
