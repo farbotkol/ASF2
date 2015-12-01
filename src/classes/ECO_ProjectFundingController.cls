@@ -221,10 +221,11 @@ public class ECO_ProjectFundingController {
         return new PageReference('/' + projectId);
     }
     
-    public void save()
+    public PageReference save()
     {               
         list<Funding__c> fundingRecordsToBeSaved = new list<Funding__c>();
-
+        //TotalApprovedRevenueLimit__c
+        //TotalFundingAmount__c
         try
         {
                                
@@ -236,6 +237,11 @@ public class ECO_ProjectFundingController {
                     {
                     	if(f.newFunding)
                     	{
+                            if(agreement.TotalApprovedRevenueLimit__c < (agreement.TotalFundingAmount__c + f.funding.AllocatedAmount__c))
+                            {
+                                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'The total funding amount is greater than the Agreements Total Approved Revenue Limit'));
+                                return null;    
+                            }
     						f.funding.CurrencyIsoCode = agreement.FundingCurrencyCode__c;   
                         	f.funding.ProjFuncRateType__c = 'Spot';
                         	f.funding.ProjFuncRateDate__c = f.funding.DateAllocatedDate__c;
@@ -270,6 +276,11 @@ public class ECO_ProjectFundingController {
                             //handles first time you save funding.  this will save and pull back exchange rate.  will be allowed to save once more before funding is locked
                             if(f.newFunding)
                             {
+                                if(agreement.TotalApprovedRevenueLimit__c < (agreement.TotalFundingAmount__c + f.funding.AllocatedAmount__c))
+                                {
+                                    ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'The total funding amount is greater than the Agreements Total Approved Revenue Limit'));
+                                    return null;    
+                                }
                                 f.funding.CurrencyIsoCode = agreement.FundingCurrencyCode__c;   
                                 f.funding.ProjFuncRateType__c = 'Spot';
                                 f.funding.ProjFuncRateDate__c = f.funding.DateAllocatedDate__c;
@@ -332,7 +343,9 @@ public class ECO_ProjectFundingController {
 
 		agreement = [select Id, Name, Amount__c, Account__c, Description__c, TotalApprovedRevenueLimit__c, FundingCurrencyCode__c, UnallocatedFunding__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
                 
-        creatingNewFunding = false;                 
+        creatingNewFunding = false; 
+
+        return null;                
     }
     
     private Decimal getExchangeRate()
