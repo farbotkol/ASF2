@@ -392,7 +392,7 @@ public with sharing class ECO_OrganizationFinderController {
 
         if(lProjectOrganizationsToMakeSecondary.size() > 0){
             for(ProjectOrganization__c oProjectOrganization : lProjectOrganizationsToMakeSecondary){
-                oProjectOrganization.Type__c = 'Secondary';
+                oProjectOrganization.Type__c = 'Supporting';
             }
 
             try{
@@ -477,7 +477,7 @@ public with sharing class ECO_OrganizationFinderController {
 
         if(lProjectOrganizationsToMakeSecondary.size() > 0){
             for(ProjectOrganization__c oProjectOrganization : lProjectOrganizationsToMakeSecondary){
-                oProjectOrganization.Type__c = 'Secondary';
+                oProjectOrganization.Type__c = 'Supporting';
             }
 
             try{
@@ -489,7 +489,7 @@ public with sharing class ECO_OrganizationFinderController {
                 return null;
             }
         }else{
-            ProjectOrganization__c oProjectOrganizationToInsert = new ProjectOrganization__c(Project__c = oProject.Id, OrganizationString__c = sSelectedOrganizationId, Type__c = 'Secondary');
+            ProjectOrganization__c oProjectOrganizationToInsert = new ProjectOrganization__c(Project__c = oProject.Id, OrganizationString__c = sSelectedOrganizationId, Type__c = 'Supporting');
 
             try{
                 insert oProjectOrganizationToInsert;

@@ -62,7 +62,7 @@ public class ECO_SafetyHealthEnvironmentController {
             return null;*/
 
 
-            update project;
+            /*update project;
             
             ProjectActivities__c pa =  new ProjectActivities__c(Project__c = project.Id, Name='New Project Activity');
             insert pa;
@@ -71,20 +71,20 @@ public class ECO_SafetyHealthEnvironmentController {
             myPage.getParameters().put('saveURL', '/apex/ECO_SafetyHealthEnvironment?Id=' + project.Id);
             myPage.getParameters().put('retURL', '/apex/ECO_SafetyHealthEnvironment?Id=' + project.Id + '&RecordToDelete='+ pa.Id + '&RecordType=ProjAct');
       
-            return myPage;
+            return myPage;*/
 
-
+            return  new PageReference('/apex/eco_projectactivity?ProjectID=' + project.Id);
         }
 
         public PageReference RemoveProjectActivities(){
-            ProjectActivities__c pa = ProjActivities[rowNumber-1];
+            /*ProjectActivities__c pa = ProjActivities[rowNumber-1];
 
             if(pa.id != null){
                 ProjActivitiesRemove.add(pa);
             }
 
             ProjActivities.remove(rowNumber-1);
-
+            */
             return null;
 
         }
@@ -242,8 +242,11 @@ public class ECO_SafetyHealthEnvironmentController {
     {
         get
         {
+            system.debug( 'newSafetyHealthInspectionAtt 247 ' + project.id );
+
             if(safetyHealthInspectionAtt==null)
             {
+	            system.debug( 'newSafetyHealthInspectionAtt 251 ' + project.id );
                 safetyHealthInspectionAtt = new Attachment(parentid = project.id);
             }
             return safetyHealthInspectionAtt;

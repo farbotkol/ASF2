@@ -6,6 +6,7 @@ public class ECO_CloseoutOpportunityPhaseController {
 
 	public  pse__Proj__c oProject {get;set;}
     public  list<SelectOption> types { get; set; }
+    public boolean bHasAccessToOpportunity {get;set;}
 
     public list<QuestionnaireSet__c> lstNogo {get;set;}
 
@@ -48,7 +49,17 @@ public class ECO_CloseoutOpportunityPhaseController {
         }
 
         attachmentsMap = new Map<Id, Attachment>([select Id, Name, ContentType, LastModifiedDate, LastModifiedById from Attachment where parentId = :oProject.Id]);
-        
+
+        list<UserRecordAccess> lstURA = [SELECT RecordId, HasReadAccess, HasEditAccess, HasDeleteAccess FROM UserRecordAccess WHERE  UserId=:UserInfo.getUserId() AND RecordId =: oProject.pse__Opportunity__c];
+        bHasAccessToOpportunity = false;
+
+        if(lstURA.size() > 0){
+            if(lstURA[0].HasReadAccess){
+                bHasAccessToOpportunity = true;
+            }
+        }
+
+
     }
 
     public pagereference createChangeManagement(){

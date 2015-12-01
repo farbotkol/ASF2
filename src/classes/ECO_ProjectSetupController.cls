@@ -329,6 +329,7 @@ public with sharing class ECO_ProjectSetupController {
         oSite.Country__c = oSiteSearch.country;       
         oSite.State__c = oSiteSearch.province;
 
+        string oracleRTFilter = Schema.Sobjecttype.Account.getRecordTypeInfosByName().get('Oracle Only').getRecordTypeId();
         string strSOQL = 'SELECT ';
         string strWhereClause = ' WHERE '; 
         boolean boolAtLeastOne = false;
@@ -363,9 +364,9 @@ public with sharing class ECO_ProjectSetupController {
             string userOrgID = userOrg.OUID__c;
 
             if(boolAtLeastOne){
-                strSOQL += ' AND OUID__c =: userOrgID ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+                strSOQL += ' AND OUID__c =: userOrgID and Account__r.recordtypeid !=: oracleRTFilter ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
             } else {
-                strSOQL += ' WHERE OUID__c =: userOrgID ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+                strSOQL += ' WHERE OUID__c =: userOrgID and Account__r.recordtypeid !=: oracleRTFilter ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
             }
         }
 
@@ -1003,7 +1004,7 @@ public with sharing class ECO_ProjectSetupController {
 
     public PageReference SelectPrimary(){
         for(OrganizationWrapper oSelectedProjectOrganization: lSelectedOrganizations){
-            oSelectedProjectOrganization.strType = 'Secondary';
+            oSelectedProjectOrganization.strType = 'Supporting';
         }
 
         if (mapOrganizationIdToProjectOrganization.containskey(sSelectedOrganizationId)) {
@@ -1041,10 +1042,10 @@ public with sharing class ECO_ProjectSetupController {
     public PageReference SelectSecondary(){
 
         if (mapOrganizationIdToProjectOrganization.containskey(sSelectedOrganizationId)) {
-            mapOrganizationIdToProjectOrganization.get(sSelectedOrganizationId).strType = 'Secondary';
+            mapOrganizationIdToProjectOrganization.get(sSelectedOrganizationId).strType = 'Supporting';
         } else {
             OrganizationWrapper oNewProjectOrganization = new OrganizationWrapper(mapOrganizationString.get(sSelectedOrganizationId));
-            oNewProjectOrganization.strtype = 'Secondary';
+            oNewProjectOrganization.strtype = 'Supporting';
 
             if(lSelectedOrganizations.size() == 0){
                 oNewProjectOrganization.oProjectOrganization.ContributionPercent__c = 100;
