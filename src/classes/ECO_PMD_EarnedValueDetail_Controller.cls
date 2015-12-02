@@ -32,7 +32,6 @@ global with sharing class ECO_PMD_EarnedValueDetail_Controller {
 
         ordered_evs = ECO_PMD_Helpers.sortProjecTasks(evs);
 
-
         return ordered_evs;
     }
 }

@@ -37,7 +37,7 @@ public class ECO_Service_ProjectTask{
                             CostMTD__c,             //ok
                             TotalForecastCostPrevME__c,         //Select TotalForecastCost__c from BudgetTask where BudgetHeader.Status=forecast and BudgetHeader.date is in previous fiscal month or earlier
                             EarnedValue__c,                     // ???
-   /*ARMAN CPI__c,   */                          // ???
+   							CPI__c,
                             MonthEndDate3FiscalMonthsAgo__c,
                             CostITD3FiscalMonthEndsAgo__c,
                             EndDateFiscalMonth__c,
@@ -72,7 +72,6 @@ public class ECO_Service_ProjectTask{
                 if(forecastBudget.containskey(pt.Id))
                 pt.TotalForecastCostPrevME__c = (Decimal) forecastBudget.get(pt.Id).get('totalCost');
                 pt.EarnedValue__c = null;
-     /*ARMAN pt.CPI__c = null;*/
                 pt.MonthEndDate3FiscalMonthsAgo__c = threeMonthsAgoFiscalEndDate;
                  if(ITD3Months.containskey(pt.Id))
                 pt.CostITD3FiscalMonthEndsAgo__c =  (Decimal) ITD3Months.get(pt.Id).get('totalCost');

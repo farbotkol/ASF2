@@ -1963,29 +1963,4 @@ GROUP BY pseProject__c
         }
         return laborMultValue;
     }
-    
-    /*private Decimal getNetService(Decimal revenue, Decimal nonLabor)
-    {
-        System.debug(System.LoggingLevel.WARN, '___getNetService: revenue='+revenue+', nonLabor='+nonLabor);
-        if (revenue != null && nonLabor != null) {
-            return revenue - nonLabor;
-        }
-        else {
-            return 0;
-        }
-    }
-    
-    private Decimal getNMGR(Decimal netMargin, Decimal revenue)
-    {
-        if (revenue == 0)
-            return 0;
-        return (netMargin/revenue) * 100;
-    }   
-    
-    private Decimal getNMNSRC(Decimal netMargin, Decimal netService)
-    {
-        if (netService == 0)
-            return 0;
-        return (netMargin/netService) * 100;        
-    }*/
 }

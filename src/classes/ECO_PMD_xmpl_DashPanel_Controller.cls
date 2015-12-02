@@ -17,7 +17,7 @@ global class ECO_PMD_xmpl_DashPanel_Controller {
                 , CostITD__c
                 , CostMonthToDate__c
                 , CostYearToDate__c
-                /*ARMAN , NMNSRITD__c*/
+                , NMNSRITD__c
             FROM ProjectSnapshot__c
             where Project__c = :projectId  AND SnapshotDate__c = LAST_N_MONTHS:6];
     }

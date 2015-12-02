@@ -16,8 +16,8 @@ global class ECO_PMD_FinancialSummary_Controller {
                     ProjectNumber__c, 
                     CostITD__c, 
                     CostMonthToDate__c, 
-                    CostYearToDate__c /*ARMAN , 
-                    NMNSRITD__c*/
+                    CostYearToDate__c, 
+                    NMNSRITD__c
                 FROM            
                     ProjectSnapshot__c
                 where 

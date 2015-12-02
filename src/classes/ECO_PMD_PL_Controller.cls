@@ -11,7 +11,7 @@ global with sharing class ECO_PMD_PL_Controller {
 
         ProjectSnapshot_MashUp snapshot_mashup = new ProjectSnapshot_MashUp();
         
-        /*ARMAN: try
+        try
         {
             // GET THE LATEST TWO SNAPSHOTS FOR THE PROJECT
             List<ProjectSnapshot__c>  snapshots = [SELECT SnapshotDate__c 
@@ -49,7 +49,7 @@ global with sharing class ECO_PMD_PL_Controller {
 
             snapshot_mashup.error = ex.getMessage() + ' ' + ex.getLineNumber();
             snapshot_mashup.nodata = true;
-        }*/
+        }
 
         return snapshot_mashup;
     }

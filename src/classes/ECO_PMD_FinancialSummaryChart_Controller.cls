@@ -16,7 +16,7 @@ global class ECO_PMD_FinancialSummaryChart_Controller {
                     id,                     
                     Project__c, ProjectNumber__c, CostMonthToDate__c, CostYearToDate__c, 
                     SnapshotDate__c, DSO__c, CostBudget__c, GrossRevenueITD__c, GMNSRITD__c,
-                    GrossRevenueBudget__c, /*ARMAN NetMarginBudget__c, NetMarginITD__c,*/ CostITD__c
+                    GrossRevenueBudget__c, NetMarginBudget__c, NetMarginITD__c, CostITD__c
                 FROM            
                     ProjectSnapshot__c
                 where 
@@ -41,12 +41,10 @@ global class ECO_PMD_FinancialSummaryChart_Controller {
         {
             financialSummaryDetails.financialSummaryData = financialSummaryData;
             financialSummaryDetails.financialSummaryPlanData = financialSummaryPlanData;
-            financialSummaryDetails.GMNSR = 0;//financialSummaryData[listsize-1].GMNSRITD__c; 
+            financialSummaryDetails.GMNSR = 0;
             financialSummaryDetails.DTWAccrual = 0; 
             financialSummaryDetails.DSO = 0;
-            financialSummaryDetails.currencyCode = financialSummaryData[listsize-1].CurrencyIsoCode; 
-            //financialSummaryDetails.chartType = "cost";
-            //financialSummaryDetails.dateRange = 6;
+            financialSummaryDetails.currencyCode = financialSummaryData[listsize-1].CurrencyIsoCode;
         }                                
  
         
