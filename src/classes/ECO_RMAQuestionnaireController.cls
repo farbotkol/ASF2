@@ -88,7 +88,16 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
 	
     public void refreshData(){
         
-    	lQuestionnaires = ECO_Utils_Questionnaire.GetQuestionnaires(oQuestionnaire.QuestionnaireSet__c);
+    	//lQuestionnaires = ECO_Utils_Questionnaire.GetQuestionnaires(oQuestionnaire.QuestionnaireSet__c);
+        lQuestionnaires = new list<Questionnaire__c>([SELECT Id
+															, Name
+															, ProjectRisk__c
+															, DoATriggers__c
+															, PercentComplete__c
+                                                      		, QuestionnaireTemplate__r.SortOrder__c
+													FROM Questionnaire__c 
+													WHERE QuestionnaireSet__c = :oQuestionnaire.QuestionnaireSet__c
+                                                     ORDER BY QuestionnaireTemplate__r.SortOrder__c]);
         iIndex = ECO_Utils_Questionnaire.FindQuestionnaireIndex(lQuestionnaires, oQuestionnaire);
 
         lAnswers = ECO_Utils_Questionnaire.GetAnswers(oQuestionnaire.Id);

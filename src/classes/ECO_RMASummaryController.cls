@@ -64,8 +64,10 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 															, ProjectRisk__c
 															, DoATriggers__c
 															, PercentComplete__c 
+                                                      		, QuestionnaireTemplate__r.SortOrder__c
 													FROM Questionnaire__c 
-													WHERE QuestionnaireSet__c = :oQuestionnaireSet.Id]);
+													WHERE QuestionnaireSet__c = :oQuestionnaireSet.Id
+                                                     ORDER BY QuestionnaireTemplate__r.SortOrder__c]);
 
 		if(lQuestionnaires.isEmpty())
 		{	
