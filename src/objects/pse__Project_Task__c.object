@@ -3538,6 +3538,8 @@
     <fields>
         <fullName>CPI__c</fullName>
         <externalId>false</externalId>
+        <formula>1</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>CPI</label>
         <precision>18</precision>
         <required>false</required>
@@ -3650,7 +3652,7 @@
         <fullName>CostForecastTrend__c</fullName>
         <description>TotalActualCost__c  + ( TotalApprovedCost__c -  EarnedValue__c )/ CPI__c</description>
         <externalId>false</externalId>
-        <formula>1</formula>
+        <formula>TotalActualCost__c  + ( TotalApprovedCost__c -  EarnedValue__c )/ CPI__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Cost Forecast Trend</label>
         <precision>18</precision>
@@ -3721,6 +3723,19 @@
         <fullName>CostPrevMTD__c</fullName>
         <externalId>false</externalId>
         <label>Cost Prev. MTD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>CostVariance__c</fullName>
+        <externalId>false</externalId>
+        <formula>PlannedCost__c -  TotalProjectFunctionalBurdenedCost__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cost Variance</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -4150,6 +4165,28 @@ S = Successful</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>PlannedCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Planned Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PlannedValue__c</fullName>
+        <externalId>false</externalId>
+        <label>Planned Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>ProjectNumber__c</fullName>
         <description>Oracle Project Number</description>
         <externalId>false</externalId>
@@ -4269,6 +4306,20 @@ S = Successful</inlineHelpText>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>SPI__c</fullName>
+        <externalId>false</externalId>
+        <formula>EarnedValue__c/ PlannedValue__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>SPI</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>ScheduleVariance__c</fullName>
@@ -5872,4 +5923,3 @@ IF(pse__Start_Date_Time__c &lt; pse__Parent_Task__r.pse__Start_Date_Time__c,true
         <requireRowSelection>true</requireRowSelection>
     </webLinks>
 </CustomObject>
-
