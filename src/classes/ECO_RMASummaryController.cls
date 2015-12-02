@@ -372,7 +372,8 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 		// System.debug('In validate, null check AccountManager__c');
 		if(!(theProject.AccountManager__c == '' || theProject.AccountManager__c ==null))
 		{
-        	Notification oNote = new Notification('One or more of your nominated clients is an ECAM or CAM Account. Please work with the nominated Account Manager.');
+            Notification oNote = new Notification('One or more of the named clients for this project has a nominated Client Account Manager.  Engage the relevant CAM(s) as early as possible to inform the Go/No Go assessment and Project Plan development.');
+        	//Notification oNote = new Notification('One or more of your nominated clients is an ECAM or CAM Account. Please work with the nominated Account Manager.');
             lNotifications.add(oNote);		
 		}		
 		
