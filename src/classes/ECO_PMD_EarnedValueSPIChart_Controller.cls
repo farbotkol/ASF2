@@ -12,17 +12,17 @@ global class ECO_PMD_EarnedValueSPIChart_Controller {
         EarnedValueDetails earnedValueDetails = new EarnedValueDetails();
         
         List<ProjectSnapshot__c> earnedValueData  =  [SELECT      
-        			id, 
-				    SnapshotDate__c,
-				    EarnedValueSPI__c,
-				    ScheduledVarianceValue__c, 
-				    ScheduledVarianceDays__c,
-        			NMNSRITD__c
-	            FROM            
-	            	ProjectSnapshot__c
-	            where 
-	            	Project__c = :projectId AND SnapshotDate__c = LAST_N_MONTHS:6
-	            	order by SnapshotDate__c asc];
+                    id, 
+                    SnapshotDate__c
+                    /*ARMAN , EarnedValueSPI__c,
+                    ScheduledVarianceValue__c, 
+                    ScheduledVarianceDays__c,
+                    NMNSRITD__c*/
+                FROM            
+                    ProjectSnapshot__c
+                where 
+                    Project__c = :projectId AND SnapshotDate__c = LAST_N_MONTHS:6
+                    order by SnapshotDate__c asc];
 
         Integer listsize = earnedValueData.size();    
 
@@ -31,7 +31,7 @@ global class ECO_PMD_EarnedValueSPIChart_Controller {
             earnedValueDetails.earnedValuesData = earnedValueData;
             
             earnedValueDetails.schvar = nullToZero(earnedValueData[listsize-1].ScheduledVarianceValue__c);
-            earnedValueDetails.spi = nullToZero(earnedValueData[listsize-1].EarnedValueSPI__c);
+            /*ARMAN earnedValueDetails.spi = nullToZero(earnedValueData[listsize-1].EarnedValueSPI__c);*/
             earnedValueDetails.schvardays = nullToZero(earnedValueData[listsize-1].ScheduledVarianceDays__c);
             earnedValueDetails.currencyCode = earnedValueData[listsize-1].CurrencyIsoCode; 
         }

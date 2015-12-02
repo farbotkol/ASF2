@@ -14,10 +14,10 @@ global class ECO_PMD_EarnedValueCPIChart_Controller {
         List<ProjectSnapshot__c> earnedValueData  =  [SELECT      
                     id, 
                     SnapshotDate__c,
-                    EarnedValueCPI__c,
+                    /*ARMAN EarnedValueCPI__c,*/
                     EarnedValueActualSpend__c, 
                     EarnedValuePlannedValue__c,
-                    NMNSRITD__c,
+                    /*ARMAN NMNSRITD__c,*/
                     ProjectStartDate__c, ProjectEndDate__c
                 FROM            
                     ProjectSnapshot__c
@@ -32,7 +32,7 @@ global class ECO_PMD_EarnedValueCPIChart_Controller {
             earnedValueDetails.earnedValuesData = earnedValueData;
             
             earnedValueDetails.costvar = nullToZero(earnedValueData[listsize-1].EarnedValueActualSpend__c) - nullToZero(earnedValueData[listsize-1].EarnedValuePlannedValue__c);
-            earnedValueDetails.cpi = nullToZero(earnedValueData[listsize-1].EarnedValueCPI__c);
+            //ARMAN earnedValueDetails.cpi = nullToZero(earnedValueData[listsize-1].EarnedValueCPI__c);
             earnedValueDetails.currencyCode = earnedValueData[listsize-1].CurrencyIsoCode; 
         }
         else 

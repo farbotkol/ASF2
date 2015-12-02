@@ -11,7 +11,7 @@ global with sharing class ECO_PMD_PL_Controller {
 
         ProjectSnapshot_MashUp snapshot_mashup = new ProjectSnapshot_MashUp();
         
-        try
+        /*ARMAN: try
         {
             // GET THE LATEST TWO SNAPSHOTS FOR THE PROJECT
             List<ProjectSnapshot__c>  snapshots = [SELECT SnapshotDate__c 
@@ -37,22 +37,6 @@ global with sharing class ECO_PMD_PL_Controller {
                 ORDER BY SnapshotDate__c DESC
                 LIMIT 1];
 
-            // GET THE LATEST SNAPSHOTS FOR THE PROJECT - Need budget only
-            /*ProjectSnapshot__c  firstsnapshots = [SELECT SnapshotDate__c, GrossRevenueBudget__c
-                , ContingencyBudget__c, NetServiceBudget__c, SurMarginBudget__c, NetMarginBudget__c, NMNSRBudget__c
-                , LaborMultBudget__c, LostMarginBudget__c
-                FROM ProjectSnapshot__c
-                where Project__c = :projectId 
-                ORDER BY SnapshotDate__c ASC
-                LIMIT 1];*/
-
-            // we have at least 2 months
-            /*if (snapshots.size()==2)
-            {
-                snapshot_mashup.current =  snapshots[0];
-                snapshot_mashup.previous = snapshots[1];
-            }*/
-
             // There is only one month of snapshots
             if (snapshots.size()==1)
             {
@@ -65,7 +49,7 @@ global with sharing class ECO_PMD_PL_Controller {
 
             snapshot_mashup.error = ex.getMessage() + ' ' + ex.getLineNumber();
             snapshot_mashup.nodata = true;
-        }
+        }*/
 
         return snapshot_mashup;
     }

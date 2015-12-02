@@ -15,7 +15,8 @@ public with sharing class ECO_PMD_TrendAnalysis_Controller {
 
 	@RemoteAction @ReadOnly
     public static List<ProjectSnapshot__c> GetSnapshotData(String projectId) {
-        return [select
+        
+        return null; /*Arman: return [select
 			Id,
 			Period_Namee__c,
 			SnapshotType__c,
@@ -62,6 +63,6 @@ public with sharing class ECO_PMD_TrendAnalysis_Controller {
 		    DSO__c
 		from ProjectSnapshot__c
 		where Project__r.Id = :projectId AND SnapshotDate__c = LAST_N_MONTHS:6
-		order by SnapshotDate__c desc];
+		order by SnapshotDate__c desc];*/
 	}
 }

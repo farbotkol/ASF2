@@ -11,13 +11,13 @@ global class ECO_PMD_xmpl_DashPanel_Controller {
         Id projectId = projectNum;
         
         return [SELECT id
-		        , SnapshotDate__c
-		        , Project__c
-		        , ProjectNumber__c
-		        , CostITD__c
-		        , CostMonthToDate__c
-		        , CostYearToDate__c
-		        , NMNSRITD__c
+                , SnapshotDate__c
+                , Project__c
+                , ProjectNumber__c
+                , CostITD__c
+                , CostMonthToDate__c
+                , CostYearToDate__c
+                /*ARMAN , NMNSRITD__c*/
             FROM ProjectSnapshot__c
             where Project__c = :projectId  AND SnapshotDate__c = LAST_N_MONTHS:6];
     }
