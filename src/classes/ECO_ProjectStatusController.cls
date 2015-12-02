@@ -24,6 +24,7 @@ public with sharing class ECO_ProjectStatusController {
         currentProject = (pse__Proj__c)controller.getRecord();
         currentRecordId = currentProject.Id;
         
+        
     }
     public String locationsResilienceStatus{
         get {
@@ -188,24 +189,28 @@ public with sharing class ECO_ProjectStatusController {
                     }
             		System.debug('singleRecStatus:::::'+singleRecStatus);
             		System.debug('statusString:::::::'+statusString);
-            		if(lRMAs.size() == 1)
-                        return singleRecStatus;
-                    else{
-                        /*if(statusString.contains('R'))
-                            retStatus = 'Rejected';
-                        else if(statusString.contains('C'))
-                            retStatus = 'Complete';
-                        else
-                            retStatus = 'Started';*/
-                        if(statusString.startsWith('R'))
-                            retStatus = 'Rejected';
-                        else if(statusString.startsWith('C'))
-                            retStatus = 'Complete';
-                        else
-                            retStatus = 'Started';
-                        System.debug('retStatus ::::'+retStatus);
-                        return retStatus;
-                    }
+            		if(currentProject.pse__Stage__c == 'No-Go')
+                        return 'Rejected';
+            		else{
+                        if(lRMAs.size() == 1)
+                            return singleRecStatus;
+                        else{
+                            /*if(statusString.contains('R'))
+                                retStatus = 'Rejected';
+                            else if(statusString.contains('C'))
+                                retStatus = 'Complete';
+                            else
+                                retStatus = 'Started';*/
+                            if(statusString.startsWith('R'))
+                                retStatus = 'Rejected';
+                            else if(statusString.startsWith('C'))
+                                retStatus = 'Complete';
+                            else
+                                retStatus = 'Started';
+                            System.debug('retStatus ::::'+retStatus);
+                            return retStatus;
+                        }
+        			}
                     //System.debug('retStatus ::::'+retStatus);
                 //}
                 //else    
