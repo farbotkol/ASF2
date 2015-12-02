@@ -185,7 +185,10 @@
 	 	   	  	<apex:inputField value="{!mapDisplayTQTExisting[extsRow].oPTM.Contact__c}" rendered="{!mapDisplayTQTExisting[extsRow].oTechnicalQualityTeam.TechnicalQualityTeamMember__c = null}" required="true"/>
 	 	   	  </apex:column>
 	 	   	  <apex:column Headervalue="Role" styleClass="{!IF((mapDisplayTQTExisting[extsRow].bHasError),"ErrorRow","")}">
-	 	   	  	<apex:inputField value="{!mapDisplayTQTExisting[extsRow].oTechnicalQualityTeam.Role__c}" required="true"/>
+	 	   	  	<!--<apex:inputField value="{!mapDisplayTQTExisting[extsRow].oTechnicalQualityTeam.Role__c}" required="true"/>-->
+                  <apex:selectList title="PickList1" size="1" value="{!mapDisplayTQTExisting[extsRow].oTechnicalQualityTeam.Role__c}" required="true">
+                      <apex:selectOptions value="{!TQTRoles}"/>
+                  </apex:selectList>
 	 	   	  </apex:column>
 	 	   	  <!--<apex:column Headervalue="Required Date" styleClass="{!IF((mapDisplayTQTExisting[extsRow].bHasError),"ErrorRow","")}">
 	 	   	  	<apex:inputField value="{!mapDisplayTQTExisting[extsRow].oTechnicalQualityTeam.RequiredDate__c}" required="true"/>

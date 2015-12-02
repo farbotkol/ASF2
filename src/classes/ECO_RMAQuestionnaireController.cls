@@ -337,7 +337,8 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
 
             Risk__c risk = questionToRiskMap.get(RMKey);
 
-            if(risk.Project__c != null && risk.DoATrigger__c==false){
+            //if(risk.Project__c != null && risk.DoATrigger__c==false){
+            if(risk.Project__c != null ){
                 if(risk.RiskMitigation__c == '' || risk.RiskMitigation__c == null){
                     return true;
                 }
