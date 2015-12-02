@@ -407,7 +407,7 @@ public with sharing class ECO_ProjectSummaryController {
     	}
     	else
     	{
-    		results += '<li>' + ' Tasks failed validation.  There needs to be at least one taks to sync to Oracle.' + '</li>';
+    		results += '<li>' + ' Tasks failed validation.  There needs to be at least one task to sync to Oracle.' + '</li>';
     	}
 
     	system.debug('validateProjectTasks=' + results);
