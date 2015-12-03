@@ -90,7 +90,7 @@ public class ECO_Service_Agreement {
                 TotalTaskOrdersValue__c, ISMSA__c, InterimApprovalType__c, InterimApprovalDate__c,
                 InterimApprovalExpiryDate__c, InterimApprovalComments__c, TotalApprovedRevenueLimit__c,
                 InterimApprovalRevenueFeeLimit__c, InterimApprovalCostLimit__c, AgreementVariance__c, UnallocatedFunding__c,
-                JointVenturePartner__c, VendorSite__c, VendorSite__r.AccountName__c, AgreementExecutedBy2__c
+                JointVenturePartner__c, VendorSite__c, VendorSite__r.AccountName__c, AgreementExecutedBy2__c, ChangeManagerIsNew__c
                 from Agreement__c where Id = :agreementId]; 
     }
     
@@ -116,7 +116,7 @@ public class ECO_Service_Agreement {
                 TotalTaskOrdersValue__c, ISMSA__c, InterimApprovalType__c, InterimApprovalDate__c,
                 InterimApprovalExpiryDate__c, InterimApprovalComments__c, TotalApprovedRevenueLimit__c,
                 InterimApprovalRevenueFeeLimit__c, InterimApprovalCostLimit__c, AgreementVariance__c, UnallocatedFunding__c,
-                JointVenturePartner__c, VendorSite__c, VendorSite__r.AccountName__c
+                JointVenturePartner__c, VendorSite__c, VendorSite__r.AccountName__c, ChangeManagerIsNew__c
                 from Agreement__c where Id in (select Agreement__c from ProjectAgreement__c where Project__c = :projectId)]; 
     }
     
@@ -142,7 +142,7 @@ public class ECO_Service_Agreement {
                 TotalTaskOrdersValue__c, ISMSA__c, InterimApprovalType__c, InterimApprovalDate__c,
                 InterimApprovalExpiryDate__c, InterimApprovalComments__c, TotalApprovedRevenueLimit__c,
                 InterimApprovalRevenueFeeLimit__c, InterimApprovalCostLimit__c, AgreementVariance__c, UnallocatedFunding__c,
-                JointVenturePartner__c, VendorSite__c, VendorSite__r.AccountName__c
+                JointVenturePartner__c, VendorSite__c, VendorSite__r.AccountName__c, ChangeManagerIsNew__c
                 from Agreement__c 
                 where Id in (select Agreement__c from ProjectAgreement__c where Project__c = :projectId)
                 and RecordType.Name in ('Prime', 'Prime Task Order', 'Prime (MSA)')];
