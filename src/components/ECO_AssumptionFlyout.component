@@ -11,6 +11,8 @@
 	<script>
 	$k = jQuery.noConflict();
 
+		var oldWidth3;
+
 		var AssumptionFlyout = {
 			init : function(){
 				$k('body').on('click', AssumptionFlyout.hideContentFlyout);
@@ -27,10 +29,10 @@
 			},
 
 			hideContentFlyout : function(){
-	       		var width = $k('#assumptionPane').outerWidth() * -1 + 'px';
+	       		//var width = $k('#assumptionPane').outerWidth() * -1 + 'px';
 	       		
 	       		$k('#assumptionPane').animate({
-		       		right : width
+		       		right : oldWidth3
 				  }, 550, 'easeInCubic');
 	        },
 	       
@@ -40,6 +42,7 @@
 	       		if($k('#assumptionPane').css('right') == '0px'){
 	       			AssumptionFlyout.hideContentFlyout();
 	       		}else{
+	       			oldWidth3 = $k('#assumptionPane').css('right');
 	       			$k('#assumptionPane').animate({
 			       		right : 0
 					  }, 550, 'easeOutCubic');
@@ -61,8 +64,8 @@
 			background-color:#f3f3f3;
 			position: fixed;
 			width: 725px;
-			right: -780px;
-			top: 100px;
+			right: -779px;
+			top: 80px;
 			height:550px;
 			padding: 10px 30px 20px 20px;
 			border-right: none;

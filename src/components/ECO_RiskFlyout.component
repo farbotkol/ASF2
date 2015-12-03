@@ -11,6 +11,8 @@
 	<script>
 		$q = jQuery.noConflict();
 
+		var oldWidth4;
+
 		var RiskFlyout = {
 			init : function(){
 
@@ -28,10 +30,10 @@
 			},
 
 			hideContentFlyout : function(){
-	       		var width = $q('#riskPane').outerWidth() * -1 + 'px';
+	       		// var width = $q('#riskPane').outerWidth() * -1 + 'px';
 	       		
 	       		$q('#riskPane').animate({
-		       		right : width
+		       		right : oldWidth4
 				  }, 550, 'easeInCubic');
 	        },
 	       
@@ -41,6 +43,7 @@
 	       		if($q('#riskPane').css('right') == '0px'){
 	       			RiskFlyout.hideContentFlyout();
 	       		}else{
+	       			oldWidth4 = $q('#riskPane').css('right');
 	       			$q('#riskPane').animate({
 			       		right : 0
 					  }, 550, 'easeOutCubic');
@@ -62,7 +65,7 @@
 			background-color:#f3f3f3;
 			position: fixed;
 			width: 725px;
-			right: -780px;
+			right: -777px;
 			top: 100px;
 			height:550px;
 			padding: 10px 30px 20px 20px;

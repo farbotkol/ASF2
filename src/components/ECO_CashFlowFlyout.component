@@ -180,6 +180,8 @@ var n = this,
             editor: $q('<input>')
         };
 
+        var oldWidth2;
+
         var cashFlyout = {
             init : function(){
 
@@ -197,10 +199,10 @@ var n = this,
             },
 
             hideContentFlyout : function(){
-                var width = $q('#cashPane').outerWidth() * -1 + 'px';
+                //var width = $q('#cashPane').outerWidth() * -1 + 'px';
                 
                 $q('#cashPane').animate({
-                    right : width
+                    right : oldWidth2
                   }, 550, 'easeInCubic');
             },
            
@@ -210,6 +212,7 @@ var n = this,
                 if($q('#cashPane').css('right') == '0px'){
                     cashFlyout.hideContentFlyout();
                 }else{
+                    oldWidth2 = $q('#cashPane').css('right');
                     $q('#cashPane').animate({
                         right : 0
                       }, 550, 'easeOutCubic');
@@ -550,8 +553,8 @@ var n = this,
             background-color:#f3f3f3;
             position: fixed;
             width: 925px;
-            right: -950px;
-            top: 50px;
+            right: -949px;
+            top: 63px;
             height:550px;
             padding: 10px 0 20px 20px;
             border-right: none;
