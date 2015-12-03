@@ -9,7 +9,7 @@ trigger ECO_Project_TeamMember_AllEvents on ProjectTeamMember__c ( after update,
     
     if(trigger.isAfter && trigger.isUpdate){ 
         System.debug( 'Delete Team Member' + trigger.isAfter + ' == ' + trigger.isDelete + ' == ' + trigger.isUpdate );
-        ECO_Project_TeamMember_Triggers.DeleteSharingForTeamMembers( trigger.new,  trigger.oldMap, trigger.newMap );
+        ECO_Project_TeamMember_Triggers.DeleteSharingForTeamMembers( trigger.old,  trigger.oldMap, trigger.newMap );
     }    
     
     if( trigger.isBefore && ( trigger.isUpdate || trigger.isInsert ) ){
