@@ -1015,7 +1015,7 @@ global virtual class ECO_AgreementController {
 
         if(agreementRecordType != 'Prime (MSA)')
         {
-            if(project.pse__Stage__c == 'Execution' && agreement.RecordType.Name == 'Prime' && !project.EnableTopTaskCustomerFlag__c)
+            if(project.pse__Stage__c == 'Execution' && agreement.RecordType.Name == 'Prime' && !project.EnableTopTaskCustomerFlag__c && mode == 'New')
             {
                 ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Prime Agreement cannot be created for project in execution status and top tasks not enabled for project');
                 ApexPages.addMessage(oPageMessage);
