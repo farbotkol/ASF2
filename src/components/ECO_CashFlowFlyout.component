@@ -847,7 +847,7 @@ var n = this,
                                 <apex:pageBlockTable styleClass="dataTable1" value="{!lWeeklyRollupEntries}" var="row" border="1">
                                     <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2a">
 
-                                        <apex:outputText value="{!row.ApprovedCost__c}" />
+                                        <apex:outputText value="{!row.ApprovedCost__c + (row.ApprovedCost__c * row.Project__r.PercentageMargin__c / 100.0)}" />
                                     </apex:column>
 
                                     <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2a">
@@ -868,8 +868,8 @@ var n = this,
                                 <thead>
                                     <tr class="headerRow">
                                         <th class="tableHeader1 tableHeader2a">Period Start Date</th>
-                                        <th class="tableHeader1 tableHeader2a">Planned Cost<br />(In Period)</th>
-                                        <th class="tableHeader1 tableHeader2a">Planned Cost<br />(Cumulative)</th>
+                                        <th class="tableHeader1 tableHeader2a">Planned Revenue<br />(In Period)</th>
+                                        <th class="tableHeader1 tableHeader2a">Planned Revenue<br />(Cumulative)</th>
                                         <th class="tableHeader1 tableHeader2a">Billing<br />(In Period)</th>
                                         <th class="tableHeader1 tableHeader2a">Cash In<br />(In Period)</th>
                                         <th class="tableHeader1 tableHeader2a">Cash In<br />(Cumulative)</th>

@@ -33,6 +33,8 @@ public with sharing class ECO_CashFlowFlyoutController {
                      , AppliedAcctBurdenedCost__c
                      , AppliedAcctRawCost__c
                      , AppliedApprovedCost__c
+                     , Project__r.PercentageMargin__c
+
                 FROM WeeklyRollupEntry__c
                 WHERE
                     Project__c = :sProjectId
