@@ -1741,6 +1741,15 @@ S = Successful</inlineHelpText>
         <externalId>false</externalId>
         <inlineHelpText>Select if any parent agreement is applicable (e.g. standing contract, JV, prime contract for back-to-back with subs)</inlineHelpText>
         <label>Parent Agreement</label>
+        <lookupFilter>
+            <active>true</active>
+            <filterItems>
+                <field>Agreement__c.Id</field>
+                <operation>notEqual</operation>
+                <valueField>$Source.Id</valueField>
+            </filterItems>
+            <isOptional>false</isOptional>
+        </lookupFilter>
         <referenceTo>Agreement__c</referenceTo>
         <relationshipLabel>Child Agreements</relationshipLabel>
         <relationshipName>AgreementsParent</relationshipName>
