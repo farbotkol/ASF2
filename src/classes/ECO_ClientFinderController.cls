@@ -42,7 +42,7 @@ public with sharing virtual class ECO_ClientFinderController{
 
     private static string siteLessLIMIT = '50';
     private static string siteMoreLIMIT = '200';
-
+    public integer iSiteRowDelete {get;set;}
 
 	/* Custom classes to facilitate this controller */
 	public class EcoControllerException extends Exception {}
@@ -100,6 +100,14 @@ public with sharing virtual class ECO_ClientFinderController{
             showMoreSites();
             SearchSites();
         }
+    }
+
+    public PageReference RemoveSite(){
+        Project_Site__c psDelete = lstProjectSites[iSiteRowDelete];
+        lstProjectSites.remove(iSiteRowDelete);
+
+        delete psDelete;
+        return null;
     }
 
     public PageReference stub(){

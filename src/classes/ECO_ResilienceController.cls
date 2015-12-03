@@ -20,6 +20,9 @@ public with sharing class ECO_ResilienceController {
 
         public list<SelectOption> types { get; set; }
 
+        public string sTargetAttachment {get;set;}
+        public boolean bFromSHE {get;set;}
+
         public class EcoControllerException extends Exception {}
 
         /* Re-Usable Method for Querying Project Cities */
@@ -56,6 +59,11 @@ public with sharing class ECO_ResilienceController {
         public ECO_ResilienceController (ApexPages.StandardController oStandardController) {
 
                 this.oProject = (pse__Proj__c)oStandardController.getRecord();
+                bFromSHE = false;
+
+                if(ApexPages.currentPage().getParameters().get('fromSHE') != null){
+                    bFromSHE = true;
+                }
 
                 projectRisk = 0;
                 strAnswer = 'Unknown';
@@ -244,6 +252,18 @@ public with sharing class ECO_ResilienceController {
     
      	//OSP_Attachment__c
      	//
+
+        public PageReference removeattachment(){
+            id iTargetAttachment = sTargetAttachment;
+            Attachment aAttachToRemove = attachmentsMap.get(iTargetAttachment);
+            attachmentsMap.remove(iTargetAttachment);
+            delete aAttachToRemove;
+            oProject.OSP_Attachment__c = oProject.OSP_Attachment__c.remove(iTargetAttachment + ';');
+            update oProject;
+            return null;
+        }
+
+
         public list<Attachment> getOSP_AttachmentFiles()
         {
             list<String> attachmentIds = new list<String>();
