@@ -76,6 +76,7 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 			
 			String queryString = 'SELECT Id';
 			queryString += ' , Name';
+            queryString += ' , SortOrder__c';
 			queryString += ' , (SELECT Id';
 			queryString += ' FROM Questions__r';
 				queryString += ' WHERE (GeographiesAvailableTo__c INCLUDES (\''+theProject.CarryingOutOrganization__r.GeographyName__c+'\')';
@@ -89,6 +90,7 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 			queryString += ' AND IsActive__c = true';
 			queryString += ' )';	
 			queryString += ' FROM QuestionnaireTemplate__c';
+            queryString += ' ORDER BY SortOrder__c';
 
 			System.debug('QuestionnaireTemplate query: ' + queryString);
 			
@@ -520,6 +522,7 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
                 
                 String queryString = 'SELECT Id';
                 queryString += ' , Name';
+                queryString += ' , SortOrder__c';
                 queryString += ' , (SELECT Id';
                     queryString += ' FROM Questions__r';
                     /*queryString += ' WHERE ((Region__c INCLUDES (\''+theProject.CarryingOutOrganization__r.Region__c+'\')';
@@ -538,6 +541,8 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
                     queryString += ' )';
                     
                 queryString += ' FROM QuestionnaireTemplate__c';
+                queryString += ' ORDER BY SortOrder__c';
+                
     
                 map<Id, QuestionnaireTemplate__c> mQuestionnaireTemplates = new map<Id, QuestionnaireTemplate__c>();
                 for (QuestionnaireTemplate__c qt : Database.query(queryString)) {

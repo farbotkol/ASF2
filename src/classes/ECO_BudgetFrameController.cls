@@ -174,6 +174,14 @@ public class ECO_BudgetFrameController {
         return oPageReference;
     }
 
+    public PageReference gotoAgreements() {
+        PageReference oPageReference = Page.ECO_ProjectAgreement;
+        oPageReference.getParameters().put('retURL', '/apex/ECO_BudgetHeaderSummary?id=' + sProjectId);
+        oPageReference.getParameters().put('ProjectId', sProjectId);
+        
+        return oPageReference;
+    }
+
     public PageReference showBudgetList(){
         PageReference oPageReference = Page.ECO_BudgetHeaderSummary;
 

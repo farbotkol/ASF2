@@ -635,7 +635,7 @@
         <apex:pageBlock title="Contract Reviews">
         	<apex:include pageName="ECO_ContractReviewRequests" />
         </apex:pageBlock>
-        <apex:pageBlock title="Approval Request Forms" rendered="{!NOT(AND(isDOAAdmin,oDOA.Enable_RCST_Button__c))}">
+        <apex:pageBlock title="Approval Request Forms" rendered="{!AND(NOT(isDOAAdmin),NOT(oDOA.Enable_RCST_Button__c))}">
             <apex:pageMessage severity="INFO" summary="No records to display" rendered="{!If(lForm.size > 0 , false, true)}" >
 			</apex:pageMessage>
         	<apex:pageBlockTable rendered="{!If(lForm.size > 0 , true, false)}" value="{!lForm}" var="form">
@@ -707,7 +707,7 @@
     </apex:actionRegion>
     
     <!--<apex:relatedList list="ComplianceConditionsofApprovals__r"/>-->
-    <apex:relatedList list="Forms__r" rendered="{!AND(isDOAAdmin,oDOA.Enable_RCST_Button__c)}"/>
+    <apex:relatedList list="Forms__r" rendered="{!AND(isDOAAdmin,NOT(oDOA.Enable_RCST_Button__c))}"/>
     <apex:relatedList list="DOA_Register__r" title="DOA Register" rendered="{!isDOAAdmin}"/>
     <apex:relatedList list="DOAConditions__r" title="DOA Conditions of Approval" rendered="{!isDOAAdmin}"/>
     <!--<apex:relatedList list="ComplianceConditionsofApprovals__r" title="Compliance Conditions of Approval" rendered="{!isDOAAdmin}"/>
