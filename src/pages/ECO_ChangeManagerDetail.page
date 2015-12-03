@@ -1332,17 +1332,20 @@
             </div><br/>
             <apex:pageBlock mode="edit" title="{!changeManager.RecordType.Name & ' Change Edit'}">
                 <apex:pageBlockButtons >
-                    <apex:commandButton value="Save" action="{!saveChangeManager}"/>
+                    <apex:commandButton value="Save" action="{!saveChangeManager}" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/>
                     <apex:commandButton value="Return to Project" action="{!returnToProject}"/>
-                    <apex:commandButton value="Take Project Snapshot" action="{!takeProjectSnapshot}"/>
+                    <apex:commandButton value="Take Project Snapshot" action="{!takeProjectSnapshot}" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c == 'Submitted'}"/>
+                    <apex:commandButton value="Submit for Approval" action="{!SubmitForApproval}" id="Submit_for_Approval" rendered="{!(changeManager.ApprovalStatus__c == null || changeManager.ApprovalStatus__c == '' || changeManager.ApprovalStatus__c == 'Rejected')}"/>
                 </apex:pageBlockButtons>
             <apex:pageBlockSection title="Project Details" columns="1">
                 <apex:outputField value="{!changeManager.Project__r.Name}"/>
                 <apex:outputField value="{!changeManager.ProjectNumber__c}"/>
                 <apex:outputField value="{!changeManager.Client__c}"/>
                 <apex:outputField value="{!changeManager.ProjectValue__c}"/>    
-                <apex:inputField value="{!changeManager.OutgoingPM__c}"/>   
-                <apex:inputField value="{!changeManager.IncomingPM__c}"/>                   
+                <apex:inputField value="{!changeManager.OutgoingPM__c}" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/>   
+                <apex:inputField value="{!changeManager.IncomingPM__c}" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/>
+                <apex:outputField value="{!changeManager.OutgoingPM__c}" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>   
+                <apex:outputField value="{!changeManager.IncomingPM__c}" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>                   
             </apex:pageBlockSection>
 
             <apex:pageBlockSection title="Handover Summary" columns="1" id="pbstest">
@@ -1350,7 +1353,7 @@
 
 <apex:outputPanel >
 <table><tr><td>
-<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverContractualDocuments__c}" >
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverContractualDocuments__c}"  readonly="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}">
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
@@ -1359,13 +1362,13 @@
 
 </td></tr></table></apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverContractualDocuments__c == 'No'}" >
-Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainContractualDocuments__c}" style="width: 825px; height: 40px"/>
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainContractualDocuments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/><apex:outputField value="{!changeManager.HandoverExplainContractualDocuments__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 
 
 <apex:outputPanel >
 <table><tr><td>
-<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverContractualObligations__c}" >
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverContractualObligations__c}" readonly="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}">
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
@@ -1374,13 +1377,13 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainContr
 </td></tr></table>
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverContractualObligations__c == 'No'}" >
-Provide a Summary of what is remaining:<br/><apex:inputField value="{!changeManager.HandoverExplainContractObligations__c}" style="width: 825px; height: 40px"/>
+Provide a Summary of what is remaining:<br/><apex:inputField value="{!changeManager.HandoverExplainContractObligations__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/><apex:outputField value="{!changeManager.HandoverExplainContractObligations__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 
 
 <apex:outputPanel >
 <table><tr><td>
-<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverSubsonProject__c}" >
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverSubsonProject__c}" readonly="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}">
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
@@ -1403,12 +1406,12 @@ Provide a Summary of what is remaining:<br/><apex:inputField value="{!changeMana
 </apex:outputPanel>
 
 <apex:outputPanel rendered="{!changeManager.HandoverSubsonProject__c == 'Yes'}" >
-State the current status of payment, scope completion and performance:<br/><apex:inputField value="{!changeManager.HandoverExplainSubsonProject__c}" style="width: 825px; height: 40px"/>
+State the current status of payment, scope completion and performance:<br/><apex:inputField value="{!changeManager.HandoverExplainSubsonProject__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/><apex:outputField value="{!changeManager.HandoverExplainSubsonProject__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
 <table><tr><td>
-<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverMandatoryProjectApprovals__c}" >
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverMandatoryProjectApprovals__c}"  readonly="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}">
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
@@ -1417,12 +1420,12 @@ State the current status of payment, scope completion and performance:<br/><apex
 </td></tr></table>          
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverMandatoryProjectApprovals__c == 'No'}" >
-Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainMandatoryProjectApprovals__c}" style="width: 825px; height: 40px"/>
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainMandatoryProjectApprovals__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/><apex:outputField value="{!changeManager.HandoverExplainMandatoryProjectApprovals__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
 <table><tr><td>
-<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverProjectTeamInform__c}" >
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverProjectTeamInform__c}" readonly="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}">
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
@@ -1431,12 +1434,12 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainManda
 </td></tr></table>         
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverProjectTeamInform__c == 'No'}" >
-Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainProjectTeamInform__c}" style="width: 825px; height: 40px"/>
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainProjectTeamInform__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/><apex:outputField value="{!changeManager.HandoverExplainProjectTeamInform__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
 <table><tr><td>
-<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverClientInformed__c}" >
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverClientInformed__c}" readonly="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}">
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
@@ -1450,7 +1453,7 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainKnown
 
 <apex:outputPanel >
 <table><tr><td>
-<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverKnownRisks__c}" >
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverKnownRisks__c}" readonly="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}">
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
@@ -1459,12 +1462,12 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainKnown
 </td></tr></table>        
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverKnownRisks__c == 'No'}" >
-Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainKnownRisks__c}" style="width: 825px; height: 40px"/>
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainKnownRisks__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/><apex:outputField value="{!changeManager.HandoverExplainKnownRisks__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
 <table><tr><td>
-<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverBudgetUpdated__c}" >
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverBudgetUpdated__c}" readonly="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}">
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
@@ -1473,12 +1476,12 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainKnown
 </td></tr></table>         
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverBudgetUpdated__c == 'No'}" >
-Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainBudgetUpdated__c}" style="width: 825px; height: 40px"/>
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainBudgetUpdated__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/><apex:outputField value="{!changeManager.HandoverExplainBudgetUpdated__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
 <table><tr><td>
-<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverActionsRaised__c}" >
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverActionsRaised__c}" readonly="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}">
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
@@ -1486,11 +1489,11 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainBudge
 <br/><apex:outputText style="font-weight: bold;">9. Have actions raised on the project been closed or in the process of being rectified?</apex:outputText> </td></tr></table>          
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverActionsRaised__c == 'No'}" >
-Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainActionsRaised__c}" style="width: 825px; height: 40px"/>
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainActionsRaised__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/><apex:outputField value="{!changeManager.HandoverExplainActionsRaised__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 <apex:outputPanel >
 <table><tr><td>
-<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverCriticalProjectPaperwork__c}" >
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverCriticalProjectPaperwork__c}" readonly="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}">
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
@@ -1499,12 +1502,12 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainActio
 </td></tr></table>         
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverCriticalProjectPaperwork__c == 'No'}" >
-Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainProjectPaperwork__c}" style="width: 825px; height: 40px"/>
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainProjectPaperwork__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/><apex:outputField value="{!changeManager.HandoverExplainProjectPaperwork__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
 <table><tr><td>
-<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverSignedCopies__c}" >
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverSignedCopies__c}" readonly="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}">
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
@@ -1513,12 +1516,12 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainProje
 </td></tr></table> 
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverSignedCopies__c == 'No'}">
-    Please Explain:<br/><apex:inputField value="{!changeManager.ExplainHandoverSignedCopies__c}" style="width: 825px; height: 40px"/>
+    Please Explain:<br/><apex:inputField value="{!changeManager.ExplainHandoverSignedCopies__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/><apex:outputField value="{!changeManager.ExplainHandoverSignedCopies__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
 <table><tr><td>
-    <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverRelevantProjectFiles__c}" >
+    <apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverRelevantProjectFiles__c}" readonly="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}">
         <apex:selectOptions value="{!YesNoOptions}"/>
         <apex:actionSupport event="onchange" rerender="pbstest"/>
     </apex:selectRadio>
@@ -1527,12 +1530,12 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainProje
 </td></tr></table> 
     </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverRelevantProjectFiles__c == 'No'}">
-    Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainRelevantProjectFiles__c}" style="width: 825px; height: 40px"/>
+    Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainRelevantProjectFiles__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/><apex:outputField value="{!changeManager.HandoverExplainRelevantProjectFiles__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 
 <apex:outputPanel >
 <table><tr><td>
-<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverCommReporting__c}" >
+<apex:selectRadio layout="lineDirection" value="{!changeManager.HandoverCommReporting__c}" readonly="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}">
     <apex:selectOptions value="{!YesNoOptions}"/>
     <apex:actionSupport event="onchange" rerender="pbstest"/>
 </apex:selectRadio>
@@ -1541,25 +1544,29 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainProje
 </td></tr></table> 
 </apex:outputPanel>
 <apex:outputPanel rendered="{!changeManager.HandoverCommReporting__c == 'No'}">
-Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainCommReporting__c}" style="width: 825px; height: 40px"/>
+Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainCommReporting__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/><apex:outputField value="{!changeManager.HandoverExplainCommReporting__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 <apex:outputPanel >
     <apex:outputText style="font-weight: bold;">14. What is going well with the project?</apex:outputText><br/>
-    <apex:inputField value="{!changeManager.HandoverGoingWell__c}" style="width: 825px; height: 40px"/>
+    <apex:inputField value="{!changeManager.HandoverGoingWell__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/>
+    <apex:outputField value="{!changeManager.HandoverGoingWell__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 <apex:outputPanel >
     <apex:outputText style="font-weight: bold;">15. What is not going well with the project?</apex:outputText><br/>
-    <apex:inputField value="{!changeManager.HandoverNotGoingWell__c}" style="width: 825px; height: 40px"/>
+    <apex:inputField value="{!changeManager.HandoverNotGoingWell__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/>
+    <apex:outputField value="{!changeManager.HandoverNotGoingWell__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 <apex:outputPanel >
     <apex:outputText style="font-weight: bold;">16. State current financial status of project, including any outstanding invoices.</apex:outputText><br/>
-    <apex:inputField value="{!changeManager.HandoverCurrentFinancialStatus__c}" style="width: 825px; height: 40px"/>
+    <apex:inputField value="{!changeManager.HandoverCurrentFinancialStatus__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/>
+    <apex:outputField value="{!changeManager.HandoverCurrentFinancialStatus__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
 </apex:outputPanel>
 </apex:pageBlockSection>
 <apex:pageBlockSection title="Handover Outcomes">
     <apex:outputPanel >
         <apex:outputText style="font-weight: bold;">List all issues and outcomes from handover process</apex:outputText><br/>
-        <apex:inputField value="{!changeManager.HandoverOutcomes__c}" style="width: 825px; height: 40px"/>
+        <apex:inputField value="{!changeManager.HandoverOutcomes__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted'}"/>
+        <apex:outputField value="{!changeManager.HandoverOutcomes__c}" style="width: 825px; height: 40px" rendered="{!changeManager.ApprovalStatus__c == 'Approved' || changeManager.ApprovalStatus__c == 'Submitted'}"/>
     </apex:outputPanel>
 </apex:pageBlockSection>
 </apex:pageBlock>
