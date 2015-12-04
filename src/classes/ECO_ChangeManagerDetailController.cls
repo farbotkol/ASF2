@@ -112,9 +112,20 @@ public class ECO_ChangeManagerDetailController {
             changeManager.ProjectApprover__c = ECO_Service_ProjectTeam.getActiveProjectApproverId(changeManager.Project__c); //populateProjectApprover();
             changeManager.ProjectAccountantApprover__c = ECO_Service_ProjectTeam.populateProjectAccountant(changeManager.Project__c);
             changeManager.FinanceApprover__c = ECO_Service_ProjectTeam.populateProjectFinanceLead(changeManager.Project__c);  
+
             update changeManager;
         }
-     
+
+        if(changeManager.Project__r.pse__Stage__c == 'Planning' && changeManager.IsExecutionApprovalChange__c && changeManager.Project__r.pse__Start_Date__c != null)
+        {
+            List<ProjectTeamMember__c> teamMembers = [select Id, Name, StartDate__c from ProjectTeamMember__c where Project__c = :changeManager.Project__c and StartDate__c != :changeManager.Project__r.pse__Start_Date__c];
+            for(ProjectTeamMember__c teamMember:teamMembers)
+            {
+                teamMember.StartDate__c = changeManager.Project__r.pse__Start_Date__c;
+            }
+            if(!teamMembers.isEmpty())
+                update teamMembers;
+        }     
                 
         if(changeManager.OutgoingPM__c == null)
             changeManager.OutgoingPM__c = changeManager.ProjectManagerId__c;
@@ -308,7 +319,7 @@ public class ECO_ChangeManagerDetailController {
     	ECO_Utils_Meta.SelectAll soUtil = new ECO_Utils_Meta.SelectAll();
 		soUtil.GetFields('ChangeManager__c');
 		String queryString = soUtil.SOQL;
-		queryString = querystring.replace('FROM ChangeManager__c', ',project__r.Name, project__r.OracleProjectNumber__c, RecordType.Id, Project__r.ChangeManagerClientsRequirements__c, Project__r.ChangeManagerAECOMRequirements__c,  RecordType.Name FROM ChangeManager__c');
+		queryString = querystring.replace('FROM ChangeManager__c', ',project__r.Name, project__r.pse__Start_Date__c, project__r.pse__Stage__c, project__r.OracleProjectNumber__c, RecordType.Id, Project__r.ChangeManagerClientsRequirements__c, Project__r.ChangeManagerAECOMRequirements__c,  RecordType.Name FROM ChangeManager__c');
 		queryString += ' WHERE Id = \''+ changeManager.Id +'\'';
 		
 		list<ChangeManager__c> changeManagers = Database.query(queryString);
