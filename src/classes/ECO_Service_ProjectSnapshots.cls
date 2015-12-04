@@ -728,11 +728,14 @@ public class ECO_Service_ProjectSnapshots {
                 Decimal totalRevenue = (Decimal)ar.get('totalRevenue');
                 Id projId = (Id) ar.get('ProjectNumber__c');
                 System.debug(System.LoggingLevel.WARN, '___range='+range+', totalRevenue='+totalRevenue+', projId='+projId);
-                if (billingMetricsARMap != null) {
+                if (billingMetricsARMap != null && billingMetricsARMap.size() > 0) {
                     System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap='+billingMetricsARMap);
                     Decimal billedARValue = 0;
                     if (billingMetricsARMap.get(projId) != null) {
                     	billedARValue = billingMetricsARMap.get(projId).BilledAR;
+                    	if (billedARValue == null) {
+                    		billedARValue = 0;
+                    	}
                     }
                     
                     if (range == UNBILLED_181Plus) {
@@ -1136,56 +1139,47 @@ public class ECO_Service_ProjectSnapshots {
     	return metricsMap;
     }
 
-    /*private String getRelatedProjectTasks(List<Id> projectIds)
-    {
-        String returnString = '';
-        try {
-	        System.debug(System.LoggingLevel.WARN, '___getRelatedProjectTasks Query rows BEFORE='+Limits.getQueryRows());
-	        List<pse__Project_Task__c> projectTasks = [SELECT Id, Name, pse__Actual_End_Date__c, pse__Actual_Start_Date__c, 
-	            pse__End_Date__c, pse__Start_Date__c, ProjectTaskNumber__c FROM pse__Project_Task__c 
-	            WHERE pse__Project__c IN :projectIds];
-	        System.debug(System.LoggingLevel.WARN, '___getRelatedProjectTasks Query rows AFTER='+Limits.getQueryRows());
-	        System.debug(System.LoggingLevel.WARN, '___getRelatedProjectTasks rows='+projectTasks.size());
-	        for (pse__Project_Task__c projectTask:projectTasks)
-	        {
-	            if (returnString == '') {
-	                returnString = projectTask.Name + ';;' + projectTask.ProjectTaskNumber__c + ';;' + 
-	                	projectTask.pse__Start_Date__c.format()  + ';;' + projectTask.pse__End_Date__c.format()  + ';;' + 
-	                	projectTask.pse__Actual_Start_Date__c + ';;' + projectTask.pse__Actual_End_Date__c;
-	            }
-	            else {
-	                returnString += '::' + projectTask.Name + ';;' + projectTask.ProjectTaskNumber__c + ';;' + 
-	                	projectTask.pse__Start_Date__c.format()  + ';;' + projectTask.pse__End_Date__c.format()  + ';;' + 
-	                	projectTask.pse__Actual_Start_Date__c + ';;' + projectTask.pse__Actual_End_Date__c;
-	            }          
-	        }
-        }
-        catch(Exception e) {
-            System.Debug(e.getStackTraceString());
-        }
-        return returnString;
-    }*/
     private String getRelatedProjectTasks(List<Id> projectIds)
     {
         String returnString = '';
         try {
-	        System.debug(System.LoggingLevel.WARN, '___getRelatedProjectTasks Query rows BEFORE='+Limits.getQueryRows());
 	        List<pse__Project_Task__c> projectTasks = [SELECT Id, Name, ForecastEndDate__c, ForecastStartDate__c,
 	            pse__End_Date__c, pse__Start_Date__c, ProjectTaskNumber__c FROM pse__Project_Task__c
 	            WHERE pse__Project__c IN :projectIds];
-	        System.debug(System.LoggingLevel.WARN, '___getRelatedProjectTasks Query rows AFTER='+Limits.getQueryRows());
 	        System.debug(System.LoggingLevel.WARN, '___getRelatedProjectTasks rows='+projectTasks.size());
+
+            String forecastStart = '';
+            String forecastEnd = '';
+            String actualStart = '';
+            String actualEnd = '';
+
 	        for (pse__Project_Task__c projectTask:projectTasks)
 	        {
+                if(projectTask.ForecastStartDate__c != null)
+                    forecastStart = projectTask.ForecastStartDate__c.format();
+
+                if(projectTask.ForecastEndDate__c != null)
+                    forecastEnd = projectTask.ForecastEndDate__c.format();
+
+                if(projectTask.pse__Start_Date__c != null)
+                    actualStart = projectTask.pse__Start_Date__c.format();
+
+                if(projectTask.pse__End_Date__c != null)
+                    actualEnd = projectTask.pse__End_Date__c.format();
+                        
 	            if (returnString == '') {
 	                returnString = projectTask.Name + ';;' + projectTask.ProjectTaskNumber__c + ';;' +
-	                	projectTask.ForecastStartDate__c  + ';;' + projectTask.ForecastEndDate__c  + ';;' +
-	                	projectTask.pse__Start_Date__c.format() + ';;' + projectTask.pse__End_Date__c.format();
+	                	forecastStart  + ';;' + forecastEnd  + ';;' +
+	                	actualStart + ';;' + actualEnd;
 	            }
 	            else {
-	            	System.debug(System.LoggingLevel.WARN, '___getRelatedProjectTasks returnString B4='+returnString);
-	                returnString += '::' + projectTask.Name + ';;' + projectTask.ProjectTaskNumber__c + ';;' +projectTask.ForecastStartDate__c  + ';;' + projectTask.ForecastEndDate__c  + ';;' +projectTask.pse__Start_Date__c.format() + ';;' + projectTask.pse__End_Date__c.format();
-	            }         
+	            	returnString += '::' + projectTask.Name + ';;' + projectTask.ProjectTaskNumber__c + ';;' +
+	            		forecastStart + ';;' + forecastEnd  + ';;' + actualStart + ';;' + actualEnd;
+	            }  
+                forecastStart = '';
+                forecastEnd = '';
+                actualStart = '';
+                actualEnd = '';      
 	        }
 	        System.debug(System.LoggingLevel.WARN, '___getRelatedProjectTasks returnString='+returnString);
 	    }
@@ -1659,9 +1653,6 @@ public class ECO_Service_ProjectSnapshots {
                     BudgetResource__r.BudgetHeader__r.OriginalBudget__c
                  FROM BudgetAssignment__c 
                  WHERE BudgetResource__r.PLReportCategory__c IN :plReportCategorySet
-                 AND (BudgetResource__r.BudgetHeader__r.OriginalBudget__c=true
-                 OR BudgetResource__r.BudgetHeader__r.Status__c = 'Forecast'
-                 OR BudgetResource__r.BudgetHeader__r.Status__c = 'Approved')
                  AND ProjectTask__r.pse__Project__r.Id IN : projectIds];
 
             for (BudgetAssignment__c ba : budgetAssignments) {
@@ -1671,92 +1662,133 @@ public class ECO_Service_ProjectSnapshots {
                 BudgetHeader__c bHeader = ba.BudgetResource__r.BudgetHeader__r;
                 if (bHeader != null) {
                     String bStatus = bHeader.status__c;
-                    Boolean origBudget = bHeader.OriginalBudget__c;
                     
-                    if (bStatus == 'Forecast') {
-                        if (ba.OverrideTotalCost__c > 0) {
-                            if (PLReportCategory == ODC_Exps) {
-                                snapshot.CostsODCEXPSForecast__c = ba.OverrideTotalCost__c;
-                            }
-                            else if (PLReportCategory == ODC_Subs) {
-                                snapshot.CostsODCSUBSForecast__c = ba.OverrideTotalCost__c;
-                            }
-                            else if (PLReportCategory == ODC_Contingency) {
-                                snapshot.ContingencyForecast__c = ba.OverrideTotalCost__c;
-                            }
-                            else if (PLReportCategory == 'Labor') {
-                                snapshot.LaborForecast__c = ba.OverrideTotalCost__c;
-                            }
-                            else if (PLReportCategory == 'Fringe') {
-                                snapshot.FringeForecast__c = ba.OverrideTotalCost__c;
-                            }
-                            else if (PLReportCategory == 'Overhead') {
-                                snapshot.OverheadForecast__c = ba.OverrideTotalCost__c;
-                            }
-                        }
-                        else {
-                            if (PLReportCategory == ODC_Exps) {
-                                snapshot.CostsODCEXPSForecast__c = ba.TotalComputedCost__c;
-                            }
-                            else if (PLReportCategory == ODC_Subs) {
-                                snapshot.CostsODCSUBSForecast__c = ba.TotalComputedCost__c;
-                            }
-                            else if (PLReportCategory == ODC_Contingency) {
-                                snapshot.ContingencyForecast__c = ba.TotalComputedCost__c;
-                            }
-                            else if (PLReportCategory == 'Labor') {
-                                snapshot.LaborForecast__c = ba.TotalComputedCost__c;
-                            }
-                            else if (PLReportCategory == 'Fringe') {
-                                snapshot.FringeForecast__c = ba.TotalComputedCost__c;
-                            }
-                            else if (PLReportCategory == 'Overhead') {
-                                snapshot.OverheadForecast__c = ba.TotalComputedCost__c;
-                            }
-                        }
-                    }
-                    else if (origBudget) {
+                    Boolean origBudget = bHeader.OriginalBudget__c;
+                    if (origBudget) {
                         if (PLReportCategory == ODC_Exps) {
-                            snapshot.CostsODCEXPSBudgetOriginal__c = ba.TotalComputedCost__c;  
+                            snapshot.CostsODCEXPSBudgetOriginal__c += ba.TotalComputedCost__c;  
                         }
                         else if (PLReportCategory == ODC_Subs) {
-                            snapshot.CostsODCSUBSBudgetOriginal__c = ba.TotalComputedCost__c;
+                            snapshot.CostsODCSUBSBudgetOriginal__c += ba.TotalComputedCost__c;
                         }
                         else if (PLReportCategory == ODC_Contingency) {
-                            snapshot.ContingencyBudgetOriginal__c = ba.TotalComputedCost__c;
+                            snapshot.ContingencyBudgetOriginal__c += ba.TotalComputedCost__c;
                         }
                         else if (PLReportCategory == 'Labor') {
-                            snapshot.LaborBudgetOriginal__c = ba.TotalComputedCost__c;
+                            snapshot.LaborBudgetOriginal__c += ba.TotalComputedCost__c;
                         }
                         else if (PLReportCategory == 'Fringe') {
-                            snapshot.FringeBudgetOriginal__c = ba.TotalComputedCost__c;
+                            snapshot.FringeBudgetOriginal__c += ba.TotalComputedCost__c;
                         }
                         else if (PLReportCategory == 'Overhead') {
-                            snapshot.OverheadBudgetOriginal__c = ba.TotalComputedCost__c;
+                            snapshot.OverheadBudgetOriginal__c += ba.TotalComputedCost__c;
                         }
                     }
-                    else if (bStatus == 'Approved'){
+                    
+                    if (bStatus == 'Approved') {
+                        if (PLReportCategory == ODC_Exps) {
+                            snapshot.CostsODCEXPSBudget__c += ba.TotalComputedCost__c;
+                        }
+                        else if (PLReportCategory == ODC_Subs) {
+                            snapshot.CostsODCSUBSBudget__c += ba.TotalComputedCost__c;
+                        }
+                        else if (PLReportCategory == ODC_Contingency) {
+                            snapshot.ContingencyBudget__c += ba.TotalComputedCost__c;
+                        }
+                        else if (PLReportCategory == 'Labor') {
+                            snapshot.LaborBudget__c += ba.TotalComputedCost__c;
+                        }
+                        else if (PLReportCategory == 'Fringe') {
+                            snapshot.FringeBudget__c += ba.TotalComputedCost__c;
+                        }
+                        else if (PLReportCategory == 'Overhead') {
+                            snapshot.OverheadBudget__c += ba.TotalComputedCost__c;
+                        }
+                    }
+                    else { // Unapproved
+                    	if (PLReportCategory == ODC_Exps) {
+                            snapshot.CostsODCEXPSUnapproved__c += ba.TotalComputedCost__c;
+                        }
+                        else if (PLReportCategory == ODC_Subs) {
+                            snapshot.CostsODCSUBSUnapproved__c += ba.TotalComputedCost__c;
+                        }
+                        else if (PLReportCategory == ODC_Contingency) {
+                            snapshot.ContingencyUnapproved__c += ba.TotalComputedCost__c;
+                        }
+                        else if (PLReportCategory == 'Labor') {
+                            snapshot.LaborUnapproved__c += ba.TotalComputedCost__c;
+                        }
+                        else if (PLReportCategory == 'Fringe') {
+                            snapshot.FringeUnapproved__c += ba.TotalComputedCost__c;
+                        }
+                        else if (PLReportCategory == 'Overhead') {
+                            snapshot.OverheadUnapproved__c += ba.TotalComputedCost__c;
+                        }
                         
-                        if (PLReportCategory == ODC_Exps) {
-                            snapshot.CostsODCEXPSBudget__c = ba.TotalComputedCost__c;
-                        }
-                        else if (PLReportCategory == ODC_Subs) {
-                            snapshot.CostsODCSUBSBudget__c = ba.TotalComputedCost__c;
-                        }
-                        else if (PLReportCategory == ODC_Contingency) {
-                            snapshot.ContingencyBudget__c = ba.TotalComputedCost__c;
-                        }
-                        else if (PLReportCategory == 'Labor') {
-                            snapshot.LaborBudget__c = ba.TotalComputedCost__c;
-                        }
-                        else if (PLReportCategory == 'Fringe') {
-                            snapshot.FringeBudget__c = ba.TotalComputedCost__c;
-                        }
-                        else if (PLReportCategory == 'Overhead') {
-                            snapshot.OverheadBudget__c = ba.TotalComputedCost__c;
-                        }
+                        if (bStatus == 'Forecast') {
+	                        if (ba.OverrideTotalCost__c > 0) {
+	                            if (PLReportCategory == ODC_Exps) {
+	                                snapshot.CostsODCEXPSForecast__c += ba.OverrideTotalCost__c;
+	                            }
+	                            else if (PLReportCategory == ODC_Subs) {
+	                                snapshot.CostsODCSUBSForecast__c += ba.OverrideTotalCost__c;
+	                            }
+	                            else if (PLReportCategory == ODC_Contingency) {
+	                                snapshot.ContingencyForecast__c += ba.OverrideTotalCost__c;
+	                            }
+	                            else if (PLReportCategory == 'Labor') {
+	                                snapshot.LaborForecast__c += ba.OverrideTotalCost__c;
+	                            }
+	                            else if (PLReportCategory == 'Fringe') {
+	                                snapshot.FringeForecast__c += ba.OverrideTotalCost__c;
+	                            }
+	                            else if (PLReportCategory == 'Overhead') {
+	                                snapshot.OverheadForecast__c += ba.OverrideTotalCost__c;
+	                            }
+	                        }
+	                        else {
+	                            if (PLReportCategory == ODC_Exps) {
+	                                snapshot.CostsODCEXPSForecast__c += ba.TotalComputedCost__c;
+	                            }
+	                            else if (PLReportCategory == ODC_Subs) {
+	                                snapshot.CostsODCSUBSForecast__c += ba.TotalComputedCost__c;
+	                            }
+	                            else if (PLReportCategory == ODC_Contingency) {
+	                                snapshot.ContingencyForecast__c += ba.TotalComputedCost__c;
+	                            }
+	                            else if (PLReportCategory == 'Labor') {
+	                                snapshot.LaborForecast__c += ba.TotalComputedCost__c;
+	                            }
+	                            else if (PLReportCategory == 'Fringe') {
+	                                snapshot.FringeForecast__c += ba.TotalComputedCost__c;
+	                            }
+	                            else if (PLReportCategory == 'Overhead') {
+	                                snapshot.OverheadForecast__c += ba.TotalComputedCost__c;
+	                            }
+	                        }
+	                    }
+	                    else if (bStatus == 'Estimate') { // Draft
+	                        if (PLReportCategory == ODC_Exps) {
+	                            snapshot.CostsODCEXPSDraft__c += ba.TotalComputedCost__c;
+	                        }
+	                        else if (PLReportCategory == ODC_Subs) {
+	                            snapshot.CostsODCSUBSDraft__c += ba.TotalComputedCost__c;
+	                        }
+	                        else if (PLReportCategory == ODC_Contingency) {
+	                            snapshot.ContingencyDraft__c += ba.TotalComputedCost__c;
+	                        }
+	                        else if (PLReportCategory == 'Labor') {
+	                            snapshot.LaborDraft__c += ba.TotalComputedCost__c;
+	                        }
+	                        else if (PLReportCategory == 'Fringe') {
+	                            snapshot.FringeDraft__c += ba.TotalComputedCost__c;
+	                        }
+	                        else if (PLReportCategory == 'Overhead') {
+	                            snapshot.OverheadDraft__c += ba.TotalComputedCost__c;
+	                        }
+	                    }
                     }
-    
+                    
                     projectIdToSnapshotMap.put(projId, snapshot);
                 }
             }
@@ -1774,14 +1806,13 @@ public class ECO_Service_ProjectSnapshots {
             Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap) {
         try {
             List<AggregateResult> results = 
-                [SELECT SUM(Quantity__c) Hours, ProjectTask__r.pse__Project__r.Id projectId
+                [SELECT SUM(Quantity__c) Hours, ProjectTask__r.pse__Project__r.Id projectId, 
+                 BudgetResource__r.BudgetHeader__r.OriginalBudget__c, BudgetResource__r.BudgetHeader__r.Status__c
                  FROM BudgetAssignment__c
                  WHERE BudgetResource__r.ExpenditureResourceType__c = 'LAB'
-                 AND (BudgetResource__r.BudgetHeader__r.OriginalBudget__c=true
-                 OR BudgetResource__r.BudgetHeader__r.Status__c = 'Forecast' 
-                 OR BudgetResource__r.BudgetHeader__r.Status__c = 'Approved') 
                  AND ProjectTask__r.pse__Project__r.Id IN : projectIds
-                 GROUP BY ProjectTask__r.pse__Project__r.Id];
+                 GROUP BY ProjectTask__r.pse__Project__r.Id, BudgetResource__r.BudgetHeader__r.OriginalBudget__c, 
+                 	BudgetResource__r.BudgetHeader__r.Status__c];
 
             for (AggregateResult ar : results)
             {
@@ -1789,10 +1820,30 @@ public class ECO_Service_ProjectSnapshots {
                 if (hours != null) {
                     Id projId = (Id) ar.get('projectId');
                     ProjectSnapshot__c snapshot = projectIdToSnapshotMap.get(projId);
-                    snapshot.HoursBudgetOriginal__c = hours;
-                    snapshot.HoursForecast__c = hours;
-                    snapshot.HoursBudget__c = hours;
-                    projectIdToSnapshotMap.put(projId, snapshot);
+                    BudgetHeader__c bHeader = (BudgetHeader__c) ar.get('BudgetResource__r.BudgetHeader__c');
+                	if (bHeader != null) {
+	                    String bStatus = bHeader.status__c;
+	                    Boolean origBudget = bHeader.OriginalBudget__c;
+	                    
+	                    if (origBudget) {
+	                    	snapshot.HoursBudgetOriginal__c += hours;
+	                    }
+	                    
+	                    if (bStatus == 'Approved') {
+	                    	snapshot.HoursBudget__c += hours;
+		                }
+		                else { // Unapproved
+		                    snapshot.HoursUnapproved__c += hours;
+		                    
+		                    if (bStatus == 'Forecast') {
+		                    	snapshot.HoursForecast__c += hours;
+		                    }
+		                    else if (bStatus == 'Estimate') { // Draft
+		                    	snapshot.HoursDraft__c += hours;
+		                    }
+		                }
+                	}
+                	projectIdToSnapshotMap.put(projId, snapshot);
                 }
             }
         }
