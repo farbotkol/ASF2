@@ -340,12 +340,22 @@
 
 						<div id="AddressInput">
 						<apex:pageBlockSection title="Search For Account" columns="2" collapsible="false">
-							<apex:repeat value="{!$ObjectType.Site__c.FieldSets.pse_ClientFinder_Search_Fieldset}" var="FieldsForSearch">
-								<apex:pageBlockSectionItem >
-									<apex:outputLabel value="{!FieldsForSearch.Label}" />
-									<apex:inputField value="{!oSite[FieldsForSearch]}" required="false" />
-								</apex:pageBlockSectionItem>
-							</apex:repeat>
+                            <apex:pageBlockSectionItem HelpText="Enter client name">
+                                <apex:outputLabel value="Account Name" />
+                                <apex:inputText value="{!oSiteSearch.name}" />
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="City/Town" />
+                                <apex:inputText value="{!oSiteSearch.city}" />
+                            </apex:pageBlockSectionItem>
+                             <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="State/Province/Emirate" />
+                                <apex:inputText value="{!oSiteSearch.province}" />
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Country" />
+                                <apex:inputText value="{!oSiteSearch.country}" />
+                            </apex:pageBlockSectionItem>   
 						</apex:pageBlockSection>
 						</div>
 						<div style="text-align:center;">

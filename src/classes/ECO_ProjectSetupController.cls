@@ -393,20 +393,29 @@ public with sharing class ECO_ProjectSetupController {
             
             map<string, Site__c> mapUniqueSites = new map<string, Site__c>();
             mapSearchSites = new map<id, Site__c>();
+            list<Site__c> nullSearchSites = new list<site__c>();
 
             for (Site__c oSearchSite: lstSitesSearchResults){
-                if(mapUniqueSites.containskey(oSearchSite.OracleCustomerID__c)){
-                    if(oSearchSite.CustomerSiteUseCode__c == 'BILL_TO') {
+                if(oSearchSite.OracleCustomerID__c == null){
+                    nullSearchSites.add(oSearchSite);
+                } else {
+                    if(mapUniqueSites.containskey(oSearchSite.OracleCustomerID__c)){
+                        if(oSearchSite.CustomerSiteUseCode__c == 'BILL_TO') {
+                            mapSearchSites.put(oSearchSite.id, oSearchSite);
+                            mapUniqueSites.put(oSearchSite.OracleCustomerID__c, oSearchSite);
+                        }
+                    } else {
                         mapSearchSites.put(oSearchSite.id, oSearchSite);
                         mapUniqueSites.put(oSearchSite.OracleCustomerID__c, oSearchSite);
                     }
-                } else {
-                    mapSearchSites.put(oSearchSite.id, oSearchSite);
-                    mapUniqueSites.put(oSearchSite.OracleCustomerID__c, oSearchSite);
                 }
             }
 
             lstSitesSearchResults = mapUniqueSites.values();
+
+            if(nullSearchSites.size() >0){
+                lstSitesSearchResults.addall(nullSearchSites);
+            }
 
 
         }
@@ -591,17 +600,15 @@ public with sharing class ECO_ProjectSetupController {
 
     public PageReference Step2(){
 
-        for (SiteWrapper oSiteWrapper: lstSites) {
-            if(oSiteWrapper.booIsBilling && oSiteWrapper.billingContact == null){
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'You must select a contact for each billing client.');
-                ApexPages.addMessage(oMsg);  
-                return null; 
-            }
+        if(canContinue()){
+                tab2enabled = true;
+                tabState = 'name2';    
+                return null;   
+        } else {
+                return null;
         }
 
-        tab2enabled = true;
-        tabState = 'name2';    
-        return null;    
+ 
     }    
 
 
@@ -913,6 +920,39 @@ public with sharing class ECO_ProjectSetupController {
         return null;
     }*/
 
+    public boolean canContinue()
+    {
+        boolean bIsValid = true;
+        boolean noEmptyCB = true;
+        Decimal dSiteTotal = 0;
+
+        for (SiteWrapper oSiteWrapper:lstSites)
+        {
+            Decimal dPercentage = ECO_Utils_String.NullCheck(oSiteWrapper.contributions); 
+            dSiteTotal += dPercentage;
+
+            if(oSiteWrapper.booIsBilling && oSiteWrapper.billingContact == null){
+                noEmptyCB = false;
+            }
+        }
+
+        if(!noEmptyCB)
+        {
+            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'You must select a contact for each billing client.');
+            ApexPages.addMessage(oPageMessage);
+            bIsValid = false;
+        }
+
+        if(dSiteTotal != 100)
+        {
+            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Sites does not total 100%.');
+            ApexPages.addMessage(oPageMessage);
+            bIsValid = false;
+        }       
+        
+        return bIsValid;          
+    }
+
     public boolean isValid()
     {
         boolean bIsValid = true;
@@ -925,7 +965,7 @@ public with sharing class ECO_ProjectSetupController {
             Decimal dPercentage = ECO_Utils_String.NullCheck(oSiteWrapper.contributions); 
             dSiteTotal += dPercentage;
 
-            if(oSiteWrapper.billingContact == null){
+            if(oSiteWrapper.booIsBilling && oSiteWrapper.billingContact == null){
                 noEmptyCB = false;
             }
         }
