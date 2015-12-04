@@ -16,6 +16,63 @@
 		}
 	</style>
     
+    <style>
+		.largerTextBox {
+			width: 85%;
+		}
+		
+		div.attachmentModal {
+			//display: none;
+		}
+		
+		.percentInput{
+		  float: right;
+		  z-index: 999;
+		  margin-right: -45px;
+		  margin-top: 1px;
+		  color: #A7A7A7;
+		}
+		
+		.smallInput {
+			width: 46px;
+			float:right;
+			line-height:14px;
+			height: 19px;
+		}
+		.fileList
+		{
+			padding-top: 5px;
+			padding-bottom: 5px;
+		}		
+		
+  		.attachNewFile{
+  			visibility: hidden;
+  		}	
+        
+        .customHelpText{
+            padding:7px;
+            border:1px solid #85B3CE;
+            min-height:30px;
+            display:block;
+            width:auto;
+            margin:0;
+        //  background-color:#C6E4EE;
+            background-color:#A2D3F1;
+            background-repeat:no-repeat;
+            border-radius:4px;
+        }
+        
+        .customHelpBody{
+            display:block;
+            color:#;
+            max-width:95%;
+        }
+        
+        .mouseOverInfoOuter{
+        	text-align:left;
+        }
+	</style>
+    
 	<apex:form >
 		<script type='text/javascript'>
 			var doSync = "false";
@@ -221,8 +278,19 @@
 		</apex:outputPanel>
 		
 		<apex:pageMessage summary="The purchase order is pending approval." severity="INFO" rendered="{!pendingApproval}" />
+		<div class="customHelpText">
+            <div class="customHelpBody">
+                The raising of a Purchase Order for a Sub Contract or Vendor Agreement enables tracking of the committed costs against a project, as well as complance with finance policies regarding the capturing of purchase committments within Oracle.  To raise a PO, complete the following steps:<br/>
+                1.  Select the Vendor and input the minimum fields required, the hit "Save Purchase Order"<br/>
+                2.  Add as many PO Line Items as required<br/>
+                3.  Submit for approval.  Once approve d the PO will be created in Oracle and an Oracle PO Nubmer provided - this number should be given to the sub/vendor to quote on their subsequent invoices.<br/><br/>
+	
+					Please note - Advantage should be used for the purchase of indirect materials., the ePM Purchase Order functionality should only be used in relation to project specific subs or specialised vendor services/supplies.
 
+            </div>
+        </div>
 		<apex:pageBlock rendered="{!!hideEverything}">
+            
             <apex:pageBlockButtons location="top">
                 <!-- creates purchase order header -->
                 <apex:commandButton value="{!savePOBtnValue}" action="{!updatePurchaseOrder}" rendered="{!canEditHeader}" reRender="msg" id="btnSavePOHeader" />
@@ -262,48 +330,34 @@
                         <apex:tab label="Purchase Order Summary" id="tabPOSummary">
                             <apex:pageBlock >
                                 <apex:pageBlockSection columns="2" title="Purchase Order Information" id="pbsPOHeader">
-                                    <!--
-                                    <apex:pageBlockSectionItem rendered="{!allowNewPOLineItems}">
+                                    <!--apex:pageBlockSectionItem rendered="{!allowNewPOLineItems}">
                                         <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Name.Label}" for="PO_NAME" />
                                         <apex:outputField value="{!poheader.Name}" id="PO_NAME" />
-                                    </apex:pageBlockSectionItem>
-                                    -->
+                                    </apex:pageBlockSectionItem-->
+                                    
                                     <apex:pageBlockSectionItem rendered="{!allowNewPOLineItems}">
                                         <apex:outputLabel value="Purchase Order Number" for="PO_NUMBER" />
                                         <apex:outputField value="{!poHeader.OraclePurchaseOrderNumber__c}" id="PO_NUMBER" />							
                                     </apex:pageBlockSectionItem>
             
                                     <apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Project__c.Label}" for="pohProject"/>
+                                        <apex:outputPanel >
+                                            <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Project__c.Label}" for="pohProject"/>                    
+                                            <c:ECO_HelpIcon helpText="This is the project this PO relates to.  This will be automatically determined by how you access/create the PO." />
+                                        </apex:outputPanel>                                       
                                         <apex:outputField value="{!poHeader.Project__c}" id="pohProject" />
                                     </apex:pageBlockSectionItem>
-                            
-                                    <apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Agreement__c.Label}" for="pohAgreement"/>
-                                        <!--
-                                        <apex:outputField value="{!poHeader.Agreement__c}" id="pohAgreement" />
-                                        -->
-                                        <!-- note used allowNewPOLineItems prev-->
-            
-                                        <apex:outputPanel id="pohAgreementSec">
-                                            <apex:selectList value="{!poHeader.Agreement__c}" size="1" id="pohAgreement" rendered="{!canEditHeader}">
-                                                <apex:selectOptions value="{!optAgreements}"/>
-                                            </apex:selectList>
-                                            <apex:outputText value="{!agreementIdentifier}" rendered="{!!canEditHeader}"/>
-                                        </apex:outputPanel>							
-                                    </apex:pageBlockSectionItem>	
     
                                     <apex:pageBlockSectionItem rendered="{!allowNewPOLineItems}">
-                                        <!--<apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Status__c.Label}" for="pohStatus" />
-                                        <apex:outputField value="{!poHeader.Status__c}" id="pohStatus" />-->							
+                                        <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Status__c.Label}" for="pohStatus" />
+                                        <apex:outputField value="{!poHeader.Status__c}" id="pohStatus" />							
                                     </apex:pageBlockSectionItem>
-                                    <!--
-                                    <apex:pageBlockSectionItem >
+                                    
+                                    <!--apex:pageBlockSectionItem >
                                         <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.CarryingOutOrganization__c.Label}" for="pohCarryingOutOrganization" />
                                         <apex:outputField value="{!poHeader.CarryingOutOrganization__c}" id="pohCarryingOutOrganization" />							
                                     </apex:pageBlockSectionItem>
-                                    -->	
-                                    <!--
+                                    
                                     <apex:pageBlockSectionItem >
                                         <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.CarryingOutOrganizationOrgId__c.Label}" for="pohSarryingOutOrganizationOrgId" />
                                         <apex:outputField value="{!poHeader.CarryingOutOrganizationOrgId__c}" id="pohSarryingOutOrganizationOrgId" />						
@@ -312,11 +366,13 @@
                                     <apex:pageBlockSectionItem >
                                         <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.OUID__c.Label}" for="pohOUID"/>
                                         <apex:outputField value="{!poHeader.Project__r.OUID__c}" id="pohOUID" />
-                                    </apex:pageBlockSectionItem>
-                                    -->
+                                    </apex:pageBlockSectionItem-->                                    
     
                                     <apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="Sub / Vendor" for="pohProjSite"/>
+                                        <apex:outputPanel >
+                                            <apex:outputLabel value="Sub / Vendor" for="pohProjSite"/>                    
+                                            <c:ECO_HelpIcon helpText="Choose a Sub/Vendor to raise the PO against.  Subs/Vendors must be added to the project team via the Subs & Vendors page to be available for selection here." />
+                                        </apex:outputPanel>                                        
                                         <apex:outputPanel >
                                             <div class="requiredInput">
                     							<div class="requiredBlock"></div>
@@ -327,43 +383,71 @@
                                             </div>
                                         </apex:outputPanel>				
                                     </apex:pageBlockSectionItem>
+                                    
+                                    <apex:pageBlockSectionItem >
+                                        <apex:outputPanel >
+                                            <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Agreement__c.Label}" for="pohAgreement"/>                   
+                                            <c:ECO_HelpIcon helpText="Select the agreement the PO relates to (e.g. the Subs agreement created 
+                                                                      in the Agreements page).  In the case of vendors where no specific agreement 
+                                                                      has been entered into , this field can be left blank" />
+                                        </apex:outputPanel>                                        
+                                        <!--apex:outputField value="{!poHeader.Agreement__c}" id="pohAgreement" /-->                                        
+                                        <!-- note used allowNewPOLineItems prev-->            
+                                        <apex:outputPanel id="pohAgreementSec">
+                                            <apex:selectList value="{!poHeader.Agreement__c}" size="1" id="pohAgreement" rendered="{!canEditHeader}">
+                                                <apex:selectOptions value="{!optAgreements}"/>
+                                            </apex:selectList>
+                                            <apex:outputText value="{!agreementIdentifier}" rendered="{!!canEditHeader}"/>
+                                        </apex:outputPanel>							
+                                    </apex:pageBlockSectionItem>
             
                                     <apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="Currency" for="pohCurrencyIsoCode"/>
+                                        <apex:outputPanel >
+                                            <apex:outputLabel value="Currency" for="pohCurrencyIsoCode"/>                    
+                                            <c:ECO_HelpIcon helpText="Select the currency for the Purchase Order to be raised in (this would typically 
+                                                                      be the currency of the agreement with the sub/vendor)" />
+                                        </apex:outputPanel>
                                         <apex:outputPanel >
                                             <apex:inputField value="{!poHeader.CurrencyIsoCode}" id="pohCurrencyIsoCode" rendered="{!canEditHeader}"/>
                                             <apex:outputText value="{!poHeader.CurrencyIsoCode}" rendered="{!!canEditHeader}"/>
                                         </apex:outputPanel>		
                                     </apex:pageBlockSectionItem>
                             
-                                    <!--
-                                    <apex:pageBlockSectionItem >
+                                    <!--apex:pageBlockSectionItem >
                                         <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.POType__c.Label}" for="pohPOType"/>
                                         <apex:inputField value="{!poHeader.POType__c}" id="pohPOType" />
-                                    </apex:pageBlockSectionItem>
-                                    -->
-            
+                                    </apex:pageBlockSectionItem-->
+                                    
                                     <apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Requestor__c.Label}" for="pohRequestor"/>
                                         <apex:outputPanel >
-                                        <apex:inputField required="true" value="{!poHeader.Requestor__c}" id="pohRequestor" rendered="{!canEditHeader}"/>
-                                        <apex:outputText value="{!poHeader.Requestor__r.Name}" rendered="{!!canEditHeader}"/>
+                                            <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Requestor__c.Label}" for="pohRequestor"/>                   
+                                            <c:ECO_HelpIcon helpText="Search & Select for the name of the Requestor (i.e. person raising the PO).  
+                                                                      This is typically the PM, but may be a task manager, discipline leader who 
+                                                                      has responbility for managing the sub/vendor." />
+                                        </apex:outputPanel>                                        
+                                        <apex:outputPanel >
+                                        	<apex:inputField required="true" value="{!poHeader.Requestor__c}" id="pohRequestor" rendered="{!canEditHeader}"/>
+                                        	<apex:outputText value="{!poHeader.Requestor__r.Name}" rendered="{!!canEditHeader}"/>
                                         </apex:outputPanel>	
                                     </apex:pageBlockSectionItem>
             
                                     <apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.PaymentTerm__c.Label}" for="pohPaymentTerm"/>
-                                        <apex:outputPanel >								
+                                        <apex:outputPanel >
+                                            <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.PaymentTerm__c.Label}" for="pohPaymentTerm"/>                   
+                                            <c:ECO_HelpIcon helpText="Select the payment terms for this Purchase Order.  These may be pre-populated based 
+                                                                      on the default for the sub/vendor selected, but should be updated to reflect the 
+                                                                      agreed terms per the subs contract if required." />
+                                        </apex:outputPanel>
+                                        <apex:outputPanel >
                                             <apex:inputField value="{!poHeader.PaymentTerm__c}" id="pohPaymentTerm" rendered="{!canEditHeader}"/>
                                             <apex:outputText value="{!poHeader.PaymentTerm__c}" rendered="{!!canEditHeader}"/>
                                         </apex:outputPanel>
                                     </apex:pageBlockSectionItem>
-                                    <!--
-                                    <apex:pageBlockSectionItem >
+                                    
+                                    <!--apex:pageBlockSectionItem >
                                         <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Revision__c.Label}" for="pohRevision"/>
                                         <apex:outputField value="{!poHeader.Revision__c}" id="pohRevision" />
-                                    </apex:pageBlockSectionItem>
-                                    -->
+                                    </apex:pageBlockSectionItem-->                                    
                                 </apex:pageBlockSection>
     
                                 <apex:pageBlockSection id="vendorSection" columns="2" title="Sub / Vender Information" rendered="{!allowNewPOLineItems}">
@@ -424,6 +508,12 @@
                                 </apex:pageBlockSection>
                                 
                                 <apex:pageBlockSection columns="1" title="Purchase Order Line Items" rendered="{!allowNewPOLineItems}" id="pbStatus">
+                                    <div class="customHelpText">
+                                        <div class="customHelpBody">
+                                            This section shows all the PO Line Items raised on this PO (a single PO may contain one or many line items).  Click 
+                                            on "Add Purchase Order Line Item " to add new/additional line items.
+                                        </div>
+                                    </div>
                                     <apex:pageBlockSectionItem >
                                         <apex:outputPanel >
                                             <div align="center">
@@ -487,9 +577,10 @@
                                             </apex:column>
                                             <apex:column styleClass="{!if(poLineItem.IsArchived__c == true, 'archive', '')}">
                                                 <apex:facet name="header">Submitted</apex:facet>																			
-                                                <apex:outputText value="{0, date, yyyy-MM-dd}">
+<!--                                                <apex:outputText value="{0, date, yyyy-MM-dd}">
                                                     <apex:param value="{!poLineItem.OracleSyncDatetime__c}" />											
-                                                </apex:outputText>                                                    
+                                                </apex:outputText>  -->
+                                                <c:ECO_DateFormat date="{!poLineItem.OracleSyncDatetime__c}" />
                                             </apex:column>						
                                         </apex:pageBlockTable> 
                                     </apex:pageBlockSectionItem>
@@ -577,16 +668,34 @@
                                 </apex:pageBlockSection>
                                 
                                 <apex:pageBlockSection columns="1" title="Purchase Order Status" rendered="{!allowNewPOLineItems}">
+                                    <div class="customHelpText">
+                                        <div class="customHelpBody">
+                                            This section shows the current status of the PO - the total summary values and a list of the AP 
+                                            Invoices received from the sub/vendor which have been entered into Oracle and allocated against this PO.
+                                        </div>
+                                    </div>
                                     <apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="Total Purchase Order Amount:"/>
-                                        <apex:outputText value="{!totalPurchaseOrderLineAmount}" />
+                                        <apex:outputPanel >
+                                            <apex:outputLabel value="Total Purchase Order Amount:"/>
+                                            <c:ECO_HelpIcon helpText="The Total Amount of the overall PO (this is the sum of the individual line items entered)." />
+                                        </apex:outputPanel>
+                                        <apex:outputText value="{!totalPurchaseOrderLineAmount}"/>
                                     </apex:pageBlockSectionItem>
                                     <apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="Total Allocated Amount:"/>
+                                        <apex:outputPanel >
+                                            <apex:outputLabel value="Total Allocated Amount:"/>
+                                            <c:ECO_HelpIcon helpText="The Toal Amount of all Accounts Payable Invoices that have been matched against or allocated to this 
+                                                                      PO upon entry into Oracle and being chraged to this project.  This does not indicate how much has 
+                                                                      been paid to the sub/vendor.  Refer to the table below for further details  on invoices, including 
+                                                                      payment date." />
+                                        </apex:outputPanel>                                        
                                         <apex:outputText value="{!totalAllocatedAmount}" />
                                     </apex:pageBlockSectionItem>
                                     <apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="Total Remaining Amount:"/>
+                                        <apex:outputPanel >
+                                            <apex:outputLabel value="Total Remaining Amount:"/>
+                                            <c:ECO_HelpIcon helpText="The balance of the PO yet to be allocated against an invoice from the sub/vendor." />
+                                        </apex:outputPanel>                                        
                                         <apex:outputText value="{!totalRemainingAmount}" />
                                     </apex:pageBlockSectionItem>
                                     <apex:pageBlockTable value="{!poStatusList}" var="poStatus">

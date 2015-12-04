@@ -340,7 +340,7 @@ public with sharing class ECO_SubsVendorsController
         for (Schema.FieldSetMember fsmField: SObjectType.Site__c.FieldSets.pse_ClientFinder_Search_Fieldset.getFields()) 
         {
         	System.debug('field path: ' + fsmField.getFieldPath());
-        	if ( recursiveGet(oSite,fsmField.getFieldPath()) != null) 
+        	if ( recursiveGet(oSite,fsmField.getFieldPath()) != null && recursiveGet(oSite,fsmField.getFieldPath()) != '') 
         	{
 
                 strSOQL += fsmField.getFieldPath() + ' LIKE \'%' + recursiveGet(oSite,fsmField.getFieldPath()) + '%\' AND ';
@@ -354,6 +354,7 @@ public with sharing class ECO_SubsVendorsController
         } else {
 
             string userOrgID = userOrg.OUID__c;
+            System.debug('userOrgID: ' + userOrgID);
             strSOQL += ' AND OUID__c =: userOrgID  LIMIT ' + sLimit;
         }
 

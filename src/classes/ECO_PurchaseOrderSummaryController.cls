@@ -1,4 +1,4 @@
-public without sharing class ECO_PurchaseOrderSummaryController{
+public without sharing class ECO_PurchaseOrderSummaryController {
 
 	public class POException extends Exception {}
 
@@ -103,7 +103,6 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 	public Boolean debugMode {get; private set;}
 
 	public Boolean canEditHeader {get; private set;}
-
 
 	public Boolean hasBeenApproved {get; private set;}
 
@@ -254,8 +253,7 @@ public without sharing class ECO_PurchaseOrderSummaryController{
                         allowPOCloseout = true;	
                         allowPOCancel = false;
                     }
-                }
-                
+                }                
             }   			
     		//}else{
     		//	allowRequestSubmit = false;    			
@@ -307,7 +305,6 @@ public without sharing class ECO_PurchaseOrderSummaryController{
      	validDistributions = new  List<Distribution__c>();
 
 		if(purchaseOrderId != null) {
-
 			sJSON = ECO_Service_PurchaseOrders.createPurchaseOrderMessageWrapperJSON(purchaseOrderId, null);
 	     	poHeader = ECO_Service_PurchaseOrders.GetPurchaseOrder(purchaseOrderId);
 
@@ -374,13 +371,11 @@ public without sharing class ECO_PurchaseOrderSummaryController{
         }
     	return result;
     }
-
    
     public void refreshJSON(){
     	sJSON = ECO_Service_PurchaseOrders.createPurchaseOrderMessageWrapperJSON(purchaseOrderId, messageQueueId);
     	//sJSON = 'messageQueueId = ' + messageQueueId;
-    }
-	
+    }	
 
     public void getDefaultPaymentTermsForVendor(){
         System.debug('---Entering getDefaultPaymentTermsForVendor');
@@ -395,7 +390,6 @@ public without sharing class ECO_PurchaseOrderSummaryController{
         optAgreements = getProjectAgreements();
         System.debug('---Exiting getDefaultPaymentTermsForVendor');
     }
-
     
     private ProjectTeamMember__c getProjectManager(){
     	ProjectTeamMember__c result = null;
@@ -414,7 +408,6 @@ public without sharing class ECO_PurchaseOrderSummaryController{
     	}
     	return result;
     }
-
 
     private List<VendorSite__c> vendorSites;
 
@@ -453,7 +446,7 @@ public without sharing class ECO_PurchaseOrderSummaryController{
     											FROM
                                                 	Agreement__c
     											WHERE
-                                                	Project__c = :projectId AND VendorSite__c =: selProjectSiteId];
+                                                	Project__c = :projectId AND VendorSite__c =: selProjectSiteId AND VendorSite__c != Null];
 
     	results.add(new SelectOption('', '-- Choose Agreement --'));											
 
@@ -494,8 +487,7 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 			validationMsgSummary = 'The purchase order cannot be synced due to missing information on the purchase order or related items:<ul>' + poHeaderMsg + poLineItemMsg + distributionMsg + '</ul>';
 		}else{
 			showValidationMsg = false;
-		}
-		
+		}		
 	}
 
 /*
@@ -533,14 +525,12 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 	}
 */
 
-
 	private Boolean isPurchasedOrderApproved(){
 		Boolean result = false;
-		List<ProcessInstance> approvalProcess = [SELECT Status, 
-													SystemModstamp 
-												FROM ProcessInstance
-												WHERE TargetObjectId = :poHeader.Id
-												ORDER BY SystemModstamp DESC];
+		List<ProcessInstance> approvalProcess = [SELECT Status, SystemModstamp 
+												 FROM ProcessInstance
+												 WHERE TargetObjectId = :poHeader.Id
+												 ORDER BY SystemModstamp DESC];
 		if(!approvalProcess.isEmpty()){
 			if(approvalProcess.get(0).Status.equalsIgnoreCase('Approved')){
 				result = true;
@@ -565,19 +555,15 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 			result = false;
 		}
 		return result;
-	}
-
-	
+	}	
 
 	private Boolean savePurchaseOrder(){
 		Boolean saveSuccessful = false;
 
-		try{
-
-            if(selProjectSiteId == null){
+		try {
+            if(selProjectSiteId == null) {
                 ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'The Vendor Site has not been selected and must be picked before saving the Purchase Order.'));
                 return saveSuccessful;
-
             }
 
 			poHeader.VendorSite__c = Id.valueOf(selProjectSiteId);
@@ -585,45 +571,41 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 			List<ProjectTeamMember__c> projectManagers = ECO_Service_ProjectSync.getProjectManagerForProject(projectId);
 			if(!projectManagers.isEmpty()){
 				poHeader.ProjectManager__c = projectManagers.get(0).Contact__r.pse__Salesforce_User__c;
-
-				//poHeader.ProjectManager__c = projectManagers.get(0).Contact__r.User__c;
+				// poHeader.ProjectManager__c = projectManagers.get(0).Contact__r.User__c;
 			}
 			
-			if(hasSyncHistory && !syncHistory.isEmpty()){
+			if(hasSyncHistory && !syncHistory.isEmpty()) {
 				poHeader.ActionFlag__c = 'U';
-			}else{
+			}else {
 				poHeader.ActionFlag__c = 'C';
 			}
-			if(poHeader.Id == null){					
+			if(poHeader.Id == null) {					
 				insert poHeader;
 				purchaseOrderId = poHeader.Id;						
 											
-			}else{					
+			}else {					
 				update poHeader;
 			}
 
-            if(poHeader.VendorSite__c != null){
+            if(poHeader.VendorSite__c != null) {
                 allowNewPOLineItems = true;
             }
 
 			saveSuccessful = true;
-		}catch(Exception e){
+		}catch(Exception e) {
 			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'An error has occurred while updating the project! ' + e.getMessage()));
 		}
 
 		return saveSuccessful;
 	}
 
-
-
-
-
-
-	public PageReference saveAndSubmitForApproval(){
+	public PageReference saveAndSubmitForApproval() {
 		isApprovedDoSyncNow = false;
 
 		PageReference pageRef = null;
-
+        
+        Id currUserId = UserInfo.getUserId();
+        
 		//default status to approved since trigger will auto approve if pm, if not approval request will fire setting status to Pending		
 		//if(poHeader.ProjectManager__c == UserInfo.getUserId()){
 			//poHeader.Status__c = 'APPROVED';
@@ -631,52 +613,76 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 		//	poHeader.Status__c = 'Pending';
 		//}
 		
-		pse__Proj__c project = [SELECT Id, 
-    									pse__Project_Manager__c, 
-    									pse__Project_Manager__r.pse__Salesforce_User__c,
-    									OwnerId
-    								FROM pse__Proj__c	
-    								WHERE Id = :projectId];
+		pse__Proj__c project = [SELECT 	
+                                	Id, 
+    								pse__Project_Manager__c, 
+    								pse__Project_Manager__r.pse__Salesforce_User__c,
+                                	ProjectApprover__r.pse__Salesforce_User__c,
+    								OwnerId
+    							FROM 
+                                	pse__Proj__c	
+    							WHERE 
+                                	Id = :projectId];
 
-		if(savePurchaseOrder()){
-			
-			if(poHeader.CancelFlag__c){
+		if(savePurchaseOrder()) {			
+			if(poHeader.CancelFlag__c) {
 				poIsClosedOutOrClosedOut = true;
 			}
 
-			if(useApprovalProcess){
-				Boolean isPM = false;
-				Id currUserId = UserInfo.getUserId();
+			if(useApprovalProcess) {
+				Boolean isPM = false;				
 				
-				if(project != null){
-					if(project.pse__Project_Manager__r.pse__Salesforce_User__c != null){
-						if(project.pse__Project_Manager__r.pse__Salesforce_User__c == currUserId){
+				if(project != null) {
+					if(project.pse__Project_Manager__r.pse__Salesforce_User__c != null) {
+						if(project.pse__Project_Manager__r.pse__Salesforce_User__c == currUserId) {
 							isPM = true;
 						}
-					}else if(project.OwnerId == currUserId){	//if no pm is set it's assumed project owner is pm
+					}else if(project.OwnerId == currUserId) {	// if no pm is set it's assumed project owner is pm
 						isPM = true;
 					}
 				}
 				system.debug('isPM = ' + isPM);
 
-				if(isPM){
-
+				if(isPM) {
 					system.debug('pm is user - attempting autoapprove');
-
-					try{
-						autoApprovePurchaseOrder();	//if requestor is pm then the approval is submitted and auto approved
-						poHeader.Status__c = 'APPROVED';
-						update poHeader;
-						isApprovedDoSyncNow = true;
-
+                    if(project.ProjectApprover__r.pse__Salesforce_User__c != null) {
+                        POHeader__c poheader = [SELECT Id, ProjectManager__c FROM POHeader__c WHERE Id =: poHeader.Id];
+                        poheader.ProjectManager__c = project.ProjectApprover__r.pse__Salesforce_User__c;
+                        update poheader;
+                    }
+                    					
+                    // Create an approval request for the account
+                    Approval.ProcessSubmitRequest req1 = new Approval.ProcessSubmitRequest();
+                    req1.setComments('Submitting request for approval.');
+                    req1.setObjectId(poHeader.Id);
+                    
+                    // Submit on behalf of a specific submitter
+                    req1.setSubmitterId(currUserId); 
+                    /*if(project.ProjectApprover__r.pse__Salesforce_User__c != null) {
+                        List<Id> approverIds = new List<Id>();
+                        approverIds.add(project.ProjectApprover__r.pse__Salesforce_User__c);
+                        System.debug('approverIds:' + approverIds);
+                        req1.setNextApproverIds(approverIds);
+                    } */                   	
+                    
+                    // Submit the record to specific process and skip the criteria evaluation
+                    req1.setProcessDefinitionNameOrId('EcoPurchaseOrder');
+                    
+                    // Submit the approval request for the account
+                    Approval.ProcessResult result = Approval.process(req1);
+                    
+                    return null;
+					/*try{                        
+						//autoApprovePurchaseOrder();	//if requestor is pm then the approval is submitted and auto approved
+						//poHeader.Status__c = 'APPROVED';
+						//update poHeader;
+						//isApprovedDoSyncNow = true;
 					}catch(Exception e){
 						ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'An error has occurred while approving the purchase order! ' + e.getMessage()));
-					}
-									
-				}else if(isApprovedFromApprovalProcess()){	
+					}	*/								
+				}else if(isApprovedFromApprovalProcess()){
 					isApprovedDoSyncNow = true;
-				}else{	
-					
+				}else{					
 					system.debug('pm is not user - sending for approval');
 
 					/*String retUrl = '/apex/ECO_PurchaseOrderSummary?projectId=' + projectId + '&id=' + poHeader.Id;
@@ -714,9 +720,7 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 				}
 			}else{
 				isApprovedDoSyncNow = true;
-			}
-			
-					
+			}					
 		}
 		
 		return pageRef;
@@ -737,10 +741,9 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 		return result;
 	}
 
-
-	private void autoApprovePurchaseOrder(){
+	/*private void autoApprovePurchaseOrder(){
 		ECO_Service_PurchaseOrders.submitForApproval(poHeader, UserInfo.getUserId());
-	}
+	}*/
 
 	public PageReference updatePurchaseOrder(){
 		PageReference pageRef = null;
@@ -748,16 +751,12 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 				pageRef = new PageReference('/apex/ECO_PurchaseOrderSummary');
 				pageRef.getParameters().put('projectId', projectId);
 				pageRef.getParameters().put('id', poHeader.Id);
-				pageRef.setRedirect(true);
-			
+				pageRef.setRedirect(true);			
 		}
 		return pageRef;	
 	}
-
-
-
+    
 	public void closeOutPurchaseOrder(){
-
 		try{
 			poHeader.Status__c = 'CLOSEOUT';
 			update poHeader;
@@ -767,13 +766,11 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 		}catch(Exception e){
 			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.WARNING, 'An error has occurred while updating the purchase order: ' + e.getMessage()));
 		}
-
 	}
 
 	public Boolean poIsClosedOutOrClosedOut {get; private set;}
 
 	public void cancelPurchaseOrder(){
-
 		poHeader.CancelFlag__c = true;
 		saveAndSubmitForApproval();
 		/*
@@ -809,12 +806,10 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 		validatedAndDisplayWarnings();
 	}
 
-
 	public class syncHistoryHelper {
 		public String syncLocalDateTime {get;set;}
 		public IntegrationMessageQueue__c msgQueue {get;set;}
 	}
-
 	
     public void initiateOracleSyncRequest(){
     	messageQueueId = ECO_Service_PurchaseOrders.createMessageQueueForRequest(poHeader.Id, messageQueueJobName);
@@ -824,8 +819,6 @@ public without sharing class ECO_PurchaseOrderSummaryController{
     }
 
     public void executeOracleSyncRequest(){
-    	
-
     	syncAttemptResult = '';
 		//sJSON = ECO_Service_PurchaseOrders.createPurchaseOrderMessageWrapperJSON(purchaseOrderId, messageQueueId);
     	try{
@@ -837,7 +830,6 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 	    	system.debug('endpoint url = ' + url);
 
 			String resp = '';
-
 		
 			resp = ECO_Service_PurchaseOrders.initiateOracleSyncRequest(purchaseOrderId, url, messageQueueId);
 		
@@ -865,7 +857,6 @@ public without sharing class ECO_PurchaseOrderSummaryController{
     	List<IntegrationMessageQueue__c> msgQueueResults = [SELECT Id, Status__c, SuccessMessage__c, ErrorMessage__c 
     												FROM IntegrationMessageQueue__c
     												WHERE Id = :messageQueueId];
-
     	
     	if(msgQueueResults.isEmpty()){
 			//ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Unable to find message queue record for this request!'));
@@ -873,10 +864,7 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 			syncErrorOccurred = true;
 		}else{
 			IntegrationMessageQueue__c msgQueueResult = msgQueueResults.get(0);
-
-
 			/*
-
 			if(String.isEmpty(responseMessage)){
 	    		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'Oracle Number was not returned from successful request!'));
 	    		msgQueueResult.Status__c = 'Error';
@@ -916,28 +904,20 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 	    			result = 'po number returned is non-numeric: ' + poNumber;
 	    			syncErrorOccurred = true;
 	    		}
-	    		*/
-	    		
-				
+	    		*/			
 	    	}else{
 	    		result = msgQueueResult.ErrorMessage__c;
 	    		syncErrorOccurred = true;
-	    	}
-
-	    	
+	    	}	    	
 	    }
     	
     	system.debug('checkResults result = ' + result);
     	
     	return result;
-    }
-    
+    }    
 
-    public void doRequest(){
-
-
-    }
-
+    /*public void doRequest(){
+    }*/
 
     private String checkForEmpty(String stringIn, String fieldLabel){
     	String result = '';
@@ -947,7 +927,6 @@ public without sharing class ECO_PurchaseOrderSummaryController{
     	return result;
     }
 
-
     public PageReference returnToProject(){
     	PageReference pageRef = new PageReference('/' + projectId);
     	if(isFromAgreement || projectId == null){
@@ -956,7 +935,6 @@ public without sharing class ECO_PurchaseOrderSummaryController{
     	pageRef.setRedirect(true);
     	return pageRef;
     }
-
 
     private void generateSyncHistory(){
     	if(poHeader.Id != null){
@@ -989,11 +967,8 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 		    if(!requestFailures.isEmpty()){
 		    	hasRequestFailures = true;
 		    	numFailedAttemptedSyncs = requestFailures.size();
-		    }
-
-		
+		    }		
     	}
-
 	}
 
     public class nonSyncItem{
@@ -1024,8 +999,7 @@ public without sharing class ECO_PurchaseOrderSummaryController{
   					invalidPOLineItems.add(badItem);  		
     			}else{
     				validPOLineItems.add(poLineItem);
-    			}
-    			
+    			}    			
     		}
     	}
 		numValidPOLineItems = validPOLineItems.size();
@@ -1036,8 +1010,7 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 		if(!invalidPOLineItems.isEmpty()){
 			allowRequestSubmit = false;
 			results += '<li>' + numInvalidPOLineItems + ' PO Line Items failed validation. See the PO Line Items section below for details.</li>';					
-			selectedPOLineItemTab = 'invalidPOLineItems';							
-				
+			selectedPOLineItemTab = 'invalidPOLineItems';			
 		}
 
 		validPOLineItemLimitMsg = '(' +numValidPOLineItems + ' records)';
@@ -1052,7 +1025,7 @@ public without sharing class ECO_PurchaseOrderSummaryController{
     	return results;
     }	
 
-    public PageReference SimulateProcessedByOracle(){
+    public PageReference SimulateProcessedByOracle() {
 
     	poHeader.OraclePurchaseOrderId__c = '654321';
     	update poHeader;
@@ -1061,8 +1034,7 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 		pageRef.getParameters().put('projectId', projectId);
 		pageRef.getParameters().put('id', poHeader.Id);
 		pageRef.setRedirect(true);
-		return pageRef;	
-    	
+		return pageRef;    	
     }
 
     public void SimulateInvoicedByOracle(){
@@ -1072,9 +1044,7 @@ public without sharing class ECO_PurchaseOrderSummaryController{
     	poStatus.APPaidDate__c = Date.today();
     	insert poStatus;
     }
-
-
-
+    
     private String generateProgressBar(Integer currentPosition, String statusMsg, Boolean isError){
     	if(isError){
     		progressErrors += '<font color="red">' + statusMsg + '</font><br/>';
@@ -1094,8 +1064,7 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 				html += '<td width="20px" height="10px" style="background-color:green;"><span title="' + tdTitle + '"><font color="green">.....</font></span></td>';
     		}else{
     			html += '<td  width="20px" height="10px" >&nbsp</td>';
-    		}   		
-
+    		}
     	}
     	html += '</tr></table>';
     	html += '<br/>';
@@ -1145,7 +1114,6 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 	}
 
     public void sendPOSyncRequest_complete(){
-
 	    //fakeOracleProjectSyncRequest();
 	    executeOracleSyncRequest();
 	    //syncProgressMsg = syncAttemptResult;
@@ -1178,12 +1146,9 @@ public without sharing class ECO_PurchaseOrderSummaryController{
 		    showPollingMsg = true;
 			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM, generateProgressBar(5, syncProgressMsg, false)));
 			validatedAndDisplayWarnings();
-			hasSyncHistory = true;
-			
+			hasSyncHistory = true;			
 		}	   
 	}
-
-
 
 	public void checkIfSyncHasBeenProcessed(){
     	pollMessageQueue = true;
@@ -1212,7 +1177,6 @@ public without sharing class ECO_PurchaseOrderSummaryController{
     		pollingMessageQueueMsg = 'Checking if project has been processed in <span id="pollingTimer">10</span> seconds...';
     		pollingMessageQueueMsgBottom = 'Checking if project has been processed in <span id="pollingTimerBottom">10</span> seconds...';
     	}
-
     }
     
     public PageReference deletePurchaseOrder() {
