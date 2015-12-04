@@ -371,8 +371,8 @@ public with sharing virtual class ECO_ProjectReviewsController
 		ECO_Service_ProjectSnapshots projectSnapshotService = new ECO_Service_ProjectSnapshots(theProject.Id);
 		ProjectSnapshot__c projectSnapshot = projectSnapshotService.getProjectSnapshot(DateTime.now());
 		projectSnapshot.ProjectReview__c = oProjectReview.Id;
-		projectSnapshot.Project__c = oProjectReview.Project__c;
-		insert projectSnapshot;
+		//projectSnapshot.Project__c = oProjectReview.Project__c;
+		update projectSnapshot;
 		upsert lKPI_Results;
 		//return SaveAll();
 		
@@ -400,7 +400,7 @@ public with sharing virtual class ECO_ProjectReviewsController
 	{
 		if(theProject == null)
 		{
-			String query = 'SELECT Id, ProjectNumber__c, OwnerId, pse__Stage__c, pse__Opportunity__c, OpportunityName__c, pse__End_Date__c, CarryingOutOrganizationFormula__c, PercentageMargin__c, WeightedNSR__c, ProjectApprover__c, pse__Start_Date__c, RecordType.Name, CarryingOutOrganization__c, CarryingOutOrganization__r.Region__c, pse__Project_Manager__c, NetServicesRevenue__c, ProjectOwningOrg__c, TotalMargin__c, PrimaryEndClient__c, PrimaryEndClientName__c, TotalBidBudget__c, PrimaryBillingClient__c, PrimaryBillingClientName__c';
+			String query = 'SELECT Id, ProjectNumber__c, TotalApprovedRevenue__c, OwnerId, pse__Stage__c, pse__Opportunity__c, OpportunityName__c, pse__End_Date__c, CarryingOutOrganizationFormula__c, PercentageMargin__c, WeightedNSR__c, ProjectApprover__c, pse__Start_Date__c, RecordType.Name, CarryingOutOrganization__c, CarryingOutOrganization__r.Region__c, pse__Project_Manager__c, NetServicesRevenue__c, ProjectOwningOrg__c, TotalMargin__c, PrimaryEndClient__c, PrimaryEndClientName__c, TotalBidBudget__c, PrimaryBillingClient__c, PrimaryBillingClientName__c';
 			for(Schema.FieldSetMember f : getCustomProjSetupFields())
 			//for(Schema.FieldSetMember f : getCustomProjFields())
 			{

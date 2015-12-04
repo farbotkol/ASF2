@@ -8,6 +8,10 @@ public with sharing class ECO_BudgetHeaderController {
 	public ECO_DTO_BudgetTask totalRow {get; set;}
     
     public String projectCurrency {get; set;}
+    public String laborPage {get; set;}
+    public String subPage {get; set;}
+    public String odcPage {get; set;}
+    public String contingencyPage {get; set;}
     
     public pse__Proj__c theProject { get; set; }
 
@@ -24,7 +28,20 @@ public with sharing class ECO_BudgetHeaderController {
 
 		reload();
         
-        BudgetHeader__c budgetHeader = [SELECT Id, Project__c FROM BudgetHeader__c WHERE Id =: headerId];
+        BudgetHeader__c budgetHeader = [SELECT Id, Project__c, RecordType.DeveloperName FROM BudgetHeader__c WHERE Id =: headerId];
+        String recordTypeName = budgetHeader.RecordType.DeveloperName;
+        if (recordTypeName != 'EAC') {
+            laborPage = 'ECO_BudgetLabourDetail';
+            subPage = 'ECO_BudgetSubDetail';
+            odcPage = 'ECO_BudgetODCDetail';
+            contingencyPage = 'ECO_BudgetContingency';
+        } else {
+            laborPage = 'ECO_BudgetLabourEAC';
+            subPage = 'ECO_BudgetSubDetailEAC';
+            odcPage = 'ECO_BudgetODCDetailEAC';
+            contingencyPage = 'ECO_BudgetContingencyEAC';
+        }
+
         theProject = ECO_Service_Projects.getProjectById(budgetHeader.Project__c);
 	}
 	

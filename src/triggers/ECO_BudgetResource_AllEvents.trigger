@@ -2,7 +2,7 @@ trigger ECO_BudgetResource_AllEvents on BudgetResource__c (before insert, before
     if (trigger.isBefore) {
         if (trigger.isInsert) {
             ECO_BudgetResourceTriggers.defaultCostRevenueValuesOnHeader(trigger.new);
-            
+            ECO_BudgetResourceTriggers.setCurrency(trigger.new);
             try {
                 ECO_BudgetResourceTriggers.calculateMultiplier(trigger.new);
             } catch (Exception ex) {

@@ -5,7 +5,8 @@ public with sharing class ECO_ResilienceController {
         public list<ProjectCity__c> lstProjectCities {get;set;}
         public list<ProjectCountry_Risk__c> lstProjectCountryRisks {get;set;}
         private Transient Attachment OSP_Attachment;
-        public String overrideSafetyHealthInspectionName  {get;set;}   
+        public String overrideSafetyHealthInspectionName  {get;set;}  
+    	public boolean multipleCountry {get;set;}  
         public map<Id, Attachment> attachmentsMap {get; set;}
     
         public string idCityID {get;set;}
@@ -19,25 +20,50 @@ public with sharing class ECO_ResilienceController {
 
         public list<SelectOption> types { get; set; }
 
+        public string sTargetAttachment {get;set;}
+        public boolean bFromSHE {get;set;}
+
         public class EcoControllerException extends Exception {}
 
         /* Re-Usable Method for Querying Project Cities */
         private void UpdateProjectCities(){
                 projectRisk = 0;
-
+            
+            	string country = null;
+				multipleCountry = false;
+            
                 lstProjectCities = [SELECT ID, NAME, Project__c, CityName__c, State_Name__c, ClassCategory__c, Type__c, ProjectCountryRisk__r.CountryName__c, ProjectCountryRisk__r.Safety_Rating__c, ProjectCountryRisk__r.BusinessRisk__c, ProjectCountryRisk__r.DetentionDiscrimination__c, ProjectCountryRisk__r.KidnapRansom__c, ProjectCountryRisk__r.Property__c, AECOMWork__c, PhysicalProject__c, Other__c FROM ProjectCity__c WHERE Project__c =: oProject.id];
 
-                for(ProjectCity__c p: lstProjectCities){
+            	system.debug( 'lstProjectCities size 1 => ' + lstProjectCities.size() );
+
+            	for(ProjectCity__c p: lstProjectCities){
                         if(p.ProjectCountryRisk__r.Safety_Rating__c > projectRisk){
                                 projectRisk = p.ProjectCountryRisk__r.Safety_Rating__c;
-                        }
+                        }                            
+                            
+                    if(! multipleCountry )
+                    {                                    	
+                        if(( country != null ) && ( country != p.ProjectCountryRisk__r.CountryName__c ) )
+                            multipleCountry = true;
+                        else
+                            multipleCountry = false;
+                    }
+                    
+                    country = p.ProjectCountryRisk__r.CountryName__c;                        
                 }
+            
+            	system.debug( 'lstProjectCities size 2 => ' + lstProjectCities.size() );
         } 
 
         /* Constructor */
         public ECO_ResilienceController (ApexPages.StandardController oStandardController) {
 
                 this.oProject = (pse__Proj__c)oStandardController.getRecord();
+                bFromSHE = false;
+
+                if(ApexPages.currentPage().getParameters().get('fromSHE') != null){
+                    bFromSHE = true;
+                }
 
                 projectRisk = 0;
                 strAnswer = 'Unknown';
@@ -73,6 +99,10 @@ public with sharing class ECO_ResilienceController {
         }               
 
         public PageReference AddCity(){
+
+                if(lstProjectCities.size() > 0){
+                    update lstProjectCities;
+                }
 
                 string sCity;
                 string sState;
@@ -214,13 +244,26 @@ public with sharing class ECO_ResilienceController {
                 UpdateProjectCities();
             
                 // Send the user back to current page.  
-                PageReference pageRef = new PageReference(ApexPages.currentPage().getUrl());
+                /*PageReference pageRef = new PageReference(ApexPages.currentPage().getUrl());
                 pageRef.setRedirect(true);
-                return pageRef;
+                return pageRef;*/
+                return null;
         }    
     
      	//OSP_Attachment__c
      	//
+
+        public PageReference removeattachment(){
+            id iTargetAttachment = sTargetAttachment;
+            Attachment aAttachToRemove = attachmentsMap.get(iTargetAttachment);
+            attachmentsMap.remove(iTargetAttachment);
+            delete aAttachToRemove;
+            oProject.OSP_Attachment__c = oProject.OSP_Attachment__c.remove(iTargetAttachment + ';');
+            update oProject;
+            return null;
+        }
+
+
         public list<Attachment> getOSP_AttachmentFiles()
         {
             list<String> attachmentIds = new list<String>();
@@ -234,19 +277,27 @@ public with sharing class ECO_ResilienceController {
     
         public void saveOSP_AttachmentAndProject()
         {
-            if(overrideSafetyHealthInspectionName != null && overrideSafetyHealthInspectionName != '')
-                OSP_Attachment.Name = overrideSafetyHealthInspectionName;                     
-            insert OSP_Attachment;
-            
-            if(oProject.OSP_Attachment__c != null)
-                oProject.OSP_Attachment__c += OSP_Attachment.Id + ';';
-            else
-                oProject.OSP_Attachment__c = OSP_Attachment.Id + ';'; 
-            
-            update oProject;
-            
-            attachmentsMap = new Map<Id, Attachment>([select Id, Name, ContentType, LastModifiedDate, LastModifiedById from Attachment where parentId = :oProject.Id]);
-            OSP_Attachment = null;
+            if(OSP_Attachment.Body != null){
+
+                if(overrideSafetyHealthInspectionName != null && overrideSafetyHealthInspectionName != '')
+                    OSP_Attachment.Name = overrideSafetyHealthInspectionName; 
+
+                system.debug( 'OSP_Attachment ' + OSP_Attachment.Name );
+                
+                insert OSP_Attachment;
+                
+                if(oProject.OSP_Attachment__c != null)
+                    oProject.OSP_Attachment__c += OSP_Attachment.Id + ';';
+                else
+                    oProject.OSP_Attachment__c = OSP_Attachment.Id + ';'; 
+                
+                update oProject;
+                
+                attachmentsMap = new Map<Id, Attachment>([select Id, Name, ContentType, LastModifiedDate, LastModifiedById from Attachment where parentId = :oProject.Id]);
+                OSP_Attachment = null;
+            } else {
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'A file must be selected in order to attach'));
+            }
         }    
     
     private list<Attachment> getAttachmentListFromIdList(list<String> attachmentIds)
@@ -281,6 +332,10 @@ public with sharing class ECO_ResilienceController {
     
         public PageReference RemoveEntryCity(){
 
+
+                if(lstProjectCities.size() > 0){
+                    update lstProjectCities;
+                }
                 string sCity;
                 string sState;
                 string sCountry;

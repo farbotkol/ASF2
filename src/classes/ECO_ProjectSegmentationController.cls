@@ -186,7 +186,7 @@ public class ECO_ProjectSegmentationController {
 	{
 		if(agreement.segAmendmentOption__c == 'Yes' && agreement.segOptionDoesNotQualify__c == 'Yes')
 		{	
-			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'You can non chose to Segment and Not Segment the contract.  Please switch one of the answers in conclusion section to No based on survey');
+			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'You can not chose to Segment and Not Segment the contract.  Please switch one of the answers in conclusion section to No based on survey');
             ApexPages.addMessage(oPageMessage);
             return null;
 		}

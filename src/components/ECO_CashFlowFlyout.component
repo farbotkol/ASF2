@@ -180,6 +180,8 @@ var n = this,
             editor: $q('<input>')
         };
 
+        var oldWidth2;
+
         var cashFlyout = {
             init : function(){
 
@@ -197,10 +199,10 @@ var n = this,
             },
 
             hideContentFlyout : function(){
-                var width = $q('#cashPane').outerWidth() * -1 + 'px';
+                //var width = $q('#cashPane').outerWidth() * -1 + 'px';
                 
                 $q('#cashPane').animate({
-                    right : width
+                    right : oldWidth2
                   }, 550, 'easeInCubic');
             },
            
@@ -210,6 +212,7 @@ var n = this,
                 if($q('#cashPane').css('right') == '0px'){
                     cashFlyout.hideContentFlyout();
                 }else{
+                    oldWidth2 = $q('#cashPane').css('right');
                     $q('#cashPane').animate({
                         right : 0
                       }, 550, 'easeOutCubic');
@@ -550,8 +553,8 @@ var n = this,
             background-color:#f3f3f3;
             position: fixed;
             width: 925px;
-            right: -950px;
-            top: 50px;
+            right: -949px;
+            top: 63px;
             height:550px;
             padding: 10px 0 20px 20px;
             border-right: none;
@@ -727,11 +730,11 @@ var n = this,
             border-width: 1px;
         }
 
-        .tableHeader2 {
+        .tableHeader2a {
             background-color: #aac0dd;
-            width:110px;
-            min-width:110px;
-            max-width:110px;
+            width:106px;
+            min-width:106px;
+            max-width:106px;
             overflow:hidden;
         }
 
@@ -842,20 +845,20 @@ var n = this,
 
                             <div style="display:none;">
                                 <apex:pageBlockTable styleClass="dataTable1" value="{!lWeeklyRollupEntries}" var="row" border="1">
-                                    <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2">
+                                    <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2a">
 
-                                        <apex:outputText value="{!row.ApprovedCost__c}" />
+                                        <apex:outputText value="{!row.ApprovedCost__c + (row.ApprovedCost__c * row.Project__r.PercentageMargin__c / 100.0)}" />
                                     </apex:column>
 
-                                    <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2">
+                                    <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2a">
                                         <apex:inputField value="{!row.OverrideApprovedCost__c}" />
                                     </apex:column>
 
-                                    <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2">
+                                    <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2a">
                                         <apex:outputText value="{!row.Revenue__c}" />
                                     </apex:column>
 
-                                    <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2">
+                                    <apex:column style="width:140px; padding:3px; text-align:right;" headerClass="tableHeader1 tableHeader2a">
                                         <apex:inputField value="{!row.OverrideRevenue__c}" />
                                     </apex:column>
                                 </apex:pageBlockTable>
@@ -864,17 +867,18 @@ var n = this,
                             <table style="border-collapse:collapse;border-width: 1px 1px 0px 1px;border-style:solid;border-color:#ffffff;table-layout:fixed;">
                                 <thead>
                                     <tr class="headerRow">
-                                        <th class="tableHeader1 tableHeader2">Period Start Date</th>
-                                        <th class="tableHeader1 tableHeader2">Planned Cost<br />(In Period)</th>
-                                        <th class="tableHeader1 tableHeader2">Planned Cost<br />(Cumulative)</th>
-                                        <th class="tableHeader1 tableHeader2">Billing<br />(In Period)</th>
-                                        <th class="tableHeader1 tableHeader2">Cash In<br />(In Period)</th>
-                                        <th class="tableHeader1 tableHeader2">Cash In<br />(Cumulative)</th>
-                                        <th class="tableHeader1 tableHeader2">Net Cash Position<br />(In Period)</th>
-                                        <th class="tableHeader1 tableHeader2">Cash Flow<br />(Cumulative)</th>
+                                        <th class="tableHeader1 tableHeader2a">Period Start Date</th>
+                                        <th class="tableHeader1 tableHeader2a">Planned Revenue<br />(In Period)</th>
+                                        <th class="tableHeader1 tableHeader2a">Planned Revenue<br />(Cumulative)</th>
+                                        <th class="tableHeader1 tableHeader2a">Billing<br />(In Period)</th>
+                                        <th class="tableHeader1 tableHeader2a">Cash In<br />(In Period)</th>
+                                        <th class="tableHeader1 tableHeader2a">Cash In<br />(Cumulative)</th>
+                                        <th class="tableHeader1 tableHeader2a">Net Cash Position<br />(In Period)</th>
+                                        <th class="tableHeader1 tableHeader2a">Cash Flow<br />(Cumulative)</th>
                                     </tr>
                                 </thead>
                             </table>
+
 
                             <div style="height:185px; overflow:scroll;">
 

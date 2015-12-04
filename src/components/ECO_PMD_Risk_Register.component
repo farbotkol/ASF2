@@ -1,0 +1,156 @@
+<apex:component controller="ECO_PMD_Risk_Register_Controller">
+	<apex:attribute name="projectId" description="Project Number" type="String" required="false" /> 
+	
+    <apex:includeScript value="{!URLFOR($Resource.KendoUi, 'KendoUi/js/jquery.min.js')}"/>
+     <apex:includeScript value="{!URLFOR($Resource.KendoUi, 'KendoUi/js/kendo.all.min.js')}"/>
+     <apex:stylesheet value="{!URLFOR($Resource.KendoUi, 'KendoUi/Style/kendo.common.min.css')}" /> 
+    <apex:stylesheet value="{!URLFOR($Resource.KendoUi, 'KendoUi/Style/kendo.default.min.css')}" /> 
+
+  <style>
+
+	.pmd-table {width:100%;}
+	.pmd-table th {text-align:center;background-color:#CCCCCC;}
+	.pmd-table tr:nth-child(even) {background-color:#FFFFFF;}
+	.pmd-table tr:nth-child(odd) {background-color:#DDDDDD;}
+	.Medium {
+	    
+	    background-color: orange;
+			font-weight: bold;
+			text-align: center;
+	}
+	.Low {
+	    
+	    background-color: Green;
+			color: White;
+			font-weight: bold;
+			text-align: center;
+	}
+
+	.High {
+	    
+	    background-color: Red;
+			color: White;
+			font-weight: bold;
+			text-align: center;
+	}
+
+	.k-grid-content table{
+
+	     border-spacing: 3px !important;
+	     border-collapse: separate;
+	}
+
+  </style>
+    
+<div ng-controller="dashRiskRegisterController" class="panel panel-default dashbox" >
+
+		<div class="panel-heading">
+	  		{!$Label.ECO_PMD_RISK_TITLE} <span ng-Show="SFDCDATA.nodata">-<b>{!$Label.ECO_PMD_NO_DATA}</b></span>
+		</div>
+
+		<div class="panel-body">
+            
+           
+            <div id="example">
+                <div id="riskRegisterGrid" class="pmd-table"></div><br/>
+    			<div id="total">{!$Label.ECO_PMD_RISK_TOTAL}: <span ng-bind="SFDCDATA.total| number:0" /></div>
+    		
+               
+            </div>
+
+        </div>
+
+        <c:ECO_PMD_PanelFooter panelId="KPI">{!$Label.ECO_PMD_RISK_MOREINFO_DETAILS}</c:ECO_PMD_PanelFooter>
+
+        <!-- apex:outputText value="{!$Label.ECO_PMD_RISK_MORE_INFO_BODY}"  escape="false" -->
+	           	
+</div>
+
+ 		<script id="dashpanel.js">
+			      (function(){
+			    
+			        angular
+			        .module("ecopmd")
+			        .controller("dashRiskRegisterController",dashRiskRegisterController);
+			        
+			        function dashRiskRegisterController($scope,$locale){
+			          $scope.exportedFunction = exportedFunction;
+			          $scope.exportedVariable = [];
+			           
+			          loadData($scope);
+
+			          $scope.isCollapsed = true;  
+			         
+			                                                                             
+			          function internalFunction(param){
+			            return param;
+			          }
+			      
+
+			          function exportedFunction(){
+			              this.SFDCDATA=[];
+			              loadData(this); // this = $scope
+			          }
+
+
+			          function createGrid() {
+                        $("#riskRegisterGrid").kendoGrid({
+                            dataSource: {
+                                data: $scope.SFDCDATA.risks,
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            Name: { type: "string" },
+                                            ContingencyDollars__c: { type: "number" },
+                                            RiskScore__c: { type: "string" }
+                                            
+                                        },
+                                       	ScoreLevel: function(score) {
+                                            	
+                                            	if (score< 30) {return 'Low';} ;
+                                            	if (score< 60) {return 'Medium';}
+                                            	if (score>= 60) {return 'High';} 
+                                            	// something else 
+                                            	return 'Low';
+
+            								}
+                                    }
+                                },
+                                pageSize: 10
+                            },
+                            //height: 320,
+                            //width: 100%,
+                            scrollable: true,
+                            sortable: true,
+                            filterable: true,
+                           
+                            columns: [
+                                 { field: "Name", title: "{!$Label.ECO_PMD_RISK_DESCRIPTION}", width: "300px"},
+                                { field: "RiskScore__c", title: "{!$Label.ECO_PMD_RISK_SCORE}", width: "100px" ,
+                                 template: "<div class='#:ScoreLevel(RiskScore__c) #'>#:RiskScore__c#</div>" },
+                                { field: "ContingencyDollars__c", title: "{!$Label.ECO_PMD_RISK_CONTINGENCY}", format: "{0:n0}", width: "90px" 
+                            		 ,attributes:{style:"text-align:right;"}}
+                            ]
+                        });
+                    }
+			            
+			          function loadData($scope){
+			            $scope.exportedVariable.push(internalFunction("value"));
+			            ECO_PMD_Risk_Register_Controller.ProjectRiskRegister(
+			              '{!projectId}',
+			              function(result, event){
+			              	console.log(result);
+
+			                if(event.status) {
+			                  $scope.$apply(function(){
+			                      $scope.SFDCDATA = result ;
+			                	  createGrid(); 
+			                     console.log('1');
+			                  });
+			                }
+			              });
+			          }    
+			        }
+			      })();
+			  </script>
+</apex:component>

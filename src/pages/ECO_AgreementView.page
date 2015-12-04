@@ -36,7 +36,7 @@
             margin-left:50%;
             padding-left:20px;
         }
-              	
+                
         .customHelpIcon
         {
             display:inline-block;
@@ -351,6 +351,7 @@
 
     <apex:outputPanel rendered="{!agreementRecordType =='Prime'}" id="primeSection">
     <apex:form > 
+        <apex:inputHidden value="{!Agreement__c.ScopePackage__c}"/>
         <apex:actionFunction id="primeScopeChanged" name="primeScopeChanged" action="{!primeScopeChangedApex}" onComplete="window.location.reload();"/>
         <apex:actionFunction id="changedPrimeAgreementStatus" name="changedPrimeAgreementStatus" rerender="primeExecutionDetails" immediate="true"/>
         <apex:pageBlock mode="{!pageBlockMode}" title="{!'Prime Agreement ' + mode}">
@@ -363,13 +364,13 @@
             <apex:commandButton value="Return To Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.ChangeManagerIsNew__c && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
 
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
-                <apex:outputText value="ECO Agreement Number"/>
+                <apex:outputText value="ePM Agreement Number"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Name}" rendered="{!mode != ''}"/>
                     <apex:outputField value="{!agreement.Name}" rendered="{!mode == ''}"/>
@@ -387,7 +388,7 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
                             <apex:actionSupport event="onchange" immediate="false" rerender="primeExecutionDetails"/>
                         </apex:inputField>
@@ -413,7 +414,7 @@
                 </apex:outputPanel>     
             </apex:pageBlockSectionItem> -->
 
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helptext="Choose one of the clients nominated on the list of clients as a billing client.  Note you can only create Prime agreements  with billing clients.">
                 <apex:outputText value="Billing Client"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Account__c}" rendered="{!mode != ''}" required="true"/>
@@ -437,7 +438,7 @@
                 </apex:outputPanel>         
             </apex:pageBlockSectionItem>     -->   
           
-            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProjectTeamMember__c.inlineHelpText}">
+            <apex:pageBlockSectionItem helptext="Choose the team member who is the owner/manager of the contract.  Typically this is the PM, but in some cases may be a task manager or client account manager.">
                 <apex:outputText value="Agreement Owner"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.ProjectTeamMember__c}" rendered="{!mode != ''}" required="true"/>
@@ -465,7 +466,7 @@
   
             <apex:pageBlockSection title="Contract Details" collapsible="false">
 
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helptext="Choose the type of contract document.">
                 <apex:outputText value="Contract Type"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.AgreementType__c}" rendered="{!mode != ''}" required="true"/>               
@@ -549,7 +550,7 @@
                 <apex:outputPanel id="primeScopeChanged">
                   <apex:inputField id="pscp1" style="width: 780px" value="{!agreement.ScopeOfServices__c}" rendered="{!mode != '' && agreement.ScopePackage__c == null}"/>               
                     <apex:outputField id="pscp2" style="width: 780px" value="{!agreement.ScopeOfServices__c}" rendered="{!mode == '' && agreement.ScopePackage__c == null}"/>
-                    <apex:outputText id="pscp3" style="width: 780px" value="{!primeScopeText}" rendered="{!agreement.ScopePackage__c != null}"/>
+                    <apex:outputText id="pscp3" style="width: 780px" value="{!primeScopeText}" rendered="{!agreement.ScopePackage__c != null}" escape="false"/>
                 </apex:outputPanel>             
             </apex:pageBlockSectionItem>    
         </apex:pageBlockSection>             
@@ -559,12 +560,12 @@
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FeeType__c.inlineHelpText}">
                 <apex:outputText value="Fee Type"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.FeeType__c}" rendered="{!mode != ''}"/>
+                    <apex:inputField value="{!agreement.FeeType__c}" rendered="{!mode != ''}" required="true"/>
                     <apex:outputField value="{!agreement.FeeType__c}" rendered="{!mode == ''}"/>        
                 </apex:outputPanel>     
             </apex:pageBlockSectionItem>            
       
-        <apex:pageBlockSectionItem >
+        <apex:pageBlockSectionItem helpText="Enter the total amount of revenue that can be earned in accordance with AECOM Revenue Policy. This is typically the total of signed contract documentation + any billed and paid amounts in excess of the contract documentation + any amount approved under DoA to be recognised as revenue at risk.  The total revenue earned on the project will be capped at this amount.">
             <apex:outputText value="Total Approved Revenue Limit"/>
             <apex:outputPanel >
                 <apex:inputField value="{!agreement.TotalApprovedRevenueLimit__c}" rendered="{!mode != ''}" />
@@ -581,7 +582,7 @@
                 </apex:outputPanel>             
             </apex:pageBlockSectionItem>    
 
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helpText="This is the total amount of all funding that has been entered through the ''Manage Funding'' screen">
                 <apex:outputText value="Total Funding Amount"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.TotalFundingAmount__c}" rendered="{!mode != ''}" required="true"/>              
@@ -613,7 +614,7 @@
                 </apex:outputPanel>             
             </apex:pageBlockSectionItem>  
 
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helptext="This is the variance between the total approved revenue limit and the committed/confirmed agreement amount and represents the amount of revenue potentially taken in excess of the committe/confirmed amount documented by the client.">
                 <apex:outputText value="Variance (Confirmed - Approved Revenue Limit)"/>
                 <apex:outputField value="{!agreement.AgreementVariance__c}"/>                
             </apex:pageBlockSectionItem>              
@@ -626,7 +627,7 @@
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>    
            
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helpText="Choose from the drop down list the reason why the approved revenue limit exceeds the committed/confirmed amount from the client.">
                     <apex:outputText value="Variance Reason"/>
                     <apex:outputPanel >
                         <apex:inputField value="{!agreement.VarianceReason__c}" rendered="{!mode != ''}"/>  
@@ -636,7 +637,7 @@
         </apex:pageBlockSection>
         
         <apex:pageBlockSection title="Interim Agreement / Work At Risk  (if applicable)" collapsible="false" columns="2">
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helptext="If work is commencing under an interim agreement, select which type of interim agreement is being used.">
                 <apex:outputText value="Interim Approval Type"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.InterimApprovalType__c}" rendered="{!mode != ''}"/>  
@@ -644,15 +645,15 @@
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>
 
-            <apex:pageBlockSectionItem >
-                <apex:outputText value="Interim Approval Date"/>
+            <apex:pageBlockSectionItem helptext="Enter the date the interim approval was obtained.">
+                <apex:outputText value="Interim Approval Date" />
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.InterimApprovalDate__c}" rendered="{!mode != ''}"/>  
                     <apex:outputField value="{!agreement.InterimApprovalDate__c}" rendered="{!mode == ''}"/> 
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>
 
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helptext="Enter the total revenue limit that is included with the interim approval. This should be entered in the project functional currency - not the agreement currency.">
                 <apex:outputText value="Interim Approval Revenue/Fee Limit"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.InterimApprovalRevenueFeeLimit__c}" rendered="{!mode != ''}"/>  
@@ -660,7 +661,7 @@
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>
 
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helptext="Enter the date the interim approval expires.">
                 <apex:outputText value="Interim Approval Expiry Date"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.InterimApprovalExpiryDate__c}" rendered="{!mode != ''}"/>  
@@ -668,7 +669,7 @@
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>
 
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helpText="Enter the total cost limit that is included with the interim approval - this is inclusive of labor, subs and ODC costs. This should be entered in the project functional currency - not the agreement currency." >
                 <apex:outputText value="Interim Approval Cost Limit"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.InterimApprovalCostLimit__c}" rendered="{!mode != ''}"/>  
@@ -809,7 +810,7 @@
 <!--         <c:ECO_MSAFlyout MSAId="{!agreement.MSAReference__c}" rendered="{!agreement.MSAReference__c != null}" id="primeMSAFlyout"/>  -->     
         <c:ECO_RiskFlyout ProjectId="{!project.Id}" rendered="{!project != null}" PlanElement="" />
         <c:ECO_AssumptionFlyout ProjectId="{!project.Id}" rendered="{!project != null}" PlanElement="" />
-		<c:ECO_ProjectTeamFlyout ProjectId="{!project.Id}" rendered="{!project != null}"  />
+        <c:ECO_ProjectTeamFlyout ProjectId="{!project.Id}" rendered="{!project != null}"  />
     </apex:form>
  
     <!--<apex:relatedList list="ContractReviews__r" rendered="{!mode==''}"/>-->
@@ -821,7 +822,7 @@
     <apex:form > 
         <apex:actionFunction id="primeScopeChanged" name="primeScopeChanged" rerender="primeScope"/>
 
-        <apex:pageBlock mode="{!pageBlockMode}" title="{!'Prime Agreement ' + mode}">
+        <apex:pageBlock mode="{!pageBlockMode}" title="{!'Other Agreement ' + mode}">
         <apex:pageBlockButtons >
             <apex:commandLink value="Print Agreement" action="{!printPdf}" styleClass="btn printAgreement" immediate="true" target="_blank" style="text-decoration:none" />
             <apex:commandButton value="Save" action="{!save}" rendered="{!mode != ''}"/>
@@ -831,12 +832,12 @@
             <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.ChangeManagerIsNew__c && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
     <apex:pageBlockSection >
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
-                <apex:outputText value="ECO Agreement Number"/>
+                <apex:outputText value="ePM Agreement Number"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Name}" rendered="{!mode != ''}"/>
                     <apex:outputField value="{!agreement.Name}" rendered="{!mode == ''}"/>
@@ -846,7 +847,7 @@
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementNumber__c.inlineHelpText}">
             <apex:outputText value="Oracle Agreement No"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.AgreementNumber__c}" rendered="{!mode != ''}"/>
+                <apex:outputField value="{!agreement.AgreementNumber__c}" rendered="{!mode != ''}"/>
                 <apex:outputField value="{!agreement.AgreementNumber__c}" rendered="{!mode == ''}"/>
             </apex:outputPanel>
         </apex:pageBlockSectionItem>  
@@ -854,7 +855,7 @@
         <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
                             <apex:actionSupport event="onchange" immediate="false" rerender="otherExecutionDetails"/>
                         </apex:inputField>
@@ -888,7 +889,7 @@
                 </apex:outputPanel>
         </apex:pageBlockSectionItem>
        
-        <apex:pageBlockSectionItem >
+        <apex:pageBlockSectionItem helptext="Choose one of the clients nominated on the list of clients as a billing client.  Note you can only create Prime agreements  with billing clients.">
                 <apex:outputText value="Billing Client"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Account__c}" rendered="{!mode != ''}" required="true"/>
@@ -916,7 +917,7 @@
 
         </apex:pageBlockSectionItem>      
               
-        <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProjectTeamMember__c.inlineHelpText}">
+        <apex:pageBlockSectionItem helptext="Choose the team member who is the owner/manager of the contract.  Typically this is the PM, but in some cases may be a task manager or client account manager.">
                 <apex:outputText value="Agreement Owner"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.ProjectTeamMember__c}" rendered="{!mode != ''}" required="true"/>
@@ -928,7 +929,7 @@
 
     <apex:pageBlockSection collapsible="false" title="Contract Details">  
 
-        <apex:pageBlockSectionItem >
+        <apex:pageBlockSectionItem helptext="Choose the type of contract document.">
             <apex:outputText value="Contract Type"/>
             <apex:outputPanel >
                 <apex:inputField value="{!agreement.AgreementType__c}" rendered="{!mode != ''}" required="true"/>               
@@ -1013,7 +1014,7 @@
             <apex:outputPanel id="primeScope">
                 <apex:inputField style="width: 780px" value="{!agreement.ScopeOfServices__c}" rendered="{!mode != '' && agreement.ScopePackage__c == null}"/>               
                 <apex:outputField style="width: 780px" value="{!agreement.ScopeOfServices__c}" rendered="{!mode == '' && agreement.ScopePackage__c == null}"/>
-                <apex:outputField style="width: 780px" value="{!agreement.ScopePackage__r.Scope_Details__c}" rendered="{!agreement.ScopePackage__c != null}"/>
+                <apex:outputField style="width: 780px" value="{!agreement.ScopePackage__r.Scope_Details__c}" rendered="{!agreement.ScopePackage__c != null}" />
                 </apex:outputPanel>             
         </apex:pageBlockSectionItem>    
     </apex:pageBlockSection> 
@@ -1022,12 +1023,12 @@
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FeeType__c.inlineHelpText}">
             <apex:outputText value="Fee Type"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.FeeType__c}" rendered="{!mode != ''}"/>
+                <apex:inputField value="{!agreement.FeeType__c}" rendered="{!mode != ''}" required="true"/>
                 <apex:outputField value="{!agreement.FeeType__c}" rendered="{!mode == ''}"/>        
             </apex:outputPanel>     
         </apex:pageBlockSectionItem>            
  
-        <apex:pageBlockSectionItem >
+        <apex:pageBlockSectionItem helpText="Enter the total amount of revenue that can be earned in accordance with AECOM Revenue Policy. This is typically the total of signed contract documentation + any billed and paid amounts in excess of the contract documentation + any amount approved under DoA to be recognised as revenue at risk.  The total revenue earned on the project will be capped at this amount.">
             <apex:outputText value="Total Approved Revenue Limit"/>
             <apex:outputPanel >
 
@@ -1044,7 +1045,7 @@
         </apex:pageBlockSectionItem>    
 
 
-        <apex:pageBlockSectionItem >
+        <apex:pageBlockSectionItem helpText="This is the total amount of all funding that has been entered through the ''Manage Funding'' screen">
             <apex:outputText value="Total Funding Amount"/>
             <apex:outputPanel >
                 <apex:inputField value="{!agreement.TotalFundingAmount__c}" rendered="{!mode != ''}" required="true"/>              
@@ -1076,7 +1077,7 @@
             </apex:outputPanel>             
         </apex:pageBlockSectionItem> 
 
-        <apex:pageBlockSectionItem >
+        <apex:pageBlockSectionItem helptext="This is the variance between the total approved revenue limit and the committed/confirmed agreement amount and represents the amount of revenue potentially taken in excess of the committe/confirmed amount documented by the client.">
                 <apex:outputText value="Variance (Confirmed - Approved Revenue Limit)"/>
                 <apex:outputField value="{!agreement.AgreementVariance__c}"/>                
         </apex:pageBlockSectionItem>   
@@ -1089,7 +1090,7 @@
                 </apex:outputPanel>
         </apex:pageBlockSectionItem>    
                                             
-        <apex:pageBlockSectionItem >
+        <apex:pageBlockSectionItem helpText="Choose from the drop down list the reason why the approved revenue limit exceeds the committed/confirmed amount from the client.">
                     <apex:outputText value="Variance Reason"/>
                     <apex:outputPanel >
                         <apex:inputField value="{!agreement.VarianceReason__c}" rendered="{!mode != ''}"/>  
@@ -1296,12 +1297,12 @@
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.ChangeManagerIsNew__c && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
-                <apex:outputText value="ECO Agreement Number"/>
+                <apex:outputText value="ePM Agreement Number"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Name}" rendered="{!mode != ''}"/>
                     <apex:outputField value="{!agreement.Name}" rendered="{!mode == ''}"/>
@@ -1317,7 +1318,7 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
                             <apex:actionSupport event="onchange" immediate="false" rerender="intExecutedBy,intExecutedDate"/>
                         </apex:inputField>
@@ -1354,14 +1355,14 @@
                     <apex:outputField value="{!agreement.ParentAgreement__c}" rendered="{!mode == ''}"/>        
                 </apex:outputPanel>     
             </apex:pageBlockSectionItem>            
-            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProjectTeamMember__c.inlineHelpText}">
+            <apex:pageBlockSectionItem helptext="Choose the team member who is the owner/manager of the contract.  Typically this is the PM, but in some cases may be a task manager or client account manager.">
                 <apex:outputText value="Agreement Owner"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.ProjectTeamMember__c}" rendered="{!mode != ''}" required="true"/>
                     <apex:outputField value="{!agreement.ProjectTeamMember__c}" rendered="{!mode == ''}"/>  
                 </apex:outputPanel>         
             </apex:pageBlockSectionItem>
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helptext="Choose one of the clients nominated on the list of clients as a billing client.  Note you can only create Prime agreements  with billing clients.">
                 <apex:outputText value="Billing Client"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Account__c}" rendered="{!mode != ''}" required="true"/>
@@ -1407,7 +1408,7 @@
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FeeType__c.inlineHelpText}">
                 <apex:outputText value="Fee Type"/>
                 <apex:outputPanel >
-                    <apex:inputField value="{!agreement.FeeType__c}" rendered="{!mode != ''}"/>
+                    <apex:inputField value="{!agreement.FeeType__c}" rendered="{!mode != ''}" required="true"/>
                     <apex:outputField value="{!agreement.FeeType__c}" rendered="{!mode == ''}"/>        
                 </apex:outputPanel>     
             </apex:pageBlockSectionItem>            
@@ -1426,7 +1427,7 @@
                     <apex:outputField value="{!agreement.PaymentTerms__c}" rendered="{!mode == ''}"/>
                 </apex:outputPanel>             
             </apex:pageBlockSectionItem>    
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helptext="Choose the type of contract document.">
                 <apex:outputText value="Contract Type"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.AgreementType__c}" rendered="{!mode != ''}" required="true"/>               
@@ -1472,7 +1473,7 @@
                     <apex:outputField value="{!agreement.ExpirationDate__c}" rendered="{!mode == ''}"/> 
                 </apex:outputPanel>                         
             </apex:pageBlockSectionItem>    
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helpText="This is the total amount of all funding that has been entered through the ''Manage Funding'' screen">
                 <apex:outputText value="Total Funding Amount"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.TotalFundingAmount__c}" rendered="{!mode != ''}" required="true"/>              
@@ -1486,7 +1487,7 @@
                     <apex:outputField value="{!agreement.ProfIndemnityLiabilityAmt__c}" rendered="{!mode == ''}"/>
                 </apex:outputPanel>                                         
             </apex:pageBlockSectionItem>    
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helptext="This is the variance between the total approved revenue limit and the committed/confirmed agreement amount and represents the amount of revenue potentially taken in excess of the committe/confirmed amount documented by the client.">
                 <apex:outputText value="Variance (Confirmed - Approved Revenue Limit)"/>
                 <apex:outputField value="{!agreement.AgreementVariance__c}"/>                
             </apex:pageBlockSectionItem>            
@@ -1497,7 +1498,7 @@
                     <apex:outputField value="{!agreement.PublicGeneralLiabilityAmt__c}" rendered="{!mode == ''}"/>      
                 </apex:outputPanel>     
             </apex:pageBlockSectionItem>
-            <apex:pageBlockSectionItem >
+            <apex:pageBlockSectionItem helpText="Choose from the drop down list the reason why the approved revenue limit exceeds the committed/confirmed amount from the client.">
                     <apex:outputText value="Variance Reason"/>
                     <apex:outputPanel >
                         <apex:inputField value="{!agreement.VarianceReason__c}" rendered="{!mode != ''}"/>  
@@ -1719,12 +1720,12 @@
 
             <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}"/> 
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.ChangeManagerIsNew__c && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
-                <apex:outputText value="ECO Agreement Number"/>
+                <apex:outputText value="ePM Agreement Number"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Name}" rendered="{!mode != ''}"/>
                     <apex:outputField value="{!agreement.Name}" rendered="{!mode == ''}"/>
@@ -1743,7 +1744,7 @@
         <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
                             <apex:actionSupport event="onchange" immediate="false" rerender="subExecutionDetails"/>
                         </apex:inputField>
@@ -1798,7 +1799,7 @@
         <apex:pageBlockSectionItem >
         </apex:pageBlockSectionItem>
 
-        <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProjectTeamMember__c.inlineHelpText}">
+        <apex:pageBlockSectionItem helptext="Choose the team member who is the owner/manager of the contract.  Typically this is the PM, but in some cases may be a task manager or client account manager.">
                 <apex:outputText value="Agreement Owner"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.ProjectTeamMember__c}" rendered="{!mode != ''}"  required="true"/>
@@ -1809,7 +1810,7 @@
     </apex:pageBlockSection>
 
     <apex:pageBlockSection title="Contract Details" collapsible="false">
-        <apex:pageBlockSectionItem >
+        <apex:pageBlockSectionItem helptext="Choose the type of contract document.">
                 <apex:outputText value="Contract Type"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.AgreementType__c}" rendered="{!mode != ''}" required="true"/>
@@ -1915,7 +1916,7 @@
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FeeType__c.inlineHelpText}">
             <apex:outputText value="Fee Type"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.FeeType__c}" rendered="{!mode != ''}"/>
+                <apex:inputField value="{!agreement.FeeType__c}" rendered="{!mode != ''}" required="true"/>
                 <apex:outputField value="{!agreement.FeeType__c}" rendered="{!mode == ''}"/>        
             </apex:outputPanel>     
         </apex:pageBlockSectionItem> 
@@ -2089,12 +2090,12 @@
             <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}"  immediate="true"/>  
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.ChangeManagerIsNew__c && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
-                <apex:outputText value="ECO Agreement Number"/>
+                <apex:outputText value="ePM Agreement Number"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Name}" rendered="{!mode != ''}"/>
                     <apex:outputField value="{!agreement.Name}" rendered="{!mode == ''}"/>
@@ -2113,7 +2114,7 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
                             <apex:actionSupport event="onchange" immediate="false" rerender="interimExecutionDetails"/>
                         </apex:inputField>
@@ -2154,7 +2155,7 @@
                 </apex:outputPanel>
             </apex:pageBlockSectionItem> -->
 
-             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProjectTeamMember__c.inlineHelpText}">
+             <apex:pageBlockSectionItem helptext="Choose the team member who is the owner/manager of the contract.  Typically this is the PM, but in some cases may be a task manager or client account manager.">
                 <apex:outputText value="Agreement Owner"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.ProjectTeamMember__c}" rendered="{!mode != ''}"  required="true"/>
@@ -2509,12 +2510,12 @@
             <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}"  immediate="true"/>  
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.ChangeManagerIsNew__c && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection >
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
-                <apex:outputText value="ECO Agreement Number"/>
+                <apex:outputText value="ePM Agreement Number"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Name}" rendered="{!mode != ''}"/>
                     <apex:outputField value="{!agreement.Name}" rendered="{!mode == ''}"/>
@@ -2533,7 +2534,7 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}">
                             <apex:actionSupport event="onchange" immediate="false" rerender="jointExecutionDetails"/>
                         </apex:inputField>
@@ -2558,7 +2559,7 @@
                 </apex:outputPanel>
             </apex:pageBlockSectionItem>  -->
 
-             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProjectTeamMember__c.inlineHelpText}">
+             <apex:pageBlockSectionItem helptext="Choose the team member who is the owner/manager of the contract.  Typically this is the PM, but in some cases may be a task manager or client account manager.">
                 <apex:outputText value="Agreement Owner"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.ProjectTeamMember__c}" rendered="{!mode != ''}"  required="true"/>
@@ -2839,13 +2840,13 @@
             <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!mode == 'New' && agreement.Project__c != null}" immediate="true"/>                       
             <apex:commandButton value="Return To Project" action="{!URLFOR($Action.pse__Proj__c.view, agreement.Project__c)}" rendered="{!mode != 'New'}"/>
             <apex:commandButton value="Return To Project Agreements" action="{!returnToProjectAgreements}" rendered="{!mode == ''}" />
-            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.AgreementNumber__c == null && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
+            <apex:commandButton value="Delete" rendered="{!contractReviewCount == 0 && agreement.ChangeManagerIsNew__c && mode == '' && agreement.AgreementStatus__c != 'Executed'}" action="{!deleteAgreement}"/>
             <apex:commandButton value="Cancel" action="{!cancel}" rendered="{!agreement.Project__c == null && mode =='New'}" />
         </apex:pageBlockButtons>
 
         <apex:pageBlockSection >
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.Name.inlineHelpText}">
-                <apex:outputText value="ECO Agreement Number"/>
+                <apex:outputText value="ePM Agreement Number"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Name}" rendered="{!mode != ''}"/>
                     <apex:outputField value="{!agreement.Name}" rendered="{!mode == ''}"/>
@@ -2860,7 +2861,7 @@
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Agreement Status"/>
                 <apex:outputPanel >
-                    <apex:actionRegion>
+                    <apex:actionRegion >
                         <apex:inputField value="{!agreement.AgreementStatus__c}" rendered="{!mode != ''}" >
                             <apex:actionSupport event="onchange" immediate="false" reRender="taskOrderExecutionDetails" />
                         </apex:inputField>
@@ -2924,7 +2925,7 @@
 
             </apex:pageBlockSectionItem>
     
-            <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.ProjectTeamMember__c.inlineHelpText}">
+            <apex:pageBlockSectionItem helptext="Choose the team member who is the owner/manager of the contract.  Typically this is the PM, but in some cases may be a task manager or client account manager.">
                 <apex:outputText value="Agreement Owner"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.ProjectTeamMember__c}" rendered="{!mode != ''}"  required="true"/>
@@ -2935,14 +2936,12 @@
             <apex:pageBlockSectionItem >
 
             </apex:pageBlockSectionItem>
-
-
-            
+      
     </apex:pageBlockSection>
 
     <apex:pageBlockSection collapsible="false" title="Contract Details">
 
-        <apex:pageBlockSectionItem >
+        <apex:pageBlockSectionItem helptext="Choose the type of contract document.">
             <apex:outputText value="Contract Type"/>
             <apex:outputPanel >
                 <apex:inputField value="{!agreement.AgreementType__c}" rendered="{!mode != ''}" required="true"/>               
@@ -3039,12 +3038,12 @@
         <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.FeeType__c.inlineHelpText}">
             <apex:outputText value="Fee Type"/>
             <apex:outputPanel >
-                <apex:inputField value="{!agreement.FeeType__c}" rendered="{!mode != ''}"/>
+                <apex:inputField value="{!agreement.FeeType__c}" rendered="{!mode != ''}" required="true"/>
                 <apex:outputField value="{!agreement.FeeType__c}" rendered="{!mode == ''}"/>        
             </apex:outputPanel>     
         </apex:pageBlockSectionItem> 
 
-        <apex:pageBlockSectionItem >
+        <apex:pageBlockSectionItem helpText="Enter the total amount of revenue that can be earned in accordance with AECOM Revenue Policy. This is typically the total of signed contract documentation + any billed and paid amounts in excess of the contract documentation + any amount approved under DoA to be recognised as revenue at risk.  The total revenue earned on the project will be capped at this amount." >
             <apex:outputText value="Total Approved Revenue Limit"/>
             <apex:outputPanel id="totalApprovedRevenueLimit">
                 <apex:outputPanel >
@@ -3062,7 +3061,7 @@
                 </apex:outputPanel> 
         </apex:pageBlockSectionItem>
 
-        <apex:pageBlockSectionItem >
+        <apex:pageBlockSectionItem helpText="This is the total amount of all funding that has been entered through the ''Manage Funding'' screen">
                 <apex:outputText value="Total Funding Amount"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.TotalFundingAmount__c}" rendered="{!mode != ''}"/>              
@@ -3095,7 +3094,7 @@
 
         </apex:pageBlockSectionItem>  
 
-        <apex:pageBlockSectionItem >
+        <apex:pageBlockSectionItem helptext="This is the variance between the total approved revenue limit and the committed/confirmed agreement amount and represents the amount of revenue potentially taken in excess of the committe/confirmed amount documented by the client.">
                 <apex:outputText value="Variance (Confirmed - Approved Revenue Limit)"/>
                 <apex:outputField value="{!agreement.AgreementVariance__c}"/>                
         </apex:pageBlockSectionItem>  
@@ -3108,7 +3107,7 @@
                 </apex:outputPanel>
         </apex:pageBlockSectionItem>
             
-        <apex:pageBlockSectionItem >
+        <apex:pageBlockSectionItem helpText="Choose from the drop down list the reason why the approved revenue limit exceeds the committed/confirmed amount from the client.">
             <apex:outputText value="Variance Reason"/>
             <apex:outputPanel >
                     <apex:inputField value="{!agreement.VarianceReason__c}" rendered="{!mode != ''}"/>  
@@ -3317,11 +3316,11 @@
                                 </apex:outputPanel>         
                         </apex:pageBlockSectionItem> 
                         <apex:pageBlockSectionItem >
-                		  <apex:outputText value="Contract Review Status"/>
-                		  <apex:outputPanel >
-                			<apex:outputText value="{!ContractReviewStatus}" rendered="{!mode == ''}"/> 
-                		  </apex:outputPanel>                                                 
-            			</apex:pageBlockSectionItem> 
+                          <apex:outputText value="Contract Review Status"/>
+                          <apex:outputPanel >
+                            <apex:outputText value="{!ContractReviewStatus}" rendered="{!mode == ''}"/> 
+                          </apex:outputPanel>                                                 
+                        </apex:pageBlockSectionItem> 
 
                          <apex:outputField value="{!agreement.ScopeOfServices__c}" style="width: 400px; height: 40px" rendered="{!mode==''}"/>                            
                     </apex:pageBlockSection>
@@ -3582,8 +3581,8 @@
         
         <apex:pageBlock title="MSA Teaming Partners" rendered="{!mode == ''}">
             <apex:pageBlockButtons location="top">
-            	<!-- <apex:commandButton value="New MSA Team Partner" action="{!createNewMSATeamingPartner}"/>> -->
-             	<apex:commandButton value="New MSA Team Partner" action="{!URLFOR($Action.MSATeamingPartner__c.new, null, ['Agreement__c'=agreement.Id, 'saveURL'='/apex/ECO_AgreementView?Id='&agreement.Id, 'retURL'='/apex/ECO_AgreementView?Id='&agreement.Id])}"/>
+                <!-- <apex:commandButton value="New MSA Team Partner" action="{!createNewMSATeamingPartner}"/>> -->
+                <apex:commandButton value="New MSA Team Partner" action="{!URLFOR($Action.MSATeamingPartner__c.new, null, ['Agreement__c'=agreement.Id, 'saveURL'='/apex/ECO_AgreementView?Id='&agreement.Id, 'retURL'='/apex/ECO_AgreementView?Id='&agreement.Id])}"/>
             </apex:pageBlockButtons>
             <apex:outputPanel rendered="{!msaTeamingPartners.size > 0}">
             <apex:pageBlockTable value="{!msaTeamingPartners}" var="msaTeamingPartner">
@@ -3614,12 +3613,14 @@
                         <th></th>
                         <apex:repeat value="{!billRateController.periods}" var="period">
                             <th class="headerRow"><span>
-                            <apex:outputText value="{0,date,MM/dd/yyyy}' - '">
+<!--                            <apex:outputText value="{0,date,MM/dd/yyyy}' - '">
                                 <apex:param value="{!period.BillRateStart__c}"/>
-                            </apex:outputText>
-                            <apex:outputText value="{0,date,MM/dd/yyyy}">
+                            </apex:outputText>  -->
+                            <c:ECO_DateFormat date="{!period.BillRateStart__c}" /> - 
+<!--                            <apex:outputText value="{0,date,MM/dd/yyyy}">
                                 <apex:param value="{!period.BillRateEnd__c}"/>
-                            </apex:outputText>
+                            </apex:outputText>  -->
+                            <c:ECO_DateFormat date="{!period.BillRateEnd__c}" />
                             </span></th>
                         </apex:repeat>
                     </tr>
@@ -3653,8 +3654,8 @@
                 
         <apex:pageBlock title="Other Direct Costs" rendered="{!mode == ''}">
             <apex:pageBlockButtons location="top">
-            	<!-- <apex:commandButton value="New Other Direct Cost" action="{!URLFOR($Action.OtherDirectCost__c.new, null, ['saveURL'='/apex/ECO_AgreementView?Id='&agreement.Id,'retURL'='/apex/ECO_AgreementView?Id='&agreement.Id, 'CF00Ne0000001Hxnt_lktp'=agreement.Id, 'CF00Ne0000001Hxnt'=agreement.Name])}"/> -->
-				<apex:commandButton value="New Other Direct Cost" action="{!URLFOR($Action.OtherDirectCost__c.new, null, ['Agreement__c'=agreement.Id, 'saveURL'='/apex/ECO_AgreementView?Id='&agreement.Id, 'retURL'='/apex/ECO_AgreementView?Id='&agreement.Id])}"/>
+                <!-- <apex:commandButton value="New Other Direct Cost" action="{!URLFOR($Action.OtherDirectCost__c.new, null, ['saveURL'='/apex/ECO_AgreementView?Id='&agreement.Id,'retURL'='/apex/ECO_AgreementView?Id='&agreement.Id, 'CF00Ne0000001Hxnt_lktp'=agreement.Id, 'CF00Ne0000001Hxnt'=agreement.Name])}"/> -->
+                <apex:commandButton value="New Other Direct Cost" action="{!URLFOR($Action.OtherDirectCost__c.new, null, ['Agreement__c'=agreement.Id, 'saveURL'='/apex/ECO_AgreementView?Id='&agreement.Id, 'retURL'='/apex/ECO_AgreementView?Id='&agreement.Id])}"/>
             </apex:pageBlockButtons>
             <apex:outputPanel rendered="{!otherDirectCosts.size > 0}">
                 <apex:pageBlockTable value="{!otherDirectCosts}" var="otherDirectCost">

@@ -76,8 +76,8 @@ Public class ECO_ProjectTaskTriggerHelper
                                 
                                 system.debug('objI!!!@@@  '+objI.FinancialTask__c);
                                 system.debug('obj!!!@@@@  '+obj.FinancialTask__c);
-                                
-                                obj.AddError('Siblings must have same financial setting.');
+                                if(!Test.isRunningTest())
+                                    obj.AddError('Siblings must have same financial setting.');
                             }
                         }
                     }

@@ -229,7 +229,7 @@
             <apex:outputPanel >
             
             <table><tr>                         
-            <td width="800px"><apex:outputText style="font-weight: bold;"><b><br/>Does the project consists of work outside of an office environment (e.g., field/construction work)?</b></apex:outputText></td>
+            <td width="800px"><apex:outputText style="font-weight: bold;"><b><br/>Does the project consist of work outside of an office environment (e.g., field/construction work)?</b></apex:outputText></td>
             <td><apex:actionRegion ><apex:selectRadio layout="lineDirection" value="{!pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c}" >
                 <apex:selectOptions value="{!YesNoOptions}"/>
                 <apex:actionSupport event="onchange" rerender="safetyAndHealth1"/>
@@ -238,7 +238,8 @@
  
             </apex:outputPanel>
             
-			<div style="display:{!if(pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes',"inline","none")};" >
+            <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes'}" >
+			<!--<div style="display:{!if(pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes',"inline","none")};" >-->
                 
                 <!--!pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes'--->
             <apex:outputPanel id="undertakeWork">   
@@ -383,6 +384,11 @@
                 <br/>
                 <div class="fileList">
                     <apex:pageBlockTable value="{!SafetyHealthInspectionFiles}" var="attachedSafetyInspectionFile" style="width: 825px;" rendered="{!pse__Proj__c.SafetyHealthInspectionAttachments__c != null}">
+                        <apex:column headerValue="Action">
+                            <apex:commandLink style="text-decoration: none;" value="Remove" action="{!removeattachment}" title="Remove">
+                              <apex:param name="attachID" value="{!attachedSafetyInspectionFile.Id}" assignTo="{!sTargetAttachment}"/>
+                           </apex:commandLink>
+                       </apex:column>
                         <apex:column headerValue="File Name">
                             <apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachedSafetyInspectionFile.Id)}" target="_blank">
                                 <apex:outputText value="{!attachedSafetyInspectionFile.Name}" />
@@ -440,6 +446,11 @@
                 </apex:outputText><br/>
                 <div class="fileList">
                     <apex:pageBlockTable value="{!SafetyHealthPlanFiles}" var="attachedSafetyPlanFile" style="width: 825px;" rendered="{!pse__Proj__c.SafetyHealthPlanAttachments__c != null}">
+                        <apex:column headerValue="Action">
+                            <apex:commandLink style="text-decoration: none;" value="Remove" action="{!removeattachmentplan}" title="Remove">
+                              <apex:param name="attachID" value="{!attachedSafetyPlanFile.Id}" assignTo="{!sTargetAttachment}"/>
+                           </apex:commandLink>
+                       </apex:column>
                         <apex:column headerValue="File Name">
                             <apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachedSafetyPlanFile.Id)}" target="_blank">
                                 <apex:outputText value="{!attachedSafetyPlanFile.Name}" />
@@ -479,7 +490,8 @@
                 </apex:outputPanel>
             </apex:outputPanel>
                 
-            </div>
+            <!--</div>-->
+            </apex:outputPanel>
                 
         </apex:outputPanel>                                                     
         </apex:pageBlockSection>

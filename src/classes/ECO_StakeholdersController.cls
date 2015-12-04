@@ -488,11 +488,11 @@ public with sharing class ECO_StakeholdersController
 		if(queryContactName != null && queryContactName != ''){
 			if(queryContactName.trim().contains(' ')){
 				List<String> nameSplit = queryContactName.trim().split(' ');
-				firstName = nameSplit[0];
-				lastName = nameSplit[nameSplit.size() - 1];
+				firstName = String.escapeSingleQuotes(nameSplit[0].replace(',', ''));
+				lastName = String.escapeSingleQuotes(nameSplit[nameSplit.size() - 1].replace(',', ''));
 			}
 			else{
-				firstName = queryContactName;
+				firstName = String.escapeSingleQuotes(queryContactName);
 			}
 		}
 		if(queryType == 'Delegate'){
@@ -555,7 +555,6 @@ public with sharing class ECO_StakeholdersController
 				delegateQuery += ' (Start_Date__c <= ' + convertStringSOQLString(startDate);
 				delegateQuery += ' AND(End_Date__c = NULL OR End_Date__c >= ' + convertStringSOQLString(startDate) + '))';
 			}
-			system.debug('***delgateQuery ' + delegateQuery);
 			List<Delegate__c> delegates = Database.query(delegateQuery);
 			Set<Id> delegateIds = new Set<Id>();
 			pse__proj__c project = [Select Id, PnLManager__r.pse__Salesforce_User__c, CarryingOutOrganization__r.FAManager__r.pse__Salesforce_User__c, CarryingOutOrganization__c from pse__Proj__c where Id =: oProject.Id];
@@ -587,11 +586,13 @@ public with sharing class ECO_StakeholdersController
 					contactQuery += ' And (FirstName Like \'' + firstName + '%\' OR LastName Like \'' + firstName + '%\')';
 				}
 				else{
-					contactQuery += ' And (FirstName Like \'' + firstName + '%\' AND LastName Like \'' + lastName + '%\')';
+					contactQuery += ' And ((FirstName Like \'' + firstName + '%\' AND LastName Like \'' + lastName + '%\')';
+					contactQuery += ' OR (FirstName Like \'' + lastName + '%\' AND LastName Like \'' + firstName + '%\'))';
 				}
 			}
 		}
 		contactQuery += ' AND (NOT person_id__c Like \'%U\')';
+		contactQuery += ' AND pse__Salesforce_User__r.TrackingID__c != null';
 		contactQuery += ' LIMIT 50';
 		queryDelegates = Database.query(contactQuery);		
 		return null;
@@ -640,7 +641,7 @@ public with sharing class ECO_StakeholdersController
 				projectTeamMembers.add(projectTeamMember);
 
 				if(existingId != null && existingId != ''){
-					projectTeamMembers.add(new ProjectTeamMember__c(Id = existingId, EndDate__c = convertStringToDate(startDate).addDays(-1)));
+					projectTeamMembers.add(new ProjectTeamMember__c(Id = existingId, EndDate__c = insertReplaceProjectTeamMember.StartDate__c.addDays(-1)));
 				}
 				
 				upsert projectTeamMembers; 
@@ -716,8 +717,8 @@ public with sharing class ECO_StakeholdersController
 			}
 		}
 
-		if(startDte < Date.today() || startDte <= endDte){
-			insertReplaceProjectTeamMember.StartDate__c.addError('Effective Date cannot be less than current day or latest date of chosen role');
+		if(startDte <= endDte){
+			insertReplaceProjectTeamMember.StartDate__c.addError('Effective Date cannot be less than the latest date of chosen role');
 			isValid = false;
 		}
 
@@ -828,9 +829,9 @@ public with sharing class ECO_StakeholdersController
 			Integer surveyToRefresh = Integer.valueOf(ApexPages.currentPage().getParameters().get('surveyToRefresh'));
 			try{
 				Site__c site = [Select Id, Account__c from Site__c where Id =: lstSSW[surveyToRefresh].ss.Client__c];
-				List<Contact> contacts = [Select Id, Name from Contact where AccountId =: site.Account__c order by Name];
+				List<Contact> contacts = [Select Id, Name from Contact where AccountId =: site.Account__c and (not FirstName Like '%payable%') AND (not LastName Like '%payable%') order by Name];
 				lstSSW[surveyToRefresh].cOptions = new list<SelectOption>();
-				lstSSW[surveyToRefresh].cOptions.add(new SelectOption(' ', '--None--'));
+				lstSSW[surveyToRefresh].cOptions.add(new SelectOption('&nbsp;', '--None--'));
 				for(Contact contact : contacts){
 					lstSSW[surveyToRefresh].cOptions.add(new SelectOption(contact.Id, contact.Name));
 				}
@@ -840,6 +841,14 @@ public with sharing class ECO_StakeholdersController
 			}
 		}
     	return null;
+    }
+
+    //formats the date sent to the proper locale format
+    @RemoteAction
+    public static String formatDate(String currentDate) {
+    	Date newDate = Date.parse(currentDate);
+    	newDate = newDate.addDays(1);
+    	return newDate.format();
     }
 
 	//removes a record from the related lists
@@ -961,7 +970,7 @@ public with sharing class ECO_StakeholdersController
             cOptions = new list<SelectOption>();
             if(contacts != null){
             	cOptions = new list<SelectOption>();
-				cOptions.add(new SelectOption(' ', '--None--'));
+            	cOptions.add(new SelectOption('&nbsp;', '--None--'));
 				for(Contact contact : contacts){
 					cOptions.add(new SelectOption(contact.Id, contact.Name));
 				}

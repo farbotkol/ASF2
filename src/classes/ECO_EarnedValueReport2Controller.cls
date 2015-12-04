@@ -38,6 +38,7 @@ public with sharing class ECO_EarnedValueReport2Controller {
     public static final String IN_PROGRESS = 'In-progress';
     
     public static final String COMMITTED = 'Committed';
+  
     
     /*
      * Returns a map with key-value pairs where the
@@ -335,6 +336,12 @@ public with sharing class ECO_EarnedValueReport2Controller {
                 projectTeamMembersForAssign.add(option);
 
                 for (ProjectTeamMember__c member : members) {
+                    if (member.Contact__r.pse__Salesforce_User__c == null)
+                        continue;
+
+                    if (member.name == null)
+                        continue;
+                    
                     option = new SelectOption(member.Contact__r.pse__Salesforce_User__c, member.name);
                     projectTeamMembers.add(option);
                     projectTeamMembersForAssign.add(option);

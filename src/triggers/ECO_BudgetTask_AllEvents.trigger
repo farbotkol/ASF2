@@ -16,6 +16,7 @@ after update, before insert, before update) {
 		}
 	} else if (trigger.isBefore) {
 		if (trigger.isInsert) {
+            ECO_BudgetTaskTriggers.setCurrency(trigger.new);
 			ECO_BudgetTaskTriggers.calculateDepth(trigger.new);
 		} else if (trigger.isUpdate) {
 			ECO_BudgetTaskTriggers.calculateDepth(trigger.new);

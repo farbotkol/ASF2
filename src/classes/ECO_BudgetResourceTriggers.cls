@@ -138,6 +138,23 @@ public without sharing class ECO_BudgetResourceTriggers {
 		
 	}
 
+	public static void setCurrency(List<BudgetResource__c> brNew) {
+    	if (!run) {
+    		return;
+    	}
+
+    	Id bhId = brNew[0].BudgetHeader__c;
+    	// Get project currency
+        BudgetHeader__c budgetHeader = [Select Id, Project__r.CurrencyIsoCode From BudgetHeader__c Where Id = :bhId];
+
+
+        String projectCurrency = budgetHeader.Project__r.CurrencyIsoCode;
+
+        for (BudgetResource__c br : brNew) {
+        	br.CurrencyIsoCode = projectCurrency;
+            
+        }
+    }
 	public static void calculateMultiplier(List<BudgetResource__c> brNew) {
 		if (!run) {
 			return;

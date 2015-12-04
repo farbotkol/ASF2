@@ -59,12 +59,34 @@
                     break;
             }
         }
+
+        function hudCreateNavigate(){
+            var selectBox = document.getElementById("navigationCreateDropdown");
+            var selectedValue = selectBox.options[selectBox.selectedIndex].value;
+            
+            switch(selectedValue) {
+                case 'createChangeOrder':
+                    createChangeOrder();
+                    break;
+                case 'createSpecificEAC':
+                    createSpecificEAC();
+                    break;
+                case 'createGenericEAC':
+                    createGenericEAC();
+                    break;
+                case 'createEstimate':
+                    createEstimate();
+                    break;
+            }
+        }
+
     </script>
     
     <apex:sectionHeader title="Budget Manager" />
     
     <div id="HUD">
         <apex:form >
+            <apex:commandButton action="{!gotoAgreements}" value="Manage Agreements" styleClass="btn btn-default hudButton" />
             <select onchange="hudNavigate();" id="navigationDropdown">
                 <option>View...</option>
                 <option value="showBudgetList">Budget List</option>
@@ -78,8 +100,17 @@
                 </apex:outputPanel>
             </select>
 
-            <apex:commandButton action="{!createChangeOrder}" value="New Change Order" styleClass="btn btn-default hudButton" />
-            <apex:commandButton action="{!createEAC}" value="New EAC" styleClass="btn btn-default hudButton" />         
+           <!-- <apex:commandButton action="{!createChangeOrder}" value="New Change Order" styleClass="btn btn-default hudButton" />
+            <apex:commandButton action="{!createEAC}" value="New EAC" styleClass="btn btn-default hudButton" />  -->
+
+            <select onchange="hudCreateNavigate();" id="navigationCreateDropdown">
+                <option>Create...</option>
+                <option value="createChangeOrder">New Change Order</option>                    
+                <option value="createSpecificEAC">New Specific EAC</option>
+                <option value="createGenericEAC">New Generic EAC</option>
+                <option value="createEstimate">New Estimate</option>
+            </select>
+
             <apex:commandButton action="{!gotoSetup}" value="Setup" styleClass="btn btn-default hudButton" />
             <apex:commandButton action="{!returnToProject}" value="Return to Project" styleClass="btn btn-default hudButton" />
         </apex:form>
@@ -98,6 +129,11 @@
         <apex:actionFunction action="{!showSubTab}" name="showSubTab" />
         <apex:actionFunction action="{!showODCTab}" name="showODCTab" />
         <apex:actionFunction action="{!showContTab}" name="showContTab" />
+
+        <apex:actionFunction action="{!createChangeOrder}" name="createChangeOrder" />
+        <apex:actionFunction action="{!createEAC}" name="createSpecificEAC" />
+        <apex:actionFunction action="{!createGenericEAC}" name="createGenericEAC" />
+        <apex:actionFunction action="{!createEstimate}" name="createEstimate" />
 
         <c:ECO_RiskFlyout PlanElement="Budget" ProjectID="{!sProjectId}" />
         <c:ECO_AssumptionFlyout PlanElement="Budget" ProjectID="{!sProjectId}" />

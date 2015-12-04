@@ -299,7 +299,7 @@ public with sharing class ECO_ProjectSetupController {
 
         list<user> lUser = [SELECT ECO_OrganizationName__c FROM User WHERE ID =:UserInfo.getUserId()];
 
-        lUserOrganizations = [SELECT Id, Name, OrganizationName__c, GeographyName__c, Region__c, District__c, Department__c, BusinessLineName__c, LocationName__c, PLManagerContact__c, ProjectOwning__c, FinanceandAccountingManagerContact__c, CFOorDelegateContact__c, OUID__c, CurrencyIsoCode, ProjectApprover__c, ProjectAccountant__c, ProjectAccountant2__c, FinanceLead2__c FROM OrganizationString__c WHERE Name =: lUser[0].ECO_OrganizationName__c and ProjectOwning__c=true];
+        lUserOrganizations = [SELECT Id, Name, OrganizationName__c, GeographyName__c, Region__c, District__c, Department__c, BusinessLineName__c, LocationName__c, PLManagerContact__c, ProjectOwning__c, FinanceandAccountingManagerContact__c, CFOorDelegateContact__c, OUID__c, CurrencyIsoCode, ProjectApprover__c, ProjectAccountant__c, ProjectAccountant2__c, FinanceLead2__c FROM OrganizationString__c WHERE Name =: lUser[0].ECO_OrganizationName__c and ProjectOwning__c=true and (InactiveDate__c > TODAY OR InactiveDate__c = null)];
 
         if(lUserOrganizations.size() > 0){
             userOrg = lUserOrganizations[0];
@@ -322,11 +322,14 @@ public with sharing class ECO_ProjectSetupController {
             return null;
         }
 
+        system.debug('** GOT HERE: ' + userOrg);
+
         oSite.Account__r.name = oSiteSearch.name; 
         oSite.City__c = oSiteSearch.city;
         oSite.Country__c = oSiteSearch.country;       
         oSite.State__c = oSiteSearch.province;
 
+        string oracleRTFilter = Schema.Sobjecttype.Account.getRecordTypeInfosByName().get('Oracle Only').getRecordTypeId();
         string strSOQL = 'SELECT ';
         string strWhereClause = ' WHERE '; 
         boolean boolAtLeastOne = false;
@@ -341,7 +344,7 @@ public with sharing class ECO_ProjectSetupController {
             
             // Only add parameters to the "WhereClause" string if they contain valid values. 
             // NOTE: only strings are supported by this code.
-            if ( recursiveGet(oSite,fsmField.getFieldPath()) != null) {
+            if ( recursiveGet(oSite,fsmField.getFieldPath()) != null && recursiveGet(oSite,fsmField.getFieldPath()) != '') {
                 strWhereClause += fsmField.getFieldPath() + ' LIKE \'%' + recursiveGet(oSite,fsmField.getFieldPath()) + '%\' AND ';
                 boolAtLeastOne = true;
             }
@@ -355,20 +358,29 @@ public with sharing class ECO_ProjectSetupController {
         }
         
         if(bSearchOutsideUserOrg){
-            strSOQL += ' ORDER BY Account__r.name ASC LIMIT ' + sSiteLimit;
+            if(boolAtLeastOne){
+                strSOQL += ' and Account__r.recordtypeid !=: oracleRTFilter ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+            } else {
+                strSOQL += ' WHERE Account__r.recordtypeid !=: oracleRTFilter ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+            }
         } else {
 
             string userOrgID = userOrg.OUID__c;
 
             if(boolAtLeastOne){
-                strSOQL += ' AND OUID__c =: userOrgID ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+                strSOQL += ' AND OUID__c =: userOrgID and Account__r.recordtypeid !=: oracleRTFilter ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
             } else {
-                strSOQL += ' WHERE OUID__c =: userOrgID ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+                strSOQL += ' WHERE OUID__c =: userOrgID and Account__r.recordtypeid !=: oracleRTFilter ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
             }
         }
 
+        system.debug('** GOT HERE: ' + strSOQL);
+
         lstSitesSearchResults = (list<Site__c>)Database.query(strSOQL);
         
+        system.debug('** GOT HERE: ' + lstSitesSearchResults.size());
+
+
         IF(lstSitesSearchResults.size() < integer.valueof(siteLessLIMIT)){
             bShowMoreButtonSite = false;
         } else {
@@ -381,20 +393,29 @@ public with sharing class ECO_ProjectSetupController {
             
             map<string, Site__c> mapUniqueSites = new map<string, Site__c>();
             mapSearchSites = new map<id, Site__c>();
+            list<Site__c> nullSearchSites = new list<site__c>();
 
             for (Site__c oSearchSite: lstSitesSearchResults){
-                if(mapUniqueSites.containskey(oSearchSite.OracleCustomerID__c)){
-                    if(oSearchSite.CustomerSiteUseCode__c == 'BILL_TO') {
+                if(oSearchSite.OracleCustomerID__c == null){
+                    nullSearchSites.add(oSearchSite);
+                } else {
+                    if(mapUniqueSites.containskey(oSearchSite.OracleCustomerID__c)){
+                        if(oSearchSite.CustomerSiteUseCode__c == 'BILL_TO') {
+                            mapSearchSites.put(oSearchSite.id, oSearchSite);
+                            mapUniqueSites.put(oSearchSite.OracleCustomerID__c, oSearchSite);
+                        }
+                    } else {
                         mapSearchSites.put(oSearchSite.id, oSearchSite);
                         mapUniqueSites.put(oSearchSite.OracleCustomerID__c, oSearchSite);
                     }
-                } else {
-                    mapSearchSites.put(oSearchSite.id, oSearchSite);
-                    mapUniqueSites.put(oSearchSite.OracleCustomerID__c, oSearchSite);
                 }
             }
 
             lstSitesSearchResults = mapUniqueSites.values();
+
+            if(nullSearchSites.size() >0){
+                lstSitesSearchResults.addall(nullSearchSites);
+            }
 
 
         }
@@ -579,17 +600,15 @@ public with sharing class ECO_ProjectSetupController {
 
     public PageReference Step2(){
 
-        for (SiteWrapper oSiteWrapper: lstSites) {
-            if(oSiteWrapper.booIsBilling && oSiteWrapper.billingContact == null){
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'You must select a client for each billing client.');
-                ApexPages.addMessage(oMsg);  
-                return null; 
-            }
+        if(canContinue()){
+                tab2enabled = true;
+                tabState = 'name2';    
+                return null;   
+        } else {
+                return null;
         }
 
-        tab2enabled = true;
-        tabState = 'name2';    
-        return null;    
+ 
     }    
 
 
@@ -901,9 +920,42 @@ public with sharing class ECO_ProjectSetupController {
         return null;
     }*/
 
+    public boolean canContinue()
+    {
+        boolean bIsValid = true;
+        boolean noEmptyCB = true;
+        Decimal dSiteTotal = 0;
+
+        for (SiteWrapper oSiteWrapper:lstSites)
+        {
+            Decimal dPercentage = ECO_Utils_String.NullCheck(oSiteWrapper.contributions); 
+            dSiteTotal += dPercentage;
+
+            if(oSiteWrapper.booIsBilling && oSiteWrapper.billingContact == null){
+                noEmptyCB = false;
+            }
+        }
+
+        if(!noEmptyCB)
+        {
+            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'You must select a contact for each billing client.');
+            ApexPages.addMessage(oPageMessage);
+            bIsValid = false;
+        }
+
+        if(dSiteTotal != 100)
+        {
+            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Sites does not total 100%.');
+            ApexPages.addMessage(oPageMessage);
+            bIsValid = false;
+        }       
+        
+        return bIsValid;          
+    }
+
     public boolean isValid()
     {
-        boolean bIsValid = false;
+        boolean bIsValid = true;
         boolean noEmptyCB = true;
         Decimal dTotal = 0;
         Decimal dSiteTotal = 0;
@@ -913,7 +965,7 @@ public with sharing class ECO_ProjectSetupController {
             Decimal dPercentage = ECO_Utils_String.NullCheck(oSiteWrapper.contributions); 
             dSiteTotal += dPercentage;
 
-            if(oSiteWrapper.billingContact == null){
+            if(oSiteWrapper.booIsBilling && oSiteWrapper.billingContact == null){
                 noEmptyCB = false;
             }
         }
@@ -928,26 +980,31 @@ public with sharing class ECO_ProjectSetupController {
         {
             ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'All selected sites must have a billing contact');
             ApexPages.addMessage(oPageMessage);
-        } else {
-            bIsValid = true;            
+            bIsValid = false;
         }
 
         if(dSiteTotal != 100)
         {
             ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Sites does not total 100%.');
             ApexPages.addMessage(oPageMessage);
-        } else {
-            bIsValid = true;
-        }
+            bIsValid = false;
+        } 
 
         if(dTotal != 100)
         {
             ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Organizations does not total 100%.');
             ApexPages.addMessage(oPageMessage);
-        } else {
-            bIsValid = true;
+            bIsValid = false;
         }
+        
+        if(oPrimaryOrganization == null){
+            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'Primary Organization has not been selected.');
+            ApexPages.addMessage(oPageMessage);    
+            bIsValid = false;        
+        }
+
         return bIsValid;
+
     }
     
     public PageReference ProjectDetailNext(){
@@ -991,7 +1048,7 @@ public with sharing class ECO_ProjectSetupController {
 
     public PageReference SelectPrimary(){
         for(OrganizationWrapper oSelectedProjectOrganization: lSelectedOrganizations){
-            oSelectedProjectOrganization.strType = 'Secondary';
+            oSelectedProjectOrganization.strType = 'Supporting';
         }
 
         if (mapOrganizationIdToProjectOrganization.containskey(sSelectedOrganizationId)) {
@@ -1029,10 +1086,10 @@ public with sharing class ECO_ProjectSetupController {
     public PageReference SelectSecondary(){
 
         if (mapOrganizationIdToProjectOrganization.containskey(sSelectedOrganizationId)) {
-            mapOrganizationIdToProjectOrganization.get(sSelectedOrganizationId).strType = 'Secondary';
+            mapOrganizationIdToProjectOrganization.get(sSelectedOrganizationId).strType = 'Supporting';
         } else {
             OrganizationWrapper oNewProjectOrganization = new OrganizationWrapper(mapOrganizationString.get(sSelectedOrganizationId));
-            oNewProjectOrganization.strtype = 'Secondary';
+            oNewProjectOrganization.strtype = 'Supporting';
 
             if(lSelectedOrganizations.size() == 0){
                 oNewProjectOrganization.oProjectOrganization.ContributionPercent__c = 100;

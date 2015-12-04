@@ -366,7 +366,7 @@ public with sharing class ECO_AddResourceController2 {
 		return 0.0;	
 	}
 
-	public PageReference addGenericResource() {
+	public PageReference addGenericResourceTitle() {
 		BudgetResource__c newBudgetColumn = new BudgetResource__c();
 
 		newBudgetColumn.BudgetHeader__c = budgetHeader.id;
@@ -377,6 +377,27 @@ public with sharing class ECO_AddResourceController2 {
 		newBudgetColumn.ProjectTeamMember__c = null;
 		newBudgetColumn.OverrideRawCost__c = computeAverageCostRate();
 		newBudgetColumn.JobName__c = jobNameSelections;
+		newBudgetColumn.OverrideUplift__c = theProject.DefaultUpliftLabor__c;
+
+		insert newBudgetColumn;
+
+		PageReference pr = new PageReference('/apex/ECO_BudgetLabourDetail?id=' + budgetHeader.id);
+		pr.setRedirect(true);
+
+		return pr;
+	}
+
+	public PageReference addGenericResource() {
+		BudgetResource__c newBudgetColumn = new BudgetResource__c();
+
+		newBudgetColumn.BudgetHeader__c = budgetHeader.id;
+		newBudgetColumn.OverrideRatesOnLines__c = true;
+		newBudgetColumn.ResourceType__c = 'Labor/Person';
+
+		newBudgetColumn.ResourceName__c = null;
+		newBudgetColumn.ProjectTeamMember__c = null;
+		newBudgetColumn.OverrideRawCost__c = theProject.DefaultBillRate__c;
+		newBudgetColumn.JobName__c = null;
 		newBudgetColumn.OverrideUplift__c = theProject.DefaultUpliftLabor__c;
 
 		insert newBudgetColumn;

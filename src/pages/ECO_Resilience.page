@@ -129,8 +129,8 @@
         </div>
     </div>  
 
+     <apex:form id="frmId">        
 
-     <apex:form id="frmId">
 
         <apex:outputField value="{!pse__Proj__c.PrimaryCityName__c}" rendered="false"/>
         <apex:outputField value="{!pse__Proj__c.PrimaryCountry__c}" rendered="false"/>
@@ -140,7 +140,8 @@
 
             <apex:pageBlockButtons location="top">
                 <apex:commandButton value="Save" action="{!SaveSelectedLocations}" />
-                <apex:commandButton value="Return to Project" action="{!cancel}" />
+                <apex:commandButton value="Return to Project" action="{!cancel}" rendered="{!NOT(bFromSHE)}" />
+                <apex:commandButton value="Return to SH&E" action="{!cancel}" rendered="{!bFromSHE}" />
             </apex:pageBlockButtons>
            
             <apex:panelGrid columns="4" id="panelGridId">
@@ -148,12 +149,13 @@
                   <label for="city">Location (City): </label>
                   <input id="city" />
                 </div>
+
                
                 <apex:commandButton action="{!AddCity}" value="Add City" id="CityRiskAdd" rerender="ProjectCityPanel, messages, ResiliencePanel"  status="CityUpdateStatus" />
             </apex:panelGrid>
             <apex:inputHidden id="CityID" value="{!idCityID}" />
             <BR /><BR />
-
+            
             <apex:outputPanel id="ProjectCityPanel">
                 <apex:pageBlockSection title="Selected Locations"  columns="1" collapsible="false"></apex:pageBlockSection>
                 <apex:actionStatus id="CityUpdateStatus">
@@ -195,13 +197,16 @@
                             <apex:outputLabel value="Project Location Risk: " />
                             <apex:outputText value="{!projectRisk}" />
                             </div>
-
+                            <BR />
+                            <apex:outputPanel rendered="{!multipleCountry}">
+	       					<BR />
+             					You have selected project locations in 2 or more countries. Please consult with the AECOM Tax Management Team for advice and input into tax matters which may impact on your project.
+        					</apex:outputPanel>
                         </apex:outputPanel>
                     </apex:facet>
                 </apex:actionStatus>
             </apex:outputPanel>
             <BR /><BR /><BR />
-
 
             <BR /><BR /><BR />
         </apex:pageBlock>
@@ -378,6 +383,11 @@
 			<div class="ouputPanelSep">
                 <div class="fileList">
                     <apex:pageBlockTable value="{!OSP_AttachmentFiles}" var="attachedOSPFile" style="width: 825px;" rendered="{!pse__Proj__c.OSP_Attachment__c != null}">
+                        <apex:column headerValue="Action">
+                            <apex:commandLink style="text-decoration: none;" value="Remove" action="{!removeattachment}" title="Remove">
+                              <apex:param name="attachID" value="{!attachedOSPFile.Id}" assignTo="{!sTargetAttachment}"/>
+                           </apex:commandLink>
+                       </apex:column>
                         <apex:column headerValue="File Name">
                             <apex:outputLink value="{!URLFOR($Action.Attachment.Download, attachedOSPFile.Id)}" target="_blank">
                                 <apex:outputText value="{!attachedOSPFile.Name}" />

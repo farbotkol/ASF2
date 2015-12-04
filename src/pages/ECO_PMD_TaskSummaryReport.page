@@ -1,0 +1,50 @@
+<apex:page showHeader="false" sidebar="false"  standardStylesheets="false" 
+           standardController="pse__Proj__c" 
+           extensions="ECO_PMD_EarnedValueDetail_Controller">
+  
+  <apex:includeScript value="{!URLFOR($Resource.angular_1_4_7_min, 'angular.min.js')}"/>
+  <apex:includeScript value="{!URLFOR($Resource.angular_1_4_7_min, 'i18n/angular-locale_' + LOWER(locale) + '.js')}"/>
+  <apex:includeScript value="{!URLFOR($Resource.bootstrap_3_3_5_Namespaced, 'ui-bootstrap-tpls-0.14.3.min.js')}" />
+  <apex:includeScript value="{!URLFOR($Resource.agGrid210, 'dist/ag-grid.min.js')}"/>
+
+  <apex:stylesheet value="{!URLFOR($Resource.bootstrap_3_3_5_Namespaced, 'css-bs/bootstrap.min.css')}" />
+  <apex:stylesheet value="{!URLFOR($Resource.agGrid210, 'dist/ag-grid.min.css')}"/>
+  <apex:stylesheet value="{!URLFOR($Resource.agGrid210, 'dist/theme-fresh.min.css')}"/>
+  <apex:stylesheet value="{!URLFOR($Resource.ECO_agGrid, 'app/components/AngularGrid/angular-grid.directive.css')}"/>
+
+  <div ng-app="ecopmd">
+    <apex:composition template="ECO_PMD_Chrome2" >
+
+      <navigation-bar 
+          projectNumber="{!pse__Proj__c.ProjectNumber__c}" 
+          projectName="{!pse__Proj__c.name}"
+          projectId="{!Id}"
+          project-number="{!pse__Proj__c.ProjectNumber__c}" 
+          project-name="{!pse__Proj__c.name}"
+          project-id="{!Id}"  x="">
+      </navigation-bar>
+      
+      <apex:define name="mainContent">
+        <div class="ecopmd-ag-wrap"> <!-- bs outside -->
+          <task-summary-report 
+              project-id="{!pse__Proj__c.Id}" 
+              project-name="{!pse__Proj__c.ProjectNumber__c} - {!pse__Proj__c.name}">
+          </task-summary-report>
+        </div>
+
+        <!-- remove if not using broken ecosystem chrome -->
+        <div style="display:none;">
+            <div id="client-care-program" />
+            <div id="technical-practice-networks" />
+            <canvas id="case-incident-rate" /><span id="case-incident-rate-txt" />
+        </div>
+      </apex:define>
+
+      <apex:define name="belowFooter">
+        <c:ECO_PMD_ag_grid_js ></c:ECO_PMD_ag_grid_js>
+      </apex:define>
+    </apex:composition>
+
+  </div>
+  
+</apex:page>

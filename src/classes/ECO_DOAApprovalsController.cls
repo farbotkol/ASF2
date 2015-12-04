@@ -9,7 +9,7 @@ public with sharing class ECO_DOAApprovalsController {
     public String doaId {get;set;}
     public Group oGroup {get;set;}
     public ECO_DOAApprovalsController(ApexPages.StandardController stdcontroller) {
-    doaId = ApexPages.currentPage().getParameters().get('Id');
+		doaId = ApexPages.currentPage().getParameters().get('Id');
         init();
     }
     public void init(){
@@ -157,7 +157,7 @@ public with sharing class ECO_DOAApprovalsController {
             System.debug('inside submitDOA before update:   '+oDOA.Id+'    '+oDOA.AssigntoDoAApprovalQueue__c);
             if(oDOA.AssigntoDoAApprovalQueue__c != true){
                 oDOA.AssigntoDoAApprovalQueue__c = true;
-              update oDOA;
+            	update oDOA;
             }
             System.debug('inside submitDOA after update:   '+oDOA.Id+'    '+oDOA.AssigntoDoAApprovalQueue__c);
             return null;

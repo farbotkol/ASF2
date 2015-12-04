@@ -106,6 +106,21 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>EarnedValue__c</fullName>
+        <externalId>false</externalId>
+        <formula>if (and(not(isblank(TaskTotalApprovedCostSnapshot__c)),PercentComplete__c&gt;0),
+   TaskTotalApprovedCostSnapshot__c * (PercentComplete__c / 100),
+   0
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Earned Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>NotifyTaskOwner__c</fullName>
         <defaultValue>false</defaultValue>
         <description>used to fire workflow to notify task owner</description>

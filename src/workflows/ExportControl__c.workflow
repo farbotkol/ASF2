@@ -72,6 +72,16 @@
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Eco_Assign_to_Export_Controls_Team</fullName>
+        <field>OwnerId</field>
+        <lookupValue>EcoExportControlsTeam</lookupValue>
+        <lookupValueType>Queue</lookupValueType>
+        <name>Eco Assign to Export Controls Team</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>LookupValue</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Eco_Set_Owner_to_Export_Control_Team</fullName>
         <field>OwnerId</field>
         <lookupValue>EcoExportControlsTeam</lookupValue>
@@ -87,11 +97,15 @@
             <name>Ecosystem_Email_Export_Controls_Team</name>
             <type>Alert</type>
         </actions>
-        <active>false</active>
+        <actions>
+            <name>Eco_Assign_to_Export_Controls_Team</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
         <criteriaItems>
-            <field>ExportControl__c.Status__c</field>
+            <field>ExportControl__c.SubmitforReview__c</field>
             <operation>equals</operation>
-            <value>Completed</value>
+            <value>True</value>
         </criteriaItems>
         <description>Should be handled via approval process notification.</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>

@@ -1,0 +1,160 @@
+<apex:component controller="ECO_PMD_Project_Schedule_Controller">
+	<apex:attribute name="projectId" description="Project Number" type="String" required="true" />
+
+	 <!-- <apex:stylesheet value="{!URLFOR($Resource.ecopmd, 'ecopmd.css')}" />
+    -->
+    <style id="ecopmd.css">
+        .pmd-panel {min-width: 400px;}
+        .pmd-panel .panel-footer {margin-top:2px;margin-bottom: 2px;}
+  
+        .pmd-table-schedule {width:100%;}
+        .pmd-table-schedule th {text-align:left;background-color:#CCCCCC;}
+        .pmd-table-schedule tr:nth-child(even) {background-color:#FFFFFF;}
+        .pmd-table-schedule tr:nth-child(odd) {background-color:#DDDDDD;}
+
+        .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+
+        .pmd-table {width:100%;}
+        .pmd-table th {text-align:center;background-color:#CCCCCC;}
+        .pmd-table tr:nth-child(even) {background-color:#FFFFFF;}
+        .pmd-table tr:nth-child(odd) {background-color:#DDDDDD;}
+
+        .k-grid-content table{
+             border-spacing: 3px !important;
+             border-collapse: separate;
+        }
+    </style>
+
+ 
+
+  <div ng-controller="dashProjectScheduleController" class="pmd-panel panel panel-default" >
+    
+    <div class="panel-heading">
+      {!$Label.ECO_PMD_PROJECT_SCHEDULE_TITLE}
+    </div>
+
+    <div class="panel-body">
+      <!--
+      <table class="pmd-table-schedule" >
+        <tr>
+            <th>{!$Label.ECO_PMD_PROJECT_SCHEDULE_NUMBER}</th>
+            <th>{!$Label.ECO_PMD_PROJECT_SCHEDULE_TASK_NAME}</th>
+            <th>{!$Label.ECO_PMD_PROJECT_SCHEDULE_BL_END}</th>
+            <th>{!$Label.ECO_PMD_PROJECT_SCHEDULE_FORECAST_END}</th>
+            <th align="right">{!$Label.ECO_PMD_PROJECT_SCHEDULE_VARIANCE}</th>
+        </tr>
+        <tr ng-repeat="task in SFDCDATA">
+          <td ng-bind="task.ProjectTaskNumber__c"></td>
+          <td ng-bind="task.Name"></td>
+          <td ng-bind="task.pse__End_Date__c | date:'shortDate' "></td>
+          <td ng-bind="task.ForecastEndDate__c| date:'shortDate' "></td>
+          <td align="right" ng-bind="task.ScheduleVariance__c | number:2"></td>
+        </tr>
+      </table>
+    `-->
+      <div id="projSchedGrid" class="pmd-table"></div>      
+    </div>
+    
+   <c:ECO_PMD_PanelFooter panelID="projsched">{!$Label.ECO_PMD_PROJSCHED_MOREINFO_DETAILS}</c:ECO_PMD_PanelFooter>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.0.1/faker.min.js"></script>
+  <script id="dashpanel.js">
+      (function(){
+    
+        angular
+        .module("ecopmd")
+        .controller("dashProjectScheduleController",dashProjectScheduleController);
+        
+        function dashProjectScheduleController($scope,$locale){
+          $scope.exportedVariable = [];
+          $scope.exportedFunction = exportedFunction;
+            
+          loadData($scope);
+          $scope.isCollapsed = true;
+         
+                                                                            
+          function internalFunction(param){
+            return param;
+          }
+            
+          function exportedFunction(){
+              this.SFDCDATA=[];
+              loadData(this); // this = $scope
+          }
+
+          function createGrid() {
+                        $("#projSchedGrid").kendoGrid({
+                            dataSource: {
+                                data: $scope.SFDCDATA,
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            ProjectTaskNumber__c: { type: "string" },
+                                            Name: { type: "string" },
+                                            pse__End_Date__c: { nullable: true, type: "number" },
+                                            ForecastEndDate__c: {  nullable: true, type: "number" },
+                                            ScheduleVariance__c: { type: "number" }
+                                            
+                                        }
+                                    }
+                                },
+                                pageSize: 10
+                            },
+                            //height: 320,
+                            //width: 100%,
+                            scrollable: true,
+                            sortable: true,
+                            filterable: true,
+                            pageable: {
+                            
+                                pageSizes: true,
+                                buttonCount: 5
+                            },
+                            columns: [
+                                 { field: "ProjectTaskNumber__c", title: "{!$Label.ECO_PMD_PROJECT_SCHEDULE_NUMBER}", width: "50px"},
+                                { field: "Name", title: "{!$Label.ECO_PMD_PROJECT_SCHEDULE_TASK_NAME}", width: "150px"},
+                                { field: "pse__End_Date__c", title: "{!$Label.ECO_PMD_PROJECT_SCHEDULE_BL_END}",attributes:{style:"text-align:right;"}
+                                  , width: "70px", template: "#: kendo.toString(new Date(pse__End_Date__c), 'yyyy MMM dd')  #"  },
+                                { field: "ForecastEndDate__c", title: "{!$Label.ECO_PMD_PROJECT_SCHEDULE_FORECAST_END}", 
+                                    template: "#: kendo.toString(new Date(ForecastEndDate__c), 'yyyy MMM dd')  #" ,attributes:{style:"text-align:right;"}, width: "70px"},
+                                { field: "ScheduleVariance__c", title: "{!$Label.ECO_PMD_PROJECT_SCHEDULE_VARIANCE}", format: "{0:n0}",attributes:{style:"text-align:right;"}, width: "70px"}
+                            ]
+                        });
+                    }
+                  
+
+          function loadData($scope){
+            $scope.exportedVariable.push(internalFunction("value"));
+            ECO_PMD_Project_Schedule_Controller.ProjectScheduleTasks(
+              '{!projectId}',
+              function(result, event){
+                if(event.status) {
+                  $scope.$apply(function(){
+                      console.log(result);
+                      $scope.SFDCDATA = result ;
+                      createGrid(); 
+                  });
+                }
+              });
+          }
+
+          /*function mapSFDCResults(result) {
+            // assumes result is an array of objects
+            var data =[];
+            angular.forEach(result, function (val, key) {
+              this.push(mapSFDCItem(val, key));
+            },data);
+            return data;
+          }
+
+          function mapSFDCItem(val, key) {
+            // https://github.com/marak/Faker.js/
+            val.missingElement = (val.missingElement)?val.missingElement:(faker.finance.amount());
+            return val;
+          }*/
+        }
+    
+      })();
+  </script>
+</apex:component>

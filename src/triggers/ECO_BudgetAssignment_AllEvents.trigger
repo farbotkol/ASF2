@@ -8,6 +8,7 @@ trigger ECO_BudgetAssignment_AllEvents on BudgetAssignment__c (
 	after undelete) {
 
 	if (Trigger.isBefore && Trigger.isInsert) {
+        ECO_BudgetAssignmentTriggers.setCurrency(trigger.new);  
 		ECO_BudgetAssignmentTriggers.setRateDefaults(trigger.new);		
 	} else if (Trigger.isAfter) {
 		if ((trigger.isInsert) || (trigger.isUpdate)) {

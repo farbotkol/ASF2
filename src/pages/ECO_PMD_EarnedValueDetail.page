@@ -1,0 +1,622 @@
+<apex:page showHeader="true" sidebar="false"  
+            standardController="pse__Proj__c" extensions="ECO_PMD_EarnedValueDetail_Controller">
+
+    <apex:includeScript value="{!URLFOR($Resource.angular_1_4_7_min, 'angular.min.js')}"/>
+    <!-- <apex:includeScript value="{!URLFOR($Resource.angular_1_4_7_min, 'i18n/angular-locale_' + LOWER(locale) + '.js')}"/>-->
+    <apex:includeScript value="{!URLFOR($Resource.bootstrap_3_3_5_Namespaced, 'ui-bootstrap-tpls-0.14.3.min.js')}" />
+    <apex:includeScript value="{!URLFOR($Resource.agGrid210, 'dist/ag-grid.min.js')}"/>
+
+    <apex:stylesheet value="{!URLFOR($Resource.bootstrap_3_3_5_Namespaced, 'css-bs/bootstrap.min.css')}" />
+    <apex:stylesheet value="{!URLFOR($Resource.agGrid210, 'dist/ag-grid.min.css')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.agGrid210, 'dist/theme-fresh.min.css')}"/>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Faker/3.0.1/faker.min.js"></script>
+
+    <!--<apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>-->
+    <apex:includeScript value="{!URLFOR($Resource.KendoUi, 'KendoUi/js/jquery.min.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.KendoUi, 'KendoUi/js/kendo.all.min.js')}"/>
+    <apex:stylesheet value="{!URLFOR($Resource.KendoUi, 'KendoUi/Style/kendo.common.min.css')}" /> 
+    <apex:stylesheet value="{!URLFOR($Resource.KendoUi, 'KendoUi/Style/kendo.default.min.css')}" /> 
+
+
+     <!-- Move to components?
+    
+    <apex:includeScript value="{!URLFOR($Resource.ECO_ChartJS, 'Chart.js')}"/>
+    <apex:includeScript value="{!URLFOR($Resource.ECO_AngularChart, 'angular-chart.js')}"/>-->
+    <style id="ecopmd.css">
+        .pmd-panel {min-width: 400px;}
+        .pmd-panel .panel-footer {margin-top:2px;margin-bottom: 2px;}
+        .pmd-kpi {width:100%;table-layout:fixed;margin-bottom:10px;}
+        .pmd-kpi td {text-align:center;}
+        .pmd-kpi tr:nth-child(odd) {font-size:xx-large;}
+        .pmd-kpi tr:nth-child(even) {font-size:x-small;}
+        
+        .pmd-table {width:100%;}
+        .pmd-table th {text-align:center;background-color:#CCCCCC;}
+        .pmd-table tr:nth-child(even) {background-color:#FFFFFF;}
+        .pmd-table tr:nth-child(odd) {background-color:#DDDDDD;}
+
+        .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+    </style>
+    <script id="ecopmdearnedvalueModule.js">
+        (function() {
+            'use strict';
+
+            var ngModule = angular.module('ecopmd', ['agGrid', 'twygmbh.auto-height', 'ui.bootstrap', 'ecopmd.navigator']);
+
+            ngModule.service('faker', function() { return window.faker; });
+
+        }());
+    </script>
+
+    <div ng-app="ecopmd">
+        <apex:composition template="ECO_PMD_Chrome">
+
+            <apex:define name="mainContent">
+               
+                <div class="ecopmd-ag-wrap">
+                     
+                    <div>
+                        <div class="row nopadding">
+                   
+                            <div class="col-md-4 nopadding">   
+                                <c:ECO_PMD_xmpl_Panel panelTitle="Earned Value Graph" panelContentHeight="200px">
+                                    <div style="text-align:center;font-size:larger;">
+                                        <span>Under Maintenance</span>
+                                    </div>
+                                </c:ECO_PMD_xmpl_Panel>
+                                <!-- <c:ECO_PMD_EarnedValueChart projectId="{!pse__Proj__c.Id}"></c:ECO_PMD_EarnedValueChart> -->
+                            </div>
+                             <div class="col-md-4 nopadding">   
+                                <c:ECO_PMD_EarnedValueCPIChart projectId="{!pse__Proj__c.Id}"></c:ECO_PMD_EarnedValueCPIChart>
+                            </div>
+
+                            <div class="col-md-4 nopadding">   
+                                <c:ECO_PMD_EarnedValueSPIChart projectId="{!pse__Proj__c.Id}"></c:ECO_PMD_EarnedValueSPIChart>
+                            </div>
+               
+                        </div>
+
+                        <div class="clearfix">
+                        </div> 
+
+                        <div class="row nopadding">
+                            <div class="col-md-12 nopadding"> 
+                                <eco-pmd-earned-value-report project-id="{!pse__Proj__c.Id}" 
+                                project-name="{!pse__Proj__c.OracleProjectnumber__c} - {!pse__Proj__c.name}" />
+                            </div>
+               
+                        </div>
+                       
+                    </div>
+
+                </div>
+                <!-- remove if not using broken ecosystem chrome -->
+                <div style="display:none;">
+                    <div id="client-care-program" />
+                    <div id="technical-practice-networks" />
+                    <canvas id="case-incident-rate" /><span id="case-incident-rate-txt" />
+                </div>
+           </apex:define>
+
+            <apex:define name="belowFooter">
+                <script id="ecopmd.earnedValueData">
+                    (function() {
+                        'use strict';
+
+                        angular
+                            .module('ecopmd')
+                            .service('earnedValueDataMock', earnedValueDataMock);
+                        
+                        angular
+                            .module('ecopmd')
+                            .service('earnedValueData', earnedValueData);
+
+                        earnedValueData.$inject = ['faker'];
+                        earnedValueDataMock.$inject = ['faker'];
+
+                        function taskOutlineDataProcessor(){
+
+                            function makeIterator(arrayParam){
+                                var nextIndex = 0;
+                                var array = arrayParam;
+                                function isDone(){
+                                    return nextIndex < array.length;
+                                }
+                                return {
+                                   next: function(){
+                                       return isDone() ?
+                                           {value: array[nextIndex++], done: false} :
+                                           {done: true};
+                                   },
+                                   current: function(){
+                                        return isDone() ? 
+                                            {value: array[nextIndex], done: false} :
+                                            {done: true};
+                                   }
+                                };
+                            }
+
+                            function tasksToTree(peers,iter){
+                                var node;
+                                while (!iter.current().done) {
+                                    if (peers.length == 0) {
+                                        peers.push({group:false, data:iter.next().value});
+                                    } else {
+                                        node = peers[peers.length-1];
+                                        if (iter.current().value.taskLevel > node.data.taskLevel) {
+                                            node.group = true;
+                                            node.expanded= true;
+                                            node.children=[];
+                                            tasksToTree(node.children,iter);
+                                        } else if (iter.current().value.taskLevel == node.data.taskLevel) {
+                                            peers.push({group:false, data:iter.next().value});
+                                        } else { return; }   
+                                    }
+                                }
+                                return peers;
+                            }
+
+                            function unflatten(arr) {
+                              var tree = [],
+                                  mappedArr = {},
+                                  arrElem,
+                                  mappedElem;
+
+                              // First map the nodes of the array to an object -> create a hash table.
+                              for(var i = 0, len = arr.length; i < len; i++) {
+                                arrElem = arr[i];
+                                mappedArr[arrElem.id] = arrElem;
+                                mappedArr[arrElem.id]['children'] = [];
+                              }
+
+
+                              for (var id in mappedArr) {
+                                if (mappedArr.hasOwnProperty(id)) {
+                                  mappedElem = mappedArr[id];
+                                  // If the element is not at the root level, add it to its parent array of children.
+                                  if (mappedElem.parentid) {
+                                    mappedArr[mappedElem['parentid']]['group']=true;
+                                    mappedArr[mappedElem['parentid']]['expanded']=true;
+                                    mappedArr[mappedElem['parentid']]['children'].push(mappedElem);
+                                  }
+                                  // If the element is at the root level, add it to first level elements array.
+                                  else {
+                                    tree.push(mappedElem);
+                                  }
+                                }
+                              }
+                              return tree;
+                            }
+
+                            return {
+                                makeIterator:makeIterator,
+                                tasksToTree: tasksToTree,
+                                unflatten: unflatten
+                            };
+                        }
+                 
+                        function earnedValueData(faker) {
+                            
+                            function loadData(vm,callback){
+                                ECO_PMD_EarnedValueDetail_Controller.EarnedValueTable(
+                                  '{!pse__Proj__c.Id}', // pse__Proj__c.Id for Page, projectId for Component
+                                  function(result, event){
+                                    if(event.status) {
+                                      vm.$scope.$apply(function(){
+                                          //vm.$scope.SFDCDATA = mapSFDCResults(result) ;
+                                          console.log("hi there");
+                                          callback(vm,mapSFDCResults(result));
+                                      });
+                                    }
+                                  });
+                            }
+
+                            function mapSFDCResults(result) {
+                                // assumes result is an array of objects
+                                var data =[];
+                                angular.forEach(result, function (val, key) {
+                                  this.push(mapSFDCItem(val, key));
+                                },data);
+                                var rowData = [];
+                                var outliner = taskOutlineDataProcessor();
+                                rowData = outliner.unflatten(data)
+                                return rowData;
+                            }
+
+                            function mapSFDCItem(val, key) {
+                                
+                                //TODO -- Put a breakpoint here -- map the values from live per the MOCK object
+                                // Test on Jake's project id=a32e00000005NMaAAM
+                                
+                                var fake = {};
+                                /* fake.CostBudgetOriginal__c = (10*faker.finance.amount());
+                                fake.TotalApprovedCost__c = fake.CostBudgetOriginal__c * (1+(faker.random.number(1000)/4000));
+                                fake.PercentComplete__c = (faker.random.number(1000)/1000);
+                                fake.EarnedValue__c = fake.TotalApprovedCost__c * fake.PercentComplete__c;
+                                fake.TotalProjectFunctionalBurdenedCost__c = fake.EarnedValue__c * (0.85+(faker.random.number(1000)/4000));
+                                fake.CPI__c = 1;
+                                fake.SPI__c = 1;
+                                fake.ScheduleVariance__c = 0;
+                                fake.CostForecastTrend__c = fake.TotalApprovedCost__c;
+                                fake.CostForecastVariance__c = fake.TotalApprovedCost__c - fake.CostForecastTrend__c;
+                                fake.Duration__c = 365;
+                                fake.percentSpentITD = (fake.TotalApprovedCost__c - fake.EarnedValue__c)/fake.TotalApprovedCost__c;*/
+                                fake.plannedCost = fake.EarnedValue__c;
+                                fake.costVariance = 0;
+                                // for TaskSummary
+                                /*fake.EAC = fake.TotalApprovedCost__c;
+                                fake.ETC = fake.EAC - fake.TotalProjectFunctionalBurdenedCost__c
+                                fake.burnAvg = fake.CostBudgetOriginal__c / 12;
+                                fake.burnETC = fake.TotalProjectFunctionalBurdenedCost__c + (fake.burnAvg * 4)
+                                fake.burnDur = (fake.ETC/fake.burnAvg);
+                                fake.approvedStart = faker.date.past();
+                                fake.approvedEnd = faker.date.future();
+                                fake.forecastStart = faker.date.past();
+                                fake.forecastEnd = faker.date.future();
+                                fake.costMTD = fake.burnAvg;
+                                fake.approvedNmnsr = fake.TotalApprovedCost__c * (faker.random.number(1000)/4000);
+                                fake.approvedRevenue = fake.TotalApprovedCost__c + fake.approvedNmnsr;*/
+
+
+                                var result = {
+                                  id:val.Id,parentid:val.pse__Parent_Task__c, group:false, expanded:false, 
+                                  data:{
+                                      Id                                        : val.Id
+                                    , ProjectTaskNumber__c                      : val.ProjectTaskNumber__c
+                                    , Name                                      : val.Name + " hello"
+                                    , pse__Order__c                             : val.pse__Order__c
+                                    , pse__Hierarchy_Depth__c                   : val.pse__Hierarchy_Depth__c
+                                    , IsChargeable__c                           : val.IsChargeable__c
+                                    , IsBillable__c                             : val.IsBillable__c
+                                    , IsTopLevelTask__c                         : val.IsTopLevelTask__c
+                                    , FinancialTask__c                          : val.FinancialTask__c
+                                    , pse__Parent_Task__r_Name                  : ''  /* d[] */
+                                    , pse__Parent_Task__r_Id                    : val.pse__Parent_Task__c
+                                    , CostBudgetOriginal__c                     : val.CostBudgetOriginal__c
+                                    , CostBudgetVariance__c                     : val.CostBudgetVariance__c
+                                    , TotalApprovedCost__c                      : val.TotalApprovedCost__c
+                                    , TotalProjectFunctionalBurdenedCost__c     : val.TotalProjectFunctionalBurdenedCost__c
+                                    , EarnedValue__c                            : val.EarnedValue__c
+                                    , PercentComplete__c                        : val.PercentComplete__c
+                                    , CPI__c                                    : val.CPI__c
+                                    , SPI__c                                    : val.SPI__c
+                                    , ScheduleVariance__c                       : val.ScheduleVariance__c
+                                    , CostForecastTrend__c                      : val.CostForecastTrend__c
+                                    , CostForecastVariance__c                   : val.CostForecastVariance__c
+                                    , Duration__c                               : val.Duration__c
+                                    , taskDisplay                               : (val.ProjectTaskNumber__c + " - " + val.Name)
+                                    , percentSpentITD                           : val.PercentSpent__c
+                                    , plannedCost                               : fake.plannedCost
+                                    , costVariance                              : fake.costVariance
+                                    , EAC                                       : val.CostForecast__c
+                                    /*, ETC                                       : val.TotalEstimateCost__c
+                                    , burnAvg                                   : fake.burnAvg
+                                    , burnETC                                   : fake.burnETC
+                                    , burnDur                                   : fake.burnDur
+                                    , approvedStart                             : fake.approvedStart
+                                    , approvedEnd                               : fake.approvedEnd
+                                    , approvedStart                             : fake.forecastStart
+                                    , forecastEnd                               : fake.forecastEnd
+                                    , costMTD                                   : fake.costMTD
+                                    , approvedNmnsr                             : fake.Nmnsr
+                                    , approvedRevenue                           : fake.approvedRevenue*/
+                                 }
+                                };
+                                return result;
+                            };
+
+                            return { 
+                                getData: loadData
+                            };
+                        }
+
+                        function earnedValueDataMock(faker) {
+
+                            function loadData() {
+                                
+                                function generateRecord(d){
+                                    var result= {
+                                      id:d[2],parentid:d[4], group:false, expanded:false, 
+                                      data:{
+                                          Id                                        : d[2]
+                                        , ProjectTaskNumber__c                      : d[1]
+                                        , Name                                      : d[0]
+                                        , pse__Order__c                             : d[5]
+                                        , pse__Hierarchy_Depth__c                   : d[3]
+                                        , IsChargeable__c                           : (d[7]=="Y")
+                                        , IsBillable__c                             : true
+                                        , IsTopLevelTask__c                         : true
+                                        , FinancialTask__c                          : d[6]
+                                        , pse__Parent_Task__r_Name                  : ''  /* d[] */
+                                        , pse__Parent_Task__r_Id                    : d[4]
+                                        , CostBudgetOriginal__c                     : d[9]
+                                        , CostBudgetVariance__c                     : d[10]
+                                        , TotalApprovedCost__c                      : d[11]
+                                        , TotalProjectFunctionalBurdenedCost__c     : d[13]
+                                        , EarnedValue__c                            : d[16]
+                                        , PercentComplete__c                        : d[15]
+                                        , CPI__c                                    : d[18]
+                                        , SPI__c                                    : d[19]
+                                        , ScheduleVariance__c                       : d[21]
+                                        , CostForecastTrend__c                      : d[22]
+                                        , CostForecastVariance__c                   : d[24]
+                                        , Duration__c                               : d[12]
+                                        , taskDisplay : (d[1] + " - " + d[0])
+                                        , percentSpentITD : (d[13]/d[11])
+                                        , plannedCost : d[16] /* WRONG */
+                                        , costVariance : d[16] - d[13] /* WRONG*/
+                                        , eac : d[11] /* WRONG */
+                                     }
+                                    };
+                                    return result;
+                                };
+                                var modelData = 
+                                   [                    
+                                    ["1    Task 1 (not chargeable)" ,"1"    ,"abc0" ,0  ,"" ,0  ,"Y"    ,"N"    ,"N"    ,300000 ,"" ,300000 ,365    ,175000 ,0.583333333333333  ,0.416666666666667  ,125000 ,150000 ,1.4    ,0.833333333333333  ,25000  ,73 ,"" ,"" ,"" ]
+                                    ,["1.1 Subtask 1.1 (chargeable)"    ,"1.1"  ,"abc2" ,1  ,"abc0" ,0  ,"Y"    ,"Y"    ,"Y"    ,150000 ,"" ,150000 ,180    ,100000 ,0.666666666666667  ,0.5    ,75000  ,112500 ,1.33333333333333   ,0.666666666666667  ,-12500 ,90 ,"" ,"" ,"" ]
+                                    ,["1.2 Subtask 1.2 (chargeable)"    ,"1.2"  ,"abc1" ,1  ,"abc0" ,1  ,"Y"    ,"Y"    ,"N"    ,150000 ,"" ,150000 ,300    ,75000  ,0.5    ,0.333333333333333  ,50000  ,37500  ,1.5    ,1.33333333333333   ,37500  ,-75    ,"" ,"" ,"" ]
+                                    ,["1.2.1  Subtask 1.2.1 (not chargeable)"   ,"1.2.1"    ,"abc4" ,2  ,"abc1" ,0  ,"N"    ,"N"    ,"Y"    ,100000 ,"" ,100000 ,90 ,"" ,"" ,0.25   ,25000  ,25000  ,x  ,1  ,x  ,0  ,"" ,"" ,"" ]
+                                    ,["1.2.2 Subtask 1.2.2 (not chargeable)"    ,"1.2.2"    ,"abc3" ,2  ,"abc1" ,1  ,"N"    ,"N"    ,"Y"    ,50000  ,"" ,50000  ,20 ,"" ,"" ,0.5    ,25000  ,12500  ,x  ,2  ,x  ,-10    ,"" ,"" ,"" ]
+                                    ,["2   Task 2 (chargeable)" ,"2"    ,"abc5" ,0  ,"" ,1  ,"Y"    ,"Y"    ,"Y"    ,50000  ,"" ,50000  ,365    ,35000  ,0.7    ,0.5    ,25000  ,25000  ,1.4    ,1  ,10000  ,0  ,"" ,"" ,"" ]
+                                    ]
+                                    ;
+                                var res = [];
+                                modelData.forEach(function (d) {
+                                    res.push( generateRecord(d) );
+                                });
+                                return res;
+                            }
+                            
+                            function getData(vm, callback) {
+                               var data = loadData();
+                                var rowData = [];
+                                var outliner = taskOutlineDataProcessor();
+                                //var vmd = outliner.makeIterator(data);
+                                //outliner.tasksToTree(rowData,vmd);
+                                rowData = outliner.unflatten(data);
+                                callback(vm,rowData);
+                            }
+
+                            return {
+                                getData: getData
+                            };
+                        }
+                     }());
+                </script>
+
+                <script id="earnedValueReportController.js">
+
+                    angular
+                    .module("ecopmd")
+                    .run(["$templateCache", function($templateCache) {$templateCache.put("modules/earnedvalue/earnedvaluereport.html","<div class=\"container-fluid\">\r\n    <style>\r\n    .ag-header-cell-text {\r\n        white-space: normal;\r\n    }\r\n    </style>\r\n    <div class=\"row\">\r\n        <div class=\"col-md-4 lead\"></div>\r\n        <div class=\"col-md-2\">\r\n            <input type=\"text\" class=\"form-control\" ng-model=\"vm.grid.quickFilterText\" placeholder=\"filter...\" >\r\n        </div>\r\n        <div class=\"col-md-6 pull-right\">\r\n            <button class=\"btn btn-info\" ng-click=\"vm.toggleColumnGroups(true)\">Expand All Columns</button>\r\n            <button class=\"btn btn-info\" ng-click=\"vm.toggleColumnGroups(false)\">Collapse All Columns</button>\r\n            <button class=\"btn btn-primary\" ng-click=\"vm.toggleToolPanel()\">{{vm.showToolPanel ? \'Hide\' : \'Show\'}} Tool Panel</button>\r\n        </div>\r\n    </div><div class=\"clearfix\"></div><clearfix></clearfix>\r\n<div ag-grid=\"vm.grid\" style=\"width:95%;Height:700px;\" class=\"ag-fresh\" height=\"600\" additional-height=\"50\" />\r\n</div>\r\n");}]);
+                    
+                    (function() {
+                        'use strict';
+
+                        angular
+                            .module('ecopmd')
+                            .directive('ecoPmdEarnedValueReport', earnedValueReport);
+
+                        earnedValueReport.$inject = [];
+                        function earnedValueReport() {
+                            return {
+                                restrict: 'EA',
+                                scope: {
+                                    projectName: '@',
+                                    projectId: '@',
+                                    data: '='
+                                },
+                                bindToController: true,
+                                controllerAs: 'vm',
+                                controller: EarnedValueReportController,
+                                templateUrl: 'modules/earnedvalue/earnedvaluereport.html'
+                            };
+                        }
+
+                        //EarnedValueReportController.$inject = ['$filter', 'earnedValueDataMock'];
+                        EarnedValueReportController.$inject = ['$filter', '$scope', 'earnedValueData'];
+                        
+                        function EarnedValueReportController($filter, $scope, earnedValueDataSource) {
+                           var vm = this;
+                           vm.$scope = $scope;
+                           vm.showToolPanel = false;
+
+                           var numberWidth = 90;
+                           var dateWidth = 75;
+                           var showInThousands = true;
+
+                           vm.grid = {
+                               columnDefs: [
+                                   {
+                                       field: 'taskDisplay', headerName: 'Task',
+                                       cellRenderer: {renderer: 'group', innerRenderer:function(params){return params.data.taskDisplay;}},valueGetter:groupValueGetter, width:250
+                                   },{
+                                       field: 'CostBudgetOriginal__c', headerName: 'Original budget',
+                                       cellRenderer: currencyCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'CostBudgetVariance__c', headerName: 'Changes',
+                                       headerGroup: 'Approved', headerGroupShow: 'open', 
+                                        cellRenderer: currencyCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'TotalApprovedCost__c', headerName: 'Cost Plan',
+                                       headerGroup: 'Approved',
+                                       cellRenderer: currencyCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'Duration__c', headerName: 'Duration',
+                                       headerGroup: 'Approved', headerGroupShow: 'open', 
+                                       cellRenderer: integerCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'TotalProjectFunctionalBurdenedCost__c', headerName: 'Cost ITD', 
+                                       headerGroup: 'ITD',
+                                       cellRenderer: currencyCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'percentSpentITD', headerName: '% spent',
+                                       headerGroup: 'ITD', headerGroupShow: 'open', 
+                                       cellRenderer: percentCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'PercentComplete__c', headerName: '% complete',
+                                       headerGroup: 'ITD', headerGroupShow: 'open', 
+                                       cellRenderer: percentCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'EarnedValue__c', headerName: 'Earned Value',
+                                       headerGroup: 'EV',
+                                       cellRenderer: currencyCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'plannedCost', headerName: 'Planned Cost',
+                                       headerGroup: 'EV', headerGroupShow: 'open', 
+                                       cellRenderer: currencyCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'CPI__c', headerName: 'CPI',
+                                       headerGroup: 'EV', 
+                                       cellRenderer: currencyCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'SPI__c', headerName: 'SPI',
+                                       headerGroup: 'EV', 
+                                       cellRenderer: currencyCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'costVariance', headerName: 'Cost Variance',
+                                       headerGroup: 'EV', headerGroupShow: 'open', 
+                                       cellRenderer: currencyCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'ScheduleVariance__c', headerName: 'ScheduleVariance',
+                                       headerGroup: 'EV', headerGroupShow: 'open', 
+                                       cellRenderer: integerCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'CostForecastTrend__c', headerName: 'Est. at Complete Trend',
+                                       headerGroup: 'EAC', headerGroupShow: 'open', 
+                                       cellRenderer: currencyCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'eac', headerName: 'Est. At Complete',
+                                       headerGroup: 'EAC', 
+                                       cellRenderer: currencyCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   },{
+                                       field: 'CostForecastVariance__c', headerName: 'EAC Variance',
+                                       headerGroup: 'EAC', headerGroupShow: 'open', 
+                                       cellRenderer: currencyCellRenderer, cellStyle: cellStyler, width: numberWidth
+                                   }
+                               ],
+                               headerHeight: 85,
+                               groupHeaders: true,
+                               pinnedColumnCount: 1,
+                               showToolPanel: vm.showToolPanel,
+                               toolPanelSuppressValues: true,
+                               rowsAlreadyGrouped: true,
+                               icons: {
+                                    groupExpanded: '<i class="fa fa-minus-square-o"/>',
+                                    groupContracted: '<i class="fa fa-plus-square-o"/>'
+                                },
+                               onReady: activate
+                           };
+                           
+                           // Discover the column groups
+                           var colGroups = [];
+                           angular.forEach(vm.grid.columnDefs, function(value, key) {
+                              if(value.headerGroup && (colGroups.indexOf(value.headerGroup)<0)) this.push(value.headerGroup);
+                           }, colGroups);
+                           vm.columnGroups = colGroups;
+
+                           function groupValueGetter(params) {
+                                return params.data.taskDisplay;
+                           }
+
+                           function dateCellRenderer(params) {
+                               return $filter('date')(params.value, 'shortDate');
+                           }
+
+                           function currencyCellRenderer(params) {
+                               return (typeof params.value === 'number')?$filter('number')(params.value/(showInThousands?1000:1), 2):params.value;
+                           }
+                           
+                           function integerCellRenderer(params) {
+                               return (typeof params.value === 'number')?$filter('number')(params.value, 0):params.value;
+                           }
+                           
+                           function percentCellRenderer(params) {
+                               return (typeof params.value === 'number')?$filter('number')(params.value*100, 0)+"%":params.value;
+                           }
+                           
+                           function cellStyler(params) {
+                               var result = {};
+                               if (typeof params.value === 'number' || params.value instanceof Date) {
+                                   result['text-align'] = 'right';
+                               }
+                               return result;
+                           }
+
+                           vm.toggleToolPanel = function (ev) {
+                               vm.showToolPanel = !vm.showToolPanel;
+                               vm.grid.api.showToolPanel(vm.showToolPanel);
+                           };
+
+                           vm.toggleColumnGroups = function (expand) {
+                               vm.columnGroups.forEach(function (name) {
+                                   var group = vm.grid.columnApi.getColumnGroup(name);
+                                   vm.grid.columnApi.columnGroupOpened(group, expand);
+                               });
+                           }
+
+                           function activate() {
+                                var provider = earnedValueDataSource;
+
+                               //vm.data = vm.data || provider.getData(vm.$scope);
+                               //vm.grid.api.setRowData(vm.data);
+                                provider.getData(vm, function(vm,data){
+                                    vm.data = vm.data || data
+                                    vm.grid.api.setRowData(vm.data);
+                                })
+                           }
+                        }
+                    }());
+                </script>
+
+                <script>
+                    angular.module('twygmbh.auto-height', []).directive('autoHeight', [
+                        /**
+                         * @version 0.0.4
+                         * @copyright TWY GmbH [All Rights Reserved]
+                         * @license MIT License (see LICENSE.txt)
+                         */
+                        '$window', '$timeout', function($window, $timeout) {
+                            return {
+                                link: function($scope, $element, $attrs) {
+                                    var combineHeights, siblings;
+                                    combineHeights = function(collection) {
+                                        var heights, i, len, node;
+                                        heights = 0;
+                                        for (i = 0, len = collection.length; i < len; i++) {
+                                            node = collection[i];
+                                            heights += node.offsetHeight;
+                                        }
+                                        return heights;
+                                    };
+                                    siblings = function($elm) {
+                                        var elm, i, len, ref, results;
+                                        ref = $elm.parent().children();
+                                        results = [];
+                                        for (i = 0, len = ref.length; i < len; i++) {
+                                            elm = ref[i];
+                                            if (elm !== $elm[0]) {
+                                                results.push(elm);
+                                            }
+                                        }
+                                        return results;
+                                    };
+                                    angular.element($window).bind('resize', function() {
+                                        var additionalHeight, parentHeight;
+                                        additionalHeight = $attrs.additionalHeight || 0;
+                                        parentHeight = $window.innerHeight - $element.parent()[0].getBoundingClientRect().top;
+                                        return $element.css('height', (parentHeight - combineHeights(siblings($element)) - additionalHeight) + "px");
+                                    });
+                                    return $timeout(function() {
+                                        return angular.element($window).triggerHandler('resize');
+                                    }, 1000);
+                                }
+                            };
+                        }
+                    ]);
+                </script>
+            </apex:define>
+
+        </apex:composition>
+    </div>
+</apex:page>

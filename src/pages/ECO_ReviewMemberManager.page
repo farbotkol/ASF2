@@ -77,17 +77,17 @@
 
 			</div>
 	  	</div>		 
-		<apex:pageBlock mode="edit" id="TQTPB" title="Add Members to Technical Quality Team">
+		<apex:pageBlock mode="edit" id="TQTPB" >
 
 			<apex:pageBlockButtons location="top">
                 <apex:commandButton action="{!savePage}" value="Save" disabled="{!NOT(inputFields)}" status="savestatus" />
-                <apex:commandButton action="{!saveRequest}" value="Submit Review Request" status="savestatus" disabled="{!NOT(inputFields)}"/>
+                <apex:commandButton action="{!saveRequest}" value="Submit Review Request" status="savestatus" disabled="{!OR(NOT(inputFields),IF(lstTQT_Wrapper.size > 0, false, true))}"/>
 				<apex:commandButton action="/{!TechnicalQualityReview__c.Deliverable__c}" value="Return to Deliverable" immediate="true"/>
                 
 			</apex:pageBlockButtons>
 
 			<apex:pageBlockButtons location="bottom">
-                <apex:commandButton action="{!saveRequest}" value="Submit Review Request" status="savestatus" disabled="{!NOT(inputFields)}"/>
+                <apex:commandButton action="{!saveRequest}" value="Submit Review Request" status="savestatus" disabled="{!OR(NOT(inputFields),IF(lstTQT_Wrapper.size > 0, false, true))}"/>
                 <apex:commandButton action="/{!TechnicalQualityReview__c.Deliverable__c}" value="Return to Deliverable" immediate="true"/>
 			</apex:pageBlockButtons>
 
@@ -352,9 +352,11 @@
 											<apex:outputField value="{!members.oReviewMember.CheckerDateTime__c}" />
 										</apex:column>
                                         <apex:column Headervalue="Action">
-                                            <apex:commandButton value="Save" action="{!saveReview}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected, NOT(bLockFields))}" reRender="wholePanel, STQT, TQTPB" oncomplete="location.reload();"/>
+                                            <apex:actionRegion >
+                                            <apex:commandButton value="Save" action="{!saveReview}" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected, NOT(bLockFields))}"  />
                                             <!--<apex:commandButton value="Submit" rendered="{!AND(members.oReviewMember.Status__c != 'Submitted', members.bSelected)}" action="{!submitForApproval}" reRender="wholePanel, STQT" status="approvalstatus"  />
 											<apex:commandButton value="Recall" rendered="{!AND(members.oReviewMember.Status__c == 'Submitted', members.bSelected)}" action="{!killApproval}" reRender="wholePanel, STQT" status="approvalstatus" />-->
+                                        	</apex:actionRegion>
                                         </apex:column>																																																
 									</apex:pageBlockTable>		
 								</apex:outputPanel>

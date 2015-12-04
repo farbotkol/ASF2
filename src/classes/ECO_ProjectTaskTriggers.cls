@@ -1,7 +1,7 @@
 public with sharing class ECO_ProjectTaskTriggers {
 	
 	public static Boolean run = true;
-
+    public static Boolean hasUpdateRan = false;
 	public static Boolean updatingBurden = false;
 	public static Boolean copyingCarrying = false;
 
@@ -62,8 +62,11 @@ public with sharing class ECO_ProjectTaskTriggers {
 			if (changed || force) {
 				Integer i = 1;
 
+                if (newStartDate == null)
+                	continue;
+                Date currentDate = newStartDate.toStartOfWeek();
 //				for (Date currentDate = project.pse__Start_Date__c; currentDate <= project.pse__End_Date__c; currentDate = currentDate.addDays(7)) {
-				for (Date currentDate = newStartDate; currentDate <= newEndDate.addDays(7); currentDate = currentDate.addDays(7)) {
+                while (currentDate <= newEndDate.addDays(7)) {
 					WeeklyRollupEntry__c rollup = new WeeklyRollupEntry__c(
 						Project__c = project.id,
 						CompositeKey__c = ECO_Service_Snapshots.DateToSnapshotKey(currentDate, project.id),
@@ -83,17 +86,21 @@ public with sharing class ECO_ProjectTaskTriggers {
 						break;
 
 					i++;
+                    currentDate = currentDate.addDays(7);
 				}
 
 				System.debug('spittig out - ' + i);
 			}
 		}	
 
+        // Prevent project task triggers running recursivley TODO: Verify with michael
+        run = false;
 		update toUpdate;
 
 		System.debug('upserting WeeklyRollupEntry(s) - ' + toUpsert);
 
 		upsert toUpsert CompositeKey__c;
+         run = true;
 	}
 
 	public static void recalculateProjectDates (List<pse__Project_Task__c> tNew) {

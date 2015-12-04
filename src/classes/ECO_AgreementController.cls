@@ -1003,7 +1003,7 @@ global virtual class ECO_AgreementController {
     {
         agreement.CurrencyIsoCode = agreement.FundingCurrencyCode__c; 
 
-        if(agreement.RecordType.Name != 'Prime (MSA)')
+        if(agreementRecordType != 'Prime (MSA)')
             project = [select Id, Name, EstimatedContractValue__c, pse__Stage__c, EnableTopTaskCustomerFlag__c, EcoSystemReferenceNumber__c, OracleProjectnumber__c, pse__Project_Manager__c from pse__Proj__c where Id = :agreement.Project__c limit 1];  
         
         if(agreement.Amount__c <= 0)
@@ -1013,12 +1013,15 @@ global virtual class ECO_AgreementController {
         	return null;
         }
 
-        if(project.pse__Stage__c == 'Execution' && agreement.RecordType.Name == 'Prime' && !project.EnableTopTaskCustomerFlag__c)
+        if(agreementRecordType != 'Prime (MSA)')
         {
-            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Prime Agreement cannot be created for project in execution status and top tasks not enabled for project');
-            ApexPages.addMessage(oPageMessage);
+            if(project.pse__Stage__c == 'Execution' && agreement.RecordType.Name == 'Prime' && !project.EnableTopTaskCustomerFlag__c && mode == 'New')
+            {
+                ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Prime Agreement cannot be created for project in execution status and top tasks not enabled for project');
+                ApexPages.addMessage(oPageMessage);
 
-            return null;
+                return null;
+            }
         }
       	
         if(createdFromAgreementPage)

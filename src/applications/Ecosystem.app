@@ -11,4 +11,6 @@
     <tab>standard-report</tab>
     <tab>standard-Idea</tab>
     <tab>SharedServicesRequest__c</tab>
+    <tab>Delegation_Manager</tab>
+    <tab>ProjectSnapshot__c</tab>
 </CustomApplication>

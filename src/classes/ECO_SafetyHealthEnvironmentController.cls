@@ -33,6 +33,8 @@ public class ECO_SafetyHealthEnvironmentController {
 
         public integer rowNumber {get;set;}
         public integer rowNumberInduction {get;set;}
+
+        public string sTargetAttachment {get;set;}
         
         
         public ECO_SafetyHealthEnvironmentController(ApexPages.StandardController sc)
@@ -42,7 +44,7 @@ public class ECO_SafetyHealthEnvironmentController {
                 
             project = (pse__Proj__c)sc.getRecord();
             defaultAnswersFromRiskMarketAssessment();  
-            project.SafetyHealthOutsideOfficeEnvironment__c = 'No';
+            //project.SafetyHealthOutsideOfficeEnvironment__c = 'No';
 
             queryProjectActivities();
 
@@ -62,7 +64,7 @@ public class ECO_SafetyHealthEnvironmentController {
             return null;*/
 
 
-            update project;
+            /*update project;
             
             ProjectActivities__c pa =  new ProjectActivities__c(Project__c = project.Id, Name='New Project Activity');
             insert pa;
@@ -71,20 +73,20 @@ public class ECO_SafetyHealthEnvironmentController {
             myPage.getParameters().put('saveURL', '/apex/ECO_SafetyHealthEnvironment?Id=' + project.Id);
             myPage.getParameters().put('retURL', '/apex/ECO_SafetyHealthEnvironment?Id=' + project.Id + '&RecordToDelete='+ pa.Id + '&RecordType=ProjAct');
       
-            return myPage;
+            return myPage;*/
 
-
+            return  new PageReference('/apex/eco_projectactivity?ProjectID=' + project.Id);
         }
 
         public PageReference RemoveProjectActivities(){
-            ProjectActivities__c pa = ProjActivities[rowNumber-1];
+            /*ProjectActivities__c pa = ProjActivities[rowNumber-1];
 
             if(pa.id != null){
                 ProjActivitiesRemove.add(pa);
             }
 
             ProjActivities.remove(rowNumber-1);
-
+            */
             return null;
 
         }
@@ -242,8 +244,11 @@ public class ECO_SafetyHealthEnvironmentController {
     {
         get
         {
+            system.debug( 'newSafetyHealthInspectionAtt 247 ' + project.id );
+
             if(safetyHealthInspectionAtt==null)
             {
+	            system.debug( 'newSafetyHealthInspectionAtt 251 ' + project.id );
                 safetyHealthInspectionAtt = new Attachment(parentid = project.id);
             }
             return safetyHealthInspectionAtt;
@@ -251,6 +256,26 @@ public class ECO_SafetyHealthEnvironmentController {
         set;
     }    
     
+    public PageReference removeattachment(){
+        id iTargetAttachment = sTargetAttachment;
+        Attachment aAttachToRemove = attachmentsMap.get(iTargetAttachment);
+        attachmentsMap.remove(iTargetAttachment);
+        delete aAttachToRemove;
+        project.SafetyHealthInspectionAttachments__c = project.SafetyHealthInspectionAttachments__c.remove(iTargetAttachment + ';');
+        update project;
+        return null;
+    }
+
+    public PageReference removeattachmentplan(){
+        id iTargetAttachment = sTargetAttachment;
+        Attachment aAttachToRemove = attachmentsMap.get(iTargetAttachment);
+        attachmentsMap.remove(iTargetAttachment);
+        delete aAttachToRemove;
+        project.SafetyHealthPlanAttachments__c = project.SafetyHealthPlanAttachments__c.remove(iTargetAttachment + ';');
+        update project;
+        return null;
+    }
+
     private list<Attachment> getAttachmentListFromIdList(list<String> attachmentIds)
     {
         list<Attachment> attachments = new list<Attachment>();
@@ -422,6 +447,8 @@ public class ECO_SafetyHealthEnvironmentController {
         
         PageReference myPage = new PageReference('/apex/ECO_Resilience');       
         myPage.getParameters().put('Id',  project.Id);
+        myPage.getParameters().put('fromSHE',  '1');
+        myPage.getParameters().put('retURL',  '/apex/ECO_SafetyHealthEnvironment?Id=' + project.Id);
         return myPage;          
     }
     

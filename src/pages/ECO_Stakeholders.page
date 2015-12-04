@@ -129,6 +129,9 @@
 	<script type="text/javascript">
 	$x(document).ready(function(){
 		initComboBox();
+		$x('.contactSelector').each(function(){
+			setVal(this);
+		})
 	})
 
 	//replaces the Enter key function when the modal is opened
@@ -152,6 +155,7 @@
 		if(existingId != ''){
 			$x('[id$=existingRecordId]').val(existingId);
 			findLatestDates();
+			//findLatestDate($x('[id$=modalProjectRoles]').text().trim());
 		}
 	}
 
@@ -168,10 +172,17 @@
 		$x('[id$=ActiveKeysTable] tr').each(function (i, row){
 			if(currentRole === $x(row).find('[id*="roleColumn"]').text().trim()){
 				if($x(row).find('[id*="roleColumn"]').text().trim() != '' && $x(row).find('[id*="roleColumn"]').text().trim() != null && $x(row).find('[id*="endDateColumn"]').text().trim() === '' && $x(row).find('[id*="startDateColumn"]').text().trim() != ''){
-					var startDate = new Date($x(row).find('[id*="startDateColumn"]').text().trim());
-					console.log('here');
-					startDate.setDate(startDate.getDate() + 1);
-					$x('[id$=queryStartDate]').val(startDate.getMonth() + 1 + '/' + startDate.getDate() + '/' + startDate.getFullYear());
+					ECO_StakeholdersController.formatDate(
+						$x(row).find('[id*="startDateColumn"]').text().trim(),
+						function(result, event){
+							if(event.type == 'exception'){
+								alert('Error retrieving proper date format : ' + event);
+							}
+							else if(event.status){
+								$x('[id$=queryStartDate]').val(result);
+							}
+						}
+					);
 				}
 			}
 		});
@@ -232,6 +243,12 @@
 		$x(element).scombobox({
 	    	showDropDown: true
 		});
+	}
+
+	function setVal(element){
+		if($x(element).val().indexOf('&nbsp') != -1){
+			$x(element).val('');
+		}
 	}
 	</script>
 	
@@ -351,7 +368,7 @@
 								<apex:variable var="teamMemberCounter" value="{!0}"/>
 								<apex:pageBlockTable value="{!lMembersTeam}" var="item" width="100%" columnsWidth="60px">
 									<apex:facet name="footer">
-										<apex:commandLink action="{!addRecord}" value="Add New Team Member" rerender="ProjectTeamTable" status="teamStatus">
+										<apex:commandLink action="{!addRecord}" value="Add New Team Member" reRender="ProjectTeamTable" status="teamStatus">
 											<apex:param name="object" value="MembersTeam" assignTo="{!recordObjectType}"/>
 										</apex:commandLink>
 									</apex:facet>
@@ -383,6 +400,7 @@
 									<apex:column >
 										<apex:facet name="header">Email</apex:facet>
 										<apex:outputField value="{!item.oPTM.Email__c}" />
+										<apex:variable var="teamMemberCounter" value="{!teamMemberCounter + 1}"/>
 									</apex:column>
 									<!--<apex:column>
 										<apex:facet name="header">Access Level</apex:facet>
@@ -548,7 +566,7 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 							
 				<apex:pageBlock title="Communication Activities">
                     <apex:pageBlockButtons location="top">
-                        <apex:outputLink style="text-decoration:none;padding:4px;" styleClass="btn" value="mailto:?subject=AECOM Project Update {!TODAY()} - {!pse__Proj__c.Name} ({!pse__Proj__c.ProjectNumber__c})&body=Dear%20%3CENTER CLIENT NAME%3E%20%2C%0A%0APlease%20find%20below%20our%20weekly%20update%20on%20TestingProgBarv1%20(PR-026253)%0A%0AKey%20items%20we%20worked%20on%20this%20week%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0AOngoing%20key%20items%20that%20we%20are%20working%20on%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0AOutstanding%20Items%2FIssues%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0ASafety%20Update%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0ARegards%2C">
+                        <apex:outputLink style="text-decoration:none;padding:4px;" styleClass="btn" value="mailto:?subject=AECOM Project Update {!TODAY()} - {!pse__Proj__c.Name} ({!pse__Proj__c.ProjectNumber__c})&body=Dear%20%3CENTER CLIENT NAME%3E%20%2C%0A%0APlease%20find%20below%20our%20weekly%20update%20on%20{!pse__Proj__c.Name} ({!pse__Proj__c.ProjectNumber__c})%0A%0AKey%20items%20we%20worked%20on%20this%20week%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0AOngoing%20key%20items%20that%20we%20are%20working%20on%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0AOutstanding%20Items%2FIssues%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0ASafety%20Update%3A%20%0A%3CENTER BULLETED LIST OR NARATIVE HERE%3E%0A%0ARegards%2C">
                             Send Client Project Update
                         </apex:outputLink>
                     </apex:pageBlockButtons>
@@ -616,7 +634,7 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 				<apex:outputPanel id="survey" >
 				<apex:pageBlock title="Project Survey Requests">
 					<apex:pageBlockButtons location="bottom">
-						<apex:commandButton action="{!SaveAll}" value="Save" rerender="pgMessages,ActiveKeysTable,InactiveKeysTable,ProjectTeamTable,VendorSubTable,StakeholderTable,CommTable" onClick="this.disabled = true;"/><!-- onComplete="location.reload()" -->
+						<apex:commandButton action="{!SaveAll}" value="Save" rerender="pgMessages,ActiveKeysTable,InactiveKeysTable,ProjectTeamTable,VendorSubTable,StakeholderTable,CommTable"  onClick="this.disabled = true;"/><!-- onComplete="location.reload()" -->
 						<apex:commandButton action="{!ReturnToProject}" value="Return to Project" />
 					</apex:pageBlockButtons>
 				
@@ -641,7 +659,10 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 							</apex:column>
 							<apex:column >
 								<apex:facet name="header">Scheduled Date</apex:facet>
-								<apex:inputField value="{!item.ss.ScheduledDate__c}" />
+								    <apex:outputpanel layout="block" styleClass="requiredInput">
+                    				<apex:outputpanel layout="block" styleClass="requiredBlock" />
+                    					<apex:inputField value="{!item.ss.ScheduledDate__c}" />
+                    				</apex:outputpanel>
 							</apex:column>
 							<apex:column >
 								<apex:facet name="header">Comments</apex:facet>
@@ -656,19 +677,11 @@ outside of AECOM (i.e., clients, business partners, subcontractors, end users, g
 	                            </apex:selectList>	
 	                        </apex:column>		
                             <apex:column headerValue="Contact" style="min-width:150px">
-
-                            	<!--<apex:inputField value="{!item.ss.Contact__c}" />
-                            	<span style="visibility: hidden;">
-                            	<apex:inputField value="{!item.ss.Site_Account__c}" />
-                            	</span>-->
                             	<apex:outputPanel layout="inline" id="contactSelect">
-	                           		<apex:selectList value="{!item.ss.Contact__c}" styleClass="contactSelector" multiselect="false" size="1" rendered="{!item.cOptions.size > 0}" id="contactSelectList">
+                            		<apex:selectList value="{!item.ss.Contact__c}" styleClass="contactSelector" multiselect="false" size="1" rendered="{!item.cOptions.size > 0}" id="contactSelectList" onchange="setVal(this)">
 		                                <apex:selectOptions value="{!item.cOptions}"></apex:selectoptions>     
-		                            </apex:selectList>	
+		                            </apex:selectList>
 	                          	</apex:outputPanel>
-								<!--<c:Typeahead object="Contact" destinationForSelectedId="contactid" filterClause="accountid = {!item.accountId}" />   
-								<apex:inputHidden id="contactid" value="{!item.ss.Contact__c}" />-->
-
 	                        </apex:column>	
 
 

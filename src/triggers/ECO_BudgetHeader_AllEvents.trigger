@@ -13,7 +13,7 @@ trigger ECO_BudgetHeader_AllEvents on BudgetHeader__c (after update, before upda
     }
         
     if( trigger.isBefore && ( trigger.isUpdate || trigger.isInsert ) ){       
-        
+        ECO_BudgetHeaderTriggers.setCurrency(trigger.new);
         ECO_Service_RecordAccess.getProjectRecordAccess( trigger.new );
     }        
 }

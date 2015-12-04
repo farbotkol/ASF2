@@ -6,7 +6,8 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
     public String overridePermission  {get;set;}
     private Transient Attachment imageAttachment;
     public String overrideImage  {get;set;}
-
+    private Transient Attachment surveyAttachment;
+    public String overrideSurveys  {get;set;}
     private Transient Attachment lessonsAttachment;
     public String overrideLessons  {get;set;}
     private Transient Attachment certificateAttachment;
@@ -147,6 +148,7 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
                             ,CurrentForecastRevenueBudget__c
                             ,AR_Value__c
                             ,UnbilledValue__c
+                            ,SurveyAttachment__c
                     from pse__Proj__c
                     where id =: oProject.id];
 
@@ -245,17 +247,24 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
             returnvalue = false;         
         }
 
-        for(QuestionnaireSet__c qs: [select id, name, ApprovalStatus__c  from QuestionnaireSet__c where ApprovalStatus__c != 'Approved'  and Project__c =: oproject.id]){
+        list<QuestionnaireSet__c> lstQS = [select id, name, ApprovalStatus__c  from QuestionnaireSet__c where Project__c =: oproject.id ORDER BY createddate desc];
+        if(lstQS.size() == 0 ||  lstQS[0].ApprovalStatus__c != 'Approved'){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Latest Risk and Market Assessment must be approved.');
+            ApexPages.addMessage(oMsg);     
+            returnvalue = false;               
+        }
+
+        /*for(QuestionnaireSet__c qs: [select id, name, ApprovalStatus__c  from QuestionnaireSet__c where ApprovalStatus__c != 'Approved'  and Project__c =: oproject.id ORDERED BY createddate desc]){
             ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Risk and Market Assessment Found - ' + qs.name + ' - ' + qs.ApprovalStatus__c + '.');
             ApexPages.addMessage(oMsg);     
             returnvalue = false;         
-        }
+        }*/
 
-        for(ExportControl__c ec: [select id, name, ApprovalStatus__c  from ExportControl__c where ApprovalStatus__c != 'Approved'  and Project__c =: oproject.id]){
+        /*for(ExportControl__c ec: [select id, name, ApprovalStatus__c  from ExportControl__c where ApprovalStatus__c != 'Approved'  and Project__c =: oproject.id]){
             ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Export Control Found - ' + ec.name + ' - ' + ec.ApprovalStatus__c + '.');
             ApexPages.addMessage(oMsg);     
             returnvalue = false;         
-        }
+        }*/
 
         for(POHeader__c po: [select id, name, Status__c  from POHeader__c where Status__c != 'APPROVED'  and Project__c =: oproject.id]){
             ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Purchase Order Found - ' + po.name + ' - ' + po.Status__c + '.');
@@ -394,6 +403,19 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
         } 
 
         return new pagereference('/apex/eco_changemanagerdetail?id=' + cm.id + '&Mode=Edit');
+    }
+
+    public Attachment docSurveyAttachment
+    {
+        get
+        {
+            if(surveyAttachment==null)
+            {
+                surveyAttachment = new Attachment(parentid = oproject.id);
+            }
+            return surveyAttachment;
+        }
+        set;
     }
 
     public Attachment doRecommendationAttachment
@@ -586,6 +608,35 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
             
             attachmentsMap = new Map<Id, Attachment>([select Id, Name, ContentType, LastModifiedDate, LastModifiedById from Attachment where parentId = :oproject.Id]);
             lessonsAttachment = null;
+        }           
+    }
+
+    public list<Attachment> getSurveyAttachment()
+    {
+
+        list<String> attachmentIds = new list<String>();
+        if(oproject.SurveyAttachment__c != null)
+            attachmentIds = oproject.SurveyAttachment__c.split(';');
+            
+        return getAttachmentListFromIdList(attachmentIds);
+    }
+
+    public void saveSurveyAndProject()
+    {
+        if(surveyAttachment.Body != null)
+        {   
+            if(overrideSurveys != null && overrideSurveys != '')
+                surveyAttachment.Name = overrideSurveys;               
+            insert surveyAttachment;
+            
+            if(oproject.SurveyAttachment__c != null)
+                oproject.SurveyAttachment__c += surveyAttachment.Id + ';';
+            else
+                oproject.SurveyAttachment__c = surveyAttachment.Id + ';';          
+            update oproject;
+            
+            attachmentsMap = new Map<Id, Attachment>([select Id, Name, ContentType, LastModifiedDate, LastModifiedById from Attachment where parentId = :oproject.Id]);
+            surveyAttachment = null;
         }           
     }
 

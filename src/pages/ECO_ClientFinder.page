@@ -246,7 +246,15 @@
 											<apex:pageMessage severity="INFO" rendered="{!IF(lstProjectSites.size > 0, false, true)}" summary="No Sites Were Selected."></apex:pageMessage> 
 											<apex:outputPanel id="SiteSelect" rendered="{!if(lstProjectSites.size > 0, true, false)}">
 												<div style="padding:0 12px;margin-top:7px">
+													<apex:variable var="rowNum" value="{!0}"/>
 													<apex:pageBlockTable value="{!lstProjectSites}" var="Site" rendered="{!if(lstProjectSites.size > 0, true, false)}">
+                                                      <apex:column headerValue="Action">
+
+                                                            <apex:commandLink style="text-decoration: none;" value="Remove" action="{!RemoveSite}" title="Remove" rerender="WholeForm" status="SiteSelectUpdateStatus" rendered="{!and(not(Site.Is_Default_Top_Task__c), not(Site.Is_Primary_End__c))}">
+                                                              <apex:param name="rowIndex" value="{!rowNum}" assignTo="{!iSiteRowDelete}"/>
+                                                           </apex:commandLink>
+                                                           <apex:variable var="rowNum" value="{!rowNum + 1}"/>
+                                                        </apex:column>
 														<apex:repeat value="{!$ObjectType.Project_Site__c.FieldSets.pse_ClientFinder_Display_Fieldset}" var="SearchField">
 															<apex:column value="{!Site[SearchField]}" />
 														</apex:repeat>
@@ -332,12 +340,22 @@
 
 						<div id="AddressInput">
 						<apex:pageBlockSection title="Search For Account" columns="2" collapsible="false">
-							<apex:repeat value="{!$ObjectType.Site__c.FieldSets.pse_ClientFinder_Search_Fieldset}" var="FieldsForSearch">
-								<apex:pageBlockSectionItem >
-									<apex:outputLabel value="{!FieldsForSearch.Label}" />
-									<apex:inputField value="{!oSite[FieldsForSearch]}" required="false" />
-								</apex:pageBlockSectionItem>
-							</apex:repeat>
+                            <apex:pageBlockSectionItem HelpText="Enter client name">
+                                <apex:outputLabel value="Account Name" />
+                                <apex:inputText value="{!oSiteSearch.name}" />
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="City/Town" />
+                                <apex:inputText value="{!oSiteSearch.city}" />
+                            </apex:pageBlockSectionItem>
+                             <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="State/Province/Emirate" />
+                                <apex:inputText value="{!oSiteSearch.province}" />
+                            </apex:pageBlockSectionItem>
+                            <apex:pageBlockSectionItem >
+                                <apex:outputLabel value="Country" />
+                                <apex:inputText value="{!oSiteSearch.country}" />
+                            </apex:pageBlockSectionItem>   
 						</apex:pageBlockSection>
 						</div>
 						<div style="text-align:center;">

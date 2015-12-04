@@ -28,6 +28,7 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 		list<string> lFields = new list<string>();
         lFields.add('Name');
         lFields.add('TotalQuestions__c');
+        lFields.add('ProjectManager__c');
         oStandardController.addFields(lFields);
 
 		oQuestionnaireSet = (QuestionnaireSet__c)oStandardController.getRecord();
@@ -64,8 +65,10 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 															, ProjectRisk__c
 															, DoATriggers__c
 															, PercentComplete__c 
+                                                      		, QuestionnaireTemplate__r.SortOrder__c
 													FROM Questionnaire__c 
-													WHERE QuestionnaireSet__c = :oQuestionnaireSet.Id]);
+													WHERE QuestionnaireSet__c = :oQuestionnaireSet.Id
+                                                     ORDER BY QuestionnaireTemplate__r.SortOrder__c]);
 
 		if(lQuestionnaires.isEmpty())
 		{	
@@ -73,6 +76,7 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 			
 			String queryString = 'SELECT Id';
 			queryString += ' , Name';
+            queryString += ' , SortOrder__c';
 			queryString += ' , (SELECT Id';
 			queryString += ' FROM Questions__r';
 				queryString += ' WHERE (GeographiesAvailableTo__c INCLUDES (\''+theProject.CarryingOutOrganization__r.GeographyName__c+'\')';
@@ -86,6 +90,7 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 			queryString += ' AND IsActive__c = true';
 			queryString += ' )';	
 			queryString += ' FROM QuestionnaireTemplate__c';
+            queryString += ' ORDER BY SortOrder__c';
 
 			System.debug('QuestionnaireTemplate query: ' + queryString);
 			
@@ -247,7 +252,7 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
             
             // have to set the appover field on the RMA before submitting
             oQuestionnaireSet.ProjectApprover__c = theProject.ProjectApprover__r.pse__Salesforce_User__c;
-    
+    		oQuestionnaireSet.ProjectManager__c = theProject.pse__Project_Manager__r.pse__Salesforce_User__c;
             update oQuestionnaireSet;
             
             // Create an approval request for the account
@@ -302,7 +307,7 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 	{
 		if(theProject == null)
 		{
-			String query = 'SELECT Id, PrimaryEndClient__c, PrimaryBillingClient__c, ProjectOwningOrg__c, ProjectNumber__c, CarryingOutOrganization__c, CarryingOutOrganization__r.Region__c, CarryingOutOrganization__r.GeographyName__c, CarryingOutOrganization__r.BusinessLineName__c, AccountManager__c, ProjectApprover__r.pse__Salesforce_User__c ';
+			String query = 'SELECT Id, ProjectApprover__c, PrimaryEndClient__c, PrimaryBillingClient__c, ProjectOwningOrg__c, ProjectNumber__c, CarryingOutOrganization__c, CarryingOutOrganization__r.Region__c, CarryingOutOrganization__r.GeographyName__c, CarryingOutOrganization__r.BusinessLineName__c, AccountManager__c, pse__Opportunity__c, pse__Project_Manager__r.pse__Salesforce_User__c, ProjectApprover__r.pse__Salesforce_User__c ';
 			// query += 'TotalMargin__c, TotalBidBudget__c, PrimaryEndClient__c, PrimaryBillingClient__c';
 			for(Schema.FieldSetMember f : getCustomProjSetupFields()) 
 			{
@@ -369,7 +374,8 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
 		// System.debug('In validate, null check AccountManager__c');
 		if(!(theProject.AccountManager__c == '' || theProject.AccountManager__c ==null))
 		{
-        	Notification oNote = new Notification('One or more of your nominated clients is an ECAM or CAM Account. Please work the nominated Account Manager.');
+            Notification oNote = new Notification('One or more of the named clients for this project has a nominated Client Account Manager.  Engage the relevant CAM(s) as early as possible to inform the Go/No Go assessment and Project Plan development.');
+        	//Notification oNote = new Notification('One or more of your nominated clients is an ECAM or CAM Account. Please work with the nominated Account Manager.');
             lNotifications.add(oNote);		
 		}		
 		
@@ -516,6 +522,7 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
                 
                 String queryString = 'SELECT Id';
                 queryString += ' , Name';
+                queryString += ' , SortOrder__c';
                 queryString += ' , (SELECT Id';
                     queryString += ' FROM Questions__r';
                     /*queryString += ' WHERE ((Region__c INCLUDES (\''+theProject.CarryingOutOrganization__r.Region__c+'\')';
@@ -534,6 +541,8 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
                     queryString += ' )';
                     
                 queryString += ' FROM QuestionnaireTemplate__c';
+                queryString += ' ORDER BY SortOrder__c';
+                
     
                 map<Id, QuestionnaireTemplate__c> mQuestionnaireTemplates = new map<Id, QuestionnaireTemplate__c>();
                 for (QuestionnaireTemplate__c qt : Database.query(queryString)) {

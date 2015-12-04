@@ -40,33 +40,60 @@ public with sharing class ECO_RFAController {
 		this.oForm = (Form__c)stdController.getRecord();
         fromVisualforce = null;
 		fromVisualforce = ApexPages.currentPage().getParameters().get('vfp');
-		if(oForm.id == null){
+        if(oForm.id == null){
             ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'You have arrived to this page through inappropriate channels');
             ApexPages.addMessage(oMsg);
 		}
-
-		
-        
-        string strSOQL = 'SELECT ';
-        string formid = oForm.id;
-            
+		string strSOQL = 'SELECT ';
+        Id formid = oForm.id;
         for (Schema.FieldSetMember fsmField: SObjectType.Form__c.FieldSets.RFABusinessGroup.getFields()) {
             strSOQL += fsmField.getFieldPath() + ', ';
         }
         
-        strSOQL += 'ID, DOAApprovalRequest__c, ReasonForRequest__c, ProposedReviewCategoryChange__c, DOAApprovalRequest__r.RecordType.DeveloperName, DOAApprovalRequest__r.Project__r.CarryingOutOrganization__c, JustificationReviewCategoryChange__c, NonProjectRelatedMatters__c, Projid__c, Business_Group__c, OwningOrganization__c, ProjectNameSubject__c, OpportunityNumber__c, OracleProjectNumber__c FROM Form__c WHERE id=: formid';
-
+        strSOQL += 'ID, DOAApprovalRequest__c, Enable_Cancel__c, ReasonForRequest__c, ProposedReviewCategoryChange__c, DOAApprovalRequest__r.RecordType.DeveloperName, DOAApprovalRequest__r.Project__r.CarryingOutOrganization__c, JustificationReviewCategoryChange__c, NonProjectRelatedMatters__c, Projid__c, Business_Group__c, OwningOrganization__c, ProjectNameSubject__c, OpportunityNumber__c, OracleProjectNumber__c FROM Form__c WHERE id=: formid';
         list<Form__c> lstform = (list<Form__c>)Database.query(strSOQL);
-		oForm = lstform[0];
-        if(oForm.OwningOrganization__c == '' || oForm.OwningOrganization__c == null)
+        if(lstform.size()>0)
+            oForm = lstform[0];
+        
+        if(oForm.OwningOrganization__c == null)
 			oForm.OwningOrganization__c = oForm.DOAApprovalRequest__r.Project__r.CarryingOutOrganization__c;
-        System.debug('Owning org:::::'+oForm.DOAApprovalRequest__r.Project__r.CarryingOutOrganization__c);
+        
         proj = new pse__Proj__c();
         loadDoaMatters();
         doaRecordType = oForm.DOAApprovalRequest__r.RecordType.DeveloperName;
-		System.debug('doa recordtype id:'+oForm.DOAApprovalRequest__r.RecordTypeId);
+		
 
 	}
+    public void init(){
+        
+        
+        totalRecs = 0;
+        OffsetSize = 0;
+		LimitSize= 20;
+        
+        
+        
+        if(oForm.Projid__c == null || oForm.Projid__c == '')
+            isNonProjectRelated = true;
+        else{
+            isNonProjectRelated = false;
+            List <pse__Proj__c> projList = new List<pse__Proj__c> ([Select Id, OpportunityID__c, Name, pse__Project_ID__c, OracleProjectnumber__c From pse__Proj__c Where Id = :oForm.Projid__c]);
+            if(projList.size()>0){
+                proj = projList[0];
+                projName = proj.Name;
+                opptyId = proj.OpportunityID__c;
+                ecosystem = proj.pse__Project_ID__c;
+                oracleProjNumber = proj.OracleProjectnumber__c;
+            }
+        }
+        System.debug('isNonProjectRelated   :'+isNonProjectRelated);
+        
+        newTrigger = new DOARegister__c();
+        tQuestions = new TemplateQuestion__c();
+        lstDOATriggers = new list<DOA_TriggerWrapper>();
+        loadDOAList();
+        
+    }
     public Boolean getisNonProjectRelated(){
         if(oForm.Projid__c == null || oForm.Projid__c == '')
             isNonProjectRelated = true;
@@ -197,31 +224,30 @@ public with sharing class ECO_RFAController {
 		
 
 	}
-    public void init(){
-        
-        
-        totalRecs = 0;
-        OffsetSize = 0;
-		LimitSize= 20;
-        
-        
-        
-        if(oForm.Projid__c == null || oForm.Projid__c == '')
-            isNonProjectRelated = true;
-        else{
-            isNonProjectRelated = false;
-            proj = [Select Id, OpportunityID__c, Name, pse__Project_ID__c, OracleProjectnumber__c From pse__Proj__c Where Id = :oForm.Projid__c] ;
-            projName = proj.Name;
-            opptyId = proj.OpportunityID__c;
-            ecosystem = proj.pse__Project_ID__c;
-            oracleProjNumber = proj.OracleProjectnumber__c;
+    
+    public pageReference returnToDOA(){
+        try{
+            DOAApprovalRequest__c doa = new DOAApprovalRequest__c();
+            doa = [Select Id, ApprovalStatus__c From DOAApprovalRequest__c Where Id = :oForm.DOAApprovalRequest__c];
+            delete doa;
+            return new Pagereference('/apex/ECO_DOA_ApprovalRequest?projectID='+proj.Id);
+        }catch(Exception e){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to return. Please contact your administrator with the following error: ' + e);
+            ApexPages.addMessage(oMsg);
+            return null;
         }
-        System.debug('isNonProjectRelated   :'+isNonProjectRelated);
-        
-        newTrigger = new DOARegister__c();
-        tQuestions = new TemplateQuestion__c();
-        lstDOATriggers = new list<DOA_TriggerWrapper>();
-        loadDOAList();
+    }
+    
+    public pageReference goToDOA(){
+        try{
+            oForm.Enable_Cancel__c = false;
+            update oForm;
+            return new Pagereference('/'+oForm.DOAApprovalRequest__c);
+        }catch(Exception e){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to return. Please contact your administrator with the following error: ' + e);
+            ApexPages.addMessage(oMsg);
+            return null;
+        }
         
     }
 	private void loadTriggers(){

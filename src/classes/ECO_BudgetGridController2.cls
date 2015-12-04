@@ -320,7 +320,7 @@ public with sharing class ECO_BudgetGridController2 {
 			bv.Project__c = theProject.Id;
 			bv.BudgetName__c = 'Baseline';
 			bv.RecordTypeId = ECO_Utils_Meta.getRecordTypeId(BudgetHeader__c.sObjectType, 'Baseline');
-			bv.Status__c = 'Estimate';
+			bv.Status__c = ECO_DTO_BudgetHeader.STATUS_ESTIMATE;
 			insert bv; 
 			
 			if ('Project Level'.equalsIgnoreCase(theProject.BudgetStrategy__c)) {
@@ -440,7 +440,7 @@ public with sharing class ECO_BudgetGridController2 {
 			
 			newBudgetHeader.RecordTypeId = ECO_Utils_Meta.getRecordTypeId(BudgetHeader__c.sObjectType, 'Change Order');
 			newBudgetHeader.Project__c = theProject.Id;
-			newBudgetHeader.Status__c = 'Estimate';
+			newBudgetHeader.Status__c = ECO_DTO_BudgetHeader.STATUS_ESTIMATE;
 			insert newBudgetHeader;
 			
 			if ('Project Level'.equalsIgnoreCase(theProject.BudgetStrategy__c)) {

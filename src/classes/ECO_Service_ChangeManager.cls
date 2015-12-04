@@ -406,7 +406,7 @@ public class ECO_Service_ChangeManager {
 
         User user = [select Id, ShaKey__c from User where Id = :UserInfo.getUserId()];
         ECO_IntegrationEndpoints__c cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
-        String url = cs.EndPointUrl__c + user.ShaKey__c + '&MESSAGE_TYPE=UPDATE_PROJECT';
+        String url = cs.EndPointUrl__c + '?PICAction=SalesIntegration&ebizId='+ user.ShaKey__c + '&MESSAGE_TYPE=UPDATE_PROJECT';
         handleOracleCallout(projectId, url, messageQueueId);
 
         ECO_Service_ProjectSync.flagProjectTasksWithSyncStatus('T', projectId, lastSync);
@@ -420,7 +420,7 @@ public class ECO_Service_ChangeManager {
 
         User user = [select Id, ShaKey__c from User where Id = :UserInfo.getUserId()];
         ECO_IntegrationEndpoints__c cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
-        String url = cs.EndPointUrl__c + user.ShaKey__c + '&MESSAGE_TYPE=UPDATE_PROJECT';
+        String url = cs.EndPointUrl__c + '?PICAction=SalesIntegration&ebizId='+ user.ShaKey__c + '&MESSAGE_TYPE=UPDATE_PROJECT';
         handleOracleCallout2(projectId, url, messageQueueId);
     }    
 

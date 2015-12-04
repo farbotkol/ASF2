@@ -3538,6 +3538,8 @@
     <fields>
         <fullName>CPI__c</fullName>
         <externalId>false</externalId>
+        <formula>EarnedValue__c /  TotalProjectFunctionalBurdenedCost__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>CPI</label>
         <precision>18</precision>
         <required>false</required>
@@ -3553,7 +3555,7 @@
         <externalId>false</externalId>
         <label>Organization String</label>
         <lookupFilter>
-            <active>true</active>
+            <active>false</active>
             <filterItems>
                 <field>OrganizationString__c.isActive__c</field>
                 <operation>equals</operation>
@@ -3623,7 +3625,7 @@
     <fields>
         <fullName>CostBudgetVariance__c</fullName>
         <externalId>false</externalId>
-        <formula>0.00</formula>
+        <formula>TotalApprovedCost__c - CostBudgetOriginal__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Cost Budget Variance</label>
         <precision>18</precision>
@@ -3648,6 +3650,7 @@
     </fields>
     <fields>
         <fullName>CostForecastTrend__c</fullName>
+        <description>TotalActualCost__c  + ( TotalApprovedCost__c -  EarnedValue__c )/ CPI__c</description>
         <externalId>false</externalId>
         <formula>TotalActualCost__c  + ( TotalApprovedCost__c -  EarnedValue__c )/ CPI__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -3662,7 +3665,7 @@
     <fields>
         <fullName>CostForecastVariance__c</fullName>
         <externalId>false</externalId>
-        <formula>0.00</formula>
+        <formula>TotalForecastCostPrevME__c - TotalProjectFunctionalBurdenedCost__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Cost Forecast Variance</label>
         <precision>18</precision>
@@ -3720,6 +3723,19 @@
         <fullName>CostPrevMTD__c</fullName>
         <externalId>false</externalId>
         <label>Cost Prev. MTD</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>CostVariance__c</fullName>
+        <externalId>false</externalId>
+        <formula>PlannedCost__c -  TotalProjectFunctionalBurdenedCost__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cost Variance</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -4149,6 +4165,28 @@ S = Successful</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>PlannedCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Planned Cost</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>PlannedValue__c</fullName>
+        <externalId>false</externalId>
+        <label>Planned Value</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>ProjectNumber__c</fullName>
         <description>Oracle Project Number</description>
         <externalId>false</externalId>
@@ -4272,13 +4310,16 @@ S = Successful</inlineHelpText>
     <fields>
         <fullName>SPI__c</fullName>
         <externalId>false</externalId>
+        <formula>EarnedValue__c/ PlannedValue__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>SPI</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>ScheduleVariance__c</fullName>
@@ -4365,6 +4406,8 @@ S = Successful</inlineHelpText>
     <fields>
         <fullName>ThreeMonthAverageBurnRate__c</fullName>
         <externalId>false</externalId>
+        <formula>(TotalProjectFunctionalBurdenedCost__c - CostITD3FiscalMonthEndsAgo__c)/3</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Three-Month Average Burn Rate</label>
         <precision>18</precision>
         <required>false</required>
@@ -4482,6 +4525,17 @@ TopTaskOwningCustomer__r.Site__r.Account__r.OracleCustomerID__c
         <externalId>false</externalId>
         <label>Total Project Functional Raw Cost</label>
         <summarizedField>ExpendItem__c.ProjectFunctionalRawCost__c</summarizedField>
+        <summaryForeignKey>ExpendItem__c.ProjectTask__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TotalProjectRawCost__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Project Raw Cost</label>
+        <summarizedField>ExpendItem__c.TotalProjectRawCost__c</summarizedField>
         <summaryForeignKey>ExpendItem__c.ProjectTask__c</summaryForeignKey>
         <summaryOperation>sum</summaryOperation>
         <trackHistory>false</trackHistory>
@@ -5582,6 +5636,12 @@ ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Execution&quot;)))</errorCondition
         <errorMessage>All tasks that are parents of a Financial task must be Financial</errorMessage>
     </validationRules>
     <validationRules>
+        <fullName>Prevent_Fin_Task_when_Oracle_synced</fullName>
+        <active>true</active>
+        <errorConditionFormula>AND(OR(ISPICKVAL(pse__Parent_Task__r.OracleSyncStatus__c,&quot;P&quot;),ISPICKVAL(pse__Parent_Task__r.OracleSyncStatus__c,&quot;S&quot;)), NOT(ISNULL(pse__Parent_Task__c )), FinancialTask__c = true, IsChargeable__c = true, ISNEW())</errorConditionFormula>
+        <errorMessage>Financial and Chargeable Child Task can not be created if parent has been synced to Oracle.</errorMessage>
+    </validationRules>
+    <validationRules>
         <fullName>ProjTaskName_CanOnlyHave20Characters</fullName>
         <active>true</active>
         <description>The project task name may only contain 20 characters</description>
@@ -5608,7 +5668,7 @@ ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Execution&quot;)))</errorCondition
         <fullName>TopTaskCannotChangedUponOracleSync</fullName>
         <active>true</active>
         <description>The top task cannot be changed once synced with Oracle</description>
-        <errorConditionFormula>AND(ISCHANGED(pse__Top_level_Parent_Task__c), OR(ISPICKVAL(OracleSyncStatus__c,&apos;S&apos;),ISPICKVAL(OracleSyncStatus__c,&apos;T&apos;)))</errorConditionFormula>
+        <errorConditionFormula>AND(NOT(ISBLANK(PRIORVALUE(pse__Top_level_Parent_Task__c))),ISCHANGED(pse__Top_level_Parent_Task__c), OR(ISPICKVAL(OracleSyncStatus__c,&apos;S&apos;),ISPICKVAL(OracleSyncStatus__c,&apos;T&apos;)))</errorConditionFormula>
         <errorMessage>The top task cannot be changed once synced with Oracle</errorMessage>
     </validationRules>
     <validationRules>
@@ -5619,7 +5679,7 @@ ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Execution&quot;)))</errorCondition
     </validationRules>
     <validationRules>
         <fullName>Validate_Planned_End_Date_for_Child</fullName>
-        <active>true</active>
+        <active>false</active>
         <errorConditionFormula>IF(ISNULL(pse__Parent_Task__c),false, 
 IF(pse__End_Date_Time__c &gt; pse__Parent_Task__r.pse__End_Date_Time__c,true,false))</errorConditionFormula>
         <errorDisplayField>Customer__c</errorDisplayField>
@@ -5627,7 +5687,7 @@ IF(pse__End_Date_Time__c &gt; pse__Parent_Task__r.pse__End_Date_Time__c,true,fal
     </validationRules>
     <validationRules>
         <fullName>Validate_Planned_Start_Date_for_Child</fullName>
-        <active>true</active>
+        <active>false</active>
         <errorConditionFormula>IF(ISNULL(pse__Parent_Task__c),false, 
 IF(pse__Start_Date_Time__c &lt; pse__Parent_Task__r.pse__Start_Date_Time__c,true,false))</errorConditionFormula>
         <errorMessage>Child Planned Start Date can not be less than Planned Parent Start Date</errorMessage>

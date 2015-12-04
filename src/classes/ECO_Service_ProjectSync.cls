@@ -339,8 +339,8 @@ public without sharing class ECO_Service_ProjectSync{
 																		CarryingOutOrganization__r.OUName__c,
 																		Template_Id__c,
 																		Template_Name__c,
-																		ProgBarPrelimPlanApproval__c
-
+																		ProgBarPrelimPlanApproval__c,
+																		Is_Oracle_Token_Valid__c
 																FROM pse__Proj__c
 																WHERE Id = :sProjectId]);
 
@@ -1932,9 +1932,13 @@ public without sharing class ECO_Service_ProjectSync{
 
 				//String endPointUrl = 'https://ecodev.aecom.com/OA_HTML/jsp/fnd/xxpic/apps/PicDisconn.jsp?PICAction=SalesIntegration&ebizId=X123456&MESSAGE_TYPE=UPDATE_PROJECT';
 
+				ECO_IntegrationEndpoints__c cs;
+				cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
 
-                String endPointUrl = 'https://ecodev.aecom.com/OA_HTML/jsp/fnd/PicDisconnSF.jsp?PICAction=SalesIntegration&ebizId=';
-                
+                String endPointUrl = cs.EndPointUrl__c + '?PICAction=SalesIntegration&ebizId=';//'https://ecodev.aecom.com/OA_HTML/jsp/fnd/PicDisconnSF.jsp?PICAction=SalesIntegration&ebizId=';
+                //String endPointUrl = 'https://ecodev.aecom.com/OA_HTML/jsp/fnd/PicDisconnSF.jsp?PICAction=SalesIntegration&ebizId=';
+
+
 				if(Test.isRunningtest()){
 					response = '<?xml version="1.0" encoding="UTF-8"?><PICRequestStatus><Status>SUCCESS</Status><Message></Message><Details></Details></PICRequestStatus>';
 				}else{

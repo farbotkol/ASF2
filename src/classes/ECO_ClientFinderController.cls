@@ -42,15 +42,33 @@ public with sharing virtual class ECO_ClientFinderController{
 
     private static string siteLessLIMIT = '50';
     private static string siteMoreLIMIT = '200';
+    public integer iSiteRowDelete {get;set;}
 
+    public siteSearchWrapper oSiteSearch {get;set;}
 
 	/* Custom classes to facilitate this controller */
 	public class EcoControllerException extends Exception {}
 
 
+    public class siteSearchWrapper{
+        public string name {get;set;}
+        public string city {get;set;}
+        public string country {get;set;}
+        public string province {get;set;}
+
+        public siteSearchWrapper(){
+            name = null;
+            city = null;
+            country = null;
+            province = null;
+        }
+
+    }
+
 	/* Constructor */
     public ECO_ClientFinderController(ApexPages.StandardController oStandardController) {
 
+        oSiteSearch = new siteSearchWrapper();
 
         sSiteLimit = siteLessLIMIT;
 
@@ -100,6 +118,14 @@ public with sharing virtual class ECO_ClientFinderController{
             showMoreSites();
             SearchSites();
         }
+    }
+
+    public PageReference RemoveSite(){
+        Project_Site__c psDelete = lstProjectSites[iSiteRowDelete];
+        lstProjectSites.remove(iSiteRowDelete);
+
+        delete psDelete;
+        return null;
     }
 
     public PageReference stub(){
@@ -298,6 +324,13 @@ public with sharing virtual class ECO_ClientFinderController{
     	strSearchResults = string.valueof(lstSitesSearchResults.size()) + ' Record(s) Found';
     	
     	return null;		*/
+
+
+
+        oSite.Account__r.name = oSiteSearch.name; 
+        oSite.City__c = oSiteSearch.city;
+        oSite.Country__c = oSiteSearch.country;       
+        oSite.State__c = oSiteSearch.province;
 
 
         string strSOQL = 'SELECT ';

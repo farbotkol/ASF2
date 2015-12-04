@@ -479,6 +479,28 @@
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoDOAApprovalRequestCompletedNonEcosystem</template>
     </alerts>
+    <alerts>
+        <fullName>Eco_DoA_Approval_Request_Queue_AssignmentEcosystem</fullName>
+        <description>Eco DoA Approval Request Queue Assignment (Ecosystem)</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>DOA_Approval_Queue</recipient>
+            <type>group</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalQueueAssignment_Ecosystem</template>
+    </alerts>
+    <alerts>
+        <fullName>Eco_DoA_Approval_Request_Queue_Assignment_Non_Ecosystem</fullName>
+        <description>Eco DoA Approval Request Queue Assignment (Non-Ecosystem)</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>DOA_Approval_Queue</recipient>
+            <type>group</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoDOAApprovalQueueAssignment_Non_Ecosystem</template>
+    </alerts>
     <fieldUpdates>
         <fullName>EcoDCSApprovalStatusApproved</fullName>
         <field>DCSHubApprovalStatus__c</field>
@@ -1394,6 +1416,10 @@ RecordType.DeveloperName = &apos;NonProject&apos;)</formula>
     <rules>
         <fullName>EcoSet DOA Assign to Approval Queue %28Ecosystem%29</fullName>
         <actions>
+            <name>Eco_DoA_Approval_Request_Queue_AssignmentEcosystem</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
             <name>EcoSet_Assign_to_DoA_Approval_Queue</name>
             <type>FieldUpdate</type>
         </actions>
@@ -1408,6 +1434,10 @@ RecordType.DeveloperName = &apos;DOACreate&apos;)</formula>
     </rules>
     <rules>
         <fullName>EcoSet DOA Assign to Approval Queue %28Non-Ecosystem%29</fullName>
+        <actions>
+            <name>Eco_DoA_Approval_Request_Queue_Assignment_Non_Ecosystem</name>
+            <type>Alert</type>
+        </actions>
         <actions>
             <name>EcoSetDoaRecordTypeSubmittedNonEcosystem</name>
             <type>FieldUpdate</type>

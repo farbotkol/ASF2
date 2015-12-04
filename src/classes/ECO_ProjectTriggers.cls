@@ -1,5 +1,6 @@
 public without sharing class ECO_ProjectTriggers {
 	public static Boolean run = true;
+	public static Set<String> executedMethods = new Set<String>();
 	
 	public static void setOwner(list<pse__Proj__c> lstProject){
 		for(pse__Proj__c p:lstProject){
@@ -13,6 +14,8 @@ public without sharing class ECO_ProjectTriggers {
 
 	public static void handleFundingLevelFlagChanges(Map<Id, pse__Proj__c> oldProjectsMap, Map<Id, pse__Proj__c> newProjectsMap)
 	{
+		if (executedMethods.contains('handleFundingLevelFlagChanges')) return;
+		executedMethods.add('handleFundingLevelFlagChanges');
 		List<Id> projectsToDeleteFunding = new List<Id>();
 		for(pse__Proj__c project:newProjectsMap.values())
 		{
@@ -109,6 +112,8 @@ public without sharing class ECO_ProjectTriggers {
 	}
 
 	public static void maintainEscalationAlerts (Map<Id, pse__Proj__c> projOldMap, Map<Id, pse__Proj__c> projNewMap) {
+		if (executedMethods.contains('maintainEscalationAlerts')) return;
+		executedMethods.add('maintainEscalationAlerts');
 		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('PROJ_Alerts')) {
 			return;
 		}
@@ -238,7 +243,18 @@ public without sharing class ECO_ProjectTriggers {
 		} 
     }
     
+    public static ProjectRole__c resilienceDirectorRole{
+    	get {
+    		if (resilienceDirectorRole == null) {
+    			resilienceDirectorRole = [Select Id, Name From ProjectRole__c Where Name = 'Resilience Director'];
+    		}
+    		return resilienceDirectorRole;
+    	}
+    	private set;
+    }
    	public static void createResilienceDirectorTeamMember(map<Id, pse__Proj__c> projOldMap, map<Id, pse__Proj__c> projNewMap, list<pse__Proj__c> updatedProjects){
+		if (executedMethods.contains('createResilienceDirectorTeamMember')) return;
+		executedMethods.add('createResilienceDirectorTeamMember');
 
 		string uName = UserInfo.getUserName();
         string uId = UserInfo.getUserId();
@@ -251,7 +267,7 @@ public without sharing class ECO_ProjectTriggers {
 
 		ProjectTeamMember__c[] projectTeamMembers = [ Select Id, Project__c, User__c, contact__r.user__r.IsActive, contact__c,  contact__r.user__r.name, user__r.Name From ProjectTeamMember__c Where ProjectRole__r.Name = 'Resilience Director' and Project__c = :updatedProjects and contact__r.user__r.isactive = true ];
 
-        ProjectRole__c role = [Select Id, Name From ProjectRole__c Where Name = 'Resilience Director'];
+        ProjectRole__c role = resilienceDirectorRole;
         
         system.debug( 'pTM ' + projectTeamMembers.size() + ' ' + projectTeamMembers );
         
@@ -345,6 +361,7 @@ public without sharing class ECO_ProjectTriggers {
 			}			
 		}		
 
+		if (!projectIds.isEmpty()) {
 		for(pse__Proj__c restartedProject:[select Id, pse__Project_Manager__r.pse__Salesforce_User__c from pse__Proj__c where Id in :projectIds])
 		{
 			messagesToInsert.add(createNewAlertForPM(restartedProject, Date.today(), 'This project has been restarted'));	
@@ -352,10 +369,13 @@ public without sharing class ECO_ProjectTriggers {
 		
 		if(messagesToInsert.size() > 0)
 			insert messagesToInsert;
+		}		
 	}
 	
 	public static void handleDefaultingTaskOwningCustomer(map<Id, pse__Proj__c> projOldMap, map<Id, pse__Proj__c> projNewMap)
 	{
+		if (executedMethods.contains('handleDefaultingTaskOwningCustomer')) return;
+		executedMethods.add('handleDefaultingTaskOwningCustomer');
 		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('PROJ_TaskOwning')) {
 			return;
 		}
@@ -391,7 +411,8 @@ public without sharing class ECO_ProjectTriggers {
 	}
 
 	public static void setExpenditureFlagOnProjectReOpen(list<pse__Proj__c> lProjects){
-		
+		if (executedMethods.contains('setExpenditureFlagOnProjectReOpen')) return;
+		executedMethods.add('setExpenditureFlagOnProjectReOpen');
 		// bjacobi@ae.com.ecosysdev
         //if(! ( ( uName == 'bobby.hoque@aecom.com.ecosysdev' ) || ( uName == 'bjacobi@ae.com.ecosysdev' ) ) )
         //    return ; 
@@ -431,6 +452,8 @@ public without sharing class ECO_ProjectTriggers {
     }    
     
 	public static void replicateNewProjectTask(list<pse__Project_Task__c> lProjectTasks){
+		if (executedMethods.contains('replicateNewProjectTask')) return;
+		executedMethods.add('replicateNewProjectTask');
 		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('PROJTASK_BudgetReplicate')) {
 			return;
 		}

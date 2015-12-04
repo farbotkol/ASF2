@@ -42,6 +42,23 @@ public without sharing class ECO_BudgetTaskTriggers {
 		}
 	}
 	
+    public static void setCurrency(List<BudgetTask__c> newBTasksList) {
+    	if (!run) {
+    		return;
+    	}
+
+    	Id bhId = newBTasksList[0].BudgetHeader__c;
+    	// Get project currency
+        BudgetHeader__c budgetHeader = [Select Id, Project__r.CurrencyIsoCode From BudgetHeader__c Where Id = :bhId];
+
+
+        String projectCurrency = budgetHeader.Project__r.CurrencyIsoCode;
+
+        for (BudgetTask__c bt : newBTasksList) {
+        	bt.CurrencyIsoCode = projectCurrency;
+            
+        }
+    }
 	public static void calculateDepth (List<BudgetTask__c> newBTasksList) {
 		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('BT_hierarchy')) {
 			return;

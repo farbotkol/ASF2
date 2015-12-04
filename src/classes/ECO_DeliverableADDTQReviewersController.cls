@@ -284,8 +284,25 @@ public with sharing class ECO_DeliverableADDTQReviewersController {
                         , Submit_For_Approval__c
                         , TechnicalQualityTeamMember__c
                         , TechnicalQualityTeamMember__r.Name
-                      From TechnicalQualityTeam__c where Deliverable__c =: setID AND Role__c <> 'Inactive Deliverable Owner'];
+                      	From TechnicalQualityTeam__c 
+               			where Deliverable__c =: setID 
+               			AND Role__c <> 'Inactive Deliverable Owner'
+              			AND Role__c <> 'Deliverable Owner'];
     }
+    
+     public List<SelectOption> getTQTRoles(){
+         List<SelectOption> roles = new List<SelectOption>();
+         Schema.DescribeFieldResult fieldResult = TechnicalQualityTeam__c.Role__c.getDescribe();
+         List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
+         for(Schema.PicklistEntry f : ple)
+         {
+             if(f.getValue() != 'Deliverable Owner' && f.getValue() != 'Inactive Deliverable Owner')
+             {
+                 roles.add(new SelectOption(f.getLabel(), f.getValue()));
+             }
+         } 
+         return roles;           
+     }
     
     public list<ProjectTeamMember__c> getProjectTeamByProjectID(set<String>setID){
         return [Select id

@@ -590,17 +590,39 @@
 												</td>
 											</tr>
 										</table>
+										<br/><br/>
 									</apex:outputPanel>
 								</apex:outputPanel>
 								</apex:actionRegion>
-								<apex:actionRegion >
+								
 								<apex:outputPanel id="projcloseStakeholderCompleteSurvey">
 									<apex:outputPanel rendered="{!if(oProject.projcloseStakeholderCompleteSurvey__c == 'No', true, false)}">
 										<apex:outputLabel value="If no, follow up with the client or the AECOM client care team." />
 									</apex:outputPanel>
+									<apex:outputPanel rendered="{!if(oProject.projcloseStakeholderCompleteSurvey__c == 'Yes', true, false)}">
+										
+										<apex:outputText value="If yes, attach survey if available." />
+										<div class="fileList">
+											<apex:pageBlockTable value="{!SurveyAttachment}" var="file" style="width: 825px;" rendered="{!oProject.SurveyAttachment__c != null}">
+												<apex:column headerValue="File Name">
+
+													<apex:outputLink value="{!URLFOR($Action.Attachment.Download, file.Id)}" target="_blank">
+														<apex:outputText value="{!file.Name}" />
+													</apex:outputLink>
+												</apex:column>
+												<apex:column value="{!file.ContentType}" />	
+												<apex:column value="{!file.LastModifiedDate}" />	
+												<apex:column value="{!file.LastModifiedById}" />
+											</apex:pageBlockTable>
+											<apex:inputFile id="docSurveyAttachment" value="{!docSurveyAttachment.Body}" contentType="{!docSurveyAttachment.ContentType}" fileName="{!docSurveyAttachment.Name}" onchange="fileChosen('{!$Component.saveSurveyAndProject}', this, '{!$Component.overrideSurveys}'); return false;"/>
+											<apex:inputText id="overrideSurveys" value="{!overrideSurveys}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
+											<apex:commandButton id="saveSurveyAndProject" value="Attach" action="{!saveSurveyAndProject}" styleclass="attachNewFile"/><br/>
+										</div>
+									</apex:outputPanel>
 									<br /><br />
 								</apex:outputPanel>
-								</apex:actionRegion>
+								
+
 								<c:ECO_ClosureQuestion yesno="false" pageController="{!PageCont}" questionField="projcloseStakeholderCloseoutMeeting__c" noField="projcloseStakeholderCloseoutMeetingText__c" 
 														questionText="Have you completed a closeout meeting with the client?"  questionType="2"/>
 

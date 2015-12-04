@@ -117,7 +117,7 @@
             <name>StatusAsOfDate_c</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>false</active>
+        <active>true</active>
         <criteriaItems>
             <field>BudgetHeader__c.StatusAsOfDate__c</field>
             <operation>notEqual</operation>

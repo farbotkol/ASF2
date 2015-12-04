@@ -60,6 +60,14 @@ public with sharing class ECO_BudgetHeaderSummaryController {
 			changeManagerPage.setRedirect(true);
             return changeManagerPage;
         }
+        else if(actionselected == 'ArchiveBudget') {
+            BudgetHeader__c bh = new BudgetHeader__c(Id = bhId, Status__c = ECO_DTO_BudgetHeader.STATUS_ARCHIVE);
+            update bh;
+        }        
+        else if(actionselected == 'UnArchiveBudget') {
+            BudgetHeader__c bh = new BudgetHeader__c(Id = bhId, Status__c = ECO_DTO_BudgetHeader.STATUS_ESTIMATE);
+            update bh;
+        }
         
         PageReference pageReference = new PageReference('/apex/ECO_BudgetHeaderSummary?Id=' + theProject.Id);
         pageReference.setRedirect(true);
@@ -80,7 +88,7 @@ public with sharing class ECO_BudgetHeaderSummaryController {
                 oBudgetHeader.Project__c = theProject.Id;
                 oBudgetHeader.BudgetName__c = 'Estimate 1';
                 oBudgetHeader.RecordTypeId = ECO_Utils_Meta.getRecordTypeId(BudgetHeader__c.sObjectType, 'Baseline');
-                oBudgetHeader.Status__c = 'Estimate';
+                oBudgetHeader.Status__c = ECO_DTO_BudgetHeader.STATUS_ESTIMATE;
                 
                 insert oBudgetHeader; 
             } catch (Exception e) {

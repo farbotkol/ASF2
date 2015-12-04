@@ -418,7 +418,7 @@
                 <field>RecordTypeId</field>
             </layoutItems>
             <layoutItems>
-                <behavior>Edit</behavior>
+                <behavior>Readonly</behavior>
                 <field>SyncTestingLayout__c</field>
             </layoutItems>
         </layoutColumns>
@@ -451,6 +451,8 @@
         <sortOrder>Desc</sortOrder>
     </relatedLists>
     <relatedLists>
+        <customButtons>NewFromProject</customButtons>
+        <excludeButtons>New</excludeButtons>
         <fields>NAME</fields>
         <fields>OraclePurchaseOrderNumber__c</fields>
         <fields>Agreement__c</fields>
@@ -459,9 +461,15 @@
         <fields>Requestor__c</fields>
         <fields>Status__c</fields>
         <fields>Total__c</fields>
-        <fields>CREATEDBY_USER</fields>
-        <fields>CREATED_DATE</fields>
         <relatedList>POHeader__c.Project__c</relatedList>
+    </relatedLists>
+    <relatedLists>
+        <fields>PONumber__c</fields>
+        <fields>ProjectTaskNumber__c</fields>
+        <fields>VendorName__c</fields>
+        <fields>ExpenditureType__c</fields>
+        <fields>POAmountBilled__c</fields>
+        <relatedList>POcommitment__c.ProjectNumber__c</relatedList>
     </relatedLists>
     <relatedLists>
         <excludeButtons>New</excludeButtons>
@@ -513,11 +521,18 @@
         <sortOrder>Asc</sortOrder>
     </relatedLists>
     <relatedLists>
+        <excludeButtons>New</excludeButtons>
+        <fields>NAME</fields>
+        <fields>CREATED_DATE</fields>
+        <fields>CREATEDBY_USER</fields>
+        <relatedList>ProjectSnapshot__c.Project__c</relatedList>
+    </relatedLists>
+    <relatedLists>
         <customButtons>Manage_Deliverable</customButtons>
         <excludeButtons>New</excludeButtons>
         <fields>NAME</fields>
         <fields>DeliverableType__c</fields>
-        <fields>Owner__c</fields>
+        <fields>DeliverablesOwner__c</fields>
         <fields>Status__c</fields>
         <fields>DueDate__c</fields>
         <fields>DateSubmitted__c</fields>
@@ -572,10 +587,6 @@
     </relatedLists>
     <relatedLists>
         <relatedList>RelatedNoteList</relatedList>
-    </relatedLists>
-    <relatedLists>
-        <fields>NAME</fields>
-        <relatedList>WeeklyRollupEntry__c.Project__c</relatedList>
     </relatedLists>
     <showEmailCheckbox>false</showEmailCheckbox>
     <showHighlightsPanel>false</showHighlightsPanel>

@@ -14,11 +14,10 @@
     <tab>ExportControl__c</tab>
     <tab>TemplateQuestion__c</tab>
     <tab>standard-Idea</tab>
-    <tab>CostDistLine__c</tab>
-    <tab>EarnedValueHeader__c</tab>
-    <tab>VendorSub__c</tab>
     <tab>ChangeManager__c</tab>
     <tab>Agreement__c</tab>
     <tab>standard-report</tab>
     <tab>standard-Dashboard</tab>
+    <tab>Delegation_Manager</tab>
+    <tab>ProjectSnapshot__c</tab>
 </CustomApplication>

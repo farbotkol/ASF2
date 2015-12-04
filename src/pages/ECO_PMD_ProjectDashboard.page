@@ -1,0 +1,103 @@
+<apex:page showHeader="true" sidebar="true" standardStylesheets="true" 
+           standardController="pse__Proj__c" extensions="ECO_PMD_ProjectDashboard_Controller,ECO_PMD_Project_Schedule_Controller">
+
+  <html xmlns:ng="http://angularjs.org" ng-app="ecopmd">
+
+    <head>
+      <apex:includeScript value="{!URLFOR($Resource.angular_1_4_7_min, 'angular.min.js')}"/>
+      <apex:includeScript value="{!URLFOR($Resource.angular_1_4_7_min, 'i18n/angular-locale_' + LOWER(locale) + '.js')}"/>
+      <apex:stylesheet value="{!URLFOR($Resource.bootstrap_3_3_5_Namespaced, 'css-bs/bootstrap.min.css')}" />
+      <apex:includeScript value="{!URLFOR($Resource.bootstrap_3_3_5_Namespaced, 'ui-bootstrap-tpls-0.14.3.min.js')}" />
+   
+       <!-- Move to components?-->
+      <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+      <apex:includeScript value="{!URLFOR($Resource.ECO_ChartJS, 'Chart.js')}"/>
+      <apex:includeScript value="{!URLFOR($Resource.ECO_AngularChart, 'angular-chart.js')}"/>
+      <apex:includeScript value="{!URLFOR($Resource.KendoUi, 'KendoUi/js/jquery.min.js')}"/>
+      <apex:includeScript value="{!URLFOR($Resource.KendoUi, 'KendoUi/js/kendo.all.min.js')}"/>
+      <apex:stylesheet value="{!URLFOR($Resource.KendoUi, 'KendoUi/style/kendo.common.min.css')}" /> 
+      <apex:stylesheet value="{!URLFOR($Resource.KendoUi, 'KendoUi/style/kendo.default.min.css')}" /> 
+      <!-- /Move to components? -->
+   
+    </head>
+
+    <body>
+      <style id="ecopmd.css">
+        .pmd-panel {min-width: 400px;}
+        .pmd-panel .panel-footer {margin-top:2px;margin-bottom: 2px;}
+        .pmd-kpi {width:100%;table-layout:fixed;margin-bottom:10px;}
+        .pmd-kpi td {text-align:center;}
+        .pmd-kpi tr:nth-child(odd) {font-size:xx-large;}
+        .pmd-kpi tr:nth-child(even) {font-size:x-small;}
+        
+        .pmd-table {width:100%;}
+        .pmd-table th {text-align:center;background-color:#CCCCCC;}
+        .pmd-table tr:nth-child(even) {background-color:#FFFFFF;}
+        .pmd-table tr:nth-child(odd) {background-color:#DDDDDD;}
+
+        .nav, .pagination, .carousel, .panel-title a { cursor: pointer; }
+      </style>
+
+      <div class="bs"> <!-- bootstrap namespace -->
+      <div class="container-fluid">
+         <c:ECO_PMD_NavigationBar_Simple pageTitle="Project Dashboard" 
+                                  projectNumber="{!pse__Proj__c.OracleProjectnumber__c}" projectName="{!pse__Proj__c.name}"
+                                  projectId="{!Id}" />
+          <div class="border row mainMargin">
+              <div class="col-md-4 col-lg-4 nopadding">
+                  <c:ECO_PMD_ProjectDetails projectId="{!pse__Proj__c.Id}"/>   
+              </div>     
+              <div class="col-md-4 col-lg-4 nopadding">      
+                <c:ECO_PMD_KPIPanel projectId="{!pse__Proj__c.Id}"/>
+              </div>   
+              <div class="col-md-4 col-lg-4 nopadding">
+                  <c:ECO_PMD_ProjectActivities projectId="{!pse__Proj__c.Id}" />
+              </div>
+          </div>
+          <div class="clearfix "></div>
+          <div class="border row mainMargin">
+              <div class="col-md-4 col-lg-4 nopadding">
+                  <c:ECO_PMD_FinancialSummaryChart projectId="{!pse__Proj__c.Id}" />
+              </div>     
+              <div class="col-md-4 col-lg-4 nopadding">      
+                  <c:ECO_PMD_EarnedValueChart projectId="{!pse__Proj__c.Id}" />  
+              </div>   
+              <div class="col-md-4 col-lg-4 nopadding">
+                   <c:ECO_PMD_ChangeOrder projectId="{!pse__Proj__c.Id}"/>  
+              </div>
+          </div>
+        <div class="clearfix"></div>
+         <div class="border row mainMargin">
+              <div class="col-md-6 col-lg-6 nopadding">
+                  <c:ECO_PMD_Risk_Register projectId="{!pse__Proj__c.Id}"/> 
+              </div>     
+              <div class="col-md-6 col-lg-6 nopadding">      
+                  <c:ECO_PMD_Project_Schedule projectId="{!pse__Proj__c.Id}"/>
+                  <!--<top-ten-panel ng-model="temp.value" title="Schedule"></top-ten-panel> 
+                  <top-ten-panel project-id="{!pse__Proj__c.Id}" title="Schedule"></top-ten-panel>-->
+                  <!-- <c:ECO_PMD_ImDifferent proj="{!wrapper}"/> -->
+              </div>
+              <!--
+              <div class="col-md-4 nopadding">
+                  <c:ECO_PMD_xmpl_Panel panelTitle="SH&E/Quality" panelContentHeight="200px">
+                      <span style="color:gray;text-align:center">Data Not Available At This Time</span>
+                  </c:ECO_PMD_xmpl_Panel>
+              </div>
+              -->
+          </div>
+      </div>
+      </div>
+              
+      <apex:includeScript value="{!URLFOR($Resource.ECO_ng_DashPanel, 'lib/moment.min.js')}"/>
+      <apex:includeScript value="{!URLFOR($Resource.ECO_ng_DashPanel, 'lib/pikaday.min.js')}"/>
+      <apex:includeScript value="{!URLFOR($Resource.ECO_ng_DashPanel, 'lib/pikaday-angular/pikaday-angular.js')}"/>
+      <apex:includeScript value="{!URLFOR($Resource.ECO_ng_DashPanel, 'lib/pubsub.min.js')}"/>
+
+      <apex:includeScript value="{!URLFOR($Resource.ECO_ng_DashPanel, 'app/app.js')}"/>
+      <apex:includeScript value="{!URLFOR($Resource.ECO_ng_DashPanel, 'app/services/PubSub/pub-sub.service.js')}"/>
+      <apex:includeScript value="{!URLFOR($Resource.ECO_ng_DashPanel, 'app/services/DashPanelService/dash-panel-service.service.js')}"/>
+      <apex:includeScript value="{!URLFOR($Resource.ECO_ng_DashPanel, 'app/components/TopTenPanel/top-ten-panel.directive.js')}"/>
+      <apex:includeScript value="{!URLFOR($Resource.ECO_ng_DashPanel, 'app/components/DatePicker/date-picker.directive.js')}"/>
+    </body>
+  </html>
+</apex:page>

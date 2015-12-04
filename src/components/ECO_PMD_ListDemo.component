@@ -1,0 +1,123 @@
+<apex:component controller="ECO_PMD_ListDemo_Controller">
+	<apex:attribute name="projectId" description="Project Number" type="String" required="false" /> 
+	
+    <apex:includeScript value="{!URLFOR($Resource.KendoUi, 'KendoUi/js/jquery.min.js')}"/>
+     <apex:includeScript value="{!URLFOR($Resource.KendoUi, 'KendoUi/js/kendo.all.min.js')}"/>
+     <apex:stylesheet value="{!URLFOR($Resource.KendoUi, 'KendoUi/style/kendo.common.min.css')}" /> 
+    <apex:stylesheet value="{!URLFOR($Resource.KendoUi, 'KendoUi/style/kendo.default.min.css')}" /> 
+
+  <style>
+      .Medium {
+            
+            background-color: orange;
+      		font-weight: bold;
+        }
+      .Low {
+            
+            background-color: Green;
+      		color: White;
+      		font-weight: bold;
+        }
+
+        .k-grid-content table{
+
+             border-spacing: 3px !important;
+             border-collapse: separate;
+        }
+
+  </style>
+    
+    <div class="panel panel-default dashbox">
+        <div class="panel-heading">
+            Risk Register
+        </div>
+        
+        <div class="panel-body" >
+            
+           
+            <div id="example">
+                <div id="grid"></div><br/>
+    			<div id="total">Total Contingency Remaining: $43.70</div>
+                <script>
+                	var risks = [];
+                    
+                    function createGrid() {
+                        $("#grid").kendoGrid({
+                            dataSource: {
+                                data: risks,
+                                schema: {
+                                    model: {
+                                        fields: {
+                                            Name: { type: "string" },
+                                            ContingencyDollars__c: { type: "number" },
+                                            RiskScore__c: { type: "string" }
+                                        }
+                                       
+                                    }
+                                },
+                                pageSize: 10
+                            },
+                            //height: 320,
+                            width: 400,
+                            scrollable: true,
+                            sortable: true,
+                            filterable: true,
+                           
+                            columns: [
+                                 { field: "Name", title: "Description", width: "300px" },
+                                { field: "ContingencyDollars__c", title: "Cgncy $", format: "{0:c}", width: "100px" },
+                                { field: "RiskScore__c", title: "Score", width: "100px" ,
+                                 template: "<div class='#:RiskScore__c #'>#:RiskScore__c#</div>" }
+                            ]
+                        });
+                    }
+
+                
+                    ECO_PMD_ListDemo_Controller.TopRisks(
+                        '{!projectId}', 
+                        function(result, event){
+                            if(event.status) {
+                     
+                                risks = result;
+                                risks[0].ContingencyDollars__c = 25.7;
+                                risks[1].ContingencyDollars__c = 12.0;
+                                risks[2].ContingencyDollars__c = 6.0;
+                                risks[0].RiskScore__c = 'Medium';
+                                risks[1].RiskScore__c = 'Low';
+                                risks[2].RiskScore__c = 'Low';
+                                
+                                createGrid();
+                                  
+                                ECO_PMD_ListDemo_Controller.TotakContingencyDollars(
+                                    '{!projectId}', 
+                                    function(result, event){
+                                        if(event.status) {
+                                            
+                                            /*//var totalcgnty = "Total Contingency Remaining " + result;
+                                            console.log(result);
+                                            //get acopy of an object
+                                           
+                                            copy.Name = "Total Contingency Remaining ";
+                                            copy.RiskScore__c = 0;
+                                            copy.ContingencyDollars__c = 0;
+                                            risks.push(copy);
+                                            */
+                                 
+											                                
+                                        }
+                                    }
+                                );
+                            }
+                        }
+                    );
+                
+                	
+                </script>
+            </div>
+                
+            
+            
+        </div>
+ 	</div>
+
+</apex:component>

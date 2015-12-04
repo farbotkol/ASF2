@@ -1,0 +1,94 @@
+<apex:component layout="block">
+  <apex:attribute name="PageTitle" description="Page Title" type="String" required="true" />
+  <apex:attribute name="ProjectName" description="Project Name" type="String" required="true" />
+  <apex:attribute name="ProjectNumber" description="Project Number" type="String" required="true" />
+  <apex:attribute name="ProjectId" description="Project ID" type="String" required="true" />
+    
+    <nav class="navbar navbar-default customNavbar">
+        <div class="container-fluid navbarBackground">
+            <div class="navbar-header" style="width:100%">
+                    <a class="navbar-brand navbarText" href="#">{!pageTitle}{!ProjectNumber} - {!ProjectName}</a> 
+                    <div style="float:right;display:inline;">
+
+                        <div ng-controller="DropdownCtrl">
+
+                            <!-- Single button with keyboard nav - ->
+                            <div class="btn-group" uib-dropdown="" uib-keyboard-nav="" on-toggle="toggled(open)">
+                                <button id="simple-btn-keyboard-nav" type="button" class="btn btn-primary" uib-dropdown-toggle="">
+                                    Dropdown with keyboard navigation <span class="caret"></span>
+                                </button>
+                                <ul class="uib-dropdown-menu" role="menu" aria-labelledby="simple-btn-keyboard-nav">
+                                    <li role="menuitem"><a href="javascript:history.go(-1);">Back</a></li>
+                                    <li role="menuitem"><a href="#">Action</a></li>
+                                    <li role="menuitem"><a href="#">Another action</a></li>
+                                    <li role="menuitem"><a href="#">Something else here</a></li>
+                                    <li class="divider"></li>
+                                    <li role="menuitem"><a href="#">Separated link</a></li>
+                                </ul>
+                            </div>
+                            -->
+                            <div>
+                                <br />
+                                <select name="singleSelect" ng-model="data.singleSelect" ng-change="Selected()">
+                                      
+                                    <option value="/{!ProjectId}">Project Command Console</option>
+                                    <option value="/apex/eco_pmd_projectdashboard?id={!ProjectId}">Project Dashboard</option>
+                                    <option value="/apex/eco_pmd_financialdashboard?id={!ProjectId}">Financial Dashboard</option>
+                                    <option value="/apex/eco_pmd_costdetail_labourhours?id={!ProjectId}">Cost Detail - Labour Hours</option>
+                                    <option value="/apex/eco_pmd_costdetail_labourcost?id={!ProjectId}">Cost Detail - Labour Costs</option>
+                                    <option value="/apex/eco_pmd_costdetail_odcexpenses?id={!ProjectId}">Cost Detail - ODC Expenses</option>
+                                    <option value="/apex/eco_pmd_costdetail_odcsubs?id={!ProjectId}">Cost Detail - ODC Subs</option>
+                                    <option value="/apex/eco_pmd_accountsreceivablereport?id={!ProjectId}">Billing &amp; A/R</option>
+                                    <option value="/apex/eco_pmd_RevenueDetails?id={!ProjectId}">Revenue Details</option>
+                                    <option value="/apex/eco_pmd_TrendAnalysis?id={!ProjectId}">Snapshot Trend Analysis</option>
+                                    <option value="/apex/eco_pmd_tasksummaryreport?id={!ProjectId}">Task Summary</option>
+                                    <option value="/apex/eco_pmd_earnedvaluedetail?id={!ProjectId}">Earned Value Detail</option>
+                                    <option value="/apex/eco_pmd_CommitmentsReport?id={!ProjectId}">x-Commitments</option>
+                                    
+                                </select>
+                            </div>
+                            
+                            
+                        </div> 
+
+                    </div>
+            </div>
+        </div>
+    </nav>
+<script>
+    (function () {
+        'use strict';
+        angular.module('ecopmd.navigator', ['ngAnimate','ui.bootstrap']);
+        angular.module('ecopmd.navigator').controller('DropdownCtrl',  ['$scope',ddc]);
+
+        function ddc($scope){
+            $scope.data = {singleSelect: null};
+
+             $scope.Selected = function(){
+              console.log($scope.data.singleSelect);
+              location.replace($scope.data.singleSelect);
+              // var redirectWindow = window.open($scope.data.singleSelect, '_blank');
+              // redirectWindow.location;
+
+            };
+        }
+
+        function dropdownCtrl($scope) {
+          
+          $scope.status = {
+            isopen: false
+          };
+
+          $scope.toggled = function(open) {
+            $log.log('Dropdown is now: ', open);
+          };
+
+          $scope.toggleDropdown = function($event) {
+            $event.preventDefault();
+            $event.stopPropagation();
+            $scope.status.isopen = !$scope.status.isopen;
+          };
+        };
+    })();
+</script>
+</apex:component>

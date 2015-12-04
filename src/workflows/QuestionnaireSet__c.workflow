@@ -6,6 +6,10 @@
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoFinal Approval for Go/No Go</description>
         <protected>false</protected>
+        <recipients>
+            <field>ProjectManager__c</field>
+            <type>userLookup</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/Go_No_Go_ApprovalCompleted</template>
     </alerts>
@@ -15,6 +19,10 @@
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoRecall Notification for Go/No Go</description>
         <protected>false</protected>
+        <recipients>
+            <field>ProjectManager__c</field>
+            <type>userLookup</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/Go_No_Go_Recall</template>
     </alerts>

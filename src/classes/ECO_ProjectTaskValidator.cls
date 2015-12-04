@@ -39,6 +39,8 @@ public without sharing class ECO_ProjectTaskValidator{
 	        	}	
         	}        					
 
+            /*
+            // ALERT - disabled by Omar Dec 4, 2015
             lRevenue = [SELECT id, TaskNumber__c, GLDate__c FROM Revenue__c WHERE TaskNumber__c IN :taskIds ORDER BY TaskNumber__c, GLDate__c DESC];
 
             if(!lRevenue.isEmpty()){
@@ -66,7 +68,7 @@ public without sharing class ECO_ProjectTaskValidator{
                     }
                 }   
             }               
-
+            */
         }
 
         Map<Id, List<pse__Project_Task__c>> mapParentPeerTasks = new Map<Id, List<pse__Project_Task__c>>();
