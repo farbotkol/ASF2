@@ -557,19 +557,10 @@ ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Pending Go/No Go&quot;)))</formula
             <name>External_Task_ID</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
-        <criteriaItems>
-            <field>pse__Project_Task__c.pse__External_Task_ID__c</field>
-            <operation>equals</operation>
-        </criteriaItems>
-        <criteriaItems>
-            <field>pse__Project_Task__c.ProjectNumber__c</field>
-            <operation>notEqual</operation>
-        </criteriaItems>
-        <criteriaItems>
-            <field>pse__Project_Task__c.ProjectTaskNumber__c</field>
-            <operation>notEqual</operation>
-        </criteriaItems>
+        <active>false</active>
+        <formula>AND(ISBLANK(pse__External_Task_ID__c),
+NOT(ISBLANK(ProjectNumber__c)),
+NOT(ISBLANK(ProjectTaskNumber__c)))</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
 </Workflow>

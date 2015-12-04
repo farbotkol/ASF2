@@ -66,6 +66,17 @@
         <template>EcoSystem_Templates/EcoCMPMHandoverRecalled</template>
     </alerts>
     <alerts>
+        <fullName>EcoCM_Notify_Incoming_PM</fullName>
+        <description>EcoCM Notify Incoming PM</description>
+        <protected>false</protected>
+        <recipients>
+            <field>IncomingPM__c</field>
+            <type>contactLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/EcoCMPMHandoverIncomingPMNotify</template>
+    </alerts>
+    <alerts>
         <fullName>EcoCustomerContractBudgetsApprovedRej</fullName>
         <ccEmails>bjacobi@centerstance.com</ccEmails>
         <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
