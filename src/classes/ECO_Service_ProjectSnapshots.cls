@@ -1136,7 +1136,7 @@ public class ECO_Service_ProjectSnapshots {
     	return metricsMap;
     }
 
-    private String getRelatedProjectTasks(List<Id> projectIds)
+    /*private String getRelatedProjectTasks(List<Id> projectIds)
     {
         String returnString = '';
         try {
@@ -1162,6 +1162,35 @@ public class ECO_Service_ProjectSnapshots {
         }
         catch(Exception e) {
             System.Debug(e.getStackTraceString());
+        }
+        return returnString;
+    }*/
+    private String getRelatedProjectTasks(List<Id> projectIds)
+    {
+        String returnString = '';
+        try {
+	        System.debug(System.LoggingLevel.WARN, '___getRelatedProjectTasks Query rows BEFORE='+Limits.getQueryRows());
+	        List<pse__Project_Task__c> projectTasks = [SELECT Id, Name, ForecastEndDate__c, ForecastStartDate__c,
+	            pse__End_Date__c, pse__Start_Date__c, ProjectTaskNumber__c FROM pse__Project_Task__c
+	            WHERE pse__Project__c IN :projectIds];
+	        System.debug(System.LoggingLevel.WARN, '___getRelatedProjectTasks Query rows AFTER='+Limits.getQueryRows());
+	        System.debug(System.LoggingLevel.WARN, '___getRelatedProjectTasks rows='+projectTasks.size());
+	        for (pse__Project_Task__c projectTask:projectTasks)
+	        {
+	            if (returnString == '') {
+	                returnString = projectTask.Name + ';;' + projectTask.ProjectTaskNumber__c + ';;' +
+	                	projectTask.ForecastStartDate__c  + ';;' + projectTask.ForecastEndDate__c  + ';;' +
+	                	projectTask.pse__Start_Date__c.format() + ';;' + projectTask.pse__End_Date__c.format();
+	            }
+	            else {
+	            	System.debug(System.LoggingLevel.WARN, '___getRelatedProjectTasks returnString B4='+returnString);
+	                returnString += '::' + projectTask.Name + ';;' + projectTask.ProjectTaskNumber__c + ';;' +projectTask.ForecastStartDate__c  + ';;' + projectTask.ForecastEndDate__c  + ';;' +projectTask.pse__Start_Date__c.format() + ';;' + projectTask.pse__End_Date__c.format();
+	            }         
+	        }
+	        System.debug(System.LoggingLevel.WARN, '___getRelatedProjectTasks returnString='+returnString);
+	    }
+        catch(Exception e) {
+            System.Debug('EXCEPTION: '+e.getStackTraceString());
         }
         return returnString;
     }
