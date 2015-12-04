@@ -181,11 +181,11 @@ public class ECO_Service_ProjectSnapshots {
             List<EarnedValueHeader__c> evHeaders = [SELECT Id FROM EarnedValueHeader__c 
             WHERE Project__c = :snapshotProjectId order by Id desc];
             
-            if (evHeaders.size() > 0){
+            if (!evHeaders.isEmpty()){
                 List<EarnedValueSnapshot__c> snapshots = [SELECT Id FROM EarnedValueSnapshot__c
                                                     WHERE ProjectTask__r.pse__Project__c = :snapshotProjectId];
                 
-                if (snapshots.size() > 0)
+                if (!snapshots.isEmpty())
                 {
                     earnedValueController = new ECO_EarnedValueReportController(evHeaders[0].Id);
                 
@@ -198,7 +198,7 @@ public class ECO_Service_ProjectSnapshots {
                                                 ORDER BY SnapshotDate__c DESC
                                                 LIMIT 1];
                     
-                    if (earnedValueTasks.size() > 0)
+                    if (!earnedValueTasks.isEmpty())
                     {
                         EarnedValueSnapshotDate = earnedValueTasks[0].SnapshotDate__c;
                         EarnedValueLastModifiedDate = earnedValueTasks[0].LastModifiedDate;
@@ -218,7 +218,7 @@ public class ECO_Service_ProjectSnapshots {
         	pSnapshotAsOfDateTime = DateTime.now();
         }
         snapshotList = createProjectSnapshots(pSnapshotAsOfDateTime);
-        if (snapshotList != null && snapshotList.size() > 0) {
+        if (snapshotList != null && !snapshotList.isEmpty()) {
             return snapshotList[0];
         }
         else {
@@ -252,7 +252,7 @@ public class ECO_Service_ProjectSnapshots {
                 System.Debug(e.getStackTraceString());
             }
 
-            if (projects != null && projects.size() > 0) {
+            if (projects != null && !projects.isEmpty()) {
                 System.debug(System.LoggingLevel.WARN, '___projects.size() ='+projects.size());
                 Id changeOrderRecordTypeId = 
                     ECO_Utils_Meta.getRecordTypeId(BudgetHeader__c.sObjectType, 'Change Order');
@@ -264,21 +264,23 @@ public class ECO_Service_ProjectSnapshots {
                 draftBudgetHeaderMap = getDraftBudgetHeaderMap(projectIds);
                 unapprovedBudgetHeaderMap = getUnapprovedBudgetHeaderMap(projectIds, true);
                 
+                pSnapshotLatestFiscalWeekEndDate = getLatestFiscalWeekEndDate();
+                
                 timePeriodMap = getTimePeriodMap();     
       
                 pse__Time_Period__c monthTP = (pse__Time_Period__c) timePeriodMap.get('Month');
                 Date monthStartDate = monthTP.pse__Start_Date__c;
-                
-                pSnapshotLatestFiscalWeekEndDate = getLatestFiscalWeekEndDate();
-                
+                System.debug(System.LoggingLevel.WARN, '___monthStartDate='+monthStartDate);
                 mtdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, monthStartDate);  
-
+				System.debug(System.LoggingLevel.WARN, '___mtdActualFinancialMetricsMap='+mtdActualFinancialMetricsMap);
+				
                 itdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, null);
 
                 billingMetricsARMap = getBillingMetricsARMap(projectIds, itdActualFinancialMetricsMap);
 
                 pse__Time_Period__c yearTP = (pse__Time_Period__c) timePeriodMap.get('Year');
                 Date yearStartDate = yearTP.pse__Start_Date__c;
+                System.debug(System.LoggingLevel.WARN, '___yearStartDate='+yearStartDate);
                 ytdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, yearStartDate);
 
                 billingMetricsAR0to30Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_0to30);
@@ -495,7 +497,7 @@ public class ECO_Service_ProjectSnapshots {
                 }   
             }
             
-            if (snapshotList.size() > 0) {
+            if (!snapshotList.isEmpty()) {
                 System.debug(System.loggingLevel.WARN, '___snapshotList.size()='+snapshotList.size());
                 insert snapshotList;
             } 
@@ -728,7 +730,7 @@ public class ECO_Service_ProjectSnapshots {
                 Decimal totalRevenue = (Decimal)ar.get('totalRevenue');
                 Id projId = (Id) ar.get('ProjectNumber__c');
                 System.debug(System.LoggingLevel.WARN, '___range='+range+', totalRevenue='+totalRevenue+', projId='+projId);
-                if (billingMetricsARMap != null && billingMetricsARMap.size() > 0) {
+                if (billingMetricsARMap != null && !billingMetricsARMap.isEmpty()) {
                     System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap='+billingMetricsARMap);
                     Decimal billedARValue = 0;
                     if (billingMetricsARMap.get(projId) != null) {
@@ -833,7 +835,7 @@ public class ECO_Service_ProjectSnapshots {
 	                                         WHERE Project__c IN :projectIds
 	                                         AND Status__c = 'Approved' ORDER BY LastModifiedDate DESC];
 	        
-	        if (budgets.size() > 0) {
+	        if (!budgets.isEmpty()) {
 	            for (BudgetHeader__c bh : budgets) {
 	                lastUpdatedBudgetDateMap.put(bh.Project__c, bh.LastModifiedDate);
 	            }
@@ -1194,7 +1196,7 @@ public class ECO_Service_ProjectSnapshots {
         List<BudgetHeader__c> budgets = [SELECT Id, LastModifiedDate FROM BudgetHeader__c WHERE Project__c IN :projectIds
                                                 AND Status__c = 'Approved' order by LastModifiedDate desc];
         
-        if (budgets.size() > 0)
+        if (! budgets.isEmpty())
             return budgets[0].LastModifiedDate;
         return null;
     }
@@ -1861,7 +1863,7 @@ public class ECO_Service_ProjectSnapshots {
 	            prevFiscalMonthList.add(ps.SnapshotPreviousFiscalMonth__c);
 	        }
 	
-	        if (prevFiscalMonthList.size() > 0) {
+	        if (!prevFiscalMonthList.isEmpty()) {
 	            List<ProjectSnapshot__c> snapshotPrevFMList = getPreviousFMForecastInformation(prevFiscalMonthList);
 	
 	            for (ProjectSnapshot__c snapshotPrevFM : snapshotPrevFMList) {
