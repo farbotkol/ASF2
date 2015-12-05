@@ -397,6 +397,7 @@ public with sharing class ECO_ProjectSetupController {
 
             for (Site__c oSearchSite: lstSitesSearchResults){
                 if(oSearchSite.OracleCustomerID__c == null){
+                    mapSearchSites.put(oSearchSite.id, oSearchSite);
                     nullSearchSites.add(oSearchSite);
                 } else {
                     if(mapUniqueSites.containskey(oSearchSite.OracleCustomerID__c)){

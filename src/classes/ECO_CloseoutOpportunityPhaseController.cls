@@ -9,6 +9,7 @@ public class ECO_CloseoutOpportunityPhaseController {
     public boolean bHasAccessToOpportunity {get;set;}
 
     public list<QuestionnaireSet__c> lstNogo {get;set;}
+    public string sopportunityName {get;set;}
 
     /* Custom classes to facilitate this controller */
     public class EcoControllerException extends Exception {}
@@ -41,6 +42,7 @@ public class ECO_CloseoutOpportunityPhaseController {
         types.add(new SelectOption('No', 'No'));
         types.add(new SelectOption('Yes', 'Yes'));  
         
+        sopportunityName = oProject.pse__Opportunity__r.name;
 
         lstNogo = [select id, GoNoGoDate__c from QuestionnaireSet__c where Project__c =: oProject.id and GoNoGoRecommendation__c = 'No Go' order by GoNoGoDate__c desc];
 
