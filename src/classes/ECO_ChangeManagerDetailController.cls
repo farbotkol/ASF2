@@ -156,6 +156,7 @@ public class ECO_ChangeManagerDetailController {
         invalidTasks = projectSummaryController2.invalidTasks;
         projectSynchMessages += projectSummaryController2.keyMemberMsg;
         invalidKeyMembers = projectSummaryController2.invalidKeyMembers;
+        projectSynchMessages += projectSummaryController2.classificationsMsg;
  
         projectSynchMessages += projectSummaryController2.customersMsg; 
         invalidCustomers = projectSummaryController2.invalidCustomers; 
