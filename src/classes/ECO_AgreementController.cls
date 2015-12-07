@@ -464,6 +464,14 @@ global virtual class ECO_AgreementController {
     
     public PageReference launchSegmentationQuestionnaire()
     {
+        if(relAgreements.isEmpty())
+        {
+            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'MSA Segmentation may only be completed after a prime task order has been associated with the MSA');
+            ApexPages.addMessage(oPageMessage);
+            return null;
+        }
+
+
     	PageReference pageRef = new PageReference('/apex/ECO_ProjectSegmentation');
     	
     	pageRef.getParameters().put('retURL', '/apex/ECO_AgreementView?Id='+agreement.Id);
