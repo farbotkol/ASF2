@@ -57,8 +57,10 @@
         </actions>
         <active>true</active>
         <description>Notifies the reviewer that the TQR is ready for review.</description>
-        <formula>AND(ISCHANGED(ReviewSubmitted__c),
-ReviewSubmitted__c = True)</formula>
+        <formula>OR(AND(ISNEW(),ReviewSubmitted__c = True),
+
+AND(ISCHANGED(ReviewSubmitted__c),
+ReviewSubmitted__c = True))</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
 </Workflow>
