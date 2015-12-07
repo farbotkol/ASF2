@@ -641,10 +641,10 @@ public class ECO_ChangeManagerDetailController {
         update changeManager;
 
 
-        if(changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c)
-            ECO_Service_ChangeManager.synchronizeProject2(changeManager.LatestMessageQueueId__c, changeManager.Project__c);
-        else
-            ECO_Service_ChangeManager.synchronizeProject(changeManager.LatestMessageQueueId__c, changeManager.Project__c);
+        //if(changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c)
+        //    ECO_Service_ChangeManager.synchronizeProject2(changeManager.LatestMessageQueueId__c, changeManager.Project__c);
+        //else
+        //    ECO_Service_ChangeManager.synchronizeProject(changeManager.LatestMessageQueueId__c, changeManager.Project__c);
 
         PageReference changeManagerPageRef = new PageReference('/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id);        
         changeManagerPageRef.getParameters().put('mode', '');
