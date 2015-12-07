@@ -7,6 +7,10 @@
         <description>EcoFinal Approval for Go/No Go</description>
         <protected>false</protected>
         <recipients>
+            <recipient>Export_Controls_Team</recipient>
+            <type>group</type>
+        </recipients>
+        <recipients>
             <field>ProjectManager__c</field>
             <type>userLookup</type>
         </recipients>
