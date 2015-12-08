@@ -1,36 +1,59 @@
-<apex:page showHeader="false" renderAs="pdf" sidebar="false" doctype="html-5.0" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" standardController="pse__Proj__c" extensions="ECO_ProjectPlanControllerPdf">
+<apex:page showHeader="false" renderAs="pdf" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" standardController="pse__Proj__c" extensions="ECO_ProjectPlanControllerPdf">
     <head>
         
         <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
         
-        <style>
+        <style type="text/css" media="print">
             @page{
                 size:landscape;
+                padding-top:60px;
+                @top-center {
+                    content: element(header);
+                }
+
+               
+                @bottom-right {
+                    content: "Page " counter(page) " of " counter(pages);
+                    font-family: sans-serif;
+                    font-size: 80%;
+                }
+            }
+            @page :first {
+                @bottom-right {
+                 /* Nothing */
+                }
             }
             body{
                 font-family:arial, sans-serif;
                 font-size:80%;
             }
-            .headerInfo{
-                height:65px;
+
+            .header{
+                display:block;
+                padding-bottom: 40px;
+                position: running(header);
+            }
+
+            .headerInline{
+                height:75px;
                 border-bottom: 2px solid #DDDDDD;
                 padding:0 0 15px 0; 
-                margin: 0 0 25px 0;
+                margin: 10px 0 25px 0;
                 background-position:top right;
                 background-repeat:no-repeat;
                 background-size:5% auto !important;
                 background-image : url({!URLFOR($Resource.ECO_CustomGraphicAssets, 'PDFLogo.jpg')});
             }
-            .headerInfo h1{
+            .headerInline h1{
                 margin:-2px 0 0 0;
                 font-size:16px;
                 line-height:80%;
             }
-            .headerInfo h2{
+            .headerInline h2{
                 font-size:16px;
                 line-height:80%;
             }
-            .headerInfo h5{
+            .headerInline h5{
                 line-height:80%;
                 margin:0;
             }
@@ -44,8 +67,10 @@
                 right:0;
                 top:0;
                 padding:50px 10px 0 25px;
+                margin-top:10px;
                 width:150px;
             }
+
             table{
                 border: 1px solid #ddd;
                 width:100%; 
@@ -112,22 +137,26 @@
             .mainTitle{
                 margin:15px 0 -5px 0;
             }
+
+            .relatedListIcon{
+                display: none;
+            }
         </style>
 
     </head>
-
-        <div class="headerInfo">
-            <h5>Project Plan</h5>
-            <h2 style="line-height:80%;">Project: {!theProject.Name}</h2>
-            <h2 style="line-height:80%;">Date: {!now()}</h2>
-                        
-            <div class="rightHeaderInfo">
-                Project ID:<br/>
-                {!theProject.ProjectNumber__c}
+        <div class="header">
+            <div class="headerInline">
+                <h5>Project Plan</h5>
+                <h2 style="line-height:80%;">Project: {!theProject.Name}</h2>
+                <h2 style="line-height:80%;">Date: {!now()}</h2>
+                            
+                <div class="rightHeaderInfo">
+                    Project ID:<br/>
+                    {!theProject.ProjectNumber__c}
+                </div>
             </div>
-
         </div>
-        
+
         <h2 style="line-height:80%;">Project: {!theProject.Name}</h2>
         <h1>PROJECT PLAN</h1>
         <br/>
@@ -141,6 +170,7 @@
         <apex:relatedList list="ProcessSteps" />
        
         <p style="page-break-after:always;"></p>
+
         <apex:pageBlock title="Project Information">
             <apex:pageBlockSection title="Project Information" collapsible="true" columns="4">
                 <apex:repeat value="{!$ObjectType.pse__Proj__c.FieldSets.ECO_ProjectPlanPdf}" var="f">
@@ -1994,5 +2024,4 @@ In completing the Environmental Review within the Project Plan it is not intende
 				</apex:pageBlockSection>
 				
 		</apex:pageBlock>
-		
 </apex:page>
