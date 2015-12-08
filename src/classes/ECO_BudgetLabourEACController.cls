@@ -12,6 +12,8 @@ public with sharing class ECO_BudgetLabourEACController {
       set; 
     }
 
+    public Integer totalPages {get; set;}
+
     public ECO_BudgetLabourEACController(ApexPages.StandardController con) {
         String strPageNum = System.currentPageReference().getParameters().get('pagenum');
       
@@ -35,6 +37,13 @@ public with sharing class ECO_BudgetLabourEACController {
     }
     
     public void recalcHashes() {
+       Decimal dtotalPages;
+     
+
+        dtotalPages = (brSsc.getResultSize() / brSsc.getPageSize());
+        dtotalPages = Math.floor(dtotalPages) + ((Math.mod(brSsc.getResultSize(), brSsc.getPageSize())>0) ? 1 : 0);
+        totalPages = Integer.valueOf(dtotalPages);
+        
       baHashes = new Map<String, Integer>();
       for(ECO_DTO_BudgetLabourDetail dtoBudgetDetail : budgetLabourWrapper.dtoBudgetLabourDetails) {
        
@@ -45,26 +54,27 @@ public with sharing class ECO_BudgetLabourEACController {
         system.debug(LoggingLevel.INFO, baHashes.size());
     }
     public void reset() {
-      budgetLabourWrapper.reset(brSsc.getRecords());      
+      budgetLabourWrapper.reset(brSsc.getRecords());
+       
+
       recalcHashes();
     }
 
-    public PageReference nextPage() {
-      return saveEACRecords( brSsc.getPageNumber() + 1);
-      /*
-      brSsc.next();
-      reset();
-      return null;
-      */
-    }
+    public PageReference pageLast() {
 
-    public PageReference prevPage() {
+      return saveEACRecords( totalPages);
+     }
+    public PageReference pageNext() {
+      return saveEACRecords( brSsc.getPageNumber() + 1);
+     }
+
+    public PageReference pagePrevious() {
      return saveEACRecords(brSsc.getPageNumber() - 1);
-     /*
-      brSsc.previous();
-      reset();
-      return null;
-      */
+
+   }
+    public PageReference pageFirst() {
+     return saveEACRecords(1);
+
     }
 
     public PageReference saveEACRecords(Integer pageNum) {
