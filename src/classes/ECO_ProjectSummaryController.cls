@@ -358,7 +358,7 @@ public with sharing class ECO_ProjectSummaryController {
         cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
         String endPointUrl = cs.EndPointUrl__c;
 
-        authenticationResult = ECO_Service_Authentication.TestProxy(endPointUrl, 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + password);
+        authenticationResult = ECO_Service_Authentication.TestProxy(endPointUrl, 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + EncodingUtil.URLENCODE(password,'UTF-8'));
 
         return null;
     }

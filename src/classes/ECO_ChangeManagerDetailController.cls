@@ -181,7 +181,7 @@ public class ECO_ChangeManagerDetailController {
         cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
 
         String endPointUrl = cs.EndPointUrl__c;
-        authenticationResult = ECO_Service_Authentication.TestProxy(endPointUrl, 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + password);
+        authenticationResult = ECO_Service_Authentication.TestProxy(endPointUrl, 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + EncodingUtil.URLENCODE(password,'UTF-8'));
         //authenticationResult = ECO_Service_Authentication.TestProxy('https://ecodev.aecom.com/OA_HTML/jsp/fnd/PicDisconnSF.jsp', 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + password);
 
         return null;
