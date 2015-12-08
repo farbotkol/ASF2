@@ -17,11 +17,8 @@ public class ECO_Service_ProjectSnapshots {
     
     public static final String AECOM_FISCAL_WEEK_END_DAY = 'Friday';
     
-    public DateTime pSnapshotDateTime {get; set{ if (pSnapshotDateTime == null) {
-        	pSnapshotDateTime = DateTime.now();
-        }
-    } }
-    public Date pSnapshotDate {get; set {if (pSnapshotDate==null) {pSnapshotDate = Date.today();}} }
+    public DateTime pSnapshotDateTime {get; set;}
+    public Date pSnapshotDate {get; set;}
     public Date pSnapshotLatestFiscalWeekEndDate {get; set;}
     
     public ECO_EarnedValueReportController earnedValueController {get; set;}
@@ -233,6 +230,7 @@ public class ECO_Service_ProjectSnapshots {
         	pSnapshotAsOfDateTime = DateTime.now();
         }
         pSnapshotDate = pSnapshotDateTime.date();
+        System.debug(System.LoggingLevel.WARN, '___pSnapshotDate='+pSnapshotDate);
         
         List<ProjectSnapshot__c> snapshotList = new List<ProjectSnapshot__c>();
         try {
@@ -859,6 +857,7 @@ public class ECO_Service_ProjectSnapshots {
 	        for (pse__Time_Period__c tp : timePeriodList) {
 	            timePeriodMap.put(tp.pse__Type__c, tp);
 	        }
+	        System.debug(System.LoggingLevel.WARN, '___pSnapshotDate='+pSnapshotDate+', timePeriodMap='+timePeriodMap);     
 	    }
         catch(Exception e) {
             System.Debug(e.getStackTraceString());
