@@ -1,6 +1,9 @@
 <apex:page standardController="pse__Proj__c" extensions="ECO_BudgetQuestionnaireController" id="thePage" sidebar="false" title="{!theProject.Name} - Budget Setup Questionnaire" >
-	
-	<!-- <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
+    <script>
+    /*** Prevents DatePicker from getting focus on load ***/
+    function setFocusOnLoad() {}
+    </script>
+	<apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
 	<apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
 	<apex:includeScript value="{!URLFOR($Resource.ECO_Bootstrap_3_3_2, 'js/bootstrap.min.js')}"/>
 	<apex:includeScript value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/js/nifty.min.js')}"/>
@@ -8,7 +11,7 @@
 	<apex:stylesheet value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2_Themes, 'themes/smoothness/jquery-ui.css')}"/>
 	<apex:stylesheet value="{!URLFOR($Resource.ECO_Bootstrap_3_3_2, 'css/bootstrap.min.css')}" /> 
 	<apex:stylesheet value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/css/nifty.css')}" />
-	<apex:stylesheet value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/css/font-awesome.min.css')}" /> -->
+	<apex:stylesheet value="{!URLFOR($Resource.ECO_NiftyAssets, 'ECO_NiftyAssets/css/font-awesome.min.css')}" /> <!-- -->
 	
 	<script type="text/javascript" >
 		var activeItem;
@@ -139,6 +142,7 @@
                 </div>
             </div>
             <br/>
+             <apex:actionRegion >
 			<apex:pageBlockSection id="projectInfo" title="Project Info" columns="1" collapsible="false">
                 <apex:pageBlockSection columns="1">
                 	<div class="customHelpText">
@@ -386,7 +390,7 @@
                         </div>
                     </div>
                     <apex:pageBlockSectionItem id="relocSection">
-                        <apex:actionRegion >
+                       
                         	<apex:pageBlockTable value="{!relocs}" var="relocNumber" id="relocTable">
                                 <apex:column >
                                     <apex:facet name="header">
@@ -429,14 +433,13 @@
                                             <img src="PaperClip Icon" />
                                         </a>
                                     </apex:repeat>
-                                    <apex:actionRegion >
-                                        <apex:commandButton action="{!goToAttachmentPage}" value="+" rerender="pageMessages">
+
+                                        <apex:commandButton action="{!goToAttachmentPage}" value="+" rerender="pageMessages,theBlock">
                                             <apex:param name="relocNumber" value="{!relocNumber}" assignTo="{!selectedRecordNumber}"/>
                                         </apex:commandButton>
-                                    </apex:actionRegion>								
+                                   							
                                 </apex:column>
                             </apex:pageBlockTable>
-                        </apex:actionRegion>
 						
 					</apex:pageBlockSectionItem>
                     <apex:pageBlockSectionItem >
@@ -444,7 +447,7 @@
                         <apex:inputField value="{!theProject.TotalEstSecondmentCost__c}"/>
                     </apex:pageBlockSectionItem>
 				</apex:pageBlockSection>
-				
+				</apex:actionRegion >
 				<!--apex:pageBlockSection title="Custom Multiplier" collapsible="false" columns="1">
 					Coming Soon!
 				</apex:pageBlockSection-->
