@@ -359,18 +359,18 @@ public with sharing class ECO_ProjectSetupController {
         
         if(bSearchOutsideUserOrg){
             if(boolAtLeastOne){
-                strSOQL += ' and Account__r.recordtypeid !=: oracleRTFilter ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+                strSOQL += ' and Account__r.recordtypeid !=: oracleRTFilter and VendorSiteID__c = null ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
             } else {
-                strSOQL += ' WHERE Account__r.recordtypeid !=: oracleRTFilter ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+                strSOQL += ' WHERE Account__r.recordtypeid !=: oracleRTFilter and VendorSiteID__c = null  ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
             }
         } else {
 
             string userOrgID = userOrg.OUID__c;
 
             if(boolAtLeastOne){
-                strSOQL += ' AND OUID__c =: userOrgID and Account__r.recordtypeid !=: oracleRTFilter ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+                strSOQL += ' AND OUID__c =: userOrgID and Account__r.recordtypeid !=: oracleRTFilter and VendorSiteID__c = null  ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
             } else {
-                strSOQL += ' WHERE OUID__c =: userOrgID and Account__r.recordtypeid !=: oracleRTFilter ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+                strSOQL += ' WHERE OUID__c =: userOrgID and Account__r.recordtypeid !=: oracleRTFilter and VendorSiteID__c = null  ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
             }
         }
 

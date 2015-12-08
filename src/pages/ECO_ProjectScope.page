@@ -108,61 +108,18 @@
             margin-left:12px;
 
         }
-        .message{
-            background-color: #A2D3F1;
-        }
+
     </style>
   
     <script>
-    function setVar(){
 
-        $l = jQuery.noConflict();
-        var selectedTab = $l('#tabs').tabs('option','active');
-        
-        $l('[id$=myHiddenField]').val(selectedTab);
-        
-        var elemVal = document.getElementById('j_id0:j_id5:j_id61:j_id66:j_id67:j_id71:j_id72:BMISelect:0').value;
-        var elemVal1 = document.getElementById('j_id0:j_id5:j_id61:j_id66:j_id67:j_id71:j_id72:BMISelect:1').value;
-        var elemValSelYes = document.getElementById('j_id0:j_id5:j_id61:j_id66:j_id67:j_id71:j_id72:BMISelect:0').checked;   
-        var elemValSelNo = document.getElementById('j_id0:j_id5:j_id61:j_id66:j_id67:j_id71:j_id72:BMISelect:1').checked; 
-        
-        //alert( ' elemValSelYes ' + elemValSelYes + ' elemValSelNo ' + elemValSelNo );
-        
-        if( elemValSelYes == false && elemValSelNo == false )
-		{
-			document.getElementById('BMI_Error').style.display = "inline"; 	
-            document.getElementById('myErrorBody').style.display = "inline"; 	
-            
-            //showMessage('WARNING', 'This would be really cool indeed!');
-            //alert('Line 135');
-            return;
-		}            
-        else
-		{
-			document.getElementById('BMI_Error').style.display = "none"; 	        
-        	saving();
-        }            
-
-        return;
-    }
 
 	function handleScopeDelete(selectedScope)
 	{
 		deleteScope(selectedScope);
 	}
     
-	function setInner(variable)
-        {
-            var selected = variable.value;
-            if(selected == 'Yes' || selected == 'True')
-            {
-                document.getElementById("j_id0:j_id31:j_id36:j_id41:j_id42:j_id46:j_id47:YesMessage").style.display = 'block';
-            }
-            if(selected == 'No' || selected == 'False')
-            {
-                document.getElementById("j_id0:j_id31:j_id36:j_id41:j_id42:j_id46:j_id47:YesMessage").style.display = 'none';
-            }
-        }  
+
     
     </script>
 
@@ -180,20 +137,20 @@
         <apex:inputField value="{!oProjectPackage.Scope__c}" style="visibility: hidden;" />
         </div>
         
-        <div id="myErrorBody" class="rcorners2" style="display: none;">Please choose Yes or No for BIM  before Saving.</div>
 
-       <apex:pageMessage id="headerSummaryMessage1" severity="info"  escape="false"  summary="
-                Provide a brief summary of the overall scope of work and proposed approach for the project.  Detailed scope packages may be added if additional detail or delineation of AECOMs services is required.  Scope packages may include specific project activities or tasks, phases of work, interdisciplinary deliverables, change orders or variations, or packages “owned” by another organization to support an intercompany agreement.  Enough detail should be provided to support development of the schedule, required resources and cost estimate.   It is best practice to also capture any risks or assumptions identified during development of the project scope and approach." />
-
-        <apex:pageMessage id="headerSummaryMessage" severity="info"  escape="false"  summary="Provide a Zbrief summary of the overall scope of work <a href=www.cnn.com>cnn</a>" />
+        <div class="customHelpText">
+            <div class="customHelpBody">
+                Provide a brief summary of the overall scope of work and proposed approach for the project.  Detailed scope packages may be added if additional detail or delineation of AECOMs services is required.  Scope packages may include specific project activities or tasks, phases of work, interdisciplinary deliverables, change orders or variations, or packages “owned” by another organization to support an intercompany agreement.  Enough detail should be provided to support development of the schedule, required resources and cost estimate.   It is best practice to also capture any risks or assumptions identified during development of the project scope and approach." 
+            </div>
+        </div>
 
         <apex:pageBlock title="Project Scope" mode="edit">
 
             <apex:pageBlockButtons location="top">
                 <apex:commandButton action="{!AddScopePackage}" value="Add Detailed Scope Packages"/>
                 <!--<apex:commandButton action="{!SavePackages}" value="Save"/>-->
-                <apex:commandButton onclick="setVar(); return false;" value="Save"/>
-                <apex:commandButton action="{!Cancel}" value="Return to Project"/>
+                <apex:commandButton action="{!SavePackages}" value="Save"/>
+                <apex:commandButton action="{!Cancel}" value="Return to Project" immediate="true"/>
             </apex:pageBlockButtons>
             <c:Tabpanel >
             <c:Tab title="{!oProjectPackage.PackageTitle__c}">
@@ -203,7 +160,8 @@
                 <apex:inputField id="first" value="{!oProjectPackage.Scope_Owner__c}" />
                 <apex:inputField value="{!oProjectPackage.Status__c}" />
 				
-				<apex:inputField id="CancelReason" value="{!oProjectPackage.CancelledReason__c}" rendered="{!theProject.pse__Stage__c = 'Execution'}" /> 
+				<!--<apex:inputField id="CancelReason" value="{!oProjectPackage.CancelledReason__c}" rendered="{!theProject.pse__Stage__c = 'Execution'}" /> -->
+                <apex:inputField id="CancelReason" value="{!oProjectPackage.CancelledReason__c}"/> 
                 
             </apex:pageBlockSection>
             <apex:pageBlockSection columns="1"  >
@@ -221,6 +179,8 @@
             
             <br /><br />
             <div style="font-weight:bold;padding:20px 10px 4px 10px;">BIM</div>
+
+
             <apex:actionRegion immediate="true">                 
                 <div style="padding:10px">
                     <apex:panelgrid columns="4" style="float:left;">
@@ -228,22 +188,25 @@
                     <!--<c:ECO_HelpIcon helpText="{!$ObjectType.Packages__c.fields.Utilize_BMI_Technology__c.inlineHelpText}" />-->
                     &nbsp;&nbsp;
                     <!--<apex:selectRadio value="{!oProjectPackage.Utilize_BMI_Technology__c}" onchange="setInner(this)" >-->
-
-                     	 <apex:selectRadio value="{!UtilizeBMI}" Id="BMISelect"  required="true">
-                            <apex:selectOptions value="{!yesNoBIM}"/>
-                            <apex:actionSupport event="onchange" reRender="Panel" action="{!checkBIMChoice}" />
-                             
-                            <!-- <apex:commandButton value="Test" action="{!test}" rerender="out" status="status"/> -->
-                             
-                         </apex:selectRadio>
+                    <apex:panelGroup >
+                        <apex:outputPanel >
+                        <div class="requiredInput">
+                            <div class="requiredBlock"></div>
+                         	 <apex:selectRadio value="{!UtilizeBMI}" Id="BMISelect">
+                                <apex:selectOptions value="{!yesNoBIM}"/>
+                                <apex:actionSupport event="onchange" reRender="Panel" action="{!checkBIMChoice}" />
+                                 
+                                <!-- <apex:commandButton value="Test" action="{!test}" rerender="out" status="status"/> -->
+                                 
+                             </apex:selectRadio>
+                        </div>
+                        </apex:outputPanel>
+                    </apex:panelGroup>
                     </apex:panelgrid>
                     <br/>
                 </div>
-                <div style="padding:10px">
-                    <p id='BMI_Error' class="rcorners2" style="display:none;">
-						Please choose Yes or No for BIM  before Saving.
-                    </p>  
-                </div>   
+
+
                 <div style="padding:10px">
                    <br/>
                    <apex:outputPanel id="Panel" >
@@ -375,7 +338,8 @@
                     <apex:inputField value="{!ScopePackage.PackageTitle__c}" required="true" />
                     <apex:inputField value="{!ScopePackage.Scope_Owner__c}" />
                     <apex:inputField value="{!ScopePackage.Status__c}" />
-					<apex:inputField value="{!oProjectPackage.CancelledReason__c}" rendered="{!theProject.pse__Stage__c = 'Execution'}" /> 
+					<!--<apex:inputField value="{!ScopePackage.CancelledReason__c}" rendered="{!theProject.pse__Stage__c = 'Execution'}" /> -->
+                    <apex:inputField value="{!ScopePackage.CancelledReason__c}" /> 
                 </apex:pageBlockSection>
                 <apex:pageBlockSection columns="1">
                     <apex:pageblockSectionItem helpText="{!$ObjectType.Packages__c.Fields.Scope_Details__c.inlineHelpText}">
