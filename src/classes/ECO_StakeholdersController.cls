@@ -102,7 +102,7 @@ public with sharing class ECO_StakeholdersController
             
             List<ProjectTeamMember__c> projectTeamMembers = new List<ProjectTeamMember__c>([Select Id, ProjectRole__c, ProjectRole__r.Name, ProjectRole__r.Type__c, Contact__c, Contact__r.Name, Contact__r.pse__Is_Resource_Active__c, Contact__r.pse__Salesforce_User__c, Status__c, ProjectRoleTitle__c, Project__c, StartDate__c, EndDate__c, Phone__c, Email__c, Active__c, Is_Active__c From ProjectTeamMember__c Where Project__c = :thisProject.Id]);
 			
-			lStakeholders = new List<Stakeholder__c>([Select Id, StakeholderType__c, Organization__c, ContactName__c, ContactPhone__c, Interest__c, AECOMContact__c From Stakeholder__c Where Project__c = :thisProject.Id]);
+			lStakeholders = new List<Stakeholder__c>([Select Id, StakeholderType__c, Organization__c, Contact__c, ContactPhone__c, Interest__c, AECOMContact__c From Stakeholder__c Where Project__c = :thisProject.Id]);
 			
 			lCommPlans = new List<CommunicationPlan__c>([Select Id, When__c, ResponsiblePerson__c, How__c, Frequency__c, Audience__c, Activity__c, GenerateTask__c, ResponsiblePTM__c From CommunicationPlan__c Where Project__c = :thisProject.Id]);
 
@@ -591,7 +591,7 @@ public with sharing class ECO_StakeholdersController
 				}
 			}
 		}
-		contactQuery += ' AND (NOT person_id__c Like \'%U\')';
+		contactQuery += ' AND (NOT pse__Salesforce_User__r.TrackingID__c Like \'%U\')';
 		contactQuery += ' AND pse__Salesforce_User__r.TrackingID__c != null';
 		contactQuery += ' LIMIT 50';
 		queryDelegates = Database.query(contactQuery);		
@@ -856,6 +856,7 @@ public with sharing class ECO_StakeholdersController
 		if(recordObjectType == 'MembersTeam')
 		{
 			Integer teamMemberToRemove = Integer.valueOf(ApexPages.currentPage().getParameters().get('teamMemberToRemove'));
+			system.debug('***teamMemberToRemove ' + teamMemberToRemove);
 			if(lMembersTeam[teamMemberToRemove].oPTM.Id != null){
 				lMembersTeam[teamMemberToRemove].oPTM.Is_Active__c = false;
 				lMembersTeam[teamMemberToRemove].oPTM.EndDate__c = Date.today();
