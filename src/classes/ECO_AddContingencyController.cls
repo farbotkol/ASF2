@@ -13,7 +13,7 @@ public with sharing class ECO_AddContingencyController {
 		newBudgetColumn.BudgetHeader__c = budgetHeaderId;
 		newBudgetColumn.OverrideRatesOnLines__c = true;
 		newBudgetColumn.ResourceType__c = 'Contingency';  // change resource type 
-
+		newBudgetColumn.MarginType__c = 'Amount';
 		// newBudgetColumn.OverrideBillRate__c = theProject.DefaultBillRate__c;  // n/a
 		// newBudgetColumn.OverrideUplift__c = theProject.DefaultUpliftLabor__c;  // n/a for contingency
 		newBudgetColumn.JobName__c = jobName;  // will need to be set in modal
