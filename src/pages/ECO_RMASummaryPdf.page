@@ -180,53 +180,12 @@
             <div class="projectSummary">
 
                 <apex:pageBlock id="ProjectSummary">
-                <div style="page-break-after: always; margin-top:-32px;" />
-
-                    <!--
-                    <apex:pageBlockSection title="Project Sites" columns="1" collapsible="false">
-                        <apex:pageBlockTable value="{!lProjectSites}" var="item" width="100%" rendered="{!if(lProjectSites != null && lProjectSites.size > 0, true, false)}">
-                            <apex:column value="{!item.Account_Name__c}"/>
-                            <apex:column value="{!item.OracleCustomerNumber__c}"/>
-                            <apex:column value="{!item.CreditRiskRating__c}"/>
-                            <apex:column value="{!item.Address1__c}"/> 
-                            <apex:column value="{!item.City__c}"/>
-                            <apex:column value="{!item.State__c}"/>
-                            <apex:column value="{!item.Country__c}"/>
-                            <apex:column value="{!item.Postal_Code__c}"/>
-                            <apex:column value="{!item.Is_Billing__c}"/>
-                            <apex:column value="{!item.Is_Default_Top_Task__c}"/>
-                            <apex:column value="{!item.Is_End__c}"/>
-                            <apex:column value="{!item.Is_Primary_End__c}"/>
-                        </apex:pageBlockTable>
-                        <apex:outputText value="No Project Sites have been defined." rendered="{!if(lProjectSites != null && lProjectSites.size = 0, true, false)}"/>
-                    </apex:pageBlockSection>
-                    -->
-
-                    
-                    
-
-                    <!-- OUT PER MICHAELS REQUEST 7/30/2015
-                    <apex:pageBlockSection collapsible="false" columns="1" title="Market Assessment" rendered="{!if(lMarketAssessments != null && lMarketAssessments.size > 0, true, false)}" >
-                    </apex:pageBlockSection>
-
-                    <apex:pageBlockTable value="{!lMarketAssessments}" style="width:100%"  var="ma" rendered="{!if(lMarketAssessments != null && lMarketAssessments.size > 0, true, false)}" >
-                        <apex:column style="width:300px" value="{!ma.Name}"/>
-                        <apex:column style="width:150px" value="{!ma.Status__c}"/>
-                    </apex:pageBlockTable>
-                    
-                    
-                    <apex:pageBlockSection collapsible="false" columns="2" title="Export Control(s)" rendered="{!if(lExportControls != null && lExportControls.size > 0, true, false)}" />
-                    <apex:pageBlockTable value="{!lExportControls}" var="ec" rendered="{!if(lExportControls != null && lExportControls.size > 0, true, false)}">
-                        <apex:column >
-                            <apex:facet name="header">Action</apex:facet>
-                            <a href="/{!ec.Id}">View</a>
-                        </apex:column>
-                        <apex:column value="{!ec.Name}"/>
-                        <apex:column value="{!ec.Status__c}"/>
-                    </apex:pageBlockTable>
-                    -->
-
-                    
+                 <apex:pageBlockSection title="Project Information" collapsible="true" columns="2">     
+                    <apex:repeat value="{!CustomProjSetupFields}" var="f">
+                        <apex:outputField value="{!theProject[f.fieldPath]}" />
+                    </apex:repeat>
+                </apex:pageBlockSection>
+                <div style="page-break-after: always;" />
 
                     <apex:pageMessage severity="INFO" summary="There are no Notifications or Alerts associated to this project" rendered="{!if(lNotifications != null && lNotifications.size = 0, true, false)}" />
 
@@ -254,8 +213,20 @@
                         </apex:pageBlockTable> 
                         <apex:outputText value="No Attendees found for this meeting." rendered="{!if(lAttendees != null && lAttendees.size < 1, true, false)}"/>
                     </div>
+                    <div style="margin-bottom:1px;">
+                        <apex:pageBlockSection title="Summary of Exceptions/Triggers" collapsible="false"></apex:pageBlockSection>
+                        <apex:pageBlockTable value="{!lQuestionnaires}" var="item">
+                            <apex:column headerValue="Name">
+                                <apex:outputField value="{!item.Name}" />
+                            </apex:column>
+                            <apex:column value="{!item.ProjectRisk__c}" styleClass="centeredColumn"/> 
+                            <apex:column value="{!item.DoATriggers__c}" styleClass="centeredColumn"/> 
+                            <apex:column value="{!item.PercentComplete__c}" styleClass="centeredColumn"/> 
+                        </apex:pageBlockTable>
+                    </div>
                     
                 </apex:pageBlock>
+                
                 
             </div>
             
@@ -380,10 +351,8 @@
                         </table>
                         </apex:outputPanel>
                     </apex:outputPanel>
-            
                 </apex:pageBlock>
             </apex:repeat>
-            
                         <apex:repeat value="{!lMarketAssessments}" var="ma" id="theRepeat" rendered="{!if(lMarketAssessments != null && lMarketAssessments.size > 0, true, false)}">
                 <apex:pageBlock title="{!ma.Name} Details" html-style="text-decoration: underline;">
                     <table class="table-hover list" width="100%" cellpadding="0" cellspacing="0" style="margin-bottom:125px;">
@@ -559,7 +528,8 @@
                                 <apex:outputField value="{!ma.FreeFormPotentialConflictofInterest__c}" style="width:75%;"/>
                             </td>
                             <td class="cell" valign="bottom">
-                                <apex:outputField value="{!ma.Potentialconflictofinterestissues__c}" />
+                                <apex:outputText rendered="{!ma.Potentialconflictofinterestissues__c == 'True'}" value="Yes" />
+                                <apex:outputText rendered="{!ma.Potentialconflictofinterestissues__c == 'False'}" value="No" />
                             </td>
                         </tr>
                     </table>
