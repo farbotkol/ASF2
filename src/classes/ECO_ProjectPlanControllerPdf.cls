@@ -11,6 +11,7 @@ public with sharing class ECO_ProjectPlanControllerPdf
     public List<Agreement__c> lAgreements { get; set; }
     public List<Agreement__c> lPrimeAgreements { get; set; }
     public Map<Id, List<Funding__c>> mapOfPrimeAgmntIdToFundings { get; set; }
+    public ECO_DTO_BudgetHeaderWrapper budgetWrapper {get; set;}
     
     public ECO_ProjectScopeController ecoProjectScopeControllerDelegate { public get; private set; }
             
@@ -310,7 +311,6 @@ public with sharing class ECO_ProjectPlanControllerPdf
         ecoRiskRegisterListControllerDelegate = new ECO_RiskRegisterListController(stdController);
         ecoProjectChangeManagerControllerDelegate = new ECO_ProjectChangeManagerController(stdController);
         ecoBudgetQuestionnaireControllerDelegate = new ECO_BudgetQuestionnaireController(stdController);
-
         ecoSafetyHealthEnvControllerDelegate.init();
         ecoDOAApprovalRequestControllerDelegate = new ECO_DOA_ApprovalRequestController(theProject.Id);
     }
@@ -376,6 +376,7 @@ public with sharing class ECO_ProjectPlanControllerPdf
 	    lAssumptions = ECO_Service_Assumptions.getAssumtionsForProject(projectId);
 	    
 		initAgreements(projectId);
+        initBudgetHeaders(projectId);
 	}
 	
 	public void initAgreements(Id projectId) {
@@ -411,6 +412,10 @@ public with sharing class ECO_ProjectPlanControllerPdf
 	          }
 	    }
 	}
+
+    public void initBudgetHeaders(Id projectId){
+        budgetWrapper = new ECO_DTO_BudgetHeaderWrapper(projectId);
+    }
 	 
 	public List<Deliverable__c> getDeliverables(){
         List <Deliverable__c> deliverList = new List<Deliverable__c>([ 	Select 	id, 

@@ -245,8 +245,8 @@ public with sharing virtual class ECO_ClientFinderController{
         }
         
 
-        for(contact c:[select id, lastname, firstname, OracleContactID__c, Site__c from contact where site__c IN: sitesid]){
-            mapSiteIDtoOptions.get(c.Site__c).add(new SelectOption(c.OracleContactID__c, c.lastname + ', ' + c.firstname));
+        for(contact c:[select id, lastname, firstname, Oracle_ID__c, Site__c from contact where site__c IN: sitesid]){
+            mapSiteIDtoOptions.get(c.Site__c).add(new SelectOption(c.Oracle_ID__c, c.lastname + ', ' + c.firstname));
             system.debug('DEBUG****: ' + c.Site__c);
         }
 

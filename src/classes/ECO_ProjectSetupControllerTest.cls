@@ -50,7 +50,19 @@ private class ECO_ProjectSetupControllerTest
         testOpp.probability = 100;
         testOpp.TO_Procurement_Method__c = 'Competitive Task Orders';		
 
-        insert testOpp;
+		Opportunity testOpp2 = new Opportunity();
+		testOpp2.accountid = testAccount2.id;
+        testOpp2.name = 'test opp2';
+        testOpp2.closeDate = date.today();
+        testOpp2.Stagename = '1 Lead';
+        testOpp2.probability = 100;
+        testOpp2.TO_Procurement_Method__c = 'Competitive Task Orders';	
+
+        list<Opportunity> lstOpp = new list<Opportunity>();
+        lstOpp.add(testOpp);
+        lstOpp.add(testOpp2);
+
+        insert lstOpp;
 
 		// Insert Test Site Data
 		list<site__c> testSites = new list<site__c>();
@@ -98,6 +110,41 @@ private class ECO_ProjectSetupControllerTest
 
 		insert testSites;
 
+
+		list<contact> conList = new list<contact>();
+		Contact con1 = new Contact();
+		con1.FirstName = 'test';
+		con1.LastName = 'test';
+		con1.site__c = s1.id;
+		con1.Accountid = testAccount.id;
+		con1.OracleContactID__c = 'EMPLOYEE-474518U';
+		conList.add(con1);
+
+		Contact con2 = new Contact();
+		con2.FirstName = 'test';
+		con2.LastName = 'test';
+		con2.site__c = s2.id;
+		con2.Accountid= testAccount.id;
+		con2.OracleContactID__c = 'EMPLOYEE-474518U1';
+		conList.add(con2);
+
+		Contact con3 = new Contact();
+		con3.FirstName = 'test';
+		con3.LastName = 'test';
+		con3.site__c = s3.id;
+		con3.Accountid= testAccount.id;
+		con3.OracleContactID__c = 'EMPLOYEE-474518U2';
+		conList.add(con3);
+
+		Contact con4 = new Contact();
+		con4.FirstName = 'test';
+		con4.LastName = 'test';
+		con4.site__c = s4.id;
+		con4.Accountid = testAccount2.id;
+		con4.OracleContactID__c = 'EMPLOYEE-474518U3';
+		conList.add(con4);
+
+		insert conList;
 
 		List<OrganizationString__c> lOrgStrings = new List<OrganizationString__c>();
 		OrganizationString__c Org1 = ECO_Utils_Testing.createTestOrg();
@@ -250,7 +297,15 @@ private class ECO_ProjectSetupControllerTest
 		system.assertEquals(ext.lstSites[0].booIsDefaultTopTask, true);
 
 
+		for(ECO_ProjectSetupController.SiteWrapper sw: ext.lstSites){
+			sw.billingContact = sw.contacts[0].getValue();
+		}
+
+		ext.Step2();
+
 		system.assertEquals(ext.lstSearchOpportunities.size(), 1); 
+
+		ext.idSelectedOppRecType = ext.opportunityRecType[1].getvalue();
 
 		ext.SkipOpportunity();
 
@@ -270,9 +325,12 @@ private class ECO_ProjectSetupControllerTest
 		ext.sSelectedOrganizationId = ext.lOrganizations[0].id;
 		ext.SelectPrimary();
 
+
 		system.assertEquals(ext.isValid(), true);
 
 		ext.CreateProject();
+		
+		system.assertNotEquals(ext.oProject.id, null);	
 
 		pse__Proj__c oProject = [select id, pse__Opportunity__c from pse__Proj__c];
 
@@ -310,6 +368,10 @@ private class ECO_ProjectSetupControllerTest
 		system.assertEquals(ext.lstSites[0].booIsBilling, true); 
 		system.assertEquals(ext.lstSites[0].booIsEnd, true); 		
 		system.assertEquals(ext.lstSites[0].booIsDefaultTopTask, true);
+
+		for(ECO_ProjectSetupController.SiteWrapper sw: ext.lstSites){
+			sw.billingContact = sw.contacts[0].getValue();
+		}
 
 		system.assertEquals(ext.lstSearchOpportunities.size(), 1); 
 
