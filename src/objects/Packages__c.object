@@ -351,9 +351,9 @@
         <fullName>EcoScopeCancelledReasonRequired</fullName>
         <active>true</active>
         <description>A Scope cancelled reason is required when the scope is marked as cancelled</description>
-        <errorConditionFormula>AND(ISPICKVAL( Status__c , &quot;Cancelled&quot;),
-ISPICKVAL(Scope__r.pse__Stage__c, &quot;Execution&quot;),
-ISNULL( CancelledReason__c ))</errorConditionFormula>
+        <errorConditionFormula>ISPICKVAL( Status__c , &quot;Cancelled&quot;) &amp;&amp;
+ISPICKVAL(Scope__r.pse__Stage__c, &quot;Execution&quot;)&amp;&amp;
+ (ISBLANK(CancelledReason__c) || ISNULL(CancelledReason__c))</errorConditionFormula>
         <errorMessage>A Scope cancelled reason is required when the scope is marked as cancelled</errorMessage>
     </validationRules>
     <webLinks>
