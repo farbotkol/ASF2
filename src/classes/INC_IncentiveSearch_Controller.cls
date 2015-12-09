@@ -36,14 +36,7 @@ public without sharing class INC_IncentiveSearch_Controller {
 	public PageReference addRow(){
 		criteriaRow ocriteriaRow;
 		if(searchCriteria != null && searchCriteria.size() > 0){
-			/*if(searchCriteria[searchCriteria.size() -1].criteria == 'PM'){
-				if(IncProj.ProjectManager__c != null){
-		   			searchCriteria[searchCriteria.size() -1].value = IncProj.ProjectManager__c;
-				}else{
-					searchCriteria[searchCriteria.size() -1].value = '';
-		   		}
-			} */
-
+			
 			if((searchCriteria[searchCriteria.size() -1].value != null && searchCriteria[searchCriteria.size() -1].value !='') ||
 				searchCriteria[searchCriteria.size() -1].IncProj.ProjectManager__c != null){
 			  	if(searchCriteria.size() <5){
@@ -92,6 +85,7 @@ public without sharing class INC_IncentiveSearch_Controller {
 					rw.Message = '';
 					lupdate.add(rw.oIP);
 				}else{
+					//DTWINCISCSELNEWOWN
 					rw.Message = 'Please select a new Owner.';
 					bHasError = true;
 				}
@@ -127,13 +121,16 @@ public without sharing class INC_IncentiveSearch_Controller {
 				}
 			}
 			if(lResults.size() > 200){
+				//DTWINCISCSEATOMANYERR
 				apexPages.addMessage(new apexPages.message(apexPages.Severity.Info,'Your search returned more that 200 results.  Only the first 200 are displayed.'));
 			}
 			if(lResults == null || lResults.size() == 0){
+				//DTWINCISCNORESERR
 				apexPages.addMessage(new apexPages.message(apexPages.Severity.Info,'Your search returned no results.'));
 			}
 			System.Debug(logginglevel.error,'lResults: ' + lResults);
 		}else{
+			//DTWINCISCPREVDUP
 			apexPages.addMessage(new apexPages.message(apexPages.Severity.Error,'Please review your criteria for duplicates or missing values'));
 		}
 		return null;
@@ -160,17 +157,7 @@ public without sharing class INC_IncentiveSearch_Controller {
 
 		return bReturn;
 	}
-/*
-    Project Numberx
-    Project Namex
-    Project Managerx
-    Customer Namex
-    Aggregated Number
-    Aggregated Projects
-    Approved NSR Budgetx
-    Owner
-    Enrollment Statusx
-*/
+
 
 	private String buildQuery(){
 		String sQuery = 'Select ID' + 
@@ -279,6 +266,13 @@ public without sharing class INC_IncentiveSearch_Controller {
 		}
 	
 		private void buildSelectOptions(criteriaRow previousRow){
+				/*
+					DTWINCISCPM
+					DTWINCISCPN
+					DTWINCISCPNUM
+					DTWINCISCCN
+					DTWINCISCOW
+				*/
 				criteriaRowList.add(new SelectOption('',''));
 				criteriaRowlist.add(new SelectOption('PM','Project Manager'));
 				criteriaRowlist.add(new SelectOption('PN','Project Name'));

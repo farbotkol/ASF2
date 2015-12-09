@@ -207,7 +207,7 @@
             <name>X19_Set</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <criteriaItems>
             <field>EnrollmentParticipant__c.Baseline_Margin_Change__c</field>
             <operation>equals</operation>

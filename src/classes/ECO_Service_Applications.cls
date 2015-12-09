@@ -13,10 +13,86 @@ public without sharing class ECO_Service_Applications {
 		}
 	}
 	
+	/*  Luke Farbotko AECOM 23 Nov 2015
+		Builds the required quiry string for returning a users applications in eco portal
+		The default apps boolean is used to switch between wheather we want the users 
+		selected apps or the apps that AECOM want for all users as default.
+	*/
+	public static String builderApplicationsForUserQuery(User theUser, String searchTerm, Boolean defultsApps) {
+		String queryString = 'SELECT Id';
+		queryString			+= ' , Name';
+		queryString			+= ' , RecordTypeId';
+		queryString			+= ' , BusinessLinesAvailableTo__c';
+		queryString			+= ' , DefaultSortOrder__c';
+		queryString			+= ' , GeographiesAvailableTo__c';
+		queryString			+= ' , RegionsAvailableTo__c';
+		queryString			+= ' , IsActive__c';
+		queryString			+= ' , IsHidden__c';
+		queryString			+= ' , ConfigurationTemplate__r.IsRemovable__c';
+		queryString			+= ' , IsRemovable__c';
+		queryString			+= ' , IsTemplateActive__c';
+		queryString			+= ' , User__c';
+		queryString			+= ' , IsDefault__c';
+		queryString			+= ' , UserSortOrder__c';
+		queryString			+= ' , Application__c';
+		queryString			+= ' , Application__r.ApplicationName__c';
+		queryString			+= ' , Application__r.ApplicationURL__c';
+		queryString			+= ' , Application__r.ImageName__c';
+		queryString			+= ' , Application__r.NetworkRequirement__c';
+		queryString			+= ' , Application__r.MobileEnabled__c';
+		queryString			+= ' , RecordType.Name';
+		queryString			+= ' , ConfigurationTemplate__c';
+
+		queryString			+= ' FROM Configuration__c';
+		// This block is for user records
+		queryString			+= ' WHERE ';
+
+		if (defultsApps == false){
+			queryString		+= '(User__c = \''+theUser.Id+'\'';
+			queryString			+= ' AND ConfigurationTemplate__r.IsActive__c = true';
+			//queryString			+= ' AND IsHidden__c = false';
+			//queryString			+= ' AND ConfigurationTemplate__r.GeographiesAvailableTo__c INCLUDES (\'' + theUser.ECO_Geography__c + '\',\'All\')';
+			//queryString			+= ' AND ConfigurationTemplate__r.BusinessLinesAvailableTo__c INCLUDES (\'' + theUser.ECO_BusinessLine__c + '\',\'All\')';
+			//queryString			+= ' AND ConfigurationTemplate__r.RegionsAvailableTo__c INCLUDES (\'' + theUser.ECO_Region__c + '\',\'All\')';
+			if (ECO_Utils_String.NullCheck(searchTerm) != '') {
+				queryString			+= ' AND (Application__r.Category__c LIKE \'%' + searchTerm + '%\'';
+				queryString			+= ' OR Application__r.ApplicationName__c LIKE \'%' + searchTerm + '%\')';
+			}
+			queryString			+= ' AND RecordType.Name = \'Application\')';
+
+		}
+		else{
+			queryString			+= ' (User__c = null';
+			queryString			+= ' AND IsActive__c = true';
+			queryString			+= ' AND IsDefault__c = true';
+			//queryString			+= ' AND GeographiesAvailableTo__c INCLUDES (\'' + theUser.ECO_Geography__c + '\',\'All\')';
+			//queryString			+= ' AND BusinessLinesAvailableTo__c INCLUDES (\'' + theUser.ECO_BusinessLine__c + '\',\'All\')';
+			//queryString			+= ' AND RegionsAvailableTo__c INCLUDES (\'' + theUser.ECO_Region__c + '\',\'All\')';
+			if (ECO_Utils_String.NullCheck(searchTerm) != '') {
+				queryString			+= ' AND (Application__r.Category__c LIKE \'%' + searchTerm + '%\'';
+				queryString			+= ' OR Application__r.ApplicationName__c LIKE \'%' + searchTerm + '%\')';
+			}
+			queryString			+= ' AND RecordType.Name = \'Application Template\')';
+		}
+
+		
+		// this block is for template records
+		
+		
+		//queryString			+= ' ORDER BY User__c DESC';
+		//queryString			+= ' ORDER BY UserSortOrder__c ASC';
+		//queryString			+= ' , UserSortOrder__c ASC';
+		//queryString			+= ' , Application__c ASC';
+		//queryString			+= ' , DefaultSortOrder__c ASC';
+		
+		system.debug(debugLevel, 'Built this query:  '+queryString);
+		return queryString;
+	}
+
 	public static Map<Id, Configuration__c> getUpdateApplicationsForUser (User theUser, String searchTerm) {
 		
 		// Map<Id, Configuration__c> applicationToConfigMap = new Map<Id, Configuration__c>();
-		
+		/*
 		String queryString = 'SELECT Id';
 		queryString			+= ' , Name';
 		queryString			+= ' , RecordTypeId';
@@ -80,7 +156,18 @@ public without sharing class ECO_Service_Applications {
 		// This has to happen in two loops because ordering by a blank user just doesn't work.. the nulls show up first.
 		
 		List<Configuration__c> configs = Database.query(queryString);
-		
+		*/
+
+		// Luke Farbotko AECOM  23-Oct-2015 - next 5 lines have been added to replace the above commented block.
+		// It breats the previous query into and post joins to gain SOQL performace by removing the 'OR'condition
+		List<Configuration__c> configsDefaults = Database.query(builderApplicationsForUserQuery(theUser, searchTerm,true));
+		List<Configuration__c> configsUsers = Database.query(builderApplicationsForUserQuery(theUser, searchTerm,false));
+
+		List<Configuration__c> configs = new List<Configuration__c>();
+
+		configs.addAll(configsDefaults);
+		configs.addAll(configsUsers);
+
 		// First loop populates the user records only
 		for (Configuration__c configItem : configs) {
 			if (configItem.RecordType.Name == 'Application Template') {
@@ -170,8 +257,21 @@ public without sharing class ECO_Service_Applications {
 		queryString			+= ' AND IsRemovable__c = true';
 		queryString			+= ' AND RecordType.Name = \'Application Template\')';
 		
+		string likeArray = '';
+
+
 		if (ECO_Utils_String.NullCheck(name) != ''){
-			queryString			+= ' AND Application__r.ApplicationName__c LIKE \'%' + String.escapeSingleQuotes(name) + '%\' ';
+			list<string> nameArray = String.escapeSingleQuotes(name).split(' ');
+			
+			for(string s:nameArray){
+				likeArray += 'Application__r.ApplicationName__c LIKE \'%' + s + '%\' OR ';
+			}
+
+			likeArray = likeArray.removeEnd('OR ');
+
+			queryString			+= ' AND ( ' +  likeArray + ' ) ';
+
+			system.debug(likeArray);
 		}
 
 		if (searchMap != null) {

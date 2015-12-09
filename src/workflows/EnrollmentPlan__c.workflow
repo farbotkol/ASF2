@@ -23,7 +23,8 @@
         <recipients>
             <type>owner</type>
         </recipients>
-        <senderType>CurrentUser</senderType>
+        <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
         <template>DTW_Project_Incentives/Notification_of_Approaching_IP_Scheduled_Finish_Date</template>
     </alerts>
     <alerts>
@@ -461,6 +462,54 @@
         </recipients>
         <senderType>CurrentUser</senderType>
         <template>DTW_Project_Incentives/Notify_BL_Shift_Since_Enrollment</template>
+    </alerts>
+    <alerts>
+        <fullName>Target_Change_Notfiy_Approver_1</fullName>
+        <description>Target Change - Notfiy Approver 1</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Approver1__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>DTW_Project_Incentives/Notify_Approvers_When_Targets_Have_Changed</template>
+    </alerts>
+    <alerts>
+        <fullName>Target_Change_Notfiy_Approver_2</fullName>
+        <description>Target Change - Notfiy Approver 2</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Approver2__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>DTW_Project_Incentives/Notify_Approvers_When_Targets_Have_Changed</template>
+    </alerts>
+    <alerts>
+        <fullName>Target_Change_Notfiy_Approver_3</fullName>
+        <description>Target Change - Notfiy Approver 3</description>
+        <protected>false</protected>
+        <recipients>
+            <field>Approver3__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>DTW_Project_Incentives/Notify_Approvers_When_Targets_Have_Changed</template>
+    </alerts>
+    <alerts>
+        <fullName>Target_Change_Notfiy_Corp_Admin</fullName>
+        <description>Target Change - Notfiy Corp Admin</description>
+        <protected>false</protected>
+        <recipients>
+            <recipient>CORP_DTW_Admin</recipient>
+            <type>group</type>
+        </recipients>
+        <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>DTW_Project_Incentives/Notify_Approvers_When_Targets_Have_Changed</template>
     </alerts>
     <fieldUpdates>
         <fullName>ApprovalRecentlyProcessed</fullName>
@@ -1342,7 +1391,7 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Set_App_Admin_Processed</fullName>
-        <field>App_Admin_Processed__c</field>
+        <field>CorpAdminProcessed__c</field>
         <literalValue>1</literalValue>
         <name>Set App Admin Processed</name>
         <notifyAssignee>false</notifyAssignee>
@@ -1375,6 +1424,17 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_Corp_Admin_Processed</fullName>
+        <description>Set the Corp Admin Process Checkbox to True.</description>
+        <field>CorpAdminProcessed__c</field>
+        <literalValue>1</literalValue>
+        <name>Set Corp Admin Processed</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>Set_EA_Status_Rejected_for_Correction</fullName>
@@ -1467,6 +1527,15 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <field>EPChanged__c</field>
         <literalValue>No</literalValue>
         <name>Set EPChanged to No</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_Enrolled_Checkbox</fullName>
+        <field>Enrolled__c</field>
+        <literalValue>1</literalValue>
+        <name>Set Enrolled Checkbox</name>
         <notifyAssignee>false</notifyAssignee>
         <operation>Literal</operation>
         <protected>false</protected>
@@ -1565,6 +1634,15 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Set_Target_Has_Changed_Flag</fullName>
+        <field>TargetChanged__c</field>
+        <literalValue>1</literalValue>
+        <name>Set Target Has Changed Flag</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Set_WorkflowStep_to_Pending_PM_Action</fullName>
         <field>WorkflowStep__c</field>
         <literalValue>Pending PM Action</literalValue>
@@ -1642,6 +1720,15 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <operation>Literal</operation>
         <protected>false</protected>
         <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Unset_Target_Has_Changed_Flag</fullName>
+        <field>TargetChanged__c</field>
+        <literalValue>0</literalValue>
+        <name>Unset Target Has Changed Flag</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
         <fullName>X60_Days_Closed_set_to_No</fullName>
@@ -2322,7 +2409,7 @@ ISCHANGED( NSRAdjustment__c  )
     </rules>
     <rules>
         <fullName>DTW - 30-Day Notification of Approaching IP Scheduled Finish Date</fullName>
-        <active>false</active>
+        <active>true</active>
         <criteriaItems>
             <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
             <operation>equals</operation>
@@ -2356,7 +2443,7 @@ ISCHANGED( NSRAdjustment__c  )
     </rules>
     <rules>
         <fullName>DTW - 60-Day Notification of Approaching IP Scheduled Finish Date</fullName>
-        <active>false</active>
+        <active>true</active>
         <criteriaItems>
             <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
             <operation>equals</operation>
@@ -2543,6 +2630,65 @@ DPEAdjustment__c &lt;&gt; DPEBudget</description>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
+        <fullName>Notify Approver 1 of Target Change</fullName>
+        <actions>
+            <name>Target_Change_Notfiy_Approver_1</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>Unset_Target_Has_Changed_Flag</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Notify Approver 1 if upstream Approver changed Target.</description>
+        <formula>and(App_1_Processed__c  , 
+
+ischanged(EnrollmentStatus__c), 
+or( 
+ispickval(EnrollmentStatus__c,&quot;Enrolled&quot;),contains(text(EnrollmentStatus__c),&quot;Pending&quot;)), 
+TargetChanged__c)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Notify Approver 2 of Target Change</fullName>
+        <actions>
+            <name>Target_Change_Notfiy_Approver_2</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>Unset_Target_Has_Changed_Flag</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Notify Approver 2 if Upstream Approver Changes Target.</description>
+        <formula>and(App_2_Processed__c , 
+
+ischanged(EnrollmentStatus__c), 
+or( 
+ispickval(EnrollmentStatus__c,&quot;Enrolled&quot;),contains(text(EnrollmentStatus__c),&quot;Pending&quot;)), 
+TargetChanged__c)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Notify Approver 3 of Target Change</fullName>
+        <actions>
+            <name>Target_Change_Notfiy_Approver_3</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>Unset_Target_Has_Changed_Flag</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Notify Approver 3 if Upstream Approver changes Target.</description>
+        <formula>and(App_3_Processed__c,
+ischanged(EnrollmentStatus__c), 
+or( 
+ispickval(EnrollmentStatus__c,&quot;Enrolled&quot;),contains(text(EnrollmentStatus__c),&quot;Pending&quot;)), 
+TargetChanged__c)</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
         <fullName>Notify Approvers and PM of EP being Unenrolled</fullName>
         <actions>
             <name>Send_Notification_to_EA_Approvers_when_status_equals_Unenrolled</name>
@@ -2556,6 +2702,25 @@ DPEAdjustment__c &lt;&gt; DPEBudget</description>
         </criteriaItems>
         <description>WFR to fire based on the Enrollment Status field being set to Unenrolled</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>Notify Corp Admin of Target Change</fullName>
+        <actions>
+            <name>Target_Change_Notfiy_Corp_Admin</name>
+            <type>Alert</type>
+        </actions>
+        <actions>
+            <name>Unset_Target_Has_Changed_Flag</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Notify Corp Admin of Target Change if Corp Admin has approved the record.</description>
+        <formula>and(
+CorpAdminProcessed__c,ischanged(EnrollmentStatus__c), 
+or( 
+ispickval(EnrollmentStatus__c,&quot;Enrolled&quot;),contains(text(EnrollmentStatus__c),&quot;Pending&quot;)), 
+TargetChanged__c)</formula>
+        <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
         <fullName>Notify DTW Admin when Approvers have Changed</fullName>
@@ -2753,7 +2918,7 @@ ispickval(EPChanged__c,&quot;Yes&quot;))</formula>
     </rules>
     <rules>
         <fullName>Prepayment Alert to Approver 1 and PM</fullName>
-        <active>false</active>
+        <active>true</active>
         <criteriaItems>
             <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
             <operation>equals</operation>
@@ -2784,6 +2949,21 @@ ispickval(EPChanged__c,&quot;Yes&quot;))</formula>
             <timeLength>-30</timeLength>
             <workflowTimeTriggerUnit>Days</workflowTimeTriggerUnit>
         </workflowTimeTriggers>
+    </rules>
+    <rules>
+        <fullName>Set Enrolled Checkbox to True</fullName>
+        <actions>
+            <name>Set_Enrolled_Checkbox</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <criteriaItems>
+            <field>EnrollmentPlan__c.EnrollmentStatus__c</field>
+            <operation>equals</operation>
+            <value>Enrolled,Archived</value>
+        </criteriaItems>
+        <description>Set the enrolled checkbox when status changes to &apos;Enrolled&apos; or &apos;Archived&apos;.</description>
+        <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>
         <fullName>Set Exceptions Flag to NO</fullName>
@@ -2855,6 +3035,43 @@ OR(
             <value>Yes</value>
         </criteriaItems>
         <description>DELETE</description>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Set Target Has Changed Flag</fullName>
+        <actions>
+            <name>Set_Target_Has_Changed_Flag</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Set the &apos;Target Has Changed&apos; checkbox if an Adjustment, DSO, or Scope Change field as changed.</description>
+        <formula>and(LastModifiedById&lt;&gt;Approver1ID__c, 
+or(
+ischanged(ContingencyAdjustment__c),
+
+ischanged(DPEAdjustment__c ),
+
+ischanged(GrossRevenueAdjustment__c ),
+
+ischanged(GrossMarginAmountAdjustment__c ),
+
+ischanged(GMofNSRAdjustment__c ),
+
+ischanged(NSRAdjustment__c  ),
+
+ischanged(SubsODCsAdjustment__c ),
+
+ischanged(ContingencyScopeChange__c ),
+
+ischanged(GrossRevenueScopeChange__c ),
+
+ischanged(GrossMarginAmountScopeChange__c),
+
+ischanged(GMofNSRScopeChange__c ),
+
+ischanged(SubsODCsScopeChange__c ),
+
+ischanged(DSOTarget__c )))</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>

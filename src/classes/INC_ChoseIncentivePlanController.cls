@@ -18,7 +18,7 @@ public class INC_ChoseIncentivePlanController {
 	public INC_ChoseIncentivePlanController(){
 		System.Debug(logginglevel.error,'Here in choose IncentivePlan__c ' + fromWizard);
 		showsave = false;
-		selectedSelectionMethod = 'Guided';
+		selectedSelectionMethod = 'Guided'; //DTWINCCIPCSOGUIDE
 		ID enrollID = Apexpages.currentPage().getParameters().get('id');
 		enrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{enrollID})[0];
 		availablePlans = new list<planWrapper>();
@@ -48,7 +48,6 @@ public class INC_ChoseIncentivePlanController {
 												and GeographyAllocation__c =: enrollmentPlan.IncentiveProject__r.SuperGeography__c];
 		planMapByRegion = new map<string, list<IncentivePlanTemplate__c>>();
 		planMapByContractType = new map<string, list<IncentivePlanTemplate__c>>();
-		System.Debug(logginglevel.error,'Maps: ' + plans);
 		for(IncentivePlanTemplate__c plan:plans)
 		{
 			if(planMapByRegion.get(plan.GeographyAllocation__c) == null)
@@ -62,16 +61,16 @@ public class INC_ChoseIncentivePlanController {
 			planMapByContractType.get(plan.ContractType__c + '-' + plan.ContractSubType__c + '-' + plan.GeographyAllocation__c).add(plan);
 		}		
 
-		System.debug(logginglevel.error,'planMapByRegion: ' + planMapByRegion);
-		System.debug(logginglevel.error,'planMapByContractType: ' + planMapByContractType);
+//		System.debug(logginglevel.error,'planMapByRegion: ' + planMapByRegion);
+//		System.debug(logginglevel.error,'planMapByContractType: ' + planMapByContractType);
 
 	}
 	
 	public list<SelectOption> getYesNoOptions()
 	{
 	    list<SelectOption> options = new list<SelectOption>();
-	    options.add(new SelectOption('Yes', 'Yes'));
-	    options.add(new SelectOption('No', 'No'));
+	    options.add(new SelectOption('Yes', 'Yes')); //DTWINCCIPCSOYES
+	    options.add(new SelectOption('No', 'No')); //DTWINCCIPCSONO
 	
 	    return options;
 	}
@@ -79,8 +78,10 @@ public class INC_ChoseIncentivePlanController {
 	public list<SelectOption> getSelectionMethods()
 	{
 	    list<SelectOption> options = new list<SelectOption>();
-	    options.add(new SelectOption('Guided', 'Guided'));
-	    options.add(new SelectOption('Manual', 'Manual'));
+
+	    //for translation only check output not key value hec 11/24
+	    options.add(new SelectOption('Guided', 'Guided'));//DTWINCCIPCSOGUIDE
+	    options.add(new SelectOption('Manual', 'Manual'));//DTWINCCIPCSOMAN
 	
 	    return options;		
 	}
@@ -119,18 +120,18 @@ public class INC_ChoseIncentivePlanController {
 	{
 		System.Debug(logginglevel.error,'FP OR TM: ' + getIsMultiPlanEligible() + ' ' + question3Answer + question4Answer);
 		if(question3Answer == 'Yes' && question4Answer == 'Yes'){
-			return 'Fixed Price';
+			return 'Fixed Price'; //DTWINCCIPCFP
 		}
 		
 		if(question3Answer=='No' && question4Answer=='Yes'){
-			return 'Both';
+			return 'Both';//DTWINCCIPCBOTH
 		}
 		
 		if(question3Answer=='Yes' && question4Answer=='No'){
-			return 'Time & Material';
+			return 'Time & Material';//DTWINCCIPCTM
 		}
 
-		return 'Time & Material';
+		return 'Time & Material'; //DTWINCCIPCTM
 	}
 
 	public boolean getIsFixedPriceEligible()
@@ -150,8 +151,8 @@ public class INC_ChoseIncentivePlanController {
 	private String getNetMarginOrGrossMargin()
 	{
 		if(question2Answer == 'Yes')
-			return 'Net Margin';	
-		return 'Gross Margin';
+			return 'Net Margin'; //DTWINCCIPCNM
+		return 'Gross Margin'; //DTWINCCIPCGM
 	}
 	
 	public PageReference returnHome(){ 
@@ -178,16 +179,17 @@ public class INC_ChoseIncentivePlanController {
 
 		if(question1Answer == 'No' && selectedSelectionMethod != 'Manual')
 		{
+			//DTWINCCIPCAFEXERROR
 			ApexPages.addmessage(new ApexPages.Message(ApexPages.Severity.Error, 'Application should not be started until contract is fully executed!'));
 			return null;
 		}
 		
-		if(selectedSelectionMethod == 'Manual')
+		if(selectedSelectionMethod == 'Manual') //DTWINCCIPCSOMAN
 		{
 			availablePlans.clear();
 			//availablePlans.addall(planMapByRegion.get(geoAlloc));
-			System.debug(logginglevel.error,'planMapByRegion: ' + planMapByRegion);
-			System.Debug(logginglevel.error,'geoAllo Manual: '+ geoAlloc);
+		//	System.debug(logginglevel.error,'planMapByRegion: ' + planMapByRegion);
+		//	System.Debug(logginglevel.error,'geoAllo Manual: '+ geoAlloc);
 			buildAvailablePlans(planMapByRegion.get(geoAlloc));
 			showsave = true;
 			return null;		
@@ -200,7 +202,7 @@ public class INC_ChoseIncentivePlanController {
 			return null;
 		}*/
 
-		if(selectedSelectionMethod == 'Guided')
+		if(selectedSelectionMethod == 'Guided')//DTWINCCIPCSOGUIDE
 		{		
 			mainType = getFixedPriceOrTAndM();
 			subType = getNetMarginOrGrossMargin();

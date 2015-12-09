@@ -1645,6 +1645,22 @@ IF(
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>PMMismatch__c</fullName>
+        <externalId>false</externalId>
+        <formula>and(not(isblank(EnrollmentPlan__c)),
+ProjectManager__r.Id &lt;&gt; OwnerId,
+not(begins( OwnerId,&quot;00G&quot;)),
+not(isblank(ProjectManager__c))
+
+
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>PM Mismatch</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>PRStatus__c</fullName>
         <externalId>false</externalId>
         <formula>IF( 
@@ -2116,37 +2132,6 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>AllBoth</fullName>
-        <columns>ProjectID__c</columns>
-        <columns>NAME</columns>
-        <columns>OrgCarryingOutProject__c</columns>
-        <columns>CustomerName__c</columns>
-        <columns>ContractType__c</columns>
-        <columns>ProjectStartDate__c</columns>
-        <columns>ScheduledFinishDate__c</columns>
-        <columns>EnrollmentStatus__c</columns>
-        <columns>GRBacklog__c</columns>
-        <columns>RegionDescription__c</columns>
-        <columns>GeographyDescription__c</columns>
-        <columns>ProjectManager__c</columns>
-        <columns>ProjectStatus__c</columns>
-        <columns>FPPOverallEligibility__c</columns>
-        <columns>TMPlanOverallEligibility__c</columns>
-        <filterScope>Everything</filterScope>
-        <filters>
-            <field>FPPOverallEligibility__c</field>
-            <operation>equals</operation>
-            <value>Yes</value>
-        </filters>
-        <filters>
-            <field>TMPlanOverallEligibility__c</field>
-            <operation>equals</operation>
-            <value>Yes</value>
-        </filters>
-        <label>All - Eligible for both</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
         <fullName>AllClosedProjects</fullName>
         <columns>ProjectID__c</columns>
         <columns>NAME</columns>
@@ -2427,6 +2412,39 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>Carmen_s_T_M_Eligible_Projects_ANZ</fullName>
+        <columns>ProjectID__c</columns>
+        <columns>NAME</columns>
+        <columns>ContractType__c</columns>
+        <columns>EnrollmentStatus__c</columns>
+        <columns>WorkflowOwner__c</columns>
+        <columns>ProjectStartDate__c</columns>
+        <columns>ScheduledFinishDate__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>EnrollmentStatus__c</field>
+            <operation>equals</operation>
+            <value>Pending DTW Action</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>IncentiveProject__c.Incentive_Project</value>
+        </filters>
+        <filters>
+            <field>GeographyDescription__c</field>
+            <operation>equals</operation>
+            <value>ANZ</value>
+        </filters>
+        <filters>
+            <field>TMPlanOverallEligibility__c</field>
+            <operation>equals</operation>
+            <value>Yes</value>
+        </filters>
+        <label>Carmen&apos;s T&amp;M Eligible Projects ANZ</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>DTWIneligibleQueue_IncentiveProject</fullName>
         <filterScope>Queue</filterScope>
         <label>DTW Ineligible Queue</label>
@@ -2520,6 +2538,7 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
         <columns>EACasofDate__c</columns>
         <columns>LAST_UPDATE</columns>
         <columns>EnrollmentPlan__c</columns>
+        <columns>ChangeRequest__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>CountEnrollmentPlan__c</field>
@@ -2681,6 +2700,49 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
         </sharedTo>
     </listViews>
     <listViews>
+        <fullName>Haroldsview</fullName>
+        <columns>NAME</columns>
+        <columns>DTW_Complete__c</columns>
+        <columns>ApprovedNSRBacklog__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>RoutingMemberRule__c</field>
+            <operation>equals</operation>
+            <value>RM-17865</value>
+        </filters>
+        <filters>
+            <field>EnrollmentPlan__c</field>
+            <operation>equals</operation>
+        </filters>
+        <label>Haroldsview</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Katherine_Rejected_Enrollments_ANZ</fullName>
+        <columns>ProjectID__c</columns>
+        <columns>NAME</columns>
+        <columns>WorkflowOwner__c</columns>
+        <columns>EnrollmentStatus__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>EnrollmentStatus__c</field>
+            <operation>equals</operation>
+            <value>Rejected</value>
+        </filters>
+        <filters>
+            <field>RECORDTYPE</field>
+            <operation>equals</operation>
+            <value>IncentiveProject__c.Incentive_Project</value>
+        </filters>
+        <filters>
+            <field>GeographyDescription__c</field>
+            <operation>equals</operation>
+            <value>ANZ</value>
+        </filters>
+        <label>Katherine - Rejected Enrollments - ANZ</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>My_New_Projects_Added</fullName>
         <columns>NAME</columns>
         <columns>ProjectStartDate__c</columns>
@@ -2717,6 +2779,47 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
         <columns>Location__c</columns>
         <filterScope>Everything</filterScope>
         <label>Org String Data</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Pacific_Eligible_for_both</fullName>
+        <columns>ProjectID__c</columns>
+        <columns>NAME</columns>
+        <columns>CustomerName__c</columns>
+        <columns>ContractType__c</columns>
+        <columns>ProjectStartDate__c</columns>
+        <columns>ScheduledFinishDate__c</columns>
+        <columns>ActualPercentProjectCompleteITD__c</columns>
+        <columns>ForecastNSRBacklog__c</columns>
+        <columns>EnrollmentStatus__c</columns>
+        <columns>RegionDescription__c</columns>
+        <columns>GeographyDescription__c</columns>
+        <columns>ProjectManager__c</columns>
+        <columns>ProjectStatus__c</columns>
+        <columns>FPPOverallEligibility__c</columns>
+        <columns>TMPlanOverallEligibility__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>FPPOverallEligibility__c</field>
+            <operation>equals</operation>
+            <value>Yes</value>
+        </filters>
+        <filters>
+            <field>TMPlanOverallEligibility__c</field>
+            <operation>equals</operation>
+            <value>Yes</value>
+        </filters>
+        <filters>
+            <field>EnrollmentStatus__c</field>
+            <operation>equals</operation>
+            <value>Pending DTW Action</value>
+        </filters>
+        <filters>
+            <field>GeographyDescription__c</field>
+            <operation>equals</operation>
+            <value>Pacific</value>
+        </filters>
+        <label>Pacific - Eligible for both</label>
         <language>en_US</language>
     </listViews>
     <listViews>

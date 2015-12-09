@@ -10,10 +10,6 @@ public with sharing class INC_EnrollPlanInterimPay_Controller {
         editParticipants = true;
         oEnrollmentPlan = (EnrollmentPlan__c)stdController.getRecord();
         oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentPlan.id})[0];
-       /* if(oEnrollmentPlan.EnrollmentStatus__c == 'Enrolled' ||
-           oEnrollmentPlan.EnrollmentStatus__c == 'Archived'){
-            editParticipants = false;
-        } */
         System.Debug(logginglevel.error,'Start loadExistingSchedules ' + System.Now());
         loadExistingPayments();
         System.Debug(logginglevel.error,'Start addblankRows ' + System.Now());
@@ -75,6 +71,7 @@ public with sharing class INC_EnrollPlanInterimPay_Controller {
                 upsert lSave;
                 loadExistingPayments();
                 addblankRows();
+                //DTWINCEPECSAVESUCCESS
                 ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Confirm,'Save Successful.'));
             }
         }catch(Exception e){
@@ -102,6 +99,7 @@ public with sharing class INC_EnrollPlanInterimPay_Controller {
                 if(oPay.Milestone__c != null ||
                    oPay.PaymentDate__c != null){
                    bSave = false;
+                   //DTWINCEPIPCEDERR
                    ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'Please enter a description for any payments with a Milestone or Payment Date.'));
                   break;
                 }

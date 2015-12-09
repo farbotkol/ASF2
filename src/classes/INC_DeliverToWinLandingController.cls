@@ -199,7 +199,7 @@ public without sharing class INC_DeliverToWinLandingController {
     	}
 
     	//lstPartAck = [select id, EnrollmentAppName__c, ProjectName__c, Sent_Date__c from ParticipantAcknowledgement__c where Acknowledged__c != 'Yes' and ParticipantID__c != null and ownerid=:UserInfo.getUserId() limit 5];
-    	lstPartAck = [select id, EnrollmentAppName__c, ProjectName__c, Sent_Date__c, Status__c, ParticipantID__r.EnrollmentPlan__r.ProjectID__c from ParticipantAcknowledgement__c where OwnerId=:UserInfo.getUserId() and Acknowledged__c != 'Yes' and ParticipantID__c != null order by Sent_Date__c desc limit 1000];
+    	lstPartAck = [select id, EnrollmentAppName__c, ProjectName__c, Sent_Date__c, Status__c, ParticipantID__r.EnrollmentPlan__r.ProjectID__c from ParticipantAcknowledgement__c where OwnerId=:UserInfo.getUserId() and Acknowledged__c != 'Yes' and ParticipantID__c != null and X60DaysClosed__c != 'Yes' order by Sent_Date__c desc limit 1000];
 
     	for(ParticipantAcknowledgement__c pa:lstPartAck){
     		lstApprovalItemPA.add(new ApprovalItem(pa));
