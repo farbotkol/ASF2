@@ -1,4 +1,4 @@
-<apex:page extensions="ECO_RMASummaryControllerPdf" showHeader="false" renderAs="pdf" sidebar="false" doctype="html-5.0" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" tabStyle="QuestionnaireSet__c" standardController="QuestionnaireSet__c" action="{!init}">
+<apex:page extensions="ECO_RMASummaryControllerPdf" showHeader="false" renderAs="pdf" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false"  standardController="QuestionnaireSet__c" >
 
     <head>
         <script>
@@ -27,34 +27,46 @@
         sfdcPage.appendToOnloadQueue(collapseSection);
         </script>
 
-        <style>
+        <style type="text/css" media="print">
             @page{
                 size:landscape;
+                @top-center {
+                    content: element(header);
+                }
+                @bottom-center{
+                    content: element(footer);
+                }
             }
             body{
                 font-family:arial, sans-serif;
                 font-size:80%;
             }
-            .headerInfo{
-                height:65px;
+
+           .header{
+                display:block;
+                padding-bottom: 40px;
+            }
+
+            .headerInline{
+                height:75px;
                 border-bottom: 2px solid #DDDDDD;
                 padding:0 0 15px 0; 
-                margin: 0 0 25px 0;
+                margin: 10px 0 25px 0;
                 background-position:top right;
                 background-repeat:no-repeat;
                 background-size:5% auto !important;
                 background-image : url({!URLFOR($Resource.ECO_CustomGraphicAssets, 'PDFLogo.jpg')});
             }
-            .headerInfo h1{
+            .headerInline h1{
                 margin:-2px 0 0 0;
                 font-size:16px;
                 line-height:80%;
             }
-            .headerInfo h2{
+            .headerInline h2{
                 font-size:16px;
                 line-height:80%;
             }
-            .headerInfo h5{
+            .headerInline h5{
                 line-height:80%;
                 margin:0;
             }
@@ -68,6 +80,7 @@
                 right:0;
                 top:0;
                 padding:50px 10px 0 25px;
+                margin-top:10px;
                 width:150px;
             }
             table{
@@ -123,7 +136,8 @@
                 margin:0;
             }
             .footer{
-                position:absolute; width:100%; height:100px; bottom:0; border-top:1px solid #4a4a56; padding-top:15px;
+                position:absolute; height:100px; bottom:0; border-top:1px solid #4a4a56; padding-top:15px;
+                position: running(footer);
             }
             .risk{
                 background:#ebebeb;
@@ -139,23 +153,22 @@
         </style>
 
     </head>
+        <div class="header">
+            <div class="headerInline">
+                <h5>Risk and Market Assessment</h5>
+                <h2 style="line-height:80%;">Project: {!QuestionnaireSet__c.Project__r.Name}</h2>
+                <h2 style="line-height:80%;">Date: {!now()}</h2>
 
-        <div class="headerInfo">
-            <h5>Risk and Market Assessment</h5>
-            <h2 style="line-height:80%;">Project: {!QuestionnaireSet__c.Project__r.Name}</h2>
+                <div class="rightHeaderInfo">
+                    Project ID:<br/>
+                    {!QuestionnaireSet__c.Project__r.Id}
+                </div>
 
-            <div class="rightHeaderInfo">
-                Project ID:<br/>
-                {!QuestionnaireSet__c.Project__r.Id}
+                <h1 style="">
+                    <apex:outputLabel for="QuestionnaireSetName" value="Version: "/>
+                    <apex:outputText value="{!oQuestionnaireSet.Name}" />
+                </h1> 
             </div>
-
-            <h1 style="">
-                <apex:outputLabel for="QuestionnaireSetName" value="Version: "/>
-                <apex:outputText value="{!oQuestionnaireSet.Name}" />
-            </h1>
-
-            
-
         </div>
 
         <div class="footer">
@@ -167,45 +180,8 @@
             <div class="projectSummary">
 
                 <apex:pageBlock id="ProjectSummary">
-                <div style="page-break-after: always; margin-top:-32px;">
+                <div style="page-break-after: always; margin-top:-32px;" />
 
-
-                    <apex:pageBlockSection title="Project Information" collapsible="true" columns="2">
-                        <apex:outputField value="{!theProject.Name}" />
-                        <apex:outputField value="{!theProject.OwnerId}" style="text-decoration:none;" />
-                        <apex:outputField value="{!theProject.pse__Opportunity__c}" />
-                        <apex:outputField value="{!theProject.EstimatedContractValue__c}" />
-                        <apex:outputField value="{!theProject.pse__Project_Manager__c}" />
-                        <apex:outputField value="{!theProject.NetServicesRevenue__c}" />
-                        <apex:outputField value="{!theProject.ProjectOwningOrg__c}" />
-                        <apex:outputField value="{!theProject.TotalMargin__c}" />
-                        <apex:outputField value="{!theProject.PrimaryEndClient__c}" />
-                        <apex:outputField value="{!theProject.TotalBidBudget__c}" />
-                        <apex:outputField value="{!theProject.PrimaryBillingClient__c}" />
-                        <apex:outputField value="{!theProject.EstimatedStartDate__c}" />
-                        <apex:outputField value="{!QuestionnaireSet__c.UnansweredQuestionCount__c}"/>
-                    </apex:pageBlockSection>
-
-
-
-                    <div class="notificationAndAlerts">
-                        <apex:pageBlockSection collapsible="false" title="Notifications and Alerts" columns="2"></apex:pageBlockSection>
-                        <apex:repeat value="{!lNotifications}" var="n" rendered="{!if(lNotifications != null && lNotifications.size > 0, true, false)}">
-                            <apex:pageMessage severity="INFO" summary="{!n.sMessage}" />
-                        </apex:repeat>
-                    </div>
-
-
-                    <apex:pageBlockSection columns="1" title="Risk Assessment" collapsible="false"></apex:pageBlockSection>
-
-                    <apex:pageBlockTable value="{!lQuestionnaires}" columnsWidth="40%,20%,20%,20%" var="item" rendered="{!NOT(ISNULL(sSelectedQuestionnaireSet))}">
-                        <apex:column headerValue="Name" value="{!item.Name}" /> 
-                        <apex:column value="{!item.ProjectRisk__c}"/> 
-                        <apex:column value="{!item.DoATriggers__c}"/> 
-                        <apex:column value="{!item.PercentComplete__c}"/> 
-                    </apex:pageBlockTable>
-
-                </div>
                     <!--
                     <apex:pageBlockSection title="Project Sites" columns="1" collapsible="false">
                         <apex:pageBlockTable value="{!lProjectSites}" var="item" width="100%" rendered="{!if(lProjectSites != null && lProjectSites.size > 0, true, false)}">
@@ -422,7 +398,8 @@
                                 <apex:outputField value="{!ma.FreeFormDocumentedBusinessPlan__c}" style="width:75%;"/>
                             </td>
                             <td class="cell" valign="top">
-                                <apex:outputField value="{!ma.DocumentedBusinessPlan__c}" />
+                                <apex:outputText rendered="{!ma.DocumentedBusinessPlan__c == 'True'}" value="Yes" />
+                                <apex:outputText rendered="{!ma.DocumentedBusinessPlan__c == 'False'}" value="No" />
                             </td>
                         </tr>
                         <tr>
@@ -432,7 +409,8 @@
                                 <apex:outputField value="{!ma.FreeFormDocumentedKeyAccount__c}" style="width:75%;"/>
                             </td>
                             <td class="cell" valign="top">
-                                <apex:outputField value="{!ma.DocumentedKeyAccount__c}" />
+                                <apex:outputText rendered="{!ma.DocumentedKeyAccount__c == 'True'}" value="Yes" />
+                                <apex:outputText rendered="{!ma.DocumentedKeyAccount__c == 'False'}" value="No" />
                             </td>
                         </tr>
                         <tr>
@@ -442,7 +420,8 @@
                                 <apex:outputField value="{!ma.FreeFormStrongClientRelationship__c}" style="width:75%;"/>
                             </td>
                             <td class="cell" valign="bottom">
-                                <apex:outputField value="{!ma.StrongClientRelationship__c}" />
+                                <apex:outputText rendered="{!ma.StrongClientRelationship__c == 'True'}" value="Yes" />
+                                <apex:outputText rendered="{!ma.StrongClientRelationship__c == 'False'}" value="No" />
                             </td>
                         </tr>
                         <tr>
@@ -452,7 +431,8 @@
                                 <apex:outputField value="{!ma.FreeFormRecentProjectExperience__c}" style="width:75%;"/>
                             </td>
                             <td class="cell" valign="bottom">
-                                <apex:outputField value="{!ma.RecentProjectExperience__c}" />
+                                <apex:outputText rendered="{!ma.RecentProjectExperience__c == 'True'}" value="Yes" />
+                                 <apex:outputText rendered="{!ma.RecentProjectExperience__c == 'False'}" value="No" />
                             </td>
                         </tr>
                         <tr>
@@ -462,7 +442,8 @@
                                 <apex:outputField value="{!ma.FreeFormRequiredTechnicalPersonnel__c}" style="width:75%;"/>
                             </td>
                             <td class="cell" valign="bottom">
-                                <apex:outputField value="{!ma.RequiredTechnicalPersonnel__c}" />
+                                <apex:outputText rendered="{!ma.RequiredTechnicalPersonnel__c == 'True'}" value="Yes"/>
+                                <apex:outputText rendered="{!ma.RequiredTechnicalPersonnel__c == 'False'}" value="No"/>
                             </td>
                         </tr>
                         <tr>
@@ -472,7 +453,8 @@
                                 <apex:outputField value="{!ma.FreeFormStrongPositiveWin__c}" style="width:75%;"/>
                             </td>
                             <td class="cell" valign="bottom">
-                                <apex:outputField value="{!ma.StrongPositiveWin__c}" />
+                                <apex:outputText rendered="{!ma.StrongPositiveWin__c == 'True'}" value="Yes" />
+                                <apex:outputText rendered="{!ma.StrongPositiveWin__c == 'False'}" value="No" />
                             </td>
                         </tr>
                         <tr>
@@ -482,7 +464,8 @@
                                 <apex:outputField value="{!ma.FreeFormAwareofOpportunity__c}" style="width:75%;"/>
                             </td>
                             <td class="cell" valign="bottom">
-                                <apex:outputField value="{!ma.AwareofOpportunity__c}" />
+                                <apex:outputText rendered="{!ma.AwareofOpportunity__c == 'True'}" value="Yes" />
+                                <apex:outputText rendered="{!ma.AwareofOpportunity__c == 'False'}" value="No" />
                             </td>
                         </tr>
                         <tr>
@@ -492,7 +475,8 @@
                                 <apex:outputField value="{!ma.FreeFormSufficientTimeandResources__c}" style="width:75%;"/>
                             </td>
                             <td class="cell" valign="bottom">
-                                <apex:outputField value="{!ma.SufficientTimeandResources__c}" />
+                                <apex:outputText rendered="{!ma.SufficientTimeandResources__c == 'True'}" value="Yes" />
+                                <apex:outputText rendered="{!ma.SufficientTimeandResources__c == 'False'}" value="No" />
                             </td>
                         </tr>
                         <tr>
@@ -502,7 +486,8 @@
                                 <apex:outputField value="{!ma.FreeFormIncumbent__c}" style="width:75%;"/>
                             </td>
                             <td class="cell" valign="bottom">
-                                <apex:outputField value="{!ma.Incumbent__c}" />
+                                <apex:outputText rendered="{!ma.Incumbent__c == 'True'}" value="Yes" />
+                                <apex:outputText rendered="{!ma.Incumbent__c == 'False'}" value="No" />
                             </td>
                         </tr>
                         <tr>
@@ -512,7 +497,8 @@
                                 <apex:outputField value="{!ma.FreeFormDecisionMaker__c}" style="width:75%;"/>
                             </td>
                             <td class="cell" valign="bottom">
-                                <apex:outputField value="{!ma.DecisionMaker__c}" />
+                                <apex:outputText rendered="{!ma.DecisionMaker__c == 'True'}" value="Yes" />
+                                <apex:outputText rendered="{!ma.DecisionMaker__c == 'False'}" value="No" />
                             </td>
                         </tr>
                         <tr>
@@ -522,7 +508,8 @@
                                 <apex:outputField value="{!ma.FreeFormDecisiontoAppoint__c}" style="width:75%;"/>
                             </td>
                             <td class="cell" valign="bottom">
-                                <apex:outputField value="{!ma.DecisiontoAppoint__c}" />
+                                <apex:outputText rendered="{!ma.DecisiontoAppoint__c == 'True'}" value="Yes" />
+                                <apex:outputText rendered="{!ma.DecisiontoAppoint__c == 'False'}" value="No" />
                             </td>
                         </tr>
                         <tr>
@@ -535,32 +522,36 @@
                                     <tr>
                                         <td>Expert Witness or Litigation Support</td>
                                         <td>
-                                            <apex:outputField value="{!ma.ExpertWitnessorLitigationSupport__c}" />
-                                            
+                                            <apex:outputText rendered="{!ma.ExpertWitnessorLitigationSupport__c == 'True'}" value="Yes" />
+                                            <apex:outputText rendered="{!ma.ExpertWitnessorLitigationSupport__c == 'False'}" value="No" />
                                         </td>
                                     </tr>                               
                                     <tr>
                                         <td>JV Involvement</td>
                                         <td>
-                                            <apex:outputField value="{!ma.JVinvolvement__c}" />
+                                            <apex:outputText rendered="{!ma.JVinvolvement__c == 'True'}" value="Yes" />
+                                            <apex:outputText rendered="{!ma.JVinvolvement__c == 'False'}" value="No" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Program Management Services</td>
                                         <td>
-                                            <apex:outputField value="{!ma.ProgramManagementServices__c}" />
+                                            <apex:outputText rendered="{!ma.ProgramManagementServices__c == 'True'}" value="Yes" />
+                                            <apex:outputText rendered="{!ma.ProgramManagementServices__c == 'False'}" value="No" />
                                         </td>
                                     </tr>   
                                     <tr>
                                         <td>RFP Development Services</td>
                                         <td>
-                                            <apex:outputField value="{!ma.RFPDevelopmentServices__c}" />
+                                            <apex:outputText rendered="{!ma.RFPDevelopmentServices__c == 'True'}" value="Yes" />
+                                            <apex:outputText rendered="{!ma.RFPDevelopmentServices__c == 'False'}" value="No" />
                                         </td>
                                     </tr>
                                     <tr>
                                         <td>Staff Augmentation or embedded workforce</td>
                                         <td>
-                                            <apex:outputField value="{!ma.StaffAugmentationorembeddedworkforce__c}" />
+                                            <apex:outputText rendered="{!ma.StaffAugmentationorembeddedworkforce__c == 'True'}" value="Yes" />
+                                            <apex:outputText rendered="{!ma.StaffAugmentationorembeddedworkforce__c == 'False'}" value="No" />
                                         </td>
                                     </tr>                                                                                                                           
                                 </table>
