@@ -62,9 +62,11 @@ public without sharing class INC_EnrollmentCommentController {
                 bReturn = true;
                 oEnrollComment = lComments[0];
                 if(oEnrollmentApp.ApplicationType__c != 'OPT'){
+                  //DTWINCEACREJAPPMSG  - SAME MESSAGE AS THE ENROLLMENT APP CONTROLLER
                   sMessage = lComments[0].Approver__r.Name + ' rejected the application.  A rejection code must be selected before any changes to the';
                   sMessage += ' application are possible.';
                 }else{
+                  //DTWINCECCAPPOPTOUTMSG
                   sMessage = lComments[0].Approver__r.Name + ' approved opting out of the application.  A rejection code must be selected.';
                 }
         }else{
@@ -79,8 +81,10 @@ public without sharing class INC_EnrollmentCommentController {
       System.Debug(logginglevel.error,'Saving');
         if(oEnrollComment.Reason_Codes__c == null){
             System.debug(logginglevel.error,'oEnrollComment.Reason_Codes__c ');
+            //DTWINCECCRECODEERR
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'You must choose a reason code before saving.'));
         }else{
+          //DTWINCECCPECOM
           if(oEnrollComment.Comments__c != null && oEnrollComment.Comments__c != 'Please enter a comment.'
              && oEnrollComment.Comments__c != ''){
             ID workFlowID = ECO_Utils_sObject.getRecordTypeId(EnrollmentPlan__c.sObjectType,'Workflow');
@@ -136,14 +140,12 @@ public without sharing class INC_EnrollmentCommentController {
             }
           }else{
                 System.Debug(logginglevel.error,'Not saving comments');
+                  //DTWINCECCENTCOMERR
                   ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'You must enter a valid comment.'));
             
           }
               
         }
-
-        //pageReference pr = new PageReference('/apex/INC_EnrollmentApp?id='+oEnrollmentApp.id);
-        //pr.setredirect(true);
         return null;
     }
 
@@ -159,56 +161,24 @@ public without sharing class INC_EnrollmentCommentController {
     }
 
     public pageReference rejectAll(){
-      /*ID workItem = getWorkItemId(oEnrollmentApp.ID);
-      while(workItem != null){
-          //req.setNextApproverIds(new Id[] {UserInfo.getUserId()});
-          req.setWorkitemId(workItem);
-              // Submit the request for approval
-          workItem = getWorkItemId(oEnrollmentApp.id);
-       
-      }
-      return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.id);*/
+     
 
       ID workItem = getWorkItemId(oEnrollmentApp.ID);
       While(workItem != null){
         Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
+          //
           req.setComments('System generated final rejection.');
           req.setAction('Reject');
-          //req.setNextApproverIds(new Id[] {UserInfo.getUserId()});
           req.setWorkitemId(workItem);
-              // Submit the request for approval
           Approval.ProcessResult result =  Approval.process(req);
           workItem = getWorkItemId(oEnrollmentApp.id);
       }
 
       oEnrollmentApp = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentApp.ID})[0];
       oEnrollmentApp.ApprovalRecentlyProcessed__c = false;
-      //oEnrollmentApp.EnrollmentStatus__c = 'Rejected';
       update oEnrollmentApp;
 
-      /*If(workItem != null){
-            List<ProcessInstanceWorkitem> workitems = new List<ProcessInstanceWorkitem>([select Id from ProcessInstanceWorkitem where ProcessInstance.TargetObjectId =:oEnrollmentApp.id]);
-
-            list<Approval.ProcessWorkitemRequest> itemsToUpdate = new list<Approval.ProcessWorkitemRequest>();
-
-            for(ProcessInstanceWorkitem w: workitems){
-                Approval.ProcessWorkitemRequest PWR = new Approval.ProcessWorkitemRequest();
-                PWR.setComments('Recalled due to final Rejection');
-                PWR.setAction('Removed');
-                PWR.setWorkItemId(w.Id);
-                itemsToUpdate.add(PWR);
-            }                
-            System.Debug(logginglevel.error,'itemsToUpdate: ' + itemsToUpdate);
-            if(itemsToUpdate.size() > 0){
-                list<Approval.ProcessResult> results =  Approval.process(itemsToUpdate);
-                System.debug(logginglevel.error,'results: ' + results);
-            }
-      }
-      */
-
       return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.id);
-
-
     }
 
 }

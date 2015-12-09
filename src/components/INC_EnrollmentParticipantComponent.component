@@ -73,8 +73,10 @@
       </script>
 
   <!--<apex:form > -->
+   <!--{$label.DTWINCEPCEnrollment_Information}-->
     <apex:SectionHeader title="Enrollment Information"  rendered="{!NOT(fromWizard='Yes')}" />
     <apex:outputPanel rendered="{!fromWizard='Yes'}">
+     <!--{$label.DTWINCEPCEnrollment_Information}-->
       <div class="pbSubheader tertiaryPalette"><h3>Enrollment Information</h3></div>
     </apex:outputPanel>
 
@@ -97,21 +99,31 @@
         <apex:outputtext value="" rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}" />
          <apex:outputField value="{!oEnrollmentPlan.ApplicationIssuesPay__c}" rendered="{!oEnrollmentPlan.ApplicationType__c='PAY'}" />
 
-        <apex:outputField value="{!oEnrollmentPlan.AppIicationIssues__c}" rendered="{!oEnrollmentPlan.ApplicationType__c!='PAY'}" />
+          <apex:pageBlockSectionItem helpText="{!$ObjectType.EnrollmentPlan__c.fields.AppIicationIssues__c.InlineHelpText}" rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}">
+           <!--{$label.DTWINCEPCApplication_Issues}-->
+          <apex:outputLabel value="Application Issues" for="ApplicationExceptions"/>
+           <!--{$label.DTWINCEPCApplication_Issues}-->
+          <apex:outputText label="Application Issues" escape="false" value="{!sIssues}" />
+        </apex:pageBlockSectionItem>
+      
         
       </apex:pageBlockSection>
     </apex:pageblock>
    <div id="enrollpdfdisplay" class="hidden">
       <span>
+       <!--{$label.DTWINCEPCCLOSE}-->
         <button type="button" id="closeform" title="Close">Close</Button>
       </span>
       <div>
         <span>
         <div id="internalPdf">
           <object class="pdfdisplay" data="{!URLFOR($Resource.DTWParticipantGuide)}" type="application/pdf" >
- 
+         <!--{$label.DTWINCEPCIt_appears_you_don_t_have_a_PDF_plugin_for_this_browser}-->
           <p>It appears you don't have a PDF plugin for this browser.
+           <!--{$label.DTWINCCPC_No_biggie_you_can}-->
+            <!--{$label.DTWINCCPCclick_here_to}-->
              No biggie... you can <a href="{!URLFOR($Resource.DTWParticipantGuide)}">click here to
+              <!--{$label.DTWINCCPCdownload_the_PDF_file}-->
              download the PDF file.</a></p>
   
           </object>
@@ -121,22 +133,30 @@
     </div>
     
     <apex:outputPanel rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}">
+      <!--{$LABEL.DTWINCCPCAt_the_time_a_project_is_enrolled_in_DTW_up_to_60}-->
       <p class="projmessage">At the time a project is enrolled in DTW, up to 60% of the incentive  pool can be allocated to participants as “Target %”.  If additional employees are later identified for participation, they may be added to the plan, and the total allocation can exceed 60%.  However, the total allocation to participants may never exceed 100%.  If an incentive pool is earned at project close, any unallocated portion of the pool may be distributed to the participants, or amongst “discretionary participants” identified on the payment form.
       <br/><br/>
 
       <apex:outputPanel rendered="{!bFixed}">
+      <!--{$LABEL.DTWINCCPCFor_the_purposes_of_allocating_potential_award_earnings_to_employees}-->
       * For the purposes of allocating potential award earnings to employees, we use the incentive pool that would be calculated if the project achieved 3% better than the baseline margin (as shown above). This is a hypothetical value that will be communicated to employees in their Enrollment Letter, as an example of how the pool is calculated. The “Sample Payout” for a participant is the Sample Pool if Baseline +3% x the participant’s Target %. In order for potential awards to be meaningful and motivational, no participant may be allocated less than the predetermined “Min Participant Payout $” for this incentive plan, as shown in the table at the top of this page.
-      </apex:outputPanel>
-
+      </apex:outputPanel>       
       <apex:outputPanel rendered="{!bTM}">
+      <!--{$LABEL.DTWINCCPCFor_the_purposes_of_allocating_potential_award_earnings_to_employees10}-->
       * For the purposes of allocating potential award earnings to employees, we use the incentive pool that would be calculated if the project achieved 10% growth on the baseline margin dollars (as shown above).  This is a hypothetical value that will be communicated to employees in their Enrollment Letter, as an example of how the pool is calculated.  The “Sample Payout” for a participant is the Sample Pool @ Baseline + 10% x the participant’s Target %.  In order for potential awards to be meaningful and motivational, no participant may be allocated less than the predetermined “Min Participant Payout $” for this incentive plan, as shown in the table at the top of this page.
       </apex:outputPanel>
 
       </p>
     </apex:outputPanel>
     <apex:outputPanel rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}">
+     <!--{$LABEL.DTWINCCPCReference_the_Final_Pool_Adjusted_for_Ops_Metrics}-->
       <p class="projmessage">Reference the “Final Pool Adjusted for Ops Metrics” above to allocate award amounts to participants and/or add employees who are recommended for discretionary awards.  Final awards should reflect individual performance and contribution to project success as well as time dedicated to the project and previous awards paid for work on the project.  Provide a brief explanation for any adjustment made to a participant’s calculated award, and rationale for discretionary award recommendation.
  <br/><br/>
+ <!--{$LABEL.DTWINCCPCWatch_the_short}-->
+ <!--{$LABEL.DTWINCCPCHow_to_Pay_a_DTW_Award}-->
+ <!--{$LABEL.DTWINCCPC_module_posted_on_the}-->
+ <!--{$LABEL.DTWINCCPCDTW_webpage}-->
+<!--{$LABEL.DTWINCCPC_for_more_information_about_next_steps}-->
 Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.html">How to Pay a DTW Award</a> module posted on the <A href="http://my.aecomnet.com/Intranet/About/Delivery+Excellence/Design+and+Consulting+Services?appInstanceName=intranet&vgnextrefresh=1">DTW webpage</a> for more information about next steps. 
       </p>
     </apex:outputPanel>
@@ -145,99 +165,124 @@ Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.h
     <a href="#" id="viewpdf">View Participant Guidelines</a>
     
     <apex:outputPanel id="epList">
+    <!--{$LABEL.DTWINCCPCAdd_Enrollment_Participants}-->
     <apex:sectionHeader title="Add Enrollment Participants"  rendered="{!NOT(fromWizard='Yes')}"/>
     <apex:outputPanel rendered="{!fromWizard='Yes'}">
 
-
+ <!--{$LABEL.DTWINCCPCAdd_Enrollment_Participants}-->
       <div class="pbSubheader tertiaryPalette"><h3>Add Enrollment Participants</h3></div>
     </apex:outputPanel>
 
     
-
+ <!--{$LABEL.DTWINCCPCParticipants}-->
     <apex:pageBlock Title="Participants" id="Participants">
    
 
         <apex:pageBlockButtons location="both">
+        <!--{$LABEL.DTWINCCPCAdd_Row}-->
             <apex:commandButton value="Add Row" action="{!addBlankRow}" reRender="partTable,Participants" rendered="{!AND(OR(editParticipants, bPaid), NOT(AND(oEnrollmentPlan.ApplicationType__c == 'PAY', bTMorFixed)))}">
             </apex:commandButton>
+            <!--{$LABEL.DTWINCCPCAdd_Discretionary_Participant}-->
             <apex:commandButton value="Add Discretionary Participant" action="{!addBlankRow}" reRender="partTable,Participants" rendered="{!AND(OR(editParticipants, bPaid), AND(oEnrollmentPlan.ApplicationType__c == 'PAY', bTMorFixed))}">
             </apex:commandButton>
+            <!--{$LABEL.DTWINCCPCSave_and_Recalculate}-->
             <apex:commandButton styleclass="participantsave" id="participantsave" value="Save and Recalculate" action="{!SaveandRecalc}" oncomplete="checkappstatusfunc()" reRender="message,wizardheaderinfo,partTable ">
             </apex:commandButton>
+            <!--{$LABEL.DTWINCCPCSave_and_Continue}-->
             <apex:commandButton value="Save and Continue" action="{!SaveAndContinue}" rendered="{!NOT(fromWizard='Yes')}">
             </apex:commandButton>
+            <!--{$LABEL.DTWINCCPCCancel}-->
             <apex:commandButton value="Cancel" action="{!Cancel}" rendered="{!NOT(fromWizard='Yes')}">
             </apex:commandButton>
         </apex:pageBlockButtons>
         <apex:outputpanel id="message">
          <apex:pagemessages escape="false"></apex:pagemessages>
         </apex:outputpanel>
+        <!--{$LABEL.DTWINCCPCOnly_Discretionary_Participants_can_be_added_at_this_time}-->
         <apex:pageMessage severity="INFO" rendered="{!bPaid}" summary="Only Discretionary Participants can be added at this time.  Discretionary Participants are active employees whose contribution to project success merits an award, although they were not identified as DTW Participants at or during project enrollment.  Total discretionary awards should not exceed 20% of the final incentive pool." />
 
 
         <apex:variable var="rowNum" value="{!0}"/>
         <apex:pageBlockTable value="{!listParticipant}" var="Participant" id="partTable">
+          <!--{$LABEL.DTWINCCPCAction}-->
           <apex:column headerValue="Action" rendered="{!AND(oEnrollmentPlan.ApplicationType__c = 'ENR', oEnrollmentPlan.EnrollmentStatus__c != 'Enrolled')}">
                <apex:variable var="rowNum" value="{!rowNum + 1}"/>
                <center>
+               <!--{$LABEL.DTWINCCPCRemove}-->
                <apex:commandLink style="text-decoration: none;" value="X" action="{!RemoveEP}" title="Remove" reRender="epList">
                   <apex:param name="rowIndex" value="{!rowNum}" assignTo="{!rowNumber}"/>
                </apex:commandLink>
                </center>
           </apex:column>
+           <!--{$LABEL.DTWINCCPCEmployee}-->
            <apex:Column headervalue="Employee">
               <apex:inputField value="{!Participant.participant.EmployeeName__c}" rendered="{!Participant.bEnableEmpName}"/>
               <apex:OutputField value="{!Participant.participant.EmployeeName__c}" rendered="{!NOT(Participant.bEnableEmpName)}"/>
            </apex:Column>
+            <!--{$LABEL.DTWINCCPCTracking_ID}-->
            <apex:Column headervalue="Tracking ID">
               <apex:OutputField value="{!Participant.participant.EmployeeID__c}"/>
            </apex:Column>
+            <!--{$LABEL.DTWINCCPCTitle}-->
            <apex:Column headervalue="Title">
               <apex:OutputField value="{!Participant.participant.HRJobTitle__c}"/>
            </apex:Column>
+            <!--{$LABEL.DTWINCCPCParticipant_Category}-->
            <apex:Column headervalue="Participant Category">
               <apex:inputField value="{!Participant.participant.ParticipantCategory__c}" rendered="{!Participant.bPaymentEnabledField}"/>
               <apex:OutputField value="{!Participant.participant.ParticipantCategory__c}" rendered="{!NOT(Participant.bPaymentEnabledField)}"/>
            </apex:Column>
+            <!--{$LABEL.DTWINCCPCTarget}-->
            <apex:Column headervalue="Target %">
                <apex:inputField value="{!Participant.participant.TargetIncentivePoolAllocated__c}" rendered="{!Participant.bCCREnabledField}"/>
                <apex:OutputField value="{!Participant.participant.TargetIncentivePoolAllocated__c}" rendered="{!NOT(Participant.bCCREnabledField)}"/>
            </apex:Column>
+            <!--{$LABEL.DTWINCCPCSample_Payout}-->
            <apex:Column headervalue="Sample Payout*" rendered="{!oEnrollmentPlan.ApplicationType__c != 'PAY'}">
               <apex:OutputField value="{!Participant.participant.EstimatedPayout__c}"/>
            </apex:Column>
+            <!--{$LABEL.DTWINCCPCCalculated_Incentive}-->
            <apex:Column headervalue="Calculated Incentive" rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}">
               <apex:OutputField value="{!Participant.participant.CalculatedIncentive__c}"/>
            </apex:Column>
+            <!--{$LABEL.DTWINCCPCPayment_Adjustments}-->
            <apex:Column headervalue="Payment Adjustments" rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}">
               <apex:inputField value="{!Participant.participant.PaymentAdjustments__c}" rendered="true"/>
            </apex:Column>
+           <!--{$LABEL.DTWINCCPCPmt_Adj_Reason}-->
            <apex:Column headervalue="Pmt Adj Reason" rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}">
               <apex:inputField value="{!Participant.participant.PaymentAdjReason__c}" rendered="true"/>
            </apex:Column>
+           <!--{$LABEL.DTWINCCPCPayment_Amount}-->
            <apex:Column headervalue="Payment Amount" rendered="{!AND(oEnrollmentPlan.ApplicationType__c == 'PAY', bTMorFixed)}">
               <apex:outputField value="{!Participant.participant.PaymentAmount__c}" />
                 <apex:facet name="footer">
                     <apex:outputPanel >
+                     <!--{$LABEL.DTWINCCPCTotal_Payment_Amount}-->
                     <apex:outputText value="Total Payment Amount:"  rendered="{!AND(oEnrollmentPlan.ApplicationType__c == 'PAY', bTMorFixed)}" />&nbsp;&nbsp;
                     <apex:outputField value="{!oEnrollmentPlan.TotalPaymentAmount__c}" rendered="{!AND(oEnrollmentPlan.ApplicationType__c == 'PAY', bTMorFixed)}" /><br/>
+                    <!--{$LABEL.DTWINCCPCUnallocated_Amount}-->
                     Unallocated Amount:&nbsp;&nbsp;
                     <apex:outputField value="{!oEnrollmentPlan.UnallocatedAmount__c}" />                 
                     </apex:outputPanel>
                 </apex:facet>
            </apex:Column>
+            <!--{$LABEL.DTWINCCPCPayment_Date}-->
            <apex:Column headervalue="Payment Date" rendered="{!oEnrollmentPlan.ApplicationType__c == 'PAY'}">
               <apex:inputField value="{!Participant.participant.PaymentDate__c}" rendered="{!Participant.bPaymentDateEnabled}"/>
               <apex:outputField value="{!Participant.participant.PaymentDate__c}" rendered="{!NOT(Participant.bPaymentDateEnabled)}"/>
            </apex:Column>
+            <!--{$LABEL.DTWINCCPCStart_Date_on_Project}-->
            <apex:Column headervalue="Start Date on Project">
               <apex:inputField value="{!Participant.participant.StartDateonProject__c}" rendered="{!Participant.bStartDateEnabled}"/>
               <apex:outputField value="{!Participant.participant.StartDateonProject__c}" rendered="{!NOT(Participant.bStartDateEnabled)}"/>
            </apex:Column>
+            <!--{$LABEL.DTWINCCPCEnd_Date_on_Project}-->
            <apex:Column headervalue="End Date on Project" rendered="{!oEnrollmentPlan.ApplicationType__c != 'ENR'}">
               <apex:inputField value="{!Participant.participant.EndDateonProject__c}" rendered="{!Participant.bEndDateEnabled}"/>
               <apex:outputField value="{!Participant.participant.EndDateonProject__c}" rendered="{!NOT(Participant.bEndDateEnabled)}"/>
            </apex:Column>
+            <!--{$LABEL.DTWINCCPCEmployee_Status}-->
            <apex:Column headervalue="Employee Status">
               <apex:inputField value="{!Participant.participant.EmployeeStatus__c}"/>
            </apex:Column>
@@ -249,6 +294,7 @@ Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.h
           <apex:pageBlockSection columns="1">
           
           <apex:pageBlockSectionItem >
+           <!--{$LABEL.DTWINCCPCComments}-->
              <apex:Outputlabel value="Comments" />
              <apex:inputTextarea value="{!partComments}" rows="5" cols="100"/>
           </apex:pageBlockSectionItem>

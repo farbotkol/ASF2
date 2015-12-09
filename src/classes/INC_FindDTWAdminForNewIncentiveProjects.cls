@@ -16,7 +16,12 @@ global class INC_FindDTWAdminForNewIncentiveProjects implements Database.Batchab
 		list<IncentiveProject__c> lNew = Inc_Match.FindDTWAdmin(scope);
 		lNew = INC_Service_EnrollmentPlan.assignIneligibleQueue(lNew);
 
-		update lNew;
+		try{
+			Database.SaveResult[] result = Database.Update(lNew, false);
+		}
+		catch(Exception e){
+			system.debug(logginglevel.error,'Handling update incentive Error: ' + e.getMessage());
+		}
 	}
 	
 	global void finish(Database.BatchableContext BC) {

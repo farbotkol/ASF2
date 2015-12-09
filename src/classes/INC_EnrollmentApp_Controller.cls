@@ -49,11 +49,12 @@ public with sharing class INC_EnrollmentApp_Controller {
                                                   ,'InterimPaymentRequested__c'
                                                   , 'ApplicationExceptionsPay__c'
                                                   ,'IncentiveProject__r.DTWAdmin__c'
-                                                  ,'ActualSubsAndODCITD__c'});
+                                                  ,'ActualSubsAndODCITD__c'
+                                                  , 'DSOTarget__c'});
         }
 
         this.oEnrollmentApp = (EnrollmentPlan__c)stdController.getRecord();
-        
+        this.oEnrollmentApp = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentApp.Id})[0];
         setExceptions();
         setIssues();
         
@@ -139,6 +140,7 @@ public with sharing class INC_EnrollmentApp_Controller {
             if(oEnrollmentApp.IncrementalGMvsBaseline__c > 4 && isRejectedRecType == false &&
               !bTandM && oEnrollmentApp.ApplicationType__c != 'PAY'){
               System.debug(logginglevel.error,'setting Incremental message');
+              //DTWINCEACINCVSBASEERR
               ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Warning,'Incremental Margin % vs Baseline is greater than 4%'));
             }
 
@@ -305,6 +307,7 @@ public with sharing class INC_EnrollmentApp_Controller {
                                ,WizardStatus__c
                                ,IncentivePlan__c From EnrollmentPlan__c where id=:oEnrollmentApp.ID][0];
       if(oEnrollmentApp.IncentivePlan__c == null){
+        //DTWINCEACCIPERR
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'You must choose an Incentive Plan to continue. Please click save to continue.'));
       }else{
         activeTab='step3';
@@ -348,6 +351,7 @@ public with sharing class INC_EnrollmentApp_Controller {
         }
       }else{
         System.debug(logginglevel.error,'Can not save because no participants');
+        //DTWINCEACEPARTERR
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'You must enter at least one participant with a Target % greater than 0.'));
       }
 
@@ -360,17 +364,23 @@ public with sharing class INC_EnrollmentApp_Controller {
 
     
    
-    public pageReference save(){
-        System.debug(logginglevel.error,'Save in custom controller');
+   /* public pageReference save(){
+        System.debug(logginglevel.error,'Save in custom controller' + oEnrollmentApp.NSRAdjustment__c);
+        System.debug(logginglevel.error,'Save in custom controller' + oEnrollmentApp.DSOTarget__c);
         try{
-          stdController.save();
+          //((EnrollmentPlan__c)stdController.getRecord()).NSRAdjustment__c = oEnrollmentApp.NSRAdjustment__c;
+         // stdController.save();
+          update oEnrollmentApp;
+          oEnrollmentApp = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentApp.ID})[0];
+          System.debug(logginglevel.error,'After Save ' + oEnrollmentApp.NSRAdjustment__c);
+          System.debug(logginglevel.error,'After Save in custom controller' + oEnrollmentApp.DSOTarget__c);
           }catch(Exception e){
               System.Debug(logginglevel.error,'Error saving enrollment app.' + e.getMessage());
           }
         pageReference pf = new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.Id);
         //pf.setredirect(true);
         return pf;
-    }
+    }*/
 
 
     public PageReference submitFromWizard(){
@@ -395,6 +405,7 @@ public with sharing class INC_EnrollmentApp_Controller {
       }else{
         System.Debug(logginglevel.error,'Submit Failed');
         bSubmitWorked = false;
+        //DTWINCEACAPISERR
         sSubmitMessage='There are still issues with your application: <br/> ' + oEnrollmentApp.AppIicationIssues__c;
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'There are still issues with your application: <br/> ' + oEnrollmentApp.AppIicationIssues__c));
       } 
@@ -434,6 +445,7 @@ public with sharing class INC_EnrollmentApp_Controller {
               }catch(Exception e){
                   bSubmitWorked = false;
                   System.Debug(logginglevel.error,'Exception from Submit: ' + e.getMessage());
+                  //DTWINCEACACRITNOTMET
                   ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'All criteria has not be met.'));
               }
         }
@@ -443,29 +455,7 @@ public with sharing class INC_EnrollmentApp_Controller {
 
         return null;
     } 
-/*
-    public pageReference rejectAll(){
- 
-      ID workItem = getWorkItemId(oEnrollmentApp.ID);
-      While(workItem != null){
-        Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
-          req.setComments('System generated final rejection.');
-          req.setAction('Reject');
-          //req.setNextApproverIds(new Id[] {UserInfo.getUserId()});
-          req.setWorkitemId(workItem);
-              // Submit the request for approval
-          Approval.ProcessResult result =  Approval.process(req);
-          workItem = getWorkItemId(oEnrollmentApp.id);
-      }
 
-      oEnrollmentApp = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentApp.ID})[0];
-      oEnrollmentApp.ApprovalRecentlyProcessed__c = false;
-      update oEnrollmentApp;
-
-      return new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.id);
-
-    }
-*/
     private Id getWorkItemId(Id targetObjectId)
     {
       Id retVal = null;
@@ -485,6 +475,7 @@ public with sharing class INC_EnrollmentApp_Controller {
        req.setWorkitemId(workItem);
        Approval.ProcessResult result =  Approval.process(req);
        if(!result.isSuccess()){
+           //DTWINCEACREJECTERR
            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'Error Rejecting Application.'));
        }
        
@@ -516,6 +507,7 @@ public with sharing class INC_EnrollmentApp_Controller {
        req.setWorkitemId(workItem);
        Approval.ProcessResult result =  Approval.process(req);
        if(!result.isSuccess()){
+        //DTWINCEACREJECTERR
            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'Error Rejecting Application.'));
        }
        
@@ -571,6 +563,7 @@ public with sharing class INC_EnrollmentApp_Controller {
             pr = new pageReference('/apex/INC_EnrollmentApp?id='+INC_Service_EnrollmentPlan.cloneEnrollment(oEnrollmentApp.id,INC_Service_EnrollmentPlan.RequestType.CHANGE));
             pr.setredirect(true);
         }else{
+          //DTWINCEACENROLLEDERR
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'Current application needs to be Enrolled to create a change request.'));
         }
 
@@ -588,9 +581,11 @@ public with sharing class INC_EnrollmentApp_Controller {
             pr = new pageReference('/apex/INC_EnrollmentApp?id='+ sName);
             pr.setredirect(true);
           }else{
+            //DTWINCEACPAYERR
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'There was a error creating your payment request.'));
           }
         }else{
+            //DTWINCEACENROLLEDERR
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'Current application needs to be Enrolled to create a change request.'));
         }
 
@@ -641,6 +636,7 @@ public with sharing class INC_EnrollmentApp_Controller {
         if(lComments != Null && lComments.size() > 0){
                 bReturn = true;
                 oEnrollComment = lComments[0];
+                //DTWINCEACREJAPPMSG
                 sMessage = lComments[0].Approver__r.Name + ' rejected the application.  A rejection code must be selected before any changes to the';
                 sMessage += ' application are possible.';
         }else{

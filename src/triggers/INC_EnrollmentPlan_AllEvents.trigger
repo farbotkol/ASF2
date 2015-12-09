@@ -15,13 +15,20 @@ trigger INC_EnrollmentPlan_AllEvents on EnrollmentPlan__c (
    			if (Trigger.isBefore) {
 	    		if(Trigger.isUpdate && INC_EnrollmentPlanTriggers.beforeRunOnce()){
 	    			System.debug(logginglevel.error,'creating createApprovalComments');
+                    System.debug(logginglevel.error,'in Trigger Before update NSR: ' + trigger.New[0].NSRAdjustment__c);
 	    			handler.createEnrollmentCommentsFromExceptionandMA(trigger.new);
 	    		    
                     System.debug(logginglevel.error,'CurrentForm owner');
                     handler.setIDOnStatusChange(trigger.newMap, trigger.OldMap);
                     handler.setSnapShotValues(trigger.NewMap,Trigger.OldMap);
+                    System.debug(logginglevel.error, 'Setting user text fields');
+                    handler.setUserTextFields(trigger.New,Trigger.OldMap);
+	    		}else if(Trigger.isInsert){
+                    System.debug(logginglevel.error, 'Setting user text fields insert');
+
+                    handler.setUserTextFields(trigger.New,null);
                     
-	    		}
+                }
 
 	 		}else{//end is before
                 System.Debug(logginglevel.error,'After Update enrollment' + INC_EnrollmentPlanTriggers.afterRun);

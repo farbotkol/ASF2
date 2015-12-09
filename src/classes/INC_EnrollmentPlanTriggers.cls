@@ -240,6 +240,64 @@ public with sharing class INC_EnrollmentPlanTriggers {
 
 	}
     
+    public void setUserTextFields(List<EnrollmentPlan__c> newENR, map<ID,EnrollmentPlan__c> oldMap){
+    	map<id,String> mapUserNames = new map<id,String>();
+    	Set<id> setUsr = new set<id>();
+    	for(EnrollmentPlan__c ePlan : newENR){
+    		System.Debug(logginglevel.error,'Eplan: '  + Eplan + ' oldMap: ' + oldMap);
+    		if(oldMap != null && oldMap.size() > 0){
+    			if(ePlan.Approver1__c != oldMap.Get(eplan.id).Approver1__c){
+    				setUsr.add(ePlan.Approver1__c);
+    			}
+    			if(ePlan.Approver2__c != oldMap.Get(eplan.id).Approver2__c){
+    				setUsr.add(ePlan.Approver2__c);
+    			}
+    			if(ePlan.Approver3__c != oldMap.Get(eplan.id).Approver3__c){
+    				setUsr.add(ePlan.Approver3__c);
+    			}
+    			if(ePlan.CurrentApprovalOwner__c != oldMap.Get(eplan.id).CurrentApprovalOwner__c){
+    				setUsr.add(ePlan.CurrentApprovalOwner__c);
+    			}
+    			if(ePlan.DTWAdmin__c != oldMap.Get(eplan.id).DTWAdmin__c){
+    				setUsr.add(ePlan.DTWAdmin__c);
+    			}
+    		}else{
+    			setUsr.add(ePlan.Approver1__c);
+    			setUsr.add(ePlan.Approver2__c);
+    			setUsr.add(ePlan.Approver3__c);
+    			setUsr.add(ePlan.CurrentApprovalOwner__c);
+    			setUsr.add(ePlan.DTWAdmin__c);
+    		}
+    	}
+
+    	System.Debug(logginglevel.error,'setUsr: ' + setUsr);
+
+    	if(setUsr != null && setUsr.size() > 0){
+    		for(User usr: [Select ID,FirstName,LastName from User where id =: setUsr]){
+    			mapUserNames.put(usr.ID, usr.FirstName + ' ' + usr.LastName);
+    		}
+    	}
+
+    	for(EnrollmentPlan__c enr: newENR){
+    		if(mapUserNames.containsKey(enr.Approver1__c)){
+    			enr.Approver1Name__c = mapUserNames.get(enr.Approver1__c);
+    		}
+    		if(mapUserNames.containsKey(enr.Approver2__c)){
+    			enr.Approver2Name__c = mapUserNames.get(enr.Approver2__c);
+    		}
+    		if(mapUserNames.containsKey(enr.Approver3__c)){
+    			enr.Approver3Name__c = mapUserNames.get(enr.Approver3__c);
+    		}
+    		if(mapUserNames.containsKey(enr.CurrentApprovalOwner__c)){
+    			enr.CurrentApproverOwnerName__c = mapUserNames.get(enr.CurrentApprovalOwner__c);
+    		}
+    		if(mapUserNames.containsKey(enr.DTWAdmin__c)){
+    			enr.DTWAdminName__c = mapUserNames.get(enr.DTWAdmin__c);
+    		}
+    	}
+
+    }
+
     /**
      * This method is responsible for creating Participant Acknowledgement records
      * Work Item: WI-003593
@@ -383,14 +441,17 @@ public with sharing class INC_EnrollmentPlanTriggers {
         // Create the Participant Acknowledgements
         System.debug(logginglevel.error,'participantAcknowledgementsToCreate ' + participantAcknowledgementsToCreate.size());
         System.debug(logginglevel.error,'participantAcknowledgementsToUpdate: ' + participantAcknowledgementsToUpdate);
-        if(participantAcknowledgementsToCreate != null && participantAcknowledgementsToCreate.size() > 0){
+        if((participantAcknowledgementsToCreate != null && participantAcknowledgementsToCreate.size() > 0) || 
+        	participantAcknowledgementsToUpdate != null && participantAcknowledgementsToUpdate.size() > 0) {
             System.Debug(logginglevel.error,'Creating participant acknowledgements' + participantAcknowledgementsToCreate.size());
             System.savePoint sp = Database.setSavePoint();
             
             try{
             	System.Debug(logginglevel.error,'Inserting acknowledgements');
                 
-                Insert participantAcknowledgementsToCreate;
+                if(participantAcknowledgementsToCreate != null && participantAcknowledgementsToCreate.size() > 0){
+                	Insert participantAcknowledgementsToCreate;
+            	}
                 
                 System.debug(logginglevel.error,'Updating acknowledgements');
                 

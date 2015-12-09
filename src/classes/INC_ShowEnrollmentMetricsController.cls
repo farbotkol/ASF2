@@ -42,13 +42,15 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         system.Debug(logginglevel.error,'fromEnrollPart: ' + fromEnrollPart);
         getEnrollmentPlan(); 
 
-
+        //DTWINCSMCATFORMCRE
         firstColumnHeader = 'At Form Creation';
-        if(oEnrollmentPlan.EnrollmentStatus__c == 'Enrolled'){
+        if(oEnrollmentPlan.EnrollmentStatus__c == 'Enrolled' || oEnrollmentPlan.EnrollmentStatus__c=='Archived'){
             bEnrollmentPlanEnrolled = true;
+            //DTWINCSMCATENROLL
             firstColumnHeader = 'At Enrollment';
         }else{
             if(oEnrollmentPlan.ApplicationType__c == 'PAY' || oEnrollmentPlan.ApplicationType__c=='CCR'){
+                //DTWINCSMCATENROLL
                 firstColumnHeader = 'At Enrollment';
             }
         }
@@ -74,15 +76,16 @@ public without sharing class INC_ShowEnrollmentMetricsController {
     }
 
     private void setHelpTextFields(){
+        //DTWINCSMCESTEACHELP
         sEstimatedEACHelp = 'The Estimated Incentive Pool @ EAC is based on the latest EAC Margin and Margin % of NSR.';
         sEstimatedEACHelp += ' This is a point in time measure that changes with any subsequent EAC updates made by the ';
         sEstimatedEACHelp += 'PM.  For Fixed Price plan enrollments, Final Margin % must be greater than Threshold Margin % ';
         sEstimatedEACHelp += 'for any incentive pool to be earned.  Final incentive pool calculations will also reflect achievement of operational metrics.';
-   
+        //DTWINCSMCMAXEACHELP
         sMaximumEACHelp = 'The Maximum Incentive Pool @ EAC represents the maximum pool assuming all operational ';
         sMaximumEACHelp += 'metrics achieved and there is no increase or decrease to Forecast NSR.  For Fixed Price ';
         sMaximumEACHelp += 'plan enrollments, the maximum incentive pool is 3% of Final NSR.';
-
+        //DTWINCSMCFOOTNOTE1
         sFootNote = 'An Estimated Incentive Pool is generated if EAC Margin % > Threshold Margin %, and is calculated ';
         sFootNote += 'as (Forecast Margin % - Baseline Margin %) x EAC NSR x 50% x (1 - % Complete @ Enrollment).  ';
         sFootNote += 'Baseline Margin $ = Baseline Margin % x Forecast NSR; Threshold Margin $ = Threshold Margin % x ';
@@ -90,16 +93,17 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         sFootNote += 'result in a change to the Baseline and Threshold Margin';
         
         if(oEnrollmentPlan.IncentivePlan__r.ContractType__c=='Time & Material'){
+            //DTWINCSMCESTEACHELPTM
             sEstimatedEACHelp = 'The Estimated Incentive Pool @ EAC is based on the latest EAC Margin and Margin % ';
             sEstimatedEACHelp +='of NSR.  This is a point in time measure that changes with any subsequent EAC updates ';
             sEstimatedEACHelp +='made by the PM.   For T&M plan enrollments, Final Margin must be greater than Baseline Margin, ';
             sEstimatedEACHelp +='and Final Margin % must be equal to or better than Baseline Margin % for any incentive pool to be ';
             sEstimatedEACHelp +='earned.  Final incentive pool calculations will also reflect achievement of operational metrics.';
-
+            //DTWINCSMCMAXEACHELPTM
             sMaximumEACHelp = 'The Maximum Incentive Pool @ EAC represents the maximum pool assuming all operational ';
             sMaximumEACHelp +='metrics achieved and there is no increase or decrease to Forecast NSR.  For T&M plan ';
             sMaximumEACHelp +='enrollments, the maximum incentive pool is 2% of Final NSR, or $200,000 USD, whichever is less.';
-
+            //DTWINCSMCFOOTNOTE1TM
             sFootNote = 'An Estimated Incentive Pool is generated if EAC Margin > Baseline Margin, and is calculated ';
             sFootNote += 'as (Forecast Margin – Baseline Margin) x 5%.  Note: for projects enrolled in the T&M Net ';
             sFootNote += 'Margin plan, the Estimated Incentive Pool is calculated as (Forecast Margin – Baseline Margin) ';
@@ -201,6 +205,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         if(INC_Service_EnrollmentPlan.updateEnrollmentApplications(new list<EnrollmentPlan__c>{oEnrollmentPlan})){
             return close();
         }
+        //DTWINCSMCUPDATEFLAGERR
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error, 'There was a error updating the flag.'));
         return null;
     }
@@ -216,7 +221,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             oEnrollmentPlan.ContractType__c == 'CPFF - Negotiated' || 
             oEnrollmentPlan.ContractType__c == 'Unassigned'
             ){
-
+            //DTWINCSMCINCROW1
             mtw.label = 'Current EAC Margin % of NSR';
             mtw.column1Val = (oEnrollmentPlan.IncentivePlan__r.ContractSubType__c == 'Gross Margin' ? oEnrollmentPlan.IncentiveProject__r.ForecastGrossMarginofNSR__c.format() 
                 :oEnrollmentPlan.IncentiveProject__r.ForecastNMofNSR__c.format() );
@@ -225,6 +230,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             listIncValues.add(mtw);
            
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW2
             mtw.label = 'Threshold Margin % of NSR';
             mtw.column1Val = (oEnrollmentPlan.IncentivePlan__r.ContractSubType__c == 'Gross Margin' ? oEnrollmentPlan.ThresholdGM__c.format() 
                               :oEnrollmentPlan.ThresholdNM__c.format() );
@@ -233,6 +239,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             listIncValues.add(mtw);
            
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW3
             mtw.label = 'Current EAC Margin % of NSR';
             mtw.column1Val = (oEnrollmentPlan.IncentivePlan__r.ContractSubType__c == 'Gross Margin' ? oEnrollmentPlan.BaselineGMofNSR__C.format() 
                               :oEnrollmentPlan.BaselineNMofNSR__c.format() );
@@ -248,6 +255,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             double value = forcastMargin - baselineMargin;
 
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW4
             mtw.label = 'EAC Margin vs. Baseline';
             mtw.column1Val = value.format();
             mtw.labelClass = 'aslabel';
@@ -255,6 +263,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             listIncValues.add(mtw);   
 
             mtw = new metricTableRowWrapper();
+            ////DTWINCSMCINCROW5
             mtw.label = 'Is Project Forecasting an Incentive';
             mtw.column1Val = oEnrollmentPlan.EEACGMPerformance__c == 'Above Threshold' ? 'Yes':'No';//need to set this value
             mtw.labelClass = 'aslabel';
@@ -271,6 +280,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
 			*/
 
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW6
             mtw.label = 'Maximum Incentive Pool @ EAC';
             mtw.tdclass = 'raised1';
             mtw.column1Val = oEnrollmentPlan.MaxIncentivePool__c.format();
@@ -278,12 +288,14 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             listIncValuesTable2.add(mtw);
 
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW7
             mtw.label = 'Current Active Participant Count';
             mtw.column1Val = oEnrollmentPlan.NumberofParticipants__c.format();
             mtw.labelClass = 'aslabel';
             listIncValuesTable2.add(mtw);
 
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW8
             mtw.label = 'Data Refresh Date';
             mtw.column1Val = String.ValueOf(oEnrollmentPlan.IncentiveProject__r.DataRefreshDate__c);
             mtw.labelClass = 'aslabel';
@@ -292,6 +304,8 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         } else {
 
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW9GM
+            //DTWINCSMCINCROW9NM
             mtw.label = (oEnrollmentPlan.IncentivePlan__r.ContractSubType__c == 'Gross Margin' ? 'Forecast GM Budget' : 'Forecast NM Budget');
             mtw.column1Val = (oEnrollmentPlan.IncentivePlan__r.ContractSubType__c == 'Gross Margin' ? oEnrollmentPlan.IncentiveProject__r.ForecastGrossMarginBudget__c.format() 
                               :oEnrollmentPlan.IncentiveProject__r.ForecastNetMarginBudget__c.format() );
@@ -300,6 +314,8 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             listIncValues.add(mtw);
 
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW10GM
+            //DTWINCSMCINCROW10NM
             mtw.label = (oEnrollmentPlan.IncentivePlan__r.ContractSubType__c == 'Gross Margin' ? 'Baseline Gross Margin' : 'Baseline Net Margin');
             mtw.column1Val = (oEnrollmentPlan.IncentivePlan__r.ContractSubType__c == 'Gross Margin' ? (oEnrollmentPlan.BaselineGrossMargin__c!=null?oEnrollmentPlan.BaselineGrossMargin__c.format(): null)
                               :(oEnrollmentPlan.BaselineGrossMargin__c!=null?oEnrollmentPlan.BaselineGrossMargin__c.format(): null));
@@ -319,6 +335,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
 
             if(oEnrollmentPlan.IncentivePlan__r.ContractType__c == 'Fixed Price'){
                 mtw = new metricTableRowWrapper();
+                //DTWINCSMCINCROW11
                 mtw.label = 'Baseline Margin % of NSR';
                 mtw.column1Val =  (oEnrollmentPlan.BaselineGMofNSR__c!=null?oEnrollmentPlan.BaselineGMofNSR__c.format(): null);
                 mtw.labelClass = 'aslabel';
@@ -327,6 +344,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             }
 
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW12
             mtw.label = 'Profit Sharing %';
             mtw.column1Val = (oEnrollmentPlan.IncentivePlan__r.ProfitSharingPercent__c!=null?oEnrollmentPlan.IncentivePlan__r.ProfitSharingPercent__c.format(): null); 
             mtw.labelClass = 'aslabel';
@@ -335,6 +353,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
 
             if(oEnrollmentPlan.IncentivePlan__r.ContractType__c == 'Fixed Price'){
                 mtw = new metricTableRowWrapper();
+                //DTWINCSMCINCROW13
                 mtw.label = 'Estimated Incentive Pool @ EAC';
                 mtw.column1Val = (oEnrollmentPlan.EstimatedIncentivePoolEAC__c!=null?oEnrollmentPlan.EstimatedIncentivePoolEAC__c.format(): null); 
                 mtw.labelClass = 'aslabel';
@@ -343,47 +362,55 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             }
 
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW14
             mtw.label = 'DSO Target';
             mtw.column1Val = (oEnrollmentPlan.DSOTarget__c!=null?oEnrollmentPlan.DSOTarget__c.format(): null);
             mtw.labelClass = 'aslabel';
             listIncValuesTable2.add(mtw);  
 
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW15
             mtw.label = 'ITD DSO';
             mtw.column1Val = (oEnrollmentPlan.FinalITDDSO__c!=null?oEnrollmentPlan.FinalITDDSO__c.format(): null);
             mtw.labelClass = 'aslabel';
             listIncValuesTable2.add(mtw);  
 
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW16
             mtw.label = 'Client Satisfaction (NPS) Target';
             mtw.column1Val = (oEnrollmentPlan.ClientSatisfactionNPS__c!=null?oEnrollmentPlan.ClientSatisfactionNPS__c: null); 
             mtw.labelClass = 'aslabel';
             listIncValuesTable2.add(mtw);  
             
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW17
             mtw.label = 'Current Client Satisfaction';
             mtw.column1Val = (oEnrollmentPlan.ClientSatisfactionCurrent__c!=null?oEnrollmentPlan.ClientSatisfactionCurrent__c: null); 
             mtw.labelClass = 'aslabel';
             listIncValuesTable2.add(mtw); 
             
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW18
             mtw.label = 'Safety for Life Target';
             mtw.column1Val = (oEnrollmentPlan.ScoreOnSafetyforLifeMetrics__c!=null?oEnrollmentPlan.ScoreOnSafetyforLifeMetrics__c.format(): null); 
             mtw.labelClass = 'aslabel';
             listIncValuesTable2.add(mtw);
 
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW19
             mtw.label = 'Current Score on Safety for Life Metrics';
             mtw.column1Val = (oEnrollmentPlan.ScoreOnSafetyforLifeMetricsCurrent__c!=null?oEnrollmentPlan.ScoreOnSafetyforLifeMetricsCurrent__c.format(): null); 
             listIncValuesTable2.add(mtw);  
 
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW20
             mtw.label = 'Current Active Participant Count';
             mtw.column1Val = (oEnrollmentPlan.NumberofParticipants__c!=null?oEnrollmentPlan.NumberofParticipants__c.format(): null); 
             mtw.labelClass = 'aslabel';
             listIncValuesTable2.add(mtw);  
 
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCINCROW21
             mtw.label = 'Data Refresh Date';
             mtw.column1Val = (oEnrollmentPlan.IncentiveProject__r.DataRefreshDate__c!=null?oEnrollmentPlan.IncentiveProject__r.DataRefreshDate__c.format(): null); 
             mtw.labelClass = 'aslabel';
@@ -395,6 +422,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
     private void buildBaselineList(){
         listBaseline = new list<metricTableRowWrapper>();
         metricTableRowWrapper mtw = new metricTableRowWrapper();
+        //DTWINCSMCBASELINEROW1
         mtw.label = 'Baseline NSR';
         mtw.column1Val = (oEnrollmentPlan.BaselineNSRatSnapshot__c != null ? oEnrollmentPlan.BaselineNSRatSnapshot__c.format() : '');
         mtw.currentVal = (oEnrollmentPlan.BaselineNSR__c != null ? oEnrollmentPlan.BaselineNSR__c.format():'');
@@ -402,6 +430,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         mtw.labelClass = 'aslabel';
         listBaseline.add(mtw);
         mtw = new metricTableRowWrapper();
+        //DTWINCSMCBASELINEROW2
         mtw.label = 'Baseline DPE';
         mtw.column1Val = (oEnrollmentPlan.BaselineDPEatSnapshot__c != null ? oEnrollmentPlan.BaselineDPEatSnapshot__c.format() : '');
         mtw.currentVal = (oEnrollmentPlan.BaselineDPE__c != null ? oEnrollmentPlan.BaselineDPE__c.format():'');
@@ -410,6 +439,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         listBaseline.add(mtw);
         if(!bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCBASELINEROW3
             mtw.label = 'Baseline Margin';
             mtw.column1Val = (oEnrollmentPlan.BaselineGrossMarginatSnapshot__c != null ? oEnrollmentPlan.BaselineGrossMarginatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.BaselineGrossMargin__c != null ? oEnrollmentPlan.BaselineGrossMargin__c.format():'');
@@ -419,6 +449,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCBASELINEROW3
             mtw.label = 'Baseline Margin';
             mtw.column1Val = (oEnrollmentPlan.BaselineNetMarginatSnapshot__c != null ? oEnrollmentPlan.BaselineNetMarginatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.BaselineNetMargin__c != null ? oEnrollmentPlan.BaselineNetMargin__c.format():'');
@@ -428,6 +459,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(!bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCBASELINEROW4
             mtw.label = 'Baseline Margin% NSR';
             mtw.column1Val = (oEnrollmentPlan.BaselineMarginofNSRatSnapshot__c != null ? oEnrollmentPlan.BaselineMarginofNSRatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.BaselineGMofNSR__c != null ? oEnrollmentPlan.BaselineGMofNSR__c.format():'');
@@ -439,6 +471,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCBASELINEROW4
             mtw.label = 'Baseline Margin% NSR';
             mtw.column1Val = (oEnrollmentPlan.BaselineMarginofNSRatSnapshot__c != null ? oEnrollmentPlan.BaselineMarginofNSRatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.BaselineNMofNSR__c != null ? oEnrollmentPlan.BaselineNMofNSR__c.format():'');
@@ -448,6 +481,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
            listBaseline.add(mtw);
         }
         mtw = new metricTableRowWrapper();
+        //DTWINCSMCBASELINEROW5
         mtw.label='Project % Complete';
         mtw.column1Val = (oEnrollmentPlan.ITDCostCompleteatSnapshot__c != null ? oEnrollmentPlan.ITDCostCompleteatSnapshot__c.format() : '');
         mtw.currentVal = (oEnrollmentPlan.PercentCompleteCostITD__c != null ? oEnrollmentPlan.PercentCompleteCostITD__c.format():'');
@@ -456,6 +490,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         mtw.imageCol2 = oEnrollmentPlan.AlertProjectComplete__c;
         listBaseline.add(mtw);
         mtw = new metricTableRowWrapper();
+        //DTWINCSMCBASELINEROW6
         mtw.label = 'DTW % Complete @ Enrollment, Adjusted for Change Orders';
         mtw.column1Val = (oEnrollmentPlan.DTWCompleteSnapshot__c != null ? oEnrollmentPlan.DTWCompleteSnapshot__c.format() : '');
         mtw.currentVal = (oEnrollmentPlan.DTWComplete__c != null ? oEnrollmentPlan.DTWComplete__c.format():'');
@@ -467,6 +502,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
     private void buildApprovedList(){
         listApproved = new list<metricTableRowWrapper>();
         metricTableRowWrapper mtw = new metricTableRowWrapper();
+        //DTWINCSMCAPPROW1
         mtw.label = 'Gross Revenue Budget';
         mtw.column1Val = (oEnrollmentPlan.ApprovedRevenueBudgetatSnapshot__c != null ? oEnrollmentPlan.ApprovedRevenueBudgetatSnapshot__c.format() : '');
         mtw.currentVal = (oEnrollmentPlan.ApprovedRevenueBudget__c != null ? oEnrollmentPlan.ApprovedRevenueBudget__c.format():'');
@@ -475,6 +511,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         listApproved.add(mtw);
         if(!fromEnrollPart){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCAPPROW2
             mtw.label = 'Contingency Budget';
             mtw.column1Val = (oEnrollmentPlan.ApprovedContingencyBudgetatSnapshot__c != null ? oEnrollmentPlan.ApprovedContingencyBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedContingencyBudget__c != null ? oEnrollmentPlan.ApprovedContingencyBudget__c.format():'');
@@ -482,12 +519,14 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             mtw.sClass = 'importantrow';
             listApproved.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCAPPROW3
             mtw.label = 'ODC Budget (excl Subs)';
             mtw.column1Val = (oEnrollmentPlan.ApprovedODCBudgetatSnapshot__c != null ? oEnrollmentPlan.ApprovedODCBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedODCBudget__c != null ? oEnrollmentPlan.ApprovedODCBudget__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ApprovedODCBudgetVariance__c != null ? oEnrollmentPlan.ApprovedODCBudgetVariance__c.format(): '');
             listApproved.add(mtw);
             mtw = new metricTableRowWrapper();
+            ////DTWINCSMCAPPROW4
             mtw.label = 'Subconsultants Budget';
             mtw.column1Val = (oEnrollmentPlan.ApprovedSubsBudgetatSnapshot__c != null ? oEnrollmentPlan.ApprovedSubsBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedSubsBudget__c != null ? oEnrollmentPlan.ApprovedSubsBudget__c.format():'');
@@ -495,6 +534,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             listApproved.add(mtw);
         }
         mtw = new metricTableRowWrapper();
+        //DTWINCSMCAPPROW5
         mtw.label = 'NSR Budget';
         mtw.column1Val = (oEnrollmentPlan.ApprovedNSRBudgetatSnapshot__c != null ? oEnrollmentPlan.ApprovedNSRBudgetatSnapshot__c.format() : '');
         mtw.currentVal = (oEnrollmentPlan.ApprovedNSRBudget__c != null ? oEnrollmentPlan.ApprovedNSRBudget__c.format():'');
@@ -504,18 +544,21 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         listApproved.add(mtw);
         if(!fromEnrollPart){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCAPPROW6
             mtw.label = 'Labor Budget';
             mtw.column1Val = (oEnrollmentPlan.ApprovedDirectLaborBudgetatSnapshot__c != null ? oEnrollmentPlan.ApprovedDirectLaborBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedDirectLaborBudget__c != null ? oEnrollmentPlan.ApprovedDirectLaborBudget__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ApprovedDirectLaborBudgetVariance__c != null ? oEnrollmentPlan.ApprovedDirectLaborBudgetVariance__c.format(): '');
             listApproved.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCAPPROW7
             mtw.label = 'Fringe Budget';
             mtw.column1Val = (oEnrollmentPlan.ApprovedFringeBudgetatSnapshot__c != null ? oEnrollmentPlan.ApprovedFringeBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedFringeBudget__c != null ? oEnrollmentPlan.ApprovedFringeBudget__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ApprovedFringeBudgetVariance__c != null ? oEnrollmentPlan.ApprovedFringeBudgetVariance__c.format(): '');
             listApproved.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCAPPROW8
             mtw.label = 'Direct Personnel Expense (DPE) Budget';
             mtw.column1Val = (oEnrollmentPlan.ApprovedDPEBudgetatSnapshot__c != null ? oEnrollmentPlan.ApprovedDPEBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedDPEBudget__c != null ? oEnrollmentPlan.ApprovedDPEBudget__c.format():'');
@@ -526,6 +569,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(!bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCAPPROW9
             mtw.label = 'GM Budget';
             mtw.column1Val = (oEnrollmentPlan.ApprovedGrossMarginBudgetatSnapshot__c != null ? oEnrollmentPlan.ApprovedGrossMarginBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedGrossMarginBudget__c != null ? oEnrollmentPlan.ApprovedGrossMarginBudget__c.format():'');
@@ -535,6 +579,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             listApproved.add(mtw);
         }
         mtw = new metricTableRowWrapper();
+        //DTWINCSMCAPPROW10
         mtw.label = 'Overhead Budget';
         mtw.column1Val = (oEnrollmentPlan.ApprovedOverheadBudgetatSnapshot__c != null ? oEnrollmentPlan.ApprovedOverheadBudgetatSnapshot__c.format() : '');
         mtw.currentVal = (oEnrollmentPlan.ApprovedOverheadBudget__c != null ? oEnrollmentPlan.ApprovedOverheadBudget__c.format():'');
@@ -542,6 +587,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         listApproved.add(mtw);
         if(bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCAPPROW11
             mtw.label = 'Net Margin Budget';
             mtw.column1Val = (oEnrollmentPlan.ApprovedNetMarginBudgetatSnapshot__c != null ? oEnrollmentPlan.ApprovedNetMarginBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedNetMarginBudget__c != null ? oEnrollmentPlan.ApprovedNetMarginBudget__c.format():'');
@@ -552,6 +598,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(!bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCAPPROW12
             mtw.label = 'Budgeted GM% of NSR';
             mtw.column1Val = (oEnrollmentPlan.ApprovedGrossMarginofNSRatSnapshot__c != null ? oEnrollmentPlan.ApprovedGrossMarginofNSRatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedGrossMarginofNSR__c != null ? oEnrollmentPlan.ApprovedGrossMarginofNSR__c.format():'');
@@ -562,6 +609,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCAPPROW13
             mtw.label = 'Budgeted NM% of NSR';
             mtw.column1Val = (oEnrollmentPlan.ApprovedNetMarginofNSRatSnapshot__c != null ? oEnrollmentPlan.ApprovedNetMarginofNSRatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedNetMarginofNSR__c != null ? oEnrollmentPlan.ApprovedNetMarginofNSR__c.format():'');
@@ -571,18 +619,21 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(!fromEnrollPart){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCAPPROW14
             mtw.label = 'Budgeted Salary Cost Multiplier';
             mtw.column1Val = (oEnrollmentPlan.ApprovedSalaryCMatSnapshot__c != null ? oEnrollmentPlan.ApprovedSalaryCMatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedSalaryCostMultiplier__c != null ? oEnrollmentPlan.ApprovedSalaryCostMultiplier__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ApprovedSalaryCostMultiplierVariance__c != null ? oEnrollmentPlan.ApprovedSalaryCostMultiplierVariance__c.format(): '');
             listApproved.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCAPPROW15
             mtw.label = 'Budgeted Labor Cost Multiplier';
             mtw.column1Val = (oEnrollmentPlan.ApprovedDirectLMatSnapshot__c != null ? oEnrollmentPlan.ApprovedDirectLMatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedDirectLaborMultiplier__c != null ? oEnrollmentPlan.ApprovedDirectLaborMultiplier__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ApprovedDirectLaborMultiplierVariance__c != null ? oEnrollmentPlan.ApprovedDirectLaborMultiplierVariance__c.format(): '');
             listApproved.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCAPPROW16
             mtw.label = 'Total Cost Budget';
             mtw.column1Val = (oEnrollmentPlan.ApprovedCostBudgetatSnapshot__c != null ? oEnrollmentPlan.ApprovedCostBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ApprovedCostBudget__c != null ? oEnrollmentPlan.ApprovedCostBudget__c.format():'');
@@ -596,6 +647,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
     private void buildForcastList(){
         listForecasted = new list<metricTableRowWrapper>();
         metricTableRowWrapper mtw = new metricTableRowWrapper();
+        //DTWINCSMCFORROW1
         mtw.label = 'Gross Revenue Forecast';
         mtw.column1Val = (oEnrollmentPlan.ForecastRevenueBudgetatSnapshot__c != null ? oEnrollmentPlan.ForecastRevenueBudgetatSnapshot__c.format() : '');
         mtw.currentVal = (oEnrollmentPlan.ForecastRevenueBudget__c != null ? oEnrollmentPlan.ForecastRevenueBudget__c.format():'');
@@ -604,18 +656,21 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         listForecasted.add(mtw);
         if(!fromEnrollPart){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW2
             mtw.label = 'Contingency Forecast';
             mtw.column1Val = (oEnrollmentPlan.ForecastContingencyBudgetatSnapshot__c != null ? oEnrollmentPlan.ForecastContingencyBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastContingencyBudget__c != null ? oEnrollmentPlan.ForecastContingencyBudget__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ForecastContingencyBudgetVariance__c != null ? oEnrollmentPlan.ForecastContingencyBudgetVariance__c.format(): '');
             listForecasted.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW3
             mtw.label = 'ODC Forecast (excl Subs)';
             mtw.column1Val = (oEnrollmentPlan.ForecastODCBudgetatSnapshot__c != null ? oEnrollmentPlan.ForecastODCBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastODCBudget__c != null ? oEnrollmentPlan.ForecastODCBudget__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ForecastODCBudgetVariance__c != null ? oEnrollmentPlan.ForecastODCBudgetVariance__c.format(): '');
             listForecasted.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW4
             mtw.label = 'Subconsultants Forecast';
             mtw.column1Val = (oEnrollmentPlan.ForecastSubsBudgetatSnapshot__c != null ? oEnrollmentPlan.ForecastSubsBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastSubsBudget__c != null ? oEnrollmentPlan.ForecastSubsBudget__c.format():'');
@@ -623,6 +678,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             listForecasted.add(mtw);
         }
         mtw = new metricTableRowWrapper();
+        //DTWINCSMCFORROW5
         mtw.label = 'NSR Forecast';
         mtw.column1Val = (oEnrollmentPlan.ForecastNSRBudgetatSnapshot__c != null ? oEnrollmentPlan.ForecastNSRBudgetatSnapshot__c.format() : '');
         mtw.currentVal = (oEnrollmentPlan.ForecastNSRBudget__c != null ? oEnrollmentPlan.ForecastNSRBudget__c.format():'');
@@ -631,18 +687,21 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         listForecasted.add(mtw);
         if(!fromEnrollPart){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW6
             mtw.label = 'Labor Forecast';
             mtw.column1Val = (oEnrollmentPlan.ForecastLaborBudgetatSnapshot__c != null ? oEnrollmentPlan.ForecastLaborBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastDirectLaborBudget__c != null ? oEnrollmentPlan.ForecastDirectLaborBudget__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ForecastLaborBudgetVariance__c != null ? oEnrollmentPlan.ForecastLaborBudgetVariance__c.format(): '');
             listForecasted.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW7
             mtw.label = 'Fringe Forecast';
             mtw.column1Val = (oEnrollmentPlan.ForecastFringeBudgetatSnapshot__c != null ? oEnrollmentPlan.ForecastFringeBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastFringeBudget__c != null ? oEnrollmentPlan.ForecastFringeBudget__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ForecastFringeBudgetVariance__c != null ? oEnrollmentPlan.ForecastFringeBudgetVariance__c.format(): '');
             listForecasted.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW8
             mtw.label = 'Direct Personnel Expense (DPE) Forecast';
             mtw.column1Val = (oEnrollmentPlan.ForecastDPEBudgetatSnapshot__c != null ? oEnrollmentPlan.ForecastDPEBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastDPEBudget__c != null ? oEnrollmentPlan.ForecastDPEBudget__c.format():'');
@@ -652,6 +711,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(!bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW9
             mtw.label = 'GM Forecast';
             mtw.column1Val = (oEnrollmentPlan.ForecastGMBudgetatSnapshot__c != null ? oEnrollmentPlan.ForecastGMBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastGrossMarginBudget__c != null ? oEnrollmentPlan.ForecastGrossMarginBudget__c.format():'');
@@ -661,6 +721,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(!fromEnrollPart){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW10
             mtw.label = 'Overhead Forecast';
             mtw.column1Val = (oEnrollmentPlan.ForecastOverheadBudgetatSnapshot__c != null ? oEnrollmentPlan.ForecastOverheadBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastOverheadBudget__c != null ? oEnrollmentPlan.ForecastOverheadBudget__c.format():'');
@@ -669,6 +730,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW11
             mtw.label = 'NM Forecast';
             mtw.column1Val = (oEnrollmentPlan.ForecastNMBudgetatSnapshot__c != null ? oEnrollmentPlan.ForecastNMBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastNetMarginBudget__c != null ? oEnrollmentPlan.ForecastNetMarginBudget__c.format():'');
@@ -678,6 +740,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(!bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW12
             mtw.label = 'Forecast GM% of NSR';
             mtw.column1Val = (oEnrollmentPlan.ForecastGMofNSRatSnapshot__c != null ? oEnrollmentPlan.ForecastGMofNSRatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastGrossMarginofNSR__c != null ? oEnrollmentPlan.ForecastGrossMarginofNSR__c.format():'');
@@ -687,6 +750,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW13
             mtw.label = 'Forecast NM% of NSR';
             mtw.column1Val = (oEnrollmentPlan.ForecastNMofNSRatSnapshot__c != null ? oEnrollmentPlan.ForecastNMofNSRatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastNetMarginofNSR__c != null ? oEnrollmentPlan.ForecastNetMarginofNSR__c.format():'');
@@ -696,18 +760,21 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(!fromEnrollPart){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW14
             mtw.label = 'Forecast Salary Cost Multiplier';
             mtw.column1Val = (oEnrollmentPlan.ForecastSalaryCMatSnapshot__c != null ? oEnrollmentPlan.ForecastSalaryCMatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastSalaryCostMultiplier__c != null ? oEnrollmentPlan.ForecastSalaryCostMultiplier__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ForecastSalaryCMVariance__c != null ? oEnrollmentPlan.ForecastSalaryCMVariance__c.format(): '');
             listForecasted.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW15
             mtw.label = 'Forecast Labor Cost Multiplier';
             mtw.column1Val = (oEnrollmentPlan.ForecastDirectLMatSnapshot__c != null ? oEnrollmentPlan.ForecastDirectLMatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastDirectLaborMultiplier__c != null ? oEnrollmentPlan.ForecastDirectLaborMultiplier__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ForecastDirectLaborMultiplierVariance__c != null ? oEnrollmentPlan.ForecastDirectLaborMultiplierVariance__c.format(): '');
             listForecasted.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCFORROW16
             mtw.label = 'Total Cost Forecast';
             mtw.column1Val = (oEnrollmentPlan.ForecastCostBudgetatSnapshot__c != null ? oEnrollmentPlan.ForecastCostBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ForecastCostBudget__c != null ? oEnrollmentPlan.ForecastCostBudget__c.format():'');
@@ -720,6 +787,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
     private void buildAtualsList(){
         listActuals = new list<metricTableRowWrapper>();
         metricTableRowWrapper mtw = new metricTableRowWrapper();
+        //DTWINCSMCACTROW1
         mtw.label = 'Gross Revenue';
         mtw.column1Val = (oEnrollmentPlan.ActualGrossRevenueatSnapshot__c != null ? oEnrollmentPlan.ActualGrossRevenueatSnapshot__c.format() : '');
         mtw.currentVal = (oEnrollmentPlan.ActualGrossRevenueITD__c != null ? oEnrollmentPlan.ActualGrossRevenueITD__c.format():'');
@@ -728,18 +796,21 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         listActuals.add(mtw);
         if(!fromEnrollPart){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW2
             mtw.label = 'Contingency';
             mtw.column1Val = (oEnrollmentPlan.ActualContingencyBudgetatSnapshot__c != null ? oEnrollmentPlan.ActualContingencyBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ActualContingencyBudgetITD__c != null ? oEnrollmentPlan.ActualContingencyBudgetITD__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ActualContingencyBudgetVariance__c != null ? oEnrollmentPlan.ActualContingencyBudgetVariance__c.format(): '');
             listActuals.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW3
             mtw.label = 'ODC (excl Subs)';
             mtw.column1Val = (oEnrollmentPlan.ActualODCBudgetatSnapshot__c != null ? oEnrollmentPlan.ActualODCBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ActualODCBudgetITD__c != null ? oEnrollmentPlan.ActualODCBudgetITD__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ActualODCBudgetVariance__c != null ? oEnrollmentPlan.ActualODCBudgetVariance__c.format(): '');
             listActuals.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW4
             mtw.label = 'Subconsultants';
             mtw.column1Val = (oEnrollmentPlan.ActualSubsBudgetatSnapshot__c != null ? oEnrollmentPlan.ActualSubsBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ActualSubsBudgetITD__c != null ? oEnrollmentPlan.ActualSubsBudgetITD__c.format():'');
@@ -747,6 +818,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             listActuals.add(mtw);
         }
         mtw = new metricTableRowWrapper();
+        //DTWINCSMCACTROW5
         mtw.label = 'Net Service Revenue';
         mtw.column1Val = (oEnrollmentPlan.ActualNSRBudgetatSnapshot__c != null ? oEnrollmentPlan.ActualNSRBudgetatSnapshot__c.format() : '');
         mtw.currentVal = (oEnrollmentPlan.NSRBudget__c != null ? oEnrollmentPlan.NSRBudget__c.format():'');
@@ -755,18 +827,21 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         listActuals.add(mtw);
         if(!fromEnrollPart){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW6
             mtw.label = 'Labor';
             mtw.column1Val = (oEnrollmentPlan.ActualDirectLaboratSnapshot__c != null ? oEnrollmentPlan.ActualDirectLaboratSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ActualDirectLaborITD__c != null ? oEnrollmentPlan.ActualDirectLaborITD__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ActualDirectLaborVariance__c != null ? oEnrollmentPlan.ActualDirectLaborVariance__c.format(): '');
             listActuals.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW7
             mtw.label = 'Fringe';
             mtw.column1Val = (oEnrollmentPlan.ActualFringeBudgetatSnapshot__c != null ? oEnrollmentPlan.ActualFringeBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ActualFringeBudgetITD__c != null ? oEnrollmentPlan.ActualFringeBudgetITD__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ActualFringeBudgetVariance__c != null ? oEnrollmentPlan.ActualFringeBudgetVariance__c.format(): '');
             listActuals.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW8
             mtw.label = 'Direct Personnel Expense (DPE)';
             mtw.column1Val = (oEnrollmentPlan.ActualDPEBudgetatSnapshot__c != null ? oEnrollmentPlan.ActualDPEBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ActualDPEBudgetITD__c != null ? oEnrollmentPlan.ActualDPEBudgetITD__c.format():'');
@@ -776,6 +851,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(!bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW9
             mtw.label = 'Gross Margin';
             mtw.column1Val = (oEnrollmentPlan.ActualGMBudgetatSnapshot__c != null ? oEnrollmentPlan.ActualGMBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ActualGrossMarginITD__c != null ? oEnrollmentPlan.ActualGrossMarginITD__c.format():'');
@@ -785,6 +861,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(!fromEnrollPart){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW10
             mtw.label = 'Overhead';
             mtw.column1Val = (oEnrollmentPlan.ActualOverheadITDatSnapshot__c != null ? oEnrollmentPlan.ActualOverheadITDatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ActualOverheadITD__c != null ? oEnrollmentPlan.ActualOverheadITD__c.format():'');
@@ -793,6 +870,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW11
             mtw.label = 'Net Margin';
             mtw.column1Val = (oEnrollmentPlan.ActualNetMarginatSnapshot__c != null ? oEnrollmentPlan.ActualNetMarginatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ActualNetMarginITD__c != null ? oEnrollmentPlan.ActualNetMarginITD__c.format():'');
@@ -802,6 +880,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(!bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW12
             mtw.label = 'GM% of NSR';
             mtw.column1Val = (oEnrollmentPlan.ActualGMofNSRatSnapshot__c != null ? oEnrollmentPlan.ActualGMofNSRatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.AcutalGMofNSRITD__c != null ? oEnrollmentPlan.AcutalGMofNSRITD__c.format():'');
@@ -811,6 +890,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(bNMPlan){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW13
             mtw.label = 'NM% of NSR';
             mtw.column1Val = (oEnrollmentPlan.ActualNMofNSRatSnapshot__c != null ? oEnrollmentPlan.ActualNMofNSRatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ActualNMofNSRITD__c != null ? oEnrollmentPlan.ActualNMofNSRITD__c.format():'');
@@ -820,18 +900,21 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         }
         if(!fromEnrollPart){
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW14
             mtw.label = 'Salary Cost Multiplier';
             mtw.column1Val = (oEnrollmentPlan.ActualSalaryCostMultiplieratSnapshot__c != null ? oEnrollmentPlan.ActualSalaryCostMultiplieratSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ActualSalaryCostMultiplier__c != null ? oEnrollmentPlan.ActualSalaryCostMultiplier__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ActualSalaryCostMultiplierVariance__c != null ? oEnrollmentPlan.ActualSalaryCostMultiplierVariance__c.format(): '');
             listActuals.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW15
             mtw.label = 'Labor Cost Multiplier';
             mtw.column1Val = (oEnrollmentPlan.ActualLaborCMatSnapshot__c != null ? oEnrollmentPlan.ActualLaborCMatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ActualLaborCostMultiplier__c != null ? oEnrollmentPlan.ActualLaborCostMultiplier__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ActualLaborCostMultiplier_Variance__c != null ? oEnrollmentPlan.ActualLaborCostMultiplier_Variance__c.format(): '');
             listActuals.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW16
             mtw.label = 'Total Cost';
             mtw.column1Val = (oEnrollmentPlan.ActualTotalCostBudgetatSnapshot__c != null ? oEnrollmentPlan.ActualTotalCostBudgetatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.ActualTotalCostITD__c != null ? oEnrollmentPlan.ActualTotalCostITD__c.format():'');
@@ -839,6 +922,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             mtw.sClass = 'importantrow';
             listActuals.add(mtw);
             mtw = new metricTableRowWrapper();
+            //DTWINCSMCACTROW17
             mtw.label = 'Project % Complete';
             mtw.column1Val = (oEnrollmentPlan.ITDCostCompleteatSnapshot__c != null ? oEnrollmentPlan.ITDCostCompleteatSnapshot__c.format() : '');
             mtw.currentVal = (oEnrollmentPlan.PercentCompleteCostITD__c != null ? oEnrollmentPlan.PercentCompleteCostITD__c.format():'');

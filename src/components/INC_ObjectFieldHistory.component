@@ -8,32 +8,35 @@
 
 <!-- Object History Related List -->
 <apex:form id="formRelatedList">
-	<apex:pageBlock title="{!objectLabel} History">
-		<apex:pageBlockTable value="{!ObjectHistory}" var="History">
-			<apex:column headerValue="Date" value="{!History.thedate}"/>
-			<apex:column headerValue="User">
-				<apex:outputLink value="/{!History.userId}"> {!History.who} </apex:outputLink>
-			</apex:column>
-			<apex:column headerValue="Action">
-				<apex:outputText escape="false" value="{!History.action}"/>
-			</apex:column>
-		</apex:pageBlockTable>
-		<apex:outputPanel id="panelShowMore"
-		                    layout="block"
-		                    styleClass="pShowMore"
-		                    rendered="{!allowShowMore}">
+    <apex:pageBlock title="{!objectLabel} History">
+        <apex:pageBlockTable value="{!ObjectHistory}" var="History">
+             <!--{$label.DTWINCOFHDate}-->
+            <apex:column headerValue="Date" value="{!History.thedate}"/>
+            <!--{$label.DTWINCOFHUser}-->
+            <apex:column headerValue="User">
+                <apex:outputLink value="/{!History.userId}"> {!History.who} </apex:outputLink>
+            </apex:column>
+            <!--{$label.DTWINCOFHAction}-->
+            <apex:column headerValue="Action">
+                <apex:outputText escape="false" value="{!History.action}"/>
+            </apex:column>
+        </apex:pageBlockTable>
+        <apex:outputPanel id="panelShowMore"
+                            layout="block"
+                            styleClass="pShowMore"
+                            rendered="{!allowShowMore}">
+        <!--{$label.DTWINCOFHShowmore}-->
+            <apex:commandLink id="linkShowMore"
+                                action="{!showMore}"
+                                rerender="formRelatedList">Show more »</apex:commandLink>
 
-		    <apex:commandLink id="linkShowMore"
-		                        action="{!showMore}"
-		                        rerender="formRelatedList">Show more »</apex:commandLink>
+                                <span> | </span>
+         <!--{$label.DTWINCOFHgotolist}-->
+            <apex:outputLink id="linkGotoList"
+                                value="/_ui/common/history/ui/EntityHistoryFilterPage?id={!imyObject.id}">Go to list »
+                            </apex:outputLink>
+        </apex:outputPanel>                    
 
-		                        <span> | </span>
-
-		    <apex:outputLink id="linkGotoList"
-		                        value="/_ui/common/history/ui/EntityHistoryFilterPage?id={!imyObject.id}">Go to list »
-		                    </apex:outputLink>
-		</apex:outputPanel>                    
-
-	</apex:pageBlock>
+    </apex:pageBlock>
 </apex:form>
 </apex:component>

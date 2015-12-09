@@ -103,6 +103,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                                                Where ID =: setIncentiveID ]);
     }
 
+
     public static list<EnrollmentPlan__c> getEnrollmentPlan(set<id> EnrollmentPlans){
         map<id,EnrollmentPlan__c> mapPlans = INC_Service_EnrollmentPlan.getEnrollmentPlanMap(EnrollmentPlans);
         return mapPlans.Values();
@@ -127,7 +128,6 @@ public without sharing class INC_Service_EnrollmentPlan {
                           , FPPOverallEligibility_c__c
                           , TMPlanOverallEligibility__c
                           , DPEAdjustment__c
-                          , GrossMarginAdjustmentOld__c
                           , NSRAdjustment__c
                           , EnrollmentStatus__c
                           , IPProjectManager__c
@@ -174,8 +174,9 @@ public without sharing class INC_Service_EnrollmentPlan {
                           , ApplicationExceptionsPay__c
                           , IncentiveProject__r.DTWAdmin__c
                           , ForecastSubsandODCBudget__c
-                          ,IncentiveProject__r.RecordTypeId
-                     , ApplicationType__c
+                          , IncentiveProject__r.RecordTypeId
+                          , DSOTarget__c
+                          , ApplicationType__c
                 From EnrollmentPlan__c
                 where id =: EnrollmentPlans]);
 
@@ -544,9 +545,9 @@ public without sharing class INC_Service_EnrollmentPlan {
         try{
             update lUpdates;
         }catch(Exception e){
-            for(IncentiveProject__c ip: lUpdates){
+           /* for(IncentiveProject__c ip: lUpdates){
               IP.AddError(e.getMessage());
-            }
+            } */
             system.debug(logginglevel.error,'Handling Exception:  '+e.getMessage());
             Database.rollBack(sp);
             bReturn = false;
@@ -721,7 +722,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                               sFlag = 'Yes';
                             }
                           }
-
+                          //DTWINCECCPECOM set please enter a comment 
                           String sMessage = processStep.Comments!=null?processStep.Comments:'Please enter a comment.';
                           System.Debug(logginglevel.error,'ProcessStep ' + ProcessStep);
                           if(ProcessStep.StepStatus == 'Rejected' || (ProcessStep.StepStatus == 'Approved' && sMessage != 'Please enter a comment.')){
@@ -752,6 +753,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                               sFlag = 'Yes';
                             }
                         }
+                        //DTWINCECCPECOM
                       String sMessage = processStep.Comments !=null?processStep.Comments:'Please enter a comment.';
                         System.Debug(logginglevel.error,'Creating comments');
                         if((sType=='Approved' && sMessage != 'Please enter a comment.') || 

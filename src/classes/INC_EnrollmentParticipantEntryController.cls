@@ -14,6 +14,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
     public Boolean bFixed{get;set;}
     public Boolean bTM{get;set;}
     public Boolean bEnableCCR{get;set;}
+    public String sIssues{get;set;}
 
     public integer rowNumber {get;set;}
     private Enrollment_Comments__c Enrollmentcomment;
@@ -60,6 +61,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
         setUpPage();
     }
 
+
     private void setUpPage(){
         editParticipants = true;
         if(oEnrollmentPlan.EnrollmentStatus__c == 'Enrolled' ||
@@ -91,8 +93,25 @@ public with sharing class INC_EnrollmentParticipantEntryController {
         }
 
         listParticipantDelete = new list<CommentWrapper>();
+        setIssues();
     }
+    private void setIssues(){
 
+        System.Debug(logginglevel.error,'issues: ' + oEnrollmentPlan.AppIicationIssues__c);
+        System.Debug(logginglevel.error,'issues2: ' + oEnrollmentPlan.ApplicationIssues2__c);
+       sIssues ='';
+       if(oEnrollmentPlan.AppIicationIssues__c != null){
+          sIssues = oEnrollmentPlan.AppIicationIssues__c;
+        } 
+        if(oEnrollmentPlan.ApplicationIssues2__c != null){ 
+          if(sIssues != null){
+            sIssues += oEnrollmentPlan.ApplicationIssues2__c;
+          }else{
+            sIssues = oEnrollmentPlan.ApplicationIssues2__c;
+          }
+        }
+        System.Debug(logginglevel.error,'sIssues: ' + sIssues);
+    }
     private void addblankRows(){
         Integer iSize = 0;
 
@@ -225,6 +244,8 @@ public with sharing class INC_EnrollmentParticipantEntryController {
             loadExistingParticipants();
             addblankRows();
             oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{enrollID})[0];
+            setIssues();
+            //DTWINCEPECSAVESUCCESS
             ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Confirm,'Save Successful.'));
         }catch(Exception e){
             system.debug('Handling Exception:  '+e.getMessage());
@@ -271,10 +292,12 @@ public with sharing class INC_EnrollmentParticipantEntryController {
                 oEnrollmentParticipant.CurrencyIsoCode = oEnrollmentParticipant.CurrencyIsoCode;
             }
             if(oEnrollmentParticipant.ParticipantCategory__c == null){
+                //DTWINCEPECALLPARTCATERR
                 ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have a Participant Category assigned.'));
                 return false;
             }
             if((oEnrollmentParticipant.TargetIncentivePoolAllocated__c == null || oEnrollmentParticipant.TargetIncentivePoolAllocated__c <= 0) && (oEnrollmentParticipant.ParticipantType__c != 'Discretionary' && oEnrollmentPlan.ApplicationType__c == 'ENR')){
+                //DTWINCEPECALLPARTGTZERO
                 ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have an allocation greater than 0'));
                 return false;
             }
@@ -284,6 +307,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
                     System.Debug(logginglevel.error,'Pool: ' + pool + ' ' + oEnrollmentParticipant.TargetIncentivePoolAllocated__c);
                     System.Debug(logginglevel.error, 'value: ' + (oEnrollmentParticipant.TargetIncentivePoolAllocated__c * pool/100));
                     if((((oEnrollmentParticipant.TargetIncentivePoolAllocated__c * pool/100) < oEnrollmentPlan.MinParticipantPayout__c)) && oEnrollmentPlan.ApplicationType__c == 'ENR'){
+                        //DTWINCEPECALLPARGTMIN
                         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants estimated payout must be >= $' + oEnrollmentPlan.MinParticipantPayout__c + ', Currently: $' + oEnrollmentParticipant.TargetIncentivePoolAllocated__c * pool/100));
                         return false;
                     }
@@ -291,6 +315,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
             }
 
             if(oEnrollmentParticipant.EmployeeName__c == null){
+                //DTWINCEPECALLPARTEMP
                 ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have an employee name'));
                 return false;
             }
@@ -299,38 +324,6 @@ public with sharing class INC_EnrollmentParticipantEntryController {
 
         return true;
     }
-
-    /*private String validateCode(list<EnrollmentParticipant__c>lSave){
-
-        String sReturnMessage = '';
-        boolean binValidPercent = False;
-        boolean bMissingPercent = False;
-        Double iPercent = 0;
-        for(EnrollmentParticipant__c oEnrollmentParticipant: lSave){
-            if(oEnrollmentParticipant.TargetIncentivePoolAllocated__c == null || oEnrollmentParticipant.TargetIncentivePoolAllocated__c == 0){
-                bMissingPercent = true;
-            }else{
-                if(!bMissingPercent){
-                    iPercent += oEnrollmentParticipant.TargetIncentivePoolAllocated__c;
-                }
-            } 
-        }
-        if(!bMissingPercent){
-            if(iPercent > 100){
-                binValidPercent = true;
-            }
-        }
-
-        if(!bMissingPercent){
-            sReturnMessage = 'One or more lines is missing Target %.';
-        }else{
-            if(binValidPercent){
-                sReturnMessage = 'Total Target % is greater than 100.';
-            }
-        }
-
-        return sReturnMessage;
-    }*/
 
     public PageReference RemoveEP(){
         CommentWrapper cw = listParticipant[rowNumber-1];
@@ -393,18 +386,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
             bPaymentDateEnabled = false;
             bEndDateEnabled = false;
 
-            /*if(participant.StartDateonProject__c != null){
-                bStartDateEnabled = false;
-            }
-
-            if(participant.PaymentDate__c != null){
-                bPaymentEnabledField = false;
-            }
-
-            if(participant.EndDateonProject__c != null){
-                bEndDateEnabled = false;
-            }*/
-
+      
             if(oEnrollmentPlan.ApplicationType__c == 'ENR'){
                 if(oEnrollmentPlan.EnrollmentStatus__c == 'Enrolled'){
                     bEnableEmpName = false;
