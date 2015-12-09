@@ -14,10 +14,17 @@ public class ECO_DTO_BudgetLabourDetail {
     // and this will add up the total from the Budget Assignments. 
     // In the Visualforce page will retrive the total if BudgetTask has childrean based on BudgetTaskId + BudgetResourceId
     
+    public Decimal setScaling(Decimal val) {
+        if (val != null) val = val.setScale(2);
+
+        return val;
+    }
+
     public String resourceType{
         get{return oBudgetResource.ResourceType__c;}
         private set;
     }
+    
     
     public String columnHeader{
         get{return oBudgetResource.ColumnHeader__c;}
@@ -42,7 +49,7 @@ public class ECO_DTO_BudgetLabourDetail {
     public Decimal unitCost {
         get{return oBudgetResource.UnitCost__c;}
         set{oBudgetResource.UnitCost__c = value;}
-    }
+    } 
 
     public Decimal markupPercentage {
         get{return oBudgetResource.MarkupPercentage__c;}
@@ -50,12 +57,12 @@ public class ECO_DTO_BudgetLabourDetail {
     }
 
     public Decimal costRate {
-        get{return oBudgetResource.CostRate__c;}
+        get{return setScaling(oBudgetResource.CostRate__c);}
         private set;
     }
     
     public Decimal raw {
-        get{return oBudgetResource.OverrideRawCost__c;}
+        get{return setScaling(oBudgetResource.OverrideRawCost__c);}
         set{oBudgetResource.OverrideRawCost__c = value;}
     }
     
@@ -82,9 +89,9 @@ public class ECO_DTO_BudgetLabourDetail {
     public Decimal revenueRate {
         get {
             if(oBudgetResource.MarginType__c == 'Amount') {
-                return oBudgetResource.AppliedBillRate__c;
+                return setScaling(oBudgetResource.AppliedBillRate__c);
             } else if (oBudgetResource.MarginType__c == 'Percent') {
-                return oBudgetResource.AppliedBillRate__c + oBudgetResource.CostRate__c;
+                return setScaling(oBudgetResource.AppliedBillRate__c + oBudgetResource.CostRate__c);
             }
 
             return 0.0;
@@ -120,7 +127,7 @@ public class ECO_DTO_BudgetLabourDetail {
     public Decimal billRateOrMarkup{
         get{
             if(oBudgetResource.MarginType__c == 'Amount') {
-                return oBudgetResource.OverrideBillRate__c;
+                return setScaling(oBudgetResource.OverrideBillRate__c);
             }
             else if(oBudgetResource.MarginType__c == 'Percent') {
                 return oBudgetResource.OverrideUplift__c;

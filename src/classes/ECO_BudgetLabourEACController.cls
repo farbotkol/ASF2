@@ -7,6 +7,8 @@ public with sharing class ECO_BudgetLabourEACController {
 
     public Map<String, Integer> baHashes;
 
+    public Map<String, Integer> brHashes;
+
     public ApexPages.StandardSetController brSsc { 
       get;
       set; 
@@ -44,9 +46,11 @@ public with sharing class ECO_BudgetLabourEACController {
         dtotalPages = Math.floor(dtotalPages) + ((Math.mod(brSsc.getResultSize(), brSsc.getPageSize())>0) ? 1 : 0);
         totalPages = Integer.valueOf(dtotalPages);
         
+      brHashes = new Map<String, Integer>();  
       baHashes = new Map<String, Integer>();
       for(ECO_DTO_BudgetLabourDetail dtoBudgetDetail : budgetLabourWrapper.dtoBudgetLabourDetails) {
-       
+        
+          brHashes.put(dtoBudgetDetail.oBudgetResource.Id, System.hashCode(dtoBudgetDetail.oBudgetResource));
           for (BudgetAssignment__c ba : dtoBudgetDetail.mAssignmentMap.values()) {
             baHashes.put('' + ba.BudgetTask__c + ba.BudgetResource__c, System.hashCode(ba));
           }
@@ -82,9 +86,16 @@ public with sharing class ECO_BudgetLabourEACController {
        
      //   List<BudgetResource__c> budgetResourceToUpdate = new List<BudgetResource__c>();
         List<BudgetAssignment__c> budgetAssignmentsToUpdate = new List<BudgetAssignment__c>();
+        List<BudgetResource__c> budgetResourcesToUpdate = new List<BudgetResource__c>();
         
+
         system.debug(LoggingLevel.ERROR, 'budgetLabourWrapper.dtoBudgetLabourDetails size: ' + budgetLabourWrapper.dtoBudgetLabourDetails.size());
         for(ECO_DTO_BudgetLabourDetail dtoBudgetDetail : budgetLabourWrapper.dtoBudgetLabourDetails) {
+           if (brHashes.get(dtoBudgetDetail.oBudgetResource.Id) != System.hashCode(dtoBudgetDetail.oBudgetResource)) {
+               budgetResourcesToUpdate.add(dtoBudgetDetail.oBudgetResource);
+            }
+
+
           for(BudgetAssignment__c ba : dtoBudgetDetail.mAssignmentMap.values()) {
             //system.debug(LoggingLevel.ERROR, 'Quantity: ' + ba.Quantity__c + ' hash: ' + System.hashCode(ba));
             Integer hashComp = System.hashCode(ba);
@@ -101,7 +112,7 @@ public with sharing class ECO_BudgetLabourEACController {
        // upsert budgetResourceToUpdate;
     
         upsert budgetAssignmentsToUpdate;
-
+        upsert budgetResourcesToUpdate;
          PageReference pr = ApexPages.currentPage();
         pr.getParameters().put('Id', budgetHeaderId );
         pr.getParameters().put('pagenum', String.valueOf(pageNum) );
