@@ -11,21 +11,6 @@
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoTechnicalQualityTeamReviewReady</template>
     </alerts>
-    <alerts>
-        <fullName>EcoTestTechQualityReviewURL</fullName>
-        <description>EcoTestTechQualityReviewURL</description>
-        <protected>false</protected>
-        <recipients>
-            <recipient>bjacobi@ae.com</recipient>
-            <type>user</type>
-        </recipients>
-        <recipients>
-            <recipient>priya.parepalli@aecom</recipient>
-            <type>user</type>
-        </recipients>
-        <senderType>CurrentUser</senderType>
-        <template>EcoSystem_Templates/EcoTestTechQualityReview</template>
-    </alerts>
     <fieldUpdates>
         <fullName>Eco_RM_Approved_Status_Upd</fullName>
         <field>Status__c</field>
@@ -68,10 +53,6 @@
         <fullName>Eco Technical Quality Review Ready</fullName>
         <actions>
             <name>EcoEmailTechnicalQualityReviewerWhenSubmitted</name>
-            <type>Alert</type>
-        </actions>
-        <actions>
-            <name>EcoTestTechQualityReviewURL</name>
             <type>Alert</type>
         </actions>
         <active>true</active>
