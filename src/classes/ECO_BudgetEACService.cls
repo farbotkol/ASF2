@@ -687,7 +687,7 @@ insert allBudgets;
               }
 
               if (!personIdsToAdd.isEmpty()) {
-                ProjectRole__c prl = [select id from ProjectRole__c where Name = 'Task Manager'];
+                ProjectRole__c prl = [select id from ProjectRole__c where Name = 'Other'];
 
                 for (Contact con : [Select Id, pse__Salesforce_User__r.PersonId__c From Contact Where pse__Salesforce_User__r.PersonId__c in :personIdsToAdd]) {
                   ProjectTeamMember__c ptm = new ProjectTeamMember__c();
