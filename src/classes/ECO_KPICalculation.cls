@@ -74,9 +74,9 @@ public without sharing class ECO_KPICalculation {
 		list<Billing__c> billings = [select Id from Billing__c where ProjectNumber__c = :project.Id and
 									InvoiceDate__c > :asOfdate.addDays(-90)];
 		if(billings.isEmpty())
-			return true;
+			return false;
 
-		return false;
+		return true;
 	}
 
 	private static Boolean calculateHasProjectPlan(pse__Proj__c project)
