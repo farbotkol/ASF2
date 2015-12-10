@@ -120,7 +120,16 @@ public without sharing class INC_EnrollmentCommentController {
               }  
               
               System.Debug(logginglevel.error,'oEnrollmentApp.Reason_Codes__c: ' + oEnrollComment.Reason_Codes__c);
-
+              oEnrollComment = [Select ID
+                                      , Comments__c
+                                      , Type__c
+                                      , Reason_Codes__c
+                                      , Approver__c
+                                      , Approver__r.Name
+                                      , IsRejection__c
+                                      , Final_Rejection__c
+                                      From Enrollment_Comments__c 
+                                      where id =: oEnrollComment.Id][0];
               String sReason = oEnrollComment.Reason_Codes__c;
 
               /*if(sReason == 'Project in Litigation' ||
@@ -133,6 +142,7 @@ public without sharing class INC_EnrollmentCommentController {
                   rejectAll();
                 }
               } */
+              System.Debug(logginglevel.error,'Final_Rejection__c: ' + oEnrollComment.Final_Rejection__c);
               if(oEnrollComment.Final_Rejection__c && oEnrollmentApp.ApplicationType__c != 'OPT'){
                  System.Debug(logginglevel.error,'rejecting all');
                   rejectAll();

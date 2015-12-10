@@ -762,7 +762,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
             mtw = new metricTableRowWrapper();
             //DTWINCSMCFORROW14
             mtw.label = 'Forecast Salary Cost Multiplier';
-            mtw.column1Val = (oEnrollmentPlan.ForecastSalaryCMatSnapshot__c != null ? oEnrollmentPlan.ForecastSalaryCMatSnapshot__c.format() : '');
+            mtw.column1Val = (oEnrollmentPlan.ForecastSalaryCMatSnapshot__c != null ? oEnrollmentPlan.ForecastSalaryCMatSnapshot__c.format() : '0');
             mtw.currentVal = (oEnrollmentPlan.ForecastSalaryCostMultiplier__c != null ? oEnrollmentPlan.ForecastSalaryCostMultiplier__c.format():'');
             mtw.Variance = (oEnrollmentPlan.ForecastSalaryCMVariance__c != null ? oEnrollmentPlan.ForecastSalaryCMVariance__c.format(): '');
             listForecasted.add(mtw);
