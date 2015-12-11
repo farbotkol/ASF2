@@ -57,8 +57,9 @@
 
     <div class="customHelpText">
         <div class="customHelpBody">
-            To be completed for 1) non-project related DOA matters or 2) project matters that do not require approval by the Enterprise or Group Risk Committee.
-            <br/>Follow all steps prior to submitting your request for approval.
+            To be completed for 1) non-project related DOA matters or 2) project matters that do not require approval by the Enterprise or Group Risk Committee.  Follow all steps prior to submitting your request for approval.
+            <br /><br />
+            Note for DCS users, a completed Request for Project Approval (RFPA) form must accompany the RFA.  Click the "RFPA (DCS only)" button for access to the template and attach the form to the bottom of the RFA.
         </div>
     </div>  
 
@@ -72,6 +73,7 @@
                 <apex:commandButton action="{!returnToDOA}" value="Cancel" rendered="{!oForm.Enable_Cancel__c}" immediate="true"/>
                 <apex:commandButton action="{!goToDOA}" value="Back to DOA Request" rendered="{!IF(fromVisualforce = null, true, false)}" immediate="true"/>
 				<apex:commandButton action="/apex/ECO_DOAApprovals?Id={!oForm.DOAApprovalRequest__c}" value="Back to DOA Request" rendered="{!IF(fromVisualforce != null, true, false)}"/>
+                <apex:commandButton onclick="window.open('http://sharepoint.aecomnet.com/sites/pds/Shared%20Documents/1%20Proposal/1%20Opportunity/Tier%203/Request%20for%20Project%20Approval.docx');" value="RFPA (DCS Only)" immediate="true" />
             </apex:pageBlockButtons>
 
 
@@ -223,7 +225,7 @@
                         <br/><br/>3.&nbsp;    Key risks and proposed mitigation strategy for the request (e.g., there is no process risk; the team is very experienced and has recently delivered successfully a very similar project; the schedule is tight but achievable and we have appropriate excusable delay events; the supply chain is well known except for X and Y; we will be flowing down risk A and B an included a 60-day buffer on the schedule proposed by subcontractor Y).
                     </div>
                 </div>
-                <apex:inputField style="width: 75%;" label="" value="{!oForm.ReasonForRequest__c}" />
+                <apex:inputField style="width: 75%;" label="" value="{!oForm.ReasonForRequest__c}" html-placeholder="For DCS users, in lieu of completing this section, fill out a Request for Project Approval (RFPA) form for the project and attach to the bottom of this RFA.  Click the 'RFPA (DCS only)' button at the top of the screen to access the template." />
             </apex:pageBlockSection>
             <apex:pageBlockSection title="Step 5: Project Review Category Variance" collapsible="false"  columns="1" />
             <div style="padding:0 12px;margin-top:7px">
