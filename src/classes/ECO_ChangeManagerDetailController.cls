@@ -41,6 +41,7 @@ public class ECO_ChangeManagerDetailController {
     public List<syncHistoryHelper> syncHistory {get; private set;}
     public List<syncHistoryHelper> requestFailures {get; private set;}
 
+    public string budgetID {get;set;}
 
     public ECO_ChangeManagerDetailController(ApexPages.StandardController controller)
     {
@@ -68,6 +69,19 @@ public class ECO_ChangeManagerDetailController {
             pollingMessageQueueMsgBottom = 'Checking if project has been processed in <span id="pollingTimerBottom">10</span> seconds...';  
         }      
     }    
+
+    public PageReference oracleSyncControl(){
+
+
+        for(BudgetHeaderWrapper bhw: initialBudgetsForExecution){
+            if(bhw.budgetHeader.id != budgetID){
+                bhw.isSelected = false;
+            }
+        }
+
+
+        return null;
+    }
 
     public void init()
     {
@@ -276,6 +290,12 @@ public class ECO_ChangeManagerDetailController {
         return null;
     }
 
+    public pageReference cancelChangeManager()
+    {
+        changeManager.ApprovalStatus__c = 'Cancelled';
+        update changeManager;
+        return null;   
+    }
 
     public PageReference viewProjectClosureRequest()
     {

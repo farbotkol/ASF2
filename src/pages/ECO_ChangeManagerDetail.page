@@ -191,7 +191,8 @@
                 <apex:commandButton value="Edit" action="{!editChangeManager}" rendered="{!NOT(changeManager.IsApproved__c) && mode == ''}" />
                 
                 <apex:commandButton value="Save" action="{!saveChangeManager}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}" reRender="changes,pbButtonsIntExt" />
-                
+                <apex:commandButton value="Cancel" action="{!cancelChangeManager}" rendered="{!(changeManager.ApprovalStatus__c == '' || changeManager.ApprovalStatus__c == null) && (mode == '')}" />
+
                 <apex:commandButton value="Return to Change Manager" action="{!returnToChangeManager}" rendered="{!mode != ''}" />
                 <apex:commandButton value="Return to Project" action="{!returnToProject}" rendered="{!mode == ''}" />
                 <apex:commandButton value="Return to Project Changes" action="{!returnToProjectChanges}" rendered="{!mode == ''}" />
@@ -1244,11 +1245,17 @@
                     <apex:column headervalue="Last Modified Date"><apex:outputField value="{!resilience.ChangeManagerResilienceUpdatedDate__c}"/></apex:column>
                 </apex:pageBlockTable>
                         
-            </apex:pageBlockSection>                                                                                                
+            </apex:pageBlockSection> 
+            <apex:outputPanel id="budgetPanel">                                                                                               
             <apex:pageBlockSection title="Budget" collapsible="false" columns="1">
                 <apex:pageBlockTable value="{!initialBudgetsForExecution}" var="budgetwrapper" columnsWidth="10%,30%,30%,30%">
                     <apex:column headervalue="Synch to Oracle?">
-                        <apex:inputCheckbox value="{!budgetwrapper.isSelected}"/>
+                        <apex:inputCheckbox value="{!budgetwrapper.isSelected}">
+                            
+                            <apex:actionSupport event="onclick" action="{!oracleSyncControl}" reRender="budgetPanel">
+                                <apex:param name="bhID" value="{!budgetwrapper.budgetHeader.id}" assignTo="{!budgetID}"/>
+                            </apex:actionSupport>
+                        </apex:inputCheckbox>
                     </apex:column>
                     <apex:column headervalue="Budget Name" >
                         <apex:outputText value="{!budgetwrapper.budgetHeader.BudgetName__c}"/>
@@ -1260,6 +1267,7 @@
 
                 </apex:pageBlockTable>
             </apex:pageBlockSection>  
+            </apex:outputPanel>
         	</apex:pageBlock>
         </apex:outputPanel>
         </apex:outputPanel>
@@ -1572,7 +1580,7 @@ Please Explain:<br/><apex:inputField value="{!changeManager.HandoverExplainCommR
 </apex:pageBlock>
 </apex:outputPanel>
 </apex:form>
-<apex:relatedList list="ProcessSteps" id="approval"></apex:relatedList>
+<apex:relatedList list="ProcessSteps" id="approval" rendered="{!OR(projectSynchMessages == '', changeManager.ApprovalStatus__c != null)}"></apex:relatedList>
 <!--<apex:relatedList list="ProcessSteps"  id="approval" />-->
 <apex:relatedList list="CombinedAttachments" rendered="{!changeManager.RecordType.Name == 'PM Handover'}"/>
 <apex:relatedList list="Project_Snapshots__r" rendered="{!changeManager.RecordType.Name == 'PM Handover'}"/>

@@ -185,10 +185,10 @@ public with sharing class ECO_OrganizationFinderController {
             bSearchInProgress = true;
         }
 
-        if(ECO_Utils_String.NullCheck(sProjOwning) != ''){
+        /*if(ECO_Utils_String.NullCheck(sProjOwning) != ''){
             sQuery += 'Project_Owning_Text__c = \'' + sProjOwning + '\' and ';
             bSearchInProgress = true;
-        }    
+        }    */
         
         sQuery += '(InactiveDate__c > TODAY OR InactiveDate__c = null)  and ProjectOwning__c=true ORDER BY OrganizationName__c, GeographyName__c, Region__c, BusinessLineName__c, Department__c, LocationName__c';
         
@@ -296,7 +296,7 @@ public with sharing class ECO_OrganizationFinderController {
         return null;
     }
 
-    public PageReference Reset(){
+    /*public PageReference Reset(){
         sOrganizationName = '';
         sGeographyName = '';
         sRegion = '';
@@ -309,7 +309,7 @@ public with sharing class ECO_OrganizationFinderController {
         SearchOrganizations();
 
         return null;
-    }
+    }*/
 
     public boolean isValid(boolean allowDML)
     {

@@ -585,8 +585,8 @@ public with sharing class ECO_ProjectSetupController {
     public PageReference SkipOpportunity(){
 
         if(idSelectedOppRecType == '' ||idSelectedOppRecType == null ){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'You must select recordtype for automatic opportunity creation.');
-            ApexPages.addMessage(oMsg);  
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'You must select recordtype for automatic opportunity creation.'));
+
             return null;             
         }
 
@@ -642,8 +642,7 @@ public with sharing class ECO_ProjectSetupController {
 
 
                 if(listSimilarProjects.size() > 0){
-                    ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.INFO,'Attention: A duplicate project might already exist! Please confirm that you do want to create this project.');
-                    ApexPages.addMessage(oMsg);   
+                    ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO,'Attention: A duplicate project might already exist! Please confirm that you do want to create this project.'));   
                     boolNameAttempted = true;
                     lastSaveAttemptName = oProject.name;
                     return null;        
@@ -654,8 +653,7 @@ public with sharing class ECO_ProjectSetupController {
             list<pse__Proj__c> lstExactMatch = [select id from pse__Proj__c where name =: oProject.name];
 
             if(lstExactMatch.size() > 0){
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.INFO,'Attention: The project name you specified already exists! please update the project name.');
-                ApexPages.addMessage(oMsg);   
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO,'Attention: The project name you specified already exists! please update the project name.'));  
                 return null;                        
             }
 
@@ -671,8 +669,7 @@ public with sharing class ECO_ProjectSetupController {
                 }
 
             } catch (Exception e) {
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to create an Opportunity. Please contact your administrator with the following error: ' + e);
-                ApexPages.addMessage(oMsg);
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to create an Opportunity. Please contact your administrator with the following error: ' + e));
                 Database.rollback(oSavePoint);
                 oProject.pse__Opportunity__c = null;
                 return null;
@@ -695,8 +692,7 @@ public with sharing class ECO_ProjectSetupController {
                 insert oProject;
             
             } catch (Exception e) {
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to create a Project. Please contact your administrator with the following error: ' + e);
-                ApexPages.addMessage(oMsg);
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to create a Project. Please contact your administrator with the following error: ' + e));
                 Database.rollback(oSavePoint);
                 oProject.pse__Opportunity__c = null;
                 return null;
@@ -706,8 +702,7 @@ public with sharing class ECO_ProjectSetupController {
                 CreateProjectSites();
             
             } catch (Exception e) {
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to creating project sites. Please contact your administrator with the following error: ' + e);
-                ApexPages.addMessage(oMsg);
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to creating project sites. Please contact your administrator with the following error: ' + e));
                 Database.rollback(oSavePoint);
                 oProject.pse__Opportunity__c = null;
                 return null;
@@ -717,8 +712,7 @@ public with sharing class ECO_ProjectSetupController {
                 CreateProjectOrganizations();
             
             } catch (Exception e) {
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to creating project organizations. Please contact your administrator with the following error: ' + e);
-                ApexPages.addMessage(oMsg);
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to creating project organizations. Please contact your administrator with the following error: ' + e));
                 Database.rollback(oSavePoint);
                 oProject.pse__Opportunity__c = null;
                 return null;
@@ -729,8 +723,7 @@ public with sharing class ECO_ProjectSetupController {
                 update oProject;
             
             } catch (Exception e) {
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to update Project. Please contact your administrator with the following error: ' + e);
-                ApexPages.addMessage(oMsg);
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attempting to update Project. Please contact your administrator with the following error: ' + e));
                 Database.rollback(oSavePoint);
                 oProject.pse__Opportunity__c = null;
                 return null;
@@ -939,15 +932,13 @@ public with sharing class ECO_ProjectSetupController {
 
         if(!noEmptyCB)
         {
-            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'You must select a contact for each billing client.');
-            ApexPages.addMessage(oPageMessage);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'You must select a contact for each billing client.'));
             bIsValid = false;
         }
 
         if(dSiteTotal != 100)
         {
-            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Sites does not total 100%.');
-            ApexPages.addMessage(oPageMessage);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Sites does not total 100%.'));
             bIsValid = false;
         }       
         
@@ -979,28 +970,24 @@ public with sharing class ECO_ProjectSetupController {
 
         if(!noEmptyCB)
         {
-            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'All selected sites must have a billing contact');
-            ApexPages.addMessage(oPageMessage);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All selected sites must have a billing contact'));
             bIsValid = false;
         }
 
         if(dSiteTotal != 100)
         {
-            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Sites does not total 100%.');
-            ApexPages.addMessage(oPageMessage);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Sites does not total 100%.'));
             bIsValid = false;
         } 
 
         if(dTotal != 100)
         {
-            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Organizations does not total 100%.');
-            ApexPages.addMessage(oPageMessage);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'The Contribution % for the Selected Organizations does not total 100%.'));
             bIsValid = false;
         }
         
         if(oPrimaryOrganization == null){
-            ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR,'Primary Organization has not been selected.');
-            ApexPages.addMessage(oPageMessage);    
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Primary Organization has not been selected.'));    
             bIsValid = false;        
         }
 
@@ -1211,9 +1198,8 @@ public with sharing class ECO_ProjectSetupController {
 
                     oProject.PnLManager__c = contactID;
 
-                } else {
-                    ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.INFO,'Unable to populate Project Approver 2 based on PL Owner on Primary Org: ' + oOrganizationWrapper.oOrganization.name);
-                    ApexPages.addMessage(oMsg);
+                /*} else {
+                    ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.INFO,'Unable to populate Project Approver 2 based on PL Owner on Primary Org: ' + oOrganizationWrapper.oOrganization.name));*/
                 }
 
                 if(mapProjectRole.containskey('Finance Lead') && oOrganizationWrapper.oOrganization.FinanceandAccountingManagerContact__c != null){
@@ -1221,9 +1207,9 @@ public with sharing class ECO_ProjectSetupController {
                     id contactID = oOrganizationWrapper.oOrganization.FinanceandAccountingManagerContact__c;
 
                     listProjectTeamMemberToInsert.add(new ProjectTeamMember__c(Contact__c = contactID, ProjectRole__c = auth2ID, Project__c = oProject.Id, StartDate__c = oProject.EstimatedStartDate__c));
-                } else {
+                /*} else {
                     ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.INFO,'Unable to populate Finance Lead based on Finance and Accounting Manager on Primary Org: ' + oOrganizationWrapper.oOrganization.name);
-                    ApexPages.addMessage(oMsg);
+                    ApexPages.addMessage(oMsg);*/
                 }
 
                 if(mapProjectRole.containskey('CFO or Delegate') && oOrganizationWrapper.oOrganization.CFOorDelegateContact__c != null){
@@ -1231,9 +1217,9 @@ public with sharing class ECO_ProjectSetupController {
                     id contactID = oOrganizationWrapper.oOrganization.CFOorDelegateContact__c;
 
                     listProjectTeamMemberToInsert.add(new ProjectTeamMember__c(Contact__c = contactID, ProjectRole__c = auth2ID, Project__c = oProject.Id, StartDate__c = oProject.EstimatedStartDate__c));
-                } else {
+               /* } else {
                     ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.INFO,'Unable to populate CFO or Delegate based on CFO or Delegate on Primary Org: ' + oOrganizationWrapper.oOrganization.name);
-                    ApexPages.addMessage(oMsg);
+                    ApexPages.addMessage(oMsg);*/
                 }
 
                 if(mapProjectRole.containskey('Project Approver') && oOrganizationWrapper.oOrganization.ProjectApprover__c != null){
@@ -1243,9 +1229,9 @@ public with sharing class ECO_ProjectSetupController {
                     listProjectTeamMemberToInsert.add(new ProjectTeamMember__c(Contact__c = contactID, ProjectRole__c = auth2ID, Project__c = oProject.Id, StartDate__c = oProject.EstimatedStartDate__c));
 
                     oProject.ProjectApprover__c = contactID;
-                } else {
+               /* } else {
                     ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.INFO,'Unable to populate Project Approver based on Project Approver on Primary Org: ' + oOrganizationWrapper.oOrganization.name);
-                    ApexPages.addMessage(oMsg);
+                    ApexPages.addMessage(oMsg);*/
                 }
 
                 if(mapProjectRole.containskey('Project Accountant') && oOrganizationWrapper.oOrganization.ProjectAccountant__c != null){
@@ -1253,9 +1239,9 @@ public with sharing class ECO_ProjectSetupController {
                     id contactID = oOrganizationWrapper.oOrganization.ProjectAccountant__c;
 
                     listProjectTeamMemberToInsert.add(new ProjectTeamMember__c(Contact__c = contactID, ProjectRole__c = auth2ID, Project__c = oProject.Id, StartDate__c = oProject.EstimatedStartDate__c));
-                } else {
+                /*} else {
                     ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.INFO,'Unable to populate Project Accountant based on Project Accountant on Primary Org: ' + oOrganizationWrapper.oOrganization.name);
-                    ApexPages.addMessage(oMsg);
+                    ApexPages.addMessage(oMsg);*/
                 }
 
                 if(mapProjectRole.containskey('Project Accountant 2') && oOrganizationWrapper.oOrganization.ProjectAccountant2__c != null){
@@ -1263,9 +1249,9 @@ public with sharing class ECO_ProjectSetupController {
                     id contactID = oOrganizationWrapper.oOrganization.ProjectAccountant2__c;
 
                     listProjectTeamMemberToInsert.add(new ProjectTeamMember__c(Contact__c = contactID, ProjectRole__c = auth2ID, Project__c = oProject.Id, StartDate__c = oProject.EstimatedStartDate__c));
-                } else {
+                /*} else {
                     ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.INFO,'Unable to populate Project Accountant 2 based on Project Accountant 2 on Primary Org: ' + oOrganizationWrapper.oOrganization.name);
-                    ApexPages.addMessage(oMsg);
+                    ApexPages.addMessage(oMsg);*/
                 }
 
                 if(mapProjectRole.containskey('Finance Lead 2') && oOrganizationWrapper.oOrganization.FinanceLead2__c != null){
@@ -1273,9 +1259,9 @@ public with sharing class ECO_ProjectSetupController {
                     id contactID = oOrganizationWrapper.oOrganization.FinanceLead2__c;
 
                     listProjectTeamMemberToInsert.add(new ProjectTeamMember__c(Contact__c = contactID, ProjectRole__c = auth2ID, Project__c = oProject.Id, StartDate__c = oProject.EstimatedStartDate__c));
-                } else {
+                /*} else {
                     ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.INFO,'Unable to populate Finance Lead 2 based on Finance Lead 2 on Primary Org: ' + oOrganizationWrapper.oOrganization.name);
-                    ApexPages.addMessage(oMsg);
+                    ApexPages.addMessage(oMsg);*/
                 }
 
             }
