@@ -6,6 +6,16 @@
     <enableEnhancedLookup>false</enableEnhancedLookup>
     <enableFeeds>false</enableFeeds>
     <fields>
+        <fullName>pse__Add_Holidays_On_Assignment_Adjust__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>If selected, determines whether holiday schedule exception records are added if assignment date ranges are adjusted and the new date range falls within a holiday.</inlineHelpText>
+        <label>Add Holidays On Assignment Adjust</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>pse__Assignment_Ordering__c</fullName>
         <defaultValue>&quot;name&quot;</defaultValue>
         <deprecated>false</deprecated>
@@ -13,6 +23,18 @@
         <inlineHelpText>This setting defines the API name of a field to order assignments by and, optionally, the direction (ASC or DESC). Assignments always appear above held resource requests.</inlineHelpText>
         <label>Assignment Ordering</label>
         <length>255</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pse__Assignment_Search_Fieldset_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Determines which Assignment fields are searched with the text search box on the project planner.</inlineHelpText>
+        <label>Assignment Search Fieldset Name</label>
+        <length>90</length>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -73,7 +95,7 @@
     </fields>
     <fields>
         <fullName>pse__Default_Resource_Image__c</fullName>
-        <defaultValue>&quot;/resource/Planners/resources/images/FForce/default_resource_image.png&quot;</defaultValue>
+        <defaultValue>&quot;/resource/pse__Planners/resources/images/FForce/default_resource_image.png&quot;</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>Defines a URL (absolute or relative) that points to the default image to use for resources without a profile photo. Image files of 22 pixels square work best.</inlineHelpText>
@@ -83,17 +105,49 @@
         <type>Url</type>
     </fields>
     <fields>
+        <fullName>pse__Hide_Inline_Dialog__c</fullName>
+        <defaultValue>false</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This setting determines whether or not to hide the edit mode settings dialog.</inlineHelpText>
+        <label>Hide Inline Edit Dialog</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>pse__Inline_Edit_Mode_THHC__c</fullName>
+        <defaultValue>true</defaultValue>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>This setting determines how inline editing of assignments affects total assignment hours and end date.</inlineHelpText>
+        <label>Hold total assignment hours constant</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>pse__Preload_Limit__c</fullName>
         <defaultValue>100</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>This setting defines the maximum number of projects that load in the background when viewing large numbers of records. Entering a higher value results in fewer loading interruptions, but uses more memory.</inlineHelpText>
-        <label>Preload Limit</label>
+        <label>Deprecated: Preload Limit</label>
         <precision>5</precision>
         <required>false</required>
         <scale>0</scale>
         <trackTrending>false</trackTrending>
         <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pse__Project_Search_Fieldset_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Determines which Project fields are searched with the text search box on the project planner.</inlineHelpText>
+        <label>Project Search Fieldset Name</label>
+        <length>90</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -110,7 +164,7 @@
     </fields>
     <fields>
         <fullName>pse__Record_Load_Limit__c</fullName>
-        <defaultValue>25</defaultValue>
+        <defaultValue>5</defaultValue>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
         <inlineHelpText>This setting defines the number of projects that display per request to the server. You should not adjust the Record Load Limit without first consulting Customer Support.</inlineHelpText>
@@ -135,6 +189,18 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>pse__ResourceRequest_Search_Fieldset_Name__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <inlineHelpText>Determines which Resource Request fields are searched with the text search box on the project planner.</inlineHelpText>
+        <label>Resource Request Search Fieldset Name</label>
+        <length>90</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>pse__Resource_Request_Ordering__c</fullName>
         <defaultValue>&quot;name&quot;</defaultValue>
         <deprecated>false</deprecated>
@@ -151,7 +217,7 @@
         <fullName>pse__Restrict_Editing_Past_Dates__c</fullName>
         <defaultValue>false</defaultValue>
         <deprecated>false</deprecated>
-        <description>If selected, you can edit Project Planner assignment and schedule hours in the past. The default value is unselected.</description>
+        <description>If selected, you cannot edit Project Planner assignment and schedule hours in the past. The default value is deselected.</description>
         <externalId>false</externalId>
         <inlineHelpText>If selected, you can edit Project Planner assignment and schedule hours in the past. The default value is unselected.</inlineHelpText>
         <label>Restrict Editing Past Dates</label>

@@ -1,6 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
     <alerts>
+        <fullName>ACTION_Recall_of_Project_Segmentation</fullName>
+        <description>ACTION: Recall  of Project Segmentation</description>
+        <protected>false</protected>
+        <recipients>
+            <field>segDesignee__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>EcoSystem_Templates/ACTION_Recall_of_Project_Segmentation</template>
+    </alerts>
+    <alerts>
         <fullName>Rejection_of_Project_Segmentation</fullName>
         <description>Rejection of Project Segmentation</description>
         <protected>false</protected>
@@ -35,26 +46,6 @@
         <fullName>Rejection_of_Project_Segmentation1</fullName>
         <description>Rejection of Project Segmentation</description>
         <protected>false</protected>
-        <recipients>
-            <recipient>APAC</recipient>
-            <type>roleSubordinates</type>
-        </recipients>
-        <recipients>
-            <recipient>Admin</recipient>
-            <type>roleSubordinates</type>
-        </recipients>
-        <recipients>
-            <recipient>Americas</recipient>
-            <type>roleSubordinates</type>
-        </recipients>
-        <recipients>
-            <recipient>EMEA</recipient>
-            <type>roleSubordinates</type>
-        </recipients>
-        <recipients>
-            <recipient>Worldwide</recipient>
-            <type>roleSubordinates</type>
-        </recipients>
         <recipients>
             <field>AgreementOwner__c</field>
             <type>userLookup</type>
