@@ -27,6 +27,7 @@
 	       		$q('#riskPane .close').click(function(){
 	       			RiskFlyout.hideContentFlyout();
 	       		});
+	       		retrieveData();
 			},
 
 			hideContentFlyout : function(){
@@ -252,15 +253,46 @@
 					<apex:pageBlock mode="mainDetail">
 						<apex:pageBlockSection columns="1" collapsible="false" title="List of Project Risks"></apex:pageBlockSection>
 						<div style="text-align:right;margin-bottom:8px;float:right;white-space:nobreak;">Filter:&nbsp;
-							<apex:selectList size="1" value="{!sFilterCriteria}">
+							<apex:selectList size="1" value="{!sFilterCriteria}" onchange="retrieveData();">
 								<apex:selectOptions value="{!lPlanElements}" />
-								<apex:actionSupport rerender="riskPanel" event="onchange" action="{!refresh}" />
+								<apex:actionSupport rerender="riskPanel" event="onchange" />
 							</apex:selectList>
 						</div>
-						<apex:outputPanel rendered="{!IF(lRisks.size == 0, true, false)}">
+						<apex:outputPanel rendered="{!AND(IF(lDOARegisters.size == 0, true, false), sFilterCriteria == 'DOA')}">
+							<p>No DOA Registers have been associated</p>
+						</apex:outputPanel>
+						<apex:outputPanel rendered="{!AND(IF(lDOARegisters.size == 0, false, true), sFilterCriteria == 'DOA')}">
+							<table class="tablesorter" cellpadding="0" cellspacing="0" style="height:200px; overflow-y:auto; display:block;">
+								<thead>
+									<tr>
+										<th width="35px" />
+										<apex:repeat value="{!$ObjectType.DOARegister__c.FieldSets.RiskFlyoutDisplayFields}" var="field">
+											<th>
+												<apex:outputText value="{!$ObjectType.DOARegister__c.Fields[field].label}" />
+											</th>
+										</apex:repeat>
+									</tr>
+								</thead>
+								<tbody>
+									<apex:repeat value="{!lDOARegisters}" var="doaRegister">
+										<tr>
+											<td rowspan="1" align="center">
+												<a href="/{!doaRegister.Id}">View</a>
+											</td>
+											<apex:repeat value="{!$ObjectType.DOARegister__c.FieldSets.RiskFlyoutDisplayFields}" var="Field">
+												<td>
+													<apex:outputField value="{!doaRegister[Field]}" />
+												</td>
+											</apex:repeat>
+										</tr>
+									</apex:repeat>
+								</tbody>
+							</table>
+						</apex:outputPanel>
+						<apex:outputPanel rendered="{!AND(IF(lRisks.size == 0, true, false), sFilterCriteria != 'DOA')}">
 							<p>No Risks have been associated</p>
 						</apex:outputPanel>
-						<apex:outputPanel rendered="{!IF(lRisks.size == 0, false, true)}">
+						<apex:outputPanel rendered="{!AND(IF(lRisks.size == 0, false, true), sFilterCriteria != 'DOA')}">
 							<div class="list" style="overflow:scroll;height:200px;">
 								<table class="tablesorter" cellpadding="0" cellspacing="0">
 									<thead>
@@ -346,6 +378,7 @@
 				</div>
 				</apex:actionRegion>
 			</apex:outputPanel>
+			<apex:actionFunction action="{!retrieveData}" reRender="riskPanel" name="retrieveData" />
 		</div>
 	
 </apex:component>
