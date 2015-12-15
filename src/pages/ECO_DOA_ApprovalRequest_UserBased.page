@@ -68,18 +68,19 @@
             <apex:pageMessages id="messages" />
             <apex:pageBlockButtons >
 				<apex:commandButton action="{!saveDOA}" value="Save" rendered="{!OR(NOT(oDOA.AssigntoDoAApprovalQueue__c),isDOAAdmin)}"/>
-                <apex:commandButton action="{!submitGeography}" value="Submit for Geography Approval" rendered="{!isDOAAdmin}"/>
-                <apex:commandButton action="{!submitGroup}" value="Submit for Group Approval" rendered="{!isDOAAdmin}"/>
-                <apex:commandButton action="{!submitEnterprise}" value="Submit for Enterprise Approval" rendered="{!isDOAAdmin}"/>
-                <apex:commandButton action="{!submitDCSHub}" value="Submit for DCS Hub Approval" rendered="{!isDOAAdmin}"/>
-                <apex:commandButton action="{!submitAECOMHub}" value="Submit for AECOM Hub Approval" rendered="{!isDOAAdmin}"/>
+                <apex:commandButton action="{!submitGeography}" value="Submit for Geography Approval" rendered="{!isDOAAdmin}" disabled="{!oDOA.SubmitGeographyforApproval__c}"/>
+                <apex:commandButton action="{!submitGroup}" value="Submit for Group Approval" rendered="{!isDOAAdmin}" disabled="{!oDOA.SubmitGroupforApproval__c}"/>
+                <apex:commandButton action="{!submitEnterprise}" value="Submit for Enterprise Approval" rendered="{!isDOAAdmin}" disabled="{!oDOA.SubmitEnterpriseforApproval__c}"/>
+                <apex:commandButton action="{!submitDCSHub}" value="Submit for DCS Hub Approval" rendered="{!isDOAAdmin}" disabled="{!oDOA.SubmitDCSHubforApproval__c}"/>
+                <apex:commandButton action="{!submitAECOMHub}" value="Submit for AECOM Hub Approval" rendered="{!isDOAAdmin}" disabled="{!oDOA.SubmitAECOMHubForApproval__c}"/>
                 <apex:commandButton action="{!submitDOAQueue}" value="Submit to DoA Approval Queue" rendered="{!NOT(oDOA.AssigntoDoAApprovalQueue__c)}"/>
                 <apex:outputLink value="{!URLFOR($Resource.RiskCommitteeSubmittalTemplate)}" rendered="{!AND(NOT(oDOA.AssigntoDoAApprovalQueue__c), NOT(isDOAAdmin),oDOA.Enable_RCST_Button__c )}" styleClass="btn" style="text-decoration:none;padding:4px;">Risk Committee Submittal Template</apex:outputLink>
                 <apex:commandButton action="/{!oDOA.Project__c}" value="Return to Project" rendered="{!oDOA.AssigntoDoAApprovalQueue__c}"/>
             </apex:pageBlockButtons>
             <apex:pageBlockSection title="DOA Approval Request Detail" >
                 	<apex:outputField value="{!oDOA.Project__c}" rendered="{!IF(oDOA.Project__c != null, true, false)}"/>
-                	<apex:inputField value="{!oDOA.ProjectNameSubject__c}" rendered="{!IF(oDOA.Project__c != null, false, true)}"/>
+                	<apex:inputField value="{!oDOA.ProjectNameSubject__c}" rendered="{!AND(IF(oDOA.Project__c != null, false, true), NOT(oDOA.AssigntoDoAApprovalQueue__c))}"/>
+                	<apex:outputField value="{!oDOA.ProjectNameSubject__c}" rendered="{!AND(IF(oDOA.Project__c != null, false, true), oDOA.AssigntoDoAApprovalQueue__c)}"/>
                     <apex:outputField value="{!oDOA.OwnerId}" rendered="{!NOT(OR(isDOAAdmin,NOT(oDOA.AssigntoDoAApprovalQueue__c)))}"/>
                 	<apex:inputField value="{!oDOA.OwnerId}" rendered="{!OR(isDOAAdmin,NOT(oDOA.AssigntoDoAApprovalQueue__c))}"/>
                     <apex:outputField value="{!oDOA.Name}"/>
