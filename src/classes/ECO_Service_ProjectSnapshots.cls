@@ -162,7 +162,6 @@ public class ECO_Service_ProjectSnapshots {
         organizationProjectsMap = new map<Id, List<Id>>();
         organizationNameMap = new map<Id, String>();
         organizationProjectPercentage = new map<String, Decimal>(); 
-        
         projectIds = snapshotProjectIds;
     }
     
@@ -272,8 +271,10 @@ public class ECO_Service_ProjectSnapshots {
 	                pse__Time_Period__c monthTP = (pse__Time_Period__c) timePeriodMap.get('Month');
 	                monthStartDate = monthTP.pse__Start_Date__c;
 	                System.debug(System.LoggingLevel.WARN, '___monthStartDate='+monthStartDate);
-	                mtdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, monthStartDate);  
-					System.debug(System.LoggingLevel.WARN, '___mtdActualFinancialMetricsMap='+mtdActualFinancialMetricsMap);
+	                if (monthStartDate != null) {
+		                mtdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, monthStartDate);  
+						System.debug(System.LoggingLevel.WARN, '___mtdActualFinancialMetricsMap='+mtdActualFinancialMetricsMap);
+	                }
       			}
       			
                 itdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, null);
@@ -284,7 +285,10 @@ public class ECO_Service_ProjectSnapshots {
 	                pse__Time_Period__c yearTP = (pse__Time_Period__c) timePeriodMap.get('Year');
 	                yearStartDate = yearTP.pse__Start_Date__c;
 	                System.debug(System.LoggingLevel.WARN, '___yearStartDate='+yearStartDate);
-	                ytdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, yearStartDate);
+	                if (yearStartDate != null) {
+	                	ytdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, yearStartDate);
+						System.debug(System.LoggingLevel.WARN, '___ytdActualFinancialMetricsMap='+ytdActualFinancialMetricsMap);
+	                }
 				}
 				
                 billingMetricsAR0to30Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_0to30);
@@ -529,7 +533,7 @@ public class ECO_Service_ProjectSnapshots {
                     // Future Spend
                     snapshot = getFutureSpendInformation(snapshot);
                     
-                    System.debug(System.LoggingLevel.WARN, '___createProjectSnapshots: snapshot='+snapshot);
+                    //System.debug(System.LoggingLevel.WARN, '___createProjectSnapshots: snapshot='+snapshot);
                     snapshotList.add(snapshot);
                 }   
             }
@@ -1756,7 +1760,6 @@ public class ECO_Service_ProjectSnapshots {
                         else if (PLReportCategory == 'Overhead') {
                             snapshot.OverheadBudget__c += ba.TotalComputedCost__c;
                         }
-                        System.debug(System.LoggingLevel.WARN, '___APPROVED Budget: snapshot='+snapshot);
                     }
                     else { // Unapproved
                     	if (PLReportCategory == ODC_Exps) {
@@ -1840,11 +1843,10 @@ public class ECO_Service_ProjectSnapshots {
 	                            snapshot.OverheadDraft__c += ba.TotalComputedCost__c;
 	                        }
 	                    }
-                    }
-                    
-                    System.debug(System.LoggingLevel.WARN, '___projectIdToSnapshotMap: snapshot='+snapshot);
-                    projectIdToSnapshotMap.put(projId, snapshot);
+                    } 
                 }
+                System.debug(System.LoggingLevel.WARN, '___projectIdToSnapshotMap: snapshot='+snapshot);
+                projectIdToSnapshotMap.put(projId, snapshot);
             }
         }
         catch(Exception e) {
