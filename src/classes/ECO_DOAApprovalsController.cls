@@ -56,6 +56,7 @@ public with sharing class ECO_DOAApprovalsController {
     }
     public PageReference submitAECOMHub(){
         try{
+            saveDOA();
             if(oDOA.SubmitAECOMHubForApproval__c==false && oDOA.AECOMHubCountofApprovers__c >0 && oDOA.AECOMHubApprovalsRequired__c ==true ){ 
                 oDOA.SubmitAECOMHubforApproval__c = true ;
                 update oDOA; 
@@ -75,6 +76,7 @@ public with sharing class ECO_DOAApprovalsController {
     public PageReference submitGeography(){
         system.debug('inside geography');
         try{
+            saveDOA();
             if(oDOA.SubmitGeographyforApproval__c==false && oDOA.GeoCountOfApprovers__c >0 && oDOA.GeographyApprovalsRequired__c ==true ){ 
                 system.debug('inside geography if');
                 oDOA.SubmitGeographyforApproval__c = true ;
@@ -96,6 +98,7 @@ public with sharing class ECO_DOAApprovalsController {
     public PageReference submitGroup(){
         system.debug('inside group');
         try{
+            saveDOA();
             if(oDOA.SubmitGroupforApproval__c==false && oDOA.GroupCountofApprovers__c >0 && oDOA.GroupApprovalsRequired__c ==true ){ 
                 system.debug('inside group if');
                 oDOA.SubmitGroupforApproval__c = true ;
@@ -118,6 +121,7 @@ public with sharing class ECO_DOAApprovalsController {
     }
     public PageReference submitEnterprise(){
         try{
+            saveDOA();
             if(oDOA.SubmitEnterpriseforApproval__c==false && oDOA.EnterpriseCountofApprovers__c >0 && oDOA.EnterpriseApprovalsRequired__c ==true ){ 
                 oDOA.SubmitEnterpriseforApproval__c = true ;
                 update oDOA; 
@@ -136,6 +140,7 @@ public with sharing class ECO_DOAApprovalsController {
     }
     public PageReference submitDCSHub(){
         try{
+            saveDOA();
             if(oDOA.SubmitDCSHubforApproval__c==false && oDOA.DCSHubCountofApprovers__c >0 && oDOA.DCSHubApprovalsRequired__c ==true ){ 
                 oDOA.SubmitDCSHubforApproval__c = true ;
                 update oDOA; 
@@ -169,6 +174,7 @@ public with sharing class ECO_DOAApprovalsController {
     }
     public PageReference submitDOAQueue(){
         try{
+            saveDOA();
             system.debug('before update: '+oDOA.Id+'    '+oDOA.AssigntoDoAApprovalQueue__c);
             if(oDOA.AssigntoDoAApprovalQueue__c != true){
                 oDOA.AssigntoDoAApprovalQueue__c = true;

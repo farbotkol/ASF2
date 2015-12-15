@@ -2,9 +2,7 @@ public with sharing class ECO_RiskFlyoutController {
 	public id sProjectId            { get; set;}
     public string sPlanElement      { get; set;}
     public string sFilterCriteria   { get; set;}
-    public list<Risk__c> lRisks     {get; set;}
-    public List<DOARegister__c> lDOARegisters {get; set;}
-
+   
     public Risk__c oRisk {
         get{
             if(bInitialDefault){
@@ -31,58 +29,51 @@ public with sharing class ECO_RiskFlyoutController {
 
     set;}
 
-    public PageReference retrieveData(){
-        lRisks = new List<Risk__c>();
-        lDOARegisters = new List<DOARegister__c>();
-        String sSOQL = 'SELECT ';
-        if(sFilterCriteria != 'DOA'){
-            for (Schema.FieldSetMember fsmField: SObjectType.Risk__c.FieldSets.RiskFlyoutDisplayFields.getFields()) {
-                sSOQL += fsmField.getFieldPath() + ', ';
-            }
-
-            sSOQL += ' Id, PlanElement__c FROM Risk__c WHERE Project__c =\'' + sProjectId + '\'';
-            
-            if(ECO_Utils_String.NullCheck(sFilterCriteria) != ''){
-                sSOQL += ' and PlanElement__c = \'' + sFilterCriteria + '\'';
-            }
-            sSOQL += ' ORDER BY PlanElement__c';
-            lRisks = Database.query(sSOQL);
-        }
-        else{
-            for (Schema.FieldSetMember fsmField: SObjectType.DOARegister__c.FieldSets.RiskFlyoutDisplayFields.getFields()) {
-                sSOQL += fsmField.getFieldPath() + ', ';
-            }
-
-            sSOQL += 'Id ';
-
-            sSOQL += ' FROM DOARegister__c WHERE Project__c =\'' + sProjectId + '\'';
-            lDOARegisters = Database.query(sSOQL);
-        }
-        return null;
-    }
-
-    /*
     public list<Risk__c> lRisks {
         get{
             string sSOQL = 'SELECT ';
+            if(sFilterCriteria != 'DOA'){
+                for (Schema.FieldSetMember fsmField: SObjectType.Risk__c.FieldSets.RiskFlyoutDisplayFields.getFields()) {
+                    sSOQL += fsmField.getFieldPath() + ', ';
+                }
 
-            for (Schema.FieldSetMember fsmField: SObjectType.Risk__c.FieldSets.RiskFlyoutDisplayFields.getFields()) {
-                sSOQL += fsmField.getFieldPath() + ', ';
+                sSOQL += ' Id, PlanElement__c FROM Risk__c WHERE Project__c =\'' + sProjectId + '\'';
+                
+                if(ECO_Utils_String.NullCheck(sFilterCriteria) != '' && sFilterCriteria != 'DOA'){
+                    sSOQL += ' and PlanElement__c = \'' + sFilterCriteria + '\'';
+                }
+
+                sSOQL += ' ORDER BY PlanElement__c';
+
+                return (list<Risk__c>)Database.query(sSOQL);
+            }   
+            else{
+                return null;
             }
-
-            sSOQL += ' Id, PlanElement__c FROM Risk__c WHERE Project__c =\'' + sProjectId + '\'';
-            
-            if(ECO_Utils_String.NullCheck(sFilterCriteria) != '' && sFilterCriteria != 'DOA'){
-                sSOQL += ' and PlanElement__c = \'' + sFilterCriteria + '\'';
-            }
-
-            sSOQL += ' ORDER BY PlanElement__c';
-
-            return (list<Risk__c>)Database.query(sSOQL);
         }
 
-        set;}
-    */
+        set;
+    }
+
+    public List<DOARegister__c> lDOARegisters {
+        get{
+            if(sFilterCriteria == 'DOA'){
+                String sSOQL = 'SELECT ';
+                for (Schema.FieldSetMember fsmField: SObjectType.DOARegister__c.FieldSets.RiskFlyoutDisplayFields.getFields()) {
+                    sSOQL += fsmField.getFieldPath() + ', ';
+                }
+
+                sSOQL += 'Id ';
+
+                sSOQL += ' FROM DOARegister__c WHERE Project__c =\'' + sProjectId + '\'';
+                return(list<DOARegister__c>) Database.query(sSOQL);
+            }
+            else{
+                return null;
+            }
+        } 
+        set;
+    }
 
 	public ECO_RiskFlyoutController() {
 		oRisk = new Risk__c();

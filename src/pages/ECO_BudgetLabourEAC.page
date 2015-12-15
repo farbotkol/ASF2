@@ -5,6 +5,18 @@
     <script type="text/javascript">
     	$b = jQuery.noConflict();
 		
+        $b( function() {
+            $b('.currency').each( 
+                function (i, elem) { 
+                    var val = $b(elem).text(); 
+                    var fltVal = parseFloat(val);
+
+                    if( !isNaN (fltVal) ) {
+                        $b(elem).text(fltVal.toFixed(2));
+                    }
+                } );
+        });
+
     function forecastChange(line) {
         var row = $b(line).closest('tr');
         var actual = parseFloat(row.find('[id$="actual"]').text());
@@ -15,8 +27,8 @@
         current = current ? current : 0.00;
         revised = revised ? revised : 0.00;
         
-        row.find('[id$="etc"]').val(revised-actual);
-        row.find('[id$="quantity"]').val(revised-current);
+        row.find('[id$="etc"]').val( (revised-actual).toFixed(2) ) ;
+        row.find('[id$="quantity"]').val( (revised-current).toFixed(2) );
     }
     
     function etcChange(line) {
@@ -30,8 +42,8 @@
         current = current ? current : 0.00;
         etc = etc ? etc : 0.00;
 
-        row.find('[id$="revisedForecast"]').val(etc + actual);
-        row.find('[id$="quantity"]').val(etc + actual - current);
+        row.find('[id$="revisedForecast"]').val((etc + actual).toFixed(2) );
+        row.find('[id$="quantity"]').val( (etc + actual - current).toFixed(2) );
     }
     </script>
     
@@ -236,9 +248,21 @@
                             <td width="90px" class="lightBlueHeading bold">{!budgetLabourWrapper.mapLaborRatesByResourceId[budgetLabour.oBudgetResource.Id].ETCRate}</td>
                             <td width="90px" class="lightBlueHeading bold">{!budgetLabourWrapper.mapLaborRatesByResourceId[budgetLabour.oBudgetResource.Id].RevisedForecastRate}</td>                            
                         </tr>
-                        <tr><td colspan="5" class="tableInputs"><apex:inputText value="{!budgetLabour.raw}"/></td></tr>
-                        <tr><td colspan="5" class="tableInputs"><apex:inputText value="{!budgetLabour.fringe}" /></td></tr>
-                        <tr><td colspan="5" class="tableInputs"><apex:inputText value="{!budgetLabour.overhead}"/></td></tr>
+                        <tr>
+                            <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                            <td class="tableInputs"><apex:inputText value="{!budgetLabour.raw}"/></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr> 
+                            <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                            <td class="tableInputs"><apex:inputText value="{!budgetLabour.fringe}"/></td>
+                            <td>&nbsp;</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td>
+                            <td class="tableInputs"><apex:inputText value="{!budgetLabour.overhead}"/></td>
+                            <td>&nbsp;</td>
+                        </tr>
                     </tbody>
                     <tbody class="revenue">
                         <tr><td colspan="5" class="lightBlueHeading bold"><apex:outputText value="{!budgetLabour.revenueRate}"/></td></tr>

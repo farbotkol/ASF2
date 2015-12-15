@@ -326,7 +326,7 @@ public class ECO_ChangeManagerTriggerHandler {
 			                                      and ChangeManagerIsChanged__c = true and Id in :submittedIds];
 			for(Project_Site__c projectSite:projectSites)
 			{
-				projectSite.ChangeManagerApprovedForSynch__c = true;	
+				projectSite.ChangeManagerApprovedForSynch__c = false;	
 				projectSite.ChangeManagerIsNew__c = false;							
 			}
 			update projectSites;
@@ -363,7 +363,7 @@ public class ECO_ChangeManagerTriggerHandler {
 													and Id in :submittedIds];
 			for(ProjectTeamMember__c teamMember:teamMembers)
 			{
-				teamMember.ChangeManagerApprovedForSynch__c = true;
+				teamMember.ChangeManagerApprovedForSynch__c = false;
 				teamMember.ChangeManagerIsNew__c = false;	
 			}
 			update teamMembers;						
@@ -398,7 +398,7 @@ public class ECO_ChangeManagerTriggerHandler {
 													  and ChangeManagerIsChanged__c = true and Id in :submittedIds];
 			for(pse__Project_Task__c projectTask:projectTasks)
 			{
-				projectTask.ChangeManagerApprovedForSynch__c = true;
+				projectTask.ChangeManagerApprovedForSynch__c = false;
 				projectTask.ChangeManagerIsNew__c = false;								
 			}
 			update projectTasks;				
@@ -523,7 +523,7 @@ public class ECO_ChangeManagerTriggerHandler {
 			for(pse__Proj__c project:projects)
 			{
 				project.ChangeManagerIsChangedClass__c = false;
-				project.ChangeManagerApprovedForSynch__c  = true;
+				project.ChangeManagerApprovedForSynch__c  = false;
 			}
 			update projects;
 		}		
