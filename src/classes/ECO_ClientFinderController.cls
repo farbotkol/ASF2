@@ -25,7 +25,7 @@ public with sharing virtual class ECO_ClientFinderController{
 	public string strSearchResults {get;set;}
 	public string strNoRecords {get;set;}
 
-	public boolean boolShowSiteSearch {get;set;}
+	//public boolean boolShowSiteSearch {get;set;}
 	public boolean booDisplaySiteSearchResult {get;set;}
 	public boolean booNewProject {get;set;}
 
@@ -128,9 +128,9 @@ public with sharing virtual class ECO_ClientFinderController{
         return null;
     }
 
-    public PageReference stub(){
+    /*public PageReference stub(){
         return null;
-    }
+    }*/
 
 	public PageReference SelectSite() {
 
@@ -159,7 +159,7 @@ public with sharing virtual class ECO_ClientFinderController{
 
         lstProjectSites.add(oProjectSite);
 
-		if(lstProjectSites.size() == 0){
+		/*if(lstProjectSites.size() == 0){
             system.debug('****DEBUG 2');
 			oProjectSite.Is_Billing__c = true;
 			oProjectSite.Is_Default_Top_Task__c = true;
@@ -176,7 +176,7 @@ public with sharing virtual class ECO_ClientFinderController{
 
             oProject.PrimaryBillingClient__c = SelectedSite.id;
             oProject.PrimaryEndClient__c = SelectedSite.id;
-		}
+		}*/
 
 		save();
 		UpdateProjectSites();
@@ -245,8 +245,8 @@ public with sharing virtual class ECO_ClientFinderController{
         }
         
 
-        for(contact c:[select id, lastname, firstname, OracleContactID__c, Site__c from contact where site__c IN: sitesid]){
-            mapSiteIDtoOptions.get(c.Site__c).add(new SelectOption(c.OracleContactID__c, c.lastname + ', ' + c.firstname));
+        for(contact c:[select id, lastname, firstname, Oracle_ID__c, Site__c from contact where site__c IN: sitesid]){
+            mapSiteIDtoOptions.get(c.Site__c).add(new SelectOption(c.Oracle_ID__c, c.lastname + ', ' + c.firstname));
             system.debug('DEBUG****: ' + c.Site__c);
         }
 
@@ -270,10 +270,10 @@ public with sharing virtual class ECO_ClientFinderController{
 		}
 	}
 
-	public PageReference ShowSiteSearch() {
+	/*public PageReference ShowSiteSearch() {
 		boolShowSiteSearch = true;
 		return null;
-	}
+	}*/
 
 
 	/* Executes the request to handle dynamics parameters and query Sites */

@@ -15,7 +15,9 @@ public with sharing class ECO_ProjectAgreementController2 {
 		projectAgreement = (ProjectAgreement__c)controller.getRecord();
 		if(projectAgreement.Project__c == null){
 			projectAgreement.Project__c = ApexPages.currentPage().getParameters().get('ProjectId');
+            
 		}
+        
 	}
 	
 	public PageReference recordTypeSelected()
@@ -73,7 +75,7 @@ public with sharing class ECO_ProjectAgreementController2 {
 		if(recordToDelete == null || recordToDelete == '')
 		{  
 			theProject = [select Name, ProjectSectionHeaderName__c from pse__Proj__c where Id = :projectId limit 1]; 
-			agreements = [select Id, Name, RecordType.Name, Amount__c, AgreementStatus__c, Account__c from Agreement__c where Id in (select Agreement__c from ProjectAgreement__c where Project__c = :theProject.Id)];  
+			agreements = [select Id, Name, RecordType.Name, Amount__c, AgreementStatus__c, Account__c, VendorSite__r.AccountName__c from Agreement__c where Id in (select Agreement__c from ProjectAgreement__c where Project__c = :theProject.Id)];  
 			  
         	return null;			
 		}

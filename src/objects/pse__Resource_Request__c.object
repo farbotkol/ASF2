@@ -27533,7 +27533,12 @@ pse__Milestone__r.pse__Project__c != pse__Project__c
     <validationRules>
         <fullName>pse__Validate_Contact_Is_Resource</fullName>
         <active>true</active>
-        <errorConditionFormula>AND(LEN(pse__Resource__c) &gt;  0,  NOT( pse__Resource__r.pse__Is_Resource__c))</errorConditionFormula>
+        <errorConditionFormula>(ISNEW() 
+			||
+			ISCHANGED( pse__Resource__c) )
+			&amp;&amp;
+			(AND(LEN(pse__Resource__c) &gt; 0,  
+			NOT(pse__Resource__r.pse__Is_Resource__c)))</errorConditionFormula>
         <errorDisplayField>pse__Resource__c</errorDisplayField>
         <errorMessage>You must select a Contact that has the Is Resource field set to true</errorMessage>
     </validationRules>
@@ -27608,6 +27613,18 @@ for all of them (or use existing parent RR Set). Then show links to all RRs so u
         <openType>sidebar</openType>
         <page>pse__ManageResourceRequestSet</page>
         <protected>false</protected>
+    </webLinks>
+    <webLinks>
+        <fullName>pse__Mass_Update_Resource_Requests</fullName>
+        <availability>online</availability>
+        <displayType>massActionButton</displayType>
+        <height>600</height>
+        <linkType>page</linkType>
+        <masterLabel>Mass Update Resource Requests</masterLabel>
+        <openType>noSidebar</openType>
+        <page>pse__MassUpdateResourceRequest</page>
+        <protected>false</protected>
+        <requireRowSelection>false</requireRowSelection>
     </webLinks>
     <webLinks>
         <fullName>pse__OppAddResReqFromTemplate</fullName>

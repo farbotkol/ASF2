@@ -130,7 +130,8 @@ public with sharing virtual class ECO_ProjectReviewsController
 		if(theProject.pse__Stage__c == 'Planning')	
 			return SObjectType.pse__Proj__c.FieldSets.ProjectFieldsforRMASummary.getFields();
 		else
-			return SObjectType.pse__Proj__c.FieldSets.ProjectInformationExecution.getFields();
+			//return SObjectType.pse__Proj__c.FieldSets.ProjectInformationExecution.getFields();
+			return SObjectType.pse__Proj__c.FieldSets.ProjectFieldsforRMASummary.getFields();
 		//return SObjectType.pse__Proj__c.FieldSets.pse_ProjectFieldsforCustomProjectSetup.getFields();
 	}
 

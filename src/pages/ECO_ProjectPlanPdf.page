@@ -1,36 +1,58 @@
-<apex:page showHeader="false" renderAs="pdf" sidebar="false" doctype="html-5.0" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" standardController="pse__Proj__c" extensions="ECO_ProjectPlanControllerPdf">
+<apex:page showHeader="false" renderAs="pdf" sidebar="false" standardStylesheets="false" applyBodyTag="false" applyHtmlTag="false" standardController="pse__Proj__c" extensions="ECO_ProjectPlanControllerPdf">
     <head>
         
         <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
         
-        <style>
+        <style type="text/css" media="print">
             @page{
                 size:landscape;
+                padding-top:60px;
+                @top-center {
+                    content: element(header);
+                }
+
+                @bottom-right {
+                    content: "Page " counter(page) " of " counter(pages);
+                    font-family: sans-serif;
+                    font-size: 80%;
+                }
+            }
+            @page :first {
+                @bottom-right {
+                 /* Nothing */
+                }
             }
             body{
                 font-family:arial, sans-serif;
                 font-size:80%;
             }
-            .headerInfo{
-                height:65px;
+
+            .header{
+                display:block;
+                padding-bottom: 40px;
+                position: running(header);
+            }
+
+            .headerInline{
+                height:75px;
                 border-bottom: 2px solid #DDDDDD;
                 padding:0 0 15px 0; 
-                margin: 0 0 25px 0;
+                margin: 10px 0 25px 0;
                 background-position:top right;
                 background-repeat:no-repeat;
                 background-size:5% auto !important;
                 background-image : url({!URLFOR($Resource.ECO_CustomGraphicAssets, 'PDFLogo.jpg')});
             }
-            .headerInfo h1{
+            .headerInline h1{
                 margin:-2px 0 0 0;
                 font-size:16px;
                 line-height:80%;
             }
-            .headerInfo h2{
+            .headerInline h2{
                 font-size:16px;
                 line-height:80%;
             }
-            .headerInfo h5{
+            .headerInline h5{
                 line-height:80%;
                 margin:0;
             }
@@ -44,8 +66,10 @@
                 right:0;
                 top:0;
                 padding:50px 10px 0 25px;
+                margin-top:10px;
                 width:150px;
             }
+
             table{
                 border: 1px solid #ddd;
                 width:100%; 
@@ -112,22 +136,101 @@
             .mainTitle{
                 margin:15px 0 -5px 0;
             }
+
+            .relatedListIcon{
+                display: none;
+            }
+
+            .budgetFrameWrapper th, .budgetFrameWrapper td {
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+                border-left: 1px solid black;
+                border-right: 1px solid black;
+                border-collapse: collapse;        
+                padding: 5px;
+                text-align: left;
+            }
+            .budgetFrameWrapper table {
+                border: none;
+                border-collapse: collapse;
+                font-size:8px;
+            }
+            
+            .budgetFrameWrapper .dollarAmount {
+                text-align:right;
+            }
+            
+            .budgetFrameWrapper .percentAmount {
+                text-align:center;
+            }
+            
+            .budgetFrameWrapper .rightBlue {
+                background-color:#0070C0;color:white;text-align:right
+            }
+            
+            .budgetFrameWrapper .centerBlue {
+                background-color:#0070C0;color:white;text-align:center
+            }
+            
+            .budgetFrameWrapper .rightGreen {
+                background-color:#76933C;color:white;text-align:right
+            }
+            
+            .budgetFrameWrapper .centerGreen {
+                background-color:#76933C;color:white;text-align:center
+            }
+            
+            .budgetFrameWrapper .rightPurple {
+                background-color:#60497A;color:white;text-align:right
+            }
+            
+            .budgetFrameWrapper .centerPurple {
+                background-color:#60497A;color:white;text-align:center
+            }
+            
+            .budgetFrameWrapper .rightOrange {
+                background-color:#FF9900;color:white;text-align:right
+            }
+            
+            .budgetFrameWrapper .centerOrange {
+                background-color:#FF9900;color:white;text-align:center
+            }
+            
+            .budgetFrameWrapper .lightBlue {
+                background-color:#DCE6F1;
+            }
+            
+            .budgetFrameWrapper .lightGreen {
+                background-color:#EBF1DE;
+            }
+            
+            .budgetFrameWrapper .lightPurple {
+                background-color:#E4DFEC;
+            }
+            
+            .budgetFrameWrapper .lightOrange {
+                background-color:#FDE9D9;
+            }
+            
+            .budgetFrameWrapper .bold {
+                font-weight:bold;
+            }        
         </style>
 
     </head>
-
-        <div class="headerInfo">
-            <h5>Project Plan</h5>
-            <h2 style="line-height:80%;">Project: {!theProject.Name}</h2>
-            <h2 style="line-height:80%;">Date: {!now()}</h2>
-                        
-            <div class="rightHeaderInfo">
-                Project ID:<br/>
-                {!theProject.ProjectNumber__c}
+        <div class="header">
+            <div class="headerInline">
+                <h5>Project Plan</h5>
+                <h2 style="line-height:80%;">Project: {!theProject.Name}</h2>
+                <h2 style="line-height:80%;">Date: {!now()}</h2>
+                            
+                <div class="rightHeaderInfo">
+                    Project ID:<br/>
+                    {!theProject.ProjectNumber__c}
+                </div>
             </div>
-
         </div>
-        
+
         <h2 style="line-height:80%;">Project: {!theProject.Name}</h2>
         <h1>PROJECT PLAN</h1>
         <br/>
@@ -141,6 +244,7 @@
         <apex:relatedList list="ProcessSteps" />
        
         <p style="page-break-after:always;"></p>
+
         <apex:pageBlock title="Project Information">
             <apex:pageBlockSection title="Project Information" collapsible="true" columns="4">
                 <apex:repeat value="{!$ObjectType.pse__Proj__c.FieldSets.ECO_ProjectPlanPdf}" var="f">
@@ -1809,6 +1913,336 @@ In completing the Environmental Review within the Project Plan it is not intende
         <br/> 
         
         <apex:pageBlock id="theBlock">
+            <apex:pageBlockSection id="budgetHeaderSummary" title="Budget Header Summary" columns="1" collapsible="false">
+                <apex:form styleClass="budgetFrameWrapper">
+                <table style="width:100%">
+                <tr>
+                    <th style="border: 0px"></th>
+                    <th style="border: 0px"></th>
+                    <th style="border: 0px"></th>
+                    <th colspan="2" class="centerBlue">CHANGE VALUE</th>
+                    <th colspan="2" class="centerGreen">BUDGET / AS-SOLD</th>
+                    <th colspan="2" class="centerPurple">FORECAST / EAC</th>
+                    <th colspan="2" class="centerOrange">WORK AT RISK</th>
+                </tr>
+                <tr>
+                    <th style="background-color:#ACACA8">Budget Name</th>
+                    <th style="background-color:#ACACA8">Created Date</th>
+                    <th style="background-color:#ACACA8">Status</th>
+                    <th class="rightBlue">Cost</th>
+                    <th class="rightBlue">Revenue</th>
+                    <th class="rightGreen">Approved Cost</th>
+                    <th class="rightGreen">Approved Revenue</th>
+                    <th class="rightPurple">Forecast Cost</th>
+                    <th class="rightPurple">Forecast Revenue</th>
+                    <th class="rightOrange">WaR - Cost</th>
+                    <th class="rightOrange">War - Revenue</th>
+                </tr>
+                <apex:repeat value="{!budgetWrapper.dtoBudgetHeaders}" var="budgetHeader">
+                    <tr>
+                        <td>{!budgetHeader.budgetName}</td>
+                        <td>
+                            <apex:outputText value="{0,date,d MMM yyyy}">
+                                <apex:param value="{!budgetHeader.createdDate}" /> 
+                            </apex:outputText>
+                        </td>
+                        <td>{!budgetHeader.status}</td>
+                        <td class="dollarAmount lightBlue">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!budgetHeader.dTotalCost}" />
+                            </apex:outputText>
+                        </td>
+                        <td class="dollarAmount lightBlue">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!budgetHeader.dTotalRevenue}" />
+                            </apex:outputText>
+                        </td>
+                        <td class="dollarAmount lightGreen">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!budgetHeader.dTotalApprovedCost}" />
+                            </apex:outputText>
+                        </td>
+                        <td class="dollarAmount lightGreen">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!budgetHeader.dTotalApprovedRevenue}" />
+                            </apex:outputText>
+                        </td>
+                        <td class="dollarAmount lightPurple">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!budgetHeader.dTotalForecastCost}" />
+                            </apex:outputText>
+                        </td>
+                        <td class="dollarAmount lightPurple">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!budgetHeader.dTotalForecastRevenue}" />
+                            </apex:outputText>
+                        </td>
+                        <td class="dollarAmount lightOrange">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!budgetHeader.dTotalWorkAtRiskCost}" />
+                            </apex:outputText>
+                        </td>
+                        <td class="dollarAmount lightOrange">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!budgetHeader.dTotalWorkAtRiskRevenue}" />
+                            </apex:outputText>
+                        </td>
+                    </tr>
+                </apex:repeat>
+                <tr>
+                    <td style="height:30px;border-right: 0px solid #fff !important; border-left: 0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="12"></td>
+                </tr>
+                <tr>
+                    <td style="border-right: 0px solid #fff !important;border-left: 0px solid #fff !important;border-top:0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="4"></td>
+                    <td class="dollarAmount">Raw Labour</td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getBudgetTotalRawLabour}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getForecastTotalRawLabour}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getWorkAtRiskTotalRawLabour}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="border-right: 0px solid #fff !important;border-left: 0px solid #fff !important;border-top:0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="4"></td>
+                    <td class="dollarAmount">Fringe</td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getBudgetTotalFringe}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getForecastTotalFringe}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getWorkAtRiskTotalFringe}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="border-right: 0px solid #fff !important;border-left: 0px solid #fff !important;border-top:0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="4"></td>
+                    <td class="dollarAmount">Overhead</td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getBudgetTotalOverhead}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getForecastTotalOverhead}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getWorkAtRiskTotalOverhead}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="border-right: 0px solid #fff !important;border-left: 0px solid #fff !important;border-top:0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="4"></td>
+                    <td class="dollarAmount">Subs</td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getBudgetTotalSubAmount}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getForecastTotalSubAmount}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getWorkAtRiskTotalSubAmount}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="border-right: 0px solid #fff !important;border-left: 0px solid #fff !important;border-top:0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="4"></td>
+                    <td class="dollarAmount">ODCs</td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getBudgetTotalFeeAmount}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getForecastTotalFeeAmount}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getWorkAtRiskTotalFeeAmount}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="border-right: 0px solid #fff !important;border-left: 0px solid #fff !important;border-top:0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="4"></td>
+                    <td class="dollarAmount">Contingency</td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getBudgetTotalContingencyAmount}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getForecastTotalContingencyAmount}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                    <td class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getWorkAtRiskTotalContingencyAmount}" />
+                        </apex:outputText>
+                    </td>
+                    <td></td>
+                </tr>
+                <tr>
+                    <td style="border-right: 0px solid #fff !important;border-left: 0px solid #fff !important;border-top:0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="4"></td>
+                    <td class="dollarAmount bold">Current Budget total</td>
+                    <td class="dollarAmount bold">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getBudgetTotalCost}" />
+                        </apex:outputText>
+                    </td>
+                    <td class="dollarAmount bold">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getBudgetTotalRevenue}" />
+                        </apex:outputText>
+                    </td>
+                    <td class="dollarAmount bold">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getForecastTotalCost}" />
+                        </apex:outputText>
+                    </td>
+                    <td class="dollarAmount bold">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getForecastTotalRevenue}" />
+                        </apex:outputText>
+                    </td>
+                    <td class="dollarAmount bold">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getWorkAtRiskTotalCost}" />
+                        </apex:outputText>
+                    </td>
+                    <td class="dollarAmount bold">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getWorkAtRiskTotalRevenue}" />
+                        </apex:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="height:30px;border-right: 0px solid #fff !important; border-left: 0px solid #fff !important;border-bottom:0px solid #fff !important;border-top:0px solid #fff !important;" colspan="12"></td>
+                </tr>
+                <tr>
+                    <td style="border-right: 0px solid #fff !important;border-left: 0px solid #fff !important;border-top:0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="4"></td>
+                    <td class="rightBlue">BUDGET METRICS</td>
+                    <td colspan="2" class="centerGreen">BUDGET / AS - SOLD</td>
+                    <td colspan="2" class="centerPurple">FORECAST / EAC</td>
+                    <td colspan="2" class="centerOrange">WORK AT RISK</td>
+                </tr>
+                <tr>
+                    <td style="border-right: 0px solid #fff !important;border-left: 0px solid #fff !important;border-top:0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="4"></td>
+                    <td class="rightBlue">Net Service Revenue</td>
+                    <td colspan="2" class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getBudgetTotalNetServiceRevenue}" />
+                        </apex:outputText>
+                    </td>
+                    <td colspan="2" class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getForecastTotalNetServiceRevenue}" />
+                        </apex:outputText>
+                    </td>
+                    <td colspan="2" class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getWorkAtRiskTotalNetServiceRevenue}" />
+                        </apex:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-right: 0px solid #fff !important;border-left: 0px solid #fff !important;border-top:0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="4"></td>
+                    <td class="rightBlue">Gross Margin</td>
+                    <td colspan="2" class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getBudgetTotalGrossMargin}" />
+                        </apex:outputText>
+                    </td>
+                    <td colspan="2" class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getForecastTotalGrossMargin}" />
+                        </apex:outputText>
+                    </td>
+                    <td colspan="2" class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getWorkAtRiskTotalGrossMargin}" />
+                        </apex:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-right: 0px solid #fff !important;border-left: 0px solid #fff !important;border-top:0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="4"></td>
+                    <td class="rightBlue">Net Margin</td>
+                    <td colspan="2" class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getBudgetTotalNetMargin}" />
+                        </apex:outputText>
+                    </td>
+                    <td colspan="2" class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getForecastTotalNetMargin}" />
+                        </apex:outputText>
+                    </td>
+                    <td colspan="2" class="dollarAmount">
+                        <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            <apex:param value="{!budgetWrapper.getWorkAtRiskTotalNetMargin}" />
+                        </apex:outputText>
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-right: 0px solid #fff !important;border-left: 0px solid #fff !important;border-top:0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="4"></td>
+                    <td class="rightBlue">GM/NSR</td>
+                    <td colspan="2" class="percentAmount">{!budgetWrapper.getBudgetTotalGMNSR}%</td>
+                    <td colspan="2" class="percentAmount">{!budgetWrapper.getForecastTotalGMNSR}%</td>
+                    <td colspan="2" class="percentAmount">{!budgetWrapper.getWorkAtRiskTotalGMNSR}%</td>
+                </tr>
+                <tr>
+                    <td style="border-right: 0px solid #fff !important;border-left: 0px solid #fff !important;border-top:0px solid #fff !important;border-bottom:0px solid #fff !important;" colspan="4"></td>
+                    <td class="rightBlue">NM/NSR</td>
+                    <td colspan="2" class="percentAmount">{!budgetWrapper.getBudgetTotalNMNSR}%</td>
+                    <td colspan="2" class="percentAmount">{!budgetWrapper.getForecastTotalNMNSR}%</td>
+                    <td colspan="2" class="percentAmount">{!budgetWrapper.getWorkAtRiskTotalNMNSR}%</td>
+                </tr>
+                </table>
+                </apex:form>
+            </apex:pageBlockSection>
+            
 			<apex:pageBlockSection id="projectInfo" title="Project Info" columns="2" collapsible="false">
 				<apex:pageBlockSectionItem >
 					<apex:outputLabel value="Budget Levels - Cost" />
@@ -1994,5 +2428,5 @@ In completing the Environmental Review within the Project Plan it is not intende
 				</apex:pageBlockSection>
 				
 		</apex:pageBlock>
-		
+
 </apex:page>

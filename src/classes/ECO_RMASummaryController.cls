@@ -251,6 +251,8 @@ public with sharing virtual class ECO_RMASummaryController extends ECO_PageContr
             // Above line is just for test purposes, will be taken out. BH
             
             // have to set the appover field on the RMA before submitting
+            theProject = null;
+            getTheProject();
             oQuestionnaireSet.ProjectApprover__c = theProject.ProjectApprover__r.pse__Salesforce_User__c;
     		oQuestionnaireSet.ProjectManager__c = theProject.pse__Project_Manager__r.pse__Salesforce_User__c;
             update oQuestionnaireSet;

@@ -19,7 +19,7 @@ public String messageName {get; set;}
     public list<Deliverable__c> lstSearchDeliverables {get;set;}
     public list<DeliverableWrapper> lstAssignedDeliverables {get;set;}
     public map<string, list<DeliverableWrapper>> lstMapAssignedDeliverables {get;set;}
-    public map<string, boolean> MapRenderAssigned{get;set;}
+    public map<string, boolean> MapRenderAssigned{get;set;} 
     public map<string, list<DeliverableWrapper>> lstMapUnassignedDeliverables {get;set;}
     public list<DeliverableWrapper> lstUnAssignedDeliverables {get;set;}
     public List<SelectOption> lstScopeOptions {get;set;}
@@ -349,13 +349,14 @@ public String messageName {get; set;}
     /* Bulk saves all packages */
     Public PageReference SaveFirstPackages() {
         list<Packages__c> lstPackagesToInsert = new list<Packages__c>();
-
+        
         system.debug('SaveFirstPackages ' + UtilizeBMI );
 
         //oProjectPackage.Utilize_BMI_Technology__c = true;
         
         //lstPackagesToInsert.addAll(lstPackages);
         lstPackagesToInsert.add(oProjectPackage); 
+
         
         try {
             upsert lstPackagesToInsert;
@@ -371,12 +372,53 @@ public String messageName {get; set;}
     /* Bulk saves all packages */
     Public PageReference SavePackages() {
 		//return null;
-        
+
+        boolean canSave = true;
+
+        if(UtilizeBMI == null){
+            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Please answer BIM');
+            ApexPages.addMessage(oMsg);   
+            return null;          
+        }
+
+
+        checkBIMChoice();
+
+
         list<Packages__c> lstPackagesToInsert = new list<Packages__c>();
         system.debug('SavePackages ' + UtilizeBMI );
                 
         lstPackagesToInsert.addAll(lstPackages);
         lstPackagesToInsert.add(oProjectPackage);
+
+        boolean bExit = false;
+
+        for(Packages__c p:lstPackagesToInsert){
+            
+
+            if(p.Status__c == 'Cancelled' && theProject.pse__Stage__c != 'Execution'){
+                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'The package, ' + p.name  + ', cannot be cancelled unless the project is in the "Execution" stage.');
+                ApexPages.addMessage(oMsg);    
+                bExit = true;            
+            }
+        }
+
+        if(bExit){
+            return null;
+        }
+        
+        for(Packages__c p:lstPackagesToInsert){
+
+            if(p.Status__c == 'Cancelled' && theProject.pse__Stage__c == 'Execution' && (p.CancelledReason__c == null || p.CancelledReason__c == '')){
+                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'The package, ' + p.name  + ', must have a cancel reason filled out.');
+                ApexPages.addMessage(oMsg);    
+                bExit = true;            
+            }
+        }
+
+        if(bExit){
+            return null;
+        }
 
         try {
             upsert lstPackagesToInsert;
@@ -392,6 +434,7 @@ public String messageName {get; set;}
         }        
 
         scrolltobottom = false;
+
 
         return null;
     }

@@ -133,20 +133,22 @@ public with sharing class ECO_BudgetQuestionnaireController {
     }    
 	
 	public PageReference goToAttachmentPage () {
-		try {
+		
+			PageReference pr = null;
 			system.debug('selectedRecordNumber:  '+selectedRecordNumber);
 			
-			RelocationSecondment__c thisReloc = relocs.get(selectedRecordNumber);
+			// upsert thisReloc;
 			
-			upsert thisReloc;
-			
-			PageReference pr = new PageReference(URL.getSalesforceBaseUrl().toExternalForm()+'/p/attach/NoteAttach?pid='+thisReloc.Id+'&parentname=Relocation+%2F+Secondment&retURL=%2Fapex%2FECO_BudgetQuestionnaire%3Fid%3D'+theProject.Id);
-			
+			if(doSaveAction() == true) {
+				RelocationSecondment__c thisReloc = relocs.get(selectedRecordNumber);
+				system.debug('thisReloc: ' + thisReloc);
+				pr = new PageReference(URL.getSalesforceBaseUrl().toExternalForm()+'/p/attach/NoteAttach?pid='+thisReloc.Id+'&parentname=Relocation+%2F+Secondment&retURL=%2Fapex%2FECO_BudgetQuestionnaire%3Fid%3D'+theProject.Id);
+			} else {
+				return null;
+			}
+						
 			return pr;
-		} catch (Exception e) {
-			ApexPages.addMessages(e);
-			return null;
-		}
+		
 	}
 	
 	private void populateMilestones () {
@@ -261,9 +263,10 @@ public with sharing class ECO_BudgetQuestionnaireController {
 		return new PageReference(retURL);
 	}
 	
-	public void doSaveAction () {
+	public Boolean doSaveAction () {
 		System.savepoint sp = Database.setSavepoint();
-		
+		Boolean isSaveSuccess = false;
+
 		try {
 			theProject.DateLastCompletedBudgetQuestionnaire__c = Datetime.now();
 			
@@ -312,11 +315,16 @@ public with sharing class ECO_BudgetQuestionnaireController {
 			if (!relocsToDelete.isEmpty()) {
 				delete relocsToDelete;
 			}
+
+			isSaveSuccess = true;
+
 		} catch (Exception e) {
 			system.debug('Handling Exception:  '+e.getLineNumber()+'-'+e.getMessage()+'- '+e.getStackTraceString());
 			Database.rollback(sp);
 			ApexPages.addMessages(e);
 		}
+
+		return isSaveSuccess;
 	}
 	
 	public PageReference addMilestone () {

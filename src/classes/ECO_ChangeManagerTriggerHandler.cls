@@ -266,7 +266,9 @@ public class ECO_ChangeManagerTriggerHandler {
 	{
 		if(changeManager.IntExtContractManagement__c || changeManager.IsExecutionApprovalChange__c)
 		{
-			list<String> submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
+			List<String> submittedIds = new List<String>();
+			if(changeManager.SubmittedIdsForApproval__c != null)
+				submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
 
 			list<Agreement__c> agreements = ECO_Service_ChangeManager.getChangedAgreements(changeManager.Project__c, submittedIds, true);
 			list<Funding__c> fundings = ECO_Service_ChangeManager.getChangedFunding(changeManager.Project__c, submittedIds, true);
@@ -315,13 +317,16 @@ public class ECO_ChangeManagerTriggerHandler {
 
 		if(changeManager.IntExtCustomers__c || changeManager.IsExecutionApprovalChange__c)
 		{
-			list<String> submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
+			List<String> submittedIds = new List<String>();
+			if(changeManager.SubmittedIdsForApproval__c != null)
+				submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
+				
 			list<Project_Site__c> projectSites = [select Id, ChangeManagerIsChanged__c, ChangeManagerApprovedForSynch__c 
 			                                      from Project_Site__c where Project__c = :changeManager.Project__c 
 			                                      and ChangeManagerIsChanged__c = true and Id in :submittedIds];
 			for(Project_Site__c projectSite:projectSites)
 			{
-				projectSite.ChangeManagerApprovedForSynch__c = true;	
+				projectSite.ChangeManagerApprovedForSynch__c = false;	
 				projectSite.ChangeManagerIsNew__c = false;							
 			}
 			update projectSites;
@@ -348,7 +353,9 @@ public class ECO_ChangeManagerTriggerHandler {
 	{
 		if(changeManager.IntExtKeyMembers__c || changeManager.IsExecutionApprovalChange__c)
 		{
-			list<String> submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
+			List<String> submittedIds = new List<String>();
+			if(changeManager.SubmittedIdsForApproval__c != null)
+				submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
 			
 			list<ProjectTeamMember__c> teamMembers = [select Id, ChangeManagerIsChanged__c, ChangeManagerApprovedForSynch__c 
 													from ProjectTeamMember__c where Project__c = :changeManager.Project__c 
@@ -356,7 +363,7 @@ public class ECO_ChangeManagerTriggerHandler {
 													and Id in :submittedIds];
 			for(ProjectTeamMember__c teamMember:teamMembers)
 			{
-				teamMember.ChangeManagerApprovedForSynch__c = true;
+				teamMember.ChangeManagerApprovedForSynch__c = false;
 				teamMember.ChangeManagerIsNew__c = false;	
 			}
 			update teamMembers;						
@@ -382,14 +389,16 @@ public class ECO_ChangeManagerTriggerHandler {
 	{
 		if(changeManager.IntExtProjectTasks__c || changeManager.IsExecutionApprovalChange__c)
 		{
-			list<String> submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
+			List<String> submittedIds = new List<String>();
+			if(changeManager.SubmittedIdsForApproval__c != null)
+				submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
 			
 			list<pse__Project_Task__c> projectTasks = [select Id, ChangeManagerIsChanged__c, ChangeManagerApprovedForSynch__c 
 													  from pse__Project_Task__c where pse__Project__c = :changeManager.Project__c 
 													  and ChangeManagerIsChanged__c = true and Id in :submittedIds];
 			for(pse__Project_Task__c projectTask:projectTasks)
 			{
-				projectTask.ChangeManagerApprovedForSynch__c = true;
+				projectTask.ChangeManagerApprovedForSynch__c = false;
 				projectTask.ChangeManagerIsNew__c = false;								
 			}
 			update projectTasks;				
@@ -414,7 +423,9 @@ public class ECO_ChangeManagerTriggerHandler {
 	{
 		if(changeManager.IntExtScope__c || changeManager.IsExecutionApprovalChange__c)
 		{
-			list<String> submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
+			List<String> submittedIds = new List<String>();
+			if(changeManager.SubmittedIdsForApproval__c != null)
+				submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
 						
 			list<Packages__c> scopePackages = [select Id, ChangeManagerIsChanged__c from Packages__c 
 												where Scope__c = :changeManager.Project__c and ChangeManagerIsChanged__c = true
@@ -446,7 +457,9 @@ public class ECO_ChangeManagerTriggerHandler {
 	{
 		if(changeManager.IntExtDeliverables__c || changeManager.IsExecutionApprovalChange__c)
 		{
-			list<String> submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
+			List<String> submittedIds = new List<String>();
+			if(changeManager.SubmittedIdsForApproval__c != null)
+				submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
 			
 			list<Deliverable__c> deliverables = [select Id, ChangeManagerIsChanged__c, ChangeManagerIsNew__c 
 												 from Deliverable__c where Project__c = :changeManager.Project__c 
@@ -510,7 +523,7 @@ public class ECO_ChangeManagerTriggerHandler {
 			for(pse__Proj__c project:projects)
 			{
 				project.ChangeManagerIsChangedClass__c = false;
-				project.ChangeManagerApprovedForSynch__c  = true;
+				project.ChangeManagerApprovedForSynch__c  = false;
 			}
 			update projects;
 		}		
@@ -591,7 +604,10 @@ public class ECO_ChangeManagerTriggerHandler {
 	{
 		if(changeManager.IntExtResources__c || changeManager.IsExecutionApprovalChange__c)
 		{
-			list<String> submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
+			List<String> submittedIds = new List<String>();
+			if(changeManager.SubmittedIdsForApproval__c != null)
+				submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
+
 			list<VendorSite__c> vendors = [select Id, ChangeManagerIsChanged__c from VendorSite__c 
 			                              where Project__c = :changeManager.Project__c and ChangeManagerIsChanged__c = true
 			                              and Id in :submittedIds];	
@@ -623,7 +639,9 @@ public class ECO_ChangeManagerTriggerHandler {
 	{
 		if(changeManager.IntExtStakeholdersComm__c || changeManager.IsExecutionApprovalChange__c)
 		{
-			list<String> submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
+			List<String> submittedIds = new List<String>();
+			if(changeManager.SubmittedIdsForApproval__c != null)
+				submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
 			
 			list<Stakeholder__c> stakeholders = [select Id, ChangeManagerIsChanged__c from Stakeholder__c 
 											where Project__c = :changeManager.Project__c and ChangeManagerIsChanged__c = true
@@ -656,7 +674,9 @@ public class ECO_ChangeManagerTriggerHandler {
 	{
 		if(changeManager.IntExtRiskManagement__c || changeManager.IsExecutionApprovalChange__c)
 		{
-			list<String> submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
+			List<String> submittedIds = new List<String>();
+			if(changeManager.SubmittedIdsForApproval__c != null)
+				submittedIds = changeManager.SubmittedIdsForApproval__c.split(',');
 			
 			list<Risk__c> risks = [select Id, ChangeManagerIsChanged__c from Risk__c 
 			                       where Project__c = :changeManager.Project__c and ChangeManagerIsChanged__c = true

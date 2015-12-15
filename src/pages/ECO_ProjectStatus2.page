@@ -403,8 +403,8 @@
         <div id= "PlanApprovalButtons" class="buttonGroup" style="display: none;">
             <ul>
                 <li class="{!planApprovalStatus}">
-                    <!--<apex:commandlink action="{!submitPlanApproval}" value="Submit Plan for Approval" target="_blank" rendered="{!IF(NOT(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'Submitted'),true,false)}" onclick="return confirm('This project plan (and accompanying bid if pre-execution) complies with AECOM procedural requirements, including:');"/>-->
-                    <apex:commandlink action="{!submitPlanApproval}" value="Submit Plan for Approval" target="_blank" rendered="{!IF(NOT(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'Submitted'),true,false)}" />
+                    <apex:commandlink action="{!submitPlanApproval}" value="Submit Plan for Approval" target="_blank" rendered="{!IF(NOT(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'Submitted'),true,false)}" onclick="return confirm('This project plan (and accompanying bid if pre-execution) complies with AECOM procedural requirements, including: \n \u2022 Signature by Authorized Signatory \n \u2022 Approval in the Contract Review App (or is under a previously approved agreement) \n \u2022 Confirms to DoA Approval requirements and complies with any Conditions \n \u2022 Adequate resources for compliance with Quality system requirements \n \u2022 Planning to ensure all work is performed safely');"/>
+                    <!--<apex:commandlink action="{!submitPlanApproval}" value="Submit Plan for Approval" target="_blank" rendered="{!IF(NOT(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'Submitted'),true,false)}" />-->
                     <apex:commandlink action="{!submitPlanApprovalDummy}" value="Submit Plan for Approval" onclick="return confirm('Plan already submitted for approval');" rendered="{!IF(pse__Proj__c.ProgBarPrelimPlanApproval__c = 'Submitted',true,false)}"/>
                 </li>
                 <li class="{!doaManagerStatus}"><a href="/apex/ECO_DOA_ApprovalRequest?projectID={!pse__Proj__c.Id }" target="_parent"><span>DoA Manager</span></a></li>
