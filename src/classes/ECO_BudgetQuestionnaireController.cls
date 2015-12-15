@@ -20,6 +20,7 @@ public with sharing class ECO_BudgetQuestionnaireController {
     
     public Decimal defaulLabourMultiplier{
         get {
+        	if(theProject.DefaultUpliftLabor__c == null) theProject.DefaultUpliftLabor__c = 0;        	
             return theProject.DefaultUpliftLabor__c/100;
         }
         set {
@@ -29,6 +30,7 @@ public with sharing class ECO_BudgetQuestionnaireController {
     
     public Decimal defaulSubsMultiplier{
         get {
+        	if(theProject.DefaultUpliftSubs__c == null) theProject.DefaultUpliftSubs__c = 0;  
             return theProject.DefaultUpliftSubs__c/100;
         }
         set {
@@ -38,6 +40,7 @@ public with sharing class ECO_BudgetQuestionnaireController {
     
     public Decimal defaulODCMultiplier{
         get {
+        	if(theProject.DefaultUpliftODCs__c == null) theProject.DefaultUpliftODCs__c = 0;  
             return theProject.DefaultUpliftODCs__c/100;
         }
         set {
