@@ -258,9 +258,10 @@ public with sharing class ECO_BudgetQuestionnaireController {
 	}
 	
 	public PageReference saveAndReturn () {
-		doSaveAction();
+		if(doSaveAction())		
 		
 		return new PageReference(retURL);
+        else return null;
 	}
 	
 	public Boolean doSaveAction () {
