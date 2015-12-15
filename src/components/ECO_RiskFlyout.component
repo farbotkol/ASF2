@@ -27,7 +27,6 @@
 	       		$q('#riskPane .close').click(function(){
 	       			RiskFlyout.hideContentFlyout();
 	       		});
-	       		retrieveData();
 			},
 
 			hideContentFlyout : function(){
@@ -253,7 +252,7 @@
 					<apex:pageBlock mode="mainDetail">
 						<apex:pageBlockSection columns="1" collapsible="false" title="List of Project Risks"></apex:pageBlockSection>
 						<div style="text-align:right;margin-bottom:8px;float:right;white-space:nobreak;">Filter:&nbsp;
-							<apex:selectList size="1" value="{!sFilterCriteria}" onchange="retrieveData();">
+							<apex:selectList size="1" value="{!sFilterCriteria}">
 								<apex:selectOptions value="{!lPlanElements}" />
 								<apex:actionSupport rerender="riskPanel" event="onchange" />
 							</apex:selectList>
@@ -378,7 +377,6 @@
 				</div>
 				</apex:actionRegion>
 			</apex:outputPanel>
-			<apex:actionFunction action="{!retrieveData}" reRender="riskPanel" name="retrieveData" />
 		</div>
 	
 </apex:component>
