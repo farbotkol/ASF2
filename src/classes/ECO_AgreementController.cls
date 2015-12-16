@@ -130,6 +130,27 @@ global virtual class ECO_AgreementController {
         contractReviewCount = calculateContractReviewCount();    
     }
 
+    public List<SelectOption> getBillingAccounts()
+    {
+        List<Id> projectAccountIds = new List<Id>();
+        for(Project_Site__c projectSite:[select Site__r.Account__r.Id from Project_Site__c where Project__c = :project.Id])
+        {
+            projectAccountIds.add(projectSite.Site__r.Account__r.Id);
+        } 
+
+        List<SelectOption> selectOptions = new List<SelectOption>();
+        selectOptions.add(new SelectOption('--Select One--', '--Select One--'));
+
+        if(!projectAccountIds.isEmpty())
+        {
+            for(Account account:[select Id, Name from Account where Id in :projectAccountIds])
+            {
+                selectOptions.add(new SelectOption(account.Id, account.Name));
+            }
+        }
+        return selectOptions;
+    }
+
     private Integer calculateContractReviewCount()
     {
         list<Contract_Review__c> contractReviews = [select Id from Contract_Review__c where Agreement__c = :agreement.Id];
