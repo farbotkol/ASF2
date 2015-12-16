@@ -57,13 +57,15 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         if(oEnrollmentPlan.IncentivePlan__r.ContractSubType__c == 'Gross Margin'){
             bNMPlan = false;
         }
-        if(oEnrollmentPlan.EEACGMPerformance__c == 'Above Threshold' || oEnrollmentPlan.EEACGMPerformance__c == 'Above Margin'){
+        String sPerformance = getPerformance();
+        System.Debug(logginglevel.error,'sPerformance: ' + sPerformance);
+        if(sPerformance == 'Above Threshold' || sPerformance == 'Above Margin'){
             sThirdMessageClass = 'green';
         }
-        if(oEnrollmentPlan.EEACGMPerformance__c == 'Below Threshold'){
+        if(sPerformance == 'Below Threshold'){
             sSecondMessageClass = 'yellow';
         }
-        if(oEnrollmentPlan.EEACGMPerformance__c == 'Below Baseline' || oEnrollmentPlan.EEACGMPerformance__c == 'Below Margin'){
+        if(sPerformance == 'Below Baseline' || sPerformance == 'Below Margin'){
             sFirstMessageClass = 'red';
         }
         //buildtheDisplayMaps();
@@ -73,6 +75,43 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         buildBaselineList();
         buildIncVals();
         setHelpTextFields();
+    }
+
+    private string getPerformance(){
+       /* CASE( IncentivePlan__r.ContractType__c, "Fixed Price",
+         IF(Forecast_Margin_of_NSR__c > ThresholdGM__c , "Above Threshold",
+           IF(AND(Forecast_Margin_of_NSR__c > BaselineGMofNSR__c, Forecast_Margin_of_NSR__c <  ThresholdGM__c),  "Below Threshold",
+              "Below Baseline"
+        )),
+        IF(Forecast_Margin__c > BaselineGrossMargin__c, "Above Margin",
+           IF(Forecast_Margin__c < BaselineGrossMargin__c,  "Below Margin",
+              NULL
+        ))
+        )*/
+      String sReturn;
+      if(oEnrollmentPlan.IncentivePlan__r.ContractType__c == 'Fixed Price'){
+        if(oEnrollmentPlan.Forecast_Margin_of_NSR__c > oEnrollmentPlan.ThresholdGM__c){
+            sReturn='Above Threshold';
+        }else{
+            if(oEnrollmentPlan.Forecast_Margin_of_NSR__c > oEnrollmentPlan.BaselineGMofNSR__c &&
+               oEnrollmentPlan.Forecast_Margin_of_NSR__c < oEnrollmentPlan.ThresholdGM__c){
+                sReturn='Below Threshold';
+            }else{
+                sReturn='Below Baseline';
+            }
+        }
+      }else{
+        //IF(ISPICKVAL(IncentivePlan__r.ContractSubType__c,"Gross Margin"),ForecastGrossMarginBudget__c,ForecastNetMarginBudget__c)
+        if(oEnrollmentPlan.Forecast_Margin__c > oEnrollmentPlan.BaselineGrossMargin__c){
+            sReturn = 'Above Margin';
+        }else{
+            if(oEnrollmentPlan.Forecast_Margin__c < oEnrollmentPlan.BaselineGrossMargin__c){
+               sReturn = 'Below Margin';
+            }
+        }
+      }
+
+      return sReturn;
     }
 
     private void setHelpTextFields(){
@@ -159,7 +198,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         strSOQL += 'ID, CurrencyIsoCode, MetricWarningActive__c, EnrollmentStatus__c,IPProjectManager__c';
         strSOQL += ',ContractType__c,ScheduledFinishDate__c,ProjectStartDate__c,OrgCarryingOutProject__c';
         strSOQL += ',IncentivePlan__r.ContractSubType__c, IncentivePlan__r.Name';
-        strSOQL += ',IncentivePlan__r.ContractType__c';
+        strSOQL += ',IncentivePlan__r.ContractType__c, Forecast_Margin_of_NSR__c';
         strSOQL += ',IncentivePlan__r.HelpText__c,IncentiveProject__r.CustomerName__c';
         strSOQL += ',IncentiveProject__r.ForecastGrossMarginofNSR__c,IncentiveProject__r.ForecastNMofNSR__c';
         strSOQL += ',ThresholdGM__c,ThresholdNM__c,ClientSatisfactionDisplay__c';
@@ -169,7 +208,7 @@ public without sharing class INC_ShowEnrollmentMetricsController {
         strSOQL += ',EstimatedIncentivePoolEAC__c,MaxIncentivePool__c,NumberofParticipants__c';
         strSOQL += ',IncentiveProject__r.DataRefreshDate__c, EEACGMPerformance__c,IncentiveProject__r.Name';
         strSOQL += ',IncentiveProject__r.ForecastGrossMarginBudget__c, IncentiveProject__r.ForecastNetMarginBudget__c';
-        strSOQL += ',IncentivePlan__r.ProfitSharingPercent__c, IncentiveProject__r.ProjectId__c';
+        strSOQL += ',IncentivePlan__r.ProfitSharingPercent__c, IncentiveProject__r.ProjectId__c,Forecast_Margin__c';
         strSOQL += ',DSOTarget__c, FinalITDDSO__c ,ClientSatisfactionCurrent__c, ScoreOnSafetyforLifeMetrics__c, ClientSatisfactionNPS__c, ScoreOnSafetyforLifeMetricsCurrent__c';
         strSOQL += ',ApplicationType__c, DTWCompleteVariance__c, DTWComplete__c ,DTWCompleteSnapshot__c, BaselineNMofNSR__c';
         strSOQL += ',IncentivePlan__r.PlanCriteria__c,BaselineMarginofNSRatSnapshot__c, Name From EnrollmentPlan__c where Id =: sID';

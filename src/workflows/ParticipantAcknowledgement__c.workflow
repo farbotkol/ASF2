@@ -232,6 +232,17 @@
         <operation>Literal</operation>
         <protected>false</protected>
     </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Set_PA_Message_with_Last_Edited</fullName>
+        <description>Stamps the date the record was last edited when a PA record is modified.
+Message__c</description>
+        <field>Message__c</field>
+        <formula>&quot;Your response was saved on: &quot;&amp;Text(Today())</formula>
+        <name>Set PA Message with Last Edited</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
     <rules>
         <fullName>1Participant Declines</fullName>
         <actions>
@@ -308,6 +319,18 @@
         </criteriaItems>
         <description>Copy the cross object formula fields to snapshot fields to ensure that participants can view data</description>
         <triggerType>onCreateOnly</triggerType>
+    </rules>
+    <rules>
+        <fullName>DTW - Update PA Comments Field</fullName>
+        <actions>
+            <name>Set_PA_Message_with_Last_Edited</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <active>true</active>
+        <description>Update the PA Comments field when a PA record has changed.</description>
+        <formula>and(not(isnew()),
+ischanged(Acknowledged__c))</formula>
+        <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
         <fullName>Declines sets PA Status</fullName>

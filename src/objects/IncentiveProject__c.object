@@ -79,6 +79,11 @@
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
+            <field>CurrencyIsoCode</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
             <field>ScheduledFinishDate__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
@@ -2111,27 +2116,6 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>All</fullName>
-        <columns>ProjectID__c</columns>
-        <columns>NAME</columns>
-        <columns>CustomerName__c</columns>
-        <columns>ContractType__c</columns>
-        <columns>ProjectStartDate__c</columns>
-        <columns>ProjectStatus__c</columns>
-        <columns>ScheduledFinishDate__c</columns>
-        <columns>EnrollmentStatus__c</columns>
-        <columns>GRBacklog__c</columns>
-        <columns>RegionDescription__c</columns>
-        <columns>GeographyDescription__c</columns>
-        <columns>SuperGeography__c</columns>
-        <columns>ProjectManager__c</columns>
-        <columns>FPPOverallEligibility__c</columns>
-        <columns>TMPlanOverallEligibility__c</columns>
-        <filterScope>Everything</filterScope>
-        <label>All</label>
-        <language>en_US</language>
-    </listViews>
-    <listViews>
         <fullName>AllClosedProjects</fullName>
         <columns>ProjectID__c</columns>
         <columns>NAME</columns>
@@ -2299,6 +2283,51 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>All_Eligible_for_both_gt</fullName>
+        <columns>ProjectID__c</columns>
+        <columns>NAME</columns>
+        <columns>ApprovedGrossRevenueBudget__c</columns>
+        <columns>ActualPercentProjectCompleteITD__c</columns>
+        <columns>CustomerName__c</columns>
+        <columns>ContractType__c</columns>
+        <columns>ProjectStartDate__c</columns>
+        <columns>ScheduledFinishDate__c</columns>
+        <columns>EnrollmentStatus__c</columns>
+        <columns>GRBacklog__c</columns>
+        <columns>RegionDescription__c</columns>
+        <columns>GeographyDescription__c</columns>
+        <columns>ProjectManager__c</columns>
+        <columns>ProjectStatus__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>FPPOverallEligibility__c</field>
+            <operation>equals</operation>
+            <value>Yes</value>
+        </filters>
+        <filters>
+            <field>TMPlanOverallEligibility__c</field>
+            <operation>equals</operation>
+            <value>Yes</value>
+        </filters>
+        <filters>
+            <field>GeographyDescription__c</field>
+            <operation>equals</operation>
+            <value>Pacific</value>
+        </filters>
+        <filters>
+            <field>EnrollmentStatus__c</field>
+            <operation>equals</operation>
+            <value>Pending DTW Action</value>
+        </filters>
+        <filters>
+            <field>GeographyDescription__c</field>
+            <operation>equals</operation>
+            <value>middle east</value>
+        </filters>
+        <label>All - Eligible for both - GT</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>All_Fixed_Price</fullName>
         <columns>ProjectStatus__c</columns>
         <columns>ProjectID__c</columns>
@@ -2409,6 +2438,37 @@ PaymentRequest__c =&quot;&quot;, &quot;N/A&quot;, TEXT( PaymentRequest__r.Enroll
             <value>T&amp;M</value>
         </filters>
         <label>All Time and Material</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>Allgt</fullName>
+        <columns>ProjectID__c</columns>
+        <columns>NAME</columns>
+        <columns>CustomerName__c</columns>
+        <columns>ContractType__c</columns>
+        <columns>ProjectStartDate__c</columns>
+        <columns>ProjectStatus__c</columns>
+        <columns>ScheduledFinishDate__c</columns>
+        <columns>EnrollmentStatus__c</columns>
+        <columns>GRBacklog__c</columns>
+        <columns>RegionDescription__c</columns>
+        <columns>GeographyDescription__c</columns>
+        <columns>SuperGeography__c</columns>
+        <columns>ProjectManager__c</columns>
+        <columns>FPPOverallEligibility__c</columns>
+        <columns>TMPlanOverallEligibility__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>GeographyDescription__c</field>
+            <operation>equals</operation>
+            <value>middle east</value>
+        </filters>
+        <filters>
+            <field>ContractType__c</field>
+            <operation>contains</operation>
+            <value>fixed price</value>
+        </filters>
+        <label>Allgt</label>
         <language>en_US</language>
     </listViews>
     <listViews>
