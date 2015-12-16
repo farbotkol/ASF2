@@ -392,12 +392,11 @@
                                 <!--<apex:inputField value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c}" id="etc" rendered="{! !hasChildTasks}" OnKeyUp="etcChange(this);" />    -->
                                 <!-- <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c}" rendered="{!budgetTask.children.size == 0}" /> -->
                                 <apex:outputPanel rendered="{! !hasChildTasks}" > 
+                                	<apex:variable value="{! budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id]}" var="ba"/>
                                     <input class="currency" type="text" 
-                                           value="{! budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastQuantity__c 
-                                           - budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACActualQuantity__c 
-                                            + IF(budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c == null, 0,
-                                                budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c)
-                                                    }" 
+                                           value="{! IF(ba.EACForecastQuantity__c == null, 0, ba.EACForecastQuantity__c) 
+                                           - IF(ba.EACActualQuantity__c == null, 0, ba.EACActualQuantity__c) 
+                                            + IF(ba.Quantity__c == null, 0, ba.Quantity__c)}" 
                                            OnKeyUp="etcChange(this);" id="{!uniqueId}etc"/>
                                 </apex:outputPanel>
                                 <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACForecastQuantity 
@@ -434,16 +433,16 @@
                 <td class="blueHeading currency">{!budgetTask.totalEACActualQuantity}</td>
                 <td class="blueHeading currency">{!budgetTask.totalEACApprovedQuantity}</td>
                 <td class="blueHeading currency">{!budgetTask.totalEACForecastQuantity}</td>
-                <td class="blueHeading currency">{!budgetTask.totalLaborHours}</td>
-                <td class="blueHeading currency">{!IF(budgetTask.totalEACActualQuantity==null,0,budgetTask.totalEACActualQuantity) +
+                <td class="blueHeading currency">{!budgetTask.totalEACForecastQuantity - budgetTask.totalEACActualQuantity + budgetTask.totalLaborHours}</td>
+                <td class="blueHeading currency">{!IF(budgetTask.totalEACForecastQuantity==null,0,budgetTask.totalEACForecastQuantity) +
                  IF(budgetTask.totalLaborHours==null,0,budgetTask.totalLaborHours)}
                  </td>
 
                 <td class="blueHeading currency">{!budgetTask.totalEACActualCost}</td>
                 <td class="blueHeading currency">{!budgetTask.totalEACApprovedTotalCost}</td>
                 <td class="blueHeading currency">{!budgetTask.totalEACForecastTotalCost}</td>
-                <td class="blueHeading currency">{!budgetTask.totalCost}</td>
-                <td class="blueHeading currency">{!IF(budgetTask.totalEACActualCost==null,0,budgetTask.totalEACActualCost) +
+                <td class="blueHeading currency">{!budgetTask.totalEACForecastTotalCost - budgetTask.totalEACActualCost + budgetTask.totalCost}</td>
+                <td class="blueHeading currency">{!IF(budgetTask.totalEACForecastTotalCost==null,0,budgetTask.totalEACForecastTotalCost) +
                  IF(budgetTask.totalCost==null,0,budgetTask.totalCost)}
                  </td>
 

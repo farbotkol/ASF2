@@ -83,7 +83,7 @@ public class ECO_DTO_BudgetTask {
     }
     
     public Decimal totalLaborHours {
-    	get;
+    	get { return isNull(totalLaborHours).setScale(1); }
 
     	set {
     		values.put('totalLaborHours', value);
@@ -92,7 +92,7 @@ public class ECO_DTO_BudgetTask {
     }
     
     public Decimal totalODCCost {
-    	get;
+    	get { return isNull(totalODCCost).setScale(2); }
 
     	set {
     		values.put('totalODCCost', value);
@@ -101,7 +101,7 @@ public class ECO_DTO_BudgetTask {
     }
 
     public Decimal totalODCRevenue {
-    	get;
+    	get { return isNull(totalODCRevenue).setScale(2); }
     	
     	set {
     		values.put('totalODCRevenue', value);
@@ -110,7 +110,7 @@ public class ECO_DTO_BudgetTask {
     }
 
     public Decimal totalOverhead {
-    	get;
+    	get { return isNull(totalOverhead).setScale(2); }
 
     	set {
     		values.put('totalOverhead', value);
@@ -119,7 +119,7 @@ public class ECO_DTO_BudgetTask {
     }
     
     public Decimal totalRawCost {
-    	get;
+    	get { return isNull(totalRawCost).setScale(2); }
 
     	set {
     		values.put('totalRawCost', value);
@@ -128,7 +128,7 @@ public class ECO_DTO_BudgetTask {
     }
     
     public Decimal totalRevenue {
-    	get;
+    	get { return isNull(totalRevenue).setScale(2); }
 
     	set {
     		values.put('totalRevenue', value);
@@ -137,7 +137,7 @@ public class ECO_DTO_BudgetTask {
     }
     
     public Decimal totalSubCost {
-    	get;
+    	get { return isNull(totalSubCost).setScale(2); }
 
     	set {
     		values.put('totalSubCost', value);
@@ -146,7 +146,7 @@ public class ECO_DTO_BudgetTask {
     }
 
     public Decimal totalSubRevenue {
-    	get;
+    	get { return isNull(totalSubRevenue).setScale(2); }
 
     	set {
     		values.put('totalSubRevenue', value);
@@ -155,7 +155,7 @@ public class ECO_DTO_BudgetTask {
     }
     
     public Decimal totalLabourCost {
-    	get;
+    	get { return isNull(totalLabourCost).setScale(2); }
     
     	set {
     		values.put('totalLabourCost', value);
@@ -164,7 +164,7 @@ public class ECO_DTO_BudgetTask {
     }
 
     public Decimal totalLabourRevenue {
-        get;
+        get { return isNull(totalLabourRevenue).setScale(2); }
 
         set {
             values.put('totalLabourRevenue', value);
@@ -173,7 +173,7 @@ public class ECO_DTO_BudgetTask {
     }
 
     public Decimal totalEACActualCost {
-    	get;
+    	get { return isNull(totalEACActualCost).setScale(2); }
 
     	set {
     		values.put('totalEACActualCost', value);
@@ -183,7 +183,7 @@ public class ECO_DTO_BudgetTask {
 
 
     public Decimal totalEACActualQuantity {
-        get;
+        get { return isNull(totalEACActualQuantity).setScale(2); }
 
         set {
             values.put('totalEACActualQuantity', value);
@@ -192,7 +192,7 @@ public class ECO_DTO_BudgetTask {
     }
 
     public Decimal totalEACApprovedQuantity {
-        get;
+        get { return isNull(totalEACApprovedQuantity).setScale(2); }
 
         set {
             values.put('totalEACApprovedQuantity', value);
@@ -201,7 +201,7 @@ public class ECO_DTO_BudgetTask {
     }
 
     public Decimal totalEACApprovedTotalCost {
-        get;
+        get { return isNull(totalEACApprovedTotalCost).setScale(2); }
 
         set {
             values.put('totalEACApprovedTotalCost', value);
@@ -211,7 +211,7 @@ public class ECO_DTO_BudgetTask {
 
 
     public Decimal totalEACForecastQuantity {
-        get;
+        get { return isNull(totalEACForecastQuantity).setScale(2); }
 
         set {
             values.put('totalEACForecastQuantity', value);
@@ -220,7 +220,7 @@ public class ECO_DTO_BudgetTask {
     }
 
     public Decimal totalEACForecastRevenue {
-        get;
+        get { return isNull(totalEACForecastRevenue).setScale(2); }
 
         set {
             values.put('totalEACForecastRevenue', value);
@@ -229,12 +229,18 @@ public class ECO_DTO_BudgetTask {
     }
 
     public Decimal totalEACForecastTotalCost {
-        get;
+        get { return isNull(totalEACForecastTotalCost).setScale(2); }
 
         set {
             values.put('totalEACForecastTotalCost', value);
             totalEACForecastTotalCost = value;
         }
+    }
+
+    public Decimal isNull(Decimal val) {
+        Decimal retVal = val == null ? 0.00 : val;
+
+        return retVal;
     }
 
     public Boolean hasChildren {
