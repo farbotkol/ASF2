@@ -134,7 +134,7 @@
                 </td>
                 <td>{!budgetHeader.status}</td>
                 <td>
-                	<apex:selectList value="{!budgetHeader.strSelectedAction}" size="1" onchange="setIdtest(this, '{!budgetHeader.oBudgetHeader.Id}');">
+                	<apex:selectList value="{!budgetHeader.strSelectedAction}" size="1" onchange="setIdtest(this, '{!budgetHeader.oBudgetHeader.Id}');" disabled="{! NOT(theProject.pse__Stage__c == 'Execution')}">
                     	<apex:selectOptions value="{!budgetHeader.lstActions}"></apex:selectOptions>
                         <!--<apex:actionSupport event="onchange" action="{!OnAction}">
                         	<apex:param name="budgetHeaderId" value="{!budgetHeader.oBudgetHeader.Id}" assignTo="{!selectedBudgetHeader}"/>

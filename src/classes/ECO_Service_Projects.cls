@@ -3,10 +3,7 @@ public without sharing class ECO_Service_Projects {
 	public class EcoServiceException extends Exception {}
 	
 	public static List<pse__Proj__c> getProdjectsForUser (Id userId, Boolean includeClosed, String roleName) {
-		Set<String> closedStrings = new Set<String>();
-		closedStrings.add('Completed');
-		closedStrings.add('Canceled');
-		closedStrings.add('Closed');
+		Set<String> closedStrings = new Set<String>{'Completed', 'Canceled', 'Closed'};
 		
 		ECO_Utils_Meta.SelectAll soUtil = new ECO_Utils_Meta.SelectAll();
 		soUtil.GetFields('pse__Proj__c');
@@ -94,6 +91,7 @@ public without sharing class ECO_Service_Projects {
                                                                			, pse__Start_Date__c 
                                                                			, TotalEstSecondmentCost__c
                                                                			, EstimatedStartDate__c
+                                                               			, EstimatedEndDate__c
                                                                			, ProjectNumber__c
                                                                			, CurrentForecastCostBudget__c
                                                                			, CurrentForecastRevenueBudget__c
@@ -101,6 +99,7 @@ public without sharing class ECO_Service_Projects {
                                                                			, PrimarySite__c
                                                                			, CarryingOutOrganization__r.OUID__c
                                                                			, OracleSyncStatus__c
+                                                               			, pse__Stage__c
 																		, (SELECT Id
 																					, Type__c
 																					, OrganizationString__r.OrganizationName__c
