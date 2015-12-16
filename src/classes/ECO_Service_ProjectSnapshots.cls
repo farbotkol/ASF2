@@ -87,7 +87,7 @@ public class ECO_Service_ProjectSnapshots {
     {
         public Decimal TotalRevenue {get; set;}
         public Decimal TotalCost {get; set;}
-        public Decimal LaborMult {get; set;}
+        //public Decimal LaborMult {get; set;}
         public Decimal TotalLabor {get; set;}
         public Decimal TotalNonLabor {get; set;}
         public Decimal TotalContingency {get; set;}
@@ -858,8 +858,8 @@ public class ECO_Service_ProjectSnapshots {
     @TestVisible private ProjectSnapshot__c getOriginalBudgetHeaderMapInformation(FinancialMetrics originalBudgetFinancialMetrics, ProjectSnapshot__c snapshot) {
         if (originalBudgetFinancialMetrics != null) {
             snapshot.GrossRevenueBudgetOriginal__c = originalBudgetFinancialMetrics.TotalRevenue;
-            snapshot.LaborBudgetOriginal__c = originalBudgetFinancialMetrics.TotalLabor;
-            snapshot.ContingencyBudgetOriginal__c = originalBudgetFinancialMetrics.TotalContingency;
+            snapshot.CostOrigBudget__c = originalBudgetFinancialMetrics.TotalCost;
+            //FUTURE: snapshot.LaborMultBudgetOriginal__c = originalBudgetFinancialMetrics.LaborMult;
         }
         return snapshot;
     }
@@ -868,8 +868,7 @@ public class ECO_Service_ProjectSnapshots {
         if (approvedBudgetFinancialMetrics != null) {
             snapshot.GrossRevenueBudget__c = approvedBudgetFinancialMetrics.TotalRevenue;
             snapshot.CostBudget__c = approvedBudgetFinancialMetrics.TotalCost;
-            snapshot.LaborMultBudget__c = approvedBudgetFinancialMetrics.LaborMult;
-            snapshot.ContingencyBudget__c = approvedBudgetFinancialMetrics.TotalContingency;
+            //snapshot.LaborMultBudget__c = approvedBudgetFinancialMetrics.LaborMult;
         }
         return snapshot;
     }
@@ -963,7 +962,7 @@ public class ECO_Service_ProjectSnapshots {
         if (forecastBudgetFinancialMetrics != null) {
             snapshot.GrossRevenueForecast__c = forecastBudgetFinancialMetrics.TotalRevenue;
             snapshot.CostForecast__c = forecastBudgetFinancialMetrics.TotalCost;
-            snapshot.LaborMultForecast__c = forecastBudgetFinancialMetrics.LaborMult;
+            //snapshot.LaborMultForecast__c = forecastBudgetFinancialMetrics.LaborMult;
             snapshot.ContingencyForecast__c = forecastBudgetFinancialMetrics.TotalContingency;
         }
         return snapshot;
@@ -974,7 +973,7 @@ public class ECO_Service_ProjectSnapshots {
         if (draftBudgetFinancialMetrics != null) {
             snapshot.GrossRevenueDraft__c = draftBudgetFinancialMetrics.TotalRevenue;
             snapshot.CostDraft__c = draftBudgetFinancialMetrics.TotalCost;
-            snapshot.LaborMultDraft__c = draftBudgetFinancialMetrics.LaborMult;
+            //snapshot.LaborMultDraft__c = draftBudgetFinancialMetrics.LaborMult;
             snapshot.ContingencyDraft__c = draftBudgetFinancialMetrics.TotalContingency;
         }
         return snapshot;
@@ -985,7 +984,7 @@ public class ECO_Service_ProjectSnapshots {
         if (unapprovedBudgetFinancialMetrics != null) {
             snapshot.GrossRevenueUnapproved__c = unapprovedBudgetFinancialMetrics.TotalRevenue;
             snapshot.CostUnapproved__c = unapprovedBudgetFinancialMetrics.TotalCost;
-            snapshot.LaborMultUnapproved__c = unapprovedBudgetFinancialMetrics.LaborMult;
+            //snapshot.LaborMultUnapproved__c = unapprovedBudgetFinancialMetrics.LaborMult;
             snapshot.ContingencyUnapproved__c = unapprovedBudgetFinancialMetrics.TotalContingency; 
         }
         return snapshot;
@@ -996,7 +995,7 @@ public class ECO_Service_ProjectSnapshots {
         if (mtdActualFinancialMetrics != null) {
             snapshot.GrossRevenueMonthToDate__c = mtdActualFinancialMetrics.TotalRevenue;
             snapshot.CostMonthToDate__c = mtdActualFinancialMetrics.TotalCost;
-            snapshot.LaborMultMonthToDate__c = mtdActualFinancialMetrics.LaborMult;
+            //snapshot.LaborMultMonthToDate__c = mtdActualFinancialMetrics.LaborMult;
             snapshot.ContingencyMonthToDate__c = mtdActualFinancialMetrics.TotalContingency;
             snapshot.CostsODCEXPSMonthToDate__c = mtdActualFinancialMetrics.CostsODCEXPS;
             snapshot.CostsODCSUBSMonthToDate__c = mtdActualFinancialMetrics.CostsODCSUBS;
@@ -1013,7 +1012,7 @@ public class ECO_Service_ProjectSnapshots {
         if (itdActualFinancialMetrics != null) {
             snapshot.GrossRevenueITD__c = itdActualFinancialMetrics.TotalRevenue;
             snapshot.CostITD__c = itdActualFinancialMetrics.TotalCost;
-            snapshot.LaborMultITD__c = itdActualFinancialMetrics.LaborMult;
+            //snapshot.LaborMultITD__c = itdActualFinancialMetrics.LaborMult;
             snapshot.ContingencyITD__c = itdActualFinancialMetrics.TotalContingency;
             snapshot.CostsODCEXPSITD__c = itdActualFinancialMetrics.CostsODCEXPS;
             snapshot.CostsODCSUBSITD__c = itdActualFinancialMetrics.CostsODCSUBS;
@@ -1037,7 +1036,7 @@ public class ECO_Service_ProjectSnapshots {
         if (ytdActualFinancialMetrics != null) {
             snapshot.GrossRevenueYearToDate__c = ytdActualFinancialMetrics.TotalRevenue;
             snapshot.CostYearToDate__c = ytdActualFinancialMetrics.TotalCost;
-            snapshot.LaborMultYearToDate__c = ytdActualFinancialMetrics.LaborMult;
+            //snapshot.LaborMultYearToDate__c = ytdActualFinancialMetrics.LaborMult;
             snapshot.ContingencyYearToDate__c = ytdActualFinancialMetrics.TotalContingency;
             snapshot.CostsODCEXPSYearToDate__c = ytdActualFinancialMetrics.CostsODCEXPS;
             snapshot.CostsODCSUBSYearToDate__c = ytdActualFinancialMetrics.CostsODCSUBS;
@@ -1399,8 +1398,8 @@ public class ECO_Service_ProjectSnapshots {
                 metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));  
                 metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));  
                 
-                if (metrics.TotalLabor != 0)
-                    metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+                //if (metrics.TotalLabor != 0)
+                  //  metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
                 
                 metricsMap.put((Id)ar.get('Project__c'), metrics);
             }
@@ -1435,8 +1434,8 @@ public class ECO_Service_ProjectSnapshots {
                 metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));  
                 metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));  
                 
-                if (metrics.TotalLabor != 0)
-                    metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+                //if (metrics.TotalLabor != 0)
+                  //  metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
                 
                 metricsMap.put((Id)ar.get('Project__c'), metrics);
             }
@@ -1472,8 +1471,8 @@ public class ECO_Service_ProjectSnapshots {
                 metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));  
                 metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));  
                 
-                if (metrics.TotalLabor != 0)
-                    metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+                //if (metrics.TotalLabor != 0)
+                  //  metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
                 
                 metricsMap.put((Id)ar.get('Project__c'), metrics);
                 System.debug(System.logginglevel.WARN, '___getForecastBudgetHeaderMap metrics='+metrics);
@@ -1506,8 +1505,8 @@ public class ECO_Service_ProjectSnapshots {
                 metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));  
                 metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));  
                 
-                if (metrics.TotalLabor != 0)
-                    metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+                //if (metrics.TotalLabor != 0)
+                  //  metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
                 
                 metricsMap.put((Id)ar.get('Project__c'), metrics);
                 System.debug(System.logginglevel.WARN, '___getDraftBudgetHeaderMap metrics='+metrics);
@@ -1547,8 +1546,8 @@ public class ECO_Service_ProjectSnapshots {
                 metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));  
                 metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));  
                 
-                if (metrics.TotalLabor != 0)
-                    metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
+                //if (metrics.TotalLabor != 0)
+                  //  metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;
                 metricsMap.put((Id)ar.get('Project__c'), metrics);
             }
         }
@@ -1647,11 +1646,11 @@ public class ECO_Service_ProjectSnapshots {
                     metrics.totalRevenue = totalRevenueMetrics.totalRevenue;
                 }
                 
-                if (totalRevenueMetrics != null && totalLaborMetrics != null && totalNonLaborMetrics != null) {   
+                /*if (totalRevenueMetrics != null && totalLaborMetrics != null && totalNonLaborMetrics != null) {   
                     metrics.LaborMult = getLaborMult(totalRevenueMetrics.TotalRevenue, 
                     	totalNonLaborMetrics.TotalNonLabor, totalLaborMetrics.TotalLabor);
                     System.debug(System.LoggingLevel.WARN, '___metrics.LaborMult='+metrics.LaborMult); 
-                }
+                }*/
                 
                 if (funcBurdenedCostsMetrics != null) {
                     metrics.CostsODCEXPS = funcBurdenedCostsMetrics.CostsODCEXPS;
@@ -1963,7 +1962,7 @@ public class ECO_Service_ProjectSnapshots {
         return projSnapshots;
     }
     
-    private Decimal getLaborMult(Decimal revenue, Decimal nonLabor, Decimal labor)
+    /*private Decimal getLaborMult(Decimal revenue, Decimal nonLabor, Decimal labor)
     {
         Decimal laborMultValue = 0;
         System.debug(System.LoggingLevel.WARN, '___ START getLaborMult(...) ');
@@ -1978,5 +1977,5 @@ public class ECO_Service_ProjectSnapshots {
             System.Debug(System.LoggingLevel.WARN, '___getLaborMult: '+e.getStackTraceString());
         }
         return laborMultValue;
-    }
+    }*/
 }
