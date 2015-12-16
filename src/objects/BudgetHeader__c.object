@@ -56,7 +56,7 @@
     <fields>
         <fullName>AppliedTotalRevenue__c</fullName>
         <externalId>false</externalId>
-        <formula>IF( OverrideTotalRevenue__c == 0,  TotalRevenue__c , OverrideTotalRevenue__c )</formula>
+        <formula>IF( OR(OverrideTotalRevenue__c == 0, ISNULL(OverrideTotalRevenue__c)),  TotalRevenue__c , OverrideTotalRevenue__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Applied Total Revenue</label>
         <precision>18</precision>
@@ -230,7 +230,7 @@
     <fields>
         <fullName>NetServicesRevenue__c</fullName>
         <externalId>false</externalId>
-        <formula>TotalRevenue__c -  TotalSubAmount__c -  TotalFeeAmount__c</formula>
+        <formula>AppliedTotalRevenue__c -  TotalSubAmount__c -  TotalFeeAmount__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Net Services Revenue</label>
         <precision>18</precision>

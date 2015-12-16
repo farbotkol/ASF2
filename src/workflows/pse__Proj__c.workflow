@@ -103,6 +103,17 @@
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/Non_Accredited_PM_Notification</template>
     </alerts>
+    <alerts>
+        <fullName>PSA_Project_Alert_to_PM</fullName>
+        <description>PSA Project-Alert to PM</description>
+        <protected>false</protected>
+        <recipients>
+            <field>pse__Project_Manager__c</field>
+            <type>contactLookup</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>PS_Enerprise_Workflows/PSA_PM_Project_Notification</template>
+    </alerts>
     <fieldUpdates>
         <fullName>ChangeManagerDocManageUpdatedDate</fullName>
         <field>ChangeManagerDocManageUpdatedDate__c</field>
@@ -635,6 +646,17 @@ NOT(ISPICKVAL(ContractTypes__c,&quot;T&amp;M&quot;)))</formula>
         </criteriaItems>
         <description>A temporary workflow created to allow users to skip the Oracle sync and move into Execution</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
+    </rules>
+    <rules>
+        <fullName>PSA Project - Notification to PM selected on the project</fullName>
+        <actions>
+            <name>PSA_Project_Alert_to_PM</name>
+            <type>Alert</type>
+        </actions>
+        <active>false</active>
+        <description>Send email notification to PM selected on the project page.</description>
+        <formula>OR( ISCHANGED( pse__Project_Manager__c ), ISNEW() )</formula>
+        <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>
         <fullName>PSE Project Is Not Active</fullName>
