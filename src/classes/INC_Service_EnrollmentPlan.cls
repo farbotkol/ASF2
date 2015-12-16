@@ -177,6 +177,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                           , IncentiveProject__r.RecordTypeId
                           , DSOTarget__c
                           , ApplicationType__c
+                          , Forecast_Margin__c
                 From EnrollmentPlan__c
                 where id =: EnrollmentPlans]);
 

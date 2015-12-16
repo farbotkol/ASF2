@@ -213,17 +213,19 @@ public without sharing class INC_RoutingMemberTriggers {
 			sTempID.add(userID);
 			mapRemove.put(sGroup,sTempID);
 		}
+		System.Debug(logginglevel.error,'mappadd before: ' + mapAdd.KeySet());
 		INC_RoutingMemberTriggers.updateGroups(mapAdd,mapRemove);
 	}
 
 	public static void updateGroups(map<String,set<id>>MapAdd,map<String,set<id>>MapRemove){
 		set<String> setAllGroups = new set<String>();
+		set<String> sCombo = new set<String>();
 		list<GroupMember> listAdd = new list<GroupMember>();
 		list<GroupMember> listDel = new list<GroupMember>();
 
 		setAllGroups.addAll(mapAdd.keySet());
 		setAllGroups.addAll(mapRemove.keySet());
-
+		System.Debug(logginglevel.error,'set Groups: ' + setAllGroups);
 		map<String,Group> mapGroups = new map<String,Group>();
 		for(Group oGroup: 	[Select ID
 									, Name
@@ -231,13 +233,19 @@ public without sharing class INC_RoutingMemberTriggers {
 							where Name =: setAllGroups]){
 			mapGroups.put(oGroup.Name,oGroup);
 		}
+		System.Debug(logginglevel.error,'MapGroups: ' + mapGroups);
 
 		for(String sGroup: mapAdd.KeySet()){
 			for(ID userToAdd : mapAdd.Get(sGroup)){
 				ID groupID = mapGroups.get(sGroup).ID;
 				GroupMember GM = new GroupMember(GroupId = groupID,
 												 userOrGroupID = userToAdd);
-				listAdd.add(GM);
+				System.debug(LoggingLevel.error,'GM: ' + gm);
+				String sKey = String.ValueOf(groupID) + String.ValueOf(userToAdd);
+				if(!sCombo.Contains(sKey)){
+					listAdd.add(GM);
+					sCombo.add(sKey);
+				}
 			}
 		}
 
@@ -254,11 +262,15 @@ public without sharing class INC_RoutingMemberTriggers {
 				}
 			}
 		}
-
+		System.Debug(logginglevel.error,'list add: ' + listAdd.size());
 		if(listAdd != null && listAdd.size() > 0){
 			System.savePoint sp = Database.setSavePoint();
 		    try{
-		        insert listAdd;
+		    	System.Debug(logginglevel.error,'Inserting new member');
+		    //    insert listAdd;
+		        Database.insert(listAdd, false);
+
+		        System.Debug(logginglevel.error,'After insert no error');
 		    }catch(Exception e){
 		        system.debug('Handling Exception:  '+e.getMessage() + ' ' + e.getStackTraceString());
 		        Database.rollBack(sp);

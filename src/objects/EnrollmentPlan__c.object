@@ -42,9 +42,7 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <content>INC_EnrollmentApp</content>
-        <skipRecordTypeSelect>false</skipRecordTypeSelect>
-        <type>Visualforce</type>
+        <type>Default</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <customHelpPage>INC_HelpRedirect</customHelpPage>
@@ -2111,7 +2109,6 @@
         <fullName>ActualNSRBudgetVariance__c</fullName>
         <externalId>false</externalId>
         <formula>NSRBudget__c - ActualNSRBudgetatSnapshot__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Actual NSR Variance</label>
         <precision>18</precision>
         <required>false</required>
@@ -2185,7 +2182,6 @@
         <fullName>ActualODCBudgetVariance__c</fullName>
         <externalId>false</externalId>
         <formula>ActualODCBudgetITD__c -  ActualODCBudgetatSnapshot__c</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Actual ODC Variance</label>
         <precision>18</precision>
         <required>false</required>
@@ -2250,7 +2246,7 @@
         <label>Actual Project % Complete Variance</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>0</scale>
+        <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
@@ -2686,7 +2682,7 @@ IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;,
 IF( AND(TEXT(PassCSat__c)=&quot;Yes&quot;,TEXT(PassDSO__c)=&quot;Yes&quot;, TEXT(PassSafetyforLife__c)=&quot;Yes&quot;, (ROUND(FinalIncentivePoolAdjusted__c,0) &lt; ROUND(EstimatedIncPoolITD__c,0)) ), 
 IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; All Ops Metrics Met, Less than 100% of Pool Being Paid&quot; &amp; BR(), NULL)&amp; 
 
-IF( AND(OR(TEXT(PassCSat__c)&lt;&gt;&quot;Yes&quot;,TEXT(PassDSO__c)&lt;&gt;&quot;Yes&quot;, TEXT(PassSafetyforLife__c)&lt;&gt;&quot;Yes&quot;), (FinalIncentivePoolAdjusted__c &gt;= EstimatedIncPoolITD__c) ), 
+IF( AND(OR(TEXT(PassCSat__c)&lt;&gt;&quot;Yes&quot;,TEXT(PassDSO__c)&lt;&gt;&quot;Yes&quot;, TEXT(PassSafetyforLife__c)&lt;&gt;&quot;Yes&quot;), FinalIncentivePoolAdjusted__c &gt;= EstimatedIncPoolITD__c), 
 IMAGE(&quot;/resource/1429552689000/INC_ExclamationMark&quot;,&quot;Alert&quot;, 20,20) &amp; &quot; Final Pool Not Reduced for Ops Metrics Results&quot; &amp; BR(), NULL) &amp; 
 
 IF( ParticipantNoPayAmount__c &gt; 0, 
@@ -3246,7 +3242,7 @@ TEXT(IncentivePlan__r.MaxAllocationPool__c*100) &amp; &quot;%&quot; &amp; BR(), 
         <label>Approved Net Margin Budget Variance</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>1</scale>
+        <scale>0</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
@@ -3746,7 +3742,7 @@ IncentiveProject__r.ApprovedDPEBudget__c,IF(OR(NOT(ISPICKVAL(ApplicationType__c,
         <label>Baseline GM% of NSR Variance</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>1</scale>
+        <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
@@ -5744,6 +5740,19 @@ amount of the reduction to the incentive pool.</inlineHelpText>
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>Forecast_Margin__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(ISPICKVAL(IncentivePlan__r.ContractSubType__c,&quot;Gross Margin&quot;),ForecastGrossMarginBudget__c,ForecastNetMarginBudget__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Forecast Margin</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>0</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>Forecast_Margin_of_NSR__c</fullName>
         <externalId>false</externalId>
         <formula>if(text(IncentivePlan__r.ContractSubType__c)=&quot;Net Margin&quot;,
@@ -6126,7 +6135,7 @@ The DPE Adjustment is added to the DPE Budget to set the DTW Baseline DPE.  An i
         <label>Incentive Plan Variance Alert</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>0</scale>
+        <scale>2</scale>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Percent</type>
@@ -7464,7 +7473,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
      &quot;Pending Corp Review&quot;, &quot;Corporate&quot;,
      &quot;Pending DTW Admin&quot;, DTWAdminName__c,
      &quot;Rejected for Correction&quot;,CurrentApproverOwnerName__c,
-     &quot;Rejected&quot;,DTWAdmin__r.FirstName &amp; &quot; &quot; &amp; DTWAdminName__c,
+     &quot;Rejected&quot;,DTWAdminName__c,
       Null
 )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
@@ -7667,11 +7676,11 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
     </listViews>
     <listViews>
         <fullName>Enrolled_Applications</fullName>
-        <columns>EnrollmentApplicationNameUnique__c</columns>
+        <columns>NAME</columns>
         <columns>Region__c</columns>
         <columns>ApplicationType__c</columns>
-        <columns>ProjectID__c</columns>
         <columns>CURRENCY_ISO_CODE</columns>
+        <columns>ProjectID__c</columns>
         <columns>CustomerName__c</columns>
         <columns>PlanType__c</columns>
         <columns>SubmitStatus__c</columns>
@@ -7726,6 +7735,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <columns>FinalIncentivePoolAdjusted__c</columns>
         <columns>FinalScoreonSafetyForLife__c</columns>
         <columns>IncentivePlanContractType__c</columns>
+        <columns>FormStatusAge__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>ApplicationType__c</field>
@@ -7751,7 +7761,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <columns>AgeDays__c</columns>
         <columns>IncentivePlan__c</columns>
         <columns>ProjectGeography__c</columns>
-        <columns>IPProjectManager__c</columns>
+        <columns>FormStatusAge__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
             <field>EnrollmentStatus__c</field>

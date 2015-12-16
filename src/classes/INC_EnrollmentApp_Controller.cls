@@ -364,23 +364,10 @@ public with sharing class INC_EnrollmentApp_Controller {
 
     
    
-   /* public pageReference save(){
-        System.debug(logginglevel.error,'Save in custom controller' + oEnrollmentApp.NSRAdjustment__c);
-        System.debug(logginglevel.error,'Save in custom controller' + oEnrollmentApp.DSOTarget__c);
-        try{
-          //((EnrollmentPlan__c)stdController.getRecord()).NSRAdjustment__c = oEnrollmentApp.NSRAdjustment__c;
-         // stdController.save();
-          update oEnrollmentApp;
-          oEnrollmentApp = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentApp.ID})[0];
-          System.debug(logginglevel.error,'After Save ' + oEnrollmentApp.NSRAdjustment__c);
-          System.debug(logginglevel.error,'After Save in custom controller' + oEnrollmentApp.DSOTarget__c);
-          }catch(Exception e){
-              System.Debug(logginglevel.error,'Error saving enrollment app.' + e.getMessage());
-          }
-        pageReference pf = new pageReference('/apex/INC_EnrollmentApp?id=' + oEnrollmentApp.Id);
-        //pf.setredirect(true);
-        return pf;
-    }*/
+   public pageReference save(){
+         this.stdController.save();
+         return null;
+    }
 
 
     public PageReference submitFromWizard(){
