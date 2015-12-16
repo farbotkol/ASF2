@@ -255,7 +255,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
         return options;
 	}
 	
-    public List<selectOption> getQuestionnaires()
+    /*public List<selectOption> getQuestionnaires()
     {
         System.debug('inside getQuestionnaires');
         List<selectOption> options = new List<selectOption>();
@@ -265,18 +265,12 @@ public with sharing class ECO_DOA_ApprovalRequestController {
         }
         options.add(new selectOption('', '- None -'));
         
-        /*Schema.DescribeFieldResult fieldResult = QuestionnaireTemplate__c.Name.getDescribe();
-        List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
-        
-        for( Schema.PicklistEntry f : ple)
-        {
-            options.add(new SelectOption(f.getLabel(), f.getValue()));
-        }*/
+
         for(String QuesName : name){
             options.add(new SelectOption(QuesName, QuesName));
         }
         return options;
-	}
+	}*/
     
     public PageReference searchQuestionnaire(){
         System.debug('selectBusiness   '+selectBusiness);
@@ -355,7 +349,7 @@ public with sharing class ECO_DOA_ApprovalRequestController {
         return new pagereference('/apex/ECO_DOA_ApprovalRequest');
     }
 
-    public pagereference createRequest(){
+    /*public pagereference createRequest(){
         list<recordtype> lstDOART = new List<recordtype>();
 		if(projectId != null)
         	lstDOART = [select id, name from recordtype where sObjectType='DOAApprovalRequest__c' and DeveloperName ='DOACreate'];
@@ -448,11 +442,8 @@ public with sharing class ECO_DOA_ApprovalRequestController {
         	return new pagereference('/'+oNewDOA.id);
         else
         	return new pagereference('/'+ lstFormsToInsert[0].id +'/e?retURL=/'+ oNewDOA.id);
-    }
+    }*/
 
-    public pagereference stub(){
-        return null;
-    }
 
     public pagereference answerone(){
         questionTwo = null;
