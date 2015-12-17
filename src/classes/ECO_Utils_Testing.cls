@@ -9,8 +9,8 @@ public without sharing class ECO_Utils_Testing {
 		User u = new User();
 		u.FirstName = randomNumber + 'tuser';
 		u.LastName = randomNumber + 'tuser';
-	    u.Email = randomNumber + 'tuser' + '.' +randomNumber + 'tuser' + '@testuser.net';
-	    u.Username =  randomNumber + 'tuser' + '.' +randomNumber + 'tuser' + '@testuser.net' + '.test';
+        u.Email = randomNumber + 'tuser' + '.' +randomNumber + 'tuser' + '@aecom.co';
+        u.Username =  randomNumber + 'tuser' + '.' +randomNumber + 'tuser' + '@aecom.co' + '.test';
 	    u.CommunityNickname = randomNumber + 'tuser';
 	    u.Alias = randomNumber + 'tuser';
 	    u.TimeZoneSidKey = 'America/Los_Angeles';

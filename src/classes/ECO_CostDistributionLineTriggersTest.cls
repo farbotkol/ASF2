@@ -25,7 +25,8 @@ private class ECO_CostDistributionLineTriggersTest {
 		CostDistLine__c costDistLine = new CostDistLine__c();
 		costDistLine.PADate__c = Date.Today();
 		costDistLine.GLDate__c = Date.Today();
-		insert costDistLine;
+        
+        //insert costDistLine;
 		Test.stopTest();
 		//[SELECT Id FROM CostDistLine__c LIMIT 1];
 		
