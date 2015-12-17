@@ -414,13 +414,27 @@
                 </apex:outputPanel>     
             </apex:pageBlockSectionItem> -->
 
-            <apex:pageBlockSectionItem helptext="Choose one of the clients nominated on the list of clients as a billing client.  Note you can only create Prime agreements  with billing clients.">
+            <!--<apex:pageBlockSectionItem helptext="Choose one of the clients nominated on the list of clients as a billing client.  Note you can only create Prime agreements  with billing clients.">
                 <apex:outputText value="Billing Client"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Account__c}" rendered="{!mode != ''}" required="true"/>
                     <apex:outputField value="{!agreement.Account__c}" rendered="{!mode == ''}"/>    
                 </apex:outputPanel>         
-            </apex:pageBlockSectionItem>               
+            </apex:pageBlockSectionItem>
+
+            <apex:pageBlockSectionItem >
+            </apex:pageBlockSectionItem>-->
+
+            <apex:pageBlockSectionItem helptext="Choose one of the clients nominated on the list of clients as a billing client.  Note you can only create Prime agreements  with billing clients.">
+                <apex:outputText value="Billing Client"/>
+                <apex:outputPanel >
+                    <apex:selectList value="{!agreement.Account__c}" multiselect="false" size="1" rendered="{!mode != ''}" required="true">
+                        <apex:selectOptions value="{!BillingAccounts}" />
+                    </apex:selectList>
+                    <apex:outputField value="{!agreement.Account__c}" rendered="{!mode == ''}"/>    
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem>  
+
 
             <apex:pageBlockSectionItem >
                 <apex:outputText value="Ecosystem Project Reference ID"/>
@@ -633,7 +647,16 @@
                         <apex:inputField value="{!agreement.VarianceReason__c}" rendered="{!mode != ''}"/>  
                         <apex:outputField value="{!agreement.VarianceReason__c}" rendered="{!mode == ''}"/> 
                     </apex:outputPanel>                                                 
-            </apex:pageBlockSectionItem>                                                                                             
+            </apex:pageBlockSectionItem>   
+
+            <apex:pageBlockSectionItem helpText="">
+                    <apex:outputText value="Potential Performance Bonus"/>
+                    <apex:outputPanel >
+                        <apex:inputField value="{!agreement.PotentialPerformanceBonus__c}" rendered="{!mode != ''}"/>  
+                        <apex:outputField value="{!agreement.PotentialPerformanceBonus__c}" rendered="{!mode == ''}"/> 
+                    </apex:outputPanel>                                                 
+            </apex:pageBlockSectionItem>   
+
         </apex:pageBlockSection>
         
         <apex:pageBlockSection title="Interim Agreement / Work At Risk  (if applicable)" collapsible="false" columns="2">
@@ -889,10 +912,20 @@
                 </apex:outputPanel>
         </apex:pageBlockSectionItem>
        
-        <apex:pageBlockSectionItem helptext="Choose one of the clients nominated on the list of clients as a billing client.  Note you can only create Prime agreements  with billing clients.">
+        <!--<apex:pageBlockSectionItem helptext="Choose one of the clients nominated on the list of clients as a billing client.  Note you can only create Prime agreements  with billing clients.">
                 <apex:outputText value="Billing Client"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Account__c}" rendered="{!mode != ''}" required="true"/>
+                    <apex:outputField value="{!agreement.Account__c}" rendered="{!mode == ''}"/>    
+                </apex:outputPanel>         
+        </apex:pageBlockSectionItem>-->
+
+        <apex:pageBlockSectionItem helptext="Choose one of the clients nominated on the list of clients as a billing client.  Note you can only create Prime agreements  with billing clients.">
+                <apex:outputText value="Billing Client"/>
+                <apex:outputPanel >
+                    <apex:selectList value="{!agreement.Account__c}" multiselect="false" size="1" rendered="{!mode != ''}" required="true">
+                        <apex:selectOptions value="{!BillingAccounts}" />
+                    </apex:selectList>
                     <apex:outputField value="{!agreement.Account__c}" rendered="{!mode == ''}"/>    
                 </apex:outputPanel>         
         </apex:pageBlockSectionItem>
@@ -1096,7 +1129,15 @@
                         <apex:inputField value="{!agreement.VarianceReason__c}" rendered="{!mode != ''}"/>  
                         <apex:outputField value="{!agreement.VarianceReason__c}" rendered="{!mode == ''}"/> 
                     </apex:outputPanel>                                                 
-        </apex:pageBlockSectionItem>        
+        </apex:pageBlockSectionItem> 
+
+        <apex:pageBlockSectionItem helpText="">
+                    <apex:outputText value="Potential Performance Bonus"/>
+                    <apex:outputPanel >
+                        <apex:inputField value="{!agreement.PotentialPerformanceBonus__c}" rendered="{!mode != ''}"/>  
+                        <apex:outputField value="{!agreement.PotentialPerformanceBonus__c}" rendered="{!mode == ''}"/> 
+                    </apex:outputPanel>                                                 
+            </apex:pageBlockSectionItem>        
   
     </apex:pageBlockSection>
 
@@ -1362,13 +1403,23 @@
                     <apex:outputField value="{!agreement.ProjectTeamMember__c}" rendered="{!mode == ''}"/>  
                 </apex:outputPanel>         
             </apex:pageBlockSectionItem>
-            <apex:pageBlockSectionItem helptext="Choose one of the clients nominated on the list of clients as a billing client.  Note you can only create Prime agreements  with billing clients.">
+            <!--<apex:pageBlockSectionItem helptext="Choose one of the clients nominated on the list of clients as a billing client.  Note you can only create Prime agreements  with billing clients.">
                 <apex:outputText value="Billing Client"/>
                 <apex:outputPanel >
                     <apex:inputField value="{!agreement.Account__c}" rendered="{!mode != ''}" required="true"/>
                     <apex:outputField value="{!agreement.Account__c}" rendered="{!mode == ''}"/>    
                 </apex:outputPanel>         
-            </apex:pageBlockSectionItem>        
+            </apex:pageBlockSectionItem>  -->
+            <apex:pageBlockSectionItem helptext="Choose one of the clients nominated on the list of clients as a billing client.  Note you can only create Prime agreements  with billing clients.">
+                <apex:outputText value="Billing Client"/>
+                <apex:outputPanel >
+                    <apex:selectList value="{!agreement.Account__c}" multiselect="false" size="1" rendered="{!mode != ''}" required="true">
+                        <apex:selectOptions value="{!BillingAccounts}" />
+                    </apex:selectList>
+                    <apex:outputField value="{!agreement.Account__c}" rendered="{!mode == ''}"/>    
+                </apex:outputPanel>         
+            </apex:pageBlockSectionItem> 
+
             <apex:pageBlockSectionItem helptext="{!$ObjectType.Agreement__c.Fields.AgreementExecutedBy__c.inlineHelpText}">
                 <apex:outputText value="Agreement Executed By"/>
                 <apex:outputPanel >
@@ -1538,14 +1589,13 @@
                 </apex:outputPanel>     
             </apex:pageBlockSectionItem>    
 
-            <apex:pageBlockSectionItem >    
-                <apex:outputText value="Change Manager Approved For Synch"/>  
-               <apex:outputPanel >          
-                    <apex:inputField value="{!agreement.ChangeManagerApprovedForSynch__c}" rendered="{!mode == 'Edit'}" /> 
-                    <apex:outputField value="{!agreement.ChangeManagerApprovedForSynch__c}" rendered="{!mode == ''}" />  
-                </apex:outputPanel>
-            </apex:pageBlockSectionItem>
-
+            <apex:pageBlockSectionItem helpText="">
+                    <apex:outputText value="Potential Performance Bonus"/>
+                    <apex:outputPanel >
+                        <apex:inputField value="{!agreement.PotentialPerformanceBonus__c}" rendered="{!mode != ''}"/>  
+                        <apex:outputField value="{!agreement.PotentialPerformanceBonus__c}" rendered="{!mode == ''}"/> 
+                    </apex:outputPanel>                                                 
+            </apex:pageBlockSectionItem> 
 
             <apex:pageBlockSectionItem > 
                 <apex:outputText value="Description"/> 
@@ -1554,15 +1604,7 @@
                 <apex:outputField value="{!agreement.Description__c}" rendered="{!mode == ''}"/>                 
                 </apex:outputPanel>   
             </apex:pageBlockSectionItem>
-            
-            <apex:pageBlockSectionItem >    
-                <apex:outputText value="Change Manager Is Changed"/>      
-                <apex:outputPanel >      
-                    <apex:inputField value="{!agreement.ChangeManagerIsChanged__c}" rendered="{!mode == 'Edit'}" />  
-                    <apex:outputField value="{!agreement.ChangeManagerIsChanged__c}" rendered="{!mode == ''}" />  
-                </apex:outputPanel>
-            </apex:pageBlockSectionItem>
-                                                                                                                                   
+                                                                                                                                              
         </apex:pageBlockSection>
         
         <apex:pageBlockSection columns="1">
@@ -3115,7 +3157,14 @@
             </apex:outputPanel>                                                 
         </apex:pageBlockSectionItem>            
               
-        <apex:outputPanel ></apex:outputPanel>                
+        <apex:pageBlockSectionItem helpText="">
+            <apex:outputText value="Potential Performance Bonus"/>
+            <apex:outputPanel >
+                <apex:inputField value="{!agreement.PotentialPerformanceBonus__c}" rendered="{!mode != ''}"/>  
+                <apex:outputField value="{!agreement.PotentialPerformanceBonus__c}" rendered="{!mode == ''}"/> 
+            </apex:outputPanel>                                                 
+        </apex:pageBlockSectionItem> 
+
     </apex:pageBlockSection>
 
     <apex:pageBlockSection collapsible="false" title="Agreement Execution Details" id="taskOrderExecutionDetails">

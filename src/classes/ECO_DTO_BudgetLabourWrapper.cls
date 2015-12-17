@@ -451,19 +451,20 @@ public class ECO_DTO_BudgetLabourWrapper {
     }
 
     public class EACTotals {
-    	public Decimal EACActualQuantity {get; set;}
-      	public Decimal EACApprovedQuantity {get; set;}
-      	public Decimal EACForecastQuantity {get; set;}
-        
-      	public Decimal EACActualCost {get; set;}
-        public Decimal EACCurrentApprovedCost {get; set;}
-        public Decimal EACCurrentForecastCost {get; set;}
-        public Decimal EACForecastRevenue {get; set;}
-        
-        public Decimal EACEstimateToComplete {get; set;}
-        public Decimal EACCostToComplete {get; set;}
 
-        public Decimal Quantity { get; set; }
+    	public Decimal EACActualQuantity {get {return setScaling(EACActualQuantity);} set;}
+      	public Decimal EACApprovedQuantity {get {return setScaling(EACApprovedQuantity);} set;}
+      	public Decimal EACForecastQuantity {get {return setScaling(EACForecastQuantity);} set;}
+        
+      	public Decimal EACActualCost {get {return setScaling(EACActualCost);} set;}
+        public Decimal EACCurrentApprovedCost {get {return setScaling(EACCurrentApprovedCost);} set;}
+        public Decimal EACCurrentForecastCost {get {return setScaling(EACCurrentForecastCost);} set;}
+        public Decimal EACForecastRevenue {get {return setScaling(EACForecastRevenue);} set;}
+        
+        public Decimal EACEstimateToComplete {get {return setScaling(EACEstimateToComplete);} set;}
+        public Decimal EACCostToComplete {get {return setScaling(EACCostToComplete);} set;}
+
+        public Decimal Quantity { get {return setScaling(Quantity);} set; }
 
       	public EACTotals() {
         	EACActualQuantity = 0;
@@ -477,6 +478,12 @@ public class ECO_DTO_BudgetLabourWrapper {
             EACEstimateToComplete = 0.0;
             EACCostToComplete = 0.0;
       	}
+
+        public Decimal setScaling(Decimal val) {
+          if (val != null) val = val.setScale(2);
+
+          return val;
+        }
 
         public void add(EACTotals totalsToAdd) {
             this.EACActualQuantity += totalsToAdd.EACActualQuantity ;
