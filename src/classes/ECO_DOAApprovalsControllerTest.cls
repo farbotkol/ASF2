@@ -144,7 +144,7 @@ private class ECO_DOAApprovalsControllerTest {
         con.submitAECOMHub();
         con.submitDCSHub();
         con.submitEnterprise();
-        //TestMethod2();
+        
         /*con.submitEnterprise();
         con.submitGeography();
         con.submitGroup();
@@ -168,17 +168,5 @@ private class ECO_DOAApprovalsControllerTest {
         test.stopTest();
         
     }
-	static void TestMethod2(){
-        DOAApprovalRequest__c doa = [Select Id From DOAApprovalRequest__c Limit 1];
-        PageReference pageRef = new PageReference('/apex/ECO_Compliance_Condition_of_Approval');
-		test.setCurrentPage(pageRef);
-        ApexPages.currentPage().getParameters().put('Id', doa.id);
-        ECO_DOAApprovalsController con = new ECO_DOAApprovalsController(new ApexPages.StandardController(doa));
-    	test.startTest();
-        con.submitEnterprise();
-        con.submitGeography();
-        con.submitGroup();
-        con.submitDOAQueue();
-       	test.stopTest();
-    }
+	
 }
