@@ -1,0 +1,184 @@
+@isTest
+private class ECO_DOAApprovalsControllerTest {
+    static void init(){
+        OrganizationString__c testOrg =  ECO_Utils_Testing.createTestOrg();
+		insert testOrg;
+
+		Profile p = [SELECT Id FROM Profile WHERE Name='System Administrator']; 
+
+		User testUser = new User();
+		testUser.Alias = 'myuser';
+		testUser.Email ='mytestuser@example.com';
+		testUser.EmailEncodingKey ='UTF-8';
+
+		testUser.FirstName = 'test';
+		testUser.LastName ='Testing';
+		testUser.LanguageLocaleKey ='en_US';
+		testUser.LocaleSidKey ='en_US';
+		testUser.ProfileId = p.Id;
+        testUSer.TimeZoneSidKey ='America/Los_Angeles';
+        testUser.UserName ='mytestuser@example.com';
+        testUser.EmployeeNumber = '123';
+        testUser.PersonId__c = '123';
+        testUser.ECO_OrganizationName__c = testOrg.name;
+        testUser.isDoaAdmin__c = true;
+        insert testUser;
+
+
+		list<account> testAccounts = new list<account>();
+
+		// Insert Test Account
+		Account testAccount = new Account();
+		testAccount.Name = 'test account';
+		testAccount.OracleCustomerID__c = '1111';
+		testAccounts.add(testAccount);
+		insert testAccounts;
+
+		List<OrganizationString__c> lOrgStrings = new List<OrganizationString__c>();
+		OrganizationString__c Org1 = ECO_Utils_Testing.createTestOrg();
+		Org1.OrganizationName__c = 'Test Organization';
+		Org1.Name = 'Test Organization';
+		Org1.BusinessLineName__c = 'test';
+		Org1.Department__c = 'test Department';
+		Org1.District__c = 'tet District';
+		Org1.Description__c = 'test org string';
+		Org1.GeographyName__c = 'test Geo';
+		Org1.Region__c = 'test Region';
+		Org1.OrgID__c = '111';
+		Org1.OUID__c = '111';
+		Org1.InactiveDate__c = null;
+		Org1.ProjectOwning__c = true;
+
+		lOrgStrings.add(Org1);
+
+		insert lOrgStrings;	
+        
+        //team members
+		ProjectRole__c projectRole = new ProjectRole__c();
+		projectRole.Name = 'Project Manager';
+		projectRole.Type__c = 'Key Member';
+		projectRole.Active__c = true;
+
+		ProjectRole__c projectRole1 = new ProjectRole__c();
+		projectRole1.Name = 'Resilience Director';
+		projectRole1.Type__c = 'Key Member';
+		projectRole1.Active__c = true;
+
+		list<ProjectRole__c> lstpr = new list<ProjectRole__c>();
+		lstpr.add(projectRole);
+		lstpr.add(projectRole1);
+		insert lstpr;
+        
+        //create create source project 
+		pse__Proj__c testProject = new pse__Proj__c();
+		testProject.Name = 'test project 1';
+		testProject.pse__Account__c = testAccount.Id;
+		testProject.pse__Project_Type__c = 'Customer Project';
+		testProject.pse__Billing_Type__c = 'Fixed Price';
+		testProject.CurrencyIsoCode = 'USD';
+		testProject.pse__Is_Active__c = true;	
+        testProject.CarryingOutOrganization__c = Org1.Id;
+        testProject.ProgBarPrelimPlanApproval__c = 'NotStarted';
+        testProject.pse__Stage__c = 'Planning';
+        testProject.ProgressBarExecutionApproval__c = 'NotStarted';
+        testProject.ProposalSubmittedDate__c = date.today();
+        testProject.RM_Button_Clicked__c = false;
+        insert testProject;
+        //test.stopTest();
+        
+        pse__Proj__c testProj = [select id from pse__Proj__c limit 1];
+        
+        DOAApprovalRequest__c doa = new DOAApprovalRequest__c();
+        doa.Project__c = testProj.Id;
+        //doa.ApprovalStatus__c='Submitted';
+                
+        insert doa;
+        
+        ComplianceConditionsofApproval__c cc = new ComplianceConditionsofApproval__c(DOAApprovalRequest__c = doa.Id, ComplianceStatus__c ='Compliant');
+        insert cc;
+        
+        Form__c form = new Form__c(DOAApprovalRequest__c = doa.Id, Business_Group__c = 'CS-BC');
+        insert form;
+        
+        DOARegister__c doar = new DOARegister__c(DOAApprovalRequest__c = doa.Id);
+        insert doar;
+        
+        DOAConditions__c doaC = new DOAConditions__c(DOAApprovalRequest__c = doa.Id);
+        insert doac;
+    }
+    static testmethod void controllerTestMethod(){
+        init();
+        User user = [Select Id from User Limit 1];
+        DOAApprovalRequest__c doa = [Select Id From DOAApprovalRequest__c Limit 1];
+        
+        doa.SubmitAECOMHubForApproval__c = false;
+        doa.ApprovalStatus__c='Submitted';
+        doa.AECOMHubApprovalsRequired__c = true;
+        doa.AECOMHubCountofApprovers__c = 1;
+        doa.SubmitDCSHubforApproval__c = false;
+        doa.GeoCountOfApprovers__c = 1;
+        doa.GeographyApprovalsRequired__c = true;
+        doa.GroupCountofApprovers__c = 1;
+        doa.GroupApprovalsRequired__c = true;
+        doa.EnterpriseCountofApprovers__c = 1;
+        doa.EnterpriseApprovalsRequired__c = true;
+        doa.DCSHubCountofApprovers__c = 1;
+        doa.DCSHubApprovalsRequired__c = true;
+        doa.SubmitEnterpriseforApproval__c = false;
+        doa.SubmitGeographyforApproval__c = false;
+        doa.SubmitGroupforApproval__c = false;
+        update doa;
+        PageReference pageRef = new PageReference('/apex/ECO_Compliance_Condition_of_Approval');
+		test.setCurrentPage(pageRef);
+        ApexPages.currentPage().getParameters().put('Id', doa.id);
+        ECO_DOAApprovalsController con = new ECO_DOAApprovalsController(new ApexPages.StandardController(doa));
+        con.init();
+        con.saveDOA();
+        TestMethod1();
+        doa.GeoPresidentApprover__c = user.Id;
+        doa.GroupChiefExecutiveApprover__c = user.Id;
+        doa.EnterpriseRiskCommitteeApprover__c = user.Id;
+        doa.DCSHubAdministratorApprover__c = user.Id;
+        doa.AECOMHubAdministratorApprover__c = user.id;
+        update doa;
+        con.submitAECOMHub();
+        con.submitDCSHub();
+        con.submitEnterprise();
+        //TestMethod2();
+        /*con.submitEnterprise();
+        con.submitGeography();
+        con.submitGroup();
+        con.submitDOAQueue();*/
+        
+    }
+    static void TestMethod1(){
+        DOAApprovalRequest__c doa = [Select Id From DOAApprovalRequest__c Limit 1];
+        PageReference pageRef = new PageReference('/apex/ECO_Compliance_Condition_of_Approval');
+		test.setCurrentPage(pageRef);
+        ApexPages.currentPage().getParameters().put('Id', doa.id);
+        ECO_DOAApprovalsController con = new ECO_DOAApprovalsController(new ApexPages.StandardController(doa));
+        test.startTest();
+        con.submitAECOMHub();
+        con.submitDCSHub();
+        
+        con.submitEnterprise();
+        con.submitGeography();
+        con.submitGroup();
+        con.submitDOAQueue();
+        test.stopTest();
+        
+    }
+	static void TestMethod2(){
+        DOAApprovalRequest__c doa = [Select Id From DOAApprovalRequest__c Limit 1];
+        PageReference pageRef = new PageReference('/apex/ECO_Compliance_Condition_of_Approval');
+		test.setCurrentPage(pageRef);
+        ApexPages.currentPage().getParameters().put('Id', doa.id);
+        ECO_DOAApprovalsController con = new ECO_DOAApprovalsController(new ApexPages.StandardController(doa));
+    	test.startTest();
+        con.submitEnterprise();
+        con.submitGeography();
+        con.submitGroup();
+        con.submitDOAQueue();
+       	test.stopTest();
+    }
+}
