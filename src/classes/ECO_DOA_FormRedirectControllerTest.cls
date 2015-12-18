@@ -1,5 +1,5 @@
 @isTest
-private class ECO_DOAApprovalsControllerTest {
+private class ECO_DOA_FormRedirectControllerTest {
     static void init(){
         OrganizationString__c testOrg =  ECO_Utils_Testing.createTestOrg();
 		insert testOrg;
@@ -84,83 +84,34 @@ private class ECO_DOAApprovalsControllerTest {
         testProject.ProposalSubmittedDate__c = date.today();
         testProject.RM_Button_Clicked__c = false;
         insert testProject;
+        //test.stopTest();
         
         pse__Proj__c testProj = [select id from pse__Proj__c limit 1];
         
         DOAApprovalRequest__c doa = new DOAApprovalRequest__c();
         doa.Project__c = testProj.Id;
-                
         insert doa;
-        
-        ComplianceConditionsofApproval__c cc = new ComplianceConditionsofApproval__c(DOAApprovalRequest__c = doa.Id, ComplianceStatus__c ='Compliant');
-        insert cc;
         
         Form__c form = new Form__c(DOAApprovalRequest__c = doa.Id, Business_Group__c = 'CS-BC');
         insert form;
         
-        DOARegister__c doar = new DOARegister__c(DOAApprovalRequest__c = doa.Id);
-        insert doar;
         
-        DOAConditions__c doaC = new DOAConditions__c(DOAApprovalRequest__c = doa.Id);
-        insert doac;
     }
     static testmethod void controllerTestMethod(){
         init();
-        User user = [Select Id from User Limit 1];
-        DOAApprovalRequest__c doa = [Select Id From DOAApprovalRequest__c Limit 1];
+        RecordType rt = [Select Id From RecordType Where DeveloperName = 'RFA' AND sObjectType='Form__c' Limit 1];
+        Form__c oForm = [Select Id From Form__c Limit 1];
+        oForm.RecordTypeId = rt.Id;
+        //update oForm;
         
-        doa.SubmitAECOMHubForApproval__c = false;
-        doa.ApprovalStatus__c='Submitted';
-        doa.AECOMHubApprovalsRequired__c = true;
-        doa.AECOMHubCountofApprovers__c = 1;
-        doa.SubmitDCSHubforApproval__c = false;
-        doa.GeoCountOfApprovers__c = 1;
-        doa.GeographyApprovalsRequired__c = true;
-        doa.GroupCountofApprovers__c = 1;
-        doa.GroupApprovalsRequired__c = true;
-        doa.EnterpriseCountofApprovers__c = 1;
-        doa.EnterpriseApprovalsRequired__c = true;
-        doa.DCSHubCountofApprovers__c = 1;
-        doa.DCSHubApprovalsRequired__c = true;
-        doa.SubmitEnterpriseforApproval__c = false;
-        doa.SubmitGeographyforApproval__c = false;
-        doa.SubmitGroupforApproval__c = false;
-        update doa;
-        PageReference pageRef = new PageReference('/apex/ECO_Compliance_Condition_of_Approval');
+        PageReference pageRef = new PageReference('/apex/ECO_DOA_FormRedirect');
 		test.setCurrentPage(pageRef);
-        ApexPages.currentPage().getParameters().put('Id', doa.id);
-        ECO_DOAApprovalsController con = new ECO_DOAApprovalsController(new ApexPages.StandardController(doa));
-        con.init();
-        con.saveDOA();
-        TestMethod1();
-        doa.GeoPresidentApprover__c = user.Id;
-        doa.GroupChiefExecutiveApprover__c = user.Id;
-        doa.EnterpriseRiskCommitteeApprover__c = user.Id;
-        doa.DCSHubAdministratorApprover__c = user.Id;
-        doa.AECOMHubAdministratorApprover__c = user.id;
-        update doa;
-        con.submitAECOMHub();
-        con.submitDCSHub();
-        con.submitEnterprise();
-        
-        
+        ECO_DOA_FormRedirectController con = new ECO_DOA_FormRedirectController(new ApexPages.StandardController(oForm));
+        con.redirectForm();
+        con.redirectFormEdit();
+        update oForm;
+        con.redirectForm();
+        con.redirectFormEdit();
     }
-    static void TestMethod1(){
-        DOAApprovalRequest__c doa = [Select Id From DOAApprovalRequest__c Limit 1];
-        PageReference pageRef = new PageReference('/apex/ECO_Compliance_Condition_of_Approval');
-		test.setCurrentPage(pageRef);
-        ApexPages.currentPage().getParameters().put('Id', doa.id);
-        ECO_DOAApprovalsController con = new ECO_DOAApprovalsController(new ApexPages.StandardController(doa));
-        test.startTest();
-        con.submitAECOMHub();
-        con.submitDCSHub();
-        
-        con.submitEnterprise();
-        con.submitGeography();
-        con.submitGroup();
-        con.submitDOAQueue();
-        test.stopTest();
-        
-    }
-	
+
 }
