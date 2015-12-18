@@ -19,31 +19,31 @@
 
     function forecastChange(line) {
         var row = $b(line).closest('tr');
-        var actual = parseFloat(row.find('[id$="actual"]').text());
-        var current = parseFloat(row.find('[id$="currentForecast"]').text());
-        var revised = parseFloat(row.find('[id$="revisedForecast"]').val());
+        var actual = parseFloat(row.find('.actual').text());
+        var current = parseFloat(row.find('.currentForecast').text());
+        var revised = parseFloat(row.find('.revisedForecast').val());
 
         actual = actual ? actual : 0.00;
         current = current ? current : 0.00;
         revised = revised ? revised : 0.00;
         
-        row.find('[id$="etc"]').val( (revised-actual).toFixed(2) ) ;
-        row.find('[id$="quantity"]').val( (revised-current).toFixed(2) );
+        row.find('.etc').val( (revised-actual).toFixed(2) ) ;
+        row.find('[id$=quantity]').val( (revised-current).toFixed(2) );
     }
     
     function etcChange(line) {
         var row = $b(line).closest('tr');
-        var actual = parseFloat(row.find('[id$="actual"]').text());
-        var current = parseFloat(row.find('[id$="currentForecast"]').text());
-        var etc = parseFloat(row.find('[id$="etc"]').val());
+        var actual = parseFloat(row.find('.actual').text());
+        var current = parseFloat(row.find('.currentForecast').text());
+        var etc = parseFloat(row.find('.etc').val());        
         
 
         actual = actual ? actual : 0.00;
         current = current ? current : 0.00;
         etc = etc ? etc : 0.00;
 
-        row.find('[id$="revisedForecast"]').val((etc + actual).toFixed(2) );
-        row.find('[id$="quantity"]').val( (etc + actual - current).toFixed(2) );
+        row.find('.revisedForecast').val((etc + actual).toFixed(2) );
+        row.find('[id$=quantity]').val( (etc + actual - current).toFixed(2) );
     }
     </script>
     
@@ -376,43 +376,43 @@
                     <table width="100%">
                         <tr>
                         <span>
-                            <td class="lightBlueHeading currency" width="20%">
-                                <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACActualQuantity__c }" rendered="{! !hasChildTasks}" id="actual" />
-                                <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACActualQuantity}" rendered="{!hasChildTasks}"/>
+                            <td class="lightBlueHeading currency actual" width="20%">
+                                <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACActualQuantity__c }" rendered="{! !hasChildTasks}"/>
+                                <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACActualQuantity}" rendered="{!hasChildTasks}"/>
                             </td>
                             <td class="lightBlueHeading currency" width="20%">
                                 <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACApprovedQuantity__c }" rendered="{! !hasChildTasks}" />
-                                <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACApprovedQuantity}" rendered="{!hasChildTasks}"/>
+                                <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACApprovedQuantity}" rendered="{!hasChildTasks}"/>
                             </td>
-                            <td class="lightBlueHeading currency" width="20%">
-                                <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastQuantity__c }" rendered="{!budgetTask.children.size == 0}" id="currentForecast"/>
-                                <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACForecastQuantity}" rendered="{!hasChildTasks}" />
+                            <td class="lightBlueHeading currency currentForecast" width="20%">
+                                <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastQuantity__c }" rendered="{!budgetTask.children.size == 0}"/>
+                                <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACForecastQuantity}" rendered="{!hasChildTasks}" />
                             </td>      
                             <td  width="20%" class="{!IF(budgetTask.children.size == 0,'','lightBlueHeading bold')} currency">
                                 <!--<apex:inputField value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c}" id="etc" rendered="{! !hasChildTasks}" OnKeyUp="etcChange(this);" />    -->
                                 <!-- <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c}" rendered="{!budgetTask.children.size == 0}" /> -->
                                 <apex:outputPanel rendered="{! !hasChildTasks}" > 
-                                	<apex:variable value="{! budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id]}" var="ba"/>
-                                    <input class="currency" type="text" 
+                                    <apex:variable value="{! budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id]}" var="ba"/>
+                                    <input class="currency etc" type="text" 
                                            value="{! IF(ba.EACForecastQuantity__c == null, 0, ba.EACForecastQuantity__c) 
                                            - IF(ba.EACActualQuantity__c == null, 0, ba.EACActualQuantity__c) 
                                             + IF(ba.Quantity__c == null, 0, ba.Quantity__c)}" 
-                                           OnKeyUp="etcChange(this);" id="{!uniqueId}etc"/>
+                                           OnKeyUp="etcChange(this);"/>
                                 </apex:outputPanel>
                                 <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACForecastQuantity 
                                                         - budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACActualQuantity
                                                         + budgetLabourWrapper.mapTotalByLaborDetailAndTask[uniqueId]}" 
-                                                        rendered="{! hasChildTasks}"/>
+                                                        rendered="{! hasChildTasks}"/>                              
                             </td>
                             <td width="20%" class="{!IF(budgetTask.children.size == 0,'','lightBlueHeading bold')} currency">
                                 <apex:outputPanel rendered="{! !hasChildTasks}" > 
-                                    <input class="currency" type="text" 
+                                    <input class="currency revisedForecast" type="text" 
                                            value="{!IF(budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c == null, 0, budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c) + 
                                                   IF(budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastQuantity__c == null, 0, budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastQuantity__c)
                                                  
 
-                                                  	}" 
-                                           OnKeyUp="forecastChange(this);" id="{!uniqueId}revisedForecast"/>
+                                                    }" 
+                                           OnKeyUp="forecastChange(this);"/>
                                 </apex:outputPanel>
                                 <!--<apex:inputText value="{!budgetLabour.mapRevisedForecast[budgetTask.obudgetTask.Id]}" id="forecast"
                                                 rendered="{!budgetTask.children.size == 0}" OnKeyUp="forecastChange(this);"/>-->
