@@ -268,11 +268,13 @@ public class ECO_Service_ProjectSnapshots {
       			
       			if (!timePeriodMap.isEmpty()) {
 	                pse__Time_Period__c monthTP = (pse__Time_Period__c) timePeriodMap.get('Month');
-	                monthStartDate = monthTP.pse__Start_Date__c;
-	                System.debug(System.LoggingLevel.WARN, '___monthStartDate='+monthStartDate);
-	                if (monthStartDate != null) {
-		                mtdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, monthStartDate);  
-						System.debug(System.LoggingLevel.WARN, '___mtdActualFinancialMetricsMap='+mtdActualFinancialMetricsMap);
+	                if (monthTP != null) {
+		                monthStartDate = monthTP.pse__Start_Date__c;
+		                System.debug(System.LoggingLevel.WARN, '___monthStartDate='+monthStartDate);
+		                if (monthStartDate != null) {
+			                mtdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, monthStartDate);  
+							System.debug(System.LoggingLevel.WARN, '___mtdActualFinancialMetricsMap='+mtdActualFinancialMetricsMap);
+		                }
 	                }
       			}
       			
@@ -282,11 +284,13 @@ public class ECO_Service_ProjectSnapshots {
 
 				if (!timePeriodMap.isEmpty()) {
 	                pse__Time_Period__c yearTP = (pse__Time_Period__c) timePeriodMap.get('Year');
-	                yearStartDate = yearTP.pse__Start_Date__c;
-	                System.debug(System.LoggingLevel.WARN, '___yearStartDate='+yearStartDate);
-	                if (yearStartDate != null) {
-	                	ytdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, yearStartDate);
-						System.debug(System.LoggingLevel.WARN, '___ytdActualFinancialMetricsMap='+ytdActualFinancialMetricsMap);
+	                if (yearTP != null) {
+		                yearStartDate = yearTP.pse__Start_Date__c;
+		                System.debug(System.LoggingLevel.WARN, '___yearStartDate='+yearStartDate);
+		                if (yearStartDate != null) {
+		                	ytdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, yearStartDate);
+							System.debug(System.LoggingLevel.WARN, '___ytdActualFinancialMetricsMap='+ytdActualFinancialMetricsMap);
+		                }
 	                }
 				}
 				
@@ -467,8 +471,10 @@ public class ECO_Service_ProjectSnapshots {
                     
 	                if (!timePeriodMap.isEmpty()) {
 	                    // MTD
-	                    FinancialMetrics mtdFinancialMetrics = mtdActualFinancialMetricsMap.get(project.Id);
-	                    snapshot = getMtdActualFinancialMetricsMapInformation(mtdFinancialMetrics, snapshot, monthStartDate);
+	                    if (mtdActualFinancialMetricsMap != null && !mtdActualFinancialMetricsMap.isEmpty()) {
+		                    FinancialMetrics mtdFinancialMetrics = mtdActualFinancialMetricsMap.get(project.Id);
+		                    snapshot = getMtdActualFinancialMetricsMapInformation(mtdFinancialMetrics, snapshot, monthStartDate);
+	                    }
 	                }
 	                    
                     // ITD
@@ -477,8 +483,10 @@ public class ECO_Service_ProjectSnapshots {
                     
                     if (!timePeriodMap.isEmpty()) {
 	                    // YTD
-	                    FinancialMetrics ytdFinancialMetrics = ytdActualFinancialMetricsMap.get(project.Id);
-	                    snapshot = getYtdActualFinancialMetricsMapInformation(ytdFinancialMetrics, snapshot, yearStartDate);
+	                    if (ytdActualFinancialMetricsMap != null && !ytdActualFinancialMetricsMap.isEmpty()) {
+		                    FinancialMetrics ytdFinancialMetrics = ytdActualFinancialMetricsMap.get(project.Id);
+		                    snapshot = getYtdActualFinancialMetricsMapInformation(ytdFinancialMetrics, snapshot, yearStartDate);
+	                    }
                     }
                     
                     // Billing Metrics
@@ -939,22 +947,41 @@ public class ECO_Service_ProjectSnapshots {
 	// Time period
     private Map<Id, ProjectSnapshot__c> getSnapshotFiscalMonths(List<ProjectSnapshot__c> snapshots) {
         Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap = new Map<Id, ProjectSnapshot__c>();
-        List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
+        //OLD: List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
         
+        List<Date> endDateList = new List<Date>();
         for (ProjectSnapshot__c snapshot : snapshots) {
-            pse__Time_Period__c fm = null;
-            if (snapshot.SnapshotDate__c != null){                                      
-                fm = ECO_Utils_Date.getFiscalPeriod(snapshot.SnapshotDate__c.date(), 0, timePeriods);  
-                if (fm != null){
-                    snapshot.SnapshotFiscalMonth__c = fm.TimePeriodCode__c;
-                } 
-                
-                fm = ECO_Utils_Date.getFiscalPeriod(snapshot.SnapshotDate__c.date(), 1, timePeriods);  
-                if (fm != null){
-                    snapshot.SnapshotPreviousFiscalMonth__c = fm.TimePeriodCode__c;
-                }
-
-                projectIdToSnapshotMap.put(snapshot.Project__c, snapshot);
+             if (snapshot.SnapshotDate__c != null){ 
+                 endDateList.add((snapshot.SnapshotDate__c.date()).addmonths(2));
+                 endDateList.add((snapshot.SnapshotDate__c.date()).addmonths(-3));
+             }
+        }
+        System.debug(System.LoggingLevel.WARN, '___endDateList='+endDateList);
+        List<pse__Time_Period__c> timePeriods  = new  List<pse__Time_Period__c>();
+        
+        if(endDateList.size()>0)
+        {
+	        timePeriods = ECO_Utils_Date.calcTimePeriods(endDateList, 'Month'); 
+	        System.debug(System.LoggingLevel.WARN, '___timePeriods='+timePeriods);
+	        
+	        pse__Time_Period__c fm = null;
+	        for (ProjectSnapshot__c snapshot : snapshots) {
+	            if (snapshot.SnapshotDate__c != null){                                      
+	                fm = ECO_Utils_Date.getFiscalPeriod(snapshot.SnapshotDate__c.date(), 0, timePeriods);
+	                System.debug(System.LoggingLevel.WARN, '___fm='+fm);
+	                if (fm != null){
+	                    snapshot.SnapshotFiscalMonth__c = fm.TimePeriodCode__c;
+	                } 
+	                System.Debug(System.LoggingLevel.WARN, '___SnapshotFiscalMonth__c=' + snapshot.SnapshotFiscalMonth__c);
+	                
+	                fm = ECO_Utils_Date.getFiscalPeriod(snapshot.SnapshotDate__c.date(), 1, timePeriods);  
+	                if (fm != null){
+	                    snapshot.SnapshotPreviousFiscalMonth__c = fm.TimePeriodCode__c;
+	                }
+					System.Debug(System.LoggingLevel.WARN, '___SnapshotPreviousFiscalMonth__c=' + snapshot.SnapshotPreviousFiscalMonth__c);
+	                
+	                projectIdToSnapshotMap.put(snapshot.Project__c, snapshot);
+	            }
             }
         }
         return projectIdToSnapshotMap;
