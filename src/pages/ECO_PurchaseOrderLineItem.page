@@ -3,17 +3,12 @@
 		<apex:includeScript value="{!URLFOR($Resource.ECO_jQuery_1_11_2_min_js)}" />
 		<script type='text/javascript'>
 			j$ = jQuery.noConflict();
-			/*
-			function setSelectedTaskInParent(taskId, taskName){
-				parent.setTaskField(taskId, taskName);
-			}
-			*/
-
+			
 			function setTaskField(taskId, taskName, projectTaskNumber){				
 				j$("[id*=currentPOLineItem_TaskName]").html(projectTaskNumber + " (" + taskName + ")"); 
 				j$("[id*=currentPOLineItem_TaskId]").val(taskId); 
 
-				setSelectedTask_JS();
+                //setSelectedTask_JS();
 			}
 
 			function setUnitOfMeasureLabel(){
@@ -36,23 +31,11 @@
 			var firstLoad = false;
 
 			function handleLineTypeChange(){
-				//selectPOLineType_JS();
 				var hasBeenSynced = Boolean("{!hasBeenSynced}");
 				var hasPreviousVersions = Boolean("{!hasPreviousVersions}");
 			
-				/*
-				var linetype = '';
-				if(hasBeenSynced == true || hasPreviousVersions == true){
-					linetype = "{!currentPOLineItem.LineType__c}";
-									
-				}else{
-					linetype = j$("[id*=poliLineType]").val(); 	
-				}
-				*/
-
 				var linetype = j$("[id*=poliLineTypeForOnChange]").val(); 
-				//alert(linetype);
-
+			
 				if(linetype == 'Unit Rate'){
 					if(firstLoad == false){
 						j$("[id*=poliAmount]").val('');
@@ -81,7 +64,6 @@
 			function calculateTotalForGoods(){
 				
 				var hasBeenInvoiced = "{!hasBeenInvoiced}";
-				//alert(hasBeenInvoiced);
 				var unitPrice = j$.trim(j$("[id*=poliUnitPrice]").val());
 				if(hasBeenInvoiced == "true"){
 					unitPrice = j$.trim(j$("[id*=changedUnitPrice]").val());
@@ -90,14 +72,10 @@
 				}
 				
 				var quantity = j$.trim(j$("[id*=poliQuantity]").val());
-				//var unitOfMeasure = j$("[id*=poliUnitofMeasure]").val();
-
+				
 				if(unitPrice.length > 0 && quantity.length > 0){	
-					//alert(parseFloat(unitPrice));
-					//alert(parseFloat(quantity));			
 					if(j$.isNumeric(parseFloat(unitPrice)) && j$.isNumeric(parseFloat(quantity))){
 						var amtTotal = parseFloat(unitPrice) * parseFloat(quantity);	
-						//alert(amtTotal);					
 						amtTotal = amtTotal.toFixed(2); 						
 						j$("[id*=poliAmount]").val(amtTotal);					
 					}
@@ -118,14 +96,6 @@
 				firstLoad = true;
 				handleLineTypeChange();
 
-				/*
-				var editType = "{!editType}";				
-				if(editType == 'Add'){
-					j$("[id*=poliQuantity]").val('1');
-				}
-				*/
-
-				//j$("[id*=poliUnitofMeasure]").attr('disabled','disabled');
 				j$("[id*=poliUnitPrice]").blur(function(){
 					calculateTotalForGoods();
 				});
@@ -141,14 +111,6 @@
 					} 									
 				});
 			});
-
-/*
-poliQuantity
-poliAmount
-poliUnitofMeasure
-poliUnitPrice
-*/
-
 		</script>
         
         <style>
@@ -215,21 +177,10 @@ poliUnitPrice
 			<apex:inputField value="{!currentPOLineItem.UnitPrice__c}" id="changedUnitPrice" />			
 		</div>
 
-		<!--
-		<div id="poliUnitOfMeasureLabel"></div>			
-		-->
-
-		<apex:actionFunction action="{!saveCurrentPOLineItem}" name="saveCurrentPOLineItem_JS" oncomplete="closeMeAndReRender();" />
+        <apex:actionFunction action="{!saveCurrentPOLineItem}" name="saveCurrentPOLineItem_JS" oncomplete="closeMeAndReRender();" />
 		<apex:actionFunction action="{!getTasksForProject}" name="getTasksForProject_JS" reRender="pbTasks" immediate="true" oncomplete="return false;"/>
-
 		<apex:actionFunction name="doGetTasksForProject" action="{!getTasksForProject}" rerender="pbTasks" status="statusBar" />
-
-		<!--
-		<apex:actionFunction name="selectPOLineType_JS" action="{!selectPOLineType}" rerender="poliQuantity,poliAmount,poliUnitofMeasure,poliUnitPrice" />
-		-->
-
-		<apex:actionFunction name="setSelectedTask_JS" action="{!setSelectedTask}" rerender="poliUnitofMeasure" status="statusBar"/>
-
+		<!--apex:actionFunction name="setSelectedTask_JS" action="{!setSelectedTask}" rerender="poliUnitofMeasure" status="statusBar"/-->
 		<apex:actionFunction name="cancelPurchaseOrderLineItem_JS" action="{!cancelPurchaseOrderLineItem}" status="statusBar"/>
 
 		<apex:sectionHeader subtitle="{!editType} Purchase Order Line Item" title=" Purchase Order {!poHeaderName}" >
@@ -241,12 +192,8 @@ poliUnitPrice
 				</apex:facet>
 			</apex:actionStatus>
 		</apex:sectionHeader>
-		<!--
-hasBeenSynced = {!hasBeenSynced}
-<br/>
-hasPreviousVersions = {!hasPreviousVersions}
--->
-		<apex:pageMessages id="msg" escape="false"></apex:pageMessages>
+
+        <apex:pageMessages id="msg" escape="false"></apex:pageMessages>
 			<apex:outputPanel >
 				<apex:pageMessage escape="true" severity="INFO" summary="This Purchase Order Line Item has been sent to oracle. Only certain fields may be modified." rendered="{!hasBeenSynced}" />
 			</apex:outputPanel>
@@ -260,21 +207,10 @@ hasPreviousVersions = {!hasPreviousVersions}
                 </div>
 				<apex:pageBlockButtons >				
 					<apex:commandButton action="{!saveCurrentPOLineItem}" value="{!if(hasBeenSynced == true, 'Change', 'Save')}" reRender="msg"/>
-					<!--apex:commandButton action="{!returnToPurchaseOrder}" value="Cancel" immediate="true" /-->
 					<apex:commandButton onclick="handleDeleteClick('{!cancelButtonText}');" value="{!cancelButtonText}" immediate="true" disabled="{!if(currentPOLineItem.Id == null, 'true', 'false')}" reRender="msg"/>				
 					<apex:commandButton action="{!returnToPurchaseOrder}" value="Return to Purchase Order" immediate="true"/>
 				</apex:pageBlockButtons>
 				<apex:pageBlockSection columns="2">
-					<!--apex:pageBlockSectionItem >		
-						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.Name.Label}" for="currentPOLineItem_Name"/>
-						<apex:outputField value="{!currentPOLineItem.Name}" id="currentPOLineItem_Name" />
-					</apex:pageBlockSectionItem-->
-					
-					<!--apex:pageBlockSectionItem >		
-						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.POHeader__c.Label}" for="currentPOLineItem_POHeader"/>
-						<apex:outputLabel value="{!poHeaderName}" id="currentPOLineItem_POHeader" />
-					</apex:pageBlockSectionItem-->
-
 					<apex:pageBlockSectionItem >
                         <apex:outputPanel >
                             <apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.OraclePONumber__c.Label}" for="poliOraclePONumber"/>                   
@@ -326,13 +262,7 @@ hasPreviousVersions = {!hasPreviousVersions}
                                 <apex:outputLabel value="{!currentPOLineItem_TaskName}" id="currentPOLineItem_TaskName" />							
                             </div>
 						</apex:outputPanel>						
-						<!--<apex:outputLabel value="{!currentPOLineItem.ProjectTask__r.Name}" id="currentPOLineItem_TaskName" />-->
 					</apex:pageBlockSectionItem>
-
-					<!--apex:pageBlockSectionItem >		
-						<apex:outputLabel value="{!$ObjectType.POLineItem__c.Fields.Revision__c.Label}" for="poliRevision"/>
-						<apex:outputLabel value="{!currentPOLineItem.Revision__c}" id="poliRevision" />
-					</apex:pageBlockSectionItem-->
 
 					<apex:pageBlockSectionItem >
                         <apex:outputPanel >
@@ -423,14 +353,7 @@ hasPreviousVersions = {!hasPreviousVersions}
                     <apex:pageBlockSectionItem >
 						<apex:outputPanel >
 							<apex:outputLabel value="{!$ObjectType.pse__Project_Task__c.Fields.Name.Label}" for="taskFilter"/>&nbsp;&nbsp;
-							
-							<!--apex:inputText value="{!taskFilter}" id="taskFilter"/>&nbsp;&nbsp;
-							<apex:commandButton onclick="getTasksForProject_JS();" value="Search" immediate="true" /-->
-
 							<apex:inputText id="txtSearchTaskName" value="{!searchTaskName}" ></apex:inputText>
-
-							<!--apex:commandButton action="{!getTasksForProject}" value="Search2" immediate="true" reRender="pbTasks"/-->
-							
 							<apex:commandButton onclick="doGetTasksForProject(); return false;" value="Search" reRender="pbTasks" />
 							<br/><br/>
 							<apex:outputPanel id="pbTasks">
@@ -452,11 +375,6 @@ hasPreviousVersions = {!hasPreviousVersions}
 									{!task.ProjectTaskNumber__c}
 								</apex:column>
 								
-								<!--apex:column >
-									<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.pse__Parent_Task__c.Label}</apex:facet>
-									{!task.pse__Parent_Task__r.Name}
-								</apex:column-->
-								
 								<apex:column >
 									<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.FinancialTask__c.Label}</apex:facet>
 									{!if(task.FinancialTask__c == true, 'Y', 'N')}
@@ -467,16 +385,10 @@ hasPreviousVersions = {!hasPreviousVersions}
 								</apex:column>
 								<apex:column >
 									<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.pse__Start_Date__c.Label}</apex:facet>
-<!--									<apex:outputText value="{0, date, yyyy-MM-dd}">
-										<apex:param value="{!task.pse__Start_Date__c}" />											
-									</apex:outputText>	-->
 									<c:ECO_DateFormat date="{!task.pse__Start_Date__c}" />
 								</apex:column>
 								<apex:column >
 									<apex:facet name="header">{!$ObjectType.pse__Project_Task__c.Fields.pse__End_Date__c.Label}</apex:facet>
-<!--									<apex:outputText value="{0, date, yyyy-MM-dd}">
-										<apex:param value="{!task.pse__End_Date__c}" />											
-									</apex:outputText>	-->
 									<c:ECO_DateFormat date="{!task.pse__End_Date__c}" />
 								</apex:column>
 							</apex:pageBlockTable>							
@@ -486,5 +398,4 @@ hasPreviousVersions = {!hasPreviousVersions}
 				</apex:pageBlockSection>
 			</apex:pageBlock>			
 	</apex:form>
-	<!--apex:relatedList list="DistributionsPOLineItem__r" title="Distributions" /-->	
 </apex:page>

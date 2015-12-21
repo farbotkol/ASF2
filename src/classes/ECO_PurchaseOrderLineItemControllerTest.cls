@@ -4,15 +4,15 @@ private class ECO_PurchaseOrderLineItemControllerTest{
 	private static final Integer numTestProjectTasks = 10;	
 	private static final Integer numTeamMembers = 1;
 
-
 	static testMethod void testCreateAndUpdatePurchaseOrderLineItem() {
-		ECO_Utils_Testing.createTestDataForProjectSync(numTestProjectTasks, numTeamMembers);
+		Test.startTest();
+        ECO_Utils_Testing.createTestDataForProjectSync(numTestProjectTasks, numTeamMembers);
 		pse__Proj__c testProject = [SELECT Id, pse__Account__c FROM pse__Proj__c];
 
 		POHeader__c poHeader = new POHeader__c();
 		poHeader.Project__c = testProject.Id;
 		insert poHeader;
-
+		Test.stopTest();
 		PageReference pageRef = new PageReference('/apex/ECO_PurchaseOrderLineItem');
 		pageRef.getParameters().put('poHeaderId', poHeader.Id);
 		pageRef.getParameters().put('projectId', testProject.Id);
@@ -80,7 +80,6 @@ private class ECO_PurchaseOrderLineItemControllerTest{
     	savePageRef = con3.cancelPurchaseOrderLineItem();
 
     	PageReference backPageRef = con3.returnToPurchaseOrder();
-
     }
 
    static testMethod void testCreateNewControllerInstance() {
@@ -98,7 +97,5 @@ private class ECO_PurchaseOrderLineItemControllerTest{
 		test.setCurrentPage(pageRef);
 
 		ECO_PurchaseOrderLineItemController con = new ECO_PurchaseOrderLineItemController();
-
 	}
-
 }

@@ -14,6 +14,22 @@ public class ECO_DTO_BudgetHeader {
         private set;
     }
     
+    public Decimal salaryCostMultiplier {
+        get {
+            if(oBudgetHeader.TotalRawCost__c == 0)
+                return 0.00;
+            return oBudgetHeader.NetServicesRevenue__c / oBudgetHeader.TotalRawCost__c;
+        }
+    }
+    
+    public Decimal averageLabourRatePerHour {
+        get {
+            if(oBudgetHeader.TotalLaborAmount__c == 0)
+                return 0.00;
+            return oBudgetHeader.NetServicesRevenue__c / oBudgetHeader.TotalLaborAmount__c;
+        }
+    }
+    
     public DateTime createdDate {
         get {return oBudgetHeader.CreatedDate;}
         private set;

@@ -187,6 +187,60 @@ public class ECO_DTO_BudgetHeaderWrapper {
         }
     }
     
+    public Decimal getBudgetTotalsalaryCostMultiplier {
+        get{
+            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_APPROVED);
+            if(recCount > 0)
+                return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'salaryCostMultiplier')/recCount;
+        	return 0.0;
+        }
+    }
+    
+    public Decimal getForecastTotalsalaryCostMultiplier {
+        get{
+            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST);
+            if(recCount > 0)
+                return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'salaryCostMultiplier')/recCount;
+        	return 0.0;
+        }
+    }
+    
+    public Decimal getWorkAtRiskTotalsalaryCostMultiplier {
+        get{
+            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_WORKATRISK);
+            if(recCount > 0)
+            	return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'salaryCostMultiplier')/recCount;
+        	return 0.0;
+        }
+    }
+    
+    public Decimal getBudgetTotalaverageLabourRatePerHour {
+        get{
+            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_APPROVED);
+            if(recCount > 0)
+                return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'averageLabourRatePerHour')/recCount;
+        	return 0.0;
+        }
+    }
+    
+    public Decimal getForecastTotalaverageLabourRatePerHour {
+        get{
+            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST);
+            if(recCount > 0)
+                return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'averageLabourRatePerHour')/recCount;
+        	return 0.0;
+        }
+    }
+    
+    public Decimal getWorkAtRiskTotalaverageLabourRatePerHour {
+        get{
+            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_WORKATRISK);
+            if(recCount > 0)
+            	return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'averageLabourRatePerHour')/recCount;
+        	return 0.0;
+        }
+    }
+    
     public Decimal calculateTotal(String Statuses, String field) {
         Set<String> statusList = new Set<String>(Statuses.split(','));
         
@@ -198,6 +252,24 @@ public class ECO_DTO_BudgetHeaderWrapper {
         }
         
         return total;
+    }
+    
+    public Decimal calculateTotalDTOproperty(String Statuses, String property) {
+		Set<String> statusList = new Set<String>(Statuses.split(','));
+        
+        Decimal total = 0.0;
+        for(ECO_DTO_BudgetHeader budgetHeader : dtoBudgetHeaders) {
+            if(statusList.contains(budgetHeader.status)) {
+                if(property == 'salaryCostMultiplier'){
+                	total = total + (Decimal)budgetHeader.salaryCostMultiplier;
+                }
+                else if(property == 'averageLabourRatePerHour') {
+                    total = total + (Decimal)budgetHeader.averageLabourRatePerHour;
+                }                
+            }
+        }
+        
+        return total;        
     }
     
     public Integer calculateRecordsWithStatus(String Statuses) {

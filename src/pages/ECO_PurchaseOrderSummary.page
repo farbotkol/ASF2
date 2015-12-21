@@ -1,9 +1,7 @@
 <apex:page standardController="POHeader__c" extensions="ECO_PurchaseOrderSummaryController">
 	
 	<apex:includeScript value="{!URLFOR($Resource.ECO_jQuery_1_11_2_min_js)}" />
-	<!--<apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2)}" />-->
 	<apex:includeScript value="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.3/jquery-ui.min.js" />
-	<!--<apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2_Themes)}" />-->
 
 	<link rel="stylesheet" type="text/css" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.2/themes/redmond/jquery-ui.css"/>
 	<style>
@@ -89,7 +87,7 @@
 
 			var poLineItemModal = null;
 
-			function showDialog(modalTitle){
+        /*function showDialog(modalTitle){
 				
              	poLineItemModal = j$("#divTest").dialog({
 						             		autoOpen: false,
@@ -103,53 +101,29 @@
 						             	});
              	poLineItemModal.dialog('open');       		
              	
-			}
+			}*/
 
-			function closeDialog(){
+        /*function closeDialog(){
 				poLineItemModal.dialog('close');   
 				//vf rerender wasn't working - workaround for that
 				//setTimeout(doRerenderPOListItems_JS, 1000);				
-			}
+			}*/
 
-			function closeDialogAndReRender(){
+        /*function closeDialogAndReRender(){
 				closeDialog();
 				doRerenderPOListItems_JS();
-			}
+			}*/
 
-			function setTaskField(taskId, taskName){
-				
-				j$("[id*=currentPOLineItem_TaskName]").html(taskName); 
-				j$("[id*=currentPOLineItem_TaskId]").val(taskId); 
-			}
-
-			function setPOLineItemFields() {
-				var amount = j$("[id*=currentPOLineItem_Amount]").val();
-				alert(amount);
-				j$("[id*=hdncurrentPOLineItem_Amount]").val(amount); 
-				var currencyIsoCode = j$("[id*=currentPOLineItem_CurrencyIsoCode]").val();
-				alert(currencyIsoCode);
-				j$("[id*=hdncurrentPOLineItem_CurrencyIsoCode]").val(currencyIsoCode); 
-				saveCurrentPOLineItem_JS();
-			}
-
-			function editPOLineItem(id){
-				//j$("[id*=currentPOLineItem_Id]").val(id); 
-				//editExistingPOLineItem_JS();
-				var url = "/apex/ECO_ProjectTaskSearch?projectId={!poHeader.Project__c}&poHeaderId={!poHeader.Id}&poLineItemId=" + id;
-				j$("[id*=iPOLineItem]").attr('src', url);
-				showDialog('Edit Purchase Order Line Item');
-			}
-
-			function save2(){
+        /*function save2(){
 				closeDialog();
 				saveCurrentPOLineItem_JS();
-			}
+			}*/
 
-			function addNewPOLineItem(){
+        /*function addNewPOLineItem(){
 				var url = "/apex/ECO_ProjectTaskSearch?projectId={!poHeader.Project__c}&poHeaderId={!poHeader.Id}";
 				j$("[id*=iPOLineItem]").attr('src', url);
 				showDialog('Add New Purchase Order Line Item');
-			}
+			}*/
 		
 			function submitForApproval(){
 				var purchaseOrderId = "{!poHeader.Id}";
@@ -159,16 +133,19 @@
 			}
 
 			function SaveAndSubmitPurchaseOrder(){				
-				var confirmMsg = "Submit Purchase Order for Approval?";
-				if (Modal.confirm && Modal.confirm(confirmMsg)){
-					saveAndSubmitForApproval_JS();
-				} 
+				purchaseOrderStatus = "{!poHeader.Status__c}";
+                if(purchaseOrderStatus == 'APPROVED') {
+                    saveAndSubmitForApproval_JS();
+                }
+                else {
+                    var confirmMsg = "Submit Purchase Order for Approval?";
+                    if (Modal.confirm && Modal.confirm(confirmMsg)){
+                        saveAndSubmitForApproval_JS();
+                    }
+                }
 			}
 
-			function SyncPurchaseOrderIfAutoApproved(){
-				//var doSync = Boolean("{!isApprovedDoSyncNow}");
-				//var doSync = true;
-				//alert(doSync);
+			function SyncPurchaseOrderIfAutoApproved(){				
 				if(doSync == "true"){
 					createMessageQueueRecord_start_JS();
 				}
@@ -194,8 +171,7 @@
 				    temp.innerHTML = seconds;
 				    temp2.innerHTML = seconds;
 				    var timeoutFunction = setTimeout(doMessageQueuePolling, 1000);
-				}    		
-				
+				}
 			}
 
 			function changeVendor(vendorId){
@@ -209,46 +185,37 @@
 					cancelPurchaseOrder_JS();
 				}
 			}
+        
+            function authenticate() {
+                authenticateCredentials($x('[id$=username]').val(), $x('[id$=password]').val());
+            }
+        
+            function cancelModal() {
+                closeModal('modalDialogOracleLogin');
+                return false;
+            }
+        
+        	function closeAuthenticationModal(){
+                closeModal('modalDialogOracleLogin');
+                closeAuthenticationWindow();
+                return false;
+            }
 		</script>
 
-		<!--
-		<apex:actionFunction action="{!addNewPOLineItem}" name="addNewPOLineItem_JS" oncomplete="showDialog();" reRender="pbCurrentPOLineItem,currentPOLineItem_TaskId,currentPOLineItem_Id"/>
-		-->
-		<apex:actionFunction action="{!gotoPOLineItemPage}" name="addNewPOLineItem_JS" oncomplete="showDialog();" reRender="pbCurrentPOLineItem,currentPOLineItem_TaskId,currentPOLineItem_Id"/>
-		<!--
-		<apex:actionFunction action="{!editExistingPOLineItem}" name="editExistingPOLineItem_JS" oncomplete="showDialog();" reRender="pbCurrentPOLineItem,pbStatus,validPOLineItems"/>
-		<apex:actionFunction action="{!doRerenderPOListItems}" name="doRerenderPOListItems_JS" reRender="pbStatus,validPOLineItems,pbsDistributions,msgPanel,btnSync,msgValidation"/>
-		-->
-		<apex:actionFunction action="{!doRerenderPOListItems}" name="doRerenderPOListItems_JS" reRender="pbStatus,validPOLineItems,pbsDistributions,msgPanel,btnSync,msgValidation"/>
-		<!--
-		<apex:actionFunction action="{!saveCurrentPOLineItem}" name="saveCurrentPOLineItem_JS" status="statusBar" oncomplete="closeDialog(); doRerenderPOListItems_JS(); return false;" />
-		-->
+		<!--apex:actionFunction action="{!gotoPOLineItemPage}" name="addNewPOLineItem_JS" oncomplete="showDialog();" reRender="pbCurrentPOLineItem"/-->
+		<!--apex:actionFunction action="{!doRerenderPOListItems}" name="doRerenderPOListItems_JS" reRender="pbStatus,pbsDistributions,msgPanel,btnSync,msgValidation"/-->
 		<apex:actionFunction action="{!initiateOracleSyncRequest}" name="initiateOracleSyncRequest_JS" status="statusBar" oncomplete="executeOracleSyncRequest_JS();"/>
         <apex:actionFunction action="{!executeOracleSyncRequest}" name="executeOracleSyncRequest_JS" status="statusBar" reRender="msg,syncHistorySection,statusBar"/>	
         <apex:actionFunction action="{!saveAndSubmitForApproval}" name="saveAndSubmitForApproval_JS" status="statusBar" reRender="msg,statusBar,approvalHistory,autoApproveSuccessCheck" oncomplete="SyncPurchaseOrderIfAutoApproved();" />	
-		<!--
-        <apex:actionFunction action="{!assignContactToPOLineItem}" name="assignContactToPOLineItem_JS"  />
-		-->
-        <apex:actionFunction action="{!createMessageQueueRecord_start}" name="createMessageQueueRecord_start_JS" oncomplete="createMessageQueueRecord_complete_JS();" reRender="msgPanel,msgPanelBottom,msgPollingTop,msgPollingBottom" status="statusBar"/>	
+		<apex:actionFunction action="{!createMessageQueueRecord_start}" name="createMessageQueueRecord_start_JS" oncomplete="createMessageQueueRecord_complete_JS();" reRender="msgPanel,msgPanelBottom,msgPollingTop,msgPollingBottom" status="statusBar"/>	
 		<apex:actionFunction action="{!createMessageQueueRecord_complete}" name="createMessageQueueRecord_complete_JS" oncomplete="sendPOSyncRequest_start_JS();" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
 		<apex:actionFunction action="{!sendPOSyncRequest_start}" name="sendPOSyncRequest_start_JS" oncomplete="sendPOSyncRequest_complete_JS();" reRender="msgPanel,msgPanelBottom,msgPollingTop,msgPollingBottom" status="statusBar"/>
 		<apex:actionFunction action="{!sendPOSyncRequest_complete}" name="sendPOSyncRequest_complete_JS" oncomplete="sendPOSyncRequest_Finish_JS();" reRender="msgPanel,msgPanelBottom,syncHistorySection" status="statusBar"/>
-		<!-- response back not quite known yet - disable polling in the meantime-->
-        <!--
-		<apex:actionFunction action="{!sendPOSyncRequest_Finish}" name="sendPOSyncRequest_Finish_JS" oncomplete="checkIfSyncHasBeenProcessed_JS();" reRender="msgPanel,msgPanelBottom" status="statusBar"/>
-		-->
-		<apex:actionFunction action="{!sendPOSyncRequest_Finish}" name="sendPOSyncRequest_Finish_JS" reRender="msgPanel,msgPanelBottom,validPOLineItems,pbStatus,pbtValidPOLineItems,pbsPOHeader,txtJSON,btnSavePOHeader" status="statusBar"/>
+		<apex:actionFunction action="{!sendPOSyncRequest_Finish}" name="sendPOSyncRequest_Finish_JS" reRender="msgPanel,msgPanelBottom,pbStatus,pbtValidPOLineItems,pbsPOHeader,txtJSON,btnSavePOHeader" status="statusBar"/>
     	<apex:actionFunction action="{!checkIfSyncHasBeenProcessed}" name="checkIfSyncHasBeenProcessed_JS" reRender="msgPollingTop,msgPollingBottom,syncHistorySection" oncomplete="doMessageQueuePolling();"/>
 		<apex:actionFunction action="{!getDefaultPaymentTermsForVendor}" name="getDefaultPaymentTermsForVendor_JS" reRender="pohAgreement, pohPaymentTerm, vendorSection" />
 		<apex:actionFunction action="{!cancelPurchaseOrder}" name="cancelPurchaseOrder_JS" reRender="msg,statusBar,approvalHistory,autoApproveSuccessCheck" status="statusBar" oncomplete="SyncPurchaseOrderIfAutoApproved();" />
 		<div style="display:none;">
-            <apex:inputText value="{!currentPOLineItem_TaskId}" id="currentPOLineItem_TaskId" />
-            <apex:inputText value="{!currentPOLineItem_Id}" id="currentPOLineItem_Id" />
-    
-            <apex:inputText value="{!currentPOLineItem_Amount}" id="hdncurrentPOLineItem_Amount" />
-            <apex:inputText value="{!currentPOLineItem_CurrencyIsoCode}" id="hdncurrentPOLineItem_CurrencyIsoCode" />
-
-			<!--<apex:inputText value="{!currentPOLineItem_TaskName}" id="currentPOLineItem_TaskName" />-->
 			<apex:inputText value="{!selectedVendorId}" id="selectedVendorId" />
 		</div>
 		<apex:sectionHeader subtitle="Purchase Order Summary" title=" Sync Purchase Order " >
@@ -262,8 +229,9 @@
 		</apex:sectionHeader>
 
 		<apex:outputPanel id="msgPanel">
+            <apex:pageMessage detail="Your Oracle Login has expired and you are required to login to Oracle before Synching the Purchase Order. Please click the Login button and enter your Oracle credentials." severity="warning" strength="2" title="Expired Oracle Login" rendered="{!NOT($User.IsValidOracleToken__c)}"/>
 			<apex:pageMessages id="msg" escape="false"></apex:pageMessages>
-		</apex:outputPanel>
+        </apex:outputPanel>
 
 		<apex:outputPanel id="msgPolling" >
 			<div style="display:{!if(showPollingMsg==true, 'block', 'none')}">
@@ -286,7 +254,6 @@
                 3.  Submit for approval.  Once approve d the PO will be created in Oracle and an Oracle PO Nubmer provided - this number should be given to the sub/vendor to quote on their subsequent invoices.<br/><br/>
 	
 					Please note - Advantage should be used for the purchase of indirect materials., the ePM Purchase Order functionality should only be used in relation to project specific subs or specialised vendor services/supplies.
-
             </div>
         </div>
 		<apex:pageBlock rendered="{!!hideEverything}">
@@ -294,35 +261,14 @@
             <apex:pageBlockButtons location="top">
                 <!-- creates purchase order header -->
                 <apex:commandButton value="{!savePOBtnValue}" action="{!updatePurchaseOrder}" rendered="{!canEditHeader}" reRender="msg" id="btnSavePOHeader" />
-                <!--	
-                <apex:commandButton value="{!savePOBtnValue}" onclick="CreateAndSubmitPurchaseOrder(); return false;" rendered="{!showCreateAndSubmitForApproval}" />
-                -->				
-                <!--
-                <apex:commandButton value="Sync Purchase Order" action="{!doRequest}" onclick="initiateOracleSyncRequest_JS();" reRender="syncHistorySection" disabled="{!!allowRequestSubmit}" id="btnSync" rendered="{!allowNewPOLineItems}"/>
-                -->
-                <!--
-                <apex:commandButton value="Sync Purchase Order" action="{!doRequest}" onclick="createMessageQueueRecord_start_JS();" reRender="syncHistorySection" disabled="{!!allowRequestSubmit}" id="btnSyncWithProgress" rendered="{!allowNewPOLineItems}"/>
-                -->	
-                <!-- disabled for testing-->
-                <apex:commandButton value="Sync Purchase Order" onclick="SaveAndSubmitPurchaseOrder(); return false;" reRender="syncHistorySection,pbtValidPOLineItems" disabled="{!!allowRequestSubmit}" id="btnSyncWithProgress" rendered="{!if(allowNewPOLineItems == true && pendingApproval == false, 'true', 'false')}"/>
+                <apex:commandButton value="{!if(poheader.Status__c == 'APPROVED', 'Sync Purchase Order', 'Submit for Approval')}" onclick="SaveAndSubmitPurchaseOrder(); return false;" reRender="syncHistorySection,pbtValidPOLineItems,btnSyncWithProgress" disabled="{!!allowRequestSubmit}" id="btnSyncWithProgress" rendered="{!if(allowNewPOLineItems == true && pendingApproval == false && $User.IsValidOracleToken__c, 'true', 'false')}"/>
                 <apex:commandButton value="Delete" immediate="true" action="{!deletePurchaseOrder}" rendered="{!if(poheader.Status__c != 'APPROVED', 'true', 'false')}"/>
-                <!--
-                <apex:commandButton value="Sync Purchase Order" onclick="SyncPurchaseOrderIfAutoApproved(); return false;" reRender="syncHistorySection,pbtValidPOLineItems" disabled="{!!allowRequestSubmit}" id="btnSyncWithProgress" rendered="{!if(allowNewPOLineItems == true && pendingApproval == false, 'true', 'false')}"/>
-                -->
-                <!--
-                <apex:commandButton value="{!savePOBtnValue}" action="{!updatePurchaseOrder}" status="statusBar" rendered="{!if(showCreateAndSubmitForApproval == false && allowPOHeaderSave == true, 'true', 'false')}"/>
-                -->
-                <!--
-                <apex:commandButton value="{!savePOBtnValue}" action="{!updatePurchaseOrder}" status="statusBar" rendered="{!allowRequestSubmit}"/>
-                -->
                 <apex:commandButton value="Closeout Purchase Order" action="{!closeOutPurchaseOrder}" status="statusBar" disabled="{!!allowPOCloseout}" rendered="{!allowRequestSubmit}" />
                 <apex:commandButton value="Cancel Purchase Order" onclick="confirmCancelPurchaseOrder(); return false;" disabled="{!!allowPOCancel}" rendered="{!allowRequestSubmit}" />
-                <!--			
-                <apex:commandButton value="Cancel Purchase Order" action="{!cancelPurchaseOrder}" status="statusBar" disabled="{!!allowPOCancel}" rendered="{!allowRequestSubmit}" />
-                -->
                 <apex:commandButton value="{!returnBtnValue}" action="{!returnToProject}" />
                 <apex:commandButton action="{!SimulateProcessedByOracle}" value="Mock PO Number Sent Back"  rendered="{!if(hasSyncHistory && poHeader.OraclePurchaseOrderId__c == null, 'true', 'false')}"/>
                 <apex:commandButton action="{!SimulateInvoicedByOracle}" value="Mock PO Invoiced"  rendered="{!if(poHeader.OraclePurchaseOrderId__c != null && poStatus.AP_Invoice__c == null, 'true', 'false')}"/>
+                <apex:commandButton value="Login to Oracle" onclick="openModal('modalDialogOracleLogin');return false;" rendered="{!NOT($User.IsValidOracleToken__c)}"/>
             </apex:pageBlockButtons>
             <apex:pageBlockSection columns="1">
                 <apex:pageBlockSectionItem >
@@ -330,11 +276,6 @@
                         <apex:tab label="Purchase Order Summary" id="tabPOSummary">
                             <apex:pageBlock >
                                 <apex:pageBlockSection columns="2" title="Purchase Order Information" id="pbsPOHeader">
-                                    <!--apex:pageBlockSectionItem rendered="{!allowNewPOLineItems}">
-                                        <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Name.Label}" for="PO_NAME" />
-                                        <apex:outputField value="{!poheader.Name}" id="PO_NAME" />
-                                    </apex:pageBlockSectionItem-->
-                                    
                                     <apex:pageBlockSectionItem rendered="{!allowNewPOLineItems}">
                                         <apex:outputLabel value="Purchase Order Number" for="PO_NUMBER" />
                                         <apex:outputField value="{!poHeader.OraclePurchaseOrderNumber__c}" id="PO_NUMBER" />							
@@ -352,22 +293,7 @@
                                         <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Status__c.Label}" for="pohStatus" />
                                         <apex:outputField value="{!poHeader.Status__c}" id="pohStatus" />							
                                     </apex:pageBlockSectionItem>
-                                    
-                                    <!--apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.CarryingOutOrganization__c.Label}" for="pohCarryingOutOrganization" />
-                                        <apex:outputField value="{!poHeader.CarryingOutOrganization__c}" id="pohCarryingOutOrganization" />							
-                                    </apex:pageBlockSectionItem>
-                                    
-                                    <apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.CarryingOutOrganizationOrgId__c.Label}" for="pohSarryingOutOrganizationOrgId" />
-                                        <apex:outputField value="{!poHeader.CarryingOutOrganizationOrgId__c}" id="pohSarryingOutOrganizationOrgId" />						
-                                    </apex:pageBlockSectionItem>
-                                    
-                                    <apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.OUID__c.Label}" for="pohOUID"/>
-                                        <apex:outputField value="{!poHeader.Project__r.OUID__c}" id="pohOUID" />
-                                    </apex:pageBlockSectionItem-->                                    
-    
+
                                     <apex:pageBlockSectionItem >
                                         <apex:outputPanel >
                                             <apex:outputLabel value="Sub / Vendor" for="pohProjSite"/>                    
@@ -391,8 +317,6 @@
                                                                       in the Agreements page).  In the case of vendors where no specific agreement 
                                                                       has been entered into , this field can be left blank" />
                                         </apex:outputPanel>                                        
-                                        <!--apex:outputField value="{!poHeader.Agreement__c}" id="pohAgreement" /-->                                        
-                                        <!-- note used allowNewPOLineItems prev-->            
                                         <apex:outputPanel id="pohAgreementSec">
                                             <apex:selectList value="{!poHeader.Agreement__c}" size="1" id="pohAgreement" rendered="{!canEditHeader}">
                                                 <apex:selectOptions value="{!optAgreements}"/>
@@ -413,11 +337,6 @@
                                         </apex:outputPanel>		
                                     </apex:pageBlockSectionItem>
                             
-                                    <!--apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.POType__c.Label}" for="pohPOType"/>
-                                        <apex:inputField value="{!poHeader.POType__c}" id="pohPOType" />
-                                    </apex:pageBlockSectionItem-->
-                                    
                                     <apex:pageBlockSectionItem >
                                         <apex:outputPanel >
                                             <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Requestor__c.Label}" for="pohRequestor"/>                   
@@ -443,15 +362,9 @@
                                             <apex:outputText value="{!poHeader.PaymentTerm__c}" rendered="{!!canEditHeader}"/>
                                         </apex:outputPanel>
                                     </apex:pageBlockSectionItem>
-                                    
-                                    <!--apex:pageBlockSectionItem >
-                                        <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.Revision__c.Label}" for="pohRevision"/>
-                                        <apex:outputField value="{!poHeader.Revision__c}" id="pohRevision" />
-                                    </apex:pageBlockSectionItem-->                                    
                                 </apex:pageBlockSection>
     
                                 <apex:pageBlockSection id="vendorSection" columns="2" title="Sub / Vender Information" rendered="{!allowNewPOLineItems}">
-            
                                     <apex:pageBlockSectionItem >
                                         <apex:outputLabel value="{!$ObjectType.POHeader__c.Fields.VendorName__c.Label}" for="pohVendorName"/>
                                         <apex:outputField value="{!poHeader.VendorName__c}" id="pohVendorName" />
@@ -517,13 +430,7 @@
                                     <apex:pageBlockSectionItem >
                                         <apex:outputPanel >
                                             <div align="center">
-                                                <!--
-                                                    <button type="button" onclick="javascript: addNewPOLineItem_JS(); return false;">Add Purchase Order Line Item</button>			<<button type="button" onclick="javascript: showHideDivisions();">Show / Hide Divisions</button>
-                                                -->	
                                                 <apex:commandButton value="Add Purchase Order Line Item" action="{!gotoPOLineItemPage}" rendered="{!if(poHeader.Id != null, 'true', 'false')}"/>
-                                                <!--
-                                                <apex:commandButton value="Show/Hide Distributions" onclick="showHideDivisions(); return false;" />
-                                                -->
                                             </div>	
                                         </apex:outputPanel>                                            
                                     </apex:pageBlockSectionItem>
@@ -577,94 +484,10 @@
                                             </apex:column>
                                             <apex:column styleClass="{!if(poLineItem.IsArchived__c == true, 'archive', '')}">
                                                 <apex:facet name="header">Submitted</apex:facet>																			
-<!--                                                <apex:outputText value="{0, date, yyyy-MM-dd}">
-                                                    <apex:param value="{!poLineItem.OracleSyncDatetime__c}" />											
-                                                </apex:outputText>  -->
                                                 <c:ECO_DateFormat date="{!poLineItem.OracleSyncDatetime__c}" />
                                             </apex:column>						
                                         </apex:pageBlockTable> 
                                     </apex:pageBlockSectionItem>
-                
-                                    <!--apex:pageBlockSectionItem >
-                                        <apex:tabPanel value="{!selectedPOLineItemTab}" switchType="client">
-                                            <apex:tab id="validPOLineItems" label="Passed Validation {!validPOLineItemLimitMsg}">
-            
-                                                <apex:pageMessage severity="INFO" rendered="{!if(numValidPOLineItems == 0, true, false)}" summary="No valid PO line items currently exist."></apex:pageMessage>
-                                                <apex:pageBlockTable value="{!validPOLineItems}" var="validPOLineItem" rendered="{!if(numValidPOLineItems == 0, false, true)}" id="pbtValidPOLineItems">	
-                                                    <apex:column styleClass="{!if(validPOLineItem.IsArchived__c == true, 'archive', '')}">
-                                                        <apex:facet name="header">Action</apex:facet>
-                                                             
-                                                        <div style="display:{!if(validPOLineItem.IsArchived__c == true || validPOLineItem.CancelFlag__c == true, 'none', 'block')};">
-                                                            <a href="{!URLFOR('/apex/ECO_PurchaseOrderLineItem', null,["id"=validPOLineItem.Id,"retURL"=retUrl])}">{!if(validPOLineItem.OracleSyncDatetime__c == null, 'Edit', 'Change')}</a>
-                                                        </div>
-                                                             
-                                                    </apex:column>
-                                                    
-                                                    <apex:column styleClass="{!if(validPOLineItem.IsArchived__c == true, 'archive', '')}">
-                                                        <apex:facet name="header">{!$ObjectType.POLineItem__c.Fields.LineNumber__c.Label}</apex:facet>
-                                                        {!validPOLineItem.LineNumber__c}
-                                                    </apex:column>                                                    
-                                                    <apex:column styleClass="{!if(validPOLineItem.IsArchived__c == true, 'archive', '')}">
-                                                        <apex:facet name="header">{!$ObjectType.POLineItem__c.Fields.LineDescription__c.Label}</apex:facet>
-                                                        {!validPOLineItem.LineDescription__c}
-                                                    </apex:column>
-                                                    <apex:column styleClass="{!if(validPOLineItem.IsArchived__c == true, 'archive', '')}">
-                                                        <apex:facet name="header">{!$ObjectType.POLineItem__c.Fields.ProjectTask__c.Label}</apex:facet>
-                                                        {!validPOLineItem.ProjectTask__r.ProjectTaskNumber__c} ({!validPOLineItem.ProjectTask__r.Name})
-                                                    </apex:column>                                           
-                                                    <apex:column styleClass="{!if(validPOLineItem.IsArchived__c == true, 'archive', '')}">
-                                                        <apex:facet name="header">{!$ObjectType.POLineItem__c.Fields.LineType__c.Label}</apex:facet>
-                                                        {!validPOLineItem.LineType__c}
-                                                    </apex:column>
-                                                    <apex:column styleClass="{!if(validPOLineItem.IsArchived__c == true, 'archive', '')}">
-                                                        <apex:facet name="header">{!$ObjectType.POLineItem__c.Fields.Quantity__c.Label}</apex:facet>
-                                                        {!validPOLineItem.Quantity__c}
-                                                    </apex:column>
-                                                    <apex:column styleClass="{!if(validPOLineItem.IsArchived__c == true, 'archive', '')}">
-                                                        <apex:facet name="header">{!$ObjectType.POLineItem__c.Fields.UnitofMeasure__c.Label}</apex:facet>
-                                                        {!validPOLineItem.UnitOfMeasureUserDefined__c}
-                                                    </apex:column>
-                                                    <apex:column styleClass="{!if(validPOLineItem.IsArchived__c == true, 'archive', '')}">
-                                                        <apex:facet name="header">{!$ObjectType.POLineItem__c.Fields.UnitPrice__c.Label}</apex:facet>
-                                                        {!validPOLineItem.UnitPrice__c}
-                                                    </apex:column>        
-                                                    <apex:column styleClass="{!if(validPOLineItem.IsArchived__c == true, 'archive', '')}">
-                                                        <apex:facet name="header">{!$ObjectType.POLineItem__c.Fields.Amount__c.Label}</apex:facet>
-                                                        {!validPOLineItem.Amount__c}
-                                                    </apex:column>                                                
-                                                    <apex:column styleClass="{!if(validPOLineItem.IsArchived__c == true, 'archive', '')}">
-                                                        <apex:facet name="header">{!$ObjectType.POLineItem__c.Fields.ExpenditureType__c.Label}</apex:facet>
-                                                        {!validPOLineItem.ExpenditureType__c}
-                                                    </apex:column>
-                                                    <apex:column styleClass="{!if(validPOLineItem.IsArchived__c == true, 'archive', '')}">
-                                                        <apex:facet name="header">Cancelled</apex:facet>
-                                                        {!if(validPOLineItem.CancelFlag__c == true, 'Y', 'N')}
-                                                    </apex:column>
-                                                    <apex:column styleClass="{!if(validPOLineItem.IsArchived__c == true, 'archive', '')}">
-                                                        <apex:facet name="header">Submitted</apex:facet>																			
-                                                        <apex:outputText value="{0, date, yyyy-MM-dd}">
-                                                            <apex:param value="{!validPOLineItem.OracleSyncDatetime__c}" />											
-                                                        </apex:outputText>                                                    
-                                                    </apex:column>						
-                                                </apex:pageBlockTable>        
-                                            </apex:tab>
-                                            <apex:tab id="invalidPOLineItems" label="Failed Validation {!invalidPOLineItemLimitMsg}">
-                                                <apex:pageMessage severity="INFO" rendered="{!if(numInvalidPOLineItems == 0, true, false)}" summary="No invalid PO line items currently exist."></apex:pageMessage>
-                                                <apex:pageBlockTable value="{!invalidPOLineItems}" var="invalidPOLineItem" title="PO Line Items {!invalidPOLineItemLimitMsg}" rendered="{!if(numInvalidPOLineItems == 0, false, true)}">
-                                                    <apex:column >
-                                                        <apex:facet name="header">PO Line Item</apex:facet>
-                                                                
-                                                        <a href="{!URLFOR('/apex/ECO_PurchaseOrderLineItem', null,["id"=invalidPOLineItem.recordId,"retURL"=retUrl])}">{!invalidPOLineItem.recordName}</a>	
-                                                    </apex:column>
-                                                    <apex:column >											
-                                                        <apex:facet name="header">Validation Errors</apex:facet>
-                                                        <font color="red"><b>{!invalidPOLineItem.validationErrorMessage}</b></font>
-                                                    </apex:column>
-                                                </apex:pageBlockTable>
-                                            </apex:tab>
-                                        </apex:tabPanel>                                    
-                                    </apex:pageBlockSectionItem-->
-                                    
                                 </apex:pageBlockSection>
                                 
                                 <apex:pageBlockSection columns="1" title="Purchase Order Status" rendered="{!allowNewPOLineItems}">
@@ -715,90 +538,8 @@
                                         </apex:column>
                                     </apex:pageBlockTable>                                    
                                 </apex:pageBlockSection>
-                                <!--
-                                <apex:pageBlockSection columns="1" title="Distributions" rendered="{!allowNewPOLineItems}"  id="pbsDistributions">
-                                    <apex:pageBlockSectionItem>        
-                                        <apex:tabPanel switchType="client" value="{!selectedDistributionTab}" id="tabDistributionSummary">
-                                            <apex:tab label="Passed Validation ({!numValidDistributions} records)" id="validDistributions">									
-                                                <apex:pageMessage severity="INFO" rendered="{!if(numValidDistributions == 0, true, false)}" summary="No valid distributions currently exist."></apex:pageMessage>
-                                                <apex:pageBlockTable value="{!validDistributions}" var="validDistribution" rendered="{!if(numValidDistributions == 0, false, true)}" title="Tasks {!validDistributionLimitMsg}">
-                                                    <apex:column >
-                                                        <apex:facet name="header">{!$ObjectType.Distribution__c.Fields.Name.Label}</apex:facet>
-                                                        
-                                                        <a href="/{!validDistribution.Id}?retURL={!retUrl}" 
-                                                        id="lookup{!validDistribution.Id}opp4"
-                                                        onblur="LookupHoverDetail.getHover('lookup{!validDistribution.Id}opp4').hide();"
-                                                        onfocus="LookupHoverDetail.getHover('lookup{!validDistribution.Id}opp4', '/{!validDistribution.Id}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
-                                                        onmouseout="LookupHoverDetail.getHover('lookup{!validDistribution.Id}opp4').hide();"
-                                                        onmouseover="LookupHoverDetail.getHover('lookup{!validDistribution.Id}opp4', '/{!validDistribution.Id}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
-                                                        >
-                                                        {!validDistribution.Name}
-                                                        </a> 
-                                                    </apex:column>
-                                                    <apex:column >
-                                                        <apex:facet name="header">{!$ObjectType.Distribution__c.Fields.POLineItem__c.Label}</apex:facet>
-                                                        {!validDistribution.POLineItem__r.Name}
-                                                    </apex:column>
-                                                    <apex:column >
-                                                        <apex:facet name="header">{!$ObjectType.Distribution__c.Fields.DistributionNumber__c.Label}</apex:facet>
-                                                        {!validDistribution.DistributionNumber__c}
-                                                    </apex:column>
-                                                    <apex:column >
-                                                        <apex:facet name="header">{!$ObjectType.Distribution__c.Fields.AmountOrdered__c.Label}</apex:facet>
-                                                        {!validDistribution.AmountOrdered__c}
-                                                    </apex:column>
-                                                    <apex:column >
-                                                        <apex:facet name="header">{!$ObjectType.Distribution__c.Fields.QuantityOrdered__c.Label}</apex:facet>
-                                                        {!validDistribution.QuantityOrdered__c}
-                                                    </apex:column>
-                                                    <apex:column >
-                                                        <apex:facet name="header">{!$ObjectType.Distribution__c.Fields.ExpenditureDate__c.Label}</apex:facet>
-                                                        <apex:outputText value="{0, date, yyyy-MM-dd}">
-                                                            <apex:param value="{!validDistribution.ExpenditureDate__c}" />											
-                                                        </apex:outputText>	
-                                                    </apex:column>        
-                                                    <apex:column >
-                                                        <apex:facet name="header">{!$ObjectType.Distribution__c.Fields.POLinteItemExpenditureType__c.Label}</apex:facet>
-                                                        {!validDistribution.POLinteItemExpenditureType__c}
-                                                    </apex:column>	
-                                                    <apex:column >
-                                                        <apex:facet name="header">{!$ObjectType.Distribution__c.Fields.ProjectTaskNumber__c.Label}</apex:facet>
-                                                        {!validDistribution.ProjectTaskNumber__c}
-                                                    </apex:column>
-                                                    <apex:column >
-                                                        <apex:facet name="header">{!$ObjectType.Distribution__c.Fields.Revision__c.Label}</apex:facet>
-                                                        {!validDistribution.Revision__c}
-                                                    </apex:column>                                                
-                                                </apex:pageBlockTable>
-                                            </apex:tab>
-                                            <apex:tab label="Failed Validation {!invalidDistributionLimitMsg}" id="invalidDistributions">
-                                                <apex:pageMessage severity="INFO" rendered="{!if(numInvalidDistributions == 0, true, false)}" summary="No invalid distributions currently exist."></apex:pageMessage>
-                                                <apex:pageBlockTable value="{!invalidDistributions}" var="invalidDistribution" title="Distributions {!invalidDistributionLimitMsg}" rendered="{!if(numInvalidDistributions == 0, false, true)}">
-                                                    <apex:column >
-                                                        <apex:facet name="header">Distributions</apex:facet>											
-                                                        <a href="/{!invalidDistribution.recordId}?retURL={!retUrl}" 
-                                                        id="lookup{!invalidDistribution.recordId}opp4"
-                                                        onblur="LookupHoverDetail.getHover('lookup{!invalidDistribution.recordId}opp4').hide();"
-                                                        onfocus="LookupHoverDetail.getHover('lookup{!invalidDistribution.recordId}opp4', '/{!invalidDistribution.recordId}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
-                                                        onmouseout="LookupHoverDetail.getHover('lookup{!invalidDistribution.recordId}opp4').hide();"
-                                                        onmouseover="LookupHoverDetail.getHover('lookup{!invalidDistribution.recordId}opp4', '/{!invalidDistribution.recordId}/m?retURL=/apex/{!$CurrentPage.Name}?projectId={!$CurrentPage.Parameters.ProjectId}&isAjaxRequest=1').show();"
-                                                        >
-                                                        {!invalidDistribution.recordName}
-                                                        </a> 
-                                                    </apex:column>
-                                                    <apex:column >											
-                                                        <apex:facet name="header">Validation Errors</apex:facet>
-                                                        <font color="red"><b>{!invalidDistribution.validationErrorMessage}</b></font>
-                                                    </apex:column>
-                                                </apex:pageBlockTable>
-                                            </apex:tab>        
-                                        </apex:tabPanel>                                   
-                                    </apex:pageBlockSectionItem>
-                                </apex:pageBlockSection>        
-                                -->
                             </apex:pageBlock>
                         </apex:tab>
-                        <!--<apex:tab label="Request JSON" id="tabJSON" rendered="{!debugMode}">-->
                         <apex:tab label="Request JSON" id="tabJSON">
                             <apex:commandButton value="Refresh JSON" action="{!refreshJSON}" reRender="txtJSON"/><br/>
                             <apex:inputTextarea cols="200" rows="30" value="{!sJSON}" id="txtJSON" />
@@ -807,20 +548,6 @@
                 </apex:pageBlockSectionItem>
             </apex:pageBlockSection>
             
-            <!--apex:pageBlockSection title="Purchase Order Commitments" columns="1" collapsible="true">		
-                <apex:pageBlockTable value="{!POCommitments}" var="poCommitment">
-                    <apex:column value="{!poCommitment.PODate__c}"/>
-                    <apex:column value="{!poCommitment.PONumber__c}"/>
-                    <apex:column value="{!poCommitment.ExpenditureType__c}"/>
-                    <apex:column value="{!poCommitment.POLine__c}"/>
-                    <apex:column value="{!poCommitment.POLineStatus__c}"/>
-                    <apex:column value="{!poCommitment.POLineAmount__c}"/>
-                    <apex:column value="{!poCommitment.POAmountBilled__c}"/>
-                    <apex:column value="{!poCommitment.SupplierID__c}"/>
-                    <apex:column value="{!poCommitment.SupplierName__c}"/>
-                    <apex:column value="{!poCommitment.SupplierNumber__c}"/>
-                </apex:pageBlockTable>					
-            </apex:pageBlockSection-->
             <apex:pageBlockSection columns="1" title="Oracle Sync History" id="syncHistorySection" rendered="{!allowNewPOLineItems}">
                 <apex:pageBlockSectionItem >		
                     <apex:tabPanel switchType="client" selectedTab="successSync">
@@ -871,6 +598,64 @@
 				<apex:pageMessage escape="false" summary="{!pollingMessageQueueMsgBottom}" severity="INFO" ></apex:pageMessage>
 			</div>
 		</apex:outputPanel>
+        
+        <c:ECO_ModalDialog width="350" padding="0px 0px 0px 0px" name="modalDialogOracleLogin">
+            <apex:pageBlock title="Oracle Authentication">
+                <div>
+                    <apex:outputText >Your Oracle security token has expired - please enter your Oracle credentials below to renew the token</apex:outputText>
+                </div>
+                <br/><br/>
+                <div align="center">
+                    <apex:outputText style="font-weight:bold" value="Oracle Username:"/>
+                    <apex:inputText label="Oracle Username:" value="{!OracleUserName}" id="username"/><br/>
+        
+                    <apex:outputText style="font-weight:bold" value="Oracle Password:"/>
+                    <apex:inputSecret label="Oracle Password" value="{!OraclePassword}" id="password"/><br/><br/>
+                </div>
+
+                <apex:outputPanel id="btn1">
+                    <apex:outputPanel rendered="{!authenticationResult != 'SUCCESS'}">
+                        <div align="center">
+                            <apex:outputPanel layout="inline" styleClass="btn" onclick="authenticate()">Login</apex:outputPanel>
+                            <apex:outputPanel layout="inline" styleClass="btn" onclick="cancelModal()">Cancel</apex:outputPanel>
+                        </div>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+
+                <apex:outputPanel id="btn2">
+                    <apex:outputPanel rendered="{!authenticationResult == 'SUCCESS'}">
+                        <div align="center">
+                            <apex:outputPanel layout="inline" styleClass="btn" onclick="closeAuthenticationModal()">Close</apex:outputPanel>
+                        </div>
+                    </apex:outputPanel>
+                </apex:outputPanel>
+
+                <apex:outputPanel id="result">
+                    <apex:outputPanel rendered="{!authenticationResult != null}" ><br/>
+                        <b>Result: </b><apex:outputText value="{!authenticationResult}" id="authenticationResult" />
+                    </apex:outputPanel>
+                </apex:outputPanel>
+    
+                <apex:actionStatus id="queryStatus">
+                    <apex:facet name="start">
+                        <p style="padding-bottom:20px;text-align:center;" class="searchText"><img style="position:relative;top:24px;" src="/img/loading32.gif" /> Authenticating...</p>
+                    </apex:facet>
+                </apex:actionStatus>
+            </apex:pageBlock>
+        </c:ECO_ModalDialog>
+        
+        <apex:actionFunction name="authenticateCredentials" action="{!authenticateCredentials}" rerender="result, btn1, btn2" status="queryStatus" immediate="true">
+            <apex:param name="username" value=""/>
+            <apex:param name="password" value=""/>
+        </apex:actionFunction>
+        
+        <apex:actionStatus id="closeAuthentication">
+            <apex:facet name="start">
+                <p style="padding-bottom:20px;text-align:center;" class="searchText"><img style="position:relative;top:24px;" src="/img/loading32.gif" /> Closing...</p>
+            </apex:facet>
+        </apex:actionStatus>
+        
+        <apex:actionFunction name="closeAuthenticationWindow" action="{!closeAuthenticationWindow}" status="closeAuthentication" immediate="true"/>
 	</apex:form>
 	<apex:relatedList list="ProcessSteps" id="approvalHistory" ></apex:relatedList>
 
@@ -881,7 +666,6 @@
         }
         
         j$(document).ready(function(){
-            //showHideDivisions();
             j$("input[name='piSubmit']").hide();
         });    
     </script>

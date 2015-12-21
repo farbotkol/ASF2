@@ -1,11 +1,7 @@
 public with sharing class ECO_PurchaseOrderLineItemController{
-
-
 	public String taskFilter {get;set;}
 	public List<pse__Project_Task__c> projectTasks {get; set;}
 	public Boolean noSearchResults {get; private set;}
-	//public Boolean isLineTypeGoods {get; private set;}
-	//public Boolean isLineTypeServices {get; private set;}
 	public Boolean hasBeenSynced {get; private set;}
 	public Boolean hasPreviousVersions {get; private set;}
 	public String cancelButtonText {get; private set;}
@@ -49,8 +45,6 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 		}
 
 		Initialize();
-
-		//selectPOLineType();
 	}
 
 	public ECO_PurchaseOrderLineItemController(){
@@ -61,7 +55,6 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 		poLineItemId  = checkForId('Id');
 
 		Initialize();
-    	
 	}
 
 	private Boolean getInvoiceStatus(){
@@ -103,11 +96,8 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 				if(!previousVersions.isEmpty()){
 					hasPreviousVersions = true;
 				}
-
     		}
-    	}
-
-    	
+    	}    	
 	}
 
 	private Decimal getDefaultLineNumber(){
@@ -135,9 +125,7 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 		projectTasks = new List<pse__Project_Task__c>();
 		taskFilter = '';
 
-		searchTaskName = '';
-
-		
+		searchTaskName = '';		
 
 		//coming from po summary page or coming from task detail
 		if((projectId != null && poHeaderId != null) || (poLineItemId != null) ){
@@ -145,8 +133,7 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 			getTasksForProject();
     		poHeaderName = [SELECT Name FROM POHeader__c WHERE Id = :poHeaderId].Name;
 
-    		editType = 'Add';
-    	
+    		editType = 'Add';    	
 		}else{
 			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'You have reached this page incorrectly. Project Id is missing!'));
 			return;
@@ -159,7 +146,7 @@ public with sharing class ECO_PurchaseOrderLineItemController{
     	}
 	}
 
-	public void setSelectedTask(){
+	/*public void setSelectedTask(){
 		/*
 
 		List<pse__Project_Task__c> tasks = [SELECT Id, Name FROM pse__Project_Task__c WHERE Id = :currentPOLineItem_TaskId];
@@ -167,13 +154,10 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 			currentPOLineItem_TaskName = tasks.get(0).Name;
 		}		
 		*/
-	}
+	//}
 
 	public PageReference saveCurrentPOLineItem(){
-
 		//todo - validation if invoiced
-
-
 		PageReference pageRef = null;
 
 		Boolean validationOK = true;
@@ -213,12 +197,10 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 			}						
 		}
 
-
 		if(!validationOK){
 			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, '<ul>' + validationMsg + '</ul>'));
 			return null;
 		}
-
 
 		if(currentPOLineItem.Id == null){	
 			//check that line number isn't already in use
@@ -232,9 +214,6 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 				return null;
 			}
 		}
-
-
-
 
 		Savepoint sp = Database.setSavepoint();
 
@@ -256,16 +235,17 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 
 				}else{
 					update currentPOLineItem;
-				}
-
-                // Sanchivan: Added code to set the Status to Pending if a PO Line Item is added or edited.
-                // Bug 1645
-				POHeader__c poHeader = [SELECT Id, Status__c FROM POHeader__c WHERE Id = :currentPOLineItem.POHeader__c];
-                if(poHeader.Status__c == 'APPROVED') {
-                    poHeader.Status__c = 'UNAPPROVED';                
-                	update poHeader;                    
-                }                
+				}                             
 			}	
+            
+            // Sanchivan: Added code to set the Status to Pending if a PO Line Item is added or edited.
+            // Bug 1645
+            POHeader__c poHeader = [SELECT Id, Status__c FROM POHeader__c WHERE Id = :currentPOLineItem.POHeader__c];
+            if(poHeader.Status__c == 'APPROVED') {
+                poHeader.Status__c = 'UNAPPROVED';                
+                update poHeader;                    
+            } 
+            
 			pageRef = returnToPurchaseOrder();
 		}catch(Exception e){
 			Database.rollback(sp);
@@ -281,10 +261,7 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 		Decimal prevRevisonNumber = 0;
 
 		try{
-
-			if(!hasBeenSynced){
-
-				
+			if(!hasBeenSynced){				
 				if(hasPreviousVersions){
 					//if this was an unsynced change order then unarchive the previous version
 					prevRevisonNumber = currentPOLineItem.Revision__c - 1;
@@ -297,8 +274,6 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 													LIMIT 1];
 		
 					currentPOLineItem = ECO_Service_PurchaseOrders.ClonePurchaseOrderLineItemForChangeRequest(prevVersion.Id);
-					//currentPOLineItem.OracleSyncStatus__c = prevVersion.OracleSyncStatus__c;
-					//currentPOLineItem.OracleSyncDatetime__c = currentPOLineItem.OracleSyncDatetime__c;
 					currentPOLineItem.Revision__c = prevRevisonNumber;
 					currentPOLineItem.IsArchived__c = false;
 					currentPOLineItem.Id = poLineItemId;
@@ -308,16 +283,10 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 
 				}else{
 					delete currentPOLineItem;
-				}
-
-				
+				}			
 
 				result = returnToPurchaseOrder();
-			
-			
-
 			}else{
-
 				POLineItem__c snapshot = ECO_Service_PurchaseOrders.ClonePurchaseOrderLineItemForChangeRequest(currentPOLineItem.Id);
 				snapshot.Revision__c = previousVersions.size();
 				insert snapshot;
@@ -329,44 +298,21 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 				update currentPOLineItem;
 
 				result = returnToPurchaseOrder();
-						
 			}
-
 		}catch(Exception e){
 			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'An error has occurred while deleting or canceling the Purchase Order Line Item: ' + e.getMessage()));
 			Database.rollback(sp);
 		}
 		return result;
 	}
-
-
-	/*
-	public void selectPOLineType(){
-		isLineTypeGoods = false;
-    	isLineTypeServices = false;
-    	if(currentPOLineItem.LineType__c == 'Unit Rate'){
-    		isLineTypeGoods = true;
-    		currentPOLineItem.Amount__c = null;
-    		currentPOLineItem.UnitofMeasure__c = 'Each';
-    	}else{	//services
-			isLineTypeServices = true;
-			currentPOLineItem.Quantity__c = 1;
-			currentPOLineItem.UnitPrice__c = null;
-			currentPOLineItem.UnitofMeasure__c = 'Lump Sum';
-    	}
-
-    }
-	*/
-
+    
 	public PageReference returnToPurchaseOrder(){
-
 		PageReference pageRef = new PageReference(retUrl);
 		pageRef.setRedirect(true);
 		return pageRef;
 	}
 
 	public void getTasksForProject(){
-
 		String soql = 'SELECT Id, Name, ProjectTaskNumber__c, FinancialTask__c, BillTo__c, ShipTo__c,	pse__End_Date__c, ';
 		soql +=	'pse__Start_Date__c, IsBillable__c, IsChargeable__c, WorkTypeName__c, pse__Parent_Task__r.Name ';
 		soql += 'FROM pse__Project_Task__c ';
@@ -377,12 +323,7 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 		soql += 'LIMIT ' + pagingResultSize;
 
 		system.debug('soql = ' + soql);
-
-/*
-		setCon = new ApexPages.StandardsetController(Database.getQueryLocator(soql));
-        setCon.setPageSize(pagingResultSize);  
-        populateProjectTaskList(); 
-*/
+        
         projectTasks = Database.query(soql);
         system.debug('projectTasks size = ' + projectTasks.size());
          if(projectTasks.isEmpty()){
@@ -390,20 +331,7 @@ public with sharing class ECO_PurchaseOrderLineItemController{
         }else{
             noSearchResults = false;
         }
-
 	}
-
-	/*
-	private void populateProjectTaskList(){
-		projectTasks = setCon.getRecords(); 
-        if(projectTasks.isEmpty()){
-            noSearchResults = true;
-        }else{
-            noSearchResults = false;
-        }
-		//updatePagingVars();
-	}
-	*/
 
 	private Id checkForId(String paramName){
 		Id result = null;
@@ -412,6 +340,4 @@ public with sharing class ECO_PurchaseOrderLineItemController{
         }
         return result;
     }
-
-
 }
