@@ -25,6 +25,9 @@ public with sharing class ECO_ProjectSummaryController {
 	public String keyMemberMsg;
 	@TestVisible
 	public String customersMsg;	
+
+	public String classificationsMsg;
+
 	@TestVisible
 	private String customerContributionMsg;	
 
@@ -255,7 +258,8 @@ public with sharing class ECO_ProjectSummaryController {
 				projectMsg = validateProject(project, false);
 				taskMsg = validateProjectTasks(requestDTO);
 				keyMemberMsg = validateProjectKeyMembersData(requestDTO);
-				customersMsg = validateProjectCustomerData(requestDTO, project.EnableTopTaskCustomerFlag__c);		
+				customersMsg = validateProjectCustomerData(requestDTO, project.EnableTopTaskCustomerFlag__c);
+				classificationsMsg = validateClassifications();		
 				displayValidationMessage();
 
 				projectClassifications = requestDTO.CLASSIFICATION_COLLECTION;
@@ -290,6 +294,61 @@ public with sharing class ECO_ProjectSummaryController {
 
 	}
 
+	private String validateClassifications()
+	{
+		List<OrganizationString__c> lOrganizationStrings = new List<OrganizationString__c>();
+		OrganizationString__c oOrganizationString = new OrganizationString__c();
+		String validationMessage = '';
+		Integer missingClassifications = 0;
+		List<pse__Proj__c> projectsForClassficationValidation = new List<pse__Proj__c>();
+		pse__Proj__c projectClassificationValidation;
+
+		if (this.project.CarryingOutOrganization__c != NULL) {
+	        String sSOQL = 'SELECT id';
+	        for (FieldSetMember oFSM : SObjectType.pse__Proj__c.FieldSets.Project_Classifications.getFields()) {
+	            sSOQL += ', ' + oFSM.getFieldPath();
+	        }
+	        sSOQL += ' FROM OrganizationString__c';
+	        sSOQL += ' WHERE Id = \'' + this.project.CarryingOutOrganization__c + '\''; 
+	        System.debug(sSOQL);
+	        lOrganizationStrings = Database.query(sSOQL);
+		}
+
+		if (lOrganizationStrings.size() > 0) 
+		{
+            oOrganizationString = lOrganizationStrings.get(0);
+			String sSOQL = 'SELECT id';
+	        for (FieldSetMember oFSM : SObjectType.pse__Proj__c.FieldSets.Project_Classifications.getFields()) {
+	            sSOQL += ', ' + oFSM.getFieldPath();
+	        }
+	        sSOQL += ' FROM pse__Proj__c';
+	        sSOQL += ' WHERE Id = \'' + this.project.Id + '\''; 
+	        projectsForClassficationValidation = Database.query(sSOQL);
+	        projectClassificationValidation = projectsForClassficationValidation[0];
+        } 
+        else
+        {
+        	ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'No Primary Organization found, cannot edit classifications!'));
+            return 'No Primary Organization found!';
+        }		
+
+        for (FieldSetMember oFSM : SObjectType.pse__Proj__c.FieldSets.Project_Classifications.getFields()) {
+            String sOrganizationStringValue = (String) oOrganizationString.get(oFSM.getFieldPath());
+            if (sOrganizationStringValue == 'Require')
+            {
+            	if(projectClassificationValidation.get(oFSM.getFieldPath()) == '' || projectClassificationValidation.get(oFSM.getFieldPath()) == null)
+            	{
+            		return '<li>' + 'Please go to the Classifications page and enter all required Classifications' + '</li>';
+            		//validationMessage += oFSM.getFieldPath() + ' is Required' + '<br/>';
+
+            	}
+            }
+			//FieldSetMemberWrapper fsmWrapper = new FieldSetMemberWrapper();
+		}
+
+		return '';
+	}
+
     public PageReference authenticateCredentials()
     {
         String username = ApexPages.currentPage().getParameters().get('username');
@@ -299,7 +358,7 @@ public with sharing class ECO_ProjectSummaryController {
         cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
         String endPointUrl = cs.EndPointUrl__c;
 
-        authenticationResult = ECO_Service_Authentication.TestProxy(endPointUrl, 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + password);
+        authenticationResult = ECO_Service_Authentication.TestProxy(endPointUrl, 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + EncodingUtil.URLENCODE(password,'UTF-8'));
 
         return null;
     }

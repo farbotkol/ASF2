@@ -17,6 +17,10 @@ global with sharing class ECO_PMD_LabourHours_Controller {
                                                                 from pse__Proj__c where Id = :prjId];
                 projectName = project.OracleProjectNumber__c + ' - ' + project.Name;
         }
+		
+		public ECO_PMD_LabourHours_Controller () {
+		
+		}
   
         public ECO_PMD_LabourHours_Controller (ApexPages.StandardController oStandardController) {
                 this.oProject = (pse__Proj__c)oStandardController.getRecord();

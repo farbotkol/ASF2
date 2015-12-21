@@ -254,7 +254,10 @@ public with sharing class ECO_Service_Delegation {
 
         for (AggregateResult ar : groupedResultsBudget)  {
             mProjToBudgetNM.put((id)ar.get('Project__c'), (decimal)ar.get('NetMargin'));
-            mProjToBudgetNSR.put((id)ar.get('Project__c'), (decimal)ar.get('NetMargin')/(decimal)ar.get('NetServicesRevenue'));
+
+            if((decimal)ar.get('NetServicesRevenue') !=0 && (decimal)ar.get('NetServicesRevenue')!=null){
+                mProjToBudgetNSR.put((id)ar.get('Project__c'), (decimal)ar.get('NetMargin')/(decimal)ar.get('NetServicesRevenue'));
+            }
         }
 
         // Get Backlog Value
@@ -304,7 +307,7 @@ public with sharing class ECO_Service_Delegation {
 
             for (AggregateResult ar : groupedResultsForecastBudget)  {
                 mProjToForecastBudgetNM.put((id)ar.get('Project__c'), (decimal)ar.get('NetMargin'));
-                mProjToForecastBudgetNSR.put((id)ar.get('Project__c'), (decimal)ar.get('NetMargin')/(decimal)ar.get('NetServicesRevenue'));
+                //mProjToForecastBudgetNSR.put((id)ar.get('Project__c'), (decimal)ar.get('NetMargin')/(decimal)ar.get('NetServicesRevenue'));
             }
 
         }

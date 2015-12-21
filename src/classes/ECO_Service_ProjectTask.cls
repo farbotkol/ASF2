@@ -1,16 +1,37 @@
 public class ECO_Service_ProjectTask{
     
     private list<Id> projectTaskIds;
-    
+    public map<string,EarnedValueSnapshot__c> earnedvaluemap{get;set;}
+    public map<string,EarnedValueTask__c> earnedvaluetaskmap{get;set;}
     public ECO_Service_ProjectTask(list<Id> snapshotProjectTaskIds)
     {
         projectTaskIds = snapshotProjectTaskIds;    
+        earnedvaluemap = new map<string,EarnedValueSnapshot__c>();
+        earnedvaluetaskmap = new map<string,EarnedValueTask__c>();
+        for(EarnedValueTask__c e: [select id,TaskTotalApprovedCostSnapshot__C,EarnedValue__c,ProjectTask__c from EarnedValueTask__c where ProjectTask__c IN :projectTaskIds and  SnapshotDate__c <= today order by SnapshotDate__c,createddate desc] ){
+            if(earnedvaluetaskmap.containskey(e.ProjectTask__c))
+            earnedvaluetaskmap.put(e.ProjectTask__c,e);
+        }
+        for(EarnedValueSnapshot__c e:[select id,ThisWeekAmount__c,ProjectTask__c,ProjectTask__r.EarnedValue__c,ProjectTask__r.TotalApprovedCost__c,WeekStartDate__c from EarnedValueSnapshot__c where   ProjectTask__c IN :projectTaskIds and WeekStartDate__c <=today order by WeekStartDate__c,createddate desc ]){
+            if(earnedvaluemap.containskey(e.ProjectTask__c))
+                earnedvaluemap.put(e.ProjectTask__c,e);
+        }
     }
     
     public ECO_Service_ProjectTask(Id snapshotProjectTaskId)
     {
         projectTaskIds = new list<Id>();
         projectTaskIds.add(snapshotProjectTaskId);
+        earnedvaluemap = new    map<string,EarnedValueSnapshot__c>();
+         earnedvaluetaskmap = new map<string,EarnedValueTask__c>();
+        for(EarnedValueTask__c e: [select id,TaskTotalApprovedCostSnapshot__C,ProjectTask__c,EarnedValue__c from EarnedValueTask__c where ProjectTask__c = :snapshotProjectTaskId and  SnapshotDate__c <= today order by SnapshotDate__c,createddate desc] ){
+            if(earnedvaluetaskmap.containskey(e.ProjectTask__c))
+            earnedvaluetaskmap.put(e.ProjectTask__c,e);
+        }
+        for(EarnedValueSnapshot__c e:[select id,ThisWeekAmount__c,ProjectTask__c,ProjectTask__r.EarnedValue__c,ProjectTask__r.TotalApprovedCost__c,WeekStartDate__c from EarnedValueSnapshot__c where   ProjectTask__c = :snapshotProjectTaskId and WeekStartDate__c <=today order by WeekStartDate__c,createddate desc ]){
+            if(earnedvaluemap.containskey(e.ProjectTask__c))
+                earnedvaluemap.put(e.ProjectTask__c,e);
+        }
     }
         
     public List<pse__Project_Task__c> getProjectTasks()
@@ -75,7 +96,12 @@ public class ECO_Service_ProjectTask{
                 pt.MonthEndDate3FiscalMonthsAgo__c = threeMonthsAgoFiscalEndDate;
                  if(ITD3Months.containskey(pt.Id))
                 pt.CostITD3FiscalMonthEndsAgo__c =  (Decimal) ITD3Months.get(pt.Id).get('totalCost');
-              
+                if(earnedvaluemap.containskey(pt.id))
+                    pt.PlannedCost__c = earnedvaluetaskmap.get(pt.id).TaskTotalApprovedCostSnapshot__C;
+                if(earnedvaluemap.containskey(pt.id))
+                    pt.PlannedValue__c = earnedvaluemap.get(pt.id).ThisWeekAmount__c;
+                if(earnedvaluemap.containskey(pt.id))
+                   pt.EarnedValue__c = earnedvaluetaskmap.get(pt.id).EarnedValue__c;
                 pt.MetricsDate__c = date.today();
                  
             } 

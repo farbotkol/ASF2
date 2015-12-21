@@ -45,7 +45,14 @@
 	 <apex:pageBlock >
     	<apex:pageBlockButtons location="top">
             <apex:commandButton action="{!returnProj}" value="Return to Project" immediate="true"/>
-            <apex:commandButton action="{!newDeliverable}" value="New Deliverable" immediate="true"/>    
+            <apex:actionStatus id="mySaveStatus1">
+            <apex:facet name="stop">
+            <apex:commandButton action="{!newDeliverable}" status="mySaveStatus1" value="New Deliverable" disabled="false" rerender="mySaveStatus"/>
+            </apex:facet>
+            <apex:facet name="start">
+            <apex:commandButton action="{!newDeliverable}" status="mySaveStatus1" value="Processing..." disabled="true"/> </apex:facet>
+            </apex:actionStatus>
+            <!--<apex:commandButton action="{!newDeliverable}" value="New Deliverable" immediate="true" />    -->
             <apex:commandButton action="{!exportCSV}" value="Export Deliverables List"/>
         </apex:pageBlockButtons>
        	<apex:pageBlockSection title="Deliverables" columns="1" collapsible="false">

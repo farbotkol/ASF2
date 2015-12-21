@@ -20,6 +20,7 @@ public with sharing class ECO_BudgetQuestionnaireController {
     
     public Decimal defaulLabourMultiplier{
         get {
+        	if(theProject.DefaultUpliftLabor__c == null) theProject.DefaultUpliftLabor__c = 0;        	
             return theProject.DefaultUpliftLabor__c/100;
         }
         set {
@@ -29,6 +30,7 @@ public with sharing class ECO_BudgetQuestionnaireController {
     
     public Decimal defaulSubsMultiplier{
         get {
+        	if(theProject.DefaultUpliftSubs__c == null) theProject.DefaultUpliftSubs__c = 0;  
             return theProject.DefaultUpliftSubs__c/100;
         }
         set {
@@ -38,6 +40,7 @@ public with sharing class ECO_BudgetQuestionnaireController {
     
     public Decimal defaulODCMultiplier{
         get {
+        	if(theProject.DefaultUpliftODCs__c == null) theProject.DefaultUpliftODCs__c = 0;  
             return theProject.DefaultUpliftODCs__c/100;
         }
         set {
@@ -133,20 +136,22 @@ public with sharing class ECO_BudgetQuestionnaireController {
     }    
 	
 	public PageReference goToAttachmentPage () {
-		try {
+		
+			PageReference pr = null;
 			system.debug('selectedRecordNumber:  '+selectedRecordNumber);
 			
-			RelocationSecondment__c thisReloc = relocs.get(selectedRecordNumber);
+			// upsert thisReloc;
 			
-			upsert thisReloc;
-			
-			PageReference pr = new PageReference(URL.getSalesforceBaseUrl().toExternalForm()+'/p/attach/NoteAttach?pid='+thisReloc.Id+'&parentname=Relocation+%2F+Secondment&retURL=%2Fapex%2FECO_BudgetQuestionnaire%3Fid%3D'+theProject.Id);
-			
+			if(doSaveAction() == true) {
+				RelocationSecondment__c thisReloc = relocs.get(selectedRecordNumber);
+				system.debug('thisReloc: ' + thisReloc);
+				pr = new PageReference(URL.getSalesforceBaseUrl().toExternalForm()+'/p/attach/NoteAttach?pid='+thisReloc.Id+'&parentname=Relocation+%2F+Secondment&retURL=%2Fapex%2FECO_BudgetQuestionnaire%3Fid%3D'+theProject.Id);
+			} else {
+				return null;
+			}
+						
 			return pr;
-		} catch (Exception e) {
-			ApexPages.addMessages(e);
-			return null;
-		}
+		
 	}
 	
 	private void populateMilestones () {
@@ -256,14 +261,16 @@ public with sharing class ECO_BudgetQuestionnaireController {
 	}
 	
 	public PageReference saveAndReturn () {
-		doSaveAction();
+		if(doSaveAction())		
 		
 		return new PageReference(retURL);
+        else return null;
 	}
 	
-	public void doSaveAction () {
+	public Boolean doSaveAction () {
 		System.savepoint sp = Database.setSavepoint();
-		
+		Boolean isSaveSuccess = false;
+
 		try {
 			theProject.DateLastCompletedBudgetQuestionnaire__c = Datetime.now();
 			
@@ -312,11 +319,16 @@ public with sharing class ECO_BudgetQuestionnaireController {
 			if (!relocsToDelete.isEmpty()) {
 				delete relocsToDelete;
 			}
+
+			isSaveSuccess = true;
+
 		} catch (Exception e) {
 			system.debug('Handling Exception:  '+e.getLineNumber()+'-'+e.getMessage()+'- '+e.getStackTraceString());
 			Database.rollback(sp);
 			ApexPages.addMessages(e);
 		}
+
+		return isSaveSuccess;
 	}
 	
 	public PageReference addMilestone () {

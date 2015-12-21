@@ -257,8 +257,21 @@ public without sharing class ECO_Service_Applications {
 		queryString			+= ' AND IsRemovable__c = true';
 		queryString			+= ' AND RecordType.Name = \'Application Template\')';
 		
+		string likeArray = '';
+
+
 		if (ECO_Utils_String.NullCheck(name) != ''){
-			queryString			+= ' AND Application__r.ApplicationName__c LIKE \'%' + String.escapeSingleQuotes(name) + '%\' ';
+			list<string> nameArray = String.escapeSingleQuotes(name).split(' ');
+			
+			for(string s:nameArray){
+				likeArray += 'Application__r.ApplicationName__c LIKE \'%' + s + '%\' OR ';
+			}
+
+			likeArray = likeArray.removeEnd('OR ');
+
+			queryString			+= ' AND ( ' +  likeArray + ' ) ';
+
+			system.debug(likeArray);
 		}
 
 		if (searchMap != null) {

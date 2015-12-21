@@ -2075,81 +2075,95 @@
         <unique>false</unique>
     </fields>
     <fields>
-        <fullName>LaborMultBudget__c</fullName>
+        <fullName>LaborMultiplierBudget__c</fullName>
+        <description>metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;</description>
         <externalId>false</externalId>
+        <formula>If(LaborBudget__c=0 ||  ISBLANK(LaborBudget__c) , 0, (NetMarginBudget__c +  LaborBudget__c )/ LaborBudget__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Labor Multiplier Budget</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
-        <fullName>LaborMultDraft__c</fullName>
+        <fullName>LaborMultiplierDraft__c</fullName>
+        <description>metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;</description>
         <externalId>false</externalId>
+        <formula>If(LaborDraft__c=0 || ISBLANK(LaborDraft__c) , 0, (NetMarginDraft__c + LaborDraft__c )/ LaborDraft__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Labor Multiplier Draft</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
-        <fullName>LaborMultForecast__c</fullName>
+        <fullName>LaborMultiplierForecast__c</fullName>
+        <description>metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;</description>
         <externalId>false</externalId>
+        <formula>If(LaborForecast__c=0 || ISBLANK(LaborForecast__c) , 0, (NetMarginForecast__c + LaborForecast__c )/ LaborForecast__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Labor Multiplier Forecast</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
-        <fullName>LaborMultITD__c</fullName>
+        <fullName>LaborMultiplierITD__c</fullName>
+        <description>laborMultValue = (revenue - nonLabor)/labor;</description>
         <externalId>false</externalId>
+        <formula>If(LaborITD__c=0 || ISBLANK(LaborITD__c) , 0, (NetMarginITD__c + LaborITD__c )/ LaborITD__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Labor Multiplier ITD</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
-        <fullName>LaborMultMonthToDate__c</fullName>
+        <fullName>LaborMultiplierMonthToDate__c</fullName>
+        <description>laborMultValue = (revenue - nonLabor)/labor;</description>
         <externalId>false</externalId>
+        <formula>If(LaborMonthToDate__c=0 || ISBLANK(LaborMonthToDate__c) , 0, (NetMarginMonthToDate__c + LaborMonthToDate__c )/ LaborMonthToDate__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Labor Multiplier Month To Date</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
-        <fullName>LaborMultUnapproved__c</fullName>
+        <fullName>LaborMultiplierUnapproved__c</fullName>
+        <description>metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;</description>
         <externalId>false</externalId>
+        <formula>If(LaborUnapproved__c=0 || ISBLANK(LaborUnapproved__c) , 0, (NetMarginUnapproved__c + LaborUnapproved__c )/ LaborUnapproved__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Labor Multiplier Unapproved</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
-        <fullName>LaborMultYearToDate__c</fullName>
+        <fullName>LaborMultiplierYearToDate__c</fullName>
+        <description>laborMultValue = (revenue - nonLabor)/labor;</description>
         <externalId>false</externalId>
+        <formula>If(LaborYearToDate__c=0 || ISBLANK(LaborYearToDate__c) , 0, (NetMarginYearToDate__c + LaborYearToDate__c )/ LaborYearToDate__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Labor Multiplier Year To Date</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>LaborUnapproved__c</fullName>
@@ -3897,10 +3911,15 @@
     <label>Project Snapshot</label>
     <listViews>
         <fullName>All</fullName>
-        <columns>AR__c</columns>
-        <columns>ARBIEE__c</columns>
-        <columns>ARRetention__c</columns>
-        <columns>ARTotal__c</columns>
+        <columns>ProjectName__c</columns>
+        <columns>SnapshotDate__c</columns>
+        <columns>GrossRevenueETC__c</columns>
+        <columns>CostsODCEXPSMonthtoDate__c</columns>
+        <columns>CostsODCEXPSYearToDate__c</columns>
+        <columns>CostsODCEXPSITD__c</columns>
+        <columns>CostsODCSUBSMonthtoDate__c</columns>
+        <columns>CostsODCSUBSYearToDate__c</columns>
+        <columns>CostsODCSUBSITD__c</columns>
         <columns>CREATED_DATE</columns>
         <filterScope>Everything</filterScope>
         <label>All</label>

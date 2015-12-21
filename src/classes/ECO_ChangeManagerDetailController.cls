@@ -41,6 +41,7 @@ public class ECO_ChangeManagerDetailController {
     public List<syncHistoryHelper> syncHistory {get; private set;}
     public List<syncHistoryHelper> requestFailures {get; private set;}
 
+    public string budgetID {get;set;}
 
     public ECO_ChangeManagerDetailController(ApexPages.StandardController controller)
     {
@@ -68,6 +69,19 @@ public class ECO_ChangeManagerDetailController {
             pollingMessageQueueMsgBottom = 'Checking if project has been processed in <span id="pollingTimerBottom">10</span> seconds...';  
         }      
     }    
+
+    public PageReference oracleSyncControl(){
+
+
+        for(BudgetHeaderWrapper bhw: initialBudgetsForExecution){
+            if(bhw.budgetHeader.id != budgetID){
+                bhw.isSelected = false;
+            }
+        }
+
+
+        return null;
+    }
 
     public void init()
     {
@@ -156,6 +170,7 @@ public class ECO_ChangeManagerDetailController {
         invalidTasks = projectSummaryController2.invalidTasks;
         projectSynchMessages += projectSummaryController2.keyMemberMsg;
         invalidKeyMembers = projectSummaryController2.invalidKeyMembers;
+        projectSynchMessages += projectSummaryController2.classificationsMsg;
  
         projectSynchMessages += projectSummaryController2.customersMsg; 
         invalidCustomers = projectSummaryController2.invalidCustomers; 
@@ -180,7 +195,7 @@ public class ECO_ChangeManagerDetailController {
         cs = ECO_IntegrationEndpoints__c.getInstance('Project Sync 2');
 
         String endPointUrl = cs.EndPointUrl__c;
-        authenticationResult = ECO_Service_Authentication.TestProxy(endPointUrl, 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + password);
+        authenticationResult = ECO_Service_Authentication.TestProxy(endPointUrl, 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + EncodingUtil.URLENCODE(password,'UTF-8'));
         //authenticationResult = ECO_Service_Authentication.TestProxy('https://ecodev.aecom.com/OA_HTML/jsp/fnd/PicDisconnSF.jsp', 'PICAction=CreateSHAKey&UserId=' + username + '&Password=' + password);
 
         return null;
@@ -275,6 +290,12 @@ public class ECO_ChangeManagerDetailController {
         return null;
     }
 
+    public pageReference cancelChangeManager()
+    {
+        changeManager.ApprovalStatus__c = 'Cancelled';
+        update changeManager;
+        return null;   
+    }
 
     public PageReference viewProjectClosureRequest()
     {
@@ -640,10 +661,10 @@ public class ECO_ChangeManagerDetailController {
         update changeManager;
 
 
-        if(changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c)
-            ECO_Service_ChangeManager.synchronizeProject2(changeManager.LatestMessageQueueId__c, changeManager.Project__c);
-        else
-            ECO_Service_ChangeManager.synchronizeProject(changeManager.LatestMessageQueueId__c, changeManager.Project__c);
+        //if(changeManager.IntExtProjectClosure__c || changeManager.IntExtProjectOnHold__c)
+        //    ECO_Service_ChangeManager.synchronizeProject2(changeManager.LatestMessageQueueId__c, changeManager.Project__c);
+        //else
+        //    ECO_Service_ChangeManager.synchronizeProject(changeManager.LatestMessageQueueId__c, changeManager.Project__c);
 
         PageReference changeManagerPageRef = new PageReference('/apex/ECO_ChangeManagerDetail?Id='+changeManager.Id);        
         changeManagerPageRef.getParameters().put('mode', '');

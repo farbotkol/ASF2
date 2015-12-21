@@ -54,6 +54,19 @@ public class ECO_RiskRegisterListController {
         return riskList;
         
     }
+    /*public List<OpenActivity> getActivitiesOpen(){
+        List<OpenActivity> actRList = new List<OpenActivity>();
+
+        for(pse__Proj__c proj:[ Select (Select o.What.Name , o.WhatId, o.IsTask, o.ActivityDate, o.Subject, o.OwnerId, o.Status, o.Priority, o.LastModifiedDate, o.EndDateTime From OpenActivities o) from pse__Proj__c where ID =: thisProject.id]){
+        	if(!proj.OpenActivities.isempty()){
+        		for(OpenActivity opnAct: proj.OpenActivities){  // If there are multiple Tasks and Events this loop will take care of that.
+        			actRList.add(opnAct);
+                }
+        	}
+        }
+        return actRList;
+    }*/
+    
     public PageReference deleteRisk(){
         Id riskId = ApexPages.currentPage().getParameters().get('recid');
         Risk__c riskRecord = [Select id From Risk__c where id = :riskId];

@@ -145,6 +145,20 @@ IF(ISBLANK( ProjectTeamMember__c )
         <type>Picklist</type>
     </fields>
     <fields>
+        <fullName>CostRateField__c</fullName>
+        <externalId>false</externalId>
+        <formula>OverrideRawCost__c + (OverrideRawCost__c * OverrideFringeMultiplierField__c ) 
++ 
+(OverrideRawCost__c * OverrideOverheadMultiplierField__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cost Rate (Field)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>CostRate__c</fullName>
         <externalId>false</externalId>
         <formula>OverrideRawCost__c + (OverrideRawCost__c * OverrideFringeMultiplier__c ) 
@@ -167,6 +181,16 @@ IF(ISBLANK( ProjectTeamMember__c )
         <trackTrending>false</trackTrending>
         <type>Text</type>
         <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>EndDate__c</fullName>
+        <externalId>false</externalId>
+        <label>End Date</label>
+        <summarizedField>BudgetAssignment__c.EndDate__c</summarizedField>
+        <summaryForeignKey>BudgetAssignment__c.BudgetResource__c</summaryForeignKey>
+        <summaryOperation>max</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
     </fields>
     <fields>
         <fullName>ExpenditureResourceType__c</fullName>

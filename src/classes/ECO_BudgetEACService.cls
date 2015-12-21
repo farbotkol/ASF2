@@ -411,17 +411,6 @@ insert allBudgets;
 
         mapResourcesByPersonId = new Map<String, BudgetResource__c>();
 
-        //ECO_DTO_BudgetLabourWrapper budgetLabourWrapper = new budgetLabourWrapper(projectId);
-        oBudgetHeader = new BudgetHeader__c();
-        oBudgetHeader.RecordTypeId = ECO_Utils_Meta.getRecordTypeId(BudgetHeader__c.sObjectType, 'EAC');
-        oBudgetHeader.Project__c = sProjectId;
-        oBudgetHeader.Status__c = ECO_DTO_BudgetHeader.STATUS_ESTIMATE;
-        
-        list<BudgetHeader__c> lBudgetHeader = new list<BudgetHeader__c>([SELECT Id FROM BudgetHeader__c WHERE Project__c = :sProjectId]);
-        
-        oBudgetHeader.BudgetName__c = 'EAC ' + lBudgetHeader.size();
-        insert oBudgetHeader;
-        
         
         Map<String, ProjectTeamMember__c> mapPTMByPersonId = new Map<String, ProjectTeamMember__c> ();
         Map<String, VendorSite__c> mapVSbyVendorId = new Map<String, VendorSite__c> ();
@@ -698,7 +687,7 @@ insert allBudgets;
               }
 
               if (!personIdsToAdd.isEmpty()) {
-                ProjectRole__c prl = [select id from ProjectRole__c where Name = 'Task Manager'];
+                ProjectRole__c prl = [select id from ProjectRole__c where Name = 'Other'];
 
                 for (Contact con : [Select Id, pse__Salesforce_User__r.PersonId__c From Contact Where pse__Salesforce_User__r.PersonId__c in :personIdsToAdd]) {
                   ProjectTeamMember__c ptm = new ProjectTeamMember__c();

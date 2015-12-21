@@ -364,7 +364,18 @@
              <div style="display:{!if(pse__Proj__c.SafetyHealthSiteInspections__c =='Yes',"inline","none")};" >
                 
             <apex:outputPanel id="theFieldsPanel"> 
-                         <apex:actionRegion >   
+            <apex:actionRegion >   
+
+
+                <div class="customHelpText" >
+                    <div class="customHelpBody">
+                        All field activities require a Task Risk Analysis to be undertaken. Complete the required analysis per your geography safety standard (e.g., Job Safety Analysis, Safe Work Method Statement, Task Hazard Analysis) and upload the completed documents for access and reference by the project team unless a project-specific
+                         health and safety plan is prepared for the project.
+                    </div>                                                                      
+                </div>
+                <br/>
+
+
                              
             <apex:inputFile id="safetyHealthInspectionAttachment" value="{!newsafetyHealthInspectionAttachment.Body}"
                             contentType="{!newsafetyHealthInspectionAttachment.ContentType}" fileName="{!newsafetyHealthInspectionAttachment.Name}"
@@ -375,13 +386,7 @@
             </apex:actionRegion> 
 			<br/>
             <div class="ouputPanelSep">
-                <div class="customHelpText" >
-                    <div class="customHelpBody">
-                        All field activities require a Task Risk Analysis to be undertaken. Complete the required analysis per your geography safety standard (e.g., Job Safety Analysis, Safe Work Method Statement, Task Hazard Analysis) and upload the completed documents for access and reference by the project team unless a project-specific
-                         health and safety plan is prepared for the project.
-                    </div>                                                                      
-                </div>
-                <br/>
+
                 <div class="fileList">
                     <apex:pageBlockTable value="{!SafetyHealthInspectionFiles}" var="attachedSafetyInspectionFile" style="width: 825px;" rendered="{!pse__Proj__c.SafetyHealthInspectionAttachments__c != null}">
                         <apex:column headerValue="Action">

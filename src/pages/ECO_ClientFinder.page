@@ -287,7 +287,7 @@
 															</apex:inputCheckbox>
 														</apex:column>
 														<apex:column headerValue="Client">
-															<apex:selectList value="{!Site.BillingContactID__c}" disabled="{!NOT(Site.Is_Billing__c)}">
+															<apex:selectList value="{!Site.BillingContactID__c}" size="1" disabled="{!NOT(Site.Is_Billing__c)}">
             													<apex:selectOptions value="{!mapSiteIDtoOptions[Site.Site__c]}"></apex:selectoptions>
 															</apex:selectList>
 														</apex:column>
@@ -359,6 +359,10 @@
 						</apex:pageBlockSection>
 						</div>
 						<div style="text-align:center;">
+                            <apex:outputLabel value="Show me clients that are not in my Operating Unit" />&nbsp;
+                            <c:ECO_HelpIcon helpText="Check the box to search for clients with physical or billing locations outside of the users operating unit (region/geography)"/>
+                            <apex:inputCheckbox value="{!bSearchOutsideUserOrg}" />
+                            <br/><br/>
 							<apex:commandButton id="SearchButton" action="{!SearchSites}" value="Search" rerender="WholeForm" status="SiteSearchUpdateStatus" />
 						</div>
 					</apex:actionRegion>

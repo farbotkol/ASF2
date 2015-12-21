@@ -65,7 +65,22 @@
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
+            <field>PackageTitle__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
             <field>OwnerId</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>CancelledReason__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Scope_Owner__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
@@ -80,22 +95,12 @@
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
-            <field>Scope_Approach__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
-            <field>PackageTitle__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
             <field>Scope_Details__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
         <displayedFields>
-            <field>Scope_Owner__c</field>
+            <field>Scope_Approach__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
@@ -106,6 +111,16 @@
         </displayedFields>
         <displayedFields>
             <field>Utilize_BMI_Technology__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>SafetyInDesign__c</field>
+            <isFieldManaged>false</isFieldManaged>
+            <isRequired>false</isRequired>
+        </displayedFields>
+        <displayedFields>
+            <field>Safety_In_Design_Description__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
         </displayedFields>
@@ -351,7 +366,9 @@
         <fullName>EcoScopeCancelledReasonRequired</fullName>
         <active>true</active>
         <description>A Scope cancelled reason is required when the scope is marked as cancelled</description>
-        <errorConditionFormula>AND(ISPICKVAL( Status__c , &quot;Cancelled&quot;),ISBLANK( CancelledReason__c ))</errorConditionFormula>
+        <errorConditionFormula>ISPICKVAL( Status__c , &quot;Cancelled&quot;) &amp;&amp;
+ISPICKVAL(Scope__r.pse__Stage__c, &quot;Execution&quot;)&amp;&amp;
+ (ISBLANK(CancelledReason__c) || ISNULL(CancelledReason__c))</errorConditionFormula>
         <errorMessage>A Scope cancelled reason is required when the scope is marked as cancelled</errorMessage>
     </validationRules>
     <webLinks>

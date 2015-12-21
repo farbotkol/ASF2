@@ -25,7 +25,7 @@ public with sharing virtual class ECO_ClientFinderController{
 	public string strSearchResults {get;set;}
 	public string strNoRecords {get;set;}
 
-	public boolean boolShowSiteSearch {get;set;}
+	//public boolean boolShowSiteSearch {get;set;}
 	public boolean booDisplaySiteSearchResult {get;set;}
 	public boolean booNewProject {get;set;}
 
@@ -44,7 +44,11 @@ public with sharing virtual class ECO_ClientFinderController{
     private static string siteMoreLIMIT = '200';
     public integer iSiteRowDelete {get;set;}
 
+    public boolean bSearchOutsideUserOrg {get;set;}
+
     public siteSearchWrapper oSiteSearch {get;set;}
+
+    public OrganizationString__c userOrg {get;set;}
 
 	/* Custom classes to facilitate this controller */
 	public class EcoControllerException extends Exception {}
@@ -68,6 +72,7 @@ public with sharing virtual class ECO_ClientFinderController{
 	/* Constructor */
     public ECO_ClientFinderController(ApexPages.StandardController oStandardController) {
 
+        bSearchOutsideUserOrg = false;
         oSiteSearch = new siteSearchWrapper();
 
         sSiteLimit = siteLessLIMIT;
@@ -95,7 +100,24 @@ public with sharing virtual class ECO_ClientFinderController{
         	UpdateProjectSites();
         }
 
+        SearchUserOrganization();
+
 	}
+
+    public void SearchUserOrganization(){
+
+        list<user> lUser = [SELECT ECO_OrganizationName__c FROM User WHERE ID =:UserInfo.getUserId()];
+
+        list<OrganizationString__c> lUserOrganizations = [SELECT Id, Name, OrganizationName__c, GeographyName__c, Region__c, District__c, Department__c, BusinessLineName__c, LocationName__c, PLManagerContact__c, ProjectOwning__c, FinanceandAccountingManagerContact__c, CFOorDelegateContact__c, OUID__c, CurrencyIsoCode, ProjectApprover__c, ProjectAccountant__c, ProjectAccountant2__c, FinanceLead2__c FROM OrganizationString__c WHERE Name =: lUser[0].ECO_OrganizationName__c and ProjectOwning__c=true and (InactiveDate__c > TODAY OR InactiveDate__c = null)];
+
+        if(lUserOrganizations.size() > 0){
+            userOrg = lUserOrganizations[0];
+        } else {
+            userOrg = null;
+        }
+      
+    }
+
 
     private void showMoreSites(){
         showMoreSiteText = 'Show Less';
@@ -128,9 +150,9 @@ public with sharing virtual class ECO_ClientFinderController{
         return null;
     }
 
-    public PageReference stub(){
+    /*public PageReference stub(){
         return null;
-    }
+    }*/
 
 	public PageReference SelectSite() {
 
@@ -159,7 +181,7 @@ public with sharing virtual class ECO_ClientFinderController{
 
         lstProjectSites.add(oProjectSite);
 
-		if(lstProjectSites.size() == 0){
+		/*if(lstProjectSites.size() == 0){
             system.debug('****DEBUG 2');
 			oProjectSite.Is_Billing__c = true;
 			oProjectSite.Is_Default_Top_Task__c = true;
@@ -176,7 +198,7 @@ public with sharing virtual class ECO_ClientFinderController{
 
             oProject.PrimaryBillingClient__c = SelectedSite.id;
             oProject.PrimaryEndClient__c = SelectedSite.id;
-		}
+		}*/
 
 		save();
 		UpdateProjectSites();
@@ -245,8 +267,8 @@ public with sharing virtual class ECO_ClientFinderController{
         }
         
 
-        for(contact c:[select id, lastname, firstname, OracleContactID__c, Site__c from contact where site__c IN: sitesid]){
-            mapSiteIDtoOptions.get(c.Site__c).add(new SelectOption(c.OracleContactID__c, c.lastname + ', ' + c.firstname));
+        for(contact c:[select id, lastname, firstname, Oracle_ID__c, Site__c from contact where site__c IN: sitesid]){
+            mapSiteIDtoOptions.get(c.Site__c).add(new SelectOption(c.Oracle_ID__c, c.lastname + ', ' + c.firstname));
             system.debug('DEBUG****: ' + c.Site__c);
         }
 
@@ -270,62 +292,21 @@ public with sharing virtual class ECO_ClientFinderController{
 		}
 	}
 
-	public PageReference ShowSiteSearch() {
+	/*public PageReference ShowSiteSearch() {
 		boolShowSiteSearch = true;
 		return null;
-	}
+	}*/
 
 
 	/* Executes the request to handle dynamics parameters and query Sites */
 	public PageReference SearchSites(){
-    	/*string strSOQL = 'SELECT ';
-    	//string strWhereClause = ' WHERE '; 
-        string strWhereClause = ' WHERE OracleCustomerID__c != null ';  //only search for customers (filter out vendors)
-    	boolean boolAtLeastOne = false;
-    	   	
-    	for (Schema.FieldSetMember fsmField: SObjectType.Site__c.FieldSets.pse_ClientFinder_Search_Result_Fieldset.getFields()) {
-    		strSOQL += fsmField.getFieldPath() + ', ';
-    	}
-    	
-    	strSOQL += 'ID FROM Site__c';
-
-    	for (Schema.FieldSetMember fsmField: SObjectType.Site__c.FieldSets.pse_ClientFinder_Search_Fieldset.getFields()) {
-    		
-    		// Only add parameters to the "WhereClause" string if they contain valid values. 
-    		// NOTE: only strings are supported by this code.
-    		if ( recursiveGet(oSite,fsmField.getFieldPath()) != null) {
-    			//strWhereClause += fsmField.getFieldPath() + ' LIKE \'%' + recursiveGet(oSite,fsmField.getFieldPath()) + '%\' AND ';
-                strWhereClause += ' AND ' + fsmField.getFieldPath() + ' LIKE \'%' + recursiveGet(oSite,fsmField.getFieldPath()) + '%\' ';
-    			boolAtLeastOne = true;
-    		}
-    	}    	
-    	
-    	// Determines if the code found at least one non-null/non-blank search parameter. If so, manipulate the "where string" to strip the last " AND " text
-    	// and add it to the SOQL statement.
-    	if (boolAtLeastOne) {
-    		//strWhereClause = strWhereClause.substring(0,strWhereClause.length() - 5);
-    		strSOQL += strWhereClause;
-    	}
-    	
-    	strSOQL += ' LIMIT 50';
-
-    	lstSitesSearchResults = (list<Site__c>)Database.query(strSOQL);
-    	
-    	if(lstSitesSearchResults.size() > 0){
-    		booDisplaySiteSearchResult = true;
-
-    		mapSearchSites = new map<id, Site__c>();
-
-    		for (Site__c oSearchSite: lstSitesSearchResults){
-    			mapSearchSites.put(oSearchSite.id, oSearchSite);
-    		}
-    	}
-
-    	strSearchResults = string.valueof(lstSitesSearchResults.size()) + ' Record(s) Found';
-    	
-    	return null;		*/
 
 
+        if((userOrg == null || userOrg.OUID__c == null) && bSearchOutsideUserOrg == false){
+            return null;
+        }
+
+        string oracleRTFilter = Schema.Sobjecttype.Account.getRecordTypeInfosByName().get('Oracle Only').getRecordTypeId();
 
         oSite.Account__r.name = oSiteSearch.name; 
         oSite.City__c = oSiteSearch.city;
@@ -360,7 +341,24 @@ public with sharing virtual class ECO_ClientFinderController{
             strSOQL += strWhereClause;
         }
         
-        strSOQL += ' LIMIT ' + sSiteLimit;
+        if(bSearchOutsideUserOrg){
+            if(boolAtLeastOne){
+                strSOQL += ' and Account__r.recordtypeid !=: oracleRTFilter and VendorSiteID__c = null ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+            } else {
+                strSOQL += ' WHERE Account__r.recordtypeid !=: oracleRTFilter and VendorSiteID__c = null  ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+            }
+        } else {
+
+            string userOrgID = userOrg.OUID__c;
+
+            if(boolAtLeastOne){
+                strSOQL += ' AND OUID__c =: userOrgID and Account__r.recordtypeid !=: oracleRTFilter and VendorSiteID__c = null  ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+            } else {
+                strSOQL += ' WHERE OUID__c =: userOrgID and Account__r.recordtypeid !=: oracleRTFilter and VendorSiteID__c = null  ORDER BY Account__r.name ASC  LIMIT ' + sSiteLimit;
+            }
+        }
+
+        //strSOQL += ' LIMIT ' + sSiteLimit;
 
         lstSitesSearchResults = (list<Site__c>)Database.query(strSOQL);
 

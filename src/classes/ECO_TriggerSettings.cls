@@ -20,4 +20,13 @@ public without sharing class ECO_TriggerSettings {
 		
 		return returnFlag;
 	}
+	
+	public static void overrideTriggerSetting(String triggerName, Boolean boolValue) {
+		if (null == triggerSettingsMap){
+			triggerSettingsMap = ECO_TriggerSettings__c.getAll();
+		}
+		ECO_TriggerSettings__c thisTriggerSetting = triggerSettingsMap.get(triggerName);
+		thisTriggerSetting.IsEnabled__c = boolValue;
+		update thisTriggerSetting;
+	}
 }

@@ -6,22 +6,34 @@ public with sharing class ECO_ProjectStatusController {
     
     public ECO_ProjectStatusController(ApexPages.StandardController controller){
         List<String> lClassificationPathNames = new List<String>();
-        lClassificationPathNames.add('CarryingOutOrganization__c');
+        /*lClassificationPathNames.add('CarryingOutOrganization__c');
+        
         for (FieldSetMember oFSM : SObjectType.pse__Proj__c.FieldSets.Project_Classifications.getFields()) {
             lClassificationPathNames.add(oFSM.getFieldPath());
         }
-
+        
         lClassificationPathNames.add('ProgBarPrelimPlanApproval__c');
         lClassificationPathNames.add('pse__Stage__c');
         lClassificationPathNames.add('SafetyHealthCompleted__c');
-		lClassificationPathNames.add('ProgressBarExecutionApproval__c');
+        lClassificationPathNames.add('ProgressBarExecutionApproval__c');
         lClassificationPathNames.add('ProposalSubmittedDate__c');
         lClassificationPathNames.add('RM_Button_Clicked__c');
         
-        
-        controller.addFields(lClassificationPathNames);
-
+        if (!Test.isRunningTest()){    
+            controller.addFields(lClassificationPathNames);
+        }*/
+        string strSOQL = 'SELECT ';
+        Id projId;
         currentProject = (pse__Proj__c)controller.getRecord();
+        projId = currentProject.Id;
+        for (Schema.FieldSetMember fsmField: SObjectType.pse__Proj__c.FieldSets.Project_Classifications.getFields()) {
+                strSOQL += fsmField.getFieldPath() + ', ';
+        }
+        //strSOQL += 'ID, TypeCalculationCheck__c, TypeDetailCheck__c, TypeIndependentReviewIR__c, TypeInterdisciplinaryCoordinationReview__c, TypeBidabilityReview__c, TypeDesignReview__c, TypeSpecificationPackageReview__c, TypeSubconsultantClient__c, TypeConstructabilityReview__c, TypeDesignAssumptions__c, TypeOther__c ';
+        strSOQL += 'Id, CarryingOutOrganization__c, ProgBarPrelimPlanApproval__c, ProjectApproverUser__c, DelegateProject__c, pse__Stage__c, SafetyHealthCompleted__c, ProgressBarExecutionApproval__c, ProposalSubmittedDate__c, RM_Button_Clicked__c  From pse__Proj__c Where Id = :projId';
+        list<pse__Proj__c> lstproj = (list<pse__Proj__c>)Database.query(strSOQL);
+        //currentProject = [Select Id, CarryingOutOrganization__c, ProgBarPrelimPlanApproval__c, pse__Stage__c, SafetyHealthCompleted__c, ProgressBarExecutionApproval__c, ProposalSubmittedDate__c, RM_Button_Clicked__c  From pse__Proj__c Where Id = :currentProject.Id];
+        currentProject = lstproj[0];
         currentRecordId = currentProject.Id;
         
         
@@ -285,7 +297,7 @@ public with sharing class ECO_ProjectStatusController {
         set;
     }
 
-    public String projectCreatedInOracle{
+    /*public String projectCreatedInOracle{
         get{
             if(currentProject.pse__Stage__c != 'Pending Go/No Go' && currentProject.pse__Stage__c != 'Planning'){
                 return 'Complete';
@@ -298,7 +310,7 @@ public with sharing class ECO_ProjectStatusController {
             return 'NotStarted';
         }
         set;
-    }
+    }*/
 
     public String preliminaryProjectPlan{
         get{
@@ -411,7 +423,7 @@ public with sharing class ECO_ProjectStatusController {
         }
         set;
     }
-    public String closureApprovaltoExecute{
+    /*public String closureApprovaltoExecute{
         get{
             if(contractReviewStatus == 'Complete'){
                 if(currentProject.ProgressBarExecutionApproval__c == 'NotStarted')  
@@ -427,7 +439,7 @@ public with sharing class ECO_ProjectStatusController {
                 return 'NotStarted';
         }
         set;
-    }
+    }*/
     public String projInitiationStatus{
         get{
             String status = healthyStartStatus;
@@ -456,7 +468,7 @@ public with sharing class ECO_ProjectStatusController {
         }
         set;
     }
-    public String preliminaryProjectPlanApprovalStatus{
+    /*public String preliminaryProjectPlanApprovalStatus{
         get{
             if(currentProject.ProgBarPrelimPlanApproval__c == 'NotStarted'){
                 return 'NotStarted';
@@ -472,7 +484,7 @@ public with sharing class ECO_ProjectStatusController {
         }
 
         set;
-    }
+    }*/
 
     public String scopeApproachStatus {
         get {
@@ -1053,7 +1065,7 @@ public with sharing class ECO_ProjectStatusController {
         set;
     }
 
-    public PageReference projectKickOffClicked(){
+   /* public PageReference projectKickOffClicked(){
         PageReference pageRef;
         String pageRefNew='';
         String pageRefExist = '';
@@ -1089,7 +1101,7 @@ public with sharing class ECO_ProjectStatusController {
         System.debug('recId  :'+recId);
         return pageRef;
         
-    }    
+    }   */ 
     
     public PageReference healthyStartClicked() 
     {

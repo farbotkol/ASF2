@@ -182,6 +182,17 @@ public class ECO_ProjectFundingController {
     
     public PageReference createFunding()
     {
+        if(!project.ProjectLevelFundingFlag__c && creatingNewFunding == true)
+        {
+            String taskIdTryingToFund = Apexpages.currentPage().getParameters().get('taskId').substring(0,18);
+            if(taskId != taskIdTryingToFund)
+            {
+                ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Please save changes to other funded task before funding this task.');
+                ApexPages.addMessage(oPageMessage);
+                return null; 
+            }
+        }
+
         creatingNewFunding = true;
 
         if(!project.ProjectLevelFundingFlag__c)
@@ -190,7 +201,8 @@ public class ECO_ProjectFundingController {
 
             if(!project.isSegmented__c && projectTasksFundedMap.get(taskId).size() == 0)
             {
-            	list<Funding__c> projectFundings = [select Id from Funding__c where Agreement__c = :agreementId and ProjectTask__c != :taskId];
+            	//list<Funding__c> projectFundings = [select Id from Funding__c where Agreement__c = :agreementId and ProjectTask__c != :taskId];
+                List<Funding__c> projectFundings = [select Id from Funding__c where ProjectTask__c != :taskId and Project__c = :projectId];
            		if(projectFundings.size() > 0)
            		{
            			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Please fill out a Segment questionnaire for Projects that have multiple tasks!');

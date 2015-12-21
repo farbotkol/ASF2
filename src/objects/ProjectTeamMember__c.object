@@ -1153,6 +1153,13 @@ S = Successful</inlineHelpText>
         <errorConditionFormula>AND(NOT(ISBLANK(StartDate__c)),StartDate__c &lt; Contact__r.pse__Salesforce_User__r.Original_Hire_Date__c)</errorConditionFormula>
         <errorMessage>Key member start date must be greater than or equal to the user&apos;s hire date.</errorMessage>
     </validationRules>
+    <validationRules>
+        <fullName>End_Date_After_Start_Date</fullName>
+        <active>true</active>
+        <errorConditionFormula>EndDate__c &lt;  StartDate__c</errorConditionFormula>
+        <errorDisplayField>StartDate__c</errorDisplayField>
+        <errorMessage>Start Date cannot be after End Date</errorMessage>
+    </validationRules>
     <webLinks>
         <fullName>Manage_Project_Team</fullName>
         <availability>online</availability>

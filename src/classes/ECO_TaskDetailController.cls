@@ -8,6 +8,8 @@ public class ECO_TaskDetailController
     list<pse__Project_Task__c> lstProjTaskToDelete;
     public map<string,string> mapPicklistLabelToValue = new map<string,string>();
     
+    public Map<Id, Integer> taskHashes;
+
     //Class Constructor
     public ECO_TaskDetailController(ApexPages.StandardController con) 
     {
@@ -41,6 +43,7 @@ public class ECO_TaskDetailController
             for(TaskDetailWrapper objTDW : lstTaskDetailWrapper)
             {
                 objTDW.objEPT.oprojectTask.WorkTypeName__c = objTDW.strSelectedWorkTypeName;
+                if (System.hashCode(objTDW.objEPT.oprojectTask) == taskHashes.get(objTDW.objEPT.oprojectTask.Id)) continue;                
                 if(!objTDW.objEPT.oprojectTask.FinancialTask__c)
                 {
                     if(objTDW.strSub_PeerTask == 'Peer Task' || objTDW.objEPT.indentLevel == 0)
@@ -74,20 +77,19 @@ public class ECO_TaskDetailController
                         if (idTopParentTask == null) {
                             idTopParentTask = idParentTask;
                         }
-
-                        lstProjTaskToUpsert.add(objTDW.objEPT.oprojectTask);
+                    
                     }
-                    else
-                        lstProjTaskToUpsert.add(objTDW.objEPT.oprojectTask);
+                     
+                    lstProjTaskToUpsert.add(objTDW.objEPT.oprojectTask);
                 }
                 else
                 {
                     pse__Project_Task__c obj = objTDW.objEPT.oprojectTask;
                     if(objTDW.strSub_PeerTask == 'Sub Task') {
                         system.debug('ParentTask: ' + idParentTask);
-                        obj.pse__Parent_Task__c = idParentTask;
+                      //  obj.pse__Parent_Task__c = idParentTask;
 
-                        obj.pse__Top_level_Parent_Task__c = idTopParentTask;
+                       // obj.pse__Top_level_Parent_Task__c = idTopParentTask;
                     }
                         
                     obj.pse__Project__c = theProject.Id;
@@ -173,6 +175,7 @@ public class ECO_TaskDetailController
     
     public void reload() 
     {
+        taskHashes = new Map<Id, Integer>();  
         tasks = ECO_ProjectTaskService.getProjectTaskList(theProject.Id);
         
         lstTaskDetailWrapper = new list<TaskDetailWrapper>();
@@ -186,6 +189,8 @@ public class ECO_TaskDetailController
             
         for(ECO_ProjectTask obj : tasks)
         {
+            taskHashes.put(obj.Id, System.hashCode(obj.oprojectTask));
+
             TaskDetailWrapper objTD = new TaskDetailWrapper(obj,lstWorkTypeName);
             objTD.strSelectedWorkTypeName = obj.oprojectTask.WorkTypeName__c;
             if(obj.oprojectTask.ForecastStartDate__c == null && obj.oprojectTask.pse__Start_Date_Time__c != null)
@@ -258,6 +263,7 @@ public class ECO_TaskDetailController
                     if(objTDW.strSelectedAction.EqualsIgnoreCase('AddSubTask'))
                     {
                         objTDW.objEPT.oprojectTask.IsChargeable__c = false;
+                        objPT.pse__Parent_Task__c = objTDW.objEPT.oprojectTask.Id;
                     }
                     objPT.Name = '';
                     objPT.ProjectTaskNumber__c = null;
@@ -312,7 +318,12 @@ public class ECO_TaskDetailController
                 objPT.Name = '';
                 objPT.ProjectTaskNumber__c = null;
                 objPT.pse__Project__c = theProject.id;
-                
+                objPT.pse__Start_Date_Time__c = datetime.newInstance(theProject.EstimatedStartDate__c.year(), theProject.EstimatedStartDate__c.month(),theProject.EstimatedStartDate__c.day());
+                Date endDate = theProject.EstimatedEndDate__c == Null ? theProject.EstimatedStartDate__c : theProject.EstimatedEndDate__c;
+                objPT.pse__End_Date_Time__c = datetime.newInstance(endDate.year(), endDate.month(),endDate.day());
+                objPT.ForecastStartDate__c = theProject.EstimatedStartDate__c;
+                objPT.ForecastEndDate__c = theProject.EstimatedEndDate__c == Null ? theProject.EstimatedStartDate__c : theProject.EstimatedEndDate__c;
+                objPT.EarnedValueCurve__c = 'Even';            
                 list<SelectOption> lstWorkTypeName = new list<SelectOption>();
                 lstWorkTypeName.add(new SelectOption('','--None--'));
                 for(string strLbl : mapPicklistLabelToValue.keySet())

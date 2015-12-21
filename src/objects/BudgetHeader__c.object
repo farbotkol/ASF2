@@ -56,7 +56,7 @@
     <fields>
         <fullName>AppliedTotalRevenue__c</fullName>
         <externalId>false</externalId>
-        <formula>IF( OverrideTotalRevenue__c == 0,  TotalRevenue__c , OverrideTotalRevenue__c )</formula>
+        <formula>IF( OR(OverrideTotalRevenue__c == 0, ISNULL(OverrideTotalRevenue__c)),  TotalRevenue__c , OverrideTotalRevenue__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Applied Total Revenue</label>
         <precision>18</precision>
@@ -64,6 +64,17 @@
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>BudgetAsOfDate__c</fullName>
+        <description>Shows End Date (maximum from Budget Assignments) if available, else Status As Of Date.</description>
+        <externalId>false</externalId>
+        <formula>If(not(isblank(EndDate__c)),EndDate__c, datevalue(StatusAsOfDate__c))</formula>
+        <inlineHelpText>Shows End Date (maximum from Budget Assignments) if available, else Status As Of Date.</inlineHelpText>
+        <label>Budget As Of Date</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
     </fields>
     <fields>
         <fullName>BudgetMethod__c</fullName>
@@ -139,6 +150,16 @@
         <visibleLines>3</visibleLines>
     </fields>
     <fields>
+        <fullName>EndDate__c</fullName>
+        <externalId>false</externalId>
+        <label>End Date</label>
+        <summarizedField>BudgetResource__c.EndDate__c</summarizedField>
+        <summaryForeignKey>BudgetResource__c.BudgetHeader__c</summaryForeignKey>
+        <summaryOperation>max</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
         <fullName>ExternalId__c</fullName>
         <caseSensitive>false</caseSensitive>
         <externalId>true</externalId>
@@ -209,7 +230,7 @@
     <fields>
         <fullName>NetServicesRevenue__c</fullName>
         <externalId>false</externalId>
-        <formula>TotalRevenue__c -  TotalSubAmount__c -  TotalFeeAmount__c</formula>
+        <formula>AppliedTotalRevenue__c -  TotalSubAmount__c -  TotalFeeAmount__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Net Services Revenue</label>
         <precision>18</precision>

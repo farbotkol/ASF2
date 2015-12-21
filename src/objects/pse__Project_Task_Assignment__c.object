@@ -1491,6 +1491,25 @@
         <type>Lookup</type>
     </fields>
     <fields>
+        <fullName>pse__End_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(
+  NOT(ISBLANK(pse__Assignment__c)),
+  pse__Assignment__r.pse__End_Date__c,
+  IF(NOT(ISBLANK(pse__Resource_Request__r.pse__Preferred_Schedule__c)),
+     pse__Resource_Request__r.pse__Preferred_Schedule__r.pse__End_Date__c,
+     pse__Resource_Request__r.pse__End_Date__c 
+  )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>End Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
+    </fields>
+    <fields>
         <fullName>pse__External_Resource__c</fullName>
         <deprecated>false</deprecated>
         <externalId>false</externalId>
@@ -1501,6 +1520,27 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pse__Hours__c</fullName>
+        <deprecated>false</deprecated>
+        <description>The number of scheduled hours.</description>
+        <externalId>false</externalId>
+        <formula>IF( AND(NOT(ISBLANK(pse__Assignment__c)), NOT(ISBLANK(pse__Assignment__r.pse__Scheduled_Hours__c)) ),
+pse__Assignment__r.pse__Scheduled_Hours__c, 
+ IF( NOT(ISBLANK(pse__Resource_Request__c)), IF( AND( NOT(ISBLANK(pse__Resource_Request__r.pse__Preferred_Schedule__c)), NOT(ISBLANK( pse__Resource_Request__r.pse__Preferred_Schedule__r.pse__Scheduled_Hours__c)) ), 
+pse__Resource_Request__r.pse__Preferred_Schedule__r.pse__Scheduled_Hours__c, 
+ IF( NOT(ISBLANK(pse__Resource_Request__r.pse__SOW_Hours__c)), pse__Resource_Request__r.pse__SOW_Hours__c, 0) ), 0) )</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <inlineHelpText>The number of scheduled hours from a related Assignment (if one exists) or, if a Related Resource exists, either the number of hours associated with the Related Resource&apos;s Preferred Schedule or the requested number of hours.</inlineHelpText>
+        <label>Hours</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
         <unique>false</unique>
     </fields>
     <fields>
@@ -1698,6 +1738,48 @@
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Lookup</type>
+    </fields>
+    <fields>
+        <fullName>pse__Schedule_Type__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(
+	NOT(ISBLANK(pse__Assignment__c)),
+	$Label.pse__pta_schedule_type_assignment,
+		IF(NOT(ISBLANK(pse__Resource_Request__c)),
+			IF(NOT(ISBLANK(pse__Resource_Request__r.pse__Preferred_Schedule__c)),
+				 	$Label.pse__pta_schedule_type_rr_schedule,
+		   						 	$Label.pse__pta_schedule_type_rr_dates
+		   	),
+		   	$Label.pse__pta_schedule_type_rr_none
+		)
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Schedule Type</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>pse__Start_Date__c</fullName>
+        <deprecated>false</deprecated>
+        <externalId>false</externalId>
+        <formula>IF(
+  NOT(ISBLANK(pse__Assignment__c)),
+  pse__Assignment__r.pse__Start_Date__c,
+  IF(NOT(ISBLANK(pse__Resource_Request__r.pse__Preferred_Schedule__c)),
+     pse__Resource_Request__r.pse__Preferred_Schedule__r.pse__Start_Date__c,
+     pse__Resource_Request__r.pse__Start_Date__c 
+  )
+)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Start Date</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Date</type>
     </fields>
     <label>Project Task Assignment</label>
     <listViews>

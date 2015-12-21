@@ -56,8 +56,7 @@
     <fields>
         <fullName>AppliedRawCost__c</fullName>
         <externalId>false</externalId>
-        <formula>IF( OverrideRawCost__c = 0 , DefaultRawCost__c , OverrideRawCost__c)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <formula>BLANKVALUE(OverrideRawCost__c, BLANKVALUE(DefaultRawCost__c,0))</formula>
         <label>Applied Raw Cost</label>
         <precision>18</precision>
         <required>false</required>
@@ -331,9 +330,10 @@ OverrideTotalRevenue__c
         <fullName>FullyBurdenedCostRate__c</fullName>
         <description>OverrideRawCost__c *  OverrideFringeMultiplier__c *  OverrideOverheadMultiplier__c</description>
         <externalId>false</externalId>
-        <formula>OverrideRawCost__c + (OverrideRawCost__c *  OverrideFringeMultiplier__c )
-+
- (OverrideRawCost__c *  OverrideOverheadMultiplier__c)</formula>
+        <formula>IF( ISPICKVAL(WorkTypeName__c,&quot;Field Office&quot;), 
+   OverrideRawCost__c * (1 + OverrideFringeMultiplierField__c + OverrideOverheadMultiplierField__c),
+   OverrideRawCost__c * (1 + OverrideFringeMultiplier__c + OverrideOverheadMultiplier__c)
+)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Fully Burdened Cost Rate</label>
         <precision>18</precision>
@@ -346,11 +346,7 @@ OverrideTotalRevenue__c
         <fullName>FullyBurdenedCost__c</fullName>
         <description>FullyBurdenedCostRate__c *  Quantity__c</description>
         <externalId>false</externalId>
-        <formula>IF(ISBLANK(OverrideTotalCost__c),
-FullyBurdenedCostRate__c *  Quantity__c
-,
-OverrideTotalCost__c
-)</formula>
+        <formula>BLANKVALUE(OverrideTotalCost__c, FullyBurdenedCostRate__c *  Quantity__c)</formula>
         <label>Fully Burdened Cost</label>
         <precision>18</precision>
         <required>false</required>
@@ -444,9 +440,29 @@ OverrideTotalCost__c
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>OverrideFringeMultiplierField__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Fringe Multiplier (Field)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
         <fullName>OverrideFringeMultiplier__c</fullName>
         <externalId>false</externalId>
         <label>Override Fringe Multiplier</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>OverrideOverheadMultiplierField__c</fullName>
+        <externalId>false</externalId>
+        <label>Override Overhead Multiplier (Field)</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -634,7 +650,7 @@ OverrideTotalCost__c
     <fields>
         <fullName>TotalComputedCost__c</fullName>
         <externalId>false</externalId>
-        <formula>IF(ISPICKVAL(BudgetResource__r.ResourceType__c, &apos;ODC/FEE&apos;), IF(ISPICKVAL(BudgetResource__r.CostCalcType__c, &apos;Each&apos;), Quantity__c * BudgetResource__r.OverrideRawCost__c,  OverrideTotalCost__c), 0.0)</formula>
+        <formula>IF(ISPICKVAL(BudgetResource__r.ResourceType__c, &apos;ODC/FEE&apos;), IF(ISPICKVAL(BudgetResource__r.CostCalcType__c, &apos;Each&apos;), Quantity__c * BudgetResource__r.OverrideRawCost__c,  OverrideTotalCost__c), OverrideTotalCost__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Total Computed Cost</label>
         <precision>18</precision>
@@ -678,6 +694,24 @@ OverrideTotalCost__c
         <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>WorkTypeName__c</fullName>
+        <externalId>false</externalId>
+        <label>Work Type Name</label>
+        <picklist>
+            <picklistValues>
+                <fullName>Home Office</fullName>
+                <default>true</default>
+            </picklistValues>
+            <picklistValues>
+                <fullName>Field Office</fullName>
+                <default>false</default>
+            </picklistValues>
+            <sorted>false</sorted>
+        </picklist>
+        <trackTrending>false</trackTrending>
+        <type>Picklist</type>
     </fields>
     <label>Budget Assignment</label>
     <nameField>

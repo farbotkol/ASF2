@@ -17,6 +17,7 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
 	public list<Answer__c> lAnswers {get; set;}
 	public Map<Id, Risk__c> questionToRiskMap { get; set; }  // Key is TemplateQuestion__c id
     public Map<Id, DOARegister__c> questionToDOAMap { get; set; }  // Key is TemplateQuestion__c id
+    public Map<Id, String> questionToMitigationMap {get; set;}
     public list<TemplateQuestion__c> lTemplateQuestion {get; set;}
     public list<SelectOption> lAnswerValues {get; set;}
     public list<SelectOption> lAnswerValuesBoolean {get; set;}
@@ -106,7 +107,7 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
         mNotDoAAnswers = new map<string, list<Answer__c>>();
         questionToRiskMap = new Map<Id, Risk__c>();
         questionToDOAMap = new Map<Id, DOARegister__c>();
-
+		
         for(Answer__c oAnswer : lAnswers)
         {
         	if(oAnswer.TemplateQuestion__r.IsDoATrigger__c)
@@ -132,8 +133,6 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
                 newDOA.DOATrigger__c = oAnswer.TemplateQuestion__r.Question__c;
                 newDOA.RiskTitle__c = oAnswer.TemplateQuestion__r.RiskTitle__c;
                 newDOA.TemplateQuestion__c = oAnswer.TemplateQuestion__c;
-                
-                //newDOA.MitigationStrategy__c = '';
                 
                 questionToDOAMap.put(oAnswer.TemplateQuestion__c, newDOA);
     		}
@@ -168,14 +167,14 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
         System.debug('showDOASection:   '+showDOASection);
         System.debug('showDOASubSection:   '+showDOASubSection);
         for (Risk__c r : ECO_Service_Risks.getRisksForAnswers(lAnswers)) {
-        	questionToRiskMap.put(r.Answer__r.TemplateQuestion__c, r);
+            questionToRiskMap.put(r.Answer__r.TemplateQuestion__c, r);
         }
 
         for (DOARegister__c d : ECO_Service_Risks.getDOAForAnswers(lAnswers)) {
             questionToDOAMap.put(d.TemplateQuestion__c, d);
+            //d.MitigationStrategy__c = questionToMitigationMap.get(d.TemplateQuestion__c);
         }
-		
-  		return;
+		return;
     }
     
     public PageReference addRiskToAnswer () {
@@ -201,8 +200,11 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
             System.debug('addDOARiskToAnswer');
             DOARegister__c doa = questionToDOAMap.get(selectedQuestionId);
             doa.Project__c = oQuestionnaire.QuestionnaireSet__r.Project__c;
+            //doa.MitigationStrategy__c = oQuestionnaire.
             questionToDOAMap.put(selectedQuestionId, doa);
-
+			
+            
+            System.debug('questionToRiskMap[answer.TemplateQuestion__c].RiskMitigation__c::::::'+questionToRiskMap.get(selectedQuestionId));
             //add a risk for each DOA as well
             Risk__c newRisk = new Risk__c();
             newRisk.Questionnaire__c = oQuestionnaire.Id;
@@ -239,6 +241,7 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
     	try
         {
     		markDOAAnswersAsNoIfParentIsNo();
+            questionToMitigationMap = new Map<Id, String>();
     		
     		//oStandardController.save();
     		upsert lAnswers;
@@ -263,10 +266,13 @@ public with sharing class ECO_RMAQuestionnaireController extends ECO_PageControl
     		
     		for (Id i : questionToRiskMap.keySet()) {
     			questionToRiskMap.get(i).Answer__c = questionTemplateToAnswerMap.get(i);
-    		}
+                questionToMitigationMap.put(i, questionToRiskMap.get(i).RiskMitigation__c);
+            }
 
             for (Id i : questionToDOAMap.keySet()) {
+                
                 questionToDOAMap.get(i).Answer__c = questionTemplateToAnswerMap.get(i);
+                questionToDOAMap.get(i).MitigationStrategy__c = questionToMitigationMap.get(i);
             }
             System.debug('questionToDOAMap size: ' + questionToDOAMap.size());
     		

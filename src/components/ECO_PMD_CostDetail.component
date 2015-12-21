@@ -1,7 +1,7 @@
 <apex:component controller="ECO_PMD_CostDetail_Controller" layout="none">
 	<apex:attribute name="projectId" description="Project ID" type="String" required="true" />
 	<apex:attribute name="projectName" description="Project Name" type="String" required="true" />
-	<apex:attribute name="layout" description="Desired Layout (LabourHours, LabourCost, ODCExpenses, or ODCSubs)" type="String" required="true" />
+	<apex:attribute name="layout" description="Desired Layout (AllCosts, LabourHours, LabourCost, ODCExpenses, or ODCSubs)" type="String" required="true" />
 
 	<apex:includeScript value="{!URLFOR($Resource.angular_1_4_7_min, 'angular.min.js')}"/>
 	<apex:includeScript value="{!URLFOR($Resource.angular_1_4_7_min, 'i18n/angular-locale_' + LOWER(locale) + '.js')}"/>
@@ -204,9 +204,10 @@
 			function costDetailController($filter, _, costDetailTransformer) {
 				var vm = this;
 
-				vm.layout = vm.layout || 'LabourHours'; // one of LabourHours, LabourCost, ODCExpenses, ODCSubs
+				vm.layout = vm.layout || 'AllCosts'; // one of AllCosts, LabourHours, LabourCost, ODCExpenses, ODCSubs
 
 				var layoutToPeriodField  = {
+					AllCosts: 'CostDistLine_ProjectFunctionalBurdenedCost',
 					LabourHours: 'ExpenditureItem_Quantity',
 					LabourCost: 'CostDistLine_ProjectFunctionalBurdenedCost',
 					ODCExpenses: 'CostDistLine_ProjectFunctionalBurdenedCost',
@@ -214,6 +215,7 @@
 				};
 
 				var layoutToGroupKeys = {
+					AllCosts: ['task', 'expenditureItemType'],
 					LabourHours: [ 'task', 'personOrVendor',  'expenditureItemType' ],
 					LabourCost: [ 'task', 'personOrVendor', 'expenditureItemType' ],
 					ODCExpenses: [ 'task', 'expenditureCategory', 'expenditureItemType' ],

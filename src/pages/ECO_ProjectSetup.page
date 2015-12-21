@@ -4,7 +4,7 @@
     <apex:includeScript value="{!URLFOR($Resource.ECO_jQueryUI_1_11_2, 'jquery-ui.min.js')}" />
 
     <style>
-
+		
         .colA {
             text-align:right;
             vertical-align:middle !important;
@@ -268,31 +268,31 @@
 
 
         <apex:pageMessages id="messages" />
+         <c:ECO_CollapsibleSection sectionTitle="Project Setup Instructions">
+            <div class="customHelpText">
+                <div class="customHelpBody">
+                    Complete the following steps to provide the minimum information required to create an Ecosystem project record.   Additional project information can be added once the initial setup is complete.   
+                    <br/><br/>
+                        Step 1: Search and select the client account(s) associated with the project.  If the account does not exist, create a new client account record using the request button.   
+                        <br/>
+                        Step 2:  Select the relevant project opportunity associated with the client account(s).  This will link the new project record to the existing Salesforce opportunity record.  Skip the selection if the opportunity records listed are not relevant to the project or no opportunities exist for the client account(s).
+                        <br/>
+                        Step 3: Provide a project name, owner, estimated start date and estimated fee.
+                        <br/>
+                        Step 4: Select the AECOM organization(s) that will support delivery of the project, the role (primary or secondary) and percent contribution. 
+                        <br/>
+                        <br/>
+                </div>
+            </div>    
+        </c:ECO_CollapsibleSection>
 
-        <div class="customHelpText">
-            <div class="customHelpBody">
-                Complete the following steps to provide the minimum information required to create an Ecosystem project record.   Additional project information can be added once the initial setup is complete.   
-                <br/><br/>
-                    Step 1: Search and select the client account(s) associated with the project.  If the account does not exist, create a new client account record using the request button.   
-                    <br/>
-                    Step 2:  Select the relevant project opportunity associated with the client account(s).  This will link the new project record to the existing Salesforce opportunity record.  Skip the selection if the opportunity records listed are not relevant to the project or no opportunities exist for the client account(s).
-                    <br/>
-                    Step 3: Provide a project name, owner, estimated start date and estimated fee.
-                    <br/>
-                    Step 4: Select the AECOM organization(s) that will support delivery of the project, the role (primary or secondary) and percent contribution. 
-                    <br/>
-                    <br/>
-            </div>
-        </div>  
-        <br/>
-        <br/>
-        <br/>
-		<apex:include pageName="ECO_ProjectStatusOnCreateProject"/>
+        <apex:include pageName="ECO_ProjectStatusOnCreateProject" id="Bar"/>
+        
         <br/>
         <br/>
         <br/>
         <apex:form id="theform">
-
+			
             <apex:outputPanel id="SelectAddressPanel">
                 <apex:pageBlock mode="edit" title="Create Project" id="thepageblock"> 
 
@@ -403,7 +403,7 @@
                                                                     </apex:column>
                                                                     <apex:column headerValue="Primary End">
                                                                         <apex:inputCheckbox value="{!Site.booIsPrimaryEnd}" disabled="{!OR(Site.booIsPrimaryEnd, NOT(Site.booIsEnd))}">
-                                                                            <apex:actionSupport event="onclick" action="{!PrimaryEndSelect}" reRender="WholeForm">
+                                                                            <apex:actionSupport event="onclick" action="{!PrimaryEndSelect}" reRender="SiteTab, theForm">
                                                                                 <apex:param assignTo="{!idSiteID}" name="SiteID" value="{!Site.oSite.id}" />
                                                                             </apex:actionSupport>
                                                                         </apex:inputCheckbox>

@@ -81,9 +81,14 @@
                 </apex:commandLink>
             </apex:column>
             <apex:column headerValue="Record Type"><apex:outputField value="{!agreement.RecordType.Name}"/></apex:column>
-             <apex:column headerValue="Billing Client"><apex:outputField value="{!agreement.Account__c}"/></apex:column>
+             <apex:column headerValue="Billing Client">
+             	<apex:outputField value="{!agreement.VendorSite__r.AccountName__c}" rendered="{!agreement.RecordType.Name == 'Sub'}"/>
+             	<apex:outputField value="{!agreement.Account__c}" rendered="{!agreement.RecordType.Name != 'Sub'}"/>
+             </apex:column>
             <apex:column headerValue="Agreement Status"><apex:outputField value="{!agreement.AgreementStatus__c}"/></apex:column>
-            <apex:column headerValue="Agreement Amount(confirmed)"><apex:outputField value="{!agreement.Amount__c}"/></apex:column> 
+            <apex:column headerValue="Agreement Amount(estimated)"><apex:outputField value="{!agreement.Amount__c}"/></apex:column> 
+            <apex:column headerValue="Agreement Amount(confirmed)"><apex:outputField value="{!agreement.AgreementAmountEstimated__c}"/></apex:column> 
+            <apex:column headerValue="Total Approved Revenue Limit"><apex:outputField value="{!agreement.TotalApprovedRevenueLimit__c}"/></apex:column> 
         </apex:pageBlockTable>  
         <apex:outputPanel rendered="{!agreements.size == 0}">
             <apex:outputText value="No records to display"/>

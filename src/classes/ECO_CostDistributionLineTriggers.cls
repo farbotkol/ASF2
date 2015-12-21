@@ -41,14 +41,17 @@ public without sharing class ECO_CostDistributionLineTriggers {
 			update projectTasksToUpdate;
 		}
 		*/
-
+        set<string> costdistlineset = new set<string>();
+        map<string,CostDistLine__c> costdistmap = new map<string,CostDistLine__c>();
 		map<string, Decimal> mFunctionalRawCost = new map<string, Decimal>();
 		map<string, Decimal> mFunctionalBurdenedCost = new map<string, Decimal>();
-
+        set<string> ExpenditureItemset   = new set<string>();
 		if(tNew != null){
 			for(CostDistLine__c oCDL : tNew){
+               
+                costdistlineset.add(ocdl.id);
 				string sSnapshotKey = ECO_Service_Snapshots.DateToSnapshotKey(oCDL.PADate__c, oCDL.ProjectNumber__c, oCDL.TaskNumber__c);
-
+                ExpenditureItemset.add(oCDL.ExpenditureItem__c);
 				Decimal dFunctionalRawCost = ECO_Utils_String.NullCheck(mFunctionalRawCost.get(sSnapshotKey)) + ECO_Utils_String.NullCheck(oCDL.ProjectFunctionalRawCost__c);
 				mFunctionalRawCost.put(sSnapshotKey, dFunctionalRawCost);
 
@@ -59,8 +62,9 @@ public without sharing class ECO_CostDistributionLineTriggers {
 
 		if(tOld != null){
 			for(CostDistLine__c oCDL : tOld){
+              costdistlineset.add(ocdl.id);
 				string sSnapshotKey = ECO_Service_Snapshots.DateToSnapshotKey(oCDL.PADate__c, oCDL.ProjectNumber__c, oCDL.TaskNumber__c);
-
+                ExpenditureItemset.add(oCDL.ExpenditureItem__c);
 				Decimal dFunctionalRawCost = ECO_Utils_String.NullCheck(mFunctionalRawCost.get(sSnapshotKey)) - ECO_Utils_String.NullCheck(oCDL.ProjectFunctionalRawCost__c);
 				mFunctionalRawCost.put(sSnapshotKey, dFunctionalRawCost);
 
@@ -68,7 +72,29 @@ public without sharing class ECO_CostDistributionLineTriggers {
 				mFunctionalBurdenedCost.put(sSnapshotKey, dFunctionalBurdenedCost);
 			}
 		}
+        map<string,string> snapshotkeycategorymap = new map<string,string>();
+        map<string,decimal> snapshotqtymap = new map<string,decimal>();
+         map<string,string> snapshotresourcetypemap = new map<string,string>();
+        if(ExpenditureItemset.size()>0)
+        {
+            for(CostDistLine__c cd: [select id,ExpenditureItem__c,PADate__c,ProjectFunctionalRawCost__c,ProjectRawCost__c,ProjectNumber__c,TaskNumber__c,ExpenditureItem__r.ExpenditureResourceType__c,ExpenditureItem__r.PLReportCategory__c,ExpenditureItem__r.Quantity__c  from CostDistLine__c where ExpenditureItem__c IN :ExpenditureItemset ]){
 
+                string sSnapshotKey = ECO_Service_Snapshots.DateToSnapshotKey(cd.PADate__c, cd.ProjectNumber__c, cd.TaskNumber__c);
+                if(costdistlineset.contains(cd.id))
+                {
+                    costdistmap.put(sSnapshotKey,cd);
+                }
+                if(cd.ExpenditureItem__r.PLReportCategory__c !=null)
+                {
+                    
+                    snapshotkeycategorymap.put(sSnapshotKey,cd.ExpenditureItem__r.PLReportCategory__c);
+                }
+                
+                snapshotresourcetypemap.put(sSnapshotKey,cd.ExpenditureItem__r.ExpenditureResourceType__c);
+               
+                snapshotqtymap.put(sSnapshotKey ,cd.ExpenditureItem__r.Quantity__c );
+            }
+        }
 		set<string> lSnapshotKeys = new set<string>();
 
 		for(string s : mFunctionalRawCost.keySet()){
@@ -83,6 +109,14 @@ public without sharing class ECO_CostDistributionLineTriggers {
 																								    , SnapshotKey__c
 																								    , ProjectFunctionalRawCost__c
 																								    , ProjectFunctionalBurdenedCost__c 
+                                                                                                    ,ProjectFunctionalRawCostPLFringe__c
+                                                                                                    ,ProjectFunctionalRawCostPLLabor__c
+                                                                                                    ,ProjectFunctionalRawCostPLODCEXPS__c
+                                                                                                    ,ProjectFunctionalRawCostPLODCSUBS__c
+                                                                                                    ,ProjectFunctionalRawCostPLOverhead__c
+                                                                                                    ,ProjectHours__c
+                                                                                                    ,ProjectFunctionalRawCostResourceNonLabor__c
+                                                                                                    ,ProjectFunctionalRawCostResourceLabor__c
 																							  FROM EarnedValueSnapshot__c 
 																							  WHERE SnapshotKey__c in :lSnapshotKeys]);
 
@@ -103,12 +137,37 @@ public without sharing class ECO_CostDistributionLineTriggers {
 
 				bRecordToAdd = true;
 			}
-
+            if(costdistmap.containsKey(sSnapshotKey)){
+                  system.debug('141-------'+141);
+                  system.debug('costdistmap.get(sSnapshotKey).ExpenditureItem__r.PLReportCategory__c-------'+costdistmap.get(sSnapshotKey).ExpenditureItem__r.PLReportCategory__c);
+                  system.debug('costdistmap.get(sSnapshotKey).ProjectFunctionalRawCost__c-------'+costdistmap.get(sSnapshotKey).ProjectFunctionalRawCost__c);  
+                    if(costdistmap.get(sSnapshotKey).ExpenditureItem__r.PLReportCategory__c == 'ODC - Exps')
+                    oEarnedValueSnapshot.ProjectFunctionalRawCostPLODCEXPS__C = costdistmap.get(sSnapshotKey).ProjectFunctionalRawCost__c;
+                    if(costdistmap.get(sSnapshotKey).ExpenditureItem__r.PLReportCategory__c == 'ODC - Subs')
+                    oEarnedValueSnapshot.ProjectFunctionalRawCostPLODCSUBS__c = costdistmap.get(sSnapshotKey).ProjectFunctionalRawCost__c;
+                    if(costdistmap.get(sSnapshotKey).ExpenditureItem__r.PLReportCategory__c == 'Labor')
+                    oEarnedValueSnapshot.ProjectFunctionalRawCostPLLabor__c = costdistmap.get(sSnapshotKey).ProjectFunctionalRawCost__c;
+                    if(costdistmap.get(sSnapshotKey).ExpenditureItem__r.PLReportCategory__c == 'Fringe')
+                    oEarnedValueSnapshot.ProjectFunctionalRawCostPLFringe__c = costdistmap.get(sSnapshotKey).ProjectFunctionalRawCost__c;
+                    if(costdistmap.get(sSnapshotKey).ExpenditureItem__r.PLReportCategory__c == 'Overhead')
+                    oEarnedValueSnapshot.ProjectFunctionalRawCostPLOverhead__c = costdistmap.get(sSnapshotKey).ProjectFunctionalRawCost__c;
+                                
+            }
+            if(snapshotqtymap.containsKey(sSnapshotKey)){
+                oEarnedValueSnapshot.ProjectHours__c = snapshotqtymap.get(sSnapshotKey);
+            }
+            if(snapshotresourcetypemap.containsKey(sSnapshotKey)){
+                 if(snapshotresourcetypemap.get(sSnapshotKey) == 'Overhead')
+                    oEarnedValueSnapshot.ProjectFunctionalRawCostResourceLabor__c = oEarnedValueSnapshot.ProjectFunctionalRawCost__c;
+                 else
+                      oEarnedValueSnapshot.ProjectFunctionalRawCostResourcenonLabor__c = oEarnedValueSnapshot.ProjectFunctionalRawCost__c;
+            }
 			if(bRecordToAdd)
 				lEarnedValueSnapshotsToUpdate.add(oEarnedValueSnapshot);
 		}
 
 		if (!lEarnedValueSnapshotsToUpdate.isEmpty()) {
+           system.debug('lEarnedValueSnapshotsToUpdate----'+lEarnedValueSnapshotsToUpdate[0].id);
 			update lEarnedValueSnapshotsToUpdate;
 		}
 	}
