@@ -214,9 +214,17 @@ public class ECO_ChangeManagerTriggerHandler {
 			if(changeManager.IntExtBudget__c)
 			{
 				RecordType recrodType = [select Id, Name from RecordType where Id = :changeManager.RecordTypeId];
-				BudgetHeader__c budgetHeader = [select Id, RecordType.Name, ChangeManagerIsChanged__c, ChangeManagerApprovedForSynch__c, Status__c from BudgetHeader__c where Id = :changeManager.BudgetHeader__c];
+				BudgetHeader__c budgetHeader = [select Id, RecordType.Name, ChangeManagerIsChanged__c, ChangeManagerApprovedForSynch__c, Status__c, Project__c from BudgetHeader__c where Id = :changeManager.BudgetHeader__c];
+				List<BudgetHeader__c> approvedBudgetHeaders;
+
 				if(changeManager.IsExternalChange__c)
 				{
+					approvedBudgetHeaders = [select Id, ChangeManagerApprovedForSynch__c from BudgetHeader__c where Project__c = :budgetHeader.Project__c];
+					for(BudgetHeader__c approvedBudgetHeader:approvedBudgetHeaders)
+					{
+						approvedBudgetHeader.ChangeManagerApprovedForSynch__c = true;	
+					}
+
 					budgetHeader.Status__c = 'Approved';
 					budgetHeader.ChangeManagerIsChanged__c = false;
 					budgetHeader.ChangeManagerApprovedForSynch__c = true;
@@ -235,7 +243,10 @@ public class ECO_ChangeManagerTriggerHandler {
 				{
 					budgetHeader.Status__c = 'Forecast';	
 				}
+
 				update budgetHeader;
+				if(!approvedBudgetHeaders.isEmpty())
+					update approvedBudgetHeaders;
 			}						
 		}
 	}

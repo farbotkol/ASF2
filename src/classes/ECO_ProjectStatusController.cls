@@ -30,7 +30,7 @@ public with sharing class ECO_ProjectStatusController {
                 strSOQL += fsmField.getFieldPath() + ', ';
         }
         //strSOQL += 'ID, TypeCalculationCheck__c, TypeDetailCheck__c, TypeIndependentReviewIR__c, TypeInterdisciplinaryCoordinationReview__c, TypeBidabilityReview__c, TypeDesignReview__c, TypeSpecificationPackageReview__c, TypeSubconsultantClient__c, TypeConstructabilityReview__c, TypeDesignAssumptions__c, TypeOther__c ';
-        strSOQL += 'Id, CarryingOutOrganization__c, ProgBarPrelimPlanApproval__c, pse__Stage__c, SafetyHealthCompleted__c, ProgressBarExecutionApproval__c, ProposalSubmittedDate__c, RM_Button_Clicked__c  From pse__Proj__c Where Id = :projId';
+        strSOQL += 'Id, CarryingOutOrganization__c, ProgBarPrelimPlanApproval__c, ProjectApproverUser__c, DelegateProject__c, pse__Stage__c, SafetyHealthCompleted__c, ProgressBarExecutionApproval__c, ProposalSubmittedDate__c, RM_Button_Clicked__c  From pse__Proj__c Where Id = :projId';
         list<pse__Proj__c> lstproj = (list<pse__Proj__c>)Database.query(strSOQL);
         //currentProject = [Select Id, CarryingOutOrganization__c, ProgBarPrelimPlanApproval__c, pse__Stage__c, SafetyHealthCompleted__c, ProgressBarExecutionApproval__c, ProposalSubmittedDate__c, RM_Button_Clicked__c  From pse__Proj__c Where Id = :currentProject.Id];
         currentProject = lstproj[0];
