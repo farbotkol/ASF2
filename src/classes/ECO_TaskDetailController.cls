@@ -42,8 +42,8 @@ public class ECO_TaskDetailController
 
             for(TaskDetailWrapper objTDW : lstTaskDetailWrapper)
             {
-                if (System.hashCode(objTDW.objEPT.oprojectTask) == taskHashes.get(objTDW.objEPT.oprojectTask.Id)) continue;
                 objTDW.objEPT.oprojectTask.WorkTypeName__c = objTDW.strSelectedWorkTypeName;
+                if (System.hashCode(objTDW.objEPT.oprojectTask) == taskHashes.get(objTDW.objEPT.oprojectTask.Id)) continue;                
                 if(!objTDW.objEPT.oprojectTask.FinancialTask__c)
                 {
                     if(objTDW.strSub_PeerTask == 'Peer Task' || objTDW.objEPT.indentLevel == 0)
