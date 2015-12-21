@@ -72,7 +72,7 @@ public with sharing class INC_EnrollPlanInterimPay_Controller {
                 loadExistingPayments();
                 addblankRows();
                 //DTWINCEPECSAVESUCCESS
-                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Confirm,'Save Successful.'));
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Confirm,LABEL.DTWINCEPECSAVESUCCESS));
             }
         }catch(Exception e){
             system.debug('Handling Exception:  '+e.getMessage());
@@ -100,7 +100,7 @@ public with sharing class INC_EnrollPlanInterimPay_Controller {
                    oPay.PaymentDate__c != null){
                    bSave = false;
                    //DTWINCEPIPCEDERR
-                   ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,'Please enter a description for any payments with a Milestone or Payment Date.'));
+                   ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Error,LABEL.DTWINCEPIPCEDERR));
                   break;
                 }
             }

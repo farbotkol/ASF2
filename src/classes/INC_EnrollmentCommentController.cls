@@ -62,12 +62,14 @@ public without sharing class INC_EnrollmentCommentController {
                 bReturn = true;
                 oEnrollComment = lComments[0];
                 if(oEnrollmentApp.ApplicationType__c != 'OPT'){
-                  //DTWINCEACREJAPPMSG  - SAME MESSAGE AS THE ENROLLMENT APP CONTROLLER
-                  sMessage = lComments[0].Approver__r.Name + ' rejected the application.  A rejection code must be selected before any changes to the';
-                  sMessage += ' application are possible.';
+                  //LABEL.DTWINCEACREJAPPMSG  - SAME MESSAGE AS THE ENROLLMENT APP CONTROLLER
+                  sMessage = lComments[0].Approver__r.Name + LABEL.DTWINCEACREJAPPMSG;//' rejected the application.  A rejection code must be selected before any changes to the';
+                  //sMessage += ' application are possible.';
                 }else{
                   //DTWINCECCAPPOPTOUTMSG
-                  sMessage = lComments[0].Approver__r.Name + ' approved opting out of the application.  A rejection code must be selected.';
+
+                  //sMessage = lComments[0].Approver__r.Name + ' approved opting out of the application.  A rejection code must be selected.';
+                  sMessage = lComments[0].Approver__r.Name +  LABEL.DTWINCECCAPPOPTOUTMSG;
                 }
         }else{
           oEnrollComment = new Enrollment_Comments__c(EnrollmentApplication__c = oEnrollmentApp.ID);
@@ -82,10 +84,11 @@ public without sharing class INC_EnrollmentCommentController {
         if(oEnrollComment.Reason_Codes__c == null){
             System.debug(logginglevel.error,'oEnrollComment.Reason_Codes__c ');
             //DTWINCECCRECODEERR
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'You must choose a reason code before saving.'));
+            //ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'You must choose a reason code before saving.'));
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,LABEL.DTWINCECCRECODEERR));
         }else{
           //DTWINCECCPECOM
-          if(oEnrollComment.Comments__c != null && oEnrollComment.Comments__c != 'Please enter a comment.'
+          if(oEnrollComment.Comments__c != null && oEnrollComment.Comments__c != LABEL.DTWINCECCPECOM
              && oEnrollComment.Comments__c != ''){
             ID workFlowID = ECO_Utils_sObject.getRecordTypeId(EnrollmentPlan__c.sObjectType,'Workflow');
             ID paymentID = ECO_Utils_sObject.getRecordTypeId(EnrollmentPlan__c.sObjectType,'Payment Request');
@@ -151,7 +154,8 @@ public without sharing class INC_EnrollmentCommentController {
           }else{
                 System.Debug(logginglevel.error,'Not saving comments');
                   //DTWINCECCENTCOMERR
-                  ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'You must enter a valid comment.'));
+                  //ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'You must enter a valid comment.'));
+                  ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,LABEL.DTWINCECCENTCOMERR));
             
           }
               

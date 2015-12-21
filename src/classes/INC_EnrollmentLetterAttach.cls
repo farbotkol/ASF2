@@ -1,6 +1,6 @@
 global class INC_EnrollmentLetterAttach {
 
-	@future
+	@future(callout=true)
 	public static void attachEnrollmentLetter(set<string> partAckIDs) {
 
 		if(partAckIDs == null || partAckIDs.size() ==0){

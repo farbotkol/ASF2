@@ -18,7 +18,8 @@ public class INC_ChoseIncentivePlanController {
 	public INC_ChoseIncentivePlanController(){
 		System.Debug(logginglevel.error,'Here in choose IncentivePlan__c ' + fromWizard);
 		showsave = false;
-		selectedSelectionMethod = 'Guided'; //DTWINCCIPCSOGUIDE
+		//selectedSelectionMethod = 'Guided'; //DTWINCCIPCSOGUIDE
+		selectedSelectionMethod = LABEL.DTWINCCIPCSOGUIDE;
 		ID enrollID = Apexpages.currentPage().getParameters().get('id');
 		enrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{enrollID})[0];
 		availablePlans = new list<planWrapper>();
@@ -69,8 +70,10 @@ public class INC_ChoseIncentivePlanController {
 	public list<SelectOption> getYesNoOptions()
 	{
 	    list<SelectOption> options = new list<SelectOption>();
-	    options.add(new SelectOption('Yes', 'Yes')); //DTWINCCIPCSOYES
-	    options.add(new SelectOption('No', 'No')); //DTWINCCIPCSONO
+	   // options.add(new SelectOption('Yes', 'Yes')); //DTWINCCIPCSOYES
+	   // options.add(new SelectOption('No', 'No')); //DTWINCCIPCSONO
+	  	options.add(new SelectOption('Yes', LABEL.DTWINCCIPCSOYES)); //DTWINCCIPCSOYES
+	    options.add(new SelectOption('No', LABEL.DTWINCCIPCSONO)); //DTWINCCIPCSONO
 	
 	    return options;
 	}
@@ -80,8 +83,8 @@ public class INC_ChoseIncentivePlanController {
 	    list<SelectOption> options = new list<SelectOption>();
 
 	    //for translation only check output not key value hec 11/24
-	    options.add(new SelectOption('Guided', 'Guided'));//DTWINCCIPCSOGUIDE
-	    options.add(new SelectOption('Manual', 'Manual'));//DTWINCCIPCSOMAN
+	    options.add(new SelectOption('Guided', LABEL.DTWINCCIPCSOGUIDE));//DTWINCCIPCSOGUIDE
+	    options.add(new SelectOption('Manual', LABEL.DTWINCCIPCSOMAN));//DTWINCCIPCSOMAN
 	
 	    return options;		
 	}
@@ -120,18 +123,18 @@ public class INC_ChoseIncentivePlanController {
 	{
 		System.Debug(logginglevel.error,'FP OR TM: ' + getIsMultiPlanEligible() + ' ' + question3Answer + question4Answer);
 		if(question3Answer == 'Yes' && question4Answer == 'Yes'){
-			return 'Fixed Price'; //DTWINCCIPCFP
+			return 'Fixed Price';
 		}
 		
 		if(question3Answer=='No' && question4Answer=='Yes'){
-			return 'Both';//DTWINCCIPCBOTH
+			return 'Both';
 		}
 		
 		if(question3Answer=='Yes' && question4Answer=='No'){
-			return 'Time & Material';//DTWINCCIPCTM
+			return 'T&M';
 		}
 
-		return 'Time & Material'; //DTWINCCIPCTM
+		return 'T&M';
 	}
 
 	public boolean getIsFixedPriceEligible()
@@ -151,8 +154,8 @@ public class INC_ChoseIncentivePlanController {
 	private String getNetMarginOrGrossMargin()
 	{
 		if(question2Answer == 'Yes')
-			return 'Net Margin'; //DTWINCCIPCNM
-		return 'Gross Margin'; //DTWINCCIPCGM
+			return 'Net Margin';
+		return 'Gross Margin';
 	}
 	
 	public PageReference returnHome(){ 
@@ -256,7 +259,7 @@ public class INC_ChoseIncentivePlanController {
 		}
 		//enrollmentPlan.IncentivePlan__c = Apexpages.currentPage().getParameters().get('planId');
 		//selectedPlan = enrollmentPlan.IncentivePlan__c;
-		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM,'Saved'));
+		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM,LABEL.DTWINCEPECSAVESUCCESS));
             
 		update enrollmentPlan;
 		if(fromWizard == null || fromWizard == 'No'){

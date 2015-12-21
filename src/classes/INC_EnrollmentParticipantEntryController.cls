@@ -246,7 +246,7 @@ public with sharing class INC_EnrollmentParticipantEntryController {
             oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{enrollID})[0];
             setIssues();
             //DTWINCEPECSAVESUCCESS
-            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Confirm,'Save Successful.'));
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Confirm,LABEL.DTWINCEPECSAVESUCCESS));
         }catch(Exception e){
             system.debug('Handling Exception:  '+e.getMessage());
             Database.rollBack(sp);
@@ -292,13 +292,15 @@ public with sharing class INC_EnrollmentParticipantEntryController {
                 oEnrollmentParticipant.CurrencyIsoCode = oEnrollmentParticipant.CurrencyIsoCode;
             }
             if(oEnrollmentParticipant.ParticipantCategory__c == null){
-                //DTWINCEPECALLPARTCATERR
-                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have a Participant Category assigned.'));
+                //LABEL.DTWINCEPECALLPARTCATERR
+                //ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have a Participant Category assigned.'));
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,LABEL.DTWINCEPECALLPARTCATERR));
                 return false;
             }
             if((oEnrollmentParticipant.TargetIncentivePoolAllocated__c == null || oEnrollmentParticipant.TargetIncentivePoolAllocated__c <= 0) && (oEnrollmentParticipant.ParticipantType__c != 'Discretionary' && oEnrollmentPlan.ApplicationType__c == 'ENR')){
-                //DTWINCEPECALLPARTGTZERO
-                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have an allocation greater than 0'));
+                //LABEL.DTWINCEPECALLPARTGTZERO
+                //ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have an allocation greater than 0'));
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,LABEL.DTWINCEPECALLPARTGTZERO));
                 return false;
             }
 
@@ -307,16 +309,19 @@ public with sharing class INC_EnrollmentParticipantEntryController {
                     System.Debug(logginglevel.error,'Pool: ' + pool + ' ' + oEnrollmentParticipant.TargetIncentivePoolAllocated__c);
                     System.Debug(logginglevel.error, 'value: ' + (oEnrollmentParticipant.TargetIncentivePoolAllocated__c * pool/100));
                     if((((oEnrollmentParticipant.TargetIncentivePoolAllocated__c * pool/100) < oEnrollmentPlan.MinParticipantPayout__c)) && oEnrollmentPlan.ApplicationType__c == 'ENR'){
-                        //DTWINCEPECALLPARGTMIN
-                        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants estimated payout must be >= $' + oEnrollmentPlan.MinParticipantPayout__c + ', Currently: $' + oEnrollmentParticipant.TargetIncentivePoolAllocated__c * pool/100));
+                        //LABEL.DTWINCEPECALLPARGTMIN
+                        //LABEL.DTWINCEPECALLPARGTMIN2
+                        //ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants estimated payout must be >= $' + oEnrollmentPlan.MinParticipantPayout__c + ', Currently: $' + oEnrollmentParticipant.TargetIncentivePoolAllocated__c * pool/100));
+                        ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,LABEL.DTWINCEPECALLPARGTMIN + oEnrollmentPlan.MinParticipantPayout__c + ', ' + LABEL.DTWINCEPECALLPARGTMIN2 + oEnrollmentParticipant.TargetIncentivePoolAllocated__c * pool/100));
                         return false;
                     }
                 }
             }
 
             if(oEnrollmentParticipant.EmployeeName__c == null){
-                //DTWINCEPECALLPARTEMP
-                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have an employee name'));
+                //LABEL.DTWINCEPECALLPARTEMP
+                //ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'All Participants must have an employee name'));
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,LABEL.DTWINCEPECALLPARTEMP));
                 return false;
             }
 

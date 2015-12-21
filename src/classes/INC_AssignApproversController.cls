@@ -15,8 +15,10 @@ public with sharing class INC_AssignApproversController {
 		oEnrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentPlan.ID})[0];
 		validateIfEditIsPossible();
 		if(iShowApprover1 == 3){
-			//CUSTOMLABEL DTWINCAACFAERR
-			ApexPages.addMessage(new apexpages.message(apexpages.severity.error,'Only the first approver or DTW Admins can reassign approvers.'));
+			//CUSTOMLABEL LABEL.DTWINCAACFAERR
+			//ApexPages.addMessage(new apexpages.message(apexpages.severity.error,'Only the first approver or DTW Admins can reassign approvers.'));
+			ApexPages.addMessage(new apexpages.message(apexpages.severity.error,LABEL.DTWINCAACFAERR));
+		
 			return;
 		}
 		bEdit = true;

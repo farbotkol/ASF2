@@ -86,7 +86,8 @@ public without sharing class INC_IncentiveSearch_Controller {
 					lupdate.add(rw.oIP);
 				}else{
 					//DTWINCISCSELNEWOWN
-					rw.Message = 'Please select a new Owner.';
+					//rw.Message = 'Please select a new Owner.';
+					rw.Message = LABEL.DTWINCISCSELNEWOWN;
 					bHasError = true;
 				}
 			}
@@ -122,16 +123,19 @@ public without sharing class INC_IncentiveSearch_Controller {
 			}
 			if(lResults.size() > 200){
 				//DTWINCISCSEATOMANYERR
-				apexPages.addMessage(new apexPages.message(apexPages.Severity.Info,'Your search returned more that 200 results.  Only the first 200 are displayed.'));
+				//apexPages.addMessage(new apexPages.message(apexPages.Severity.Info,'Your search returned more that 200 results.  Only the first 200 are displayed.'));
+				apexPages.addMessage(new apexPages.message(apexPages.Severity.Info,LABEL.DTWINCISCSEATOMANYERR));
 			}
 			if(lResults == null || lResults.size() == 0){
-				//DTWINCISCNORESERR
-				apexPages.addMessage(new apexPages.message(apexPages.Severity.Info,'Your search returned no results.'));
+				//LABEL.DTWINCISCNORESERR
+				//apexPages.addMessage(new apexPages.message(apexPages.Severity.Info,'Your search returned no results.'));
+				apexPages.addMessage(new apexPages.message(apexPages.Severity.Info,LABEL.DTWINCISCNORESERR));
 			}
 			System.Debug(logginglevel.error,'lResults: ' + lResults);
 		}else{
-			//DTWINCISCPREVDUP
-			apexPages.addMessage(new apexPages.message(apexPages.Severity.Error,'Please review your criteria for duplicates or missing values'));
+			//LABEL.DTWINCISCPREVDUP
+			//apexPages.addMessage(new apexPages.message(apexPages.Severity.Error,'Please review your criteria for duplicates or missing values'));
+			apexPages.addMessage(new apexPages.message(apexPages.Severity.Error,LABEL.DTWINCISCPREVDUP));
 		}
 		return null;
 	}
@@ -274,11 +278,11 @@ public without sharing class INC_IncentiveSearch_Controller {
 					DTWINCISCOW
 				*/
 				criteriaRowList.add(new SelectOption('',''));
-				criteriaRowlist.add(new SelectOption('PM','Project Manager'));
-				criteriaRowlist.add(new SelectOption('PN','Project Name'));
-				criteriaRowlist.add(new SelectOption('PNUM','Project Number'));
-				criteriaRowlist.add(new SelectOption('CN','Customer Name'));
-				criteriaRowlist.add(new SelectOption('OW','Owner'));
+				criteriaRowlist.add(new SelectOption('PM',LABEL.DTWINCISCPM));
+				criteriaRowlist.add(new SelectOption('PN',LABEL.DTWINCISCPN));
+				criteriaRowlist.add(new SelectOption('PNUM',LABEL.DTWINCISCPNUM));
+				criteriaRowlist.add(new SelectOption('CN',LABEL.DTWINCISCCN));
+				criteriaRowlist.add(new SelectOption('OW',LABEL.DTWINCISCOW));
 		}
 
 	}
