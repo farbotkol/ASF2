@@ -16,6 +16,35 @@ public with sharing class ECO_ProjectTaskTriggers {
     private static Map<Id, pse__Project_Task__c> mapTasksById;
     private static Map<Id, pse__Project_Task__c> tasksToUpdateForecasts;
 
+    public static void recalculateBudgets(List<pse__Project_Task__c> tNew) {
+
+        if (!run) return;
+
+        if (executedMethods.contains('recalculateBudgets')) return;
+        executedMethods.add('recalculateBudgets');
+
+        List<BudgetAssignment__c> budgetAssignmentsToUpdate = new List<BudgetAssignment__c>();
+        Map<Id, String> mapWorkTypeById = new Map<Id,String>();
+
+        for (pse__Project_Task__c task : tNew) {
+            mapWorkTypeById.put(task.Id, task.WorkTypeName__c);
+        }
+
+        for (BudgetAssignment__c ba : [Select Id, WorkTypeName__c, BudgetTask__r.ProjectTask__c
+                                        From BudgetAssignment__c
+                                        Where BudgetTask__r.ProjectTask__c IN :mapWorkTypeById.keySet()]) {
+
+            String workType = mapWorkTypeById.get(ba.BudgetTask__r.ProjectTask__c);
+            system.debug(ba.Id + ' - workType: ' + workType);
+            ba.WorkTypeName__c = workType;
+
+            budgetAssignmentsToUpdate.add(ba);
+        }
+
+        run = false;
+        update budgetAssignmentsToUpdate;
+        run = true;
+    }
     public static void rollupForecastDates(Map<Id, pse__Project_Task__c> tNewMap, Map<Id, pse__Project_Task__c> tOldMap) {
         System.debug(LoggingLevel.INFO, 'rollupForecastDates - run ' + run);
         if (!run) return;

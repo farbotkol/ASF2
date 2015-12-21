@@ -90,6 +90,7 @@ public with sharing class ECO_BudgetTaskService {
 					ProjectTask__r.pse__Parent_Task__c,
 					ParentTask__c,
 					ProjectTask__r.ProjectTaskNumber__c,
+					ProjectTask__r.WorkTypeName__c,
 					TaskName__c,
 					TotalContingency__c,
 					TotalCost__c,
