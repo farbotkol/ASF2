@@ -7,8 +7,8 @@ public without sharing class ECO_BudgetResourceTriggers {
         if (oBudgetAssignment.OverrideOverheadMultiplier__c != oBudgetResource.OverrideOverheadMultiplier__c) return false;
         if (oBudgetAssignment.MarginType__c != oBudgetResource.MarginType__c) return false;
         if (oBudgetAssignment.OverrideBillRate__c != oBudgetResource.OverrideBillRate__c) return false;
-        if (oBudgetAssignment.OverrideUplift__c != oBudgetResource.OverrideUplift__c) return false;
-
+        if (oBudgetAssignment.OverrideFringeMultiplierField__c != oBudgetResource.OverrideFringeMultiplierField__c) return false;
+        if (oBudgetAssignment.OverrideOverheadMultiplierField__c != oBudgetResource.OverrideOverheadMultiplierField__c) return false;
         return true;
     }
 
@@ -17,6 +17,8 @@ public without sharing class ECO_BudgetResourceTriggers {
 	    	oBudgetAssignment.OverrideRawCost__c = oBudgetResource.OverrideRawCost__c;
 	        oBudgetAssignment.OverrideFringeMultiplier__c = oBudgetResource.OverrideFringeMultiplier__c;
 	        oBudgetAssignment.OverrideOverheadMultiplier__c = oBudgetResource.OverrideOverheadMultiplier__c;
+	        oBudgetAssignment.OverrideFringeMultiplierField__c = oBudgetResource.OverrideFringeMultiplierField__c;
+	        oBudgetAssignment.OverrideOverheadMultiplierField__c = oBudgetResource.OverrideOverheadMultiplierField__c;
 	        
 	        oBudgetAssignment.MarginType__c = oBudgetResource.MarginType__c;
 	        oBudgetAssignment.OverrideBillRate__c = oBudgetResource.OverrideBillRate__c;
@@ -35,6 +37,8 @@ public without sharing class ECO_BudgetResourceTriggers {
         														OverrideRawCost__c, 
         														OverrideFringeMultiplier__c,
         														OverrideOverheadMultiplier__c,
+        														OverrideFringeMultiplierField__c,
+        														OverrideOverheadMultiplierField__c,
         														MarginType__c,
         														OverrideBillRate__c,
         														OverrideUplift__c 
@@ -144,17 +148,21 @@ public without sharing class ECO_BudgetResourceTriggers {
     	if (!run) {
     		return;
     	}
+		
+		Set<Id> bhIds = new Set<Id>();
+		Map<Id, String> mapCurrencies = new Map<Id, String>();
 
-    	Id bhId = brNew[0].BudgetHeader__c;
+		for (BudgetResource__c br : brNew) {
+			bhIds.add(br.BudgetHeader__c);
+		}   
+		 	
     	// Get project currency
-        BudgetHeader__c budgetHeader = [Select Id, Project__r.CurrencyIsoCode From BudgetHeader__c Where Id = :bhId];
-
-
-        String projectCurrency = budgetHeader.Project__r.CurrencyIsoCode;
+        for (BudgetHeader__c budgetHeader : [Select Id, Project__r.CurrencyIsoCode From BudgetHeader__c Where Id In :bhIds]) {
+        	mapCurrencies.put(budgetHeader.Id, budgetHeader.Project__r.CurrencyIsoCode);
+        }
 
         for (BudgetResource__c br : brNew) {
-        	br.CurrencyIsoCode = projectCurrency;
-            
+        	br.CurrencyIsoCode = mapCurrencies.get(br.BudgetHeader__c);
         }
     }
 
