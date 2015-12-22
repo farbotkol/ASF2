@@ -2,6 +2,11 @@ trigger ECO_Project_TeamMember_AllEvents on ProjectTeamMember__c ( after update,
 
     system.debug( 'ECO_Project_TeamMember_AllEvents ');
     
+    if(trigger.isAfter && trigger.isInsert){
+        ECO_Project_TeamMember_Triggers.permissionGanttView(trigger.new);
+    }
+
+
     if(trigger.isAfter && (!trigger.isDelete) ){ 
         system.debug( 'ECO_Project_TeamMember_AllEvents->CreateSharingForTeamMembers');
         ECO_Project_TeamMember_Triggers.CreateSharingForTeamMembers(trigger.new);

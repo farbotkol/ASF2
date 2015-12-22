@@ -2,6 +2,8 @@ trigger ECO_Project_AllEvents on pse__Proj__c (before update, before insert, aft
 
     if(trigger.isBefore && trigger.isInsert){
         ECO_ProjectTriggers.setCAMEmail(trigger.new);
+        ECO_ProjectTriggers.setAECOMPRCat(trigger.new);
+        
     }
 
     if (trigger.isAfter && (trigger.isInsert || trigger.isUpdate)) {

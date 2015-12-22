@@ -23,7 +23,15 @@ public without sharing class ECO_ProjectTriggers {
 		Map<Id, Id> permissionMap = new Map<Id, Id>();
 
 		for (pse__Proj__c project : newList) {
-			pse__Proj__c oldProject = oldMap.get(project.id);
+
+			pse__Proj__c oldProject;
+
+			if((isInsert)){
+				oldProject = null;
+			} else {
+				oldProject = oldMap.get(project.id);
+			}
+			
 
 			if (project.Owner_Permission_Control__c == null) {
 				if ((isInsert) || (project.OwnerId != oldProject.OwnerId)) {
@@ -82,6 +90,33 @@ public without sharing class ECO_ProjectTriggers {
 			}
 		}
 	}
+
+
+	public static void setAECOMPRCat(list<pse__Proj__c> lstProject){
+
+		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('setAECOMPRCat')) {
+			return;
+		}
+
+
+		for(pse__Proj__c p:lstProject){
+			if(p.clAECOMProjectReviewCategory__c == null){
+
+				string cat = 'C-0';
+
+				if(p.EstimatedContractValue__c < 500000 ){
+					cat = 'C-3';
+				} else if (p.EstimatedContractValue__c >= 500000 && p.EstimatedContractValue__c < 10000000){
+					cat = 'C-2';
+				} else if (p.EstimatedContractValue__c >= 10000000){
+					cat = 'C-1';
+				} 
+
+				p.clAECOMProjectReviewCategory__c = cat;
+			}
+		}
+	}
+
 
 	public static void handleFundingLevelFlagChanges(Map<Id, pse__Proj__c> oldProjectsMap, Map<Id, pse__Proj__c> newProjectsMap)
 	{
