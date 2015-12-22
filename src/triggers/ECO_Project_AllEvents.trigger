@@ -1,5 +1,9 @@
 trigger ECO_Project_AllEvents on pse__Proj__c (before update, before insert, after insert, after update) {
 
+    if(trigger.isBefore && trigger.isInsert){
+        ECO_ProjectTriggers.setCAMEmail(trigger.new);
+    }
+
     if(trigger.isBefore && trigger.isUpdate){
         EcoDisableProjectOwnerTrigger__c mc = EcoDisableProjectOwnerTrigger__c.getOrgDefaults();
 
