@@ -235,21 +235,21 @@ public class ECO_BudgetEACService
 
         createProjectTasks(sProjectId);
 
-        AggregateResult[] arLabor = [Select Sum(Quantity__c) Quantity__c, Sum(FullyBurdenedCost__c) FullyBurdenedCost__c, BudgetTask__r.ProjectTask__c, BudgetTask__r.BudgetHeader__r.Status__c
+        AggregateResult[] arLabor = [Select Sum(Quantity__c) Quantity__c, Sum(FullyBurdenedCostNumber__c) FullyBurdenedCost__c, BudgetTask__r.ProjectTask__c, BudgetTask__r.BudgetHeader__r.Status__c
         From BudgetAssignment__c 
         Where BudgetTask__r.ProjectTask__r.pse__Project__c = :sProjectId AND ResourceType__c = 'Labor/Person' AND
         (BudgetTask__r.BudgetHeader__r.Status__c = 'Forecast' OR BudgetTask__r.BudgetHeader__r.Status__c = 'Approved') 
         GROUP BY BudgetTask__r.ProjectTask__c, BudgetTask__r.BudgetHeader__r.Status__c
         ];
 
-        AggregateResult[] arSubs = [Select Sum(OverrideTotalCost__c) OverrideTotalCost__c, BudgetTask__r.ProjectTask__c, BudgetResource__r.VendorSite__c, BudgetTask__r.BudgetHeader__r.Status__c 
+        AggregateResult[] arSubs = [Select Sum(FullyBurdenedCostNumber__c) OverrideTotalCost__c, BudgetTask__r.ProjectTask__c, BudgetResource__r.VendorSite__c, BudgetTask__r.BudgetHeader__r.Status__c 
         From BudgetAssignment__c 
         Where BudgetTask__r.ProjectTask__r.pse__Project__c = :sProjectId AND ResourceType__c = 'Subcontractor' AND
         (BudgetTask__r.BudgetHeader__r.Status__c = 'Forecast' OR BudgetTask__r.BudgetHeader__r.Status__c = 'Approved') 
         GROUP BY BudgetTask__r.ProjectTask__c, BudgetResource__r.VendorSite__c, BudgetTask__r.BudgetHeader__r.Status__c
         ];
 
-        AggregateResult[] arContingency = [Select Sum(OverrideTotalCost__c) OverrideTotalCost__c, BudgetTask__r.ProjectTask__c, BudgetResource__r.JobName__c, BudgetTask__r.BudgetHeader__r.Status__c 
+        AggregateResult[] arContingency = [Select Sum(FullyBurdenedCostNumber__c) OverrideTotalCost__c, BudgetTask__r.ProjectTask__c, BudgetResource__r.JobName__c, BudgetTask__r.BudgetHeader__r.Status__c 
         From BudgetAssignment__c 
         Where BudgetTask__r.ProjectTask__r.pse__Project__c = :sProjectId AND ResourceType__c='Contingency' AND  
         (BudgetTask__r.BudgetHeader__r.Status__c = 'Forecast' OR BudgetTask__r.BudgetHeader__r.Status__c = 'Approved') 
@@ -411,7 +411,6 @@ insert allBudgets;
 
         mapResourcesByPersonId = new Map<String, BudgetResource__c>();
 
-        
         Map<String, ProjectTeamMember__c> mapPTMByPersonId = new Map<String, ProjectTeamMember__c> ();
         Map<String, VendorSite__c> mapVSbyVendorId = new Map<String, VendorSite__c> ();
 
