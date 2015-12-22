@@ -1,7 +1,7 @@
 public without sharing class ECO_ProjectTriggers {
 	public static Boolean run = true;
 	public static Set<String> executedMethods = new Set<String>();
-
+	
 	public static void setOwner(list<pse__Proj__c> lstProject){
 		for(pse__Proj__c p:lstProject){
 			if(p.pse__Stage__c == 'Approved'){
@@ -12,82 +12,10 @@ public without sharing class ECO_ProjectTriggers {
 		}
 	}
 
-	public static void permissionGanttViewEditToOwner(Map<Id, pse__Proj__c> oldMap, List<pse__Proj__c> newList, Boolean isInsert) {
-		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('PROJ_PermissionGantt')) {
-			return;
-		}        
-
-		List<pse__Proj__c> toCreate = new List<pse__Proj__c>();
-
-		Set<Id> permissionIds = new Set<Id>();
-		Map<Id, Id> permissionMap = new Map<Id, Id>();
-
-		for (pse__Proj__c project : newList) {
-			pse__Proj__c oldProject = oldMap.get(project.id);
-
-			if (project.Owner_Permission_Control__c == null) {
-				if ((isInsert) || (project.OwnerId != oldProject.OwnerId)) {
-					toCreate.add(project);
-				}
-			} else if (project.OwnerId != oldProject.OwnerId) {
-				permissionIds.add(project.Owner_Permission_Control__c);
-				permissionMap.put(project.Owner_Permission_Control__c, project.OwnerId);
-			}
-		}
-
-		List<pse__Permission_Control__c> newPermissions = new List<pse__Permission_Control__c>();
-
-		for (pse__Proj__c project : toCreate) {
-			pse__Permission_Control__c permission = new pse__Permission_Control__c();
-
-			permission.AccessReason__c = 'Project Owner';
-			permission.pse__Edit_Task_Manager__c = true;
-			permission.pse__Project__c = project.id;
-			permission.pse__Start_Date__c = Date.today();
-			permission.pse__User__c = project.OwnerId;
-			permission.pse__View_Task_Manager__c = true;
-
-			newPermissions.add(permission);
-		}
-
-		insert newPermissions;
-
-		List<pse__Permission_Control__c> updatePermissions = [select id, pse__User__c, AccessReason__c from pse__Permission_Control__c where AccessReason__c = 'Project Owner' and id in :permissionIds];
-
-		for (pse__Permission_Control__c permission : updatePermissions) {
-			permission.pse__User__c = permissionMap.get(permission.id);
-		}
-
-		update updatePermissions;
-	}
-
-	public static void setCAMEmail(list<pse__Proj__c> lstProject){
-		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('PROJ_CAMEmail')) {
-			return;
-		}        
-
-		set<id> acctIDs  = new set<id>();
-
-		for(pse__Proj__c p: lstProject){
-			acctIDs.add(p.pse__Account__c);
-		}
-
-		map<id, account> mapAcct = new map<id, account>([select id, Account_Manager__r.Email__c from account where id IN: acctIDs AND Account_Manager__c <> null AND Account_Manager__r.Email__c <> null]);
-
-		if(mapAcct.size() >= 1){
-			for(pse__Proj__c p:lstProject){
-				if(mapAcct.containsKey(p.pse__Account__c)){
-					p.ClientAccountManagerEmail__c = mapAcct.get(p.pse__Account__c).Account_Manager__r.Email__c;
-				}
-			}
-		}
-	}
-
 	public static void handleFundingLevelFlagChanges(Map<Id, pse__Proj__c> oldProjectsMap, Map<Id, pse__Proj__c> newProjectsMap)
 	{
 		if (executedMethods.contains('handleFundingLevelFlagChanges')) return;
 		executedMethods.add('handleFundingLevelFlagChanges');
-
 		List<Id> projectsToDeleteFunding = new List<Id>();
 		for(pse__Proj__c project:newProjectsMap.values())
 		{
@@ -186,7 +114,6 @@ public without sharing class ECO_ProjectTriggers {
 	public static void maintainEscalationAlerts (Map<Id, pse__Proj__c> projOldMap, Map<Id, pse__Proj__c> projNewMap) {
 		if (executedMethods.contains('maintainEscalationAlerts')) return;
 		executedMethods.add('maintainEscalationAlerts');
-
 		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('PROJ_Alerts')) {
 			return;
 		}
@@ -316,13 +243,11 @@ public without sharing class ECO_ProjectTriggers {
 		} 
     }
     
-    
     public static ProjectRole__c resilienceDirectorRole{
     	get {
     		if (resilienceDirectorRole == null) {
     			resilienceDirectorRole = [Select Id, Name From ProjectRole__c Where Name = 'Resilience Director'];
     		}
-
     		return resilienceDirectorRole;
     	}
     	private set;
@@ -335,6 +260,10 @@ public without sharing class ECO_ProjectTriggers {
         string uId = UserInfo.getUserId();
         string uFirstName = UserInfo.getFirstName();
         string uLastName = UserInfo.getLastName();
+        
+		// bjacobi@ae.com.ecosysdev
+        //if(! ( ( uName == 'bobby.hoque@aecom.com.ecosysdev' ) || ( uName == 'bjacobi@ae.com.ecosysdev' ) ) )
+        //    return ; 
 
 		ProjectTeamMember__c[] projectTeamMembers = [ Select Id, Project__c, User__c, contact__r.user__r.IsActive, contact__c,  contact__r.user__r.name, user__r.Name From ProjectTeamMember__c Where ProjectRole__r.Name = 'Resilience Director' and Project__c = :updatedProjects and contact__r.user__r.isactive = true ];
 
@@ -433,13 +362,13 @@ public without sharing class ECO_ProjectTriggers {
 		}		
 
 		if (!projectIds.isEmpty()) {
-			for(pse__Proj__c restartedProject:[select Id, pse__Project_Manager__r.pse__Salesforce_User__c from pse__Proj__c where Id in :projectIds])
-			{
-				messagesToInsert.add(createNewAlertForPM(restartedProject, Date.today(), 'This project has been restarted'));	
-			}	
-			
-			if(messagesToInsert.size() > 0)
-				insert messagesToInsert;
+		for(pse__Proj__c restartedProject:[select Id, pse__Project_Manager__r.pse__Salesforce_User__c from pse__Proj__c where Id in :projectIds])
+		{
+			messagesToInsert.add(createNewAlertForPM(restartedProject, Date.today(), 'This project has been restarted'));	
+		}	
+		
+		if(messagesToInsert.size() > 0)
+			insert messagesToInsert;
 		}		
 	}
 	
@@ -447,7 +376,6 @@ public without sharing class ECO_ProjectTriggers {
 	{
 		if (executedMethods.contains('handleDefaultingTaskOwningCustomer')) return;
 		executedMethods.add('handleDefaultingTaskOwningCustomer');
-
 		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('PROJ_TaskOwning')) {
 			return;
 		}
@@ -526,7 +454,6 @@ public without sharing class ECO_ProjectTriggers {
 	public static void replicateNewProjectTask(list<pse__Project_Task__c> lProjectTasks){
 		if (executedMethods.contains('replicateNewProjectTask')) return;
 		executedMethods.add('replicateNewProjectTask');
-
 		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('PROJTASK_BudgetReplicate')) {
 			return;
 		}
@@ -544,7 +471,7 @@ public without sharing class ECO_ProjectTriggers {
 		list<pse__Proj__c> lProjects = new list<pse__Proj__c>([SELECT Id,
 																	  (SELECT Id
 																	   FROM BudgetHeaders__r
-																	   WHERE Status__c = :ECO_DTO_BudgetHeader.STATUS_ESTIMATE)
+																	   WHERE Status__c = 'Estimate')
 															   FROM pse__Proj__c
 															   WHERE Id in :mTasksByProjectId.keySet()]);
 
