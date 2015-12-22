@@ -1,5 +1,13 @@
 trigger ECO_Project_AllEvents on pse__Proj__c (before update, before insert, after insert, after update) {
 
+    if(trigger.isBefore && trigger.isInsert){
+        ECO_ProjectTriggers.setCAMEmail(trigger.new);
+    }
+
+    if (trigger.isAfter && (trigger.isInsert || trigger.isUpdate)) {
+        ECO_ProjectTriggers.permissionGanttViewEditToOwner(trigger.oldMap, trigger.new, trigger.isInsert);
+    }
+
     if(trigger.isBefore && trigger.isUpdate){
         EcoDisableProjectOwnerTrigger__c mc = EcoDisableProjectOwnerTrigger__c.getOrgDefaults();
 
