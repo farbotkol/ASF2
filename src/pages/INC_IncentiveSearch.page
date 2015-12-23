@@ -74,42 +74,41 @@ border-right: none;
 </style>
 <apex:form >
     <apex:pageMessages />
-    <!--{$LABEL.DTWINCISIPS}-->
-    <apex:sectionHeader title="" subtitle="Incentive Project Search" />
- <!--{$LABEL.DTWINCISAPMER}-->
-<p class="projmessage">All projects meeting eligibility requirements will be flagged to the Deliver to Win administrator for review and release into workflow.  This search function can be used to view the latest status of an enrollment in workflow.  No subsequent actions can be taken unless you have active rights to the record.
+    
+    <apex:sectionHeader title="" subtitle="{!$Label.DTWINCISIPS}" />
+
+<p class="projmessage">{!$Label.DTWINCISAPMER}
 <br/><br/>
-<!--{$LABEL.DTWINCPTDNM}-->
-Projects that do not meet eligibility requirements can be queried as well.  If you are the Project Manager (PM) or the DTW Administrator, you may take ownership of the record and, if desired, begin the enrollment application process.  If you are a user other than the PM or DTW Administrator, you may change the owner to the PM or DTW Administrator.  Note that any ineligible projects proposed for enrollment will be subject to additional approvals. 
+
+{!$Label.DTWINCPTDNM} 
 <br/><br/>
-<!--{$LABEL.DTWINCISNTPE}-->
-Note that project eligibility is assessed weekly on Sunday evenings (Pacific time).  The project data source is AECOM Insight.  Any changes to project budgets in the underlying financial system (e.g. Oracle, ACCPAC) will be reflected after a weekend refresh.</p>
-<!--{$LABEL.DTWINCISSC}-->
-    <apex:pageBlock title="Search Criteria">
+
+ {!$Label.DTWINCISNTPE}</p>
+
+    <apex:pageBlock title="{!$Label.DTWINCISSC}">
         <apex:pageBlockSection title="" showheader="false" columns="1">
             <apex:pageBlockTable value="{!searchCriteria}" var="row" id="theSearchTable">
-               <!--{$LABEL.DTWINCISROW}-->
-               <apex:column headerValue="Row">
+              
+               <apex:column headerValue="{!$Label.DTWINCISROW}">
                     <apex:outputText value="{!row.Row}"/>
                </apex:column>
-                <!--{$LABEL.DTWINCISCriteria}-->
-               <apex:column headerValue="Criteria">
+               
+               <apex:column headerValue="{!$Label.DTWINCISCriteria}">
                    <apex:selectList value="{!row.criteria}" multiselect="false" size="1">
                       <apex:selectOptions value="{!row.criteriaRowlist}"/>
                       <apex:actionSupport event="onchange" reRender="theSearchTable"/>
                    </apex:selectList>
                </apex:column>
-                 <!--{$LABEL.DTWINCISValue}-->
-               <apex:column headerValue="Value">
+                
+               <apex:column headerValue="{!$Label.DTWINCISValue}">
                     <apex:inputText value="{!blankValue}" html-readonly="true" rendered="{!row.Criteria = ''}"/>
                     <apex:inputText value="{!row.value}" rendered="{!AND(row.Criteria != '',row.Criteria != 'PM')}"/>
                     <apex:inputField value="{!row.IncProj.ProjectManager__c}" rendered="{!Row.Criteria = 'PM'}" />
                </apex:column>
                <apex:column >
-                <!--{$LABEL.DTWINCISAddRow}-->
-                <!--{$LABEL.DTWINCISRemoveRow}-->
-                   <apex:commandButton value="Add Row" action="{!addrow}" reRender="theSearchTable"/>
-                    <apex:commandButton value="Remove Row" action="{!removerow}" reRender="theSearchTable">
+               
+                   <apex:commandButton value="{!$Label.DTWINCISAddRow}" action="{!addrow}" reRender="theSearchTable"/>
+                    <apex:commandButton value="{!$Label.DTWINCISRemoveRow}" action="{!removerow}" reRender="theSearchTable">
                       <apex:param name="removerow" value="{!row.row}" assignTo="{!removerow}"/>
                     </apex:commandButton>
                </apex:column>
@@ -118,34 +117,33 @@ Note that project eligibility is assessed weekly on Sunday evenings (Pacific tim
     </apex:pageBlock>
     <apex:pageBlock >
         <apex:pageBlockButtons location="top">
-         <!--{$LABEL.DTWINCISSearch}-->
-                <!--{$LABEL.DTWINCISChangeOwner}-->
-           <apex:commandButton value="Search" action="{!search}"/>
-           <apex:commandButton value="Change Owner" action="{!changeowner}" rendered="{!lresults.size > 0}" />
+         
+           <apex:commandButton value="{!$Label.DTWINCISSearch}" action="{!search}"/>
+           <apex:commandButton value="{!$Label.DTWINCISChangeOwner}" action="{!changeowner}" rendered="{!lresults.size > 0}" />
         </apex:pageBlockButtons>
         <apex:pageBlockSection showHeader="false" columns="1">
           <div>
           <apex:outputpanel rendered="{!lResults.size > 0}">
             <table id="values" class="searchresults">
                 <tr>
-                     <!--{$LABEL.DTWINCISSelect}-->
-                    <th class="selectcol">Select</th>
-                     <!--{$LABEL.DTWINCISProjectNumber}-->
-                    <th id="projectnumber">Project Number</th>
-                     <!--{$LABEL.DTWINCISProjectName}-->
-                    <th class="largecolumn">Project Name</th>
-                     <!--{$LABEL.DTWINCISCustomerName}-->
-                    <th class="largecolumn">Customer Name</th>
-                     <!--{$LABEL.DTWINCISApproved}-->
-                    <th class="mediumcolumn">Approved NSR Budget</th>
-                     <!--{$LABEL.DTWINCISCurrentOwner}-->
-                    <th class="mediumcolumn">Current Owner</th>
-                     <!--{$LABEL.DTWINCISEnrollment }-->
-                    <th class="mediumcolumn">Enrollment Status</th>
-                     <!--{$LABEL.DTWINCISNew }-->
-                    <th id="newuser">New Owner</th>
-                     <!--{$LABEL.DTWINCISMessages}-->
-                    <th id="largecolumn">Messages</th>
+                     
+                    <th class="selectcol">{!$label.DTWINCISSelect}</th>
+                    
+                    <th id="projectnumber">{!$label.DTWINCISProjectNumber}</th>
+                     
+                    <th class="largecolumn">{!$label.DTWINCISProjectName}</th>
+                     
+                    <th class="largecolumn">{!$label.DTWINCISCustomerName}</th>
+                    
+                    <th class="mediumcolumn">{!$label.DTWINCISApproved}</th>
+                    
+                    <th class="mediumcolumn">{!$label.DTWINCISCurrentOwner}</th>
+                     
+                    <th class="mediumcolumn">{!$label.DTWINCISEnrollment }</th>
+                     
+                    <th id="newuser">{!$label.DTWINCISNew }</th>
+                     
+                    <th id="largecolumn">{!$label.DTWINCISMessages}</th>
                 </tr>
                 <apex:outputPanel >
                 <apex:repeat value="{!lResults}" var="result">

@@ -80,52 +80,52 @@
         var reason = document.getElementsByTagName("select")[1];
         var val2 = reason.value;
         if(val != '' && val != 'Please enter a comment.' && val2 != '' && val != 'Rejected from application page.'){
-            <!--{$LABEL.DTWINCEAComments_saved}-->
-            alert('Comments saved!'); 
+          
+            alert('{!$Label.DTWINCEAComments_saved}'); 
             window.location = '/apex/INC_EnrollmentApp?id={!EnrollmentPlan__c.ID}';
         }else{
-         <!--{$LABEL.DTWINCEAPlease_enter_a_valid_Comment_and_Reason_Code}-->
-            alert('Please enter a valid Comment and Reason Code.');
+        
+            alert('{!$Label.DTWINCEAPlease_enter_a_valid_Comment_and_Reason_Code}');
         }
         return false;
     }   
     function rejectMessage(){
-        <!--{$LABEL.DTWINCEAApplication_Rejected}-->
-        alert('Application Rejected'); 
+       
+        alert('{!$Label.DTWINCEAApplication_Rejected}'); 
         window.location = '/apex/INC_EnrollmentApp?id={!EnrollmentPlan__c.ID}';
         return false;
     }
     function closeMessage(){
-         <!--{$LABEL.DTWINCEAApplication_Closed}-->
-        alert('Application Closed'); 
+        
+        alert('{!$Label.DTWINCEAApplication_Closed}'); 
         window.location = '/apex/INC_EnrollmentApp?id={!EnrollmentPlan__c.ID}';
         return false;
     }
     function finishWizardMsg(){
         if({!bFinished}){
-         <!--{$LABEL.DTWINCEAYou_have_completed_the_wizard}-->
-            alert('You have completed the wizard.');
+         
+            alert('{!$Label.DTWINCEAYou_have_completed_the_wizard}');
             window.location = '/apex/INC_EnrollmentApp?id={!EnrollmentPlan__c.ID}';
             return false;   
         }
     }
     function saveMessage(){
-    <!--{$LABEL.DTWINCEAApplication_Saved}-->
-        alert('Application Saved'); 
+   
+        alert('{!$Label.DTWINCEAApplication_Saved}'); 
         window.location = '/apex/INC_EnrollmentApp?id={!EnrollmentPlan__c.ID}';
         return false;
     }
     function submitMessage(){
         //debugger;
-        <!--{$LABEL.DTWINCEAApplication_Submitted}-->
-        alert('Application Submitted'); 
+      
+        alert('{!$Label.DTWINCEAApplication_Submitted}'); 
         window.location = '/apex/INC_DeliverToWinLanding';
         
         return false;
     }
     function rejectionCommentsMessage(){
-    <!--{$LABEL.DTWINCEARejection_comments_required}-->
-        alert('Rejection comments required.');
+    
+        alert('{!$Label.DTWINCEARejection_comments_required}');
         window.location = '/apex/INC_EnrollmentApp?id={!EnrollmentPlan__c.ID}';
         return false;   
     }
@@ -237,8 +237,8 @@
         //document.querySelector('[id*="rejectReason"]').disabled = true;
     });
 </script>
-<!--{$label.DTWINCEAEnrollment_Application}-->
-<apex:sectionHeader title="Enrollment Application" subtitle="{!EnrollmentPlan__c.Name}" id="sectionheader" help="http://my.aecomnet.com/portal/site/Intranet/menuitem.4bb5ad8d27dddb3d13bd6e20c43611ca/?vgnextoid=4699bc2ceae8e410VgnVCM100000089e1bacRCRD&vgnextchannel=c7e1b267a0f9c410VgnVCM100000089e1bacRCRD&vgnextfmt=default"/>
+
+<apex:sectionHeader title="{!$Label.DTWINCEAEnrollment_Application}" subtitle="{!EnrollmentPlan__c.Name}" id="sectionheader" help="http://my.aecomnet.com/portal/site/Intranet/menuitem.4bb5ad8d27dddb3d13bd6e20c43611ca/?vgnextoid=4699bc2ceae8e410VgnVCM100000089e1bacRCRD&vgnextchannel=c7e1b267a0f9c410VgnVCM100000089e1bacRCRD&vgnextfmt=default"/>
 <apex:actionFunction name="checkappstatus" action="{!checkStatus}" rerender="step3buttons, step3buttonsccr" />
 <apex:actionFunction name="submitfromwizardjava" action="{!submitfromwizard}" />
 </apex:outputPanel> 
@@ -255,48 +255,41 @@
                     <div class="instructions">
                     <apex:outputPanel rendered="{!EnrollmentPlan__c.ApplicationType__c ='ENR'}">
                         <p>
-                            <!--{$LABEL.DTWINCEAAs_the_project_manager_you_are_best_suited_to_initiate_the_Deliver_to_Wi}-->
-                            As the project manager you are best suited to initiate the Deliver to Win application.  This wizard will assist you in preparing the application for approval.  Visit the Approver Resources on the DTW webpage for more information.
+                            {!$Label.DTWINCEAAs_the_project_manager_you_are_best_suited_to_initiate_the_Deliver_to_Wi}
                             <ul class="instructionlist" >
-                            <!--{$LABEL.DTWINCEAeStep_1_Review_Master_Data}-->
-                            <li>Step 1 - Review Master Data, ensuring the correct contract type is identified, and that the geo and department info look correct.  Data is retrieved from AECOM Insight and is reflective of the prior weekend's data load.  Click "Propose Enrollment" to continue with the application, or click "Not Suitable for Enrollment" if you do not wish to enroll this project in the Deliver to Win incentive plan.
-                            </li>
+                           
+                            <li>{!$Label.DTWINCEAeStep_1_Review_Master_Data} </li>
                             <li>  
-                             <!--{$LABEL.DTWINCEAStep_2_Choose_an_incentive_plan}-->
-                            Step 2- Choose an incentive plan.  If you are familiar with the options, you can select manually.  If unsure, the guided option will  help with  just a few basic questions.
+                             {!$Label.DTWINCEAStep_2_Choose_an_incentive_plan}
                             </li>
                             <li>
-                             <!--{$LABEL.DTWINCEAStep_3_Propose_key_project_personnel_for_participation}-->
-                            Step 3 - Propose key project personnel for participation and propose target incentive pool allocations.  Click "Save and Recalculate" to see sample payouts and ensure your changes are being reflected correctly.   
+                             {!$Label.DTWINCEAStep_3_Propose_key_project_personnel_for_participation}
                             </li>
                             <li>
-                            <!--{$LABEL.DTWINCEAStep_4_Once_participant_selections_and_allocations_are_completed}-->
-                            Step 4 - Once participant selections and allocations are completed, click "Submit for Approval".  An email will be sent to the P&amp;L manager / Approver 1 for their review and action.
+                            {!$Label.DTWINCEAStep_4_Once_participant_selections_and_allocations_are_completed}
                             </li>
                             </ul>
                         </p>
                     </apex:outputPanel>
                     <apex:outputPanel rendered="{!EnrollmentPlan__c.ApplicationType__c ='CCR'}">
                         <p>
-                            <!--{$LABEL.DTWINCEAAs_the_project_manager_you_are_best_suited_to_propose}-->
-                            As the project manager you are best suited to propose any necessary Deliver to Win Participant changes on this project.  Please add new Participants below.  Where necessary, Participant targets may be changed.  If a Participant has rolled off the project, please populate their End Date on the project, and note that they may still be eligible for award.  Use the comment box to provide rationale for any proposed changes..
+                            {!$Label.DTWINCEAAs_the_project_manager_you_are_best_suited_to_propose}
                             
                         </p>
                     </apex:outputPanel>
                     </div>
         <apex:tabPanel switchType="client" value="{!activeTab}" id="theTabPanel">
-             <!--{$LABEL.DTWINCEAStep_1_Review_Project_Master_Data}-->
-            <apex:tab label="Step 1 - Review Project Master Data" name="step1" id="tabOne" rendered="{!EnrollmentPlan__c.ApplicationType__c='ENR'}">
+             
+            <apex:tab label="{!$Label.DTWINCEAStep_1_Review_Project_Master_Data}" name="step1" id="tabOne" rendered="{!EnrollmentPlan__c.ApplicationType__c='ENR'}">
                 <div class="buttonwrapper">
-                 <!--{$LABEL.DTWINCEANot_Suitable_for_Enrollment}-->
-                 <!--{$LABEL.DTWINCEAIf_you_do_not_wish_to_enroll_this_project_in_the_Deliver_to_Win_incentiv}-->
-                 <!--($LABEL.DTWINCEAAre_you_sure_you_want_to_Opt_out}-->
-                <apex:commandButton styleclass="nextbtn" action="{!proposeOptOut}" value="Not Suitable for Enrollment"  onclick="return confirm('Are you sure you want to Opt-out?');" title="If you do not wish to enroll this project in the Deliver to Win incentive plan, you may recommend excluding the project from DTW.  Your recommendation will be forwarded to a Plan Approver for review."/>
-                <!--{$LABEL.DTWINCEAPropose_Enrollment}-->
-                <apex:commandButton styleclass="nextbtn" action="{!steptwo}" value="Propose Enrollment" reRender="tabs"/>
+                        
+                
+                <apex:commandButton styleclass="nextbtn" action="{!proposeOptOut}" value=" {!$Label.DTWINCEANot_Suitable_for_Enrollment}"  onclick="return confirm('($LABEL.DTWINCEAAre_you_sure_you_want_to_Opt_out}');" title="{!$Label.DTWINCEAIf_you_do_not_wish_to_enroll_this_project_in_the_Deliver_to_Win_incentiv}"/>
+                
+                <apex:commandButton styleclass="nextbtn" action="{!steptwo}" value="{!$Label.DTWINCEAPropose_Enrollment}" reRender="tabs"/>
                 </div>
-                <!--{$LABEL.DTWINCEAProject_Master_Data}-->
-                   <apex:pageBlockSection collapsible="false" showHeader="True" columns="2" Title="Project Master Data">
+                
+                   <apex:pageBlockSection collapsible="false" showHeader="True" columns="2" Title="{!$Label.DTWINCEAProject_Master_Data}">
                       <apex:outputField value="{!EnrollmentPlan__c.ProjectID__c}"/>
                       <apex:outputField value="{!EnrollmentPlan__c.ContractType__c}"/>
                       <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__c}"/>
@@ -310,46 +303,46 @@
                       <apex:outputField value="{!EnrollmentPlan__c.BusinessLine__c}"/>
                       <apex:outputField value="{!EnrollmentPlan__c.OrgCarryingOutProject__c}"/>
                       <apex:outputText value="" />
-                       <!--{$LABEL.DTWINCEANext_Approver}-->
-                      <apex:outputField label="Next Approver" value="{!EnrollmentPlan__c.Approver1__c}"/>
+                     
+                      <apex:outputField label="{!$Label.DTWINCEANext_Approver}" value="{!EnrollmentPlan__c.Approver1__c}"/>
                 </apex:pageBlockSection>
             </apex:tab>
-             <!--{$LABEL.DTWINCEAStep_2_Choose_Incentive_Plan}-->
-            <apex:tab label="Step 2 - Choose Incentive Plan" name="step2" id="tabTwo" rendered="{!EnrollmentPlan__c.ApplicationType__c='ENR'}">
+             
+            <apex:tab label="{!$Label.DTWINCEAStep_2_Choose_Incentive_Plan}" name="step2" id="tabTwo" rendered="{!EnrollmentPlan__c.ApplicationType__c='ENR'}">
             <div class="buttonwrapper">
-            <!--{$LABEL.DTWINCEABack}-->
-                <apex:commandButton styleclass="nextbtn" action="{!stepone}" value="Back" reRender="tabs" />
-                <!--{$LABEL.DTWINCEANext}-->
-                <apex:commandButton styleclass="nextbtn" action="{!stepthree}" value="Next"  />
+           
+                <apex:commandButton styleclass="nextbtn" action="{!stepone}" value="{!$Label.DTWINCEABack}" reRender="tabs" />
+               
+                <apex:commandButton styleclass="nextbtn" action="{!stepthree}" value="{!$Label.DTWINCEANext}"  />
             </div>
             <p class="projmessage">
-           <!--{$LABEL.DTWINCEAWhen_using_Guided_selection}-->
-            When using "Guided "selection, answer the questionnaire and click "Search Plans" to display the most suitable Incentive Plan(s).  Alternatively, select "Manual" to display all available plans.  Place a check in the box next to the desired Incentive Plan, and click "Save".  Your browser page will refresh.  Then click "Next" to move to the 3rd step.
-            </p>
+           
+           {!$Label.DTWINCEAWhen_using_Guided_selection}
+           </p>
                 <apex:outputPanel rendered="{!activeTab = 'step2'}" >
                 <c:INC_ChoseIncentivePlanComponent fromWizardVal="Yes"/>
                 </apex:outputPanel>
             </apex:tab>
-             <!--{$LABEL.DTWINCEAStep_3_Participant_Allocations}-->
-            <apex:tab label="Step 3 - Participant Allocations" name="step3" id="stepTwo" rendered="{!EnrollmentPlan__c.ApplicationType__c='ENR'}">
+            
+            <apex:tab label="{!$Label.DTWINCEAStep_3_Participant_Allocations}" name="step3" id="stepTwo" rendered="{!EnrollmentPlan__c.ApplicationType__c='ENR'}">
              <div>
                 <apex:outputText escape="false" styleclass="submitMessage" value="{!sSubmitMessage}" />
             </div>
              <div class="buttonwrapper">
              <apex:outputpanel id="step3buttons">
-             <!--{$LABEL.DTWINCEABack}-->
-                <apex:commandButton styleclass="nextbtn" action="{!steptwo}" value="Back" reRender="tabs" />
+             
+                <apex:commandButton styleclass="nextbtn" action="{!steptwo}" value="{!$Label.DTWINCEABack}" reRender="tabs" />
                 <!--<apex:commandButton styleclass="nextbtn" action="{!finishwizard}" value="Finish and Review App" reRender="tabs" oncomplete="return finishWizardMsg();"/> -->
-                <!--{$LABEL.DTWINCEASubmit_for_Approval}-->
-                <apex:commandButton styleclass="nextbtn" value="Submit for Approval" action="{!submitfromwizard}"  oncomplete="return submitMessage();" reRender="tabs, script" rendered="{!bShowWizardSubmit}"/> 
+               
+                <apex:commandButton styleclass="nextbtn" value="{!$Label.DTWINCEASubmit_for_Approval}" action="{!submitfromwizard}"  oncomplete="return submitMessage();" reRender="tabs, script" rendered="{!bShowWizardSubmit}"/> 
              </apex:outputPanel>
             </div>
             <apex:outputPanel rendered="{!activeTab = 'step3'}" >
                 <c:INC_EnrollmentParticipantComponent fromWizardVal="Yes"/>
             </apex:outputPanel>
             </apex:tab>
-            <!--{$LABEL.DTWINCEAParticipant_Allocations}-->
-            <apex:tab label="Participant Allocations" name="step3" id="stepTwoccr" rendered="{!EnrollmentPlan__c.ApplicationType__c='CCR'}">
+            
+            <apex:tab label="{!$Label.DTWINCEAParticipant_Allocations}" name="step3" id="stepTwoccr" rendered="{!EnrollmentPlan__c.ApplicationType__c='CCR'}">
              <div>
                 <apex:outputText escape="false" styleclass="submitMessage" value="{!sSubmitMessage}" />
             </div>
@@ -357,8 +350,8 @@
              <apex:outputpanel id="step3buttonsccr">
               
                 <!--<apex:commandButton styleclass="nextbtn" action="{!finishwizard}" value="Finish and Review App" reRender="tabs" oncomplete="return finishWizardMsg();"/> -->
-                <!--{$LABEL.DTWINCEASubmit_for_Approval}-->
-                <apex:commandButton styleclass="nextbtn" value="Submit for Approval" action="{!submitfromwizard}"  oncomplete="return submitMessage();" reRender="tabs, script" rendered="{!bShowWizardSubmit}"/> 
+               
+                <apex:commandButton styleclass="nextbtn" value="{!$Label.DTWINCEASubmit_for_Approval}" action="{!submitfromwizard}"  oncomplete="return submitMessage();" reRender="tabs, script" rendered="{!bShowWizardSubmit}"/> 
              </apex:outputPanel>
             </div>
             <apex:outputPanel rendered="{!activeTab = 'step3'}" >
@@ -379,47 +372,47 @@
        <c:INC_EnrollmentComments />
     </apex:outputPanel>
 <apex:outputpanel rendered="{!NOT(isRejectedRecType)}">
- <!--{$LABEL.DTWINCEAEnrollment_Application_Detail}-->
-    <apex:pageBlock title="Enrollment Application Detail" id="mainblock">
+ 
+    <apex:pageBlock title="{!$Label.DTWINCEAEnrollment_Application_Detail}" id="mainblock">
         <apex:pageBlockButtons location="top">
            <div id="topsave">
-           <!--{$LABEL.DTWINCEASave}-->
-            <apex:commandButton value="Save" action="{!Save}"  oncomplete="return saveMessage();"/>
-            <!--{$LABEL.DTWINCEASubmit_for_Approval}-->
-            <apex:commandButton value="Submit for Approval" action="{!submit}" rendered="{!bShowSubmit}" oncomplete="return submitMessage();"  styleClass="hidebutton"/> 
-            <!--{$LABEL.DTWINCEAChoose_Incentive_Plan}-->
-            <apex:commandButton value="Choose Incentive Plan" action="{!chooseplan}" styleClass="hidebutton"/>
-             <!--{$LABEL.DTWINCEAApplication_Metrics}-->
-            <apex:commandButton value="Application Metrics" action="{!showAppMetrics}"  styleClass="hidebutton"/>
-             <!--{$LABEL.DTWINCEAAssign_Approvers}-->
-            <apex:commandButton value="Assign Approvers" action="{!reassignApprovers}"  styleClass="hidebutton" rendered="{!bShowAA}"/>
+           
+            <apex:commandButton value="{!$Label.DTWINCEASave}" action="{!Save}"  oncomplete="return saveMessage();"/>
+           
+            <apex:commandButton value="{!$Label.DTWINCEASubmit_for_Approval}" action="{!submit}" rendered="{!bShowSubmit}" oncomplete="return submitMessage();"  styleClass="hidebutton"/> 
+            
+            <apex:commandButton value="{!$Label.DTWINCEAChoose_Incentive_Plan}" action="{!chooseplan}" styleClass="hidebutton"/>
+          
+            <apex:commandButton value="{!$Label.DTWINCEAApplication_Metrics}" action="{!showAppMetrics}"  styleClass="hidebutton"/>
+            
+            <apex:commandButton value="{!$Label.DTWINCEAAssign_Approvers}" action="{!reassignApprovers}"  styleClass="hidebutton" rendered="{!bShowAA}"/>
             <apex:actionStatus id="saveStatus">
             <apex:facet name="stop">
-            <!--{$LABEL.DTWINCEACreate_Change_Request}-->
-            <apex:commandButton value="Create Change Request" action="{!createChangeRequest}" status="saveStatus" rerender="fullpage" rendered="{!AND(EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled',bShowCCR)}" styleClass="hidebutton"/>
+           
+            <apex:commandButton value="{!$Label.DTWINCEACreate_Change_Request}" action="{!createChangeRequest}" status="saveStatus" rerender="fullpage" rendered="{!AND(EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled',bShowCCR)}" styleClass="hidebutton"/>
             </apex:facet>
             <apex:facet name="start">
-                <!--{$LABEL.DTWINCEACreating}-->
-                <apex:commandButton value="Creating..." disabled="true" status="saveStatus"/>
+               
+                <apex:commandButton value="{!$Label.DTWINCEACreating}" disabled="true" status="saveStatus"/>
             </apex:facet>
             </apex:actionStatus>
             <apex:actionStatus id="saveStatus2">
             <apex:facet name="stop">
-            <!--{$LABEL.DTWINCEACreate_Payment_Request}-->
-            <apex:commandButton value="Create Payment Request" status="saveStatus2" action="{!createPaymentRequest}" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}"  styleClass="hidebutton"/>
+           
+            <apex:commandButton value="{!$Label.DTWINCEACreate_Payment_Request}" status="saveStatus2" action="{!createPaymentRequest}" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c = 'Enrolled'}"  styleClass="hidebutton"/>
             </apex:facet>
             <apex:facet name="start">
-             <!--{$LABEL.DTWINCEACreating}-->
-                <apex:commandButton value="Creating..." disabled="true" status="saveStatus2"/>
+            
+                <apex:commandButton value="{!$Label.DTWINCEACreating}" disabled="true" status="saveStatus2"/>
             </apex:facet>
             </apex:actionStatus>
-             <!--{$LABEL.DTWINCEAReject_Application}-->
-                <!--{$LABEL.DTWINCEAAre_you_sure_you_want_to_reject_the_application}-->
-            <apex:commandButton value="Reject Application" action="{!finalRejectButton}"  onclick="if(!confirm('Are you sure you want to reject the application?')){return};" oncomplete="return rejectMessage();"  styleClass="hidebutton" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c != 'Enrolled'}"/>
-             <!--{$LABEL.DTWINCEAClose_Application}-->
-            <apex:commandButton value="Close Application" action="{!closeApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton" rendered="{!AND(bShowAA,EnrollmentPlan__c.ApplicationType__c = 'PAY')}"/>
-             <!--{$LABEL.DTWINCEAClose_Application_No_Award}-->
-            <apex:commandButton value="Close Application (No Award)" action="{!closeNoAwardApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton" rendered="{!bShowAA}"/>
+             
+                
+            <apex:commandButton value="{!$Label.DTWINCEAReject_Application}" action="{!finalRejectButton}"  onclick="if(!confirm('{!$Label.DTWINCEAAre_you_sure_you_want_to_reject_the_application}')){return};" oncomplete="return rejectMessage();"  styleClass="hidebutton" rendered="{!EnrollmentPlan__c.EnrollmentStatus__c != 'Enrolled'}"/>
+            
+            <apex:commandButton value="{!$Label.DTWINCEAClose_Application}" action="{!closeApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton" rendered="{!AND(bShowAA,EnrollmentPlan__c.ApplicationType__c = 'PAY')}"/>
+             
+            <apex:commandButton value="{!$Label.DTWINCEAClose_Application_No_Award}" action="{!closeNoAwardApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton" rendered="{!bShowAA}"/>
 
            </div>
         </apex:pageBlockButtons>
@@ -434,17 +427,17 @@
           <apex:outputField value="{!EnrollmentPlan__c.AgeDays__c}"/>
         
           <apex:pageBlockSectionItem helpText="{!$ObjectType.EnrollmentPlan__c.fields.AppIicationIssues__c.InlineHelpText}" rendered="{!EnrollmentPlan__c.ApplicationType__c != 'PAY'}">
-            <!--{$LABEL.DTWINCEAApplication_Issues}-->
-            <apex:outputLabel value="Application Issues" for="ApplicationExceptions"/>
-              <!--{$LABEL.DTWINCEAApplication_Issues}-->
-            <apex:outputText label="Application Issues" escape="false" value="{!sIssues}" />
+           
+            <apex:outputLabel value="{!$Label.DTWINCEAApplication_Issues}" for="ApplicationExceptions"/>
+             
+            <apex:outputText label="{!$Label.DTWINCEAApplication_Issues}" escape="false" value="{!sIssues}" />
           </apex:pageBlockSectionItem>
     
           <apex:outputField value="{!EnrollmentPlan__c.ApplicationIssuesPay__c}" rendered="{!EnrollmentPlan__c.ApplicationType__c == 'PAY'}"/>
     
           <apex:pageBlockSectionItem helpText="{!$ObjectType.EnrollmentPlan__c.fields.Application_Exceptions__c.InlineHelpText}">
-             <!--{$LABEL.DTWINCEAApplication_Exceptions}--> 
-            <apex:outputLabel value="Application Exceptions" for="ApplicationExceptions"/>
+             
+            <apex:outputLabel value="{!$Label.DTWINCEAApplication_Exceptions}" for="ApplicationExceptions"/>
             <apex:outputText id="ApplicationExceptions" escape="false" value="{!sExceptions}" />
           </apex:pageBlockSectionItem>
           <apex:outputField value="{!EnrollmentPlan__c.PlanType__c}"/>
@@ -461,29 +454,20 @@
         <apex:pageBlockSection collapsible="false" showHeader="false" columns="1">
             
                     <div class="projmessage">
-            <!--{$LABEL.DTWINCEACompletion_of_the_payment_form_can_begin_30_days_prior_to_project_close}-->
-                <!--{$LABEL.DTWINCEAHow_to_Pay_a_DTW_Award}-->
-                 <!--{$LABEL.DTWINCEADTW_webpage}-->
-                  <!--{$LABEL.DTWINCEA_module_posted_on_the}-->
-                <!--{$LABEL.DTWINCEA_which_will_provide_information_about_payment_of_DTW_awards}-->
-                Completion of the payment form can begin 30 days prior to project close.  Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.html">How to Pay a DTW Award</a> module posted on the <a href="http://my.aecomnet.com/Intranet/About/Delivery+Excellence/Design+and+Consulting+Services?appInstanceName=intranet&vgnextrefresh=1">DTW webpage</a> which will provide information about payment of DTW awards. 
+          
+                {!$Label.DTWINCEACompletion_of_the_payment_form_can_begin_30_days_prior_to_project_close}<a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.html">{!$Label.DTWINCEAHow_to_Pay_a_DTW_Award}</a>{!$Label.DTWINCEA_module_posted_on_the}<a href="http://my.aecomnet.com/Intranet/About/Delivery+Excellence/Design+and+Consulting+Services?appInstanceName=intranet&vgnextrefresh=1">{!$Label.DTWINCEADTW_webpage}</a>{!$Label.DTWINCEA_which_will_provide_information_about_payment_of_DTW_awards} 
 
                 <ol>
-                <!--{$LABEL.DTWINCEAFill_in_the_final_safety_score_based_on_the}-->
-                     <!--{$LABEL.DTWINCEASafety_for_Life_Scorecard}-->
-                     <!--{$LABEL.DTWINCEA_completed_by_the_PM_and_fill_in_Client_Satisfaction_rating_from}-->
-                     <!--{$LABEL.DTWINCEAEvaluating_Operational_Metrics}-->
-                       <!--{$LABEL.DTWINCEA_chart_to_determine_amount_of_the_reduction_to_the_incentive_pool}-->
-                    <li>Fill in the final safety score based on the <a href="http://my.aecomnet.com/deployedfiles/Intranet/About/Global Project Excellence/Documents/2015 Safety for Life Scorecard.pptx">Safety for Life Scorecard</a>  completed by the PM, and fill in Client Satisfaction rating from most recent NPS or other client survey. Indicate whether each of the three operational metrics were achieved by selecting “Yes” or “No”.  If any operational metrics were not achieved, review the <a href="http://my.aecomnet.com/deployedfiles/Intranet/About/Global Project Excellence/Documents/Evaluating Operational Metrics June 2015.pdf">Evaluating Operational Metrics</a> chart to determine amount of the reduction to the incentive pool.  </li>
-                    <!--{$LABEL.DTWINCEAFill_in_the_Final_Pool_Adjusted_for_Ops_Metrics_If_all_operational_m}-->
-                    <li>Fill in the “Final Pool Adjusted for Ops Metrics”.  If all operational metrics achieved, this equals the Final Incentive Pool @ITD shown to the left.</li>
-                    <!--{$LABEL.DTWINCEAGo_to_the_next_section_Enrollment_Participants_and_click_on_Add_Edit}-->
-                    <li>Go to the next section “Enrollment Participants” and click on “Add/Edit Enrollment Participants”.</li>
+              
+                    <li>{!$Label.DTWINCEAFill_in_the_final_safety_score_based_on_the} <a href="http://my.aecomnet.com/deployedfiles/Intranet/About/Global Project Excellence/Documents/2015 Safety for Life Scorecard.pptx">{!$Label.DTWINCEASafety_for_Life_Scorecard}</a>{!$Label.DTWINCEA_completed_by_the_PM_and_fill_in_Client_Satisfaction_rating_from} <a href="http://my.aecomnet.com/deployedfiles/Intranet/About/Global Project Excellence/Documents/Evaluating Operational Metrics June 2015.pdf">{!$Label.DTWINCEAEvaluating_Operational_Metrics}</a>{!$Label.DTWINCEA_chart_to_determine_amount_of_the_reduction_to_the_incentive_pool}</li>
+                    
+                    <li>{!$Label.DTWINCEAFill_in_the_Final_Pool_Adjusted_for_Ops_Metrics_If_all_operational_m}</li>
+                    
+                    <li>{!$Label.DTWINCEAGo_to_the_next_section_Enrollment_Participants_and_click_on_Add_Edit}</li>
                 </ol>
-<!--{$LABEL.DTWINCEAReference_the_Final_Pool_Adjusted_for_Ops_Metrics}-->
 
-                 Reference the “Final Pool Adjusted for Ops Metrics” above to allocate award amounts to participants and/or add employees who are recommended for discretionary awards.  Final awards should reflect individual performance and contribution to project success as well as time dedicated to    the project and previous awards paid for work on the project.  Provide a brief explanation for any adjustment made to a participant’s calculated award, and rationale for discretionary award recommendation.
-                <br/><br/>
+                {!$Label.DTWINCEAReference_the_Final_Pool_Adjusted_for_Ops_Metrics}
+                  <br/><br/>
                 <!--Watch the short <a Href="http://intranet.aecomnet.com/hosted/dtwpayments/story.html">How to Pay a DTW Award</a> module posted on the <a href="http://my.aecomnet.com/Intranet/About/Delivery+Excellence/Design+and+Consulting+Services?appInstanceName=intranet&vgnextrefresh=1">DTW webpage</a> for more information about next steps. -->
               
 
@@ -496,8 +480,8 @@
         </apex:outputPanel>
 
         <apex:outputpanel styleclass="centersection">
-        <!--{$LABEL.DTWINCEAProject_Master_Data}-->
-        <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="Project Master Data">
+        
+        <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="{!$Label.DTWINCEAProject_Master_Data}">
           <apex:outputField value="{!EnrollmentPlan__c.ProjectID__c}"/>
           <apex:outputField value="{!EnrollmentPlan__c.ContractType__c}"/>
           <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__c}"/>
@@ -514,15 +498,15 @@
           <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__r.ProjectStatus__c}"/>
     
         </apex:pageBlockSection>
-        <!--{$LABEL.DTWINCEADTW_Admin_Fields}-->
-        <apex:pageBlockSection Title="DTW Admin Fields" columns="1" rendered="{!And(OR(UserType=2,UserType=3),EnrollmentPlan__c.ApplicationType__c='CCR')}">
+       
+        <apex:pageBlockSection Title="{!$Label.DTWINCEADTW_Admin_Fields}" columns="1" rendered="{!And(OR(UserType=2,UserType=3),EnrollmentPlan__c.ApplicationType__c='CCR')}">
         <apex:repeat value="{!$ObjectType.EnrollmentPlan__c.FieldSets.DTWAdminCloseout}" var="f">
             <apex:inputField value="{!EnrollmentPlan__c[f]}" />
         </apex:repeat>
         </apex:pageBlockSection>
         </apex:outputpanel>
-         <!--{$LABEL.DTWINCEADTW_Incentive_Plan_Financial_Metrics}-->
-        <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="DTW Incentive Plan - Financial Metrics" rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c ='PAY')}">
+        
+        <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="{!$Label.DTWINCEADTW_Incentive_Plan_Financial_Metrics}" rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c ='PAY')}">
           <apex:outputField value="{!EnrollmentPlan__c.MaxIncentivePool__c}"/>
 
           <apex:outputField value="{!EnrollmentPlan__c.ThresholdGMatEAC__c}" rendered="{!NOT(bTandM)}" />
@@ -544,8 +528,8 @@
           <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__r.NetARBalance__c}" />
 
         </apex:pageBlockSection>
-         <!--{$LABEL.DTWINCEADTW_Incentive_Plan_Financial_Metrics}-->
-        <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="DTW Incentive Plan - Financial Metrics" rendered="{!EnrollmentPlan__c.ApplicationType__c ='PAY'}">
+         
+        <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="{!$Label.DTWINCEADTW_Incentive_Plan_Financial_Metrics}" rendered="{!EnrollmentPlan__c.ApplicationType__c ='PAY'}">
           <apex:outputField value="{!EnrollmentPlan__c.MaxIncentivePool__c}"/>
 
           <!--<apex:outputField value="{!EnrollmentPlan__c.ThresholdGMatEAC__c}" rendered="{!NOT(bTandM)}" /> -->
@@ -575,49 +559,48 @@
           <apex:outputField value="{!EnrollmentPlan__c.IncentiveProject__r.NetARBalance__c}" />
           <apex:outputField value="{!EnrollmentPlan__c.PercentCompleteCostITD__c}" rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}"/>
         </apex:pageBlockSection>
-        <!--{$LABEL.DTWINCEAFinal_Incentive_Information}-->
-        <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="Final Incentive Information" rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}" >
+       
+        <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="{!$Label.DTWINCEAFinal_Incentive_Information}" rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}" >
           <apex:outputField value="{!EnrollmentPlan__c.FinalIncentivePoolITD__c}"/>
           <apex:inputField Styleclass="highlightedfield" value="{!EnrollmentPlan__c.FinalIncentivePoolAdjusted__c}"/>
         </apex:pageBlockSection>
-     <!--{$LABEL.DTWINCEAProject_Budget_DTW_Baseline_and_Forecast}-->
-      <!--{$LABEL.DTWINCEAProject_Financial_Results}-->
-    <apex:pageBlockSection title="{!if(NOT(EnrollmentPlan__c.ApplicationType__c='PAY'),'Project Budget, DTW Baseline and Forecast','Project Financial Results')}" collapsible="true" columns="1">
+    
+    <apex:pageBlockSection title="{!if(NOT(EnrollmentPlan__c.ApplicationType__c='PAY'),$Label.DTWINCEAProject_Budget_DTW_Baseline_and_Forecast,$Label.DTWINCEAProject_Financial_Results)}" collapsible="true" columns="1">
     <a id="budgetsection" />
-    <!--{$LABEL.DTWINCEASave_and_recalculate}-->
-    <apex:commandButton styleclass="budgetbutton" value="Save and recalculate" action="{!saveAndReturnToBudget}" rendered="{!bRenderInputFinFields}"/>
+    
+    <apex:commandButton styleclass="budgetbutton" value="{!$Label.DTWINCEASave_and_recalculate}" action="{!saveAndReturnToBudget}" rendered="{!bRenderInputFinFields}"/>
     <apex:outputfield value="{!EnrollmentPlan__c.ParentApplication__c}" rendered="{!EnrollmentPlan__c.ApplicationType__c='CCR'}"/>
     <apex:outputPanel >
             <table id="budgettable">
                 <tr>
                     <th></th>
-                     <!--{$LABEL.DTWINCEAApproved_Budget}-->
-                    <th>Approved Budget</th>
+                   
+                    <th>{!$Label.DTWINCEAApproved_Budget}</th>
                     <apex:outputPanel rendered="{!bTandM}">
-                    <!--{$LABEL.DTWINCEASnapshot}-->
-                            <th>Snapshot</th>
+                   
+                            <th>{!$Label.DTWINCEASnapshot}</th>
                     </apex:outputPanel>
                     <apex:outputPanel rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c = 'PAY')}">
                         <apex:outputPanel rendered="{!bTandM}">
-                             <!--{$LABEL.DTWINCEAExpected_Scope_Changes}-->
-                            <th>Expected Scope Changes</th>
+                             
+                            <th>{!$Label.DTWINCEAExpected_Scope_Changes}</th>
                         </apex:outputPanel>
-                        <!--{$LABEL.DTWINCEAMgmt_Adjustments}-->
-                        <th>Mgmt Adjustments</th>
+                       
+                        <th>{!$Label.DTWINCEAMgmt_Adjustments}</th>
                     </apex:outputPanel>
-                     <!--{$LABEL.DTWINCEADTW_Baseline}-->
-                    <th>DTW Baseline</th>
-                     <!--{$LABEL.DTWINCEACurrent_Forecast}-->
-                    <th>Current Forecast</th>
+                     
+                    <th>{!$Label.DTWINCEADTW_Baseline}</th>
+                     
+                    <th>{!$Label.DTWINCEACurrent_Forecast}</th>
                     <apex:outputPanel rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}">
-                    <!--{$LABEL.DTWINCEAInception_to_Date_Actuals}-->
-                    <th>Inception to Date Actuals</th>
+                 
+                    <th>{!$Label.DTWINCEAInception_to_Date_Actuals}</th>
                     </apex:outputPanel>
                 </tr>
                 <apex:outputPanel rendered="{!bTandM}">
                 <tr>
-                 <!--{$LABEL.DTWINCEAGross_Revenue}-->
-                    <td class="label">Gross Revenue</td>
+                 
+                    <td class="label">{!$Label.DTWINCEAGross_Revenue}</td>
                     <td> 
                         <apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedGrossRevenueBudget__c}"/>
                     </td>
@@ -649,8 +632,8 @@
                     </apex:outputPanel>
                 </tr>
                 <tr>
-                <!--{$LABEL.DTWINCEASub_Consultant_and_ODC}-->
-                    <td class="label">Sub Consultant and ODC</td>
+               
+                    <td class="label">{!$Label.DTWINCEASub_Consultant_and_ODC}</td>
                     <td>
                         <apex:outputField label="" value="{!EnrollmentPlan__c.ApprovedSubsODC__c}"/>
                     </td>
@@ -683,8 +666,8 @@
                 </tr>
                 </apex:outputPanel>
                 <tr>
-                <!--{$LABEL.DTWINCEAContingency}-->
-                    <td class="label">Contingency</td>
+               
+                    <td class="label">{!$Label.DTWINCEAContingency}</td>
                     <td>
                         <apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedContingencyBudget__c}"/>
                     </td>
@@ -719,8 +702,8 @@
                     </apex:outputPanel> 
                 </tr>
                 <tr id="nsrline">
-                  <!--{$LABEL.DTWINCEANSR}-->
-                    <td  class="label">NSR</td>
+                 
+                    <td  class="label">{!$Label.DTWINCEANSR}</td>
                     <td>
                         <apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedNSRBudget__c}"/>
                     </td>
@@ -755,8 +738,8 @@
             
                 </tr>
                 <tr>
-                <!--{$LABEL.DTWINCEADPE}-->
-                    <td class="label">DPE</td>
+              
+                    <td class="label">{!$Label.DTWINCEADPE}</td>
                     <td>
                         <apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedDPEBudget__c}"/>
                     </td>
@@ -791,8 +774,8 @@
                 </tr>
                 <apex:outputPanel rendered="{!EnrollmentPlan__c.IncentivePlan__r.ContractSubType__c == 'Gross Margin'}">
                 <tr id="grossmarginline">
-               <!--{$LABEL.DTWINCEAGross_Margin}-->
-                    <td  class="label">Gross Margin</td>
+               
+                    <td  class="label">{!$Label.DTWINCEAGross_Margin}</td>
                     <td>
                         <apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedGrossMarginBudget__c}"/>
                     </td>
@@ -827,8 +810,8 @@
             
                 </tr>
                 <tr id="gmnsrline">
-                <!--{$LABEL.DTWINCEAGM_of_NSR}-->
-                    <td  class="label">GM % of NSR</td>
+                
+                    <td  class="label">{!$Label.DTWINCEAGM_of_NSR}</td>
                     <td>
                         <apex:outputField id="gmnsr" label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedGrossMarginofNSR__c}"/>
                     </td>
@@ -868,8 +851,8 @@
                 </apex:outputPanel>
                 <apex:outputPanel rendered="{!EnrollmentPlan__c.IncentivePlan__r.ContractSubType__c == 'Net Margin'}">
                 <tr id="netmarginline">
-                <!--{$LABEL.DTWINCEANet_Margin}-->
-                    <td  class="label">Net Margin</td>
+              
+                    <td  class="label">{!$Label.DTWINCEANet_Margin}</td>
                     <td>
                         <apex:outputField label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedNetMarginBudget__c}"/>
                     </td>
@@ -901,8 +884,8 @@
                     </apex:outputPanel>
                 </tr>
                 <tr id="nmnsrline">
-                <!--{$LABEL.DTWINCEANM_of_NSR}-->
-                    <td  class="label">NM % of NSR</td>
+               
+                    <td  class="label">{!$Label.DTWINCEANM_of_NSR}</td>
                     <td>
                         <apex:outputField id="nmnsr" label="" value="{!EnrollmentPlan__c.IncentiveProject__r.ApprovedNMofNSR__c}"/>
                     </td>
@@ -941,8 +924,8 @@
                 <tr class="confirmrow">
                     <td></td>
                     <td/>
-                    <!--{$LABEL.DTWINCEAConfirm_Baseline}-->
-                    <td class="confirmbaseline">Confirm Baseline</td>
+                   
+                    <td class="confirmbaseline">{!$Label.DTWINCEAConfirm_Baseline}</td>
                     <td>
                       <input class="confirmcheckbox" type="checkbox"/>
                     </td>
@@ -951,8 +934,8 @@
                     </td>
                 </tr>
                 <tr class="macomments">
-                <!--{$LABEL.DTWINCEAMA_Comments}-->
-                    <td class="label malabel">MA Comments</td>
+                
+                    <td class="label malabel">{!$Label.DTWINCEAMA_Comments}</td>
                     <td></td>
                     <td>
                         <apex:inputField id="macomment" label="" styleClass="commentinput highlightedfield" value="{!EnrollmentPlan__c.MA_Comments__c}" required="false$"/>
@@ -964,16 +947,16 @@
             </table>
         </apex:outputPanel>
         </apex:pageBlockSection>
-        <!--{$LABEL.DTWINCEADTW_Operational_Metrics}-->
-        <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="DTW Operational Metrics" rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c='PAY')}" >
+       
+        <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="{!$Label.DTWINCEADTW_Operational_Metrics}" rendered="{!NOT(EnrollmentPlan__c.ApplicationType__c='PAY')}" >
           <apex:inputField Styleclass="highlightedfield" value="{!EnrollmentPlan__c.DSOTarget__c}" rendered="{!bRenderInputFinFields}"/>
           <apex:outputField Styleclass="highlightedfield" value="{!EnrollmentPlan__c.DSOTarget__c}" rendered="{!NOT(bRenderInputFinFields)}"/>
           <apex:outputField value="{!EnrollmentPlan__c.ClientSatisfactionDisplay__c}"/>
           <apex:outputField value="{!EnrollmentPlan__c.ITDDSO__c}"/>
           <apex:outputField value="{!EnrollmentPlan__c.SafetyforLifeScoreDisplay__c}"/>
         </apex:pageBlockSection>
-         <!--{$LABEL.DTWINCEADTW_Operational_Metrics}-->
-        <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="DTW Operational Metrics" rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}" >
+        
+        <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="{!$Label.DTWINCEADTW_Operational_Metrics}" rendered="{!EnrollmentPlan__c.ApplicationType__c='PAY'}" >
           <apex:outputField value="{!EnrollmentPlan__c.ClientSatisfactionDisplay__c}"/>
           <apex:outputField value="{!EnrollmentPlan__c.SafetyforLifeScoreDisplay__c}"/>
           <apex:inputField value="{!EnrollmentPlan__c.PassCSat__c}"/>
@@ -987,20 +970,20 @@
           <apex:inputField Styleclass="highlightedfield" value="{!EnrollmentPlan__c.ITDDSO__c}" />
           <span></span>
         </apex:pageBlockSection>
-         <!--{$LABEL.DTWINCEASnapshot_Fields}-->
-        <apex:pageBlockSection Title="Snapshot Fields" columns="2" rendered="{!UserType=2}">
+        
+        <apex:pageBlockSection Title="{!$Label.DTWINCEASnapshot_Fields}" columns="2" rendered="{!UserType=2}">
         <apex:repeat value="{!$ObjectType.EnrollmentPlan__c.FieldSets.DTWAdminSnapshot}" var="f">
             <apex:inputField value="{!EnrollmentPlan__c[f]}" />
         </apex:repeat>
         </apex:pageBlockSection>
-        <!--{$LABEL.DTWINCEASnapshot_Fields}-->
-        <apex:pageBlockSection Title="Snapshot Fields" columns="2" rendered="{!UserType=3}">
+        
+        <apex:pageBlockSection Title="{!$Label.DTWINCEASnapshot_Fields}" columns="2" rendered="{!UserType=3}">
         <apex:repeat value="{!$ObjectType.EnrollmentPlan__c.FieldSets.DTWAdminSnapshot}" var="f">
             <apex:outputField value="{!EnrollmentPlan__c[f]}" />
         </apex:repeat>
         </apex:pageBlockSection>
-        <!--{$LABEL.DTWINCEAAdmin_Fields}-->
-        <apex:pageBlockSection Title="Admin Fields" columns="2" rendered="{!AND(OR(UserType=2,UserType=3),EnrollmentPlan__c.ApplicationType__c='CCR')}">
+       
+        <apex:pageBlockSection Title="{!$Label.DTWINCEAAdmin_Fields}" columns="2" rendered="{!AND(OR(UserType=2,UserType=3),EnrollmentPlan__c.ApplicationType__c='CCR')}">
         <apex:repeat value="{!$ObjectType.EnrollmentPlan__c.FieldSets.DTWAdminCloseout}" var="f">
             <apex:outputField value="{!EnrollmentPlan__c[f]}" />
         </apex:repeat>
@@ -1018,22 +1001,22 @@
 <apex:outputPanel rendered="{!NOT(showWizard)}">
 <apex:outputPanel rendered="{!NOT(isRejectedRecType)}">
     <apex:relatedList list="EnrollmentParticipants__r" rendered="{!$ObjectType.EnrollmentParticipant__c.accessible}">
-        <!--{$LABEL.DTWINCEADTW_Participant_Selection}-->
-        <apex:facet name="partheader">DTW Participant Selection</apex:facet>
+        
+        <apex:facet name="partheader">{!$Label.DTWINCEADTW_Participant_Selection}</apex:facet>
     </apex:relatedList>
 </apex:outputPanel>
 <apex:form >
 <apex:outputPanel rendered="{!NOT(isRejectedRecType)}">
 <apex:pageblock >
- <!--{$LABEL.DTWINCEAApplication_Approval_Team}-->
-    <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="Application Approval Team">
+
+    <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="{!$Label.DTWINCEAApplication_Approval_Team}">
           <apex:outputField value="{!EnrollmentPlan__c.IPProjectManager__c}"/>
           <apex:outputField value="{!EnrollmentPlan__c.Approver1__c}"/>
           <apex:outputField value="{!EnrollmentPlan__c.Approver2__c}"/>
           <apex:outputField value="{!EnrollmentPlan__c.Approver3__c}"/>
     </apex:pageBlockSection>
-    <!--{$LABEL.DTWINCEAIncentive_Plan_Information}-->
-    <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="Incentive Plan Information">
+   
+    <apex:pageBlockSection collapsible="True" showHeader="True" columns="2" Title="{!$Label.DTWINCEAIncentive_Plan_Information}">
           <apex:outputField value="{!EnrollmentPlan__c.Name}"/>
           <apex:outputField value="{!EnrollmentPlan__c.FPPOverallEligibility_c__c}"/>
           <apex:outputField value="{!EnrollmentPlan__c.IncentivePlan__c}"/>

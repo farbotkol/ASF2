@@ -335,21 +335,20 @@
     });
         
     </script>
-    <!--{$LABEL.DTWINCSEMEnrollment_Plan_Summary} FOR TITLE -->
-    <!--{$LABEL.DTWINCSEMViewing_ISR_for} FOR SUB TITLE -->
-    <apex:sectionHeader title="Enrollment Plan Summary" subtitle="Viewing ISR for {!oEnrollmentPlan.IncentiveProject__r.Name}" help="http://my.aecomnet.com/portal/site/Intranet/menuitem.4bb5ad8d27dddb3d13bd6e20c43611ca/?vgnextoid=4699bc2ceae8e410VgnVCM100000089e1bacRCRD&vgnextchannel=c7e1b267a0f9c410VgnVCM100000089e1bacRCRD&vgnextfmt=default" />
+    
+    <apex:sectionHeader title="{!$Label.DTWINCSEMEnrollment_Plan_Summary}" subtitle="{!$Label.DTWINCSEMViewing_ISR_for}{!oEnrollmentPlan.IncentiveProject__r.Name}" help="http://my.aecomnet.com/portal/site/Intranet/menuitem.4bb5ad8d27dddb3d13bd6e20c43611ca/?vgnextoid=4699bc2ceae8e410VgnVCM100000089e1bacRCRD&vgnextchannel=c7e1b267a0f9c410VgnVCM100000089e1bacRCRD&vgnextfmt=default" />
     <apex:form >
     <apex:pageBlock >
         <apex:pageBlockButtons location="both">
-        <!--{$LABEL.DTWINCSEMIncentive_Calculator} -->
-            <apex:commandButton value="Incentive Calculator" action="{!openCalculator}"  styleClass="hidebutton" rendered="{!oEnrollmentPlan.IncentivePlan__r.ContractType__c='Fixed Price'}"/>
- <!--{$LABEL.DTWINCSEMAcknowledge_Warning} -->
-            <apex:commandButton Value="Acknowledge Warning" action="{!UpdateFlag}" rendered="{!oEnrollmentPlan.MetricWarningActive__c = 'Yes'}"/>
-            <!--{$LABEL.DTWINCSEMCLOSE} -->
-            <apex:CommandButton value="Close" action="{!close}"/>
+      
+            <apex:commandButton value="{!$Label.DTWINCSEMIncentive_Calculator}" action="{!openCalculator}"  styleClass="hidebutton" rendered="{!oEnrollmentPlan.IncentivePlan__r.ContractType__c='Fixed Price'}"/>
+ 
+            <apex:commandButton Value="{!$Label.DTWINCSEMAcknowledge_Warning}" action="{!UpdateFlag}" rendered="{!oEnrollmentPlan.MetricWarningActive__c = 'Yes'}"/>
+            
+            <apex:CommandButton value="{!$Label.DTWINCSEMCLOSE}" action="{!close}"/>
         </apex:pageBlockButtons>
-         <!--{$LABEL.DTWINCSEMEnrollment_Plan_Details} -->
-<apex:pageBlockSection collapsible="true" title="Enrollment Plan Details" id="section1">
+        
+<apex:pageBlockSection collapsible="true" title="{!$Label.DTWINCSEMEnrollment_Plan_Details}" id="section1">
     <script>twistSection(document.getElementById("{!$Component.section1}").childNodes[0].childNodes[0]); </script>
 
         <apex:outputField value="{!oEnrollmentPlan.Name}"/>
@@ -365,58 +364,57 @@
         <apex:outputText />
 </apex:pageBlockSection>
 <div>
- <!--{$LABEL.DTWINCSEMIncentive_Status_Report} -->
-<apex:pageBlockSection title="Incentive Status Report" collapsible="true" columns="1">
+ 
+<apex:pageBlockSection title="{!$Label.DTWINCSEMIncentive_Status_Report}" collapsible="true" columns="1">
 <div class="content"> 
-         <!--{$LABEL.DTWINCSEMMESSAGE1}-->
-      <!--{$LABEL.DTWINCSEMMESSAGE2}-->
-       <div class="message" >The Incentive Status Report (ISR) represents the financial status of the enrolled project.  As information becomes available, most recent Client Satisfaction rating (i.e. Net Promoter Score) and Safety for Life score will be included.  The ISR is intended to provide you with important insight into how your project is performing against the established targets to earn a cash award.  Review the information included here with your project leadership team to identify ways you can improve margin on your project.  A “How to Read Your ISR Reference Guide” is available on the <a href="http://my.aecomnet.com/Intranet/About/Delivery+Excellence/Design+and+Consulting+Services/_participant+resources">DTW Participant Resources webpage.</a>
+      
+       <div class="message" >{!$label.DTWINCSEMMESSAGE1}<a href="http://my.aecomnet.com/Intranet/About/Delivery+Excellence/Design+and+Consulting+Services/_participant+resources">{!$label.DTWINCSEMMESSAGE2}</a>
        </div>
     <apex:outputpanel rendered="{!IF(oEnrollmentPlan.IncentivePlan__r.ContractType__c='Fixed Price', true, false)}">
         <div>
         <div class="status {!sFirstMessageClass}">
-           <!--{$LABEL.DTWINCSEMProject_performing_below_DTW_Baseline_margin}-->
-           <li class="statusHeaders">Project performing below DTW Baseline margin % of NSR </li>
+           
+           <li class="statusHeaders">{!$label.DTWINCSEMProject_performing_below_DTW_Baseline_margin} </li>
            <li class="statusHeaders">(EAC margin % &lt; baseline margin %)</li>
            <li>--------------------</li>
-           <!--{$LABEL.DTWINCSEMBaseline_margin_is_the_expected_level}-->
-           <li>Baseline margin is the expected level of performance.  Compare the EAC margin % with the threshold margin % to determine how much improvement is required to generate an incentive pool and earn a DTW award.  Meet with plan participants and the project team to identify opportunities to reduce costs and risks in order to increase margin %.  Ensure safety, client satisfaction and cash collection goals are on target or better.</li>
+           
+           <li>{!$label.DTWINCSEMBaseline_margin_is_the_expected_level}</li>
         </div>
         
         <div class="status2 {!sSecondMessageClass}">
-           <!--{$LABEL.DTWINCSEMProject_performing_above_Baseline_of_NSR_but_below_Threshold_of_NS}-->
-           <li class="statusHeaders">Project performing above Baseline % of NSR, but below Threshold % of NSR</li>
+          
+           <li class="statusHeaders">{!$label.DTWINCSEMProject_performing_above_Baseline_of_NSR_but_below_Threshold_of_NS}</li>
            <li class="statusHeaders">(EAC margin &gt; baseline but &lt; threshold)</li>
            <li>--------------------</li>
-           <!--{$LABEL.DTWINCSEMThreshold_margin_is_the_minimum_margin_to_begin_to_generate_an_ince}-->
-           <li>Threshold margin % is the minimum margin % to begin to generate an incentive pool.  Performance in this category indicates the project is performing better than baseline, but not yet at threshold.  Compare the EAC margin % with the threshold margin % to determine how much improvement is required to generate an incentive pool and earn a DTW award.  Meet wth plan participants and the project team to identify further opportunities to reduce costs and risks in order to increase margin %.  Ensure safety, client satisfaction and cash collection goals are on target or better.</li>
+           
+           <li>{!$label.DTWINCSEMThreshold_margin_is_the_minimum_margin_to_begin_to_generate_an_ince}</li>
         </div>
         <div class="status3 {!sThirdMessageClass}">
-        <!--{$LABEL.DTWINCSEMProject_performing_above_Threshold_of_NSR}-->
-           <li class="statusHeaders">Project performing above Threshold % of NSR</li>
+       
+           <li class="statusHeaders">{!$label.DTWINCSEMProject_performing_above_Threshold_of_NSR}</li>
            <li class="statusHeaders">(EAC margin &gt; threshold)</li>
            <li>--------------------</li>
-          <!--{$LABEL.DTWINCSEMCongratulations_Based_on_Forecast_EAC_this_project}-->
-           <li>Congratulations!  Based on Forecast/EAC this project is performing above the threshold margin % required to earn an incentive pool.   Continue to maintain or improve current project performance through project close.  Ensure safety, client satisfaction and cash collection goals are on target or better.</li>
+         
+           <li>{!$label.DTWINCSEMCongratulations_Based_on_Forecast_EAC_this_project}</li>
         </div>
         </div>
     </apex:outputpanel>
     <apex:outputpanel rendered="{!IF(oEnrollmentPlan.IncentivePlan__r.ContractType__c='Fixed Price', true, false)}">
         <div>
         <div class="status4 {!sFirstMessageClass}">
-         <!--{$LABEL.DTWINCSEMBaseline_of_NSR}-->
-           <li class="statusHeaders">Baseline % of NSR</li>
+        
+           <li class="statusHeaders">{!$Label.DTWINCSEMBaseline_of_NSR}</li>
            <li class="statusHeaders">{!oEnrollmentPlan.BaselineGMofNSR__c}%</li>
         </div>
         
         <div class="status5 {!sSecondMessageClass}">
-        <!--{$LABEL.DTWINCSEMThreshold_of_NSR}-->
-           <li class="statusHeaders">Threshold % of NSR</li>
+        
+           <li class="statusHeaders">{!$Label.DTWINCSEMThreshold_of_NSR}</li>
            <li class="statusHeaders">{!oEnrollmentPlan.ThresholdGM__c}%</li>
         </div>
         <div class="status6 {!sThirdMessageClass}">
-         <!--{$LABEL.DTWINCSEMEAC_of_NSR}-->
-           <li class="statusHeaders">EAC % of NSR</li>
+         
+           <li class="statusHeaders">{!$Label.DTWINCSEMEAC_of_NSR}</li>
            <apex:outputPanel rendered="{!oEnrollmentPlan.IncentivePlan__r.ContractSubType__c='Gross Margin'}">
            <li class="statusHeaders">{!oEnrollmentPlan.ForecastGrossMarginofNSR__c}%</li>
            </apex:outputPanel>
@@ -429,28 +427,28 @@
         <apex:outputpanel rendered="{!IF(oEnrollmentPlan.IncentivePlan__r.ContractType__c='Fixed Price', false, true)}">
         <div>
         <div class="statusTM {!sFirstMessageClass}">
-        <!--{$LABEL.DTWINCSEMProject_Performing_Below_Baseline_Margin}-->
-           <li class="statusHeaders">Project Performing Below Baseline Margin $ </li>
+       
+           <li class="statusHeaders">{!$label.DTWINCSEMProject_Performing_Below_Baseline_Margin}</li>
            <li class="statusHeaders">(EAC Margin &lt; Baseline Margin)</li>
            <li>--------------------</li>
-           <!--{$LABEL.DTWINCSEMBaseline_margin_is_the_minimum_margin_required}-->
-           <li>Baseline margin is the minimum margin required to earn a DTW incentive award.  Compare the EAC margin  below with the baseline margin to determine how much additional margin is required to generate an incentive pool and earn a DTW award.  Meet with plan participants and the project team to identify opportunities to increase project scope and margin.  Ensure safety, client satisfaction and cash collection goals are on target or better.</li>
+         
+           <li>{!$label.DTWINCSEMBaseline_margin_is_the_minimum_margin_required}</li>
         </div>
         <div class="statusTM2 {!sThirdMessageClass}">
-        <!--{$LABEL.DTWINCSEMProject_Performing_Above_Baseline_Margin}-->
-           <li class="statusHeaders">Project Performing Above Baseline Margin $</li>
+        
+           <li class="statusHeaders">{!$label.DTWINCSEMProject_Performing_Above_Baseline_Margin}</li>
            <li class="statusHeaders">(EAC Margin &gt; Baseline Margin)</li>
            <li>--------------------</li>
-          <!--{$LABEL.DTWINCSEM_Congratulations_Based_on_the_latest_EAC_this_project_is_expected}-->
-           <li>Congratulations!  Based on the latest EAC, this project is expected to generate incremental margin above baseline and earn an incentive pool.   Continue to identify opportunities to increase project scope and margin, and ensure margin % is at or better than the margin % baseline.  Ensure safety, client satisfaction and cash collection goals are on target or better.</li>
+         
+           <li>{!$label.DTWINCSEM_Congratulations_Based_on_the_latest_EAC_this_project_is_expected}-</li>
         </div>
         </div>
     </apex:outputpanel>
     <apex:outputpanel rendered="{!IF(oEnrollmentPlan.IncentivePlan__r.ContractType__c='Fixed Price', false, true)}">
         <div>
         <div class="statusTM4 {!sFirstMessageClass}">
-         <!--{$LABEL.DTWINCSEMBaseline_Margin}-->
-           <li class="statusHeaders">Baseline Margin $</li>
+       
+           <li class="statusHeaders">{!$Label.DTWINCSEMBaseline_Margin}</li>
            <li class="statusHeaders">{!oEnrollmentPlan.BaselineGrossMargin__c}</li>
         </div>
         <div class="statusTM5 {!sThirdMessageClass}">
@@ -515,14 +513,14 @@
 
     <apex:pageBlockSection showHeader="false" collapsible="false" columns="2" rendered="{!PanelToRender=2}">
         <apex:pageBlockSectionItem helpText="{!$ObjectType.IncentiveProject__c.Fields.ForecastNMofNSR__c.InlineHelpText}" rendered="{!bNMPlan}">
-         <!--{$LABEL.DTWINCSEMCurrent_EAC_Margin_of_NSR}-->
-        <apex:outputLabel value="Current EAC Margin % of NSR" />
+        
+        <apex:outputLabel value="{!$Label.DTWINCSEMCurrent_EAC_Margin_of_NSR}" />
         <apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.ForecastNMofNSR__c}"  />
         </apex:pageBlockSectionItem>
 
         <apex:pageBlockSectionItem helpText="{!$ObjectType.IncentiveProject__c.Fields.ForecastGrossMarginofNSR__c.InlineHelpText}" rendered="{!NOT(bNMPlan)}">
-         <!--{$LABEL.DTWINCSEMCurrent_EAC_Margin_of_NSR}-->
-        <apex:outputLabel value="Current EAC Margin % of NSR" />
+        
+        <apex:outputLabel value="{!$Label.DTWINCSEMCurrent_EAC_Margin_of_NSR}" />
         <apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.ForecastGrossMarginofNSR__c}" />
         </apex:pageBlockSectionItem>
         
@@ -541,12 +539,12 @@
         <apex:outputField value="{!oEnrollmentPlan.BaselineNMofNSR__c}" rendered="{!bNMPlan}"/>
     
         <apex:outputField value="{!oEnrollmentPlan.IncentiveProject__r.DataRefreshDate__c}"/>
-        <!--{$LABEL.DTWINCSEMEAC_Margin_vs_Baseline}-->
-        <apex:outputText value="{!EACvsBaseline}" label="EAC Margin vs. Baseline" />
+       
+        <apex:outputText value="{!EACvsBaseline}" label="{!$Label.DTWINCSEMEAC_Margin_vs_Baseline}" />
         
         <apex:outputText />
-        <!--{$LABEL.DTWINCSEMIs_Project_Forecasting_an_Incentive}-->
-        <apex:outputText value="{!IF(oEnrollmentPlan.EEACGMPerformance__c == 'Above Threshold','Yes','No')}" label="Is Project Forecasting an Incentive"/>
+       
+        <apex:outputText value="{!IF(oEnrollmentPlan.EEACGMPerformance__c == 'Above Threshold','Yes','No')}" label="{!$Label.DTWINCSEMIs_Project_Forecasting_an_Incentive}"/>
     </apex:pageBlockSection>
     
     <!--<apex:pageBlockSection columns="1">
@@ -591,9 +589,9 @@
         <div id="Baseline">
             <div class="tableheader docheaderclass">
                 <p class="pheader">
-                <!--{$LABEL.DTWINCSEMDeliver_to_Win_Baseline_Metrics}-->
+               
                 
-                    <h1 class="clickheader dtwheader">Deliver to Win Baseline Metrics</h1>
+                    <h1 class="clickheader dtwheader">{!$label.DTWINCSEMDeliver_to_Win_Baseline_Metrics}</h1>
                 </p>
                 <p>
                     <table class="plantypetable">
@@ -630,16 +628,16 @@
                     </apex:repeat>
                 </table>
                 <p class="dtwmessage">
-                <!--{$LABEL.DTWINCSEM_Includes_Management_Adjustments_if_any_Changes_in_budget_since}-->
-                    Includes Management Adjustments, if any.  Changes in budget since enrollment may impact Deliver to Win baseline metrics, including margin % and "% complete @ enrollment"
+                
+                    {!$label.DTWINCSEM_Includes_Management_Adjustments_if_any_Changes_in_budget_since}
                 </p>
             </div>
         </div>
         <div id="Approved" class="approvedtable">
             <div class="tableheader docheaderclass">
                 <p class="pheader">
-                <!--{$LABE.DTWINCSEMApproved_Budget}-->
-                    <h1 class="clickheader">Approved Budget</h1>
+                
+                    <h1 class="clickheader">{!$LABEL.DTWINCSEMApproved_Budget}</h1>
                 </p>
             </div>
             <div class="content">
@@ -647,11 +645,11 @@
                     <tr class="headerrow">
                         <th></th>
                         <th>{!firstColumnHeader}</th>
-                         <!--{$LABEL.DTWINCSEMCurrent}-->
-                        <th>Current</th>
+                        
+                        <th>{!$label.DTWINCSEMCurrent}</th>
                         <th></th>
-                         <!--{$LABEL.DTWINCSEMVariance}-->
-                        <th>Variance</th>
+                        
+                        <th>{!$label.DTWINCSEMVariance}</th>
                         <th></th>
                     </tr>
                     <apex:repeat value="{!listApproved}" var="appRow">
@@ -680,11 +678,11 @@
                     <tr class="headerrow">
                         <th></th>
                         <th>{!firstColumnHeader}</th>
-                        <!--{$LABEL.DTWINCSEMCurrent}-->
-                        <th>Current</th>
+                       
+                        <th>{!$label.DTWINCSEMCurrent}</th>
                         <th></th>
-                         <!--{$LABEL.DTWINCSEMVariance}-->
-                        <th>Variance</th>
+                         
+                        <th>{!$label.DTWINCSEMVariance}</th>
                         <th></th>
                     </tr>
                     <apex:repeat value="{!listForecasted}" var="forRow">
@@ -703,8 +701,8 @@
         <div id="Actual">
             <div class="tableheader docheaderclass">
                 <p class="pheader">
-                <!--{$LABEL.DTWINCSEMInception_to_Date_Actuals}-->
-                    <h1 class="clickheader">Inception to Date Actuals</h1>
+               
+                    <h1 class="clickheader">{!$label.DTWINCSEMInception_to_Date_Actuals}</h1>
                 </p>
             </div>
             <div class="content">
@@ -712,11 +710,11 @@
                     <tr class="headerrow">
                         <th></th>
                         <th>{!firstColumnHeader}</th>
-                         <!--{$LABEL.DTWINCSEMCurrent}-->
-                        <th>Current</th>
+                         
+                        <th>{!$label.DTWINCSEMCurrent}</th>
                         <th></th>
-                         <!--{$LABEL.DTWINCSEMVariance}-->
-                        <th>Variance</th>
+                        
+                        <th>{!$label.DTWINCSEMVariance}</th>
                         <th></th>
                     </tr>
                     <apex:repeat value="{!listActuals}" var="appRow">
@@ -735,8 +733,8 @@
 </div>
 </apex:outputPanel>
 <div class="float">
-            <!--{$LABEL.DTWINCSEMIncentive_Plan_Details}-->
-    <apex:pageBlockSection title="Incentive Plan Details"  id="section2"  collapsible="true" columns="1" showHeader="true"> 
+           
+    <apex:pageBlockSection title="{!$Label.DTWINCSEMIncentive_Plan_Details}"  id="section2"  collapsible="true" columns="1" showHeader="true"> 
         <script>twistSection(document.getElementById("{!$Component.section2}").childNodes[0].childNodes[0]); </script>
             <apex:outputField value="{!oEnrollmentPlan.IncentivePlan__r.Name}"/>
             <apex:outputField value="{!oEnrollmentPlan.IncentivePlan__r.ContractType__c}"/>
