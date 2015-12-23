@@ -32,6 +32,7 @@ if(trigger.isUpdate && ECO_ProjectTaskTriggers.hasUpdateRan) {
      
     if (trigger.isAfter) {
         if ((trigger.isInsert) || (trigger.isUpdate)) {
+            ECO_ProjectTaskTriggers.recalculateBudgets(trigger.new);
 
             ECO_ProjectTaskTriggers.calculateEarnedValueSnaps(trigger.new);
             

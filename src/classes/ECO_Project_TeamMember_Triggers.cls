@@ -1,5 +1,74 @@
 public class ECO_Project_TeamMember_Triggers {
 	
+    public static Boolean run = true;
+
+    public static void permissionGanttView(list<ProjectTeamMember__c> newTeamMembers){
+
+        if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('permissionGanttView')) {
+            return;
+        }
+
+        set<id> sContacts = new set<id>();
+
+        for(ProjectTeamMember__c ptm: newTeamMembers)
+        {
+            sContacts.add(ptm.Contact__c);
+        }
+
+        map<Id, Contact> contactsMap = new map<Id, Contact>([select Id, FirstName, LastName, pse__Salesforce_User__c from Contact where Id in :sContacts]);
+        Map<ID, ProjectRole__c> mapOfProjectRoles = new Map<ID, ProjectRole__c> ( [SELECT Active__c, Type__c, Id, Name FROM ProjectRole__c Where Active__c = true] );    
+        List<pse__Permission_Control__c> newPermissions = new List<pse__Permission_Control__c>();
+
+
+        for(ProjectTeamMember__c ptm: newTeamMembers)
+        {
+            if(contactsMap.get(ptm.contact__c).pse__Salesforce_User__c != null &&
+                (mapOfProjectRoles.get(ptm.ProjectRole__c).name == 'Technical Lead' ||
+                mapOfProjectRoles.get(ptm.ProjectRole__c).name == 'Finance Lead 2' ||
+                mapOfProjectRoles.get(ptm.ProjectRole__c).name == 'Finance Lead' ||
+                mapOfProjectRoles.get(ptm.ProjectRole__c).name == 'Project Accountant 2' ||
+                mapOfProjectRoles.get(ptm.ProjectRole__c).name == 'Project Accountant' ||
+                mapOfProjectRoles.get(ptm.ProjectRole__c).name == 'Project Management Specialist' ||
+                mapOfProjectRoles.get(ptm.ProjectRole__c).name == 'CFO or Delegate' ||
+                mapOfProjectRoles.get(ptm.ProjectRole__c).name == 'Project Approver' ||
+                mapOfProjectRoles.get(ptm.ProjectRole__c).name == 'Project Approver 2' ||
+                mapOfProjectRoles.get(ptm.ProjectRole__c).name == 'Task Manager' ||
+                mapOfProjectRoles.get(ptm.ProjectRole__c).name == 'Project Manager')
+                ){
+                    pse__Permission_Control__c permission = new pse__Permission_Control__c();
+
+                    permission.ProjectTeamMember__c = ptm.id;
+                    permission.pse__End_Date__c = ptm.enddate__c;
+                    permission.pse__Project__c = ptm.project__c;
+                    permission.pse__Start_Date__c = ptm.startdate__c;
+                    permission.pse__User__c = contactsMap.get(ptm.contact__c).pse__Salesforce_User__c;
+                    permission.pse__View_Task_Manager__c = true;
+                    newPermissions.add(permission);
+            }
+
+            if(contactsMap.get(ptm.contact__c).pse__Salesforce_User__c != null &&
+                mapOfProjectRoles.get(ptm.ProjectRole__c).name == 'Deputy Project Manager'){
+
+                    pse__Permission_Control__c permission = new pse__Permission_Control__c();
+
+                    permission.ProjectTeamMember__c = ptm.id;
+                    permission.pse__End_Date__c = ptm.enddate__c;
+                    permission.pse__Project__c = ptm.project__c;
+                    permission.pse__Start_Date__c = ptm.startdate__c;
+                    permission.pse__User__c = contactsMap.get(ptm.contact__c).pse__Salesforce_User__c;
+                    permission.pse__Edit_Task_Manager__c = true;
+                    permission.pse__View_Task_Manager__c = true;
+                    newPermissions.add(permission);
+            }
+
+        }
+
+        if(newPermissions.size() > 0){
+            insert newPermissions;
+        }
+
+    }
+
 	public static void handleBeforeInsert(list<ProjectTeamMember__c> newTeamMembers)
 	{
 		/*map<Id, Id> projectTeamContactMap = new map<Id, Id>();

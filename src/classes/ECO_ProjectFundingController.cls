@@ -47,7 +47,7 @@ public class ECO_ProjectFundingController {
             project = [select Id, Name, ProjectLevelFundingFlag__c, TotalApprovedRevenue__c, CurrencyIsoCode, TotalForecastRevenue__c, isSegmented__c, SegmentationStatus__c, ProjectCurrencyCode__c, ProjectFunctionalCurrencyCode__c, EnableTopTaskCustomerFlag__c, DistributionRule__c, OUID__c from pse__Proj__c where Id = :projectAgreements[0].Project__c];
             //topTask = project.EnableTopTaskCustomerFlag__c;
         }
-        agreement = [select Id, Name, Amount__c, Account__c, Description__c, ChangeManagerIsNew__c, TotalApprovedRevenueLimit__c, UnallocatedFunding__c, FundingCurrencyCode__c, CurrencyIsoCode, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
+        agreement = [select Id, Name, Amount__c, Account__c, Description__c, ChangeManagerIsNew__c, TotalApprovedRevenue__c, TotalForecastRevenue__c, TotalApprovedRevenueLimit__c, UnallocatedFunding__c, FundingCurrencyCode__c, CurrencyIsoCode, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
         
         if(!project.ProjectLevelFundingFlag__c)
         {
@@ -98,7 +98,7 @@ public class ECO_ProjectFundingController {
             initializeProjectLevelFunding();
         }
 
-        agreement = [select Id, Name, Amount__c, Account__c, Description__c, FundingCurrencyCode__c, ChangeManagerIsNew__c, TotalApprovedRevenueLimit__c, UnallocatedFunding__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
+        agreement = [select Id, Name, Amount__c, Account__c, Description__c, FundingCurrencyCode__c, ChangeManagerIsNew__c, TotalApprovedRevenue__c, TotalForecastRevenue__c, TotalApprovedRevenueLimit__c, UnallocatedFunding__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
         //System.Debug('BrentBrentBrentfundingsize2' + projectLevelFunding.size());
         //PageReference pageRef = new PageReference('/apex/ECO_ProjectFunding');
         //pageRef.getParameters().put('AgreementId', agreement.Id);
@@ -154,24 +154,7 @@ public class ECO_ProjectFundingController {
        			 	projectTasksMap.get(funding.ProjectTask__c).TotalFunding__c += funding.AllocatedAmount__c;          	
         	}
             projectTasksFundedAllAgreementsMap.get(funding.ProjectTask__c).add(new Funding(false, funding, true));
-        }
-        
-        //AggregateResult[] projectTaskAllocations = [select ProjectTask__c task, sum(AllocatedAmount__c) allocationAmount, sum(TotalBaselinedAmount__c) allocationAmount2 from Funding__c where ProjectTask__c in :projectTasks and Agreement__c = :agreementId group by ProjectTask__c];             
-        //for(AggregateResult projectTaskAllocation:projectTaskAllocations)
-        //{
-        //    if((Decimal)projectTaskAllocation.get('allocationAmount2') != null)
-        //    {
-        //        projectTasksFundingTotalsMap.put((Id)projectTaskAllocation.get('task'), (Decimal)projectTaskAllocation.get('allocationAmount')  + (Decimal)projectTaskAllocation.get('allocationAmount2') ); 
-		//		projectTasksmap.get((ID)projectTaskAllocation.get('task')).CurrencyIsoCode = agreement.CurrencyIsoCode;
-        //    	projectTasksMap.get((Id)projectTaskAllocation.get('task')).TotalFunding__c = (Decimal)projectTaskAllocation.get('allocationAmount')  + (Decimal)projectTaskAllocation.get('allocationAmount2');	
-        //    }
-        //    else
-        //    {
-       //         projectTasksFundingTotalsMap.put((Id)projectTaskAllocation.get('task'), (Decimal)projectTaskAllocation.get('allocationAmount'));
-
-        //    }
-        //}
-               
+        }      
     }
     
     public void taskChanged()
@@ -205,7 +188,7 @@ public class ECO_ProjectFundingController {
                 List<Funding__c> projectFundings = [select Id from Funding__c where ProjectTask__c != :taskId and Project__c = :projectId];
            		if(projectFundings.size() > 0)
            		{
-           			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, 'Please fill out a Segment questionnaire for Projects that have multiple tasks!');
+           			ApexPages.Message oPageMessage = new ApexPages.Message(ApexPages.Severity.ERROR, project.isSegmented__c + 'Please fill out a Segment questionnaire for Projects that have multiple tasks!' + projectTasksFundedMap.get(taskId).size() );
             		ApexPages.addMessage(oPageMessage);
             		return null;
            		}        			
@@ -353,7 +336,7 @@ public class ECO_ProjectFundingController {
             initializeProjectLevelFunding();
         }
 
-		agreement = [select Id, Name, Amount__c, Account__c, Description__c, ChangeManagerIsNew__c, TotalApprovedRevenueLimit__c, FundingCurrencyCode__c, UnallocatedFunding__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
+		agreement = [select Id, Name, Amount__c, Account__c, Description__c, ChangeManagerIsNew__c, TotalApprovedRevenue__c, TotalForecastRevenue__c, TotalApprovedRevenueLimit__c, FundingCurrencyCode__c, UnallocatedFunding__c, ActionCode__c, Account__r.Name, TotalFundingAmount__c from Agreement__c where Id = :agreementId];
                 
         creatingNewFunding = false; 
 

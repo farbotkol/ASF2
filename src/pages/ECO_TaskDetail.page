@@ -128,29 +128,7 @@
             min-width: 13px;
         }
     </style>
-   <script type="text/javascript">
-        function manageRows(b)
-        {
-            //alert('Function Called');
-            //idpage:j_id0:idfrm:j_id39:0:selectId
-             var e = document.getElementById('idpage:j_id0:idfrm:j_id53:'+ b +':selectId');
-             var str = e.options[e.selectedIndex].text;
-             if(str == 'Delete Task')
-             {
-                 if(confirm('Are you sure?'))
-                 {
-                     document.getElementById('idpage:j_id0:idfrm:hdnINPUT').value = b;
-                     manageRowsJS();
-                 }
-             }
-             else
-             {
-                 document.getElementById('idpage:j_id0:idfrm:hdnINPUT').value = b;
-                 manageRowsJS();
-             }
-        }
-        
-    </script>
+  
    
 <apex:form id="idfrm">
     <apex:inputHidden value="{!intRowNo}" id="hdnINPUT"/>
@@ -158,15 +136,16 @@
     <apex:actionFunction action="{!manageRows}" name="manageRowsJS" reRender="pnl" status="idStatus"/>
     <apex:outputPanel id="pnl">
     <script type="text/javascript">
-        function manageRows(b)
+        function manageRows(line, linenum)
         {
             //idpage:j_id0:idfrm:j_id39:0:selectId
-             var e = document.getElementById('idpage:j_id0:idfrm:j_id53:'+ b +':selectId');
-             var str = e.options[e.selectedIndex].text;
+             var e = $b(line)
+             var str = e.val();
              
-             document.getElementById('idpage:j_id0:idfrm:hdnINPUT').value = b;
+             $b("[id$='hdnINPUT']").val(linenum);
+             //document.getElementById('idpage:j_id0:idfrm:hdnINPUT').value = linenum;
              //alert(document.getElementById('idpage:j_id0:idfrm:hdnINPUT'));
-             if(str == 'Delete Task')
+             if(str == 'DeleteTask')
              {
                  if(confirm('Are you sure?'))
                  {
@@ -184,7 +163,7 @@
         });
     </script>
     
-    <apex:sectionHeader title="Task Detail"/>
+    <apex:sectionHeader title="Task Manager"/>
    <apex:pageMessages ></apex:pageMessages>
     
     <table width="100%" border="1px solid black">
@@ -233,7 +212,7 @@
                 </td>
                 <td>
                     <apex:outputText value="{!task.strSub_PeerTask}" rendered="{!task.boolShowInput}"></apex:outputText>
-                    <apex:selectList value="{!task.strSelectedAction}" size="1" onchange="manageRows({!b});" id="selectId" rendered="{!NOT(task.boolShowInput)}">
+                    <apex:selectList value="{!task.strSelectedAction}" size="1" onchange="manageRows(this,{!b});" id="selectId" rendered="{!NOT(task.boolShowInput)}">
                         <apex:selectOptions value="{!task.lstAction}" ></apex:selectOptions>
                     </apex:selectList>
                 </td>
@@ -274,7 +253,7 @@
                <td>
                    <!--<apex:inputField value="{!task.objEPT.oprojectTask.WorkTypeName__c}"/>-->
                    
-                   <apex:selectList value="{!task.strSelectedWorkTypeName}" size="1">
+                   <apex:selectList value="{!task.strSelectedWorkTypeName}" size="1" rendered="{!task.objEPT.children.size == 0}">
                         <apex:selectOptions value="{!task.lstWorkTypeName}" ></apex:selectOptions>
                    </apex:selectList>
                </td>

@@ -329,7 +329,8 @@ public with sharing class ECO_ProjectSetupController {
         oSite.Country__c = oSiteSearch.country;       
         oSite.State__c = oSiteSearch.province;
 
-        string oracleRTFilter = Schema.Sobjecttype.Account.getRecordTypeInfosByName().get('Oracle Only').getRecordTypeId();
+        recordtype rtOO = [select id from recordtype where developername='Oracle_Only'];
+        string oracleRTFilter = rtOO.id;
         string strSOQL = 'SELECT ';
         string strWhereClause = ' WHERE '; 
         boolean boolAtLeastOne = false;

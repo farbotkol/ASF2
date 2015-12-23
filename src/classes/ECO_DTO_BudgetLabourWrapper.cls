@@ -26,6 +26,9 @@ public class ECO_DTO_BudgetLabourWrapper {
     public Id budgetHeaderId {get; set;}
 
     public String projectCurrency {get; set;}
+
+    public Boolean hasFieldTasks {get; set;}
+
     public Integer getTotalLaborHours{
         get{return (Integer)calculateBudgetLabourTotals('TotalHours__c');}
     }
@@ -89,7 +92,8 @@ public class ECO_DTO_BudgetLabourWrapper {
                                                           	TotalComputedCost__c,
                                                           	OverrideTotalCost__c,
                                                           	OverrideTotalRevenue__c,
-                                                       		CalculatedRevenue__c
+                                                       		CalculatedRevenue__c,
+                                                          WorkTypeName__c
                                                          from BudgetAssignments__r)
                                                     FROM
                                                       BudgetResource__c
@@ -172,7 +176,8 @@ public class ECO_DTO_BudgetLabourWrapper {
                                                           EACForecastRevenue__c,
                                                           OverrideTotalCost__c,
                                                           OverrideTotalRevenue__c,
-                                                          CalculatedRevenue__c
+                                                          CalculatedRevenue__c,
+                                                          WorkTypeName__c
                                                          from BudgetAssignments__r)
                                                     FROM
                                                       BudgetResource__c
@@ -204,7 +209,7 @@ public class ECO_DTO_BudgetLabourWrapper {
     
     public void reset(List<BudgetResource__c> budgetResources) {
         BudgetHeader__c budgetHeader = [Select Id, Project__c, Project__r.ProjectFunctionalCurrencyCode__c From BudgetHeader__c Where Id = :budgetHeaderId];
-
+        hasFieldTasks = false;
         projectCurrency = budgetHeader.Project__r.ProjectFunctionalCurrencyCode__c;
         dtoBudgetLabourDetails = new List<ECO_DTO_BudgetLabourDetail>();
         
@@ -216,7 +221,11 @@ public class ECO_DTO_BudgetLabourWrapper {
         
         System.debug('BudgetResource complete');
         
-        system.debug('BudgetTaskService Complete');
+        for(ECO_DTO_BudgetTask budgetTask : dtoBudgetTasks) {
+          if (budgetTask.obudgetTask.ProjectTask__r.WorkTypeName__c == 'Field Office') {
+            hasFieldTasks = true;
+          }
+        }
         
         createEmptyBudgetAssignments();
         
@@ -285,6 +294,7 @@ public class ECO_DTO_BudgetLabourWrapper {
         mapTotalByLaborDetailAndTask = new Map<String, Decimal>();
         for(ECO_DTO_BudgetLabourDetail labour : dtoBudgetLabourDetails) {
         	for(ECO_DTO_BudgetTask budgetTask : dtoBudgetTasks) {
+
                 if(budgetTask.children.size() > 0) {
                     mapTotalByLaborDetailAndTask.put('' + labour.oBudgetResource.Id + budgetTask.obudgetTask.Id, getSubtaskTotal(budgetTask, labour, 'Quantity__c', false));
                 }
@@ -386,9 +396,11 @@ public class ECO_DTO_BudgetLabourWrapper {
     private void createEmptyBudgetAssignments() {
     	for(ECO_DTO_BudgetLabourDetail dtoBudgetLabourDetail : dtoBudgetLabourDetails) {
             for(ECO_DTO_BudgetTask dtoBudgetTask : dtoBudgetTasks) {
-                if(dtoBudgetLabourDetail.mAssignmentMap.get(dtoBudgetTask.obudgetTask.Id) == Null) {
-                    BudgetAssignment__c budgetAssignment = new BudgetAssignment__c();
+                BudgetAssignment__c budgetAssignment = dtoBudgetLabourDetail.mAssignmentMap.get(dtoBudgetTask.obudgetTask.Id);
+                if( budgetAssignment == Null) {
+                    budgetAssignment = new BudgetAssignment__c();
                     budgetAssignment.BudgetTask__c = dtoBudgetTask.obudgetTask.Id;
+                    budgetAssignment.WorkTypeName__c = dtoBudgetTask.oBudgetTask.ProjectTask__r.WorkTypeName__c;
                     budgetAssignment.BudgetResource__c = dtoBudgetLabourDetail.oBudgetResource.Id;
                     budgetAssignment.Quantity__c = 0;
                     budgetAssignment.EACActualQuantity__c = 0;
@@ -406,7 +418,7 @@ public class ECO_DTO_BudgetLabourWrapper {
                     dtoBudgetLabourDetail.mapCostToComplete.put(dtoBudgetTask.obudgetTask.Id, 0);
                     //dtoBudgetLabourDetail.mapRevisedForecast.put(dtoBudgetTask.obudgetTask.Id, 0);                    
                 }
-            }    
+            } 
         }
     }
     

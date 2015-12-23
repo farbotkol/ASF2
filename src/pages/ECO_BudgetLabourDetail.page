@@ -72,6 +72,9 @@
         .hiddenRate {
             display: none;
         }
+        
+        {!IF(budgetLabourWrapper.hasFieldTasks,'','.fieldRate { display: none; }')}
+        
     </style>
     <apex:sectionHeader subtitle="Labour Details" title="All values shown in : {!budgetLabourWrapper.projectCurrency}"/>  
 
@@ -116,10 +119,10 @@
                         <tr><th>Project Role</th></tr>
                     </thead>
                     <tbody>
-                        <tr><th>Total Cost Rate  (FBLR)</th></tr>
+                        <tr><th>{!IF(budgetLabourWrapper.hasFieldTasks,'Total Cost Rate (FBLR) (Home/Field)','Total Cost Rate (FBLR)')}</th></tr>
                         <tr class="hiddenRate"><th>Raw</th></tr>
-                        <tr class="hiddenRate"><th>% Fringe (Home/Field)</th></tr>
-                        <tr class="hiddenRate"><th>% O/H (Home/Field)</th></tr>
+                        <tr class="hiddenRate"><th>{!IF(budgetLabourWrapper.hasFieldTasks,'% Fringe (Home/Field)','% Fringe')}</th></tr>
+                        <tr class="hiddenRate"><th>{!IF(budgetLabourWrapper.hasFieldTasks,'% O/H (Home/Field)','% O/H')}</th></tr>
                     
                         <tr class="hiddenRate"><td style="height: 20px;">&nbsp;</td></tr> <!-- Validate if we can replace with css padding -->
                     
@@ -154,14 +157,14 @@
                         <tr class="hiddenRate"><td class="tableInputs">
                             <table border="0" width="100%" style="border:0px;" cellspacing="0" cellpadding="0"><tr>
                             <td width="50%" style="border:0px;"><apex:inputText value="{!budgetLabour.fringe}" size="10"/>%</td>
-                            <td width="50%" style="border:0px;"><apex:inputText value="{!budgetLabour.fringeField}" size="10"/>%</td>
+                            <td width="50%" style="border:0px;" class="fieldRate"><apex:inputText value="{!budgetLabour.fringeField}" size="10"/>%</td>
                             </tr></table>
                         </td></tr>
                         
                         <tr class="hiddenRate"><td class="tableInputs">
                             <table border="0" width="100%" style="border:0px;" cellspacing="0" cellpadding="0"><tr>
                             <td width="50%" style="border:0px;"><apex:inputText value="{!budgetLabour.overhead}" size="10"/>%</td>
-                            <td width="50%" style="border:0px;"><apex:inputText value="{!budgetLabour.overheadField}" size="10"/>%</td>
+                            <td width="50%" style="border:0px;" class="fieldRate"><apex:inputText value="{!budgetLabour.overheadField}" size="10"/>%</td>
                             </tr></table>
                         </td></tr>
                     </tbody>
