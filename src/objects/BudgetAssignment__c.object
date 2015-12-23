@@ -327,6 +327,20 @@ OverrideTotalRevenue__c
         <unique>true</unique>
     </fields>
     <fields>
+        <fullName>FullyBurdenedCostNumber__c</fullName>
+        <description>This field is used for aggregate queries to total correctly on currency fields</description>
+        <externalId>false</externalId>
+        <formula>FullyBurdenedCost__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Fully Burdened Cost (Number)</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>FullyBurdenedCostRate__c</fullName>
         <description>OverrideRawCost__c *  OverrideFringeMultiplier__c *  OverrideOverheadMultiplier__c</description>
         <externalId>false</externalId>
@@ -346,7 +360,7 @@ OverrideTotalRevenue__c
         <fullName>FullyBurdenedCost__c</fullName>
         <description>FullyBurdenedCostRate__c *  Quantity__c</description>
         <externalId>false</externalId>
-        <formula>BLANKVALUE(OverrideTotalCost__c, FullyBurdenedCostRate__c *  Quantity__c)</formula>
+        <formula>BLANKVALUE(OverrideTotalCost__c, FullyBurdenedCostRate__c * Quantity__c)</formula>
         <label>Fully Burdened Cost</label>
         <precision>18</precision>
         <required>false</required>
