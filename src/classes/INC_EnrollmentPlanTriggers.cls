@@ -122,6 +122,7 @@ public with sharing class INC_EnrollmentPlanTriggers {
 		if(allPlans != null && allPlans.size() > 0){
 			list<EnrollmentParticipant__c> listUpdates = new list<EnrollmentParticipant__c>();
 			Id readOnlyTypeId = ECO_Utils_sObject.getRecordTypeId(EnrollmentParticipant__c.sObjectType,'Read Only Participant');
+				
 			System.Debug(logginglevel.error,'Readonly ID ' + readOnlyTypeId);
 
 			for(EnrollmentParticipant__c EP: [Select id
@@ -377,7 +378,8 @@ public with sharing class INC_EnrollmentPlanTriggers {
             		if(mapCurrentParticipantsByEmail.get(ePar.EmployeeName__r.Email).TargetIncentivePoolAllocated__c !=
             			ePar.TargetIncentivePoolAllocated__c){
             			System.Debug(logginglevel.error,'Part target not = old target: ' + epar.EmployeeName__r.Email);
-            			pA.RecordTypeId = Schema.SObjectType.ParticipantAcknowledgement__c.getRecordTypeInfosByName().get('Sent').getRecordTypeId();
+            			//pA.RecordTypeId = Schema.SObjectType.ParticipantAcknowledgement__c.getRecordTypeInfosByName().get('Sent').getRecordTypeId();
+						pA.RecordTypeId = ECO_Utils_sObject.getRecordTypeId(ParticipantAcknowledgement__c.sObjectType,'Sent');
 						pA.OwnerId = ePar.EmployeeName__r.pse__Salesforce_User__c;
 						pA.Manager__c = ePar.EmployeeName__r.pse__Salesforce_User__r.ManagerId;
 						pA.ParticipantID__c = ePar.Id;
@@ -400,7 +402,8 @@ public with sharing class INC_EnrollmentPlanTriggers {
 
             	}else{//new participant
             		pa.NotificationFlag__c = 'New';
-            		pA.RecordTypeId = Schema.SObjectType.ParticipantAcknowledgement__c.getRecordTypeInfosByName().get('Sent').getRecordTypeId();
+            		//pA.RecordTypeId = Schema.SObjectType.ParticipantAcknowledgement__c.getRecordTypeInfosByName().get('Sent').getRecordTypeId();
+					pA.RecordTypeId = ECO_Utils_sObject.getRecordTypeId(ParticipantAcknowledgement__c.sObjectType,'Sent');
 					pA.OwnerId = ePar.EmployeeName__r.pse__Salesforce_User__c;
 					pA.Manager__c = ePar.EmployeeName__r.pse__Salesforce_User__r.ManagerId;
 					pA.ParticipantID__c = ePar.Id;
@@ -409,7 +412,8 @@ public with sharing class INC_EnrollmentPlanTriggers {
             }else{
             	//new
             	pa.NotificationFlag__c = 'New';
-            	pA.RecordTypeId = Schema.SObjectType.ParticipantAcknowledgement__c.getRecordTypeInfosByName().get('Sent').getRecordTypeId();
+            	//pA.RecordTypeId = Schema.SObjectType.ParticipantAcknowledgement__c.getRecordTypeInfosByName().get('Sent').getRecordTypeId();
+				pA.RecordTypeId = ECO_Utils_sObject.getRecordTypeId(ParticipantAcknowledgement__c.sObjectType,'Sent');
 				pA.OwnerId = ePar.EmployeeName__r.pse__Salesforce_User__c;
 				pA.Manager__c = ePar.EmployeeName__r.pse__Salesforce_User__r.ManagerId;
 				pA.ParticipantID__c = ePar.Id;

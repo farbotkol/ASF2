@@ -122,8 +122,8 @@ public with sharing class INC_EnrollmentApp_Controller {
             }
 
             enrollcharId = String.ValueOF(oEnrollmentApp.id).mid(0,15);
-            ID rejectedRecTypeID = Schema.SObjectType.EnrollmentPlan__c.getRecordTypeInfosByName().get('Rejected Application').getRecordTypeId();
-            
+            Id rejectedRecTypeID = ECO_Utils_sObject.getRecordTypeId(EnrollmentPlan__c.sObjectType,'Rejected Application');
+        
            
             if(rejectedRecTypeID == oEnrollmentApp.RecordTypeID && oEnrollmentApp.ApprovalRecentlyProcessed__c &&
                oEnrollmentApp.ApplicationType__c != 'PAY'){
@@ -141,7 +141,7 @@ public with sharing class INC_EnrollmentApp_Controller {
               !bTandM && oEnrollmentApp.ApplicationType__c != 'PAY'){
               System.debug(logginglevel.error,'setting Incremental message');
               //DTWINCEACINCVSBASEERR
-              ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Warning,'Incremental Margin % vs Baseline is greater than 4%'));
+              ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.Warning,LABEL.DTWINCEACINCVSBASEERR));
             }
 
             System.Debug(logginglevel.error,'isRejectedRecType 2' + isRejectedRecType);

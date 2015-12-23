@@ -27,8 +27,8 @@ public with sharing class INC_EnrollmentPlanProgressController {
         oEnrollmentPlan = getValues(EnrollID);
         System.Debug(logginglevel.error,'Enrollment status in progress: ' + oEnrollmentPlan.EnrollmentStatus__c);
         bShowProgress = true;
-        ID rejectedRecTypeID = Schema.SObjectType.EnrollmentPlan__c.getRecordTypeInfosByName().get('Rejected Application').getRecordTypeId();
-            
+        Id rejectedRecTypeID = ECO_Utils_sObject.getRecordTypeId(EnrollmentPlan__c.sObjectType,'Rejected Application');
+        
         if(oEnrollmentPlan.StatusNumber__c > 6){
             bShowProgress = false;
 

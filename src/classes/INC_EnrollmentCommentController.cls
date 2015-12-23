@@ -10,18 +10,22 @@ public without sharing class INC_EnrollmentCommentController {
     // controller.
     public INC_EnrollmentCommentController() {
         oEnrollmentApp = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{Apexpages.currentpage().getParameters().get('id')})[0];
-         ID rejectedRecTypeID = Schema.SObjectType.EnrollmentPlan__c.getRecordTypeInfosByName().get('Rejected Application').getRecordTypeId();
-            
+        ID rejectedRecTypeID;
+              
+        try{
+            rejectedRecTypeID = Schema.SObjectType.EnrollmentPlan__c.getRecordTypeInfosByName().get('Rejected Application').getRecordTypeId();
+        }catch(Exception e){
+            list<RecordType> lRec = [Select id, Name from RecordType where sObjectType = 'EnrollmentPlan__c' and Name = 'Rejected Application'];
+            rejectedRecTypeID = lRec[0].id;
+        }
            
-            if(rejectedRecTypeID == oEnrollmentApp.RecordTypeID){
-                isRejectedRecType = true;
-                bCommentFound = getLatestRejectionComment();
-
-            }else{
-                isRejectedRecType = false;
-            }
-
-    }
+        if(rejectedRecTypeID == oEnrollmentApp.RecordTypeID){
+            isRejectedRecType = true;
+            bCommentFound = getLatestRejectionComment();
+        }else{
+            isRejectedRecType = false;
+        }
+}
 
     private boolean getLatestRejectionComment(){
         boolean bReturn = false;
