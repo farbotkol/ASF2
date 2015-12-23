@@ -295,8 +295,8 @@
                 </apex:outputPanel> 
                 <apex:outputPanel rendered="{!NOT(changeManager.IsApproved__c) || (changeManager.IsApproved__c && changeManager.IntExtContractManagement__c)}">                     
                 <tr><td nowrap="nowrap">           
-                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!ChangedAgreements != null && NOT(changeManager.IsApproved__c)}" /> 
-                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!ChangedAgreements == null && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementChanges__c}" rendered="{!(ChangedAgreements != null || ChangedContractManagementFunding != null) && NOT(changeManager.IsApproved__c)}" /> 
+                    <apex:outputField value="{!changeManager.IntExtChangeManagementNoChanges__c}" rendered="{!(ChangedAgreements == null && ChangedContractManagementFunding == null) && NOT(changeManager.IsApproved__c)}" /> 
                     <apex:outputField value="{!changeManager.IntExtContractManagement__c}" rendered="{!changeManager.IsApproved__c || mode == ''}" /> 
                     <apex:inputField value="{!changeManager.IntExtContractManagement__c}" rendered="{!NOT(changeManager.IsApproved__c)  && mode != ''}">
                         <apex:actionSupport event="onchange" rerender="changes"/>
@@ -1259,6 +1259,10 @@
                     </apex:column>
                     <apex:column headervalue="Budget Name" >
                         <apex:outputText value="{!budgetwrapper.budgetHeader.BudgetName__c}"/>
+                    </apex:column>
+                    <apex:column headervalue="Budget Name" >
+                        <apex:outputlink value="{!URLFOR('/apex/ECO_BudgetHeaderSummary?Id=' + changeManager.Project__c, null)}"><apex:outputField value="{!budgetwrapper.budgetHeader.BudgetName__c}"/></apex:outputlink>
+                        <!--<apex:outputText value="{!budgetwrapper.budgetHeader.BudgetName__c}"/>-->
                     </apex:column>
                     <apex:column headervalue="Cost Charge"><apex:outputField value="{!budgetwrapper.budgetHeader.TotalCost__c}"/></apex:column>
                     <apex:column headervalue="Revenue Charge"><apex:outputField value="{!budgetwrapper.budgetHeader.TotalRevenue__c}"/></apex:column>
