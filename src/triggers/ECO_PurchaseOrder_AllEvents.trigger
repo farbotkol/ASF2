@@ -24,6 +24,9 @@ trigger ECO_PurchaseOrder_AllEvents on POHeader__c (after insert, after update, 
         }
     }
 */	
+    if(Trigger.isAfter && Trigger.isUpdate) {
+        ECO_Service_PurchaseOrders.lockPurchaseOrderLineItems(Trigger.NewMap, Trigger.OldMap);
+    }
     
     if( trigger.isBefore && ( trigger.isUpdate || trigger.isInsert ) ){
         ECO_Service_RecordAccess.getProjectRecordAccess( trigger.new );

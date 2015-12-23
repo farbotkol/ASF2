@@ -517,6 +517,7 @@ public without sharing class ECO_PurchaseOrderSummaryController {
 	}
 
 	public PageReference saveAndSubmitForApproval() {
+        
 		isApprovedDoSyncNow = false;
 
 		PageReference pageRef = null;
@@ -540,6 +541,7 @@ public without sharing class ECO_PurchaseOrderSummaryController {
 			}
 
 			if(useApprovalProcess) {
+                
 				Boolean isPM = false;				
 				
 				if(project != null) {
@@ -576,7 +578,8 @@ public without sharing class ECO_PurchaseOrderSummaryController {
                     Approval.ProcessResult result = Approval.process(req1);
                     
                     return null;
-				}else if(isApprovedFromApprovalProcess()){
+				}else if(poheader.Status__c == 'APPROVED' && isApprovedFromApprovalProcess()){
+                    System.debug('TestTTT***');
 					isApprovedDoSyncNow = true;
 				}else{					
 					system.debug('pm is not user - sending for approval');

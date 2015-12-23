@@ -607,7 +607,8 @@ public without sharing class ECO_Service_PurchaseOrders{
 																		Class__c,
 																		SubClass__c,
 																		IsArchived__c,
-																		ChangeRequestPOLineItem__c
+																		ChangeRequestPOLineItem__c,
+                                                                    	IsLocked__c
 																FROM POLineItem__c
 																WHERE POHeader__c = :sPurchaseOrderId																
 																ORDER BY LineNumber__c ASC, IsArchived__c ASC]);
@@ -974,5 +975,24 @@ public without sharing class ECO_Service_PurchaseOrders{
             	poStatus.POHeader__c = poNumberToSFDCPOIdMap.get(poStatus.PONumber__c);
             }           
         }       
+    }
+    
+    public static void lockPurchaseOrderLineItems(Map<Id, POHeader__c> newPurchaseOrderMap, Map<Id, POHeader__c> oldPurchaseOrderMap) {
+        Set<Id> purchaseOrderIds = new Set<Id>();
+        
+        for(POHeader__c purchaseOrder : newPurchaseOrderMap.values()) {
+            if(purchaseOrder.Status__c != oldPurchaseOrderMap.get(purchaseOrder.Id).Status__c &&
+               purchaseOrder.Status__c == 'APPROVED') {
+            	purchaseOrderIds.add(purchaseOrder.Id);
+            }
+        }
+        
+        List<POLineItem__c> poLineItems = [SELECT Id, IsLocked__c FROM POLineItem__c WHERE POHeader__c in : purchaseOrderIds];
+        
+        for(POLineItem__c poLineItem : poLineItems) {
+            poLineItem.IsLocked__c = True;
+        }
+        
+        update poLineItems;
     }
 }

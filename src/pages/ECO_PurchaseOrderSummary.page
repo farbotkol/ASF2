@@ -438,7 +438,7 @@
                                     	<apex:pageBlockTable value="{!poLineItems}" var="poLineItem">	
                                             <apex:column styleClass="{!if(poLineItem.IsArchived__c == true, 'archive', '')}">
                                                 <apex:facet name="header">Action</apex:facet>
-                                                <div style="display:{!if(poLineItem.IsArchived__c == true || poLineItem.CancelFlag__c == true, 'none', 'block')};">
+                                                <div style="display:{!if(poLineItem.IsArchived__c == true || poLineItem.CancelFlag__c == true || poLineItem.IsLocked__c == True, 'none', 'block')};">
                                                     <a href="{!URLFOR('/apex/ECO_PurchaseOrderLineItem', null,["id"=poLineItem.Id,"retURL"=retUrl])}">{!if(poLineItem.OracleSyncDatetime__c == null, 'Edit', 'Change')}</a>
                                                 </div>                                                
                                             </apex:column>
