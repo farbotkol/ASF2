@@ -45,8 +45,6 @@ public class ECO_ChangeManagerDetailController {
 
     public ECO_ChangeManagerDetailController(ApexPages.StandardController controller)
     {
-        //changeManager = (ChangeManager__c)controller.getRecord();
-        //changeManager = getChangeChangeManager();
 
         invalidTasks = new list<ECO_ProjectSummaryController.nonSyncItem>();
         invalidCustomers = new list<ECO_ProjectSummaryController.nonSyncItem>(); 
@@ -79,27 +77,17 @@ public class ECO_ChangeManagerDetailController {
             }
         }
 
-
         return null;
     }
 
     public void init()
-    {
-        //if(changeManager.ApprovalStatus__c == 'Sync Approved')
-        //{
-        //    project = [select Id, Name, EcoSystemReferenceNumber__c, OracleProjectnumber__c  from pse__Proj__c where Id = :changeManager.Project__c limit 1];            
-
-        //    isSubmitted = true;
-        //    synchronizeProject(project.Id);
-        //}               
-
+    {         
         recordTypeId = ApexPages.currentPage().getParameters().get('RecordType'); 
         mode = ApexPages.currentPage().getParameters().get('Mode'); 
         numSuccessfulSyncs = 0;
         numFailedAttemptedSyncs = 0;
         hasSyncHistory = false;
         hasRequestFailures = false;
-
         
         if(recordTypeId != '' && recordTypeId != null && mode != 'View' && changeManager.ApprovalStatus__c != 'Sync Approved')
         {
@@ -111,12 +99,14 @@ public class ECO_ChangeManagerDetailController {
             mode = '';
             
         changeManager = getChangeChangeManager();
+
+        OracleUserName = changeManager.OracleUserName__c;
         
         if((changeManager.IsExecutionApprovalChange__c || changeManager.IsExternalChange__c || changeManager.IsInternalChange__c) 
                   && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed'))
             needOracleLogin = true;    
 
-        project = [select Id, Name, EcoSystemReferenceNumber__c, OracleProjectnumber__c  from pse__Proj__c where Id = :changeManager.Project__c limit 1];            
+        project = [select Id, Name, EcoSystemReferenceNumber__c, OracleProjectnumber__c, ProjectLevelFundingFlag__c from pse__Proj__c where Id = :changeManager.Project__c limit 1];            
 
         if(changeManager.IsExecutionApprovalChange__c )
             populateInitialBudgetsForExecution(); 
@@ -144,7 +134,7 @@ public class ECO_ChangeManagerDetailController {
         if(changeManager.OutgoingPM__c == null)
             changeManager.OutgoingPM__c = changeManager.ProjectManagerId__c;
 
-        project = [select Id, Name, EcoSystemReferenceNumber__c, OracleProjectnumber__c  from pse__Proj__c where Id = :changeManager.Project__c limit 1];            
+        project = [select Id, Name, EcoSystemReferenceNumber__c, OracleProjectnumber__c, ProjectLevelFundingFlag__c from pse__Proj__c where Id = :changeManager.Project__c limit 1];            
         ApexPages.currentPage().getParameters().put('projectId', changeManager.Project__c);
         listOfVendorSites = [select Id, Name, AccountName__c, Site__r.Account__c from VendorSite__c where Project__c = :changeManager.Project__c];           
         if(changeManager.ApprovalStatus__c == 'Submitted')
@@ -178,13 +168,188 @@ public class ECO_ChangeManagerDetailController {
         if(changeManager.IntExtContractManagement__c)
             projectSynchMessages += validateAgreements();
 
+        //if(changeManager.IsExecutionApprovalChange__c)
+        projectSynchMessages += executionApprovalAgreementFundingBudgetValidations();
+
         if(projectSynchMessages != '' && projectSynchMessages != null)
             projectSynchMessages = '<ol>' + projectSynchMessages + '</ol>';
 
         generateSyncHistory();
     }
     
+    private String executionApprovalAgreementFundingBudgetValidations()
+    {
+        Decimal totalRevenue = 0;
+        Decimal totalFunding = 0;
+        if(changeManager.IsExecutionApprovalChange__c)
+        {
+            if(project.ProjectLevelFundingFlag__c)
+            {
+                for(AggregateResult arTotalRevenue:[select Sum(TotalRevenue__c) TotalRevenue From BudgetHeader__c Where Project__c = :changeManager.Project__c and Id = :changeManager.BudgetIdsSelectedForExecution__c])
+                {
+                    if(arTotalRevenue.get('TotalRevenue') != null)
+                        totalRevenue += (Decimal) arTotalRevenue.get('TotalRevenue');
+                }
 
+                for(AggregateResult arTotalFunding:[select sum(AllocatedAmount__c) TotalFunding from Funding__c where Project__c = :changeManager.Project__c])
+                {
+                    if(arTotalFunding.get('TotalFunding') != null)
+                        totalFunding += (Decimal) arTotalFunding.get('TotalFunding');
+                }
+
+                if(totalRevenue != totalFunding)
+                {
+                    return '<li>The selected total budget revenue and the total funding amount are not equal.  Please fix this before submitting for execution.</li>';
+                }
+
+            }
+            else
+            {
+                Map<Id, Decimal> fundingByTasksTotals = new Map<Id, Decimal>();
+                Map<Id, Decimal> budgetRevenueByTasksTotals = new Map<Id, Decimal>();
+                Set<Id> taskIds = new Set<Id>();
+
+                for(AggregateResult ar:[Select Sum(TotalRevenue__c) TotalRevenue, ProjectTask__c From BudgetTask__c Where ProjectTask__r.pse__Project__c = :changeManager.Project__c and BudgetHeader__c = :changeManager.BudgetIdsSelectedForExecution__c group by ProjectTask__c])
+                {
+                    if(ar.get('TotalRevenue') != null)
+                    {
+                        taskIds.add((Id)ar.get('ProjectTask__c'));
+                        budgetRevenueByTasksTotals.put((Id)ar.get('ProjectTask__c'), (Decimal)ar.get('TotalRevenue'));  
+                    }   
+                }
+                for(AggregateResult ar:[select sum(AllocatedAmount__c) TotalFunding, ProjectTask__c from Funding__c where Project__c = :changeManager.Project__c group by ProjectTask__c])
+                {
+                    if(ar.get('TotalFunding') != null)
+                    {
+                        taskIds.add((Id)ar.get('ProjectTask__c'));
+                        fundingByTasksTotals.put((Id)ar.get('ProjectTask__c'), (Decimal)ar.get('TotalFunding'));
+                    }
+                }
+
+                Decimal fundingTaskTotal = 0;
+                Decimal budgetTaskTotal = 0;
+                String returnValue = '';
+                for(pse__Project_Task__c task:[select Id, Name from pse__Project_Task__c where Id in :taskIds])
+                {
+                    if(fundingByTasksTotals.containsKey(task.Id))
+                        fundingTaskTotal += fundingByTasksTotals.get(task.Id);
+
+                    if(budgetRevenueByTasksTotals.containsKey(task.Id))
+                        budgetTaskTotal += budgetRevenueByTasksTotals.get(task.Id);
+
+                    if(fundingTaskTotal != budgetTaskTotal)
+                        returnValue += '<li>Task: ' + task.Name + ' - The selected budget total revenue for task does not match the total funding for the task.  Please fix this before submitting for execution.</li>';
+                    fundingTaskTotal = 0;
+                    budgetTaskTotal = 0;
+                }
+                if(returnValue != '')
+                    return returnValue;
+
+            }
+        }
+        else
+        {
+            if(changeManager.IntExtBudget__c && changeManager.IsExternalChange__c)
+            {
+                if(project.ProjectLevelFundingFlag__c)
+                {
+                    BudgetHeader__c budgetHeader = [select Id, TotalRevenue__c From BudgetHeader__c where Id = :changeManager.BudgetHeader__c limit 1];
+                    totalRevenue = budgetHeader.TotalRevenue__c;
+                    for(AggregateResult arTotalRevenue:[select Sum(TotalRevenue__c) TotalRevenue From BudgetHeader__c Where Project__c = :changeManager.Project__c and Status__c = 'Approved'])
+                    {
+                        if(arTotalRevenue.get('TotalRevenue') != null)
+                            totalRevenue += (Decimal) arTotalRevenue.get('TotalRevenue');
+                    }
+
+                    if(!changeManager.IntExtContractManagement__c)
+                    {
+                        for(Funding__c funding:[select AllocatedAmount__c from Funding__c where Project__c = :changeManager.Project__c and ChangeManagerIsNew__c = false])
+                        {
+                            //if(arTotalFunding.get('TotalFunding') != null)
+                            totalFunding += funding.AllocatedAmount__c;
+                        }
+                    }
+                    else
+                    {
+                        for(Funding__c funding:[select AllocatedAmount__c from Funding__c where Project__c = :changeManager.Project__c])
+                        {
+                            //if(arTotalFunding.get('TotalFunding') != null)
+                            totalFunding += funding.AllocatedAmount__c;
+                        } 
+                    }
+                    if(totalRevenue != totalFunding)
+                    {
+                        return '<li>' + 'The selected total budget revenue resulting from this change order and the total funding amount are not equal.  Please fix this before synching this project to Oracle by adding more funding to you agreement(s) and synch it to Oracle.</li>';
+                    }
+
+                }
+                else
+                {
+                    Map<Id, Decimal> fundingByTasksTotals = new Map<Id, Decimal>();
+                    Map<Id, Decimal> budgetRevenueByTasksTotals = new Map<Id, Decimal>();
+                    Set<Id> taskIds = new Set<Id>();
+
+                    for(BudgetTask__c budgetTask:[select ProjectTask__c, TotalRevenue__c from BudgetTask__c where BudgetHeader__c = :changeManager.BudgetHeader__c ])
+                    {
+                        taskIds.add(budgetTask.ProjectTask__c);
+                        budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetTask.TotalRevenue__c);    
+                    }
+
+                    for(BudgetTask__c budgetTask:[Select TotalRevenue__c, ProjectTask__c From BudgetTask__c Where ProjectTask__r.pse__Project__c = :changeManager.Project__c and BudgetHeader__r.Status__c = 'Approved'])
+                    {
+                        taskIds.add(budgetTask.ProjectTask__c);
+                        if(!budgetRevenueByTasksTotals.containsKey(budgetTask.ProjectTask__c))
+                            budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetTask.TotalRevenue__c);
+                        else
+                            budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetRevenueByTasksTotals.get(budgetTask.ProjectTask__c) + budgetTask.TotalRevenue__c);    
+                    }
+
+                    if(!changeManager.IntExtContractManagement__c)
+                    {
+                        for(Funding__c funding:[select AllocatedAmount__c, ProjectTask__c from Funding__c where Project__c = :changeManager.Project__c and  ChangeManagerIsNew__c = false])
+                        {
+                            taskIds.add(funding.ProjectTask__c);
+                            if(!fundingByTasksTotals.containsKey(funding.ProjectTask__c))
+                                fundingByTasksTotals.put(funding.ProjectTask__c, funding.AllocatedAmount__c);    
+                            else
+                                fundingByTasksTotals.put(funding.ProjectTask__c, fundingByTasksTotals.get(funding.ProjectTask__c) + funding.AllocatedAmount__c);
+                        }
+                    }
+                    else
+                    {
+                        for(Funding__c funding:[select AllocatedAmount__c, ProjectTask__c from Funding__c where Project__c = :changeManager.Project__c])
+                        {
+                            taskIds.add(funding.ProjectTask__c);
+                            if(!fundingByTasksTotals.containsKey(funding.ProjectTask__c))
+                                fundingByTasksTotals.put(funding.ProjectTask__c, funding.AllocatedAmount__c);    
+                            else
+                                fundingByTasksTotals.put(funding.ProjectTask__c, fundingByTasksTotals.get(funding.ProjectTask__c) + funding.AllocatedAmount__c);
+                        }                        
+                    }
+
+                    Decimal fundingTaskTotal = 0;
+                    Decimal budgetTaskTotal = 0;
+                    String returnValue = '';
+                    for(pse__Project_Task__c task:[select Id, Name from pse__Project_Task__c where Id in :taskIds])
+                    {
+                        if(fundingByTasksTotals.containsKey(task.Id))
+                            fundingTaskTotal += fundingByTasksTotals.get(task.Id);
+
+                        if(budgetRevenueByTasksTotals.containsKey(task.Id))
+                            budgetTaskTotal += budgetRevenueByTasksTotals.get(task.Id);
+
+                        if(fundingTaskTotal != budgetTaskTotal)
+                            returnValue += '<li>Task: ' + task.Name + ' - The selected budget total revenue for task does not match the total funding for the task.  Please add funding for this task and synching to oracle before synching this change order.</li>';
+                        fundingTaskTotal = 0;
+                        budgetTaskTotal = 0;
+                    }
+                    if(returnValue != '')
+                        return returnValue;
+                }
+            }
+        }
+        return '';
+    }
 
     public PageReference authenticateCredentials()
     {

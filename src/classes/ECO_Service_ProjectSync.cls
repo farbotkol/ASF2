@@ -327,6 +327,8 @@ public without sharing class ECO_Service_ProjectSync{
 																		ProjectOwningOrg__c,
 																		OracleProjectId__c,
 																		OracleCustomerNumber__c,
+																		OracleUserName__c,
+																		IsSystemAdmin__c,
 																		pse__Project_Status__c,
 																		CostIndRateSCHID__c,
 																		ProjectFunctionalCurrencyCode__c,
@@ -408,6 +410,7 @@ public without sharing class ECO_Service_ProjectSync{
 																				pse__Project__r.OracleProjectnumber__c,
 																				pse__Project__r.OracleProjectId__c,
 																				CostIndRateSCHID__c,
+																				OracleProjectTaskId__c,
 																				LastModifiedDate,
 																				pse__Hierarchy_Depth__c,
 																				TaxReceivingTask__c,
@@ -470,6 +473,7 @@ public without sharing class ECO_Service_ProjectSync{
 																				pse__Parent_Task__r.Name,		
 																				OracleSyncStatus__c,
 																				OracleSyncErrorMessage__c,
+																				OracleProjectTaskId__c,
 																				Attribute1__c,
 																				Attribute2__c,
 																				Attribute3__c,
@@ -550,6 +554,7 @@ public without sharing class ECO_Service_ProjectSync{
 																				pse__Parent_Task__r.Name,		
 																				OracleSyncStatus__c,
 																				OracleSyncErrorMessage__c,
+																				OracleProjectTaskId__c,
 																				Attribute1__c,
 																				Attribute2__c,
 																				Attribute3__c,
@@ -1151,7 +1156,10 @@ public without sharing class ECO_Service_ProjectSync{
 			this.CHARGEABLE_FLAG = ECO_Utils_String.NullCheck(formatBooleanForOracle(oTask.IsChargeable__c));
 			this.WORK_TYPE_NAME = ECO_Utils_String.NullCheck(oTask.WorkTypeName__c);
 			this.COST_IND_RATE_SCH_ID = ECO_Utils_String.NullCheck(oTask.CostIndRateSCHID__c);
-			this.PM_TASK_REFERENCE = String.valueOf(oTask.Id);
+			if(!String.isEmpty(oTask.OracleProjectTaskId__c))
+				this.PM_TASK_REFERENCE = String.valueOf(oTask.OracleProjectTaskId__c);
+			else
+				this.PM_TASK_REFERENCE = String.valueOf(oTask.Id);
 			this.PM_PARENT_TASK_REFERENCE  = ECO_Utils_String.NullCheck(String.valueOf(oTask.pse__Parent_Task__c));
 			this.ATTRIBUTE_CATEGORY = '';
 			this.SEQUENCE_ID = '';
@@ -1233,26 +1241,23 @@ public without sharing class ECO_Service_ProjectSync{
 			this.CUSTOMER_NAME = ECO_Utils_String.NullCheck(oSite.Account_Name__c);
 
 			//allow for overriding of bill to and ship to address ids
-			if(String.isEmpty(oSite.BillToAddressID__c)){
+			if(String.isEmpty(oSite.BillToAddressID__c))
 				this.BILL_TO_ADDRESS_ID = ECO_Utils_String.NullCheck(oSite.OracleBillToAddressId__c);
-			}else{
+			else
 				this.BILL_TO_ADDRESS_ID = ECO_Utils_String.NullCheck(oSite.BillToAddressID__c);
-			}
 
-			if(String.isEmpty(oSite.ShipToAddressID__c)){
+			if(String.isEmpty(oSite.ShipToAddressID__c))
 				this.SHIP_TO_ADDRESS_ID = ECO_Utils_String.NullCheck(oSite.OracleShipToAddressId__c);
-			}else{
+			else
 				this.SHIP_TO_ADDRESS_ID = ECO_Utils_String.NullCheck(oSite.ShipToAddressID__c);
-			}
 			
 			this.BILLING_CONTACT_ID = ECO_Utils_String.NullCheck(oSite.BillingContactID__c);
 			this.DEFAULT_TOP_TASK_CUSTOMER = ECO_Utils_String.NullCheck(formatBooleanForOracle(oSite.Is_Default_Top_Task__c));
 			this.INVOICE_CURRENCY_CODE = ECO_Utils_String.NullCheck(oSite.CurrencyIsoCode);
-			if(oSite.Contribution__c == null){
+			if(oSite.Contribution__c == null)
 				this.CONTRIBUTION = '';
-			}else{
-				this.CONTRIBUTION = String.valueOf(oSite.Contribution__c);
-			}			
+			else
+				this.CONTRIBUTION = String.valueOf(oSite.Contribution__c);		
 			this.SEQUENCE_ID = '';
 			//this.JOB_ID = ECO_Utils_String.NullCheck(oSite.JobID__c);
 			this.JOB_ID = '';
@@ -2022,6 +2027,7 @@ public without sharing class ECO_Service_ProjectSync{
 																				pse__Parent_Task__r.Name,		
 																				OracleSyncStatus__c,
 																				OracleSyncErrorMessage__c,
+																				OracleProjectTaskId__c,
 																				Attribute1__c,
 																				Attribute2__c,
 																				Attribute3__c,
