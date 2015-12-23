@@ -327,6 +327,8 @@ public without sharing class ECO_Service_ProjectSync{
 																		ProjectOwningOrg__c,
 																		OracleProjectId__c,
 																		OracleCustomerNumber__c,
+																		OracleUserName__c,
+																		IsSystemAdmin__c,
 																		pse__Project_Status__c,
 																		CostIndRateSCHID__c,
 																		ProjectFunctionalCurrencyCode__c,

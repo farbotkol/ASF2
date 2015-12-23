@@ -1283,7 +1283,8 @@
             </div>
             <div align="center">
             <apex:outputText style="font-weight:bold" value="Oracle Username:"/>
-            <apex:inputText label="Username:" value="{!OracleUserName}" id="username"/><br/>
+            <apex:inputText label="Username:" value="{!OracleUserName}" id="username" rendered="{!changeManager.IsSystemAdmin__c}" />
+            <apex:inputText label="Username:" value="{!OracleUserName}" id="usernameRO" rendered="{!NOT(changeManager.IsSystemAdmin__c)}" html-readonly="true"/><br/>
 
             <apex:outputText style="font-weight:bold" value="Oracle Password:"/>
             <apex:inputSecret label="Password" value="{!OraclePassword}" id="password"/><br/><br/>

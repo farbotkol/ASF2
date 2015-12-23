@@ -1337,7 +1337,8 @@
             <br/><br/>
             <div align="center">
             <apex:outputText style="font-weight:bold" value="Oracle Username:"/>
-            <apex:inputText label="Oracle Username:" value="{!OracleUserName}" id="username"/><br/>
+            <apex:inputText label="Oracle Username:" value="{!OracleUserName}" id="username" rendered="{!project.IsSystemAdmin__c}"/>
+            <apex:inputText label="Oracle Username:" value="{!OracleUserName}" id="usernameRO" rendered="{!NOT(project.IsSystemAdmin__c)}" html-readonly="true"/><br/>
 
             <apex:outputText style="font-weight:bold" value="Oracle Password:"/>
             <apex:inputSecret label="Oracle Password" value="{!OraclePassword}" id="password"/><br/><br/>

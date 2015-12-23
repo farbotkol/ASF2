@@ -209,6 +209,7 @@ public with sharing class ECO_ProjectSummaryController {
 
 		if(isProjectNumber){			
 
+			OracleUserName = project.OracleUserName__c;
 			if(projectId != null){
 				sJSON = ECO_Service_ProjectSync.SendProjectNumberData(projectId);
 			}
