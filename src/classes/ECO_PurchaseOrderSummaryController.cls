@@ -860,7 +860,7 @@ public without sharing class ECO_PurchaseOrderSummaryController {
         
         totalPurchaseOrderLineAmount = 0.0;
         for(POLineItem__c lineItem : poLineItems) {
-            if(lineItem.Amount__c != null) {
+            if(lineItem.Amount__c != null && lineItem.CancelFlag__c == False) {
                 totalPurchaseOrderLineAmount =  totalPurchaseOrderLineAmount + lineItem.Amount__c;
             }            
         }
