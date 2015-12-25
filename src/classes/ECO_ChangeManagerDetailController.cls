@@ -45,8 +45,6 @@ public class ECO_ChangeManagerDetailController {
 
     public ECO_ChangeManagerDetailController(ApexPages.StandardController controller)
     {
-        //changeManager = (ChangeManager__c)controller.getRecord();
-        //changeManager = getChangeChangeManager();
 
         invalidTasks = new list<ECO_ProjectSummaryController.nonSyncItem>();
         invalidCustomers = new list<ECO_ProjectSummaryController.nonSyncItem>(); 
@@ -79,27 +77,17 @@ public class ECO_ChangeManagerDetailController {
             }
         }
 
-
         return null;
     }
 
     public void init()
-    {
-        //if(changeManager.ApprovalStatus__c == 'Sync Approved')
-        //{
-        //    project = [select Id, Name, EcoSystemReferenceNumber__c, OracleProjectnumber__c  from pse__Proj__c where Id = :changeManager.Project__c limit 1];            
-
-        //    isSubmitted = true;
-        //    synchronizeProject(project.Id);
-        //}               
-
+    {         
         recordTypeId = ApexPages.currentPage().getParameters().get('RecordType'); 
         mode = ApexPages.currentPage().getParameters().get('Mode'); 
         numSuccessfulSyncs = 0;
         numFailedAttemptedSyncs = 0;
         hasSyncHistory = false;
         hasRequestFailures = false;
-
         
         if(recordTypeId != '' && recordTypeId != null && mode != 'View' && changeManager.ApprovalStatus__c != 'Sync Approved')
         {
@@ -111,6 +99,8 @@ public class ECO_ChangeManagerDetailController {
             mode = '';
             
         changeManager = getChangeChangeManager();
+
+        OracleUserName = changeManager.OracleUserName__c;
         
         if((changeManager.IsExecutionApprovalChange__c || changeManager.IsExternalChange__c || changeManager.IsInternalChange__c) 
                   && (changeManager.OracleApprovalSyncStatus__c == 'Submitted' || changeManager.OracleApprovalSyncStatus__c == 'Failed'))

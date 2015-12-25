@@ -234,49 +234,52 @@ public without sharing class ECO_CostDistributionLineTriggers {
 		}
 	}
 	
-	public static void calculateFiscalMonths(list<CostDistLine__c> costDistLines)
-	{
-          list<date> enddatelist = new list<date>();
-        for (CostDistLine__c ba : costDistLines){
-             if (ba.GLDate__c != null){ 
-                 
-                 enddatelist.add((ba.GLDate__c).addmonths(2));
-                 enddatelist.add((ba.GLDate__c).addmonths(-3));
-             }
+    public static void calculateFiscalMonths(list<CostDistLine__c> costDistLines) {
+        if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('CDL_calcFiscalMonths')) {
+            return;
         }
-        system.debug('enddatelist----'+enddatelist);
-         List<pse__Time_Period__c> timePeriods  = new  List<pse__Time_Period__c>();
-        if(enddatelist.size()>0)
-        {
-		// Time period
-          timePeriods = ECO_Utils_Date.calcTimePeriods(enddatelist,'Month');
         
-        
-        // Time period
-       // List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
-		
-		pse__Time_Period__c fm = null;
-		for (CostDistLine__c cdl : costDistLines){
-												
-			for (Integer i = 0; i < timePeriods.size(); i++){
-				
-				if (cdl.GLDate__c != null){	
-					fm = ECO_Utils_Date.getFiscalPeriod(cdl.GLDate__c, 0, timePeriods);  
-					if (fm != null){
-						cdl.GLFiscalMonth__c = fm.TimePeriodCode__c;
-					}
-					
-				}
-				
-				if (cdl.PADate__c != null){	
-					fm = ECO_Utils_Date.getFiscalPeriod(cdl.PADate__c, 0, timePeriods);  
-					if (fm != null){
-						cdl.PAFiscalMonth__c = fm.TimePeriodCode__c;
-					}
-					
-				}
-			}
-           } 
-		}
-	}
+        list<date> enddatelist = new list<date>();
+        Set<Date> datesToConvert = new Set<Date>();
+        Map<Date, String> mapTimePeriodCodeByDate = new Map<Date, String> ();
+
+        for (CostDistLine__c ba : costDistLines) {
+            datesToConvert.add(ba.GLDate__c);
+            datesToConvert.add(ba.PADate__c);
+
+            if (ba.GLDate__c != null) {
+                enddatelist.add((ba.GLDate__c).addmonths(2));
+                enddatelist.add((ba.GLDate__c).addmonths(-3));
+            }
+        }
+        datesToConvert.remove(null);
+
+        system.debug('enddatelist----' + enddatelist);
+        List<pse__Time_Period__c> timePeriods  = new  List<pse__Time_Period__c>();
+        if (enddatelist.size() > 0) {
+            // Time period
+            timePeriods = ECO_Utils_Date.calcTimePeriods(enddatelist, 'Month');
+
+            /* Calculate all the timeperiod codes at once and cache the results*/
+            pse__Time_Period__c fm = null;
+            for (Date dt : datesToConvert) {
+                fm = ECO_Utils_Date.getFiscalPeriod(dt, 0, timePeriods);
+                if (fm != null) {
+                    mapTimePeriodCodeByDate.put(dt, fm.TimePeriodCode__c);
+                }
+            }
+
+            for (CostDistLine__c cdl : costDistLines) {
+                for (Integer i = 0; i < timePeriods.size(); i++) {
+                    if (cdl.GLDate__c != null) {
+                        cdl.GLFiscalMonth__c = mapTimePeriodCodeByDate.get(cdl.GLDate__c);
+                    }
+
+                    if (cdl.PADate__c != null) {
+                        cdl.PAFiscalMonth__c = mapTimePeriodCodeByDate.get(cdl.PADate__c);
+                    }
+                }
+            }
+        }
+    }
 }

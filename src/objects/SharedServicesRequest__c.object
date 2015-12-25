@@ -38076,7 +38076,9 @@ AND(NOT(ISBLANK(BillingContactFirstName__c)),
 ISBLANK(BillingContactLastName__c)), 
 
 AND(NOT(ISBLANK(BillingContactLastName__c)), 
-ISBLANK(BillingContactFirstName__c)))</errorConditionFormula>
+ISBLANK(BillingContactFirstName__c)),
+OR(ISBLANK(BillingContactFirstName__c), 
+ISBLANK(BillingContactLastName__c)))</errorConditionFormula>
         <errorDisplayField>BillingContactFirstName__c</errorDisplayField>
         <errorMessage>Billing Contact Information: First Name, Last Name and Email or Phone are required</errorMessage>
     </validationRules>
