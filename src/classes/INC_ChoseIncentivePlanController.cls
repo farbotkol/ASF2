@@ -19,11 +19,28 @@ public class INC_ChoseIncentivePlanController {
 		System.Debug(logginglevel.error,'Here in choose IncentivePlan__c ' + fromWizard);
 		showsave = false;
 		//selectedSelectionMethod = 'Guided'; //DTWINCCIPCSOGUIDE
-		selectedSelectionMethod = LABEL.DTWINCCIPCSOGUIDE;
+		selectedSelectionMethod = 'Guided';
 		ID enrollID = Apexpages.currentPage().getParameters().get('id');
 		enrollmentPlan = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{enrollID})[0];
 		availablePlans = new list<planWrapper>();
 		buildPlanMaps();	
+
+		String sQuestions = Apexpages.currentPage().getParameters().get('Q');
+		if(sQuestions != null && sQuestions.length() > 0){
+			if(sQuestions.startsWith('M')){
+				selectedSelectionMethod = 'Manual';
+			}else{
+				Integer[] Answers = sQuestions.getChars();
+				System.Debug(logginglevel.error,'anwers: ' + Answers);
+				System.Debug(logginglevel.error,'value: '+ String.valueOf(Answers[1]));
+				question1Answer = String.fromCharArray( new List<integer> { Answers[1] } ) =='Y'?'Yes':'No';
+				question2Answer = String.fromCharArray( new List<integer> { Answers[2] } ) =='Y'?'Yes':'No';
+				question3Answer = String.fromCharArray( new List<integer> { Answers[3] } ) =='Y'?'Yes':'No';
+				question4Answer = String.fromCharArray( new List<integer> { Answers[4] } ) =='Y'?'Yes':'No';
+			}
+			submitQuestionnairre();
+		}
+
 	}
 
 	public INC_ChoseIncentivePlanController(ApexPages.StandardController controller)
@@ -187,7 +204,7 @@ public class INC_ChoseIncentivePlanController {
 			return null;
 		}
 		
-		if(selectedSelectionMethod == 'Manual') //DTWINCCIPCSOMAN
+		if(selectedSelectionMethod == LABEL.DTWINCCIPCSOMAN) //DTWINCCIPCSOMAN
 		{
 			availablePlans.clear();
 			//availablePlans.addall(planMapByRegion.get(geoAlloc));
@@ -262,9 +279,20 @@ public class INC_ChoseIncentivePlanController {
 		ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.CONFIRM,LABEL.DTWINCEPECSAVESUCCESS));
             
 		update enrollmentPlan;
-		if(fromWizard == null || fromWizard == 'No'){
-			return new PageReference('/' + enrollmentPlan.Id );
+
+		//if(fromWizard == null || fromWizard == 'No'){
+		//Build return key
+		String sKey= selectedSelectionMethod == 'Manual'?'M':'G';
+		if(sKey == 'G'){
+			System.Debug(logginglevel.error,'answers: ' + question1Answer + question2Answer);
+			sKey += question1Answer=='Yes'?'Y':'N';
+			sKey += question2Answer=='Yes'?'Y':'N';
+			sKey += question3Answer=='Yes'?'Y':'N';
+			sKey += question4Answer=='Yes'?'Y':'N';
 		}
+			return new PageReference('/' + enrollmentPlan.Id +'?Q=' + sKey);
+		//}
+		//}
 
 		return null;
 	}

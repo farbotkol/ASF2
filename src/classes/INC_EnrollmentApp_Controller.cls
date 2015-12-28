@@ -55,6 +55,7 @@ public with sharing class INC_EnrollmentApp_Controller {
 
         this.oEnrollmentApp = (EnrollmentPlan__c)stdController.getRecord();
         this.oEnrollmentApp = INC_Service_EnrollmentPlan.getEnrollmentPlan(new set<id>{oEnrollmentApp.Id})[0];
+        System.Debug(logginglevel.error,'IncentivePlan__c: ' + oEnrollmentApp.IncentivePlan__c);
         setExceptions();
         setIssues();
         
@@ -158,6 +159,7 @@ public with sharing class INC_EnrollmentApp_Controller {
           if(setDTW.contains(UserInfo.getUserId())){
             bShowAA = true; //in the groups so all full edit
           }
+          checkStatus();
     }
 
 
@@ -345,6 +347,7 @@ public with sharing class INC_EnrollmentApp_Controller {
         try{
           oEnrollmentApp.WizardStatus__c = 'Complete';
            bFinished = true;
+          System.Debug(logginglevel.error,'Submit oEnrollmentApp: ' + oEnrollmentApp.IncentivePlan__c);
           update oEnrollmentApp;
 
         }catch(exception e){
