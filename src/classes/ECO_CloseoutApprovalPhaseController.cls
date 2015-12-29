@@ -229,28 +229,24 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
 
         for (Schema.FieldSetMember fsmField: SObjectType.pse__Proj__c.FieldSets.EcoProjectClosureValidation.getFields()) {
             if(oproject.get(fsmField.getFieldPath()) == null){
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'The following question must be answered: ' + fsmField.getLabel());
-                ApexPages.addMessage(oMsg);               
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'The following question must be answered: ' + fsmField.getLabel()));         
                 returnvalue = false;
             }
         }
 
         if (oProject.projcloseClaimsPending__c == 'Yes'){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'This project has pending claims and therefore cannot be closed at this time. Please put the project on hold until all claims are resolved, at which point you can close the project.');
-            ApexPages.addMessage(oMsg);               
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'This project has pending claims and therefore cannot be closed at this time. Please put the project on hold until all claims are resolved, at which point you can close the project.'));            
             returnvalue = false;            
         }
 
         for(ChangeManager__c cm: [select id, name, ApprovalStatus__c  from ChangeManager__c where (ApprovalStatus__c = 'Submitted' or ApprovalStatus__c = 'Rejected') and Project__c =: oproject.id and IntExtContractManagement__c= true]){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Change Management Found');
-            ApexPages.addMessage(oMsg);     
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Change Management Found'));    
             returnvalue = false;         
         }
 
         list<QuestionnaireSet__c> lstQS = [select id, name, ApprovalStatus__c  from QuestionnaireSet__c where Project__c =: oproject.id ORDER BY createddate desc];
         if(lstQS.size() == 0 ||  lstQS[0].ApprovalStatus__c != 'Approved'){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Latest Risk and Market Assessment must be approved.');
-            ApexPages.addMessage(oMsg);     
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Latest Risk and Market Assessment must be approved.'));    
             returnvalue = false;               
         }
 
@@ -267,26 +263,22 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
         }*/
 
         for(POHeader__c po: [select id, name, Status__c  from POHeader__c where Status__c != 'APPROVED'  and Project__c =: oproject.id]){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Purchase Order Found - ' + po.name + ' - ' + po.Status__c + '.');
-            ApexPages.addMessage(oMsg);     
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Purchase Order Found - ' + po.name + ' - ' + po.Status__c + '.'));    
             returnvalue = false;         
         }        
 
         for(ProjectReview__c pr: [select id, name, Status__c  from ProjectReview__c where Status__c != 'Approved' and Status__c != 'Completed' and Project__c =: oproject.id]){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Project Review Found - ' + pr.name + ' - ' + pr.Status__c + '.');
-            ApexPages.addMessage(oMsg);     
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Project Review Found - ' + pr.name + ' - ' + pr.Status__c + '.'));
             returnvalue = false;         
         }  
 
         for(Deliverable__c del: [select id, name, Status__c  from Deliverable__c where Status__c != 'Review Complete'  and Project__c =: oproject.id]){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Deliverable Found - ' + del.name + ' - ' + del.Status__c + '.');
-            ApexPages.addMessage(oMsg);     
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved Deliverable Found - ' + del.name + ' - ' + del.Status__c + '.'));   
             returnvalue = false;         
         }  
 
         for(DOAApprovalRequest__c doar: [select id, name, ApprovalStatus__c  from DOAApprovalRequest__c where (ApprovalStatus__c = 'Submitted' or ApprovalStatus__c = 'Rejected')  and Project__c =: oproject.id]){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved DOA Request Found - ' + doar.name + ' - ' + doar.ApprovalStatus__c + '.');
-            ApexPages.addMessage(oMsg);     
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'Unapproved DOA Request Found - ' + doar.name + ' - ' + doar.ApprovalStatus__c + '.'));     
             returnvalue = false;         
         }                   
 
@@ -309,8 +301,7 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
                 //oProject.pse__Stage__c = 'Approved';
                 update oProject;
             }catch(EcoControllerException e){
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e);
-                ApexPages.addMessage(oMsg);
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e));
                 Database.rollback(oSavePoint);
                 return null; 
             } 
@@ -319,14 +310,13 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
 			
 			ChangeManager__c cm;
 			if(oProject.RequestedProjectStatus__c == 'Closed')
-            	cm = new ChangeManager__c(recordtypeid = lstRT[0].id, Project__c = oProject.id, IntExtProjectClosure__c=true);
+            	cm = new ChangeManager__c(recordtypeid = lstRT[0].id, Project__c = oProject.id, IntExtProjectClosure__c=true, IntExtProjectOnHoldComments__c=oProject.OnHoldReason__c );
 			else
-				cm = new ChangeManager__c(recordtypeid = lstRT[0].id, Project__c = oProject.id, IntExtProjectOnHold__c=true);	
+				cm = new ChangeManager__c(recordtypeid = lstRT[0].id, Project__c = oProject.id, IntExtProjectOnHold__c=true, IntExtProjectOnHoldComments__c=oProject.OnHoldReason__c );	
             try{
                 insert cm;
             }catch(EcoControllerException e){
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to insert Change Manager: ' + e);
-                ApexPages.addMessage(oMsg);
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to insert Change Manager: ' + e));
                 return null; 
             } 
 
@@ -347,8 +337,7 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
             //oProject.pse__Stage__c = 'Approved';
             update oProject;
         }catch(EcoControllerException e){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e);
-            ApexPages.addMessage(oMsg);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e));
             Database.rollback(oSavePoint);
             return null; 
         } 
@@ -362,8 +351,7 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
         try{
             insert cm;
         }catch(EcoControllerException e){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to insert Change Manager: ' + e);
-            ApexPages.addMessage(oMsg);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to insert Change Manager: ' + e));
             return null; 
         } 
 
@@ -382,8 +370,7 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
             //oProject.pse__Stage__c = 'Approved';
             update oProject;
         }catch(EcoControllerException e){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e);
-            ApexPages.addMessage(oMsg);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e));
             Database.rollback(oSavePoint);
             return null; 
         } 
@@ -397,8 +384,7 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
         try{
             insert cm;
         }catch(EcoControllerException e){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to insert Change Manager: ' + e);
-            ApexPages.addMessage(oMsg);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to insert Change Manager: ' + e));
             return null; 
         } 
 
@@ -688,8 +674,7 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
             //oProject.pse__Stage__c = 'Approved';
             update oProject;
         }catch(EcoControllerException e){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e);
-            ApexPages.addMessage(oMsg);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e));
             Database.rollback(oSavePoint);
             return null; 
         } 
@@ -706,8 +691,7 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
             oProject.pse__Stage__c = 'Approved';
             update oProject;
         }catch(EcoControllerException e){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e);
-            ApexPages.addMessage(oMsg);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e));
             Database.rollback(oSavePoint);
             return null; 
         } 
@@ -794,13 +778,13 @@ public with sharing class ECO_CloseoutApprovalPhaseController {
                 EcoDisableProjectTeamClosureEmail__c settings = EcoDisableProjectTeamClosureEmail__c.getOrgDefaults();
 
                 if(emailList.size() > 0 && settings.EcoDisableProjectTeamClosureEmail__c == false) {
-
-                    Messaging.sendEmail(emailList);
+                    if(!Test.isRunningTest()){
+                        Messaging.sendEmail(emailList);
+                    }
                 }
                 
             }catch(EcoControllerException e){
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to create portal messages regarding closure date. Please contact your administrator with the following error: ' + e);
-                ApexPages.addMessage(oMsg);
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to create portal messages regarding closure date. Please contact your administrator with the following error: ' + e));
                 success = false;
                 return success;
             } 

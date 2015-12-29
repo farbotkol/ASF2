@@ -136,8 +136,103 @@ private class ECO_DOA_ApprovalRequestControllerTest {
         con.answerone();
         con.answertwo();
         con.answerthree();
+        con.questionThree = 'No';
 
         con.questions();
+        con.getQuestionnaires();
+        con.createRequest();
 
     }
+
+    static testmethod void controllerRFATestMethod(){
+
+
+    	init();
+
+    	pse__Proj__c testProject = [select id from pse__Proj__c limit 1];
+
+        PageReference pageRef = new PageReference('/apex/ECO_DOA_ApprovalRequest');
+		test.setCurrentPage(pageRef);
+		ApexPages.currentPage().getParameters().put('projectID', testProject.id);
+
+
+        ECO_DOA_ApprovalRequestController con = new ECO_DOA_ApprovalRequestController();
+        con.getBusinessLines();
+        con.getGeographies();
+        con.idQuestionID = con.lstTemplateQuestions[0].id;
+        con.addQuestion();
+        con.idQuestionID = con.lstTemplateQuestions[1].id;
+        con.addQuestion();
+        con.deleteId =  con.lstDOATriggers[0].oTrigger.id;
+        con.deleteDOA();
+
+        con.FirstPage();
+        con.next();
+        con.previous();
+        con.lastPage();
+        con.getNxt();
+        con.getPrev();
+
+        con.answerone();
+        con.answertwo();
+        con.answerthree();
+        con.questionThree = 'No';
+
+        con.questions();
+        con.getQuestionnaires();
+        con.createRequest();
+
+        Test.startTest();
+
+
+        form__c frm = [select id from form__c limit 1];
+        system.assertNotEquals(frm.id,null);        
+
+        ApexPages.StandardController sc = new ApexPages.StandardController(frm);
+        ECO_RFAController controller = new ECO_RFAController(sc);     
+        controller.init();
+
+        TemplateQuestion__c tq = [select id from TemplateQuestion__c limit 1];
+        
+
+
+        controller.FirstPage();
+        controller.lastPage();
+
+        controller.getPrev();
+        controller.getNxt();
+
+        controller.OffsetSize =1;
+        controller.LimitSize=0;
+        controller.previous();
+        controller.next();
+
+        controller.getBusinessLines();
+        controller.getGeographies();
+
+        controller.idQuestionID = tq.id;
+        controller.addQuestion();
+        controller.getQuestionnaires();
+        controller.searchQuestionnaire();
+        controller.getisDeleteRendered();
+
+        //controller.loadTriggers();
+        controller.getisNonProjectRelated();
+        controller.AddNonProjectRelatedMatter();
+        controller.RemoveNonProjectRelatedMatter();
+
+        controller.saveForm();
+        controller.doaRegisterId = controller.NonProjectRelatedMatters[0].id;
+
+        //controller.deleteDOARegister();
+        //controller.writeAddNonProjectRelatedMatterToField();
+        controller.saveForm();
+        controller.returnToDOA();
+        controller.goToDOA();
+
+
+        Test.stopTest();
+
+    }
+
 }
