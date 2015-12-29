@@ -14,11 +14,26 @@ public class ECO_DTO_BudgetHeader {
         private set;
     }
     
+    public Decimal directPersonnelExpenses {
+        get {
+            Decimal totalRawCost = oBudgetHeader.TotalRawCost__c;
+            Decimal totalFringe = oBudgetHeader.TotalFringe__c;
+            Decimal dpe = 0;
+
+            totalRawCost = totalRawCost != null ? totalRawCost : 0;
+            totalFringe = totalFringe != null ? totalFringe : 0;
+
+            return totalRawCost + totalFringe;
+        }
+    }
+
     public Decimal salaryCostMultiplier {
         get {
-            if(oBudgetHeader.TotalRawCost__c == 0)
+
+            if(directPersonnelExpenses == 0)
                 return 0.00;
-            return oBudgetHeader.NetServicesRevenue__c / oBudgetHeader.TotalRawCost__c;
+
+            return oBudgetHeader.NetServicesRevenue__c / directPersonnelExpenses;
         }
     }
     

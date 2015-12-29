@@ -346,8 +346,8 @@
 			<tr>
 				<td class="summaryLabelCell2">GM/NSR</td>
 				<td class="numberCellWidth">
-					<apex:outputText value="{0, number, ###,###,###,##0}">
-						<apex:param value="{!BudgetHeader__c.TotalRevenue__c}" />
+					<apex:outputText value="{0, number, ###,###,###,##0.0}%">
+						<apex:param value="{!BudgetHeader__c.GMNSR__c}" />
 					</apex:outputText>	
 				</td>
 			</tr>
@@ -355,8 +355,8 @@
 			<tr>
 				<td class="summaryLabelCell2">NM/NSR</td>
 				<td class="numberCellWidth">
-					<apex:outputText value="{0, number, ###,###,###,##0}">
-						<apex:param value="{!BudgetHeader__c.TotalRevenue__c}" />
+					<apex:outputText value="{0, number, ###,###,###,##0.0}%">
+						<apex:param value="{!BudgetHeader__c.NMNSR__c}" />
 					</apex:outputText>	
 				</td>
 			</tr>
@@ -364,8 +364,8 @@
 			 <tr>
 				<td class="summaryLabelCell2">Salary Cost Multiplier</td>
 				<td class="numberCellWidth">
-					<apex:outputText value="{0, number, ###,###,###,##0}" rendered="{!AND(NOT(ISNULL(BudgetHeader__c.TotalCost__c)),BudgetHeader__c.TotalCost__c!=0)}">
-                        <apex:param value="{!BudgetHeader__c.TotalRevenue__c/BudgetHeader__c.TotalCost__c}" />
+					<apex:outputText value="{0, number, ###,###,###,##0.##}" rendered="{!AND(NOT(ISNULL(BudgetHeader__c.TotalRawCost__c + BudgetHeader__c.TotalFringe__c)), (BudgetHeader__c.TotalRawCost__c+ BudgetHeader__c.TotalFringe__c)!=0)}">
+                        <apex:param value="{!BudgetHeader__c.NetServicesRevenue__c/(BudgetHeader__c.TotalRawCost__c + BudgetHeader__c.TotalFringe__c)}" />
 					</apex:outputText>	
 				</td>
 			</tr>
@@ -373,8 +373,8 @@
             <tr>
 				<td class="summaryLabelCell2">Average Labor Rate Per hour</td>
 				<td class="numberCellWidth">
-					<apex:outputText value="{0, number, ###,###,###,##0}" rendered="{!AND(NOT(ISNULL(totalRow.totalLaborHours)),totalRow.totalLaborHours!=0)}">
-                        <apex:param value="{!BudgetHeader__c.TotalRawCost__c/totalRow.totalLaborHours}" />
+					<apex:outputText value="{0, number, ###,###,###,##0.##}" rendered="{!AND(NOT(ISNULL(BudgetHeader__c.TotalLaborAmount__c)),BudgetHeader__c.TotalLaborAmount__c!=0)}">
+                        <apex:param value="{!BudgetHeader__c.NetServicesRevenue__c/BudgetHeader__c.TotalLaborAmount__c}" />
 					</apex:outputText>	
 				</td>
 			</tr>
