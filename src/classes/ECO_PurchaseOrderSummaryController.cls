@@ -197,7 +197,10 @@ public without sharing class ECO_PurchaseOrderSummaryController {
     			poHeader.Project__c = projectId;
     			if(projectManager != null){
     				poHeader.Requestor__c = projectManager.Contact__c;
-    			}   			
+    			}   
+                pse__Proj__c project = [SELECT Id, CurrencyISOCode FROM pse__Proj__c WHERE Id =: projectId];
+                poHeader.CurrencyIsoCode = project.CurrencyISOCode; 
+                System.debug('Purchase Order CurrencyIsoCode set');
     		}
     			
     		if(agreementId != null) {

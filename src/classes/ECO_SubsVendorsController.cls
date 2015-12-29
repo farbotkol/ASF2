@@ -150,6 +150,7 @@ public with sharing class ECO_SubsVendorsController
     public PageReference AddPO(){
         POHeader__c po = new POHeader__c();
         po.Project__c = oProject.id;
+        po.CurrencyIsoCode = oProject.CurrencyIsoCode;
 
         insert po;
 
