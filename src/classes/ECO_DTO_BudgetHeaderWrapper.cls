@@ -135,109 +135,110 @@ public class ECO_DTO_BudgetHeaderWrapper {
     
     public Decimal getBudgetTotalGMNSR {
         get{
-            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_APPROVED);
-            if(recCount > 0)
-                return calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'GMNSR__c')/recCount;
+            Decimal NSR = calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'NetServicesRevenue__c');
+            
+            if(NSR != 0) {
+                Decimal GM = calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'GrossMargin__c');    
+                return (100*GM/NSR).setScale(2);
+            }
         	return 0.0;
         }
     }
 
     public Decimal getForecastTotalGMNSR {
         get{
-            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST);
-            if(recCount > 0)
-                return calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'GMNSR__c')/recCount;
+            Decimal NSR = calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'NetServicesRevenue__c');
+            
+            if(NSR != 0) {
+                Decimal GM = calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'GrossMargin__c');    
+                return (100*GM/NSR).setScale(2);
+            }
         	return 0.0;
         }
     }
 
     public Decimal getWorkAtRiskTotalGMNSR {
         get{
-            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_WORKATRISK);
-            if(recCount > 0)
-            	return calculateTotal(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'GMNSR__c')/recCount;
+            Decimal NSR = calculateTotal(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'NetServicesRevenue__c');
+            
+            if(NSR != 0) {
+                Decimal GM = calculateTotal(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'GrossMargin__c');    
+                return (100*GM/NSR).setScale(2);
+            }            
         	return 0.0;
         }
     }
     
     public Decimal getBudgetTotalNMNSR {
         get{
-            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_APPROVED);
-            if(recCount > 0)
-                return calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'NMNSR__c')/recCount;
+            Decimal NSR = calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'NetServicesRevenue__c');
+            
+            if(NSR != 0) {
+                Decimal NM = calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'NetMargin__c');    
+                return (100*NM/NSR).setScale(2);
+            }
         	return 0.0;
         }
     }
 
     public Decimal getForecastTotalNMNSR {
         get{
-            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST);
-            if(recCount > 0)
-                return calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'NMNSR__c')/recCount;
+            Decimal NSR = calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'NetServicesRevenue__c');
+            
+            if(NSR != 0) {
+                Decimal NM = calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'NetMargin__c');    
+                return (100*NM/NSR).setScale(2);
+            }
         	return 0.0;
         }
     }
 
     public Decimal getWorkAtRiskTotalNMNSR {
         get{
-            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_WORKATRISK);
-            if(recCount > 0)
-            	return calculateTotal(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'NMNSR__c')/recCount;
+            Decimal NSR = calculateTotal(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'NetServicesRevenue__c');
+            
+            if(NSR != 0) {
+                Decimal NM = calculateTotal(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'NetMargin__c');    
+                return (100*NM/NSR).setScale(2);
+            }
+
         	return 0.0;
         }
     }
     
     public Decimal getBudgetTotalsalaryCostMultiplier {
         get{
-            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_APPROVED);
-            if(recCount > 0)
-                return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'salaryCostMultiplier')/recCount;
-        	return 0.0;
+            return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'salaryCostMultiplier').setScale(1);
         }
     }
     
     public Decimal getForecastTotalsalaryCostMultiplier {
         get{
-            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST);
-            if(recCount > 0)
-                return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'salaryCostMultiplier')/recCount;
-        	return 0.0;
+            return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'salaryCostMultiplier').setScale(1);
         }
     }
     
     public Decimal getWorkAtRiskTotalsalaryCostMultiplier {
         get{
-            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_WORKATRISK);
-            if(recCount > 0)
-            	return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'salaryCostMultiplier')/recCount;
-        	return 0.0;
+            return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'salaryCostMultiplier').setScale(1);
         }
     }
     
     public Decimal getBudgetTotalaverageLabourRatePerHour {
         get{
-            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_APPROVED);
-            if(recCount > 0)
-                return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'averageLabourRatePerHour')/recCount;
-        	return 0.0;
+            return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'averageLabourRatePerHour').setScale(1);
         }
     }
     
     public Decimal getForecastTotalaverageLabourRatePerHour {
         get{
-            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST);
-            if(recCount > 0)
-                return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'averageLabourRatePerHour')/recCount;
-        	return 0.0;
+            return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'averageLabourRatePerHour').setScale(1);
         }
     }
     
     public Decimal getWorkAtRiskTotalaverageLabourRatePerHour {
         get{
-            Integer recCount = calculateRecordsWithStatus(ECO_DTO_BudgetHeader.STATUS_WORKATRISK);
-            if(recCount > 0)
-            	return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'averageLabourRatePerHour')/recCount;
-        	return 0.0;
+            return calculateTotalDTOproperty(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'averageLabourRatePerHour').setScale(1);
         }
     }
     
@@ -257,19 +258,25 @@ public class ECO_DTO_BudgetHeaderWrapper {
     public Decimal calculateTotalDTOproperty(String Statuses, String property) {
 		Set<String> statusList = new Set<String>(Statuses.split(','));
         
-        Decimal total = 0.0;
+        Decimal totalNum = 0.0;
+        Decimal totalDen = 0.0;
+
         for(ECO_DTO_BudgetHeader budgetHeader : dtoBudgetHeaders) {
             if(statusList.contains(budgetHeader.status)) {
+                totalNum = totalNum + budgetHeader.oBudgetHeader.NetServicesRevenue__c;
                 if(property == 'salaryCostMultiplier'){
-                	total = total + (Decimal)budgetHeader.salaryCostMultiplier;
+                    totalDen = totalDen + budgetHeader.directPersonnelExpenses;
                 }
                 else if(property == 'averageLabourRatePerHour') {
-                    total = total + (Decimal)budgetHeader.averageLabourRatePerHour;
+                    totalDen = totalDen + budgetHeader.oBudgetHeader.TotalLaborAmount__c;
                 }                
             }
         }
         
-        return total;        
+        if (totalDen != 0.0) {
+            return totalNum/totalDen;
+        }
+        return 0.0;        
     }
     
     public Integer calculateRecordsWithStatus(String Statuses) {

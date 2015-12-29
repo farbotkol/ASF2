@@ -49,89 +49,6 @@ public class ECO_DTO_BudgetLabourWrapper {
         }
         return total;
     }
-    
-    public ECO_DTO_BudgetLabourWrapper(Id projectId) {
-        mapAssignmentsByNameAndTask = new Map <String, List<BudgetAssignment__c>>();
-        
-        system.debug('ECO_DTO_BudgetLabourWrapper Constructor BEGIN');
-        dtoBudgetLabourDetails = new List<ECO_DTO_BudgetLabourDetail>();
-        dtoBudgetTasks = new List<ECO_DTO_BudgetTask>();
-        
-        List<BudgetResource__c> budgetResources = [SELECT
-                                                      Id,
-                                                      ResourceType__c,
-                                                      ColumnHeader__c,
-                                                      JobName__c,
-                                                      ExpenditureType__c,
-                                                      CostRate__c,
-                                                      UnitType__c,
-                                                      UnitCost__c,
-                                                      MarkupPercentage__c,
-                                                      OverrideRawCost__c,
-                                                      OverrideFringeMultiplier__c,
-                                                      OverrideOverheadMultiplier__c,
-                                                      OverrideFringeMultiplierField__c,
-                                                      OverrideOverheadMultiplierField__c,
-                                                      AppliedBillRate__c,
-                                                      MarginType__c,
-                                                      CostCalcType__c,
-                                                      OverrideBillRate__c,
-                                                      OverrideUplift__c,
-                                                      TotalQuantity__c,
-                                                      TotalCost__c,
-                                                      TotalHours__c,
-                                                      TotalRevenue__c,
-                                                      BudgetHeader__c,
-                                                      IsQuoted__c,
-                                                      IsEstimated__c,
-                                                      IsBillable__c,
-                                                      (SELECT Id,
-                                                          	BudgetResource__c,
-                                                          	BudgetTask__c,
-                                                          	Quantity__c,
-                                                          	TotalComputedCost__c,
-                                                          	OverrideTotalCost__c,
-                                                          	OverrideTotalRevenue__c,
-                                                       		CalculatedRevenue__c,
-                                                          WorkTypeName__c
-                                                         from BudgetAssignments__r)
-                                                    FROM
-                                                      BudgetResource__c
-                                                    WHERE
-                                                      BudgetHeader__r.Project__c = :projectId AND (BudgetHeader__r.Status__c = 'Forecast' OR BudgetHeader__r.Status__c = 'Forecast')];
-        
-        for(BudgetResource__c budgetResource : budgetResources) {
-            ECO_DTO_BudgetLabourDetail dtoBudgetLabourDetail = new ECO_DTO_BudgetLabourDetail(budgetResource, budgetResource.BudgetAssignments__r);
-      		dtoBudgetLabourDetails.add(dtoBudgetLabourDetail);
-            String uniqueId = dtoBudgetLabourDetail.uniqueId;
-			     List<BudgetAssignment__c> budgetAssignments = mapAssignmentsByNameAndTask.get(uniqueId);
-            
-            if(budgetAssignments == null) {
-                budgetAssignments = new List<BudgetAssignment__c> ();	
-                mapAssignmentsByNameAndTask.put(uniqueId,budgetAssignments);                
-            }
-            
-            budgetAssignments.addAll(budgetResource.BudgetAssignments__r);
-        }
-        
-        System.debug('BudgetResource complete');
-        
-       // dtoBudgetTasks = ECO_BudgetTaskService.getBudgetTaskListFromProject(projectId);
-        
-        system.debug('BudgetTaskService Complete');
-        
-        createEmptyBudgetAssignments();
-        
-       // system.debug('BudgetTaskService Complete');
-        
-        calculateTopLevelTasksTotalForLaborPerson();
-        calculateTopLevelTasksTotalCostForSubPerson();
-        calculateTopLevelTasksTotalRevenueForSubPerson();      
-        calculateTopLevelTasksTotalQuantityForODCResource();
-        calculateTopLevelTasksTotalComputedCostForODCResource();
-        
-//        calculateGrandTotal();
-    }
 
     public static List<BudgetResource__c> budgetResourceSelector(Id budgetHeaderId, String resourceType) {
       List<BudgetResource__c> budgetResources = [SELECT
@@ -258,7 +175,7 @@ public class ECO_DTO_BudgetLabourWrapper {
       
         for(ECO_DTO_BudgetLabourDetail labour : dtoBudgetLabourDetails) {
           for(ECO_DTO_BudgetTask budgetTask : dtoBudgetTasks) {
-                if(budgetTask.children.size() > 0) {
+                if(budgetTask.children.size() > 0 || budgetTask.indentLevel == 0) {
                     EACTotals totals = new EACTotals();
                     totals.EACActualQuantity = getSubtaskTotal(budgetTask, labour, 'EACActualQuantity__c', false);
                     totals.EACApprovedQuantity = getSubtaskTotal(budgetTask, labour, 'EACApprovedQuantity__c', false);
@@ -295,7 +212,7 @@ public class ECO_DTO_BudgetLabourWrapper {
         for(ECO_DTO_BudgetLabourDetail labour : dtoBudgetLabourDetails) {
         	for(ECO_DTO_BudgetTask budgetTask : dtoBudgetTasks) {
 
-                if(budgetTask.children.size() > 0) {
+                if(budgetTask.children.size() > 0 || budgetTask.indentLevel == 0) {
                     mapTotalByLaborDetailAndTask.put('' + labour.oBudgetResource.Id + budgetTask.obudgetTask.Id, getSubtaskTotal(budgetTask, labour, 'Quantity__c', false));
                 }
         	}    
@@ -306,7 +223,7 @@ public class ECO_DTO_BudgetLabourWrapper {
         mapTotalCostBySubDetailAndTask = new Map<String, Decimal>();
         for(ECO_DTO_BudgetLabourDetail labour : dtoBudgetLabourDetails) {
         	for(ECO_DTO_BudgetTask budgetTask : dtoBudgetTasks) {
-                if(budgetTask.children.size() > 0) {
+                if(budgetTask.children.size() > 0 || budgetTask.indentLevel == 0) {
                     mapTotalCostBySubDetailAndTask.put('' + labour.oBudgetResource.Id + budgetTask.obudgetTask.Id, getSubtaskTotal(budgetTask, labour, 'OverrideTotalCost__c', false));
                 }
         	}    
@@ -317,7 +234,7 @@ public class ECO_DTO_BudgetLabourWrapper {
         mapTotalQuantityByODCDetailAndTask = new Map<String, Decimal>();
         for(ECO_DTO_BudgetLabourDetail labour : dtoBudgetLabourDetails) {
           for(ECO_DTO_BudgetTask budgetTask : dtoBudgetTasks) {
-                if(budgetTask.children.size() > 0) {
+                if(budgetTask.children.size() > 0 || budgetTask.indentLevel == 0) {
                     mapTotalQuantityByODCDetailAndTask.put('' + labour.oBudgetResource.Id + budgetTask.obudgetTask.Id, getSubtaskTotal(budgetTask, labour, 'Quantity__c', false));
                 }
           }    
@@ -328,7 +245,7 @@ public class ECO_DTO_BudgetLabourWrapper {
         mapTotalComputedCostByODCDetailAndTask = new Map<String, Decimal>();
         for(ECO_DTO_BudgetLabourDetail labour : dtoBudgetLabourDetails) {
           for(ECO_DTO_BudgetTask budgetTask : dtoBudgetTasks) {
-                if(budgetTask.children.size() > 0) {
+                if(budgetTask.children.size() > 0 || budgetTask.indentLevel == 0) {
                     mapTotalComputedCostByODCDetailAndTask.put('' + labour.oBudgetResource.Id + budgetTask.obudgetTask.Id, getSubtaskTotal(budgetTask, labour, 'TotalComputedCost__c', false));
                 }
           }    
@@ -339,7 +256,7 @@ public class ECO_DTO_BudgetLabourWrapper {
         mapTotalRevenueBySubDetailAndTask = new Map<String, Decimal>();
         for(ECO_DTO_BudgetLabourDetail labour : dtoBudgetLabourDetails) {
         	for(ECO_DTO_BudgetTask budgetTask : dtoBudgetTasks) {
-                if(budgetTask.children.size() > 0) {
+                if(budgetTask.children.size() > 0 || budgetTask.indentLevel == 0) {
                     if(labour.marginType == 'Amount'){
                        // System.debug('Total Calculated Revenue Amount: ' + getSubtaskTotal(budgetTask, labour, 'CalculatedRevenue__c', false));
                     	mapTotalRevenueBySubDetailAndTask.put('' + labour.oBudgetResource.Id + budgetTask.obudgetTask.Id, getSubtaskTotal(budgetTask, labour, 'OverrideTotalRevenue__c', false));
@@ -378,11 +295,13 @@ public class ECO_DTO_BudgetLabourWrapper {
           theTask.totalComputedCost = theTask.getSubtaskTotal('TotalComputedCost__c');
       }
     }
-    
+
+
 	public Decimal getSubtaskTotal(ECO_DTO_BudgetTask budgetTask, ECO_DTO_BudgetLabourDetail labour, String fieldName, boolean includeThis) {
 		Decimal result = 0;
 
-		if (includeThis) {
+
+		if (includeThis || (budgetTask.children.size() == 0)) {
             result += labour.mAssignmentMap.get(budgetTask.obudgetTask.Id).get(fieldName) == Null ? 0.0 : (Decimal) labour.mAssignmentMap.get(budgetTask.obudgetTask.Id).get(fieldName);
 		}
 

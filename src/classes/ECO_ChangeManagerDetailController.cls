@@ -57,15 +57,7 @@ public class ECO_ChangeManagerDetailController {
         changeManager = (ChangeManager__c)controller.getRecord();
         changeManagerStandardController = controller;
 
-        needOracleLogin = false;
-
-        if(changeManager.OracleApprovalSyncStatus__c == 'Approved')
-        {
-            showPollingMsg = true;
-            pollMessageQueue = true;
-            pollingMessageQueueMsg = 'Checking if project has been processed in <span id="pollingTimer">10</span> seconds...';
-            pollingMessageQueueMsgBottom = 'Checking if project has been processed in <span id="pollingTimerBottom">10</span> seconds...';  
-        }      
+        needOracleLogin = false;      
     }    
 
     public PageReference oracleSyncControl(){
@@ -154,27 +146,38 @@ public class ECO_ChangeManagerDetailController {
         ECO_ProjectSummaryController projectSummaryController2 = new ECO_ProjectSummaryController();
     
         projectSynchMessages = '';
-        projectSynchMessages += projectSummaryController2.projectMsg;
+        if(changeManager.ApprovalStatus__c != 'Approved' && changeManager.ApprovalStatus__c != 'Submitted')
+        {
+            projectSynchMessages += projectSummaryController2.projectMsg;
         
-        projectSynchMessages += projectSummaryController2.taskMsg;
-        invalidTasks = projectSummaryController2.invalidTasks;
-        projectSynchMessages += projectSummaryController2.keyMemberMsg;
-        invalidKeyMembers = projectSummaryController2.invalidKeyMembers;
-        projectSynchMessages += projectSummaryController2.classificationsMsg;
+            projectSynchMessages += projectSummaryController2.taskMsg;
+            invalidTasks = projectSummaryController2.invalidTasks;
+            projectSynchMessages += projectSummaryController2.keyMemberMsg;
+            invalidKeyMembers = projectSummaryController2.invalidKeyMembers;
+            projectSynchMessages += projectSummaryController2.classificationsMsg;
  
-        projectSynchMessages += projectSummaryController2.customersMsg; 
-        invalidCustomers = projectSummaryController2.invalidCustomers; 
+            projectSynchMessages += projectSummaryController2.customersMsg; 
+            invalidCustomers = projectSummaryController2.invalidCustomers; 
 
-        if(changeManager.IntExtContractManagement__c)
-            projectSynchMessages += validateAgreements();
+            if(changeManager.IntExtContractManagement__c)
+                projectSynchMessages += validateAgreements();
 
-        //if(changeManager.IsExecutionApprovalChange__c)
-        projectSynchMessages += executionApprovalAgreementFundingBudgetValidations();
+            //if(changeManager.IsExecutionApprovalChange__c)
+            projectSynchMessages += executionApprovalAgreementFundingBudgetValidations();
 
-        if(projectSynchMessages != '' && projectSynchMessages != null)
-            projectSynchMessages = '<ol>' + projectSynchMessages + '</ol>';
+            if(projectSynchMessages != '' && projectSynchMessages != null)
+                projectSynchMessages = '<ol>' + projectSynchMessages + '</ol>';
 
+        }
         generateSyncHistory();
+
+        if(changeManager.OracleApprovalSyncStatus__c == 'Approved')
+        {
+            showPollingMsg = true;
+            pollMessageQueue = true;
+            pollingMessageQueueMsg = 'Checking if project has been processed in <span id="pollingTimer">10</span> seconds...';
+            pollingMessageQueueMsgBottom = 'Checking if project has been processed in <span id="pollingTimerBottom">10</span> seconds...';  
+        }
     }
     
     private String executionApprovalAgreementFundingBudgetValidations()

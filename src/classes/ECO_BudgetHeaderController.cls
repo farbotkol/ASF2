@@ -21,6 +21,7 @@ public with sharing class ECO_BudgetHeaderController {
 		List<String> fields = new List<String>();
 
 		fields.add('Project__c');
+        fields.add('AppliedTotalRevenue__c');
 
 		stdController.addFields(fields);
 

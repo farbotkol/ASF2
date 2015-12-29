@@ -236,7 +236,7 @@
             <name>EcoSetForecastEndDate</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <formula>ISBLANK(ForecastEndDate__c)</formula>
         <triggerType>onCreateOnly</triggerType>
     </rules>
@@ -246,7 +246,7 @@
             <name>EcoSetForecastStartDate</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <formula>ISBLANK(ForecastStartDate__c)</formula>
         <triggerType>onCreateOnly</triggerType>
     </rules>
@@ -278,7 +278,7 @@
             <name>EcoSetForecastEndDatePlanning</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <formula>AND(NOT(ISCHANGED(ForecastEndDate__c)),
 ISCHANGED(pse__End_Date__c),
 IsTopLevelTask__c = False, 
@@ -293,7 +293,7 @@ ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Pending Go/No Go&quot;)))</formula
             <name>EcoSetForecastStartDatePlanning</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <formula>AND(NOT(ISCHANGED(ForecastStartDate__c)),
 ISCHANGED(pse__Start_Date__c),
 IsTopLevelTask__c = False, 
@@ -539,7 +539,7 @@ ISPICKVAL(pse__Project__r.pse__Stage__c,&quot;Pending Go/No Go&quot;)))</formula
             <name>Update_Forecast_Start_Date</name>
             <type>FieldUpdate</type>
         </actions>
-        <active>true</active>
+        <active>false</active>
         <booleanFilter>1 OR 2</booleanFilter>
         <criteriaItems>
             <field>pse__Project_Task__c.ForecastStartDate__c</field>

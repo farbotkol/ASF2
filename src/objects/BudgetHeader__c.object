@@ -56,7 +56,9 @@
     <fields>
         <fullName>AppliedTotalRevenue__c</fullName>
         <externalId>false</externalId>
-        <formula>IF( OR(OverrideTotalRevenue__c == 0, ISNULL(OverrideTotalRevenue__c)),  TotalRevenue__c , OverrideTotalRevenue__c )</formula>
+        <formula>IF( ISPICKVAL(Project__r.BudgetStrategyRevenue__c, &apos;Project Level&apos;), OverrideTotalRevenue__c,
+IF( ISPICKVAL(Project__r.BudgetStrategyRevenue__c, &apos;Top Task&apos;),  TotalTopLevelOverrideRevenue__c, 
+    TotalRevenue__c))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Applied Total Revenue</label>
         <precision>18</precision>
@@ -185,7 +187,7 @@
     <fields>
         <fullName>GrossMargin__c</fullName>
         <externalId>false</externalId>
-        <formula>TotalRevenue__c - TotalOverhead__c -  TotalFeeAmount__c -  TotalSubAmount__c</formula>
+        <formula>AppliedTotalRevenue__c - (  TotalRawCost__c +  TotalFringe__c + TotalFeeAmount__c  + TotalSubAmount__c + TotalContingencyAmount__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Gross Margin</label>
         <precision>18</precision>
@@ -218,7 +220,7 @@
     <fields>
         <fullName>NetMargin__c</fullName>
         <externalId>false</externalId>
-        <formula>TotalRevenue__c - TotalCost__c</formula>
+        <formula>AppliedTotalRevenue__c - TotalCost__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Net Margin</label>
         <precision>18</precision>
@@ -230,7 +232,7 @@
     <fields>
         <fullName>NetServicesRevenue__c</fullName>
         <externalId>false</externalId>
-        <formula>AppliedTotalRevenue__c -  TotalSubAmount__c -  TotalFeeAmount__c</formula>
+        <formula>AppliedTotalRevenue__c - TotalSubAmount__c - TotalFeeAmount__c - TotalContingencyAmount__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Net Services Revenue</label>
         <precision>18</precision>
@@ -481,6 +483,16 @@
             <value>Subcontractor</value>
         </summaryFilterItems>
         <summaryForeignKey>BudgetResource__c.BudgetHeader__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
+        <fullName>TotalTopLevelOverrideRevenue__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Top Level Override Revenue</label>
+        <summarizedField>BudgetTask__c.OverrideTotalRevenue__c</summarizedField>
+        <summaryForeignKey>BudgetTask__c.BudgetHeader__c</summaryForeignKey>
         <summaryOperation>sum</summaryOperation>
         <trackTrending>false</trackTrending>
         <type>Summary</type>

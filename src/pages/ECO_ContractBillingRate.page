@@ -59,7 +59,7 @@
 
 <apex:form >
 
-
+<apex:pageMessages/>
 <apex:actionFunction id="updateBillRateApex" name="updateBillRateApex" rerender="updatedKey, updatedValue" action="{!updateBillRateApex}" immediate="true">
     <apex:param id="updatedKey" name="updatedKey" assignto="{!updatedKey}" value=""/>
     <apex:param id="updatedValue" name="updatedValue" assignto="{!updatedValue}" value=""/> 
@@ -74,7 +74,12 @@ Select "Create Bill Rate Period" to create a start and end date of the effective
         </div> 
 
 <apex:pageBlock title="Contract Billing Rate Edit" mode="edit">
-<apex:pageBlockButtons location="top"><apex:commandButton value="Save" action="{!saveBillRates}" immediate="false"/><apex:commandButton value="Return To MSA" action="{!returnToAgreement}"/></apex:pageBlockButtons>
+<apex:pageBlockButtons location="top">
+    <apex:commandButton value="Save">
+        <apex:actionSupport event="onclick" action="{!saveBillRates}"/>
+    </apex:commandButton>
+    <apex:commandButton value="Return To MSA" action="{!returnToAgreement}"/>
+</apex:pageBlockButtons>
 
 <apex:pageBlockSection columns="1">
     <apex:pageBlockSectionItem >
@@ -111,7 +116,8 @@ Select "Create Bill Rate Period" to create a start and end date of the effective
                 <apex:repeat value="{!periods}" var="period">
                     <apex:variable var="key" value="{!period.Id}-{!laborCategory}"/>
                     <td>
-                        <apex:inputField value="{!billRatePeriodCategoryRateMap[key].BillRate__c}" onChange="updateBillRate(this, '{!key}');" html-placeholder="{!period.Id}-{!laborCategory}" />                   
+                        <apex:inputField value="{!billRatePeriodCategoryRateMap[key].BillRate__c}" onkeyup="updateBillRate(this, '{!key}'); return false;" html-placeholder="{!period.Id}-{!laborCategory}" >
+                        </apex:inputField>                   
                     </td>           
                 </apex:repeat> 
         </tr>
