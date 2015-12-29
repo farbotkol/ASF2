@@ -3,8 +3,8 @@
         <apex:define name="budgetScreen"> 
     <apex:includeScript value="{!$Resource.ECO_jQuery_1_11_2_min_js}"/>
     <script type="text/javascript">
-    	$b = jQuery.noConflict();
-		
+        $b = jQuery.noConflict();
+        
         $b( function() {
             $b('.currency').each( 
                 function (i, elem) { 
@@ -12,7 +12,7 @@
                     var fltVal = parseFloat(val);
 
                     if( !isNaN (fltVal) ) {
-                        $b(elem).text(fltVal.toFixed(2));
+                         $b(elem).text(fltVal.toFixed(2));
                     }
                 } );
         });
@@ -29,6 +29,8 @@
         
         row.find('.etc').val( (revised-actual).toFixed(2) ) ;
         row.find('[id$=quantity]').val( (revised-current).toFixed(2) );
+
+        checkIfEACLowered(current, revised, row);
     }
     
     function etcChange(line) {
@@ -36,7 +38,6 @@
         var actual = parseFloat(row.find('.actual').text());
         var current = parseFloat(row.find('.currentForecast').text());
         var etc = parseFloat(row.find('.etc').val());        
-        
 
         actual = actual ? actual : 0.00;
         current = current ? current : 0.00;
@@ -44,7 +45,36 @@
 
         row.find('.revisedForecast').val((etc + actual).toFixed(2) );
         row.find('[id$=quantity]').val( (etc + actual - current).toFixed(2) );
+
+        var revised = parseFloat(row.find('.revisedForecast').val());
+        checkIfEACLowered(current, revised, row);
     }
+    
+    function checkIfEACLowered(currentEAC, revisedEAC, row) {
+        if (revisedEAC < currentEAC)
+            row.find('.revisedForecast').addClass('negEAC');
+        else
+            row.find('.revisedForecast').removeClass('negEAC').addClass('revisedForecast');
+    }
+
+    function validateForm(){
+        
+        var negEACCount = $b('.negEAC').length;
+        
+        if (negEACCount > 0)
+            return confirmNegEAC();
+        else
+            return true;
+    }
+
+    function confirmNegEAC()
+    {
+        if (confirm("Are you sure you want to Lower your EAC?  Please confirm!"))
+            return true;
+        else
+            return false;
+    }
+
     </script>
     
     <style>
@@ -52,7 +82,7 @@
             border-top: 1px solid black;
             border-left: 1px solid black;
             border-right: 1px solid black;
-        	padding:3px;
+            padding:3px;
         }
         .laborDetail td.lastCell {
             border-bottom: 1px solid black;
@@ -67,7 +97,7 @@
         }
         
         .laborDetail input, .taskDetail input{
-        	width:80%;
+            width:80%;
         }
         
         .taskDetail>td{
@@ -85,7 +115,7 @@
             border-right: 1px solid black;
         }
         
-	   
+       
         table.rowHeader th, table.rowHeader td {
             border-top: 1px solid transparent;
             border-left: 1px solid transparent;
@@ -107,7 +137,7 @@
             padding:3px;
             height: 20px;
         }
-	table.rowHeader td, table.laborDetail td, table.rowHeader th, table.laborDetail th {
+    table.rowHeader td, table.laborDetail td, table.rowHeader th, table.laborDetail th {
             padding:3px;
             height: 20px;
         }
@@ -136,35 +166,41 @@
         }
         
         .taskNumberCol{
-        	width:120px; 
-  			max-width:120px;
- 			min-width:120px; 
-			overflow:hidden;
+            width:120px; 
+            max-width:120px;
+            min-width:120px; 
+            overflow:hidden;
         }
         
         .taskNameCol{
-        	width:210px;
-  			max-width:210px;
- 			min-width:210px; 
-			overflow:hidden;
+            width:210px;
+            max-width:210px;
+            min-width:210px; 
+            overflow:hidden;
         }
         
         .resourceCol td{
-        	width:90px;
-        	max-width:90px;
- 			min-width:90px; 
-			overflow:hidden;
+            width:90px;
+            max-width:90px;
+            min-width:90px; 
+            overflow:hidden;
         }
         
         .totalCol{
-        	width:110px;
-        	max-width:110px;
- 			min-width:110px; 
-			overflow:hidden;
+            width:110px;
+            max-width:110px;
+            min-width:110px; 
+            overflow:hidden;
         }
         
         .currency{
-        	text-align:right;
+            text-align:right;
+        }
+        
+        .negEAC {
+            border: 1px solid #ff9999;
+            background-color: #ff9999;
+            font-weight: bold;
         }
     </style>
     <apex:sectionHeader subtitle="Labour Details" title="All values shown in : {!budgetLabourWrapper.projectCurrency}"/>  
@@ -187,19 +223,20 @@
                 <table class="rowHeader" cellpadding="0" cellspacing="0">
                     <thead>
                         <tr><th>
-                            <apex:commandButton value="<<" action="{!pageFirst}" title="First Page" alt="First Page" disabled="{!!brSsc.hasPrevious}" style="width:30px;margin-bottom:5px;"/>
-                            <apex:commandButton value="<" action="{!pagePrevious}" title="Previous Page" alt="Previous Page" disabled="{!!brSsc.hasPrevious}" style="width:30px;"/>
+                            <apex:commandButton value="<<" action="{!pageFirst}"  onclick="return validateForm();" title="First Page" alt="First Page" disabled="{!!brSsc.hasPrevious}" style="width:30px;margin-bottom:5px;"/>
+                            <apex:commandButton value="<" action="{!pagePrevious}"  onclick="return validateForm();" title="Previous Page" alt="Previous Page" disabled="{!!brSsc.hasPrevious}" style="width:30px;"/>
 
                             <span style="min-width:5px;">&nbsp;</span>
                             Page {!brSsc.pageNumber} of {!totalPages}
                             <span style="min-width:5px;">&nbsp;</span>
 
-                             <apex:commandButton value=">" action="{!pageNext}" title="Next Page" alt="Next Page" disabled="{!!brSsc.hasNext}" style="width:30px;"/>
-                            <apex:commandButton value=">>" action="{!pageLast}" title="Last Page" alt="Last Page" disabled="{!!brSsc.hasNext}" style="width:30px;"/>
+
+                            <apex:commandButton value=">" action="{!pageNext}" onclick="return validateForm();" title="Next Page" alt="Next Page" disabled="{!!brSsc.hasNext}" style="width:30px;"/>
+                            <apex:commandButton value=">>" action="{!pageLast}" onclick="return validateForm();" title="Last Page" alt="Last Page" disabled="{!!brSsc.hasNext}" style="width:30px;"/>
 
                             <br/>
 
-                            <apex:commandButton value="Save" action="{!saveEAC}"/>
+                            <apex:commandButton value="Save" action="{!saveEAC}" onclick="return validateForm();"/>
                             
                         <!-- TODO   
 <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/> -->
@@ -245,7 +282,7 @@
                             <td width="90px" class="lightBlueHeading bold">{!budgetLabourWrapper.mapLaborRatesByResourceId[budgetLabour.oBudgetResource.Id].EACActualRate}</td>
                             <td width="90px" class="lightBlueHeading bold">{!budgetLabourWrapper.mapLaborRatesByResourceId[budgetLabour.oBudgetResource.Id].EACApprovedRate}</td>
                             <td width="90px" class="lightBlueHeading bold">{!budgetLabourWrapper.mapLaborRatesByResourceId[budgetLabour.oBudgetResource.Id].EACCurrentForecastRate}</td>
-                            <td width="90px" class="lightBlueHeading bold">{!budgetLabour.costRate}</td>
+                            <td width="90px" class="lightBlueHeading bold">{!budgetLabour.costRate }</td>
                             <td width="90px" class="lightBlueHeading bold">{!budgetLabourWrapper.mapLaborRatesByResourceId[budgetLabour.oBudgetResource.Id].RevisedForecastRate}</td>                            
                         </tr>
                         <tr>
@@ -325,20 +362,98 @@
                 <table class="resourceCol" width="100%">
                     <tr> 
                     <apex:variable value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[budgetLabour.oBudgetResource.Id + 'Total']}" var="totalByResource"/>
-                        <td class="currency">{!totalByResource.EACActualQuantity}</td>
+                        <td>
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            	<apex:param value="{!totalByResource.EACActualQuantity}" />
+                			</apex:outputText>
+                        </td>
+                        <td> 
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            	<apex:param value="{!totalByResource.EACApprovedQuantity}" />
+                			</apex:outputText>
+                        </td>
+                        <td> 
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            	<apex:param value="{!totalByResource.EACForecastQuantity}" />
+                			</apex:outputText>
+                        </td>
+                        <td> 
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            	<apex:param value="{!totalByResource.EACForecastQuantity 
+                                                - totalByResource.EACActualQuantity 
+                                                + totalByResource.Quantity }" />
+                			</apex:outputText>
+                        </td>
+                        <td> 
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                            	<apex:param value="{!totalByResource.Quantity + totalByResource.EACForecastQuantity}" />
+                			</apex:outputText>
+                        </td>
+                        <!--td class="currency">{!totalByResource.EACActualQuantity}</td>
                         <td class="currency">{!totalByResource.EACApprovedQuantity}</td> 
                         <td class="currency">{!totalByResource.EACForecastQuantity}</td>
                         <td class="currency">{!totalByResource.EACForecastQuantity 
                                                 - totalByResource.EACActualQuantity 
                                                 + totalByResource.Quantity }</td>
-                        <td class="currency">{!totalByResource.Quantity + totalByResource.EACForecastQuantity}</td>
+                        <td class="currency">{!totalByResource.Quantity + totalByResource.EACForecastQuantity}</td-->
                         
                     </tr>
                 </table>
             </td>
         </apex:repeat>
+            <td class="blueHeading"> 
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACActualQuantity}" />
+                </apex:outputText>
+            </td>
+            <td class="blueHeading"> 
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACApprovedQuantity}" />
+                </apex:outputText>
+            </td>
+            <td class="blueHeading"> 
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACForecastQuantity}" />
+                </apex:outputText>
+            </td>
+            <td class="blueHeading"> 
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.Quantity}" />
+                </apex:outputText>
+            </td>
+            <td class="blueHeading"> 
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.Quantity + budgetLabourWrapper.grandTotals.EACActualQuantity}" />
+                </apex:outputText>
+            </td>
             
-            <td class="blueHeading currency">{!budgetLabourWrapper.grandTotals.EACActualQuantity}</td>
+            <td class="blueHeading"> 
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACActualCost}" />
+                </apex:outputText>
+            </td>
+            <td class="blueHeading"> 
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACCurrentApprovedCost}" />
+                </apex:outputText>
+            </td>
+            <td class="blueHeading"> 
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACCurrentForecastCost}" />
+                </apex:outputText>
+            </td>
+            <td class="blueHeading"> 
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACEstimateToComplete}" />
+                </apex:outputText>
+            </td>
+            <td class="blueHeading"> 
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACEstimateToComplete + budgetLabourWrapper.grandTotals.EACActualCost}" />
+                </apex:outputText>
+            </td>
+            
+            <!--td class="blueHeading currency">{!budgetLabourWrapper.grandTotals.EACActualQuantity}</td>
             <td class="blueHeading currency">{!budgetLabourWrapper.grandTotals.EACApprovedQuantity}</td>
             <td class="blueHeading currency">{!budgetLabourWrapper.grandTotals.EACForecastQuantity}</td>
             <td class="blueHeading currency">{!budgetLabourWrapper.grandTotals.Quantity}</td>
@@ -348,11 +463,18 @@
             <td class="blueHeading currency">{!budgetLabourWrapper.grandTotals.EACCurrentApprovedCost}</td>
             <td class="blueHeading currency">{!budgetLabourWrapper.grandTotals.EACCurrentForecastCost}</td>
             <td class="blueHeading currency">{!budgetLabourWrapper.grandTotals.EACEstimateToComplete}</td>
-            <td class="blueHeading currency">{!budgetLabourWrapper.grandTotals.EACEstimateToComplete + budgetLabourWrapper.grandTotals.EACActualCost}</td>
+            <td class="blueHeading currency">{!budgetLabourWrapper.grandTotals.EACEstimateToComplete + budgetLabourWrapper.grandTotals.EACActualCost}</td-->
 
             <td class="blueHeading currency">&nbsp;</td>
             <td class="blueHeading currency">&nbsp;</td>
-            <td class="blueHeading currency">{!budgetLabourWrapper.grandTotals.EACForecastRevenue}</td>
+            
+            <td class="blueHeading"> 
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACForecastRevenue}" />
+                </apex:outputText>
+            </td>
+            
+            <!--td class="blueHeading currency">{!budgetLabourWrapper.grandTotals.EACForecastRevenue}</td-->
             <td class="blueHeading currency">&nbsp;</td>
             <td class="blueHeading currency">&nbsp;</td>
             
@@ -376,19 +498,41 @@
                     <table width="100%">
                         <tr>
                         <span>
-                            <td class="lightBlueHeading currency actual" width="20%">
-                                <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACActualQuantity__c }" rendered="{! !hasChildTasks}"/>
-                                <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACActualQuantity}" rendered="{!hasChildTasks}"/>
+                            <!--td class="lightBlueHeading currency actual" width="20%"-->
+                            <td class="lightBlueHeading actual" width="20%">
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{! !hasChildTasks}">
+                                    <apex:param value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACActualQuantity__c}" />
+                                </apex:outputText>
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!hasChildTasks}">
+                                    <apex:param value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACActualQuantity}" />
+                                </apex:outputText>
+                                <!--apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACActualQuantity__c}" rendered="{! !hasChildTasks}"/>
+                                <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACActualQuantity}" rendered="{!hasChildTasks}"/-->
                             </td>
-                            <td class="lightBlueHeading currency" width="20%">
-                                <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACApprovedQuantity__c }" rendered="{! !hasChildTasks}" />
-                                <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACApprovedQuantity}" rendered="{!hasChildTasks}"/>
+                            <!--td class="lightBlueHeading currency" width="20%"-->
+                            <td class="lightBlueHeading" width="20%">
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{! !hasChildTasks}">
+                                    <apex:param value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACApprovedQuantity__c}" />
+                                </apex:outputText>
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!hasChildTasks}">
+                                    <apex:param value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACApprovedQuantity}" />
+                                </apex:outputText>
+                                <!--apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACApprovedQuantity__c }" rendered="{! !hasChildTasks}" />
+                                <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACApprovedQuantity}" rendered="{!hasChildTasks}"/-->
                             </td>
-                            <td class="lightBlueHeading currency currentForecast" width="20%">
-                                <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastQuantity__c }" rendered="{!budgetTask.children.size == 0}"/>
-                                <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACForecastQuantity}" rendered="{!hasChildTasks}" />
+                            <!--td class="lightBlueHeading currency currentForecast" width="20%"-->
+                            <td class="lightBlueHeading currentForecast" width="20%">
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size == 0}">
+                                    <apex:param value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastQuantity__c}" />
+                                </apex:outputText>
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!hasChildTasks}">
+                                    <apex:param value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACForecastQuantity}" />
+                                </apex:outputText>
+                                <!--apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastQuantity__c }" rendered="{!budgetTask.children.size == 0}"/>
+                                <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACForecastQuantity}" rendered="{!hasChildTasks}" /-->
                             </td>      
-                            <td  width="20%" class="{!IF(budgetTask.children.size == 0,'','lightBlueHeading bold')} currency">
+                            <!--td  width="20%" class="{!IF(budgetTask.children.size == 0,'','lightBlueHeading bold')} currency"-->
+                            <td width="20%" class="{!IF(budgetTask.children.size == 0,'','lightBlueHeading bold')}">
                                 <!--<apex:inputField value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c}" id="etc" rendered="{! !hasChildTasks}" OnKeyUp="etcChange(this);" />    -->
                                 <!-- <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c}" rendered="{!budgetTask.children.size == 0}" /> -->
                                 <apex:outputPanel rendered="{! !hasChildTasks}" > 
@@ -399,29 +543,36 @@
                                             + IF(ba.Quantity__c == null, 0, ba.Quantity__c)}" 
                                            OnKeyUp="etcChange(this);"/>
                                 </apex:outputPanel>
-                                <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACForecastQuantity 
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!hasChildTasks}">
+                                    <apex:param value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACForecastQuantity 
+                                                        - budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACActualQuantity
+                                                        + budgetLabourWrapper.mapTotalByLaborDetailAndTask[uniqueId]}" />
+                                </apex:outputText>
+                                <!--apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACForecastQuantity 
                                                         - budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACActualQuantity
                                                         + budgetLabourWrapper.mapTotalByLaborDetailAndTask[uniqueId]}" 
-                                                        rendered="{! hasChildTasks}"/>                              
+                                                        rendered="{! hasChildTasks}"/-->                              
                             </td>
-                            <td width="20%" class="{!IF(budgetTask.children.size == 0,'','lightBlueHeading bold')} currency">
+                            <!--td width="20%" class="{!IF(budgetTask.children.size == 0,'','lightBlueHeading bold')} currency"-->
+                            <td width="20%" class="{!IF(budgetTask.children.size == 0,'','lightBlueHeading bold')}">
                                 <apex:outputPanel rendered="{! !hasChildTasks}" > 
                                     <input class="currency revisedForecast" type="text" 
                                            value="{!IF(budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c == null, 0, budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c) + 
-                                                  IF(budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastQuantity__c == null, 0, budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastQuantity__c)
-                                                 
-
-                                                    }" 
+                                                  IF(budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastQuantity__c == null, 0, budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastQuantity__c)}" 
                                            OnKeyUp="forecastChange(this);"/>
                                 </apex:outputPanel>
                                 <!--<apex:inputText value="{!budgetLabour.mapRevisedForecast[budgetTask.obudgetTask.Id]}" id="forecast"
                                                 rendered="{!budgetTask.children.size == 0}" OnKeyUp="forecastChange(this);"/>-->
-                                <apex:outputText value="{!budgetLabourWrapper.mapTotalByLaborDetailAndTask[uniqueId]
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!hasChildTasks}">
+                                    <apex:param value="{!budgetLabourWrapper.mapTotalByLaborDetailAndTask[uniqueId]
+                                                          + budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACForecastQuantity}" />
+                                </apex:outputText>
+                                <!--apex:outputText value="{!budgetLabourWrapper.mapTotalByLaborDetailAndTask[uniqueId]
                                                           + budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[uniqueId].EACForecastQuantity}"
-                                                 rendered="{!hasChildTasks}"/>
+                                                 rendered="{!hasChildTasks}"/-->
                             </td>
 
-                            <apex:inputHidden id="quantity" value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c}" />
+                            <apex:inputHidden id="quantity" value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c}" html-data-old="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c}"/>
 
                             </span>
                         </tr>
@@ -430,29 +581,98 @@
 
                 </td>
             </apex:repeat>
-                <td class="blueHeading currency">{!budgetTask.totalEACActualQuantity}</td>
+                <td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalEACActualQuantity}" />
+                    </apex:outputText>
+                </td>
+				<td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalEACApprovedQuantity}" />
+                    </apex:outputText>
+                </td>
+				<td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalEACForecastQuantity}" />
+                    </apex:outputText>
+                </td>
+				<td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalEACForecastQuantity - budgetTask.totalEACActualQuantity + budgetTask.totalLaborHours}" />
+                    </apex:outputText>
+                </td> 
+				<td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!IF(budgetTask.totalEACForecastQuantity==null,0,budgetTask.totalEACForecastQuantity) +
+                 							 IF(budgetTask.totalLaborHours==null,0,budgetTask.totalLaborHours)}" />
+                    </apex:outputText>
+                </td>                 
+                
+                <!--td class="blueHeading currency">{!budgetTask.totalEACActualQuantity}</td>
                 <td class="blueHeading currency">{!budgetTask.totalEACApprovedQuantity}</td>
                 <td class="blueHeading currency">{!budgetTask.totalEACForecastQuantity}</td>
                 <td class="blueHeading currency">{!budgetTask.totalEACForecastQuantity - budgetTask.totalEACActualQuantity + budgetTask.totalLaborHours}</td>
                 <td class="blueHeading currency">{!IF(budgetTask.totalEACForecastQuantity==null,0,budgetTask.totalEACForecastQuantity) +
                  IF(budgetTask.totalLaborHours==null,0,budgetTask.totalLaborHours)}
-                 </td>
-
-                <td class="blueHeading currency">{!budgetTask.totalEACActualCost}</td>
+                 </td-->
+				
+                <td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalEACActualCost}" />
+                    </apex:outputText>
+                </td>
+                <td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalEACApprovedTotalCost}" />
+                    </apex:outputText>
+                </td>
+                <td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalEACForecastTotalCost}" />
+                    </apex:outputText>
+                </td>
+                <td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalEACForecastTotalCost - budgetTask.totalEACActualCost + budgetTask.totalCost}" />
+                    </apex:outputText>
+                </td>
+                <td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!IF(budgetTask.totalEACForecastTotalCost==null,0,budgetTask.totalEACForecastTotalCost) +
+                 							 IF(budgetTask.totalCost==null,0,budgetTask.totalCost)}" />
+                    </apex:outputText>
+                </td>
+                <!--td class="blueHeading currency">{!budgetTask.totalEACActualCost}</td>
                 <td class="blueHeading currency">{!budgetTask.totalEACApprovedTotalCost}</td>
                 <td class="blueHeading currency">{!budgetTask.totalEACForecastTotalCost}</td>
                 <td class="blueHeading currency">{!budgetTask.totalEACForecastTotalCost - budgetTask.totalEACActualCost + budgetTask.totalCost}</td>
                 <td class="blueHeading currency">{!IF(budgetTask.totalEACForecastTotalCost==null,0,budgetTask.totalEACForecastTotalCost) +
                  IF(budgetTask.totalCost==null,0,budgetTask.totalCost)}
-                 </td>
+                 </td-->
 
                 <td class="blueHeading currency">&nbsp;<!-- TODO: {!budgetTask.totalEACActualRevenue}--></td>
                 <td class="blueHeading currency">&nbsp;<!-- TODO: {!budgetTask.totalEACApprovedQuantity}--></td>
-                <td class="blueHeading currency">{!budgetTask.totalEACForecastRevenue}</td>
+                
+                <td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalEACForecastRevenue}" />
+                    </apex:outputText>
+                </td>
+                <td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!budgetTask.totalRevenue}" />
+                    </apex:outputText>
+                </td>
+                <td class="blueHeading">
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!0 + IF(budgetTask.totalRevenue==null,0,budgetTask.totalRevenue)}" />
+                    </apex:outputText>
+                </td>
+                <!--td class="blueHeading currency">{!budgetTask.totalEACForecastRevenue}</td>
                 <td class="blueHeading currency">{!budgetTask.totalRevenue}</td>
                 <td class="blueHeading currency">{!0 +
                  IF(budgetTask.totalRevenue==null,0,budgetTask.totalRevenue)}
-                 </td> 
+                 </td--> 
                <!--  
                 <td class="blueHeading">{!budgetTask.totalLaborHours}</td>
 
@@ -468,6 +688,7 @@
                 </td>
                 -->
             </tr>
+            
         </apex:repeat>
         <tr class="taskDetail">
             <td></td>
@@ -477,11 +698,38 @@
                 <table width="100%">
                     <tr> 
                     <apex:variable value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[budgetLabour.oBudgetResource.Id + 'Total']}" var="totalByResource"/>
-                        <td class="currency">{!totalByResource.EACActualCost}</td>
-                        <td class="currency">{!totalByResource.EACCurrentApprovedCost}</td> 
-                        <td class="currency">{!totalByResource.EACCurrentForecastCost}</td>
-                        <td class="currency">{!totalByResource.EACCurrentForecastCost - totalByResource.EACActualCost + totalByResource.Quantity}</td>
-                        <td class="currency">{!totalByResource.EACCurrentForecastCost + totalByResource.Quantity}</td>
+                        
+                        <td width="20%">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!totalByResource.EACActualCost}" />
+                            </apex:outputText>
+                        </td>
+                        <td width="20%">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!totalByResource.EACCurrentApprovedCost}" />
+                            </apex:outputText>
+                        </td>
+                        <td width="20%">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!totalByResource.EACCurrentForecastCost}" />
+                            </apex:outputText>
+                        </td>
+                        <td width="20%">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!totalByResource.EACCurrentForecastCost - totalByResource.EACActualCost + totalByResource.Quantity}" />
+                            </apex:outputText>
+                        </td>
+                        <td width="20%">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!totalByResource.EACCurrentForecastCost + totalByResource.Quantity}" />
+                            </apex:outputText>
+                        </td>
+						                        
+                        <!--td class="currency" width="20%">{!totalByResource.EACActualCost}</td>
+                        <td class="currency" width="20%">{!totalByResource.EACCurrentApprovedCost}</td> 
+                        <td class="currency" width="20%">{!totalByResource.EACCurrentForecastCost}</td>
+                        <td class="currency" width="20%">{!totalByResource.EACCurrentForecastCost - totalByResource.EACActualCost + totalByResource.Quantity}</td>
+                        <td class="currency" width="20%">{!totalByResource.EACCurrentForecastCost + totalByResource.Quantity}</td-->
                         
                     </tr>
                 </table>
@@ -496,11 +744,36 @@
                 <table width="100%">
                     <tr> 
                     <apex:variable value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[budgetLabour.oBudgetResource.Id + 'Total']}" var="totalByResource"/>
-                        <td class="currency">{!totalByResource.EACActualCost}</td>
-                        <td class="currency">{!totalByResource.EACCurrentApprovedCost}</td> 
-                        <td class="currency">{!totalByResource.EACCurrentForecastCost}</td>
-                        <td class="currency">{!totalByResource.EACCurrentForecastCost - totalByResource.EACActualCost + totalByResource.Quantity}</td>
-                        <td class="currency">{!totalByResource.EACCurrentForecastCost + totalByResource.Quantity}</td>
+                        <td width="20%">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!totalByResource.EACActualCost}" />
+                            </apex:outputText>
+                        </td>
+                        <td width="20%">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!totalByResource.EACCurrentApprovedCost}" />
+                            </apex:outputText>
+                        </td>
+                        <td width="20%">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!totalByResource.EACCurrentForecastCost}" />
+                            </apex:outputText>
+                        </td>
+                        <td width="20%">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!totalByResource.EACCurrentForecastCost - totalByResource.EACActualCost + totalByResource.Quantity}" />
+                            </apex:outputText>
+                        </td>
+                        <td width="20%">
+                            <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                                <apex:param value="{!totalByResource.EACCurrentForecastCost + totalByResource.Quantity}" />
+                            </apex:outputText>
+                        </td>
+                        <!--td class="currency" width="20%">{!totalByResource.EACActualCost}</td>
+                        <td class="currency" width="20%">{!totalByResource.EACCurrentApprovedCost}</td> 
+                        <td class="currency" width="20%">{!totalByResource.EACCurrentForecastCost}</td>
+                        <td class="currency" width="20%">{!totalByResource.EACCurrentForecastCost - totalByResource.EACActualCost + totalByResource.Quantity}</td>
+                        <td class="currency" width="20%">{!totalByResource.EACCurrentForecastCost + totalByResource.Quantity}</td-->
                         
                     </tr>
                 </table>
