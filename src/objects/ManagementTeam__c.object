@@ -94,8 +94,10 @@
     <fields>
         <fullName>Email__c</fullName>
         <externalId>false</externalId>
-        <formula>TeamMember__r.pse__Salesforce_User__r.Email</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <formula>IF(NOT(ISBLANK( TeamMember__c )), TeamMember__r.pse__Salesforce_User__r.Email, 
+IF(NOT(ISBLANK( ClientTeamMember__c )), ClientTeamMember__r.pse__Salesforce_User__r.Email, 
+IF(NOT(ISBLANK( VendorTeamMember__c )), VendorTeamMember__r.pse__Salesforce_User__r.Email, &apos;&apos;) 
+))</formula>
         <label>Email</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -105,8 +107,10 @@
     <fields>
         <fullName>Organization__c</fullName>
         <externalId>false</externalId>
-        <formula>TeamMember__r.OrganizationString__r.Name</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <formula>IF(NOT(ISBLANK( TeamMember__c )), TeamMember__r.OrganizationString__r.Name, 
+IF(NOT(ISBLANK( ClientTeamMember__c )), ClientTeamMember__r.OrganizationString__r.Name, 
+IF(NOT(ISBLANK( VendorTeamMember__c )), VendorTeamMember__r.OrganizationString__r.Name, &apos;&apos;) 
+))</formula>
         <label>Organization</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
@@ -116,7 +120,10 @@
     <fields>
         <fullName>Phone__c</fullName>
         <externalId>false</externalId>
-        <formula>TeamMember__r.pse__Salesforce_User__r.Phone</formula>
+        <formula>IF(NOT(ISBLANK( TeamMember__c )), TeamMember__r.pse__Salesforce_User__r.Phone, 
+IF(NOT(ISBLANK( ClientTeamMember__c )), ClientTeamMember__r.pse__Salesforce_User__r.Phone, 
+IF(NOT(ISBLANK( VendorTeamMember__c )), VendorTeamMember__r.pse__Salesforce_User__r.Phone, &apos;&apos;) 
+))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Phone</label>
         <required>false</required>
@@ -129,6 +136,32 @@
         <externalId>false</externalId>
         <label>Role</label>
         <length>50</length>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TeamMemberName__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(NOT(ISBLANK( TeamMember__c )), TeamMember__r.FirstName &amp; &apos; &apos; &amp; TeamMember__r.LastName, 
+    IF(NOT(ISBLANK( ClientTeamMember__c )), ClientTeamMember__r.FirstName &amp; &apos; &apos; &amp; ClientTeamMember__r.LastName,
+       IF(NOT(ISBLANK(  VendorTeamMember__c  )), VendorTeamMember__r.FirstName &amp; &apos; &apos; &amp; VendorTeamMember__r.LastName, &apos;&apos;) 
+ ))</formula>
+        <label>Team Member Name</label>
+        <required>false</required>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>TeamMemberRole__c</fullName>
+        <externalId>false</externalId>
+        <formula>IF(NOT(ISBLANK( TeamMember__c )),  Role__c , 
+IF(NOT(ISBLANK( ClientTeamMember__c )), ClientRole__c, 
+IF(NOT(ISBLANK( VendorTeamMember__c )), VendorRole__c, &apos;&apos;) 
+))</formula>
+        <label>Team Member Role</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
         <type>Text</type>
@@ -149,8 +182,10 @@
     <fields>
         <fullName>Title__c</fullName>
         <externalId>false</externalId>
-        <formula>TeamMember__r.pse__Salesforce_User__r.Title</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <formula>IF(NOT(ISBLANK( TeamMember__c )), TeamMember__r.pse__Salesforce_User__r.Title, 
+IF(NOT(ISBLANK( ClientTeamMember__c )), ClientTeamMember__r.pse__Salesforce_User__r.Title, 
+IF(NOT(ISBLANK( VendorTeamMember__c )), VendorTeamMember__r.pse__Salesforce_User__r.Title, &apos;&apos;) 
+))</formula>
         <label>Title</label>
         <required>false</required>
         <trackTrending>false</trackTrending>
