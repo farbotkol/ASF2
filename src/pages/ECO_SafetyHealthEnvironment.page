@@ -195,15 +195,13 @@
     <apex:inputHidden value="{!inductionId}" id="inductionId" />
     <apex:sectionHeader title="Safety, Health & Environment " subtitle="{!pse__Proj__c.Name}"/>
     
-    <div class="customHelpText">
-        <div class="customHelpBody">
-            Assessment of potential Safety, Health &amp; Environment risks is required on all projects, regardless of size or type of activities being performed (e.g., office vs field).  It is AECOM policy and best practice to plan, execute and monitor projects in such a manner to prevent work-related injuries or illnesses, prevent damage to property and/or equipment from our activities, and prevent adverse impacts to the environment from our ongoing projects or operations.  
+    <c:ECO_CollapsibleSection uniqueId="1" sectionTitle="General Guidance Information">  
+             Assessment of potential Safety, Health &amp; Environment risks is required on all projects, regardless of size or type of activities being performed (e.g., office vs field).  It is AECOM policy and best practice to plan, execute and monitor projects in such a manner to prevent work-related injuries or illnesses, prevent damage to property and/or equipment from our activities, and prevent adverse impacts to the environment from our ongoing projects or operations.  
             <br/><br/>
             Complete this section to identify any project-related safety, health or environmental risks and to determine the appropriate approach for planning and mitigation.  Upload relevant project specific SH&amp;E documents, such as standalone Health and Safety Plans, Environmental Management Plans, training or induction certificates, Journey Management Plans, or task risk analyses (e.g., JSA, SWMS, THA, etc).  
             <br/><br/>
             This section is NOT intended to report, document, track or monitor safety incidents. Any safety, health and/or environmental incidents should be immediately reported using AECOMs enterprise-wide safety reporting tool IndustrySafe.  Additionally, site specific health and safety plans, job safety analysis, and task hazard analysis should be generated utilizing current corporate and client guidelines. 
-        </div>
-    </div>
+    </c:ECO_CollapsibleSection>
 
     <br/>
 
@@ -239,7 +237,7 @@
             </apex:outputPanel>
             
             <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes'}" >
-			<!--<div style="display:{!if(pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes',"inline","none")};" >-->
+            <!--<div style="display:{!if(pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes',"inline","none")};" >-->
                 
                 <!--!pse__Proj__c.SafetyHealthOutsideOfficeEnvironment__c =='Yes'--->
             <apex:outputPanel id="undertakeWork">   
@@ -253,16 +251,15 @@
                         <apex:actionSupport event="onchange" rerender="undertakeWork"/>
                     </apex:selectRadio></td>                    
                 </tr></table>
-				<div style="display:{!if(pse__Proj__c.SafetyHealthUndertakeWork__c =='Yes',"inline","none")};" >
+                <div style="display:{!if(pse__Proj__c.SafetyHealthUndertakeWork__c =='Yes',"inline","none")};" >
                 
                     <!-- pse__Proj__c.SafetyHealthUndertakeWork__c == 'Yes' -->
                 <div class="ouputPanelSep">
-                    <div class="customHelpText" >
-	                    <div class="customHelpBody">
-	                        Project team members who will be working at the client or project offices may be required to undergo a safety induction(s) (i.e., site-specific training).  Click the “New Induction” button to create a register of all required inductions for the project.  Once each induction record has been created and added to the register, add the required project team member(s) and relevant document(s) by clicking “Add” within each record line.   Relevant documents may include application forms, induction location information or completed induction certificates.
-	                    </div>                                                                      
-	                </div>
-	                <br/>
+                    <c:ECO_CollapsibleSection sectionTitle="General Guidance Information" uniqueId="2">  
+                        Project team members who will be working at the client or project offices may be required to undergo a safety induction(s) (i.e., site-specific training).  Click the “New Induction” button to create a register of all required inductions for the project.  Once each induction record has been created and added to the register, add the required project team member(s) and relevant document(s) by clicking “Add” within each record line.   Relevant documents may include application forms, induction location information or completed induction certificates.
+                    </c:ECO_CollapsibleSection>
+
+                    <br/>
 
                     
         <!--            <apex:outputLabel style="font-weight:bold;">Inductions Register</apex:outputLabel><br/> -->
@@ -280,11 +277,32 @@
 
                             </apex:column>    
 
-                            <apex:column headervalue="Name of Induction">
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:outputText value="Name of Induction"/>&nbsp;
+                                        <apex:image value="/s.gif" styleClass="helpIcon" title="Enter the name or title of the induction or training course required."/>
+                                    </apex:outputPanel>
+                                </apex:facet>
                                 <apex:commandLink style="color:#015ba7;" action="{!URLFOR($Action.Induction__c.View, induction.Id, ['saveURL'='/apex/ECO_SafetyHealthEnvironment?Id='+pse__Proj__c.Id, 'retURL'='/apex/ECO_SafetyHealthEnvironment?Id='+pse__Proj__c.Id])}"><apex:outputText value="{!induction.Name}"/></apex:commandLink>
                             </apex:column>
-                            <apex:column headervalue="Required By" value="{!induction.RequiredBy__c}"></apex:column>
-                            <apex:column headervalue="Project Team Members">
+                            <apex:column value="{!induction.RequiredBy__c}">
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:outputText value="Required By"/>&nbsp;
+                                        <apex:image value="/s.gif" styleClass="helpIcon" title="Enter the date completion of the course is due."/>
+                                    </apex:outputPanel>
+                                </apex:facet>   
+
+                            </apex:column>
+                            <apex:column >
+
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:outputText value="Project Team Members"/>&nbsp;
+                                        <apex:image value="/s.gif" styleClass="helpIcon" title="Add the names of the project team required to complete the course."/>
+                                    </apex:outputPanel>
+                                </apex:facet>
                                 <table class="teamMemberGrid" width="100%">
                                 <TR >
 
@@ -306,15 +324,52 @@
                                 </table>
                             </apex:column>
                      
-                            <apex:column headervalue="Location of Induction" value="{!induction.LocationofInduction__c}"></apex:column>
-                            <apex:column headervalue="Frequency" value="{!induction.Frequency__c}" ></apex:column>
-                            <apex:column headervalue="Fee">
+                            <apex:column value="{!induction.LocationofInduction__c}">
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:outputText value="Location of Induction"/>&nbsp;
+                                        <apex:image value="/s.gif" styleClass="helpIcon" title="Enter the location of the course (e.g., instructor’s address, client’s site, internet address, in-house)."/>
+                                    </apex:outputPanel>
+                                </apex:facet>                                
+
+                            </apex:column>
+                            <apex:column value="{!induction.Frequency__c}" >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:outputText value="Frequency"/>&nbsp;
+                                        <apex:image value="/s.gif" styleClass="helpIcon" title="Enter how often the course must be completed or is valid (e.g., one time, annual, bi-annual)."/>
+                                    </apex:outputPanel>
+                                </apex:facet>                                      
+
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:outputText value="Fee"/>&nbsp;
+                                        <apex:image value="/s.gif" styleClass="helpIcon" title="Enter the course fee to inform the project budget, if allowable, or to inform approval of the anticipated overhead expense."/>
+                                    </apex:outputPanel>
+                                </apex:facet>    
                                 <apex:outputtext value="{0, number, ###,###,##0.00}">
                                     <apex:param value="{!induction.Fee__c}" />
                                 </apex:outputtext>  
                             </apex:column>               
-                            <apex:column headervalue="Notes" value="{!induction.Notes__c}"></apex:column>
-                            <apex:column headervalue="Attachments">
+                            <apex:column value="{!induction.Notes__c}">
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:outputText value="Notes"/>&nbsp;
+                                        <apex:image value="/s.gif" styleClass="helpIcon" title="Provide any relevant notes that would help further define the required course (e.g., instructor contact information, course schedule, course details)"/>
+                                    </apex:outputPanel>
+                                </apex:facet>                                    
+
+                            </apex:column>
+                            <apex:column >
+                                <apex:facet name="header">
+                                    <apex:outputPanel >
+                                        <apex:outputText value="Attachments"/>&nbsp;
+                                        <apex:image value="/s.gif" styleClass="helpIcon" title="Attach relevant documents related to the specific course (e.g., course information, course applications, completed training certificate)."/>
+                                    </apex:outputPanel>
+                                </apex:facet>      
+
                                 <table class="teamMemberGrid" width="100%">
                                 <TR >
 
@@ -364,27 +419,19 @@
              <div style="display:{!if(pse__Proj__c.SafetyHealthSiteInspections__c =='Yes',"inline","none")};" >
                 
             <apex:outputPanel id="theFieldsPanel"> 
-            <apex:actionRegion >   
-
-
-                <div class="customHelpText" >
-                    <div class="customHelpBody">
-                        All field activities require a Task Risk Analysis to be undertaken. Complete the required analysis per your geography safety standard (e.g., Job Safety Analysis, Safe Work Method Statement, Task Hazard Analysis) and upload the completed documents for access and reference by the project team unless a project-specific
-                         health and safety plan is prepared for the project.
-                    </div>                                                                      
-                </div>
+                <c:ECO_CollapsibleSection sectionTitle="General Guidance Information" uniqueId="3">  
+                     All field activities require a Task Risk Analysis to be undertaken. Complete the required analysis per your geography safety standard (e.g., Job Safety Analysis, Safe Work Method Statement, Task Hazard Analysis) and upload the completed documents for access and reference by the project team unless a project-specific health and safety plan is prepared for the project.
+                </c:ECO_CollapsibleSection>
                 <br/>
-
-
-                             
-            <apex:inputFile id="safetyHealthInspectionAttachment" value="{!newsafetyHealthInspectionAttachment.Body}"
+                          
+                      <apex:inputFile id="safetyHealthInspectionAttachment" value="{!newsafetyHealthInspectionAttachment.Body}"
                             contentType="{!newsafetyHealthInspectionAttachment.ContentType}" fileName="{!newsafetyHealthInspectionAttachment.Name}"
                             onchange="fileChosen('{!$Component.cmdSafetyHealthInspectionAttachment}', this, '{!$Component.overrideSafetyHealthInspectionName}'); return false;" />
                 
-	            <apex:inputText id="overrideSafetyHealthInspectionName" value="{!overrideSafetyHealthInspectionName}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
+                <apex:inputText id="overrideSafetyHealthInspectionName" value="{!overrideSafetyHealthInspectionName}"  maxlength="80" html-placeholder="Override File Name" styleclass="attachNewFile"/>
                 <apex:commandButton id="cmdsafetyHealthInspectionAttachment" value="Attach" action="{!saveSafetyHealthInspectionAttachmentAndProject}" styleclass="attachNewFile"/><br/>
-            </apex:actionRegion> 
-			<br/>
+
+            <br/>
             <div class="ouputPanelSep">
 
                 <div class="fileList">
@@ -405,12 +452,12 @@
                     </apex:pageBlockTable></div>
                 
                 <br/>
-           	</div>
-		                  
+            </div>
+                          
             </apex:outputPanel> 
                  </div>   
                 
-			</div>
+            </div>
             </apex:outputPanel>
             
             <apex:outputPanel id="healthRequirements">      
@@ -424,7 +471,11 @@
                 </tr></table>
                 <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthSpecificRequirements__c == 'Yes'}">
                     <div class="ouputPanelSep">
-                    <apex:outputText >Identify below any additional safety requirements which may apply to the project.</apex:outputText><br/>
+                    <div class="customHelpText" >
+                        <div class="customHelpBody">
+                            Identify below any additional safety requirements which may apply to the project.
+                        </div>
+                    </div><br/>
                     <apex:inputField style="width: 800px;" value="{!pse__Proj__c.SafetyHealthRequirementDescription__c}" html-placeholder="Reach out to Client Account Manager or Client Safety Lead for client specific safety and health requirements."/><br/><br/>
                     </div>
                 </apex:outputPanel> 
@@ -446,9 +497,11 @@
                 
             <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthSafetyPlan__c =='Yes'}">
                 <div class="ouputPanelSep">
-                <apex:outputText >                                  
-                Work directly with your regional SH{!'&'}E manager to compile the detailed safety plan and upload the signed and approved document.
-                </apex:outputText><br/>
+                <div class="customHelpText" >
+                    <div class="customHelpBody">
+                        Work directly with your regional SH{!'&'}E manager to compile the detailed safety plan and upload the signed and approved document.
+                    </div>
+                </div><br/>
                 <div class="fileList">
                     <apex:pageBlockTable value="{!SafetyHealthPlanFiles}" var="attachedSafetyPlanFile" style="width: 825px;" rendered="{!pse__Proj__c.SafetyHealthPlanAttachments__c != null}">
                         <apex:column headerValue="Action">
@@ -486,11 +539,11 @@
             </table>                                                                        
             </apex:outputPanel> <br/>
             <apex:outputPanel rendered="{!pse__Proj__c.SafetyHealthTravelRequired__c =='Yes'}">
-                <apex:outputText style="width: 500px">
-                A Travel Security Identification Document (TSID) is required for international travel.  Go to the Locations and Resilience section for direction based on the project location. <br/>                                           
-                Contact your local SH&amp;E Manager to determine if a Journey Management Plan is required for travel to remote or austere locations.
-                </apex:outputText><br/><br/>
-                
+                <c:ECO_CollapsibleSection sectionTitle="General Guidance Information" uniqueId="4">  
+                    A Travel Security Identification Document (TSID) is required for international travel.  Go to the Locations and Resilience section for direction based on the project location. <br/>
+                    Contact your local SH&amp;E Manager to determine if a Journey Management Plan is required for travel to remote or austere locations.
+                </c:ECO_CollapsibleSection>
+                <br/>
                 <apex:commandButton id="cmdLocationsAndResilience" value="Locations and Resilience" action="{!gotoLocationsAndResilience}"/><br/>
                 </apex:outputPanel>
             </apex:outputPanel>
@@ -502,18 +555,18 @@
         </apex:pageBlockSection>
         
         <apex:pageBlockSection title="Environment" columns="1" id="environmentImpact">
-        <apex:pageMessage severity="info"  escape="false"  summary="Where your region is certified to ISO 14001, Environmental Management, a Project Environmental Review must be completed.  Where your region is not certified, it is recommended that a Project Environmental Review is completed demonstrating AECOM’s commitment to work in an environmentally responsible manner. <br /><br />
-In completing the Environmental Review within the Project Plan it is not intended that all of the ‘normal’ environmental impacts should be listed and commented on, but rather that any ‘unusual or particularly significant’ activities or requirements should be highlighted by exception and assessed."/>     
-
-        
-To complete the Environmental Review:<br/><br/>
-<ul>
-<li>Subjectively rank the significance of each impact as high medium or low</li>
-<li>Note whether AECOM can either control or influence each identified potential impact</li>
-<li>For impacts that have been identified as being of high or medium significant and where AECOM can control or influence them, set out our proposed actions to manage these issues; and</li>
-<li>At each project review, update this assessment and note action taken (if applicable)</li>
-<li>If there are no environmental impacts, please note “none” to highlight that a review has been undertaken</li>
-</ul>
+            <c:ECO_CollapsibleSection uniqueId="5" sectionTitle="General Guidance Information">  
+                Where your region is certified to ISO 14001, Environmental Management, a Project Environmental Review must be completed.  Where your region is not certified, it is recommended that a Project Environmental Review is completed demonstrating AECOM’s commitment to work in an environmentally responsible manner. <br /><br />
+                In completing the Environmental Review within the Project Plan it is not intended that all of the ‘normal’ environmental impacts should be listed and commented on, but rather that any ‘unusual or particularly significant’ activities or requirements should be highlighted by exception and assessed.
+            </c:ECO_CollapsibleSection>
+            To complete the Environmental Review:<br/><br/>
+            <ul>
+            <li>Subjectively rank the significance of each impact as high medium or low</li>
+            <li>Note whether AECOM can either control or influence each identified potential impact</li>
+            <li>For impacts that have been identified as being of high or medium significant and where AECOM can control or influence them, set out our proposed actions to manage these issues; and</li>
+            <li>At each project review, update this assessment and note action taken (if applicable)</li>
+            <li>If there are no environmental impacts, please note “none” to highlight that a review has been undertaken</li>
+            </ul>
 
 
     <apex:outputPanel id="projectact">

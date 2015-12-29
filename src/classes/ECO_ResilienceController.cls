@@ -94,9 +94,6 @@ public with sharing class ECO_ResilienceController {
                 return null;
         }
 
-        public PageReference stub() {
-                return null;
-        }               
 
         public PageReference AddCity(){
 
