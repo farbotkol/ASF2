@@ -80,52 +80,34 @@ public with sharing class ECO_AddResourceController2 {
 	}
 
 	public void findResource() {
-		String soql = 'select id, firstname, lastname, phone, email from Contact';
+		String soql = 'select id, firstname, lastname, phone, email from Contact where pse__Salesforce_User__c != null';
 
 		Boolean added = false;
 
 		if ((searchFirstName != null) && (!searchFirstName.trim().equals(''))) {
-			soql += ' where firstname like \'%' + searchFirstName.trim() + '%\'';
 			added = true;
+			soql += ' and firstname like \'%' + searchFirstName.trim() + '%\'';
 		}
 
 		if ((searchLastName != null) && (!searchLastName.trim().equals(''))) {
-			if (added)
-				soql += ' and';
-			else
-				soql += ' where';
-
-			soql += ' lastname like \'%' + searchLastName.trim() + '%\'';
-
 			added = true;
+			soql += ' and lastname like \'%' + searchLastName.trim() + '%\'';
 		}
 
 		if ((searchPhone != null) && (!searchPhone.trim().equals(''))) {
-			if (added)
-				soql += ' and';
-			else
-				soql += ' where';
-
-			soql += ' Phone like \'%' + searchPhone.trim() + '%\'';
-
 			added = true;
+			soql += ' and Phone like \'%' + searchPhone.trim() + '%\'';
 		}
 
 		if ((searchEmail != null) && (!searchEmail.trim().equals(''))) {
-			if (added)
-				soql += ' and';
-			else
-				soql += ' where';
-
-			soql += ' Email like \'%' + searchEmail.trim() + '%\'';
-
 			added = true;
+			soql += ' and Email like \'%' + searchEmail.trim() + '%\'';
 		}
 
-		soql += ' order by lastname, firstname';
+		soql += ' order by lastname, firstname limit 200';
 
 		System.debug(LoggingLevel.ERROR, 'the soql - ' + soql);
-
+		
 		if (added)
 			contacts = Database.query(soql);
 		else

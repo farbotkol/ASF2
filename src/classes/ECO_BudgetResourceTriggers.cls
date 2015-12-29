@@ -415,6 +415,11 @@ public without sharing class ECO_BudgetResourceTriggers {
 				}
 			}	
 
+			OverrideFringeMultiplier = OverrideFringeMultiplier == null ? null : 100 * OverrideFringeMultiplier;
+			OverrideOverheadMultiplier = OverrideOverheadMultiplier == null ? null : 100 * OverrideOverheadMultiplier;
+			OverrideFringeMultiplierField = OverrideFringeMultiplierField == null ? null : 100 * OverrideFringeMultiplierField;
+			OverrideOverheadMultiplierField = OverrideOverheadMultiplierField == null ? null : 100 * OverrideOverheadMultiplierField;
+			
 			resource.OverrideFringeMultiplier__c = OverrideFringeMultiplier;
 			resource.OverrideOverheadMultiplier__c = OverrideOverheadMultiplier;
 			resource.OverrideFringeMultiplierField__c = OverrideFringeMultiplierField;
