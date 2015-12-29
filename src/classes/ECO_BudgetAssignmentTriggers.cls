@@ -42,6 +42,8 @@ public without sharing class ECO_BudgetAssignmentTriggers {
                                                                 OverrideRawCost__c, 
                                                                 OverrideFringeMultiplier__c,
                                                                 OverrideOverheadMultiplier__c,
+                                                                OverrideFringeMultiplierField__c,
+                                                                OverrideOverheadMultiplierField__c,
                                                                 MarginType__c,
                                                                 OverrideBillRate__c,
                                                                 OverrideUplift__c  
