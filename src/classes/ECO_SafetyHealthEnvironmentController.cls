@@ -79,14 +79,14 @@ public class ECO_SafetyHealthEnvironmentController {
         }
 
         public PageReference RemoveProjectActivities(){
-            /*ProjectActivities__c pa = ProjActivities[rowNumber-1];
+            ProjectActivities__c pa = ProjActivities[rowNumber-1];
 
             if(pa.id != null){
                 ProjActivitiesRemove.add(pa);
             }
 
             ProjActivities.remove(rowNumber-1);
-            */
+            
             return null;
 
         }
