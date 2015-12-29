@@ -3277,8 +3277,8 @@
             <apex:pageBlockTable value="{!msaManagementTeamMembers}" var="managementTeamMember">
                 <apex:column headervalue="Role"><apex:outputField value="{!managementTeamMember.Role__c}"/></apex:column>                   
                 <apex:column headervalue="Name"><apex:outputField value="{!managementTeamMember.TeamMember__r.Name}"/></apex:column>
-                <apex:column headervalue="Phone"><apex:outputField value="{!managementTeamMember.TeamMember__r.Phone}"/></apex:column>                  
-                <apex:column headervalue="Email"><apex:outputField value="{!managementTeamMember.TeamMember__r.Email}"/></apex:column>
+                <apex:column headervalue="Phone"><apex:outputField value="{!managementTeamMember.Phone__c}"/></apex:column>                  
+                <apex:column headervalue="Email"><apex:outputField value="{!managementTeamMember.Email__c}"/></apex:column>
             </apex:pageBlockTable>
             </apex:outputPanel>
             <apex:outputPanel rendered="{!msaManagementTeamMembers == null || msaManagementTeamMembers.size == 0}">
@@ -3391,11 +3391,11 @@
                             <apex:column style="width:80px" headervalue="Action">
                             <apex:commandLink style="color:#015ba7;" action="{!URLFOR($Action.ManagementTeam__c.edit, managementTeamMember.Id, ['retURL'='/apex/ECO_AgreementView?Id='&agreement.Id])}">Edit</apex:commandLink><apex:outputText value=" | "/>
                             <apex:commandLink style="color:#015ba7;" action="{!URLFOR($Action.ManagementTeam__c.delete, managementTeamMember.Id, ['retURL'='/apex/ECO_AgreementView?Id='&agreement.Id])}" onclick="return window.confirm('Are you sure?');">Del</apex:commandLink></apex:column>
-                            <apex:column headervalue="Role"><apex:outputField value="{!managementTeamMember.Role__c}"/></apex:column>                   
-                            <apex:column headervalue="Name"><apex:outputField value="{!managementTeamMember.TeamMember__r.Name}"/></apex:column>
+                            <apex:column headervalue="Role"><apex:outputField value="{!managementTeamMember.TeamMemberRole__c}"/></apex:column>                   
+                            <apex:column headervalue="Name"><apex:outputField value="{!managementTeamMember.TeamMemberName__c}"/></apex:column>
                             <apex:column headervalue="Organization"><apex:outputField value="{!managementTeamMember.Organization__c}"/></apex:column>
-                            <apex:column headervalue="Phone"><apex:outputField value="{!managementTeamMember.TeamMember__r.Phone}"/></apex:column>                  
-                            <apex:column headervalue="Email"><apex:outputField value="{!managementTeamMember.TeamMember__r.Email}"/></apex:column>
+                            <apex:column headervalue="Phone"><apex:outputField value="{!managementTeamMember.Phone__c}"/></apex:column>                  
+                            <apex:column headervalue="Email"><apex:outputField value="{!managementTeamMember.Email__c}"/></apex:column>
                         </apex:pageBlockTable>
                         </apex:outputPanel>
                         <apex:outputPanel rendered="{!managementTeamMembers.size == 0}">

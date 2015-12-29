@@ -248,7 +248,7 @@ global virtual class ECO_AgreementController {
             ApexPages.currentPage().getParameters().put('AgreementId', agreement.Id);         
             relatedAgreements = new list<Agreement__c>();
             attachmentsMap = new Map<Id, Attachment>([select Id, Name, ContentType, LastModifiedDate, LastModifiedById from Attachment where parentId = :agreement.Id]);
-            managementTeamMembers = [select Id, Name, Organization__c, TeamMember__r.Name, Role__c, TeamMember__r.Title, TeamMember__r.Phone, TeamMember__r.Email from ManagementTeam__c where Agreement__c = :agreement.Id];				
+            managementTeamMembers = [select Id, Name, Organization__c, TeamMemberName__c, TeamMemberRole__c, Email__c, Phone__c, TeamMember__r.Name, Role__c, TeamMember__r.Title, TeamMember__r.Phone, TeamMember__r.Email from ManagementTeam__c where Agreement__c = :agreement.Id];				
             approvedSubs = [select Id, Name, Contact_Name__c, Email__c, Phone__c, Role__c, Account__r.Name, Comments__c from Approved_Sub__c where Agreement__c = :agreement.Id];
             msaTeamingPartners = [select Id, Name, Contact_Name__c, Email__c, Phone__c, Role__c, Account__r.Name, Comments__c from MSATeamingPartner__c where Agreement__c = :agreement.Id];
             otherDirectCosts = [select Id, Name, Type__c, Comments__c, Description__c, Markup__c, Allowable__c from OtherDirectCost__c where Agreement__c = :agreement.Id];
