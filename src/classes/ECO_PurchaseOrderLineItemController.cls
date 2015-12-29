@@ -131,8 +131,12 @@ public with sharing class ECO_PurchaseOrderLineItemController{
 		if((projectId != null && poHeaderId != null) || (poLineItemId != null) ){
 			if(projectId != null)
 			getTasksForProject();
-    		poHeaderName = [SELECT Name FROM POHeader__c WHERE Id = :poHeaderId].Name;
-
+    		POHeader__c poHeader = [SELECT Name, CurrencyIsoCode FROM POHeader__c WHERE Id = :poHeaderId];
+            poHeaderName = poHeader.Name;
+			
+            if(poLineItemId == Null) {
+                currentPOLineItem.CurrencyIsoCode = poHeader.CurrencyIsoCode;
+            }
     		editType = 'Add';    	
 		}else{
 			ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR, 'You have reached this page incorrectly. Project Id is missing!'));

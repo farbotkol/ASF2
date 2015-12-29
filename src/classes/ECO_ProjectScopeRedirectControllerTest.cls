@@ -1,5 +1,7 @@
 @isTest
-private class ECO_ProjectAgreementControllerTest {
+private class ECO_ProjectScopeRedirectControllerTest
+{
+
     static void initializeSites(){
 
         OrganizationString__c testOrg =  ECO_Utils_Testing.createTestOrg();
@@ -94,28 +96,27 @@ private class ECO_ProjectAgreementControllerTest {
         testProject.CurrencyIsoCode = 'USD';
         testProject.pse__Is_Active__c = true;   
         insert testProject;
+
+        Deliverable__C oDeliver = new Deliverable__C();
+        oDeliver.Project__c = testProject.id;
+        oDeliver.Name = 'New Deliverable';
+		insert oDeliver;
+
+		Packages__c pck = new Packages__c(name = 'test' ,Scope__c = testProject.id, Type__c ='Project', PackageTitle__c = 'New Package');
+		insert pck;
     }
 
-    static testMethod void testProjectAgreementController() {
-    	
-        initializeSites();
+	@isTest
+	static void itShould()
+	{
 
-        pse__Proj__c testProject = [select id from pse__Proj__c limit 1];
-        
-        ProjectAgreement__c projectAgreement = new ProjectAgreement__c(Project__c = testProject.id);
-        
-        ApexPages.StandardController sc = new ApexPages.StandardController(projectAgreement);
-        
-        ECO_ProjectAgreementController controller = new ECO_ProjectAgreementController(sc); 
+		initializeSites();
+		Packages__c pck = [select id from Packages__c limit 1];
 
-        controller.init();
+		
+        ApexPages.StandardController sc = new ApexPages.StandardController(pck);
         
-        
-        list<RecordType>  RT = controller.getAgreementRecordTypes();
-        controller.selectedRecordType = RT[0].id;
-        controller.recordTypeSelected();
-        
-        controller.returnToProject();
-        // TO DO: implement unit test
-    }
+        ECO_ProjectScopeRedirectController controller = new ECO_ProjectScopeRedirectController(sc); 
+        controller.redirect();
+	}
 }

@@ -4,7 +4,7 @@ public with sharing class ECO_Utils_Tooling {
 	}
 
 	public static map<string, string> getFieldIDMap(string objName){
-        // Constructs the Tooling API wrapper (default constructor uses user session Id)
+       /* // Constructs the Tooling API wrapper (default constructor uses user session Id)
         ToolingAPI toolingAPI = new ToolingAPI();
          
         // Query CustomObject object by DeveloperName (note no __c suffix required)
@@ -31,6 +31,8 @@ public with sharing class ECO_Utils_Tooling {
              mNameToID.put(customField.DeveloperName + '__c', customField.Id);
          }		
 
-         return mNameToID;
+         return mNameToID;*/
+
+         return null;
 	}
 }
