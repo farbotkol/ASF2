@@ -12,6 +12,9 @@ public with sharing class ECO_BudgetContingencyController {
     public Decimal totalMitigationCost {get; set;}
     public Decimal totalBudgetContingencies {get; set;}
 
+    public Decimal totalApprovedContingencyCosts {get; set;}
+    public Decimal totalForecastContingencyCosts {get; set;}
+
     public ECO_DTO_BudgetTask totalRow {get; set;}
 
     public Integer currentPage {get; set;}
@@ -120,8 +123,12 @@ public with sharing class ECO_BudgetContingencyController {
     public void calcRiskTotals(Id projectId) {
         List<Risk__c> risks =  [Select MitigationCostTotal__c,PostmitigationContingencyTotal__c, Project__c From Risk__c Where Project__c = :projectId];
 
+        List<BudgetHeader__c> budgets = [Select Id, Status__c, TotalContingencyAmount__c From BudgetHeader__c Where Project__c = :projectId];
+
         Decimal sumTotalMitigationCost = 0;
         Decimal sumTotalPostMitigationCost = 0;
+        totalApprovedContingencyCosts = 0;
+        totalForecastContingencyCosts = 0;
 
         for(Risk__c risk : risks ) {
             sumTotalMitigationCost += risk.MitigationCostTotal__c == null ? 0 : risk.MitigationCostTotal__c;
@@ -131,6 +138,17 @@ public with sharing class ECO_BudgetContingencyController {
         totalMitigationCost = sumTotalMitigationCost;
         totalPostMitigationCost = sumTotalPostMitigationCost;
 
+        for (BudgetHeader__c bh : budgets) {
+            if (bh.Id != budgetHeaderId) {
+                if (bh.Status__c == 'Approved') {
+                    totalApprovedContingencyCosts += bh.TotalContingencyAmount__c;                    
+                } else if (bh.Status__c == 'Forecast') {
+                    totalForecastContingencyCosts += bh.TotalContingencyAmount__c;
+                }
+            }
+        }
+
+        totalForecastContingencyCosts += totalApprovedContingencyCosts;
     }
 
     public PageReference cloneResource() {
