@@ -5,6 +5,7 @@ public without sharing class ECO_BudgetResourceTriggers {
 		if (oBudgetAssignment.OverrideRawCost__c != oBudgetResource.OverrideRawCost__c) return false;
         if (oBudgetAssignment.OverrideFringeMultiplier__c != oBudgetResource.OverrideFringeMultiplier__c) return false;
         if (oBudgetAssignment.OverrideOverheadMultiplier__c != oBudgetResource.OverrideOverheadMultiplier__c) return false;
+        if (oBudgetAssignment.OverrideUplift__c != oBudgetResource.OverrideUplift__c) return false;
         if (oBudgetAssignment.MarginType__c != oBudgetResource.MarginType__c) return false;
         if (oBudgetAssignment.OverrideBillRate__c != oBudgetResource.OverrideBillRate__c) return false;
         if (oBudgetAssignment.OverrideFringeMultiplierField__c != oBudgetResource.OverrideFringeMultiplierField__c) return false;

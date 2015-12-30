@@ -294,17 +294,15 @@ public class ECO_Service_ProjectSnapshots {
 	                }
 				}
 				
-                billingMetricsAR0to30Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_0to30);
-                System.debug(System.LoggingLevel.WARN, '___billingMetricsAR0to30Map='+billingMetricsAR0to30Map);
-                billingMetricsAR31to60Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_31to60);
+				Map<Id, List<Billing__c>> billingMetricsARMapProjects = getBillingMetricsARMap(projectIds);
+				System.debug(System.LoggingLevel.WARN, '___billingMetricsARMapProjects='+billingMetricsARMapProjects);
+				getBillingMetricsARDateRangeMap(projectIds, billingMetricsARMapProjects); // sets up individual billingMetrics "Date Range" maps
+				System.debug(System.LoggingLevel.WARN, '___billingMetricsAR0to30Map='+billingMetricsAR0to30Map);
                 System.debug(System.LoggingLevel.WARN, '___billingMetricsAR31to60Map='+billingMetricsAR31to60Map);
-                billingMetricsAR61to90Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_61to90);
                 System.debug(System.LoggingLevel.WARN, '___billingMetricsAR61to90Map='+billingMetricsAR61to90Map);
-                billingMetricsAR91to180Map = getBillingMetricsARDateRangeMap(projectIds, BILLED_91to180);
                 System.debug(System.LoggingLevel.WARN, '___billingMetricsAR91to180Map='+billingMetricsAR91to180Map);
-                billingMetricsAR181PlusMap = getBillingMetricsAR181PlusMap(projectIds);
                 System.debug(System.LoggingLevel.WARN, '___billingMetricsAR181PlusMap='+billingMetricsAR181PlusMap);
-
+                
 				System.debug(System.LoggingLevel.WARN, '___Query rows BILLED='+Limits.getQueryRows());
 
                 // Note: Unbilled calculations are in reverse order
@@ -338,6 +336,7 @@ public class ECO_Service_ProjectSnapshots {
                     snapshot.LaborBudgetOriginal__c = 0;
                     snapshot.FringeBudgetOriginal__c = 0;
                     snapshot.OverheadBudgetOriginal__c = 0;
+                    snapshot.HoursBudgetOriginal__c = 0;
                     
                     snapshot.CostsODCEXPSBudget__c = 0;
                     snapshot.CostsODCSUBSBudget__c = 0;
@@ -345,6 +344,7 @@ public class ECO_Service_ProjectSnapshots {
                     snapshot.LaborBudget__c = 0;
                     snapshot.FringeBudget__c = 0;
                     snapshot.OverheadBudget__c = 0;
+                    snapshot.HoursBudget__c = 0;
                     
                     snapshot.CostsODCEXPSUnapproved__c = 0;
                     snapshot.CostsODCSUBSUnapproved__c = 0;
@@ -352,6 +352,7 @@ public class ECO_Service_ProjectSnapshots {
                     snapshot.LaborUnapproved__c = 0;
                     snapshot.FringeUnapproved__c = 0;
                     snapshot.OverheadUnapproved__c = 0;
+                    snapshot.HoursUnapproved__c = 0;
 	                
 	                snapshot.CostsODCEXPSForecast__c = 0;
 	                snapshot.CostsODCSUBSForecast__c = 0;
@@ -359,12 +360,15 @@ public class ECO_Service_ProjectSnapshots {
 	                snapshot.LaborForecast__c = 0;
 	                snapshot.FringeForecast__c = 0;
 	                snapshot.OverheadForecast__c = 0;
-	                
-	                snapshot.HoursBudget__c = 0;
-	                snapshot.HoursBudgetOriginal__c = 0;
 	                snapshot.HoursForecast__c = 0;
-	                snapshot.HoursDraft__c = 0;
-	                snapshot.HoursUnapproved__c = 0;
+	                
+	                snapshot.CostsODCEXPSDraft__c = 0;
+                    snapshot.CostsODCSUBSDraft__c = 0;
+                    snapshot.ContingencyDraft__c = 0;
+                    snapshot.LaborDraft__c = 0;
+                    snapshot.FringeDraft__c = 0;
+                    snapshot.OverheadDraft__c = 0;
+                    snapshot.HoursDraft__c = 0;
 	                
                     snapshot.AR0to30__c = 0;
                     snapshot.AR31to60__c = 0;
@@ -428,7 +432,7 @@ public class ECO_Service_ProjectSnapshots {
                             snapshot.EarnedValueLastUpdated__c = EarnedValueLastModifiedDate;
                             snapshot.EarnedValueOverallProgress__c = 0;
                             snapshot.EarnedValuePercentBudgetSpent__c = 0;
-                        }                 
+                        }
                     }
 
                     // Original Budget
@@ -546,7 +550,6 @@ public class ECO_Service_ProjectSnapshots {
                     // Future Spend
                     snapshot = getFutureSpendInformation(snapshot);
                     
-                    //System.debug(System.LoggingLevel.WARN, '___createProjectSnapshots: snapshot='+snapshot);
                     snapshotList.add(snapshot);
                 }   
             }
@@ -678,86 +681,107 @@ public class ECO_Service_ProjectSnapshots {
         return snapshot;
     }
 
-    private Map<Id, Decimal> getBillingMetricsAR181PlusMap(List<Id> projectIds)
+	private Map<Id, List<Billing__c>> getBillingMetricsARMap(List<Id> projectIds)
     {
-        Map<Id, Decimal> billingMetricsMap = new Map<Id, Decimal>();
-        Date startDate;
-        Date endDate;
-        BillingMetrics billingMetrics;
+        Map<Id, List<Billing__c>> billingMetricsMap = new Map<Id, List<Billing__c>>();
+        //BillingMetrics billingMetrics;
         try {
-            startDate = pSnapshotDate;
-            endDate = pSnapshotDate.addDays(-181);
-            String query = 'SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled' +
-                           ' FROM Billing__c WHERE ProjectNumber__c IN :projectIds '+
-                           ' AND InvoiceDate__c <= :startDate'+
-                           ' GROUP BY ProjectNumber__c';
+            List<Billing__c> billingList = [SELECT ProjectNumber__c, InvoiceDate__c, InvoiceAmount__c
+                           FROM Billing__c WHERE ProjectNumber__c IN :projectIds 
+                           AND InvoiceDate__c <= :pSnapshotDate];
             
-            System.debug(System.LoggingLevel.WARN, '___SOQL queries='+Limits.getQueries());
-            List<AggregateResult> results = database.query(query); 
-            for (AggregateResult ar : results) {
-                Decimal totalBilled = (Decimal)ar.get('totalBilled');
-                if (totalBilled != null)
-                {
-                    billingMetrics = new BillingMetrics();
-                    Id projId = (Id) ar.get('ProjectNumber__c');
-                    billingMetricsMap.put(projId, totalBilled);
+            // For each Project add to its List of Billings
+            List<Billing__c> metricsBillingList;
+            for (Billing__c billing : billingList) {
+                Id projId = (Id) billing.ProjectNumber__c;      
+                if (billingMetricsMap.get(projId) == null) {
+                	metricsBillingList = new List<Billing__c>();
+                	metricsBillingList.add(billing);
                 }
-            }
+                else {
+                	metricsBillingList = billingMetricsMap.get(projId);
+                	metricsBillingList.add(billing);
+                }
+                billingMetricsMap.put(projId, metricsBillingList);
+            }  
         }
         catch (Exception e) {
             System.debug(e.getStackTraceString());
         }
         return billingMetricsMap;
     }
-
-    private Map<Id, Decimal> getBillingMetricsARDateRangeMap(List<Id> projectIds, String range)
+    
+    private void getBillingMetricsARDateRangeMap(List<Id> projectIds, Map<Id, List<Billing__c>> billingMetricsMap)
     {
-        Map<Id, Decimal> billingMetricsMap = new Map<Id, Decimal>();
-        Date startDate; 
-        Date endDate;
         try {
-            if (range == BILLED_0to30) {
-                startDate = pSnapshotDate;
-                endDate = pSnapshotDate.addDays(-30);
-            }
-            else if (range == BILLED_31to60) {
-                startDate = pSnapshotDate.addDays(-31);
-                endDate = pSnapshotDate.addDays(-60);
-            }
-            else if (range == BILLED_61to90) {
-                startDate = pSnapshotDate.addDays(-61);
-                endDate = pSnapshotDate.addDays(-90);
-            }
-            else if (range == BILLED_91to180) {
-                startDate = pSnapshotDate.addDays(-91);
-                endDate = pSnapshotDate.addDays(-180);
-            }
-
-			System.debug(System.LoggingLevel.WARN, '___startDate='+startDate+', endDate='+endDate);
-            String query = 'SELECT ProjectNumber__c, SUM(InvoiceAmount__c) totalBilled'+
-                         ' FROM Billing__c WHERE ProjectNumber__c IN :projectIds'+ 
-                         ' AND InvoiceDate__c <= :startDate AND InvoiceDate__c >= :endDate'+ 
-                         ' GROUP BY ProjectNumber__c';
-            List<AggregateResult> results = database.query(query);    
-            for (AggregateResult ar : results) {
-                Id projId = (Id) ar.get('ProjectNumber__c');
-                Decimal totalBilled = (Decimal)ar.get('totalBilled');
-			System.debug(System.LoggingLevel.WARN, '___projId='+projId+', totalBilled='+totalBilled);
-                if (totalBilled == null)
-                {
-                    totalBilled = 0;
-                }        
-                billingMetricsMap.put(projId, totalBilled);
-            }
-			System.debug(System.LoggingLevel.WARN, '___getBillingMetricsARDateRangeMap='+billingMetricsMap);
+    		billingMetricsAR0to30Map = new Map<Id, Decimal>();
+    		billingMetricsAR31to60Map = new Map<Id, Decimal>();
+			billingMetricsAR61to90Map = new Map<Id, Decimal>();
+			billingMetricsAR91to180Map = new Map<Id, Decimal>();
+			billingMetricsAR181PlusMap = new Map<Id, Decimal>();
+			
+			for (Id projId : projectIds) {
+				billingMetricsAR0to30Map.put(projId, 0.0);
+				billingMetricsAR31to60Map.put(projId, 0.0);
+				billingMetricsAR61to90Map.put(projId, 0.0);
+				billingMetricsAR91to180Map.put(projId, 0.0);
+				billingMetricsAR181PlusMap.put(projId, 0.0);
+			}
+			
+            Date startDate0to30 = pSnapshotDate.addDays(-30);
+            Date endDate0to30 = pSnapshotDate;
+        
+            Date startDate31to60 = pSnapshotDate.addDays(-60);
+            Date endDate31to60 = pSnapshotDate.addDays(-31);
+        
+        	Date startDate61to90 = pSnapshotDate.addDays(-90);
+            Date endDate61to90 = pSnapshotDate.addDays(-61);
+        
+            Date startDate91to180 = pSnapshotDate.addDays(-180);
+            Date endDate91to180 = pSnapshotDate.addDays(-91);
+            
+            Date startDate181Plus = pSnapshotDate.addDays(-181);
+            
+        	for (Id projId : billingMetricsMap.keyset()) {
+        		List<Billing__c> billingList = (List<Billing__c>) billingMetricsMap.get(projId);
+        		for (Billing__c billing : billingList) {
+        			Date invoiceDate = billing.InvoiceDate__c;
+        			if (invoiceDate >= startDate0to30 && invoiceDate <= endDate0to30) {
+        				Decimal billed = (Decimal) billingMetricsAR0to30Map.get(projId);
+        				billed += billing.InvoiceAmount__c;
+        				billingMetricsAR0to30Map.put(projId, billed);
+        			}
+        			else if (invoiceDate >= startDate31to60 && invoiceDate <= endDate31to60) {
+        				Decimal billed = (Decimal) billingMetricsAR31to60Map.get(projId);
+        				billed += billing.InvoiceAmount__c;
+        				billingMetricsAR31to60Map.put(projId, billed);
+        			}
+        			else if (invoiceDate >= startDate61to90 && invoiceDate <= endDate61to90) {
+        				Decimal billed = (Decimal) billingMetricsAR61to90Map.get(projId);
+        				billed += billing.InvoiceAmount__c;
+        				billingMetricsAR61to90Map.put(projId, billed);
+        			}
+        			else if (invoiceDate >= startDate91to180 && invoiceDate <= endDate91to180) {
+        				Decimal billed = (Decimal) billingMetricsAR91to180Map.get(projId);
+        				billed += billing.InvoiceAmount__c;
+        				billingMetricsAR91to180Map.put(projId, billed);
+        			}
+        			else if (invoiceDate <= startDate181Plus) {
+        				Decimal billed = (Decimal) billingMetricsAR181PlusMap.get(projId);
+        				billed += billing.InvoiceAmount__c;
+        				billingMetricsAR181PlusMap.put(projId, billed);
+        			}
+        		}
+        	}
         }
         catch (Exception e) {
             System.debug(e.getStackTraceString());
         }
-        return billingMetricsMap;
     }
-
-    ////////// Start Unbilled
+    
+    ////////// 
+      //  Start Unbilled
+    //////////////
     private Map<Id, Decimal> getUnbilledMetricsARDateRangeMap(List<Id> projectIds, String range)
     {
         Map<Id, Decimal> unbilledMetricsMap = new Map<Id, Decimal>();
@@ -934,12 +958,12 @@ public class ECO_Service_ProjectSnapshots {
 			tmpDateTime = pSnapshotDateTime;
 			for (Integer i=1; i < 7; i++) {
 				if (tmpDateTime.format('EEEE') == AECOM_FISCAL_WEEK_END_DAY) {
-					return tmpDateTime.date();
+					break;
 				}
 				else {
-					tmpDateTime = pSnapshotDateTime.addDays(-1);
+					tmpDateTime = tmpDateTime.addDays(-1);
 				}
-			}	
+			}
 		}
 		return tmpDateTime.date();
 	}
@@ -947,8 +971,6 @@ public class ECO_Service_ProjectSnapshots {
 	// Time period
     private Map<Id, ProjectSnapshot__c> getSnapshotFiscalMonths(List<ProjectSnapshot__c> snapshots) {
         Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap = new Map<Id, ProjectSnapshot__c>();
-        //OLD: List<pse__Time_Period__c> timePeriods = ECO_ProjectTaskService.calcTimePeriods;
-        
         List<Date> endDateList = new List<Date>();
         for (ProjectSnapshot__c snapshot : snapshots) {
              if (snapshot.SnapshotDate__c != null){ 
@@ -959,14 +981,13 @@ public class ECO_Service_ProjectSnapshots {
         System.debug(System.LoggingLevel.WARN, '___endDateList='+endDateList);
         List<pse__Time_Period__c> timePeriods  = new  List<pse__Time_Period__c>();
         
-        if(endDateList.size()>0)
-        {
+        if (endDateList.size()>0) {
 	        timePeriods = ECO_Utils_Date.calcTimePeriods(endDateList, 'Month'); 
 	        System.debug(System.LoggingLevel.WARN, '___timePeriods='+timePeriods);
 	        
 	        pse__Time_Period__c fm = null;
 	        for (ProjectSnapshot__c snapshot : snapshots) {
-	            if (snapshot.SnapshotDate__c != null){                                      
+	            if (snapshot.SnapshotDate__c != null) {                                      
 	                fm = ECO_Utils_Date.getFiscalPeriod(snapshot.SnapshotDate__c.date(), 0, timePeriods);
 	                System.debug(System.LoggingLevel.WARN, '___fm='+fm);
 	                if (fm != null){
@@ -975,7 +996,7 @@ public class ECO_Service_ProjectSnapshots {
 	                System.Debug(System.LoggingLevel.WARN, '___SnapshotFiscalMonth__c=' + snapshot.SnapshotFiscalMonth__c);
 	                
 	                fm = ECO_Utils_Date.getFiscalPeriod(snapshot.SnapshotDate__c.date(), 1, timePeriods);  
-	                if (fm != null){
+	                if (fm != null) {
 	                    snapshot.SnapshotPreviousFiscalMonth__c = fm.TimePeriodCode__c;
 	                }
 					System.Debug(System.LoggingLevel.WARN, '___SnapshotPreviousFiscalMonth__c=' + snapshot.SnapshotPreviousFiscalMonth__c);
@@ -1101,6 +1122,7 @@ public class ECO_Service_ProjectSnapshots {
             }
             query += ' GROUP BY Project__c'+
                      ' ORDER BY Project__c';
+            System.debug(System.LoggingLevel.WARN, '___asOfDate='+asOfDate+', pSnapshotLatestFiscalWeekEndDate='+pSnapshotLatestFiscalWeekEndDate);
             System.debug(System.LoggingLevel.WARN, '___getProjectActualFinancialsCostsWeeklyRollups query= '+query);
             results = database.query(query);
             System.debug(System.LoggingLevel.WARN, '___getProjectActualFinancialsCostsWeeklyRollups results= '+results.size());
@@ -1163,6 +1185,9 @@ public class ECO_Service_ProjectSnapshots {
 	                ' ORDER BY ExpenditureItem__r.ProjectTask__r.pse__Project__c';    
 			
 				List<CostDistLine__c> cdlList = database.query(query);
+				System.debug(System.LoggingLevel.WARN, '___pSnapshotLatestFiscalWeekEndDate='+pSnapshotLatestFiscalWeekEndDate+
+					', pSnapshotDate='+pSnapshotDate);
+				System.debug(System.LoggingLevel.WARN, '___getProjectActualFinancialsCostsPartialWeek query='+query);
 				
 				for (Id projectId : projectIds) {
 					FinancialMetrics metrics = metricsMap.get(projectId);
@@ -1533,7 +1558,6 @@ public class ECO_Service_ProjectSnapshots {
     @TestVisible private Map<Id, FinancialMetrics> getUnapprovedBudgetHeaderMap(List<Id> projectIds, boolean showUnsynchedBudgets)
     {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
-        String approvalStatus = 'Approved';
         String query = 'SELECT Project__c, SUM(TotalRevenue__c) totalRevenue,'+
             ' SUM(TotalCost__c) totalCost,'+
             ' SUM(TotalNonLabor__c) totalNonLabor,'+
@@ -1541,12 +1565,16 @@ public class ECO_Service_ProjectSnapshots {
             ' SUM(TotalContingencyAmount__c) totalContingency'+
             ' FROM BudgetHeader__c'+
             ' WHERE Project__c IN :projectIds'+
-            ' AND Status__c != \''+ approvalStatus + '\''+
-            ' AND Id IN (SELECT BudgetHeader__c FROM ChangeManager__c WHERE ApprovalStatus__c != \''+ approvalStatus + '\''+
-            ' AND Project__c IN :projectIds)'+
+            ' AND Status__c != \'Approved\' '+
+            /*' AND Id IN (SELECT BudgetHeader__c FROM ChangeManager__c WHERE ApprovalStatus__c != \'Approved\' '+
+            ' AND Project__c IN :projectIds)'+*/
             ' GROUP BY Project__c';     
+        
+        /* NOTE: Unapproved metrics were being calculated by checking both the Budget Header's Status and the existence of an entry
+         in Change Manager. However, this should be redundant; and if the two objects don't agree, the results will be unexpected. 
+         Currently, we have removed the check for the record in Change Manager, pending any business request to the contrary. */
             
-        System.debug(System.LoggingLevel.WARN, '___query='+query);
+        System.debug(System.LoggingLevel.WARN, '___getUnapprovedBudgetHeaderMap query='+query);
         try {
             List<AggregateResult> results = database.query(query); 
             
@@ -1827,7 +1855,7 @@ public class ECO_Service_ProjectSnapshots {
 	                        }
 	                    }
 	                    else if (bStatus == 'Estimate') { // Draft
-	                        if (PLReportCategory == ODC_Exps) {
+	                    	if (PLReportCategory == ODC_Exps) {
 	                            snapshot.CostsODCEXPSDraft__c += ba.TotalComputedCost__c;
 	                        }
 	                        else if (PLReportCategory == ODC_Subs) {
@@ -1848,7 +1876,6 @@ public class ECO_Service_ProjectSnapshots {
 	                    }
                     } 
                 }
-                System.debug(System.LoggingLevel.WARN, '___projectIdToSnapshotMap: snapshot='+snapshot);
                 projectIdToSnapshotMap.put(projId, snapshot);
             }
         }

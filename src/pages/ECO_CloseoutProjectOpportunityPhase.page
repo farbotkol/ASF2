@@ -69,6 +69,26 @@
 	    .questionCol {
 	    	padding-top: 10px;  
 		}
+
+        /* CUSTOM HELP / GUIDANCE TEXT BOX */
+        .customHelpText{
+            padding: 7px;
+            border: 1px solid #85B3CE;
+            min-height: 10px;
+            display: block;
+            width: auto;
+            margin: 0 0 5px 0;
+            background-repeat: no-repeat;
+            border-radius: 4px;
+            background-color: #A2D3F1;
+            
+        }
+        .customHelpBody{
+            display:inline-block;
+            color:#;
+            max-width:95%;
+        }
+
 	</style>
 
     <head>
@@ -151,14 +171,35 @@
 	<apex:form >
 
 		<apex:sectionHeader title="Change Status" subtitle="{!pse__Proj__c.ProjectSectionHeaderName__c}" />
+		<apex:pageBlock id="goHelp" 
+			rendered="{!pse__Proj__c.pse__Stage__c == 'No-Go'  
+				|| pse__Proj__c.pse__Stage__c == 'Canceled by Client'}">
+			<div class="customHelpText">
+				<div class="customHelpBody">
+				Click the 'Reset Project Status' button to reset the project status back to 'Planning'. Provide notes explaining why the project status is changing from the previous revision.
+				</div>
+			</div>		
+		</apex:pageBlock>		
+		<apex:pageBlock id="noGoHelp" 
+			rendered="{!pse__Proj__c.pse__Stage__c != 'No-Go'  
+				&& pse__Proj__c.pse__Stage__c != 'Canceled by Client'}">
+			<div class="customHelpText">
+				<div class="customHelpBody">
+					Options for closing a project in the opportunity phase include: ‘Canceled by Client’, ‘No Go’ or ‘Lost’.  These statuses align to the stages in our Customer Relationship Management (CRM) tool.  
+					<br /><br />
+					Once the appropriate status is selected, determine if the corresponding CRM record for the project opportunity should also be updated.  This is typical in most cases but there are situations where the opportunity record remains open for follow-on related project opportunities.  For example, an opportunity record is tracking the end-to-end construction of a bridge but the initial project opportunity was only for the geotechnical design.  The Account or Capture Manager may desire to have the record remain open and available for the next phase of work.  If you are unsure, check with your local Business Development lead or the client record Account Manager.
+				</div>
+			</div>		
+		</apex:pageBlock>		
+
 
 
 		<apex:pageMessages id="messages" />		
 		
 		<apex:outputPanel id="noGoStartup" rendered="{!pse__Proj__c.pse__Stage__c == 'No-Go'  || pse__Proj__c.pse__Stage__c == 'Canceled by Client'}">
-			<apex:pageBlock>
-				<apex:pageBlockButtons>
-					<apex:commandButton value="Submit Project for Planning" action="{!createChangeManagementPlanning}" />
+			<apex:pageBlock >
+				<apex:pageBlockButtons >
+					<apex:commandButton value="Reset Project Status" action="{!createChangeManagementPlanning}" />
 					<apex:commandButton value="Return to Project" action="{!back}" immediate="true" />
 				</apex:pageBlockButtons>
 				<apex:pageBlockSection columns="1" collapsible="false">
@@ -216,7 +257,8 @@
 			                    <apex:selectOptions value="{!types}"></apex:selectoptions>
 			 				</apex:selectRadio>
 		            </apex:outputPanel>					
-		            <apex:outputLink value="/{!oProject.pse__Opportunity__c}" target="_blank"><apex:outputText value="{!oProject.pse__Opportunity__r.name}" /></apex:outputLink>
+		            <apex:outputLink value="/{!oProject.pse__Opportunity__c}" target="_blank" rendered="{!bHasAccessToOpportunity}" ><apex:outputText value="{!oProject.pse__Opportunity__r.name}" /></apex:outputLink>
+		            <apex:outputText value="{!sopportunityName}" rendered="{!not(bHasAccessToOpportunity)}"  />
 
 		            <apex:outputLabel value="Client Debrief" />
 		            <apex:outputText value="" />
