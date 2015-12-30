@@ -311,10 +311,34 @@
             </td>
         </tr>
         <tr class="taskDetailHeader">
-            <td class="purpleHeading">Variance from Budget</td>
-            <td class="{!IF(totalPostMitigationCost<totalBudgetContingencies,'redHeading','lightPurpleHeading')}">
+            <td class="purpleHeading">Total Contingency in current Approved Budget</td>
+            <td class="lightPurpleHeading">
                 <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                        <apex:param value="{!totalPostMitigationCost - totalBudgetContingencies}" />
+                        <apex:param value="{!totalApprovedContingencyCosts}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr class="taskDetailHeader">
+            <td class="purpleHeading">Variance from Approved Budget (incl this change)</td>
+            <td class="redHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!totalPostMitigationCost - (totalApprovedContingencyCosts + totalRow.totalContingency)}" />
+                </apex:outputText>
+           </td>
+        </tr>
+        <tr class="taskDetailHeader">
+            <td class="purpleHeading">Total Contingency in current Forecast Budget</td>
+            <td class="lightPurpleHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!totalForecastContingencyCosts}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr class="taskDetailHeader">
+            <td class="purpleHeading">Variance from Forecast Budget (incl this change)</td>
+            <td class="redHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!totalPostMitigationCost - (totalForecastContingencyCosts + totalRow.totalContingency)}" />
                 </apex:outputText>
            </td>
         </tr>

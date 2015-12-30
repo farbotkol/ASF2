@@ -61,6 +61,11 @@ public class ECO_DTO_BudgetLabourDetail {
         private set;
     }
     
+    public Decimal costRateField {
+        get{return setScaling(raw * ( 1 + fringeField/100 + overheadField/100));}
+        private set;
+    }
+
     public Decimal raw {
         get{return setScaling(oBudgetResource.OverrideRawCost__c);}
         set{oBudgetResource.OverrideRawCost__c = value;}

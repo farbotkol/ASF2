@@ -30,6 +30,8 @@ public with sharing class ECO_ProjectTaskTriggers {
             mapWorkTypeById.put(task.Id, task.WorkTypeName__c);
         }
 
+        system.debug(' In PT-recalculateBudgets: ' + mapWorkTypeById.size());
+
         for (BudgetAssignment__c ba : [Select Id, WorkTypeName__c, BudgetTask__r.ProjectTask__c
                                         From BudgetAssignment__c
                                         Where BudgetTask__r.ProjectTask__c IN :mapWorkTypeById.keySet()]) {
