@@ -134,11 +134,12 @@
     </apex:pageBlockButtons>
     
    
-    <apex:actionfunction name="refreshInputNames" rerender="test1"/>
+    <apex:actionfunction name="refreshInputNames" rerender="attachList"/>
     
     
     <c:ECO_RiskFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="" />
     <c:ECO_AssumptionFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="" />
+    <c:ECO_ProjectChatterFeedFlyout ProjectId="{!pse__Proj__c.Id}" PlanElement="" />
 
     <!-- <apex:outputLink value="{!URLFOR($Action.Attachment.Download, pse__Proj__c.DocumentControlSystemAttachment__c)}" target="_blank">
         {!attachmentsMap[pse__Proj__c.DocumentControlSystemAttachment__c].Name}
@@ -164,15 +165,21 @@
                 </td>
                 <td><apex:actionRegion ><apex:selectRadio value="{!pse__Proj__c.DocumentControlSystemType__c}" layout="lineDirection" >
                         <apex:selectOptions value="{!types}"></apex:selectoptions>
-                        <apex:actionSupport event="onchange" rerender="panelDocumentControlSystem"/>
+                        <apex:actionSupport event="onchange" action="{!setDirty}" rerender="panelDocumentControlSystem, attachList"/>
                 </apex:selectRadio></apex:actionRegion>
                 </td>
             </tr>
             <tr><td colspan="2">     
             <apex:outputPanel id="panelDocumentControlSystem">
-            <apex:inputField id="inputDocumentControlSystem" value="{!pse__Proj__c.DocumentControlSystem__c}" style="width: 825px; height: 40px;" rendered="{!pse__Proj__c.DocumentControlSystemType__c == null}"/>
-            <apex:inputField id="inputDocumentControlSystemAECOM" value="{!pse__Proj__c.DocumentControlSystem__c}" style="width: 825px; height: 40px;" rendered="{!pse__Proj__c.DocumentControlSystemType__c == 'AECOM'}" html-placeholder="Enter the local AECOM system used for document control.  This may be a specific software  or simply the  local area network. Specialized procedures for technical deliverables, such as GIS or BIM file management, should be included as appropriate.  Attach any relevant document control or file management documents for reference."/>
-            <apex:inputField id="inputDocumentControlSystemOther" value="{!pse__Proj__c.DocumentControlSystem__c}" style="width: 825px; height: 40px;" rendered="{!pse__Proj__c.DocumentControlSystemType__c == 'Client/Project'}" html-placeholder="Enter the project or client specific document control system, such as Projectwise , that may be part of our service offering or a project requirement for a secure data room to protect sensitive or confidential information.  Client or project reference documents may be attached for reference."/>
+            <apex:inputField id="inputDocumentControlSystem" value="{!pse__Proj__c.DocumentControlSystem__c}" style="width: 825px; height: 40px;" rendered="{!pse__Proj__c.DocumentControlSystemType__c == null}">
+                <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
+            <apex:inputField id="inputDocumentControlSystemAECOM" value="{!pse__Proj__c.DocumentControlSystem__c}" style="width: 825px; height: 40px;" rendered="{!pse__Proj__c.DocumentControlSystemType__c == 'AECOM'}" html-placeholder="Enter the local AECOM system used for document control.  This may be a specific software  or simply the  local area network. Specialized procedures for technical deliverables, such as GIS or BIM file management, should be included as appropriate.  Attach any relevant document control or file management documents for reference.">
+                <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
+            <apex:inputField id="inputDocumentControlSystemOther" value="{!pse__Proj__c.DocumentControlSystem__c}" style="width: 825px; height: 40px;" rendered="{!pse__Proj__c.DocumentControlSystemType__c == 'Client/Project'}" html-placeholder="Enter the project or client specific document control system, such as Projectwise , that may be part of our service offering or a project requirement for a secure data room to protect sensitive or confidential information.  Client or project reference documents may be attached for reference.">
+                <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
             </apex:outputPanel><br/>
             </td></tr>
             </table>   
@@ -190,15 +197,21 @@
                 </td>
                 <td><apex:actionRegion ><apex:selectRadio value="{!pse__Proj__c.DocumentNamingConventionsType__c}" layout="lineDirection" >
                         <apex:selectOptions value="{!types}"></apex:selectoptions>
-                        <apex:actionSupport event="onchange" rerender="panelNameConventions"/>
+                        <apex:actionSupport event="onchange" action="{!setDirty}"  rerender="panelNameConventions, attachList"/>
                 </apex:selectRadio></apex:actionRegion>
                 </td>
             </tr>
             <tr><td colspan="2">
             <apex:outputPanel id="panelNameConventions">
-            <apex:inputField id="inputNameConventions" value="{!pse__Proj__c.DocumentNamingConventions__c}" style="width: 825px; height: 40px" rendered="{!pse__Proj__c.DocumentNamingConventionsType__c == null}"/>            
-            <apex:inputField id="inputNameConventionsAECOM" value="{!pse__Proj__c.DocumentNamingConventions__c}" style="width: 825px; height: 40px" rendered="{!pse__Proj__c.DocumentNamingConventionsType__c == 'AECOM'}" html-placeholder="Enter the local AECOM  document naming conventions protocol. This could include conventions around version control (e.g., V1, Draft, Draft Final), as well as file naming conventions.  These  are likely defined by the local administrative team , technical practice or business line. Attach any relevant document control or file management documents for reference."/>          
-            <apex:inputField id="inputNameConventionsOther" value="{!pse__Proj__c.DocumentNamingConventions__c}" style="width: 825px; height: 40px" rendered="{!pse__Proj__c.DocumentNamingConventionsType__c == 'Client/Project'}" html-placeholder="Enter the project or client specific document naming conventions. This may be a requirement by your client or in your contract includes submittal of electronic deliverables or files. Client or project reference documents may be attached for reference"/>             
+            <apex:inputField id="inputNameConventions" value="{!pse__Proj__c.DocumentNamingConventions__c}" style="width: 825px; height: 40px" rendered="{!pse__Proj__c.DocumentNamingConventionsType__c == null}">
+                <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>            
+            <apex:inputField id="inputNameConventionsAECOM" value="{!pse__Proj__c.DocumentNamingConventions__c}" style="width: 825px; height: 40px" rendered="{!pse__Proj__c.DocumentNamingConventionsType__c == 'AECOM'}" html-placeholder="Enter the local AECOM  document naming conventions protocol. This could include conventions around version control (e.g., V1, Draft, Draft Final), as well as file naming conventions.  These  are likely defined by the local administrative team , technical practice or business line. Attach any relevant document control or file management documents for reference.">
+                <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>         
+            <apex:inputField id="inputNameConventionsOther" value="{!pse__Proj__c.DocumentNamingConventions__c}" style="width: 825px; height: 40px" rendered="{!pse__Proj__c.DocumentNamingConventionsType__c == 'Client/Project'}" html-placeholder="Enter the project or client specific document naming conventions. This may be a requirement by your client or in your contract includes submittal of electronic deliverables or files. Client or project reference documents may be attached for reference">
+                <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>        
         </apex:outputPanel><br/>
             </td></tr>
             </table>                       
@@ -221,16 +234,22 @@
                 </td>
                 <td><apex:actionRegion ><apex:selectRadio value="{!pse__Proj__c.FileManagementStructureType__c}" layout="lineDirection" >
                         <apex:selectOptions value="{!types}"></apex:selectoptions>
-                        <apex:actionSupport event="onchange" rerender="panelFileManagement"/>
+                        <apex:actionSupport event="onchange" action="{!setDirty}"  rerender="panelFileManagement, attachList"/>
                 </apex:selectRadio></apex:actionRegion>
                 </td>
             </tr>
             <tr><td colspan="2">
             
             <apex:outputPanel id="panelFileManagement">
-            <apex:inputField id="inputFileManagement" value="{!pse__Proj__c.FileManagementStructure__c}" rendered="{!pse__Proj__c.FileManagementStructureType__c == null}" style="width: 825px; height: 40px"/>
-            <apex:inputField id="inputFileManagementAECOM" value="{!pse__Proj__c.FileManagementStructure__c}" rendered="{!pse__Proj__c.FileManagementStructureType__c == 'AECOM'}" style="width: 825px; height: 40px" html-placeholder="Enter the local AECOM  file management structure.  This includes where and how electronic and hard copy documents are filed and maintained. These  are likely defined by your local IT department or administrative team but may be business line or practice area specific. Attach any relevant document control or file management documents for reference."/>
-            <apex:inputField id="inputFileManagementOther" value="{!pse__Proj__c.FileManagementStructure__c}" rendered="{!pse__Proj__c.FileManagementStructureType__c == 'Client/Project'}" style="width: 825px; height: 40px" html-placeholder="Enter the project or client specific file management structure. This may be a requirement by your client or in your contract includes submittal of electronic deliverables or files. Client or project reference documents may be attached for reference."/>
+            <apex:inputField id="inputFileManagement" value="{!pse__Proj__c.FileManagementStructure__c}" rendered="{!pse__Proj__c.FileManagementStructureType__c == null}" style="width: 825px; height: 40px">
+            <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
+            <apex:inputField id="inputFileManagementAECOM" value="{!pse__Proj__c.FileManagementStructure__c}" rendered="{!pse__Proj__c.FileManagementStructureType__c == 'AECOM'}" style="width: 825px; height: 40px" html-placeholder="Enter the local AECOM  file management structure.  This includes where and how electronic and hard copy documents are filed and maintained. These  are likely defined by your local IT department or administrative team but may be business line or practice area specific. Attach any relevant document control or file management documents for reference.">
+            <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
+            <apex:inputField id="inputFileManagementOther" value="{!pse__Proj__c.FileManagementStructure__c}" rendered="{!pse__Proj__c.FileManagementStructureType__c == 'Client/Project'}" style="width: 825px; height: 40px" html-placeholder="Enter the project or client specific file management structure. This may be a requirement by your client or in your contract includes submittal of electronic deliverables or files. Client or project reference documents may be attached for reference.">
+            <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
             </apex:outputPanel><br/>
             </td></tr>
             </table>        
@@ -250,16 +269,22 @@
                 </td>
                 <td><apex:actionRegion ><apex:selectRadio value="{!pse__Proj__c.DocumentTransmittalsType__c}" layout="lineDirection" >
                         <apex:selectOptions value="{!types}"></apex:selectoptions>
-                        <apex:actionSupport event="onchange" rerender="panelTransmittals"/>
+                        <apex:actionSupport event="onchange" action="{!setDirty}" rerender="panelTransmittals, attachList"/>
                 </apex:selectRadio></apex:actionRegion>
                 </td>
             </tr>
             <tr><td colspan="2">
             
             <apex:outputPanel id="panelTransmittals">
-            <apex:inputField id="inputTransmittals" value="{!pse__Proj__c.DocumentTransmittals__c}" rendered="{!pse__Proj__c.DocumentTransmittalsType__c == null}" style="width: 825px; height: 40px"/>
-            <apex:inputField id="inputTransmittalsAECOM" value="{!pse__Proj__c.DocumentTransmittals__c}" rendered="{!pse__Proj__c.DocumentTransmittalsType__c == 'AECOM'}" style="width: 825px; height: 40px" html-placeholder="Enter the local AECOM document transmittals protocol. This could include how to track transmittals and/or the format the use of transmittal logs or cover sheets.  These are likely defined by your administrative team, business line or practice area. Attach any relevant document control or file management documents for reference."/>
-            <apex:inputField id="inputTransmittalsOther" value="{!pse__Proj__c.DocumentTransmittals__c}" rendered="{!pse__Proj__c.DocumentTransmittalsType__c == 'Client/Project'}" style="width: 825px; height: 40px" html-placeholder="Enter the project or client specific document transmittals protocols.  This may be a requirement by your client or in your contract on how deliverables will be transmitted to the client or other stakeholders. Client or project reference documents may be attached for reference."/>
+            <apex:inputField id="inputTransmittals" value="{!pse__Proj__c.DocumentTransmittals__c}" rendered="{!pse__Proj__c.DocumentTransmittalsType__c == null}" style="width: 825px; height: 40px">
+            <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
+            <apex:inputField id="inputTransmittalsAECOM" value="{!pse__Proj__c.DocumentTransmittals__c}" rendered="{!pse__Proj__c.DocumentTransmittalsType__c == 'AECOM'}" style="width: 825px; height: 40px" html-placeholder="Enter the local AECOM document transmittals protocol. This could include how to track transmittals and/or the format the use of transmittal logs or cover sheets.  These are likely defined by your administrative team, business line or practice area. Attach any relevant document control or file management documents for reference.">
+            <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
+            <apex:inputField id="inputTransmittalsOther" value="{!pse__Proj__c.DocumentTransmittals__c}" rendered="{!pse__Proj__c.DocumentTransmittalsType__c == 'Client/Project'}" style="width: 825px; height: 40px" html-placeholder="Enter the project or client specific document transmittals protocols.  This may be a requirement by your client or in your contract on how deliverables will be transmitted to the client or other stakeholders. Client or project reference documents may be attached for reference.">
+            <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
             </apex:outputPanel><br/>
             </td></tr>
             </table>               
@@ -276,16 +301,22 @@
                 </td>
                 <td><apex:actionRegion ><apex:selectRadio value="{!pse__Proj__c.DocumentRecordsArchivingType__c}" layout="lineDirection" >
                         <apex:selectOptions value="{!types}"></apex:selectoptions>
-                        <apex:actionSupport event="onchange" rerender="panelArchiving"/>
+                        <apex:actionSupport event="onchange" action="{!setDirty}"  rerender="panelArchiving, attachList"/>
                 </apex:selectRadio></apex:actionRegion>
                 </td>
             </tr>
             <tr><td colspan="2">
             <apex:outputPanel id="panelArchiving">
             
-            <apex:inputField id="inputArchiving" value="{!pse__Proj__c.DocumentRecordsArchiving__c}" rendered="{!pse__Proj__c.DocumentRecordsArchivingType__c == null}" style="width: 825px; height: 40px"/>
-            <apex:inputField id="inputArchivingAECOM" value="{!pse__Proj__c.DocumentRecordsArchiving__c}" rendered="{!pse__Proj__c.DocumentRecordsArchivingType__c == 'AECOM'}" style="width: 825px; height: 40px" html-placeholder="Enter the local AECOM record retention or archiving protocol. This includes the location (on site or off site) and archive duration. These are likely defined by your administrative team, business line or practice area. Attach any relevant document control or file management documents, such as directions on how to request document archiving services, for reference."/>
-            <apex:inputField id="inputArchivingOther" value="{!pse__Proj__c.DocumentRecordsArchiving__c}" rendered="{!pse__Proj__c.DocumentRecordsArchivingType__c == 'Client/Project'}" style="width: 825px; height: 40px" html-placeholder="Enter the project or client specific record retention or archiving protocol.  This may be a requirement by your client or in your contract on how long project documents and deliverables must be archived. Client or project reference documents may be attached for reference."/>
+            <apex:inputField id="inputArchiving" value="{!pse__Proj__c.DocumentRecordsArchiving__c}" rendered="{!pse__Proj__c.DocumentRecordsArchivingType__c == null}" style="width: 825px; height: 40px">
+            <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
+            <apex:inputField id="inputArchivingAECOM" value="{!pse__Proj__c.DocumentRecordsArchiving__c}" rendered="{!pse__Proj__c.DocumentRecordsArchivingType__c == 'AECOM'}" style="width: 825px; height: 40px" html-placeholder="Enter the local AECOM record retention or archiving protocol. This includes the location (on site or off site) and archive duration. These are likely defined by your administrative team, business line or practice area. Attach any relevant document control or file management documents, such as directions on how to request document archiving services, for reference.">
+            <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
+            <apex:inputField id="inputArchivingOther" value="{!pse__Proj__c.DocumentRecordsArchiving__c}" rendered="{!pse__Proj__c.DocumentRecordsArchivingType__c == 'Client/Project'}" style="width: 825px; height: 40px" html-placeholder="Enter the project or client specific record retention or archiving protocol.  This may be a requirement by your client or in your contract on how long project documents and deliverables must be archived. Client or project reference documents may be attached for reference.">
+            <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
             </apex:outputPanel><br/>
             </td></tr>
             </table>                           
@@ -298,7 +329,10 @@
             <table>
             <tr><td >
             <apex:outputText value="Document Other Comments / Notes" styleclass="dmeOutput"/><br/> 
-            <apex:inputField id="inputComments" value="{!pse__Proj__c.DocumentOtherCommentsNotes__c}" style="width: 825px; height: 40px"/><br/>
+            <apex:inputField id="inputComments" value="{!pse__Proj__c.DocumentOtherCommentsNotes__c}" style="width: 825px; height: 40px">
+            <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
+            <br/>
             </td></tr>
             </table>   
         </apex:outputPanel>     
@@ -310,14 +344,26 @@
             <table>
             <tr><td >
             <apex:outputText value="Links to Project Network Folder or Sharepoint" styleclass="dmeOutput"/><br/> 
-            <apex:inputField id="inputSharepoint" value="{!pse__Proj__c.DocumentControlLinks__c}" style="width: 825px; height: 40px"/><br/>
+            <apex:inputField id="inputSharepoint" value="{!pse__Proj__c.DocumentControlLinks__c}" style="width: 825px; height: 40px">
+            <apex:actionSupport event="onchange" action="{!setDirty}" rerender="attachList"/>
+            </apex:inputField>
+            <br/>
             </td></tr>
             </table>   
         </apex:outputPanel>  
     </apex:pageBlockSection>
+        
+    <apex:pageBlockButtons location="bottom">
+        <apex:commandButton value="Save" action="{!save}" />
+        <apex:commandButton value="Return to Project" action="{!cancel}"/>
+        <apex:commandButton value="AECOM Project Document & Records Control Procedures" onclick="myURLOpen();" />
+    </apex:pageBlockButtons>        
 </apex:pageBlock>
 
 </apex:form>
-<apex:relatedList subject="{!pse__Proj__c}" list="CombinedAttachments" />
-
+<apex:outputPanel id="attachList">
+    <apex:outputPanel rendered="{!bAttachAvail}">
+        <apex:relatedList subject="{!pse__Proj__c}" list="CombinedAttachments" />
+    </apex:outputPanel>
+</apex:outputPanel>
 </apex:page>

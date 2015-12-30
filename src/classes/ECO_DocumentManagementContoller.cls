@@ -16,6 +16,8 @@ public class ECO_DocumentManagementContoller {
     public pse__Proj__c project;
     public map<Id, Attachment> attachmentsMap {get; set;}
     public list<SelectOption> types { get; set; }
+
+    public boolean bAttachAvail {get;set;}
     
     public ECO_DocumentManagementContoller(ApexPages.StandardController controller)
     {
@@ -26,8 +28,15 @@ public class ECO_DocumentManagementContoller {
         types = new List<SelectOption>();
         types.add(new SelectOption('AECOM', 'AECOM'));
         types.add(new SelectOption('Client/Project', 'Client/Project'));  
+
+        bAttachAvail = true;
     }   
     
+    public PageReference setDirty(){
+        bAttachAvail = false;
+        return null;
+    }
+
     public Attachment docControlSystemAttachment
     {
         get
@@ -295,6 +304,7 @@ public class ECO_DocumentManagementContoller {
     public PageReference save()
     {                       
         update project;
+        bAttachAvail = true;
                 
         return null;
     }
