@@ -573,7 +573,8 @@ public with sharing virtual class ECO_ProjectReviewsController
 		if(oProjectReview.EventID__c != null)
 		{
 			//oPR = new PageReference('/' + oProjectReview.EventID__c + '/e?retURL=' + EncodingUtil.urlEncode(ApexPages.currentPage().getURL(), 'UTF-8'));
-			oPR = new PageReference('/' + oProjectReview.EventID__c + '/e');
+			//oPR = new PageReference('/' + oProjectReview.EventID__c + '/e');
+			oPR = new PageReference('/' + oProjectReview.EventID__c );
 			oPR.getParameters().put('retURL', '/' + oProjectReview.Id);
 			oPR.getParameters().put('saveURL', '/' + oProjectReview.Id);			
 			oPR.setRedirect(true);
