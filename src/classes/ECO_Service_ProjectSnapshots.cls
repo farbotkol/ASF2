@@ -294,9 +294,9 @@ public class ECO_Service_ProjectSnapshots {
 	                }
 				}
 				
-				Map<Id, List<Billing__c>> billingMetricsARMapProjects = getBillingMetricsARMap(projectIds);
-				System.debug(System.LoggingLevel.WARN, '___billingMetricsARMapProjects='+billingMetricsARMapProjects);
-				getBillingMetricsARDateRangeMap(projectIds, billingMetricsARMapProjects); // sets up individual billingMetrics "Date Range" maps
+				Map<Id, List<Billing__c>> billingListARMap = getBillingListARMap(projectIds);
+				System.debug(System.LoggingLevel.WARN, '___billingListARMap='+billingListARMap);
+				getBillingMetricsARDateRangeMap(projectIds, billingListARMap); // sets up individual billingMetrics "Date Range" maps
 				System.debug(System.LoggingLevel.WARN, '___billingMetricsAR0to30Map='+billingMetricsAR0to30Map);
                 System.debug(System.LoggingLevel.WARN, '___billingMetricsAR31to60Map='+billingMetricsAR31to60Map);
                 System.debug(System.LoggingLevel.WARN, '___billingMetricsAR61to90Map='+billingMetricsAR61to90Map);
@@ -681,37 +681,37 @@ public class ECO_Service_ProjectSnapshots {
         return snapshot;
     }
 
-	private Map<Id, List<Billing__c>> getBillingMetricsARMap(List<Id> projectIds)
+	private Map<Id, List<Billing__c>> getBillingListARMap(List<Id> projectIds)
     {
-        Map<Id, List<Billing__c>> billingMetricsMap = new Map<Id, List<Billing__c>>();
-        //BillingMetrics billingMetrics;
+        Map<Id, List<Billing__c>> billingListMap = new Map<Id, List<Billing__c>>();
+        //BillingList billingList;
         try {
             List<Billing__c> billingList = [SELECT ProjectNumber__c, InvoiceDate__c, InvoiceAmount__c
                            FROM Billing__c WHERE ProjectNumber__c IN :projectIds 
                            AND InvoiceDate__c <= :pSnapshotDate];
             
             // For each Project add to its List of Billings
-            List<Billing__c> metricsBillingList;
+            List<Billing__c> billingListTemp;
             for (Billing__c billing : billingList) {
                 Id projId = (Id) billing.ProjectNumber__c;      
-                if (billingMetricsMap.get(projId) == null) {
-                	metricsBillingList = new List<Billing__c>();
-                	metricsBillingList.add(billing);
+                if (billingListMap.get(projId) == null) {
+                	billingListTemp = new List<Billing__c>();
+                	billingListTemp.add(billing);
                 }
                 else {
-                	metricsBillingList = billingMetricsMap.get(projId);
-                	metricsBillingList.add(billing);
+                	billingListTemp = billingListMap.get(projId);
+                	billingListTemp.add(billing);
                 }
-                billingMetricsMap.put(projId, metricsBillingList);
-            }  
+                billingListMap.put(projId, billingListTemp);
+            }
         }
         catch (Exception e) {
             System.debug(e.getStackTraceString());
         }
-        return billingMetricsMap;
+        return billingListMap;
     }
     
-    private void getBillingMetricsARDateRangeMap(List<Id> projectIds, Map<Id, List<Billing__c>> billingMetricsMap)
+    private void getBillingMetricsARDateRangeMap(List<Id> projectIds, Map<Id, List<Billing__c>> billingListARMap)
     {
         try {
     		billingMetricsAR0to30Map = new Map<Id, Decimal>();
@@ -742,8 +742,8 @@ public class ECO_Service_ProjectSnapshots {
             
             Date startDate181Plus = pSnapshotDate.addDays(-181);
             
-        	for (Id projId : billingMetricsMap.keyset()) {
-        		List<Billing__c> billingList = (List<Billing__c>) billingMetricsMap.get(projId);
+        	for (Id projId : billingListARMap.keyset()) {
+        		List<Billing__c> billingList = (List<Billing__c>) billingListARMap.get(projId);
         		for (Billing__c billing : billingList) {
         			Date invoiceDate = billing.InvoiceDate__c;
         			if (invoiceDate >= startDate0to30 && invoiceDate <= endDate0to30) {
@@ -779,9 +779,7 @@ public class ECO_Service_ProjectSnapshots {
         }
     }
     
-    ////////// 
-      //  Start Unbilled
-    //////////////
+    ///////  START Unbilled
     private Map<Id, Decimal> getUnbilledMetricsARDateRangeMap(List<Id> projectIds, String range)
     {
         Map<Id, Decimal> unbilledMetricsMap = new Map<Id, Decimal>();
@@ -890,7 +888,7 @@ public class ECO_Service_ProjectSnapshots {
         }
         return unbilledMetricsMap;
     }
-    //////// END Unbilled
+    ////////  END Unbilled
 
     @TestVisible private ProjectSnapshot__c getOriginalBudgetHeaderMapInformation(FinancialMetrics originalBudgetFinancialMetrics, ProjectSnapshot__c snapshot) {
         if (originalBudgetFinancialMetrics != null) {
