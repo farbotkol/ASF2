@@ -126,12 +126,12 @@
     <fields>
         <fullName>CalculatedRevenue__c</fullName>
         <externalId>false</externalId>
-        <formula>IF(OverrideTotalRevenue__c = 0, 
+        <formula>IF(OverrideTotalRevenue__c=0, 
 
 IF (ISPICKVAL( MarginType__c , &apos;Percent&apos;),
- MarginAmountCostTimesUplift__c 
+ BLANKVALUE(MarginAmountCostTimesUplift__c, 0) 
 ,
- MarginAmountQtyTimesRate__c 
+ BLANKVALUE(MarginAmountQtyTimesRate__c, 0) 
 )
 
 , 
@@ -675,8 +675,16 @@ OverrideTotalRevenue__c
     </fields>
     <fields>
         <fullName>TotalFringe__c</fullName>
+        <description>IF(  OverrideTotalFringe__c = 0, IF(OverrideFringeMultiplier__c = 0, DefaultFringeMultiplier__c *  AppliedRawCost__c, OverrideFringeMultiplier__c * AppliedRawCost__c) * Quantity__c, OverrideTotalFringe__c )</description>
         <externalId>false</externalId>
-        <formula>IF(  OverrideTotalFringe__c = 0, IF(OverrideFringeMultiplier__c = 0, DefaultFringeMultiplier__c *  AppliedRawCost__c, OverrideFringeMultiplier__c * AppliedRawCost__c) * Quantity__c, OverrideTotalFringe__c )</formula>
+        <formula>IF(  OverrideTotalFringe__c = 0, 
+
+IF( ISPICKVAL(WorkTypeName__c,&quot;Field Office&quot;), 
+Quantity__c * AppliedRawCost__c * OverrideFringeMultiplierField__c, 
+Quantity__c * AppliedRawCost__c * OverrideFringeMultiplier__c
+)
+
+, OverrideTotalFringe__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Total Fringe</label>
         <precision>18</precision>
@@ -687,8 +695,16 @@ OverrideTotalRevenue__c
     </fields>
     <fields>
         <fullName>TotalOverhead__c</fullName>
+        <description>IF( OverrideTotalOverhead__c = 0, IF(OverrideOverheadMultiplier__c = 0, DefaultOverheadMultiplier__c *  AppliedRawCost__c, OverrideOverheadMultiplier__c * AppliedRawCost__c) * Quantity__c, OverrideTotalOverhead__c)</description>
         <externalId>false</externalId>
-        <formula>IF( OverrideTotalOverhead__c = 0, IF(OverrideOverheadMultiplier__c = 0, DefaultOverheadMultiplier__c *  AppliedRawCost__c, OverrideOverheadMultiplier__c * AppliedRawCost__c) * Quantity__c, OverrideTotalOverhead__c)</formula>
+        <formula>IF(  OverrideTotalOverhead__c = 0, 
+
+IF( ISPICKVAL(WorkTypeName__c,&quot;Field Office&quot;), 
+Quantity__c * AppliedRawCost__c * OverrideOverheadMultiplierField__c, 
+Quantity__c * AppliedRawCost__c * OverrideOverheadMultiplier__c
+)
+
+, OverrideTotalOverhead__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Total Overhead</label>
         <precision>18</precision>
