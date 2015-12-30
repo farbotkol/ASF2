@@ -418,12 +418,14 @@
             </td>
             <td class="blueHeading"> 
                 <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                    <apex:param value="{!budgetLabourWrapper.grandTotals.Quantity}" />
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACForecastQuantity 
+                                        - budgetLabourWrapper.grandTotals.EACActualQuantity 
+                                        + budgetLabourWrapper.grandTotals.Quantity}" />
                 </apex:outputText>
             </td>
             <td class="blueHeading"> 
                 <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                    <apex:param value="{!budgetLabourWrapper.grandTotals.Quantity + budgetLabourWrapper.grandTotals.EACActualQuantity}" />
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.Quantity + budgetLabourWrapper.grandTotals.EACForecastQuantity}" />
                 </apex:outputText>
             </td>
             
@@ -444,12 +446,13 @@
             </td>
             <td class="blueHeading"> 
                 <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACEstimateToComplete}" />
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACCurrentForecastCost - budgetLabourWrapper.grandTotals.EACActualCost 
+                                        + budgetLabourWrapper.grandTotals.EACEstimateToComplete}" />
                 </apex:outputText>
             </td>
             <td class="blueHeading"> 
                 <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACEstimateToComplete + budgetLabourWrapper.grandTotals.EACActualCost}" />
+                    <apex:param value="{!budgetLabourWrapper.grandTotals.EACEstimateToComplete + budgetLabourWrapper.grandTotals.EACCurrentForecastCost}" />
                 </apex:outputText>
             </td>
             
