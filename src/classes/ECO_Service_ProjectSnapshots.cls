@@ -336,6 +336,7 @@ public class ECO_Service_ProjectSnapshots {
                     snapshot.LaborBudgetOriginal__c = 0;
                     snapshot.FringeBudgetOriginal__c = 0;
                     snapshot.OverheadBudgetOriginal__c = 0;
+                    snapshot.HoursBudgetOriginal__c = 0;
                     
                     snapshot.CostsODCEXPSBudget__c = 0;
                     snapshot.CostsODCSUBSBudget__c = 0;
@@ -343,6 +344,7 @@ public class ECO_Service_ProjectSnapshots {
                     snapshot.LaborBudget__c = 0;
                     snapshot.FringeBudget__c = 0;
                     snapshot.OverheadBudget__c = 0;
+                    snapshot.HoursBudget__c = 0;
                     
                     snapshot.CostsODCEXPSUnapproved__c = 0;
                     snapshot.CostsODCSUBSUnapproved__c = 0;
@@ -350,6 +352,7 @@ public class ECO_Service_ProjectSnapshots {
                     snapshot.LaborUnapproved__c = 0;
                     snapshot.FringeUnapproved__c = 0;
                     snapshot.OverheadUnapproved__c = 0;
+                    snapshot.HoursUnapproved__c = 0;
 	                
 	                snapshot.CostsODCEXPSForecast__c = 0;
 	                snapshot.CostsODCSUBSForecast__c = 0;
@@ -357,12 +360,15 @@ public class ECO_Service_ProjectSnapshots {
 	                snapshot.LaborForecast__c = 0;
 	                snapshot.FringeForecast__c = 0;
 	                snapshot.OverheadForecast__c = 0;
-	                
-	                snapshot.HoursBudget__c = 0;
-	                snapshot.HoursBudgetOriginal__c = 0;
 	                snapshot.HoursForecast__c = 0;
-	                snapshot.HoursDraft__c = 0;
-	                snapshot.HoursUnapproved__c = 0;
+	                
+	                snapshot.CostsODCEXPSDraft__c = 0;
+                    snapshot.CostsODCSUBSDraft__c = 0;
+                    snapshot.ContingencyDraft__c = 0;
+                    snapshot.LaborDraft__c = 0;
+                    snapshot.FringeDraft__c = 0;
+                    snapshot.OverheadDraft__c = 0;
+                    snapshot.HoursDraft__c = 0;
 	                
                     snapshot.AR0to30__c = 0;
                     snapshot.AR31to60__c = 0;
@@ -544,7 +550,6 @@ public class ECO_Service_ProjectSnapshots {
                     // Future Spend
                     snapshot = getFutureSpendInformation(snapshot);
                     
-                    //System.debug(System.LoggingLevel.WARN, '___createProjectSnapshots: snapshot='+snapshot);
                     snapshotList.add(snapshot);
                 }   
             }
@@ -739,16 +744,11 @@ public class ECO_Service_ProjectSnapshots {
             
         	for (Id projId : billingMetricsMap.keyset()) {
         		List<Billing__c> billingList = (List<Billing__c>) billingMetricsMap.get(projId);
-        		System.debug(System.LoggingLevel.WARN, '___billingList='+billingList);
         		for (Billing__c billing : billingList) {
         			Date invoiceDate = billing.InvoiceDate__c;
-        			System.debug(System.LoggingLevel.WARN, '___invoiceDate='+invoiceDate);
-        			System.debug(System.LoggingLevel.WARN, '___startDate0to30='+startDate0to30+', endDate0to30='+endDate0to30);
         			if (invoiceDate >= startDate0to30 && invoiceDate <= endDate0to30) {
         				Decimal billed = (Decimal) billingMetricsAR0to30Map.get(projId);
-        				System.debug(System.LoggingLevel.WARN, '___billed='+billed);
         				billed += billing.InvoiceAmount__c;
-        				System.debug(System.LoggingLevel.WARN, '___billed AFTER='+billed);
         				billingMetricsAR0to30Map.put(projId, billed);
         			}
         			else if (invoiceDate >= startDate31to60 && invoiceDate <= endDate31to60) {
@@ -958,12 +958,12 @@ public class ECO_Service_ProjectSnapshots {
 			tmpDateTime = pSnapshotDateTime;
 			for (Integer i=1; i < 7; i++) {
 				if (tmpDateTime.format('EEEE') == AECOM_FISCAL_WEEK_END_DAY) {
-					return tmpDateTime.date();
+					break;
 				}
 				else {
-					tmpDateTime = pSnapshotDateTime.addDays(-1);
+					tmpDateTime = tmpDateTime.addDays(-1);
 				}
-			}	
+			}
 		}
 		return tmpDateTime.date();
 	}
@@ -1122,6 +1122,7 @@ public class ECO_Service_ProjectSnapshots {
             }
             query += ' GROUP BY Project__c'+
                      ' ORDER BY Project__c';
+            System.debug(System.LoggingLevel.WARN, '___asOfDate='+asOfDate+', pSnapshotLatestFiscalWeekEndDate='+pSnapshotLatestFiscalWeekEndDate);
             System.debug(System.LoggingLevel.WARN, '___getProjectActualFinancialsCostsWeeklyRollups query= '+query);
             results = database.query(query);
             System.debug(System.LoggingLevel.WARN, '___getProjectActualFinancialsCostsWeeklyRollups results= '+results.size());
@@ -1184,6 +1185,9 @@ public class ECO_Service_ProjectSnapshots {
 	                ' ORDER BY ExpenditureItem__r.ProjectTask__r.pse__Project__c';    
 			
 				List<CostDistLine__c> cdlList = database.query(query);
+				System.debug(System.LoggingLevel.WARN, '___pSnapshotLatestFiscalWeekEndDate='+pSnapshotLatestFiscalWeekEndDate+
+					', pSnapshotDate='+pSnapshotDate);
+				System.debug(System.LoggingLevel.WARN, '___getProjectActualFinancialsCostsPartialWeek query='+query);
 				
 				for (Id projectId : projectIds) {
 					FinancialMetrics metrics = metricsMap.get(projectId);
@@ -1554,7 +1558,6 @@ public class ECO_Service_ProjectSnapshots {
     @TestVisible private Map<Id, FinancialMetrics> getUnapprovedBudgetHeaderMap(List<Id> projectIds, boolean showUnsynchedBudgets)
     {
         Map<Id, FinancialMetrics> metricsMap = new Map<Id, FinancialMetrics>();
-        String approvalStatus = 'Approved';
         String query = 'SELECT Project__c, SUM(TotalRevenue__c) totalRevenue,'+
             ' SUM(TotalCost__c) totalCost,'+
             ' SUM(TotalNonLabor__c) totalNonLabor,'+
@@ -1562,12 +1565,16 @@ public class ECO_Service_ProjectSnapshots {
             ' SUM(TotalContingencyAmount__c) totalContingency'+
             ' FROM BudgetHeader__c'+
             ' WHERE Project__c IN :projectIds'+
-            ' AND Status__c != \''+ approvalStatus + '\''+
-            ' AND Id IN (SELECT BudgetHeader__c FROM ChangeManager__c WHERE ApprovalStatus__c != \''+ approvalStatus + '\''+
-            ' AND Project__c IN :projectIds)'+
+            ' AND Status__c != \'Approved\' '+
+            /*' AND Id IN (SELECT BudgetHeader__c FROM ChangeManager__c WHERE ApprovalStatus__c != \'Approved\' '+
+            ' AND Project__c IN :projectIds)'+*/
             ' GROUP BY Project__c';     
+        
+        /* NOTE: Unapproved metrics were being calculated by checking both the Budget Header's Status and the existence of an entry
+         in Change Manager. However, this should be redundant; and if the two objects don't agree, the results will be unexpected. 
+         Currently, we have removed the check for the record in Change Manager, pending any business request to the contrary. */
             
-        System.debug(System.LoggingLevel.WARN, '___query='+query);
+        System.debug(System.LoggingLevel.WARN, '___getUnapprovedBudgetHeaderMap query='+query);
         try {
             List<AggregateResult> results = database.query(query); 
             
@@ -1848,7 +1855,7 @@ public class ECO_Service_ProjectSnapshots {
 	                        }
 	                    }
 	                    else if (bStatus == 'Estimate') { // Draft
-	                        if (PLReportCategory == ODC_Exps) {
+	                    	if (PLReportCategory == ODC_Exps) {
 	                            snapshot.CostsODCEXPSDraft__c += ba.TotalComputedCost__c;
 	                        }
 	                        else if (PLReportCategory == ODC_Subs) {
@@ -1869,7 +1876,6 @@ public class ECO_Service_ProjectSnapshots {
 	                    }
                     } 
                 }
-                System.debug(System.LoggingLevel.WARN, '___projectIdToSnapshotMap: snapshot='+snapshot);
                 projectIdToSnapshotMap.put(projId, snapshot);
             }
         }
