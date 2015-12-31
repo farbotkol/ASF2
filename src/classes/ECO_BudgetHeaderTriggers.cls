@@ -1,4 +1,4 @@
-public with sharing class ECO_BudgetHeaderTriggers {
+public without sharing class ECO_BudgetHeaderTriggers {
 	public static Boolean run = true;
 	
 	public static void setCurrency(List<BudgetHeader__c> newBHList) {
