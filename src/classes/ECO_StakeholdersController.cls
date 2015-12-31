@@ -32,6 +32,8 @@ public with sharing class ECO_StakeholdersController
     public Contact financeTeamMember{get; set;}
     private static Set<String> financeRoles = new Set<String>{'Project Accountant', 'Project Accountant 2', 'Finance Lead', 'Finance Lead 2'};
 
+    public Boolean activePA {get;set;}
+
     //constructor
 	public ECO_StakeholdersController(ApexPages.StandardController oStandardController) 
 	{
@@ -216,8 +218,14 @@ public with sharing class ECO_StakeholdersController
 				}
 			}
 			
+			activePA = false;
+
 			for(TeamMember tm : lActiveMembersKey)
 			{
+				if(tm.RoleName == 'Project Approver'){
+					activePA = true;
+				}
+
 				if(tm.oPTM.Contact__c == null)
 				{
 					showVacantKeyMemberNote = true;
@@ -617,6 +625,8 @@ public with sharing class ECO_StakeholdersController
 
 		//check to make sure the data is validated
 		if(validateKeyMember(startDate, projectRole, selectedContactId, existingId)){
+
+
 			RecordType keyRecordType = [Select Id from RecordType where sobjecttype = 'ProjectTeamMember__c' and Name = 'Key Member'];
 
 			Savepoint savePoint = Database.setSavepoint();
@@ -702,6 +712,12 @@ public with sharing class ECO_StakeholdersController
 			else{
 				startDte =  convertStringToDate(startDate);
 			}
+		}
+
+
+		if(startDte < oProject.EstimatedStartDate__c){
+			insertReplaceProjectTeamMember.StartDate__c.addError('Start Date cannot be before Project Estimated Start Date');
+			isValid = false;
 		}
 
 		//find the latest end date for the role to compare against start date of new role assignment
