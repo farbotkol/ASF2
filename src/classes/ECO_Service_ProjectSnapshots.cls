@@ -21,6 +21,8 @@ public class ECO_Service_ProjectSnapshots {
     public Date pSnapshotDate {get; set;}
     public Date pSnapshotLatestFiscalWeekEndDate {get; set;}
     
+    public String snapshotDatePrevME {get; set;}
+    
     public ECO_EarnedValueReportController earnedValueController {get; set;}
     public Date EarnedValueSnapshotDate {get; set;}
     public DateTime EarnedValueLastModifiedDate {get; set;}
@@ -57,6 +59,7 @@ public class ECO_Service_ProjectSnapshots {
     Map<Id, FinancialMetrics> itdActualFinancialMetricsMap;
     Map<Id, FinancialMetrics> ytdActualFinancialMetricsMap;
     Map<Id, FinancialMetrics> totalCostITD3MonthsAgoMetricsMap;
+    Map<Id, Decimal> itdTotalRevenueMap;
 
     Map<Id, ProjectSnapshot__c> originalOrForecastBudgetCostsMap;
     Map<Id, ProjectSnapshot__c> originalOrForecastBudgetHoursMap;
@@ -279,6 +282,8 @@ public class ECO_Service_ProjectSnapshots {
       			}
       			
                 itdActualFinancialMetricsMap = getProjectActualFinancialsMap(projectIds, null);
+                
+                itdTotalRevenueMap = getITDTotalRevenueMap(itdActualFinancialMetricsMap);
 
                 billingMetricsARMap = getBillingMetricsARMap(projectIds, itdActualFinancialMetricsMap);
 
@@ -306,11 +311,13 @@ public class ECO_Service_ProjectSnapshots {
 				System.debug(System.LoggingLevel.WARN, '___Query rows BILLED='+Limits.getQueryRows());
 
                 // Note: Unbilled calculations are in reverse order
-                unbilledMetricsAR181PlusMap = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_181Plus);
+				getUnbilledMetricsARDateRangeMap(projectIds);
+				
+                /*unbilledMetricsAR181PlusMap = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_181Plus);
                 unbilledMetricsAR91to180Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_91to180);
                 unbilledMetricsAR61to90Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_61to90);
                 unbilledMetricsAR31to60Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_31to60);
-                unbilledMetricsAR0to30Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_0to30);
+                unbilledMetricsAR0to30Map = getUnbilledMetricsARDateRangeMap(projectIds, UNBILLED_0to30);*/
 
 				System.debug(System.LoggingLevel.WARN, '___Query rows UNBILLED='+Limits.getQueryRows());
                 
@@ -522,8 +529,6 @@ public class ECO_Service_ProjectSnapshots {
                         snapshot.ARRetention__c = billingMetricsAR.Retention;
                         snapshot.ARBIEE__c = billingMetricsAR.BIEE;
                         snapshot.UnbilledTotal__c = billingMetricsAR.TotalUnbilled;
-                        
-                        System.debug(System.LoggingLevel.WARN, '___createProjectSnapshots: Billed snapshot='+snapshot);
                     }
                     
                     // Unbilled Metrics 
@@ -686,7 +691,7 @@ public class ECO_Service_ProjectSnapshots {
         Map<Id, List<Billing__c>> billingListMap = new Map<Id, List<Billing__c>>();
         //BillingList billingList;
         try {
-            List<Billing__c> billingList = [SELECT ProjectNumber__c, InvoiceDate__c, InvoiceAmount__c
+            List<Billing__c> billingList = [SELECT ProjectNumber__c, InvoiceAmount__c, InvoiceDate__c
                            FROM Billing__c WHERE ProjectNumber__c IN :projectIds 
                            AND InvoiceDate__c <= :pSnapshotDate];
             
@@ -780,113 +785,86 @@ public class ECO_Service_ProjectSnapshots {
     }
     
     ///////  START Unbilled
-    private Map<Id, Decimal> getUnbilledMetricsARDateRangeMap(List<Id> projectIds, String range)
+    private Map<Id, List<Revenue__c>> getRevenueListARMap(List<Id> projectIds)
     {
-        Map<Id, Decimal> unbilledMetricsMap = new Map<Id, Decimal>();
-        Date startDate;
+        Map<Id, List<Revenue__c>> revenueListMap = new Map<Id, List<Revenue__c>>();
         try {
-            if (range == UNBILLED_0to30) {
-                startDate = pSnapshotDate;
-            }
-            else if (range == UNBILLED_31to60) {
-                startDate = pSnapshotDate.addDays(-31);
-            }
-            else if (range == UNBILLED_61to90) {
-                startDate = pSnapshotDate.addDays(-61);
-            }
-            else if (range == UNBILLED_91to180) {
-                startDate = pSnapshotDate.addDays(-91);
-            }
-            else if (range == UNBILLED_181Plus) {
-                startDate = pSnapshotDate.addDays(-180);
-            }
-            System.debug(System.LoggingLevel.WARN, '___getUnbilledMetricsARDateRangeMap: range='+range+', startDate='+startDate+', projectIds='+projectIds);
+            List<Revenue__c> revenueList = [SELECT ProjectNumber__c, Amount__c, GLDate__c
+                           FROM Revenue__c WHERE ProjectNumber__c IN :projectIds
+                           AND GLDate__c <= :pSnapshotDate];
             
-            String query = 'SELECT ProjectNumber__c, SUM(Amount__c) totalRevenue'+
-                           ' FROM Revenue__c WHERE ProjectNumber__c IN :projectIds'+
-                           ' AND GLDate__c <= :startDate'+
-                           ' GROUP BY ProjectNumber__c';
-            List<AggregateResult> results = database.query(query); 
-            for (AggregateResult ar : results) {
-                Decimal unbilledValue = 0;
-                Decimal totalRevenue = (Decimal)ar.get('totalRevenue');
-                Id projId = (Id) ar.get('ProjectNumber__c');
-                System.debug(System.LoggingLevel.WARN, '___range='+range+', totalRevenue='+totalRevenue+', projId='+projId);
-                if (billingMetricsARMap != null && !billingMetricsARMap.isEmpty()) {
-                    System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap='+billingMetricsARMap);
-                    Decimal billedARValue = 0;
-                    if (billingMetricsARMap.get(projId) != null) {
-                    	billedARValue = billingMetricsARMap.get(projId).BilledAR;
-                    	if (billedARValue == null) {
-                    		billedARValue = 0;
-                    	}
-                    }
-                    
-                    if (range == UNBILLED_181Plus) {
-                        if (totalRevenue != null)
-                        {
-                            unbilledValue = totalRevenue - billedARValue;
-                        }
-                        else {
-                            unbilledValue = 0 - billedARValue;
-                        }
-                        System.debug(System.LoggingLevel.WARN, '___UNBILLED_181Plus='+unbilledValue);
-                    }
-                    else if (range == UNBILLED_91to180) {
-                        if (totalRevenue != null)
-                        {
-                            unbilledValue = totalRevenue - (billedARValue + unbilledMetricsAR181PlusMap.get(projId)); 
-                        }
-                        else {
-                            unbilledValue = 0 - (billedARValue + unbilledMetricsAR181PlusMap.get(projId)); 
-                        }
-                        System.debug(System.LoggingLevel.WARN, 'UNBILLED_91to180='+unbilledValue);
-                    }
-                    else if (range == UNBILLED_61to90) {
-                        if (totalRevenue != null)
-                        {
-                            unbilledValue = totalRevenue - (billedARValue + unbilledMetricsAR181PlusMap.get(projId) + 
-                                unbilledMetricsAR91to180Map.get(projId));
-                        }
-                        else {
-                            unbilledValue = 0 - (billedARValue + unbilledMetricsAR181PlusMap.get(projId) + 
-                                unbilledMetricsAR91to180Map.get(projId)); 
-                        }
-                        System.debug(System.LoggingLevel.WARN, 'UNBILLED_61to90='+unbilledValue);
-                    }
-                    else if (range == UNBILLED_31to60) {
-                        if (totalRevenue != null)
-                        {
-                            unbilledValue = totalRevenue - (billedARValue + unbilledMetricsAR181PlusMap.get(projId) + 
-                                unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId));
-                        }
-                        else {
-                            unbilledValue = 0 - (billedARValue + unbilledMetricsAR181PlusMap.get(projId) + 
-                                unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId));
-                        }
-                        System.debug(System.LoggingLevel.WARN, 'UNBILLED_31to60='+unbilledValue);
-                    }
-                    else if (range == UNBILLED_0to30) {
-                        if (totalRevenue != null)
-                        {
-                            unbilledValue = totalRevenue - (billedARValue + unbilledMetricsAR181PlusMap.get(projId) + 
-                                unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId) + unbilledMetricsAR31to60Map.get(projId));
-                        }
-                        else {
-                            unbilledValue = 0 - (billedARValue + unbilledMetricsAR181PlusMap.get(projId) + 
-                                unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId) + unbilledMetricsAR31to60Map.get(projId));
-                        }
-                        System.debug(System.LoggingLevel.WARN, 'UNBILLED_0to30='+unbilledValue);
-                    }
-                    System.debug(System.LoggingLevel.WARN, '___unbilledValue='+unbilledValue);
-                    unbilledMetricsMap.put(projId, unbilledValue);
+            // For each Project add to its List of Revenues
+            List<Revenue__c> revenueListTemp;
+            for (Revenue__c revenue : revenueList) {
+                Id projId = (Id) revenue.ProjectNumber__c;      
+                if (revenueListMap.get(projId) == null) {
+                	revenueListTemp = new List<Revenue__c>();
+                	revenueListTemp.add(revenue);
                 }
+                else {
+                	revenueListTemp = revenueListMap.get(projId);
+                	revenueListTemp.add(revenue);
+                }
+                revenueListMap.put(projId, revenueListTemp);
             }
         }
         catch (Exception e) {
             System.debug(e.getStackTraceString());
         }
-        return unbilledMetricsMap;
+        return revenueListMap;
+    }
+    
+    private void getUnbilledMetricsARDateRangeMap(List<Id> projectIds)
+    {
+        try {
+            unbilledMetricsAR0to30Map = new Map<Id, Decimal>();
+    		unbilledMetricsAR31to60Map = new Map<Id, Decimal>();
+			unbilledMetricsAR61to90Map = new Map<Id, Decimal>();
+			unbilledMetricsAR91to180Map = new Map<Id, Decimal>();
+			unbilledMetricsAR181PlusMap = new Map<Id, Decimal>();
+			
+            for (Id projId : projectIds) {
+            	unbilledMetricsAR0to30Map.put(projId, 0.0);
+				unbilledMetricsAR31to60Map.put(projId, 0.0);
+				unbilledMetricsAR61to90Map.put(projId, 0.0);
+				unbilledMetricsAR91to180Map.put(projId, 0.0);
+				unbilledMetricsAR181PlusMap.put(projId, 0.0);
+				
+            	if (billingMetricsARMap != null && !billingMetricsARMap.isEmpty()) {
+	                System.debug(System.LoggingLevel.WARN, '___billingMetricsARMap='+billingMetricsARMap);
+	                Decimal billedARValue = 0;
+	                if (billingMetricsARMap.get(projId) != null) {
+	                	billedARValue = billingMetricsARMap.get(projId).BilledAR;
+	                	if (billedARValue == null) {
+	                		billedARValue = 0;
+	                	}
+	                }
+	            
+					Decimal unbilledValue = 0;
+					Decimal totalRevenue = itdTotalRevenueMap.get(projId);
+					unbilledValue = totalRevenue - billedARValue;
+	                unbilledMetricsAR181PlusMap.put(projId, unbilledValue);
+	                
+	                unbilledValue = totalRevenue - (billedARValue + unbilledMetricsAR181PlusMap.get(projId));
+	                unbilledMetricsAR91to180Map.put(projId, unbilledValue);
+	                
+	                unbilledValue = totalRevenue - (billedARValue + unbilledMetricsAR181PlusMap.get(projId) + 
+	                        unbilledMetricsAR91to180Map.get(projId));
+	                unbilledMetricsAR61to90Map.put(projId, unbilledValue);
+	                
+	                unbilledValue = totalRevenue - (billedARValue + unbilledMetricsAR181PlusMap.get(projId) + 
+	                        unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId));
+	                unbilledMetricsAR31to60Map.put(projId, unbilledValue);       
+	                        
+	                unbilledValue = totalRevenue - (billedARValue + unbilledMetricsAR181PlusMap.get(projId) + 
+	                        unbilledMetricsAR91to180Map.get(projId) + unbilledMetricsAR61to90Map.get(projId) + unbilledMetricsAR31to60Map.get(projId));
+	                unbilledMetricsAR0to30Map.put(projId, unbilledValue);       
+            	}
+            }
+        }
+        catch (Exception e) {
+            System.debug(e.getStackTraceString());
+        }
     }
     ////////  END Unbilled
 
@@ -996,6 +974,7 @@ public class ECO_Service_ProjectSnapshots {
 	                fm = ECO_Utils_Date.getFiscalPeriod(snapshot.SnapshotDate__c.date(), 1, timePeriods);  
 	                if (fm != null) {
 	                    snapshot.SnapshotPreviousFiscalMonth__c = fm.TimePeriodCode__c;
+	                    snapshotDatePrevME = fm.TimePeriodCode__c;
 	                }
 					System.Debug(System.LoggingLevel.WARN, '___SnapshotPreviousFiscalMonth__c=' + snapshot.SnapshotPreviousFiscalMonth__c);
 	                
@@ -1498,7 +1477,6 @@ public class ECO_Service_ProjectSnapshots {
                 ' FROM BudgetHeader__c'+
                 ' WHERE Project__c IN :projectIds'+
                 ' AND Status__c = \'Forecast\' '+
-                ' AND BudgetAsOfDate__c <= :pSnapshotDate' +
                 ' GROUP BY Project__c';
             
             List<AggregateResult> results = database.query(query);
@@ -1704,6 +1682,20 @@ public class ECO_Service_ProjectSnapshots {
             System.Debug(e.getStackTraceString());
         }
         return metricsMap; 
+    }
+    
+    @TestVisible private Map<Id, Decimal> getITDTotalRevenueMap(Map<Id, FinancialMetrics> itdActualFinancialMetricsMap) {
+    	itdTotalRevenueMap = new Map<Id, Decimal>();
+    	try {
+    		for (Id projId : itdActualFinancialMetricsMap.keyset()) {
+    			FinancialMetrics fm = itdActualFinancialMetricsMap.get(projId);
+    			itdTotalRevenueMap.put(projId, fm.TotalRevenue);
+    		}	
+    	}
+        catch(Exception e) {
+            System.Debug(e.getStackTraceString());
+        }
+        return itdTotalRevenueMap;
     }
 
     @TestVisible private static Set<String> getPLReportCategories() {
@@ -1939,34 +1931,30 @@ public class ECO_Service_ProjectSnapshots {
         return projectIdToSnapshotMap;
     }
 
-    @TestVisible private Map<Id, ProjectSnapshot__c> getPreviousFMForecastMap(Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap) 
+	@TestVisible private Map<Id, ProjectSnapshot__c> getPreviousFMForecastMap(Map<Id, ProjectSnapshot__c> projectIdToSnapshotMap) 
     {
     	try {
-	        List<String> prevFiscalMonthList = new List<String>();
-	        for (ProjectSnapshot__c ps : projectIdToSnapshotMap.values()) {
-	            prevFiscalMonthList.add(ps.SnapshotPreviousFiscalMonth__c);
-	        }
-	
-	        if (!prevFiscalMonthList.isEmpty()) {
-	            List<ProjectSnapshot__c> snapshotPrevFMList = getPreviousFMForecastInformation(prevFiscalMonthList);
-	
-	            for (ProjectSnapshot__c snapshotPrevFM : snapshotPrevFMList) {
-	                Id projId = snapshotPrevFM.Project__c;
-	                ProjectSnapshot__c snapshot = projectIdToSnapshotMap.get(projId);
-	                snapshot.GrossRevenueForecastPrevME__c = snapshotPrevFM.GrossRevenueForecast__c;
-	                snapshot.CostsODCEXPSForecastPrevME__c = snapshotPrevFM.CostsODCEXPSForecast__c;
-	                snapshot.CostsODCSUBSForecastPrevME__c = snapshotPrevFM.CostsODCSUBSForecast__c;
-	                snapshot.ContingencyForecastPrevME__c = snapshotPrevFM.ContingencyForecast__c;
-	                snapshot.LaborForecastPrevME__c = snapshotPrevFM.LaborForecast__c;
-	                snapshot.FringeForecastPrevME__c = snapshotPrevFM.FringeForecast__c;
-	                snapshot.OverheadForecastPrevME__c = snapshotPrevFM.OverheadForecast__c;
-	                snapshot.HoursForecastPrevME__c = snapshotPrevFM.HoursForecast__c;
-	                snapshot.LostMarginForecastPrevME__c = snapshotPrevFM.LostMarginForecast__c;
-	                snapshot.ProjectEndDatePrevME__c = snapshotPrevFM.ProjectEndDate__c;
-	                snapshot.CashFlowITDPrevME__c = snapshotPrevFM.CashFlowITD__c;
-	                projectIdToSnapshotMap.put(projId, snapshot);
-	            }
-	        }
+           List<ProjectSnapshot__c> snapshotPrevFMList = 
+            	getPreviousFMForecastInformation(snapshotDatePrevME);
+			
+			/** NOTE: If there are multiple snapshots on the same date for the same project with snapshot type = Auto, 
+			the latest snapshot by created date will be used (see query at getPreviousFMForecastInformation). **/
+            for (ProjectSnapshot__c snapshotPrevFM : snapshotPrevFMList) {
+                Id projId = snapshotPrevFM.Project__c;
+                ProjectSnapshot__c snapshot = projectIdToSnapshotMap.get(projId);
+                snapshot.GrossRevenueForecastPrevME__c = snapshotPrevFM.GrossRevenueForecast__c;
+                snapshot.CostsODCEXPSForecastPrevME__c = snapshotPrevFM.CostsODCEXPSForecast__c;
+                snapshot.CostsODCSUBSForecastPrevME__c = snapshotPrevFM.CostsODCSUBSForecast__c;
+                snapshot.ContingencyForecastPrevME__c = snapshotPrevFM.ContingencyForecast__c;
+                snapshot.LaborForecastPrevME__c = snapshotPrevFM.LaborForecast__c;
+                snapshot.FringeForecastPrevME__c = snapshotPrevFM.FringeForecast__c;
+                snapshot.OverheadForecastPrevME__c = snapshotPrevFM.OverheadForecast__c;
+                snapshot.HoursForecastPrevME__c = snapshotPrevFM.HoursForecast__c;
+                snapshot.LostMarginForecastPrevME__c = snapshotPrevFM.LostMarginForecast__c;
+                snapshot.ProjectEndDatePrevME__c = snapshotPrevFM.ProjectEndDate__c;
+                snapshot.CashFlowITDPrevME__c = snapshotPrevFM.CashFlowITD__c;
+                projectIdToSnapshotMap.put(projId, snapshot);
+            }
         }
         catch(Exception e) {
             System.Debug(e.getStackTraceString());
@@ -1974,17 +1962,19 @@ public class ECO_Service_ProjectSnapshots {
         return projectIdToSnapshotMap;
     }
 
-    private List<ProjectSnapshot__c> getPreviousFMForecastInformation(List<String> prevFiscalMonthList) 
+    private List<ProjectSnapshot__c> getPreviousFMForecastInformation(String prevFiscalMonth) 
     {   
         List<ProjectSnapshot__c> projSnapshots;
         try {
-            projSnapshots = [SELECT Id, Project__c, GrossRevenueForecast__c, 
+        	projSnapshots = [SELECT Id, Project__c, GrossRevenueForecast__c, 
                 CostsODCEXPSForecast__c, CostsODCSUBSForecast__c, ContingencyForecast__c,
                 LaborForecast__c, FringeForecast__c, OverheadForecast__c, HoursForecast__c, 
                 LostMarginForecast__c, ProjectEndDate__c, CashFlowITD__c
                 FROM ProjectSnapshot__c 
                 WHERE SnapshotType__c = 'Auto' 
-                AND SnapshotFiscalMonth__c IN : prevFiscalMonthList];
+                AND Project__c IN :projectIds
+                AND SnapshotFiscalMonth__c = :prevFiscalMonth
+                ORDER BY CreatedDate ASC];
         }
         catch(Exception e) {
             System.Debug(e.getStackTraceString());
