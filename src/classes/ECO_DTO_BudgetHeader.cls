@@ -39,9 +39,9 @@ public class ECO_DTO_BudgetHeader {
     
     public Decimal averageLabourRatePerHour {
         get {
-            if(oBudgetHeader.TotalLaborAmount__c == 0)
+            if(oBudgetHeader.TotalLaborHours__c == 0)
                 return 0.00;
-            return oBudgetHeader.NetServicesRevenue__c / oBudgetHeader.TotalLaborAmount__c;
+            return oBudgetHeader.NetServicesRevenue__c / oBudgetHeader.TotalLaborHours__c;
         }
     }
     
@@ -61,7 +61,7 @@ public class ECO_DTO_BudgetHeader {
     }
     
     public decimal dTotalRevenue {
-        get {return oBudgetHeader.TotalRevenue__c;}
+        get {return oBudgetHeader.AppliedTotalRevenue__c;}
         private set;
     }
     
@@ -79,7 +79,7 @@ public class ECO_DTO_BudgetHeader {
     public decimal dTotalApprovedRevenue {
         get{
             if(oBudgetHeader.Status__c == STATUS_APPROVED)
-                return oBudgetHeader.TotalRevenue__c;
+                return oBudgetHeader.AppliedTotalRevenue__c;
             
             return 0.0;
         }
@@ -101,7 +101,7 @@ public class ECO_DTO_BudgetHeader {
     public decimal dTotalForecastRevenue {
         get{
             if(oBudgetHeader.Status__c == STATUS_APPROVED || oBudgetHeader.Status__c == STATUS_FORECAST)
-                return oBudgetHeader.TotalRevenue__c;
+                return oBudgetHeader.AppliedTotalRevenue__c;
             
             return 0.0;
         }
@@ -123,7 +123,7 @@ public class ECO_DTO_BudgetHeader {
     public decimal dTotalWorkAtRiskRevenue {
         get{
             if(oBudgetHeader.Status__c == STATUS_WORKATRISK)
-                return oBudgetHeader.TotalRevenue__c;
+                return oBudgetHeader.AppliedTotalRevenue__c;
             
             return 0.0;
         }

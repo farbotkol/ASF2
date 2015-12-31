@@ -6,8 +6,8 @@ trigger ECO_BudgetResource_AllEvents on BudgetResource__c (before insert, before
             try {
                 ECO_BudgetResourceTriggers.calculateMultiplier(trigger.new);
             } catch (Exception ex) {
-                System.debug('failed to apply multiplier');
-                System.debug(ex);
+                System.debug(LoggingLevel.ERROR, 'failed to apply multiplier');
+                System.debug(LoggingLevel.ERROR, ex);
             }
         }
     }

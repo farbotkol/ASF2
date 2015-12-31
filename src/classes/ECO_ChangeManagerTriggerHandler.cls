@@ -141,9 +141,16 @@ public class ECO_ChangeManagerTriggerHandler {
 
 		if(project[0].pse__Opportunity__c != null)
 		{
-			opportunity = [select Id, StageName from Opportunity where Id = :project[0].pse__Opportunity__c];
+			opportunity = [select Id, StageName, Book_Date__c from Opportunity where Id = :project[0].pse__Opportunity__c];
 			opportunity[0].StageName = '6 Contracted/Booked/Won';
-			update opportunity[0];
+			try 
+			{
+				update opportunity[0];
+			}
+			catch(Exception e)
+			{
+				System.Debug('Error Updating the Opportunity');
+			}
 		}		
 	}
 	
@@ -271,6 +278,7 @@ public class ECO_ChangeManagerTriggerHandler {
 					idUpdateString += ',' + funding.Id;				
 			}			
 		}
+		System.Debug('BrentBrentBrent ID updateString');
 	}
 
 	private static void handleAgreementsFundingChangeManagerApproval(ChangeManager__c changeManager)
