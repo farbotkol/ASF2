@@ -134,6 +134,7 @@ public without sharing class INC_Service_EnrollmentPlan {
                           , ContractType__c
                           , IPFreqofPayment__c   
                           , IPNumberofPayments__c
+                          , FinalIncentivePoolITD__c
                           , IPYearsRemaining__c
                           , GMofNSRAdjustment__c
                           , GrossMarginAmountScopeChange__c

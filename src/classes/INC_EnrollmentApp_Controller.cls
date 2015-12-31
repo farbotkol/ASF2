@@ -24,9 +24,11 @@ public with sharing class INC_EnrollmentApp_Controller {
     public String sUserLevel{get;set;}
     public boolean bShowCCR {get;set;}
     public boolean bShowAA {get;set;}
+    public String AppType{get;set;}
 
     public INC_EnrollmentApp_Controller(ApexPages.StandardController stdController) {
         activeTab = 'step1';
+        AppType = 'ENR';
         bShowWizardSubmit = false;
         bRenderInputFinFields = true;
         bCommentFound = true; //do not move this line.
@@ -495,28 +497,45 @@ public with sharing class INC_EnrollmentApp_Controller {
 
 
        ID workItem = getWorkItemId(oEnrollmentApp.ID);
-       System.debug('workItemid ' + workItem);
-       Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
-       req.setComments('Closed No Award.');
-       req.setAction('Reject');
-       req.setWorkitemId(workItem);
-       Approval.ProcessResult result =  Approval.process(req);
-       if(!result.isSuccess()){
+       System.debug(logginglevel.error,'workItemid ' + workItem);
+       While(WorkItem != null){
+         Approval.ProcessWorkitemRequest req = new Approval.ProcessWorkitemRequest();
+         req.setComments('Closed No Award.');
+         req.setAction('Reject');
+         req.setWorkitemId(workItem);
+         Approval.ProcessResult result =  Approval.process(req);
+         if(!result.isSuccess()){
+          System.Debug(logginglevel.error,'failed: ' + result);
         //DTWINCEACREJECTERR
            //ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,'Error Rejecting Application.'));
            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error,LABEL.DTWINCEACREJECTERR));
-       }
+          
+          }
+          workItem = getWorkItemId(oEnrollmentApp.ID);
+        }
        
        System.Debug(logginglevel.error,'finalRejectButton clicked');
 
       oEnrollmentAppToUpdate.Id = oEnrollmentApp.Id;
       oEnrollmentAppToUpdate.EnrollmentStatus__c = 'Closed - No Award';
 
+
       Try{
         update oEnrollmentAppToUpdate;
-         return new pageReference('/apex/INC_DeliverToWinLanding');
+        list<EnrollmentParticipant__c> lParts = new list<EnrollmentParticipant__c>();
+        lParts = [Select id, Closed_No_Award__c from EnrollmentParticipant__c where EnrollmentPlan__c =: oEnrollmentAppToUpdate.id ];
+        for(EnrollmentParticipant__c ep: lParts){
+          ep.Closed_No_Award__c = true;
+        }
+        update lParts;
+        PageReference pr = new pageReference('/apex/INC_DeliverToWinLanding');
+        pr.setRedirect(true);
+        System.Debug(logginglevel.error,'returning pr');
+        return pr;
+        
       }
       catch(Exception e){
+        System.Debug(logginglevel.error,'error closing app: ' + e.getMessage());
         ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.error, e.getMessage()));
        } 
       

@@ -143,6 +143,20 @@
 
     }
 
+    function closeNoAward(){
+        if({!oEnrollmentApp.FinalIncentivePoolITD__c} > 0 && '{!oEnrollmentApp.ApplicationType__c}' != 'PAY'){
+            //DTWINCEAForecastMSG
+             alert('{!$LABEL.DTWINCEAForecastMSG}');
+        }else{
+            //DTWINCEACloseMSG
+            if(confirm('{!$LABEL.DTWINCEACloseMSG}')){
+                closenowawardj();
+              //  window.location = '/apex/INC_DeliverToWinLanding';
+               
+            }
+        }
+    }
+
     function checkappstatusfunc(){
         checkappstatus();
         return false;
@@ -241,6 +255,7 @@
 <apex:sectionHeader title="{!$Label.DTWINCEAEnrollment_Application}" subtitle="{!EnrollmentPlan__c.Name}" id="sectionheader" help="http://my.aecomnet.com/portal/site/Intranet/menuitem.4bb5ad8d27dddb3d13bd6e20c43611ca/?vgnextoid=4699bc2ceae8e410VgnVCM100000089e1bacRCRD&vgnextchannel=c7e1b267a0f9c410VgnVCM100000089e1bacRCRD&vgnextfmt=default"/>
 <apex:actionFunction name="checkappstatus" action="{!checkStatus}" rerender="step3buttons, step3buttonsccr" />
 <apex:actionFunction name="submitfromwizardjava" action="{!submitfromwizard}" />
+<apex:actionFunction name="closenowawardj" action="{!closeNoAwardApplication}" /> 
 </apex:outputPanel> 
 <apex:outputPanel id="tabs" rendered="{!showWizard}">
 <apex:actionFunction name="enableNextButton" action="{!enableNextButton}" rerender="tabs"/>
@@ -284,7 +299,7 @@
                 <div class="buttonwrapper">
                         
                 
-                <apex:commandButton styleclass="nextbtn" action="{!proposeOptOut}" value=" {!$Label.DTWINCEANot_Suitable_for_Enrollment}"  onclick="return confirm('($LABEL.DTWINCEAAre_you_sure_you_want_to_Opt_out}');" title="{!$Label.DTWINCEAIf_you_do_not_wish_to_enroll_this_project_in_the_Deliver_to_Win_incentiv}"/>
+                <apex:commandButton styleclass="nextbtn" action="{!proposeOptOut}" value=" {!$Label.DTWINCEANot_Suitable_for_Enrollment}"  onclick="return confirm('{!$LABEL.DTWINCEAAre_you_sure_you_want_to_Opt_out}');" title="{!$Label.DTWINCEAIf_you_do_not_wish_to_enroll_this_project_in_the_Deliver_to_Win_incentiv}"/>
                 
                 <apex:commandButton styleclass="nextbtn" action="{!steptwo}" value="{!$Label.DTWINCEAPropose_Enrollment}" reRender="tabs"/>
                 </div>
@@ -412,7 +427,8 @@
             
             <apex:commandButton value="{!$Label.DTWINCEAClose_Application}" action="{!closeApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton" rendered="{!AND(bShowAA,EnrollmentPlan__c.ApplicationType__c = 'PAY')}"/>
              
-            <apex:commandButton value="{!$Label.DTWINCEAClose_Application_No_Award}" action="{!closeNoAwardApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton" rendered="{!bShowAA}"/>
+           <!-- <apex:commandButton value="{!$Label.DTWINCEAClose_Application_No_Award}" action="{!closeNoAwardApplication}"  oncomplete="return closeMessage();"  styleClass="hidebutton" rendered="{!bShowAA}"/> -->
+           <apex:commandButton value="{!$Label.DTWINCEAClose_Application_No_Award}" onClick="closeNoAward();"  styleClass="hidebutton" rendered="{!bShowAA}" reRender="page"/>
 
            </div>
         </apex:pageBlockButtons>
