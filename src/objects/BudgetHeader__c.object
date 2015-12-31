@@ -406,6 +406,21 @@ IF( ISPICKVAL(Project__r.BudgetStrategyRevenue__c, &apos;Top Task&apos;),  Total
         <type>Summary</type>
     </fields>
     <fields>
+        <fullName>TotalLaborHours__c</fullName>
+        <externalId>false</externalId>
+        <label>Total Labor Hours</label>
+        <summarizedField>BudgetResource__c.TotalHours__c</summarizedField>
+        <summaryFilterItems>
+            <field>BudgetResource__c.ResourceType__c</field>
+            <operation>equals</operation>
+            <value>Labor/Person</value>
+        </summaryFilterItems>
+        <summaryForeignKey>BudgetResource__c.BudgetHeader__c</summaryForeignKey>
+        <summaryOperation>sum</summaryOperation>
+        <trackTrending>false</trackTrending>
+        <type>Summary</type>
+    </fields>
+    <fields>
         <fullName>TotalNonLabor__c</fullName>
         <externalId>false</externalId>
         <label>Total Non Labor</label>
@@ -491,7 +506,7 @@ IF( ISPICKVAL(Project__r.BudgetStrategyRevenue__c, &apos;Top Task&apos;),  Total
         <fullName>TotalTopLevelOverrideRevenue__c</fullName>
         <externalId>false</externalId>
         <label>Total Top Level Override Revenue</label>
-        <summarizedField>BudgetTask__c.AppliedTotalRevenue__c</summarizedField>
+        <summarizedField>BudgetTask__c.OverrideTotalRevenue__c</summarizedField>
         <summaryForeignKey>BudgetTask__c.BudgetHeader__c</summaryForeignKey>
         <summaryOperation>sum</summaryOperation>
         <trackTrending>false</trackTrending>

@@ -364,7 +364,7 @@
     <fields>
         <fullName>AvgLaborHourForecastDelta__c</fullName>
         <externalId>false</externalId>
-        <formula>LaborForecastDelta__c / HoursForecastDelta__c</formula>
+        <formula>AvgLaborHourForecast__c - AvgLaborHourForecastPrevME__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Avg. Labor/Hour Forecast Delta</label>
         <precision>18</precision>
@@ -682,6 +682,30 @@
         <type>Currency</type>
     </fields>
     <fields>
+        <fullName>CostForecastDelta__c</fullName>
+        <externalId>false</externalId>
+        <formula>CostForecast__c - CostForecastPrevME__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cost Forecast Delta</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
+        <fullName>CostForecastPrevME__c</fullName>
+        <externalId>false</externalId>
+        <formula>CostsODCEXPSForecastPrevME__c + CostsODCSUBSForecastPrevME__c + ContingencyForecastPrevME__c + LaborForecastPrevME__c + FringeForecastPrevME__c + OverheadForecastPrevME__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Cost Forecast Prev. ME</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Currency</type>
+    </fields>
+    <fields>
         <fullName>CostForecast__c</fullName>
         <externalId>false</externalId>
         <label>Cost Forecast</label>
@@ -936,7 +960,7 @@
     <fields>
         <fullName>CostsODCSUBSForecastDelta__c</fullName>
         <externalId>false</externalId>
-        <formula>CostsODCSUBSForecast__c -  CostsODCEXPSForecastPrevME__c</formula>
+        <formula>CostsODCSUBSForecast__c -  CostsODCSUBSForecastPrevME__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Costs ODC SUBS Forecast Delta</label>
         <precision>18</precision>
@@ -1464,7 +1488,7 @@
     <fields>
         <fullName>GMNSRForecastPrevME__c</fullName>
         <externalId>false</externalId>
-        <formula>GrossMarginForecastPrevME__c / NetMarginForecastPrevME__c</formula>
+        <formula>GrossMarginForecastPrevME__c / NetServiceForecastPrevME__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>GMNSR Forecast Prev. ME</label>
         <precision>18</precision>
@@ -1850,7 +1874,7 @@
         <label>Hours Forecast Delta</label>
         <precision>18</precision>
         <required>false</required>
-        <scale>0</scale>
+        <scale>2</scale>
         <trackTrending>false</trackTrending>
         <type>Number</type>
         <unique>false</unique>
@@ -2079,13 +2103,13 @@
         <description>metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;</description>
         <externalId>false</externalId>
         <formula>If(LaborBudget__c=0 ||  ISBLANK(LaborBudget__c) , 0, (NetMarginBudget__c +  LaborBudget__c )/ LaborBudget__c)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Labor Multiplier Budget</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>LaborMultiplierDraft__c</fullName>
@@ -2098,7 +2122,34 @@
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LaborMultiplierForecastDelta__c</fullName>
+        <externalId>false</externalId>
+        <formula>LaborMultiplierForecast__c - LaborMultiplierForecastPrevME__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Labor Multiplier Forecast Delta</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
+        <fullName>LaborMultiplierForecastPrevME__c</fullName>
+        <externalId>false</externalId>
+        <formula>If(LaborForecastPrevME__c=0 || ISBLANK(LaborForecastPrevME__c) , 0, (NetMarginForecastPrevME__c + LaborForecastPrevME__c )/ LaborForecastPrevME__c)</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Labor Multiplier Forecast Prev. ME</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>LaborMultiplierForecast__c</fullName>
@@ -2111,7 +2162,8 @@
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>LaborMultiplierITD__c</fullName>
@@ -2124,46 +2176,47 @@
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>LaborMultiplierMonthToDate__c</fullName>
         <description>laborMultValue = (revenue - nonLabor)/labor;</description>
         <externalId>false</externalId>
         <formula>If(LaborMonthToDate__c=0 || ISBLANK(LaborMonthToDate__c) , 0, (NetMarginMonthToDate__c + LaborMonthToDate__c )/ LaborMonthToDate__c)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Labor Multiplier Month To Date</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>LaborMultiplierUnapproved__c</fullName>
         <description>metrics.LaborMult = (metrics.TotalRevenue - metrics.TotalNonLabor)/metrics.TotalLabor;</description>
         <externalId>false</externalId>
         <formula>If(LaborUnapproved__c=0 || ISBLANK(LaborUnapproved__c) , 0, (NetMarginUnapproved__c + LaborUnapproved__c )/ LaborUnapproved__c)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Labor Multiplier Unapproved</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>LaborMultiplierYearToDate__c</fullName>
         <description>laborMultValue = (revenue - nonLabor)/labor;</description>
         <externalId>false</externalId>
         <formula>If(LaborYearToDate__c=0 || ISBLANK(LaborYearToDate__c) , 0, (NetMarginYearToDate__c + LaborYearToDate__c )/ LaborYearToDate__c)</formula>
-        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Labor Multiplier Year To Date</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Currency</type>
+        <type>Number</type>
+        <unique>false</unique>
     </fields>
     <fields>
         <fullName>LaborUnapproved__c</fullName>
@@ -2346,6 +2399,30 @@
         <formula>NetMarginDraft__c / GrossRevenueDraft__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>NMGR Draft</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>NMGRForecastDelta__c</fullName>
+        <externalId>false</externalId>
+        <formula>NMGRForecast__c - NMGRForecastPrevME__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NMGR Forecast Delta</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>NMGRForecastPrevME__c</fullName>
+        <externalId>false</externalId>
+        <formula>NetMarginForecastPrevME__c / GrossRevenueForecastPrevME__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NMGR Forecast Prev. ME</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
@@ -2743,7 +2820,7 @@
     <fields>
         <fullName>NetServiceForecastPrevME__c</fullName>
         <externalId>false</externalId>
-        <formula>GrossRevenueForecastPrevME__c -  (CostsODCEXPSForecastPrevME__c +  ContingencyForecastPrevME__c +  LaborForecastPrevME__c )</formula>
+        <formula>GrossRevenueForecastPrevME__c -  (CostsODCEXPSForecastPrevME__c +  ContingencyForecastPrevME__c +  CostsODCSUBSForecastPrevME__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Net Service Forecast Prev. ME</label>
         <precision>18</precision>
@@ -2927,7 +3004,7 @@
     <fields>
         <fullName>OverheadForecastDelta__c</fullName>
         <externalId>false</externalId>
-        <formula>OverheadBudgetOriginal__c -  OverheadForecastPrevME__c</formula>
+        <formula>OverheadForecast__c -  OverheadForecastPrevME__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Overhead Forecast Delta</label>
         <precision>18</precision>
