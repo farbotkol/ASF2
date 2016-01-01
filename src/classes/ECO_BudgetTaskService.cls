@@ -32,8 +32,9 @@ public with sharing class ECO_BudgetTaskService {
                     OverrideTotalRevenue__c                                
 					from BudgetTask__c 
 					where BudgetHeader__r.Project__c = :projectId 
-//					order by ProjectTask__r.ProjectTaskNumber__c, TaskName__c];
-					order by ProjectTask__r.pse__Order__c];
+					order by ProjectTask__r.ProjectTaskNumber__c, TaskName__c];
+//					order by ProjectTask__r.pse__Task_Number__c];
+//					order by ProjectTask__r.pse__Order__c];
 
 		List<ECO_DTO_BudgetTask> tempTasks = new List<ECO_DTO_BudgetTask>();
 
@@ -91,6 +92,7 @@ public with sharing class ECO_BudgetTaskService {
 					ParentTask__c,
 					ProjectTask__r.ProjectTaskNumber__c,
 					ProjectTask__r.WorkTypeName__c,
+					ProjectTask__r.pse__Project__r.BudgetStrategy__c,
 					TaskName__c,
 					TotalContingency__c,
 					TotalCost__c,
@@ -110,8 +112,9 @@ public with sharing class ECO_BudgetTaskService {
                     OverrideTotalRevenue__c 
 					from BudgetTask__c 
 					where BudgetHeader__c = :headerId
-//					order by ProjectTask__r.ProjectTaskNumber__c, TaskName__c];
-					order by ProjectTask__r.pse__Order__c];
+					order by ProjectTask__r.ProjectTaskNumber__c, TaskName__c];
+// 					order by ProjectTask__r.pse__Order__c];
+//					order by ProjectTask__r.pse__Task_Number__c];
 
 		List<ECO_DTO_BudgetTask> tempTasks = new List<ECO_DTO_BudgetTask>();
 
@@ -132,7 +135,8 @@ public with sharing class ECO_BudgetTaskService {
 			if (task.parentTaskId != null) {
 				ECO_DTO_BudgetTask parent = taskMap.get(task.parentTaskId);
 
-				parent.addChild(task);
+				if (parent != null)
+					parent.addChild(task);
 			}
 		}
 

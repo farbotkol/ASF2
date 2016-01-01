@@ -266,12 +266,12 @@ public class ECO_BudgetEACService {
                                                    GROUP BY BudgetTask__r.ProjectTask__c, BudgetResource__r.JobName__c, BudgetTask__r.BudgetHeader__r.Status__c
                                           ];
 
-        AggregateResult[] arLaborActuals = [SELECT SUM(Quantity__c) Quantity__c, SUM(ProjectFunctionalRawCost__c) totalRawCost, ProjectTask__c
+        AggregateResult[] arLaborActuals = [SELECT SUM(Quantity__c) Quantity__c, SUM(ProjectFunctionalBurdenedCost__c) totalRawCost, ProjectTask__c
                                             FROM ExpendItem__c Where Project__c = :sProjectId AND ExpenditureType__c IN :oracleLabNames
                                                     GROUP BY ProjectTask__c
                                            ];
 
-        AggregateResult[] arSubActuals = [SELECT SUM(Quantity__c) Quantity__c, SUM(ProjectFunctionalRawCost__c) totalRawCost, ProjectTask__c
+        AggregateResult[] arSubActuals = [SELECT SUM(Quantity__c) Quantity__c, SUM(ProjectFunctionalBurdenedCost__c) totalRawCost, ProjectTask__c
                                           FROM ExpendItem__c Where Project__c = :sProjectId AND ExpenditureType__c IN :oracleSubsName
                                                   GROUP BY ProjectTask__c
                                          ];
@@ -473,17 +473,17 @@ public class ECO_BudgetEACService {
                                            (BudgetTask__r.BudgetHeader__r.Status__c = 'Forecast' OR BudgetTask__r.BudgetHeader__r.Status__c = 'Approved')
                                            GROUP BY BudgetTask__r.ProjectTask__c, BudgetResource__r.ExpenditureType__c, BudgetTask__r.BudgetHeader__r.Status__c];
 
-        AggregateResult[] arLaborActuals = [SELECT PersonId__c, SUM(Quantity__c) Quantity__c, SUM(ProjectFunctionalRawCost__c) totalRawCost, ProjectTask__c, VendorId__c
+        AggregateResult[] arLaborActuals = [SELECT PersonId__c, SUM(Quantity__c) Quantity__c, SUM(ProjectFunctionalBurdenedCost__c) totalRawCost, ProjectTask__c, VendorId__c
                                             FROM ExpendItem__c Where Project__c = :sProjectId AND ExpenditureType__c IN :oracleLabNames
                                                     GROUP BY ProjectTask__c, VendorId__c, PersonId__c
                                            ];
 
-        AggregateResult[] arSubActuals = [SELECT PersonId__c, SUM(Quantity__c) Quantity__c, SUM(ProjectFunctionalRawCost__c) totalRawCost, ProjectTask__c, VendorId__c
+        AggregateResult[] arSubActuals = [SELECT PersonId__c, SUM(Quantity__c) Quantity__c, SUM(ProjectFunctionalBurdenedCost__c) totalRawCost, ProjectTask__c, VendorId__c
                                           FROM ExpendItem__c Where Project__c = :sProjectId AND ExpenditureType__c IN :oracleSubsName
                                                   GROUP BY ProjectTask__c, VendorId__c, PersonId__c
                                          ];
 
-        AggregateResult[] arExpActuals = [SELECT SUM(Quantity__c) Quantity__c, SUM(ProjectFunctionalRawCost__c) totalRawCost, ProjectTask__c, ExpenditureType__c
+        AggregateResult[] arExpActuals = [SELECT SUM(Quantity__c) Quantity__c, SUM(ProjectFunctionalBurdenedCost__c) totalRawCost, ProjectTask__c, ExpenditureType__c
                                           FROM ExpendItem__c Where Project__c = :sProjectId AND ExpenditureType__c IN :oracleExpNames
                                                   GROUP BY ProjectTask__c, ExpenditureType__c
                                          ];
