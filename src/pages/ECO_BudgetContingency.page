@@ -236,14 +236,14 @@
                     <table width="100%">
                         <tr>
                             <td width="50%">
-                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c}" rendered="{!budgetTask.children.size == 0}" />
-                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
+                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c}" rendered="{!budgetTask.isEditable}" />
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.isVisible}">
                                     <apex:param value="{!budgetLabourWrapper.mapTotalCostBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}"/>
                                 </apex:outputText>
                             </td>
                             <td width="50%">
-                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalRevenue__c}" rendered="{!budgetTask.children.size == 0}" />
-                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
+                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalRevenue__c}" rendered="{!budgetTask.isEditable}" />
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.isVisible}">
                                     <apex:param value="{!budgetLabourWrapper.mapTotalRevenueBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}"/>
                                 </apex:outputText>
                             </td>
@@ -342,6 +342,7 @@
                 </apex:outputText>
            </td>
         </tr>
+
     </table>
     </apex:form>
 

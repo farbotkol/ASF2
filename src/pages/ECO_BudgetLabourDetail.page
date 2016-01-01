@@ -234,8 +234,8 @@
                 </td>
             <apex:repeat value="{!budgetLabourWrapper.dtoBudgetLabourDetails}" var="budgetLabour"> <!--list<DTO_BudgetLaborDetail>-->
                 <td>
-                    <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c}" rendered="{!budgetTask.children.size == 0}" />
-                    <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
+                    <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].Quantity__c}" rendered="{!budgetTask.IsEditable}" />
+                    <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.IsVisible}">
                                         <apex:param value="{!budgetLabourWrapper.mapTotalByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}" />
                     </apex:outputText>
                 </td>

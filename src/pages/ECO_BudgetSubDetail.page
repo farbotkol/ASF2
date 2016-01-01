@@ -236,18 +236,18 @@
                                 <table width="100%">
                                     <tr>
                                         <td width="50%" styleClass="numAlign" >
-                                            <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c}" rendered="{!budgetTask.children.size == 0}" />
-                                            <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}" styleClass="numAlign">
+                                            <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c}" rendered="{!budgetTask.IsEditable}" />
+                                            <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.IsVisible}" styleClass="numAlign">
                                                 <apex:param value="{!budgetLabourWrapper.mapTotalCostBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}"/>
                                             </apex:outputText>
                                         </td>
                                         <td width="50%">
                                             <apex:outputPanel id="revenueColumn" styleClass="numAlign" >
-                                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalRevenue__c}" rendered="{!budgetTask.children.size == 0 && budgetLabour.marginType == 'Amount'}" />
-                                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size == 0 && budgetLabour.marginType == 'Percent'}">
+                                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalRevenue__c}" rendered="{!budgetTask.IsEditable && budgetLabour.marginType == 'Amount'}" />
+                                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.IsEditable && budgetLabour.marginType == 'Percent'}">
                                                     <apex:param value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].CalculatedRevenue__c}" />
                                                 </apex:outputText>
-	                                            <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
+	                                            <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.IsVisible}">
                                                     <apex:param value="{!budgetLabourWrapper.mapTotalRevenueBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}" />
                                                 </apex:outputText>
                                             </apex:outputPanel>

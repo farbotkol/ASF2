@@ -250,6 +250,51 @@ public class ECO_DTO_BudgetTask {
         private set;
     }
 
+    public Boolean getIsEditable() {
+        if (obudgetTask.ProjectTask__r.pse__Project__r.BudgetStrategy__c == 'Project Level') 
+            return false;
+
+        if (!hasChildren && 
+            obudgetTask.ProjectTask__r.pse__Project__r.BudgetStrategy__c == 'Bottom Task') 
+        {
+            return true;
+        }
+
+        if (parentTaskId == null && 
+            obudgetTask.ProjectTask__r.pse__Project__r.BudgetStrategy__c == 'Top Task') 
+        {
+            return true;
+        }
+
+        return false;
+    }
+
+    public Boolean getIsVisible() {
+        if (obudgetTask.ProjectTask__r.pse__Project__r.BudgetStrategy__c == 'Project Level') 
+            return false;
+
+        if (hasChildren && 
+            obudgetTask.ProjectTask__r.pse__Project__r.BudgetStrategy__c == 'Bottom Task')
+                return true;
+
+        return false;
+        /*
+        if (parentTaskId == null &&
+            obudgetTask.ProjectTask__r.pse__Project__r.BudgetStrategy__c == 'Top Task') 
+        {
+            return true;
+        }
+
+        return false;
+        */
+    }
+
+    public Boolean showProject {
+        get {
+            return obudgetTask.ProjectTask__r.pse__Project__r.BudgetStrategy__c == 'Project Level';
+        }
+        private set;
+    }
     public  ECO_DTO_BudgetTask parent {get; set;}
     public  List<ECO_DTO_BudgetTask> children {get; set;}
     public  Integer indentLevel {get; set;}
