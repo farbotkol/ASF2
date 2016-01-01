@@ -62,7 +62,7 @@ public class ECO_DTO_BudgetLabourDetail {
     }
     
     public Decimal costRateField {
-        get{return setScaling(raw * ( 1 + ((fringeField == null) ? 0 : fringeField)/100 + ((overheadField == null) ? 0 : overheadField)/100));}
+        get{return setScaling((raw == null ? 0 : raw) * ( 1 + ((fringeField == null) ? 0 : fringeField)/100 + ((overheadField == null) ? 0 : overheadField)/100));}
         private set;
     }
 
