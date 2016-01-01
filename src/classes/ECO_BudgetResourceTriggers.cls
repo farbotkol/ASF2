@@ -158,8 +158,8 @@ public without sharing class ECO_BudgetResourceTriggers {
 		}   
 		 	
     	// Get project currency
-        for (BudgetHeader__c budgetHeader : [Select Id, Project__r.CurrencyIsoCode From BudgetHeader__c Where Id In :bhIds]) {
-        	mapCurrencies.put(budgetHeader.Id, budgetHeader.Project__r.CurrencyIsoCode);
+        for (BudgetHeader__c budgetHeader : [Select Id, Project__r.ProjectFunctionalCurrencyCode__c From BudgetHeader__c Where Id In :bhIds]) {
+        	mapCurrencies.put(budgetHeader.Id, budgetHeader.Project__r.ProjectFunctionalCurrencyCode__c);
         }
 
         for (BudgetResource__c br : brNew) {

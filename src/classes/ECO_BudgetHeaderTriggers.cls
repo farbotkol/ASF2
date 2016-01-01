@@ -2,22 +2,27 @@ public without sharing class ECO_BudgetHeaderTriggers {
 	public static Boolean run = true;
 	
 	public static void setCurrency(List<BudgetHeader__c> newBHList) {
-    	if (!run) {
-    		return;
-    	}
+		if (!run) {
+			return;
+		}
 
-    	Id projId = newBHList[0].Project__c;
-    	// Get project currency
-        pse__Proj__c proj = [Select Id, CurrencyIsoCode From pse__Proj__c Where Id = :projId];
+		Set<Id> projIds = new Set<Id>();
+		Map<Id, String> mapCurrencies = new Map<Id, String>();
+
+		for (BudgetHeader__c bh : newBHList) {
+			projIds.add(bh.Project__c);
+		}
+		// Get project currency
+	    for (pse__Proj__c proj :[Select Id, ProjectFunctionalCurrencyCode__c From pse__Proj__c Where Id IN :projIds]) {
+	    	mapCurrencies.put(proj.Id, proj.ProjectFunctionalCurrencyCode__c);
+	    }
 
 
-        String projectCurrency = proj.CurrencyIsoCode;
-
-        for (BudgetHeader__c bh : newBHList) {
-        	bh.CurrencyIsoCode = projectCurrency;
-            
-        }
-    }
+	    for (BudgetHeader__c bh : newBHList) {
+	    	bh.CurrencyIsoCode = mapCurrencies.get(bh.Project__c);            
+	    }
+	}
+	
 	public static void cascadeApprovalStatus (Map<Id, BudgetHeader__c> bhNew, Map<Id, BudgetHeader__c> bhOld) {
 		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('BH_cascadeApproval')) {
 			return;
