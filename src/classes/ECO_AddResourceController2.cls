@@ -6,7 +6,21 @@ public with sharing class ECO_AddResourceController2 {
 			if (budgetHeaderId == null) {
 				budgetHeaderId = value;
 
-				init();
+				if (refresh != null)
+					init();
+			}
+		}
+	}
+
+	public String refresh {
+		get;
+
+		set {
+			if (refresh == null) {
+				refresh = value;
+
+				if (budgetHeaderId != null)
+					init();
 			}
 		}
 	}
@@ -301,7 +315,7 @@ public with sharing class ECO_AddResourceController2 {
 
 		System.debug(LoggingLevel.ERROR, 'here 3 - ' + toAdd.size());
 
-		PageReference pr = new PageReference('/apex/ECO_BudgetLabourDetail?id=' + budgetHeader.id);
+		PageReference pr = new PageReference('/apex/' + refresh + '?id=' + budgetHeader.id);
 		pr.setRedirect(true);
 
 		return pr;
@@ -363,7 +377,7 @@ public with sharing class ECO_AddResourceController2 {
 
 		insert newBudgetColumn;
 
-		PageReference pr = new PageReference('/apex/ECO_BudgetLabourDetail?id=' + budgetHeader.id);
+		PageReference pr = new PageReference('/apex/' + refresh + '?id=' + budgetHeader.id);
 		pr.setRedirect(true);
 
 		return pr;
@@ -384,7 +398,7 @@ public with sharing class ECO_AddResourceController2 {
 
 		insert newBudgetColumn;
 
-		PageReference pr = new PageReference('/apex/ECO_BudgetLabourDetail?id=' + budgetHeader.id);
+		PageReference pr = new PageReference('/apex/' + refresh + '?id=' + budgetHeader.id);
 		pr.setRedirect(true);
 
 		return pr;

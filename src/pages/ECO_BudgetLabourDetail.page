@@ -79,7 +79,7 @@
     <apex:sectionHeader subtitle="Labour Details" title="All values shown in : {!budgetLabourWrapper.projectCurrency}"/>  
 
     <c:ECO_ModalDialog width="600" padding="20px 20px 20px 20px" name="modalDialog0">
-        <c:ECO_AddResource budgetHeader="{!BudgetHeader__c.id}" /> 
+        <c:ECO_AddResource budgetHeader="{!BudgetHeader__c.id}" refreshPage="ECO_BudgetLabourDetail"/> 
     </c:ECO_ModalDialog>    
 
     <script>
@@ -113,7 +113,7 @@
 
                             <apex:commandButton value="Save" action="{!save}"/>
                             <apex:commandButton value="Edit Rates" onclick="showRates()" rerender="norefresh"/>
-                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/>
+                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;" rendered="{!BudgetHeader__c.status__c != 'Approved'}"/>
                         </th></tr>
                         <tr><th>Name</th></tr>
                         <tr><th>Project Role</th></tr>
