@@ -92,6 +92,7 @@ public class ECO_DTO_BudgetLabourWrapper {
                                                             EACForecastTotalCost__c,
                                                           EACForecastRevenue__c,
                                                           OverrideTotalCost__c,
+                                                          FullyBurdenedCost__c,
                                                           OverrideTotalRevenue__c,
                                                           CalculatedRevenue__c,
                                                           WorkTypeName__c
@@ -125,7 +126,7 @@ public class ECO_DTO_BudgetLabourWrapper {
     }
     
     public void reset(List<BudgetResource__c> budgetResources) {
-        BudgetHeader__c budgetHeader = [Select Id, Project__c, Project__r.ProjectFunctionalCurrencyCode__c From BudgetHeader__c Where Id = :budgetHeaderId];
+        BudgetHeader__c budgetHeader = [Select Id, Project__c, Project__r.ProjectFunctionalCurrencyCode__c, Project__r.BudgetStrategyRevenue__c, OverrideTotalRevenue__c From BudgetHeader__c Where Id = :budgetHeaderId];
         hasFieldTasks = false;
         projectCurrency = budgetHeader.Project__r.ProjectFunctionalCurrencyCode__c;
         dtoBudgetLabourDetails = new List<ECO_DTO_BudgetLabourDetail>();
@@ -181,13 +182,14 @@ public class ECO_DTO_BudgetLabourWrapper {
                     totals.EACApprovedQuantity = getSubtaskTotal(budgetTask, labour, 'EACApprovedQuantity__c', false);
                     totals.EACForecastQuantity = getSubtaskTotal(budgetTask, labour, 'EACForecastQuantity__c', false);
                     
+                    totals.EACEstimateToComplete = getSubtaskTotal(budgetTask, labour, 'FullyBurdenedCost__c', false);
+
                     totals.EACActualCost = getSubtaskTotal(budgetTask, labour, 'EACActualCost__c', false);
                     totals.EACCurrentApprovedCost = getSubtaskTotal(budgetTask, labour, 'EACApprovedTotalCost__c', false);
                     totals.EACCurrentForecastCost = getSubtaskTotal(budgetTask, labour, 'EACForecastTotalCost__c', false);
                     totals.EACForecastRevenue = getSubtaskTotal(budgetTask, labour, 'OverrideTotalRevenue__c', false) + getSubtaskTotal(budgetTask, labour, 'EACForecastRevenue__c', false);
-                    totals.EACCostToComplete = getSubtaskTotal(budgetTask, labour, 'OverrideTotalCost__c', false) + getSubtaskTotal(budgetTask, labour, 'EACForecastTotalCost__c', false);
+                    totals.EACCostToComplete = totals.EACEstimateToComplete  + getSubtaskTotal(budgetTask, labour, 'EACForecastTotalCost__c', false);
                     totals.Quantity = getSubtaskTotal(budgetTask, labour, 'Quantity__c', false);  
-					totals.EACEstimateToComplete = getSubtaskTotal(budgetTask, labour, 'OverrideTotalCost__c', false);
                     
                     mapEACTotalsByLaborDetailAndTask.put('' + labour.oBudgetResource.Id + budgetTask.obudgetTask.Id, totals);
 
@@ -330,7 +332,7 @@ public class ECO_DTO_BudgetLabourWrapper {
                     budgetAssignment.EACActualCost__c = 0.0;
                     budgetAssignment.EACApprovedTotalCost__c = 0.0;
                     budgetAssignment.EACForecastTotalCost__c = 0.0;
-                    budgetAssignment.OverrideTotalRevenue__c = 0.0;
+                    budgetAssignment.OverrideTotalRevenue__c = null;
                     
                     dtoBudgetLabourDetail.mAssignmentMap.put(dtoBudgetTask.obudgetTask.Id, budgetAssignment);
                     dtoBudgetLabourDetail.mapForecastRevenue.put(dtoBudgetTask.obudgetTask.Id, 0);

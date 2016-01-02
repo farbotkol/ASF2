@@ -26,6 +26,11 @@ public class ECO_DTO_BudgetTask {
         private set;
     }
 
+    public String budgetCostStrategy {
+        get { 
+            return obudgetTask.ProjectTask__r.pse__Project__r.BudgetStrategy__c; }
+        private set;
+    }
     private  Map<String, Decimal> values;
 
     public Decimal totalContingency {
@@ -245,23 +250,24 @@ public class ECO_DTO_BudgetTask {
 
     public Boolean hasChildren {
         get {
-        return children.size() > 0 ? true: false;
+            return children.size() > 0 ? true: false;
         }
         private set;
     }
 
     public Boolean getIsEditable() {
-        if (obudgetTask.ProjectTask__r.pse__Project__r.BudgetStrategy__c == 'Project Level') 
+        
+        if (budgetCostStrategy == 'Project Level') 
             return false;
 
         if (!hasChildren && 
-            obudgetTask.ProjectTask__r.pse__Project__r.BudgetStrategy__c == 'Bottom Task') 
+            budgetCostStrategy == 'Bottom Task') 
         {
             return true;
         }
 
         if (parentTaskId == null && 
-            obudgetTask.ProjectTask__r.pse__Project__r.BudgetStrategy__c == 'Top Task') 
+            budgetCostStrategy == 'Top Task') 
         {
             return true;
         }
@@ -270,11 +276,12 @@ public class ECO_DTO_BudgetTask {
     }
 
     public Boolean getIsVisible() {
-        if (obudgetTask.ProjectTask__r.pse__Project__r.BudgetStrategy__c == 'Project Level') 
+
+        if (budgetCostStrategy == 'Project Level') 
             return false;
 
         if (hasChildren && 
-            obudgetTask.ProjectTask__r.pse__Project__r.BudgetStrategy__c == 'Bottom Task')
+            budgetCostStrategy == 'Bottom Task')
                 return true;
 
         return false;

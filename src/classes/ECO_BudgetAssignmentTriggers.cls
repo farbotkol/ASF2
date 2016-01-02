@@ -14,14 +14,14 @@ public without sharing class ECO_BudgetAssignmentTriggers {
         }   
             
         // Get project currency
-        for (BudgetTask__c budgetTask : [Select Id, ProjectTask__r.WorkTypeName__c, BudgetHeader__r.Project__r.CurrencyIsoCode 
+        for (BudgetTask__c budgetTask : [Select Id, ProjectTask__r.WorkTypeName__c, BudgetHeader__r.Project__r.ProjectFunctionalCurrencyCode__c 
                                             From BudgetTask__c 
                                             Where Id IN :btIds]) {
             mapTasks.put(budgetTask.Id, budgetTask);
         }
 
          for (BudgetAssignment__c ba : baNew) {
-            ba.CurrencyIsoCode = mapTasks.get(ba.BudgetTask__c).BudgetHeader__r.Project__r.CurrencyIsoCode;
+            ba.CurrencyIsoCode = mapTasks.get(ba.BudgetTask__c).BudgetHeader__r.Project__r.ProjectFunctionalCurrencyCode__c;
             ba.WorkTypeName__c = mapTasks.get(ba.BudgetTask__c).ProjectTask__r.WorkTypeName__c;
         }
     }
