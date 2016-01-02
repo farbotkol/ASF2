@@ -96,7 +96,7 @@
     <apex:sectionHeader subtitle="Expenses Details" title="All values shown in : {!budgetLabourWrapper.projectCurrency}"/>  
 
     <c:ECO_ModalDialog width="600" padding="20px 20px 20px 20px" name="modalDialog0">
-        <c:ECO_AddODC budgetHeader="{!BudgetHeader__c.id}" /> 
+        <c:ECO_AddODC budgetHeader="{!BudgetHeader__c.id}" refreshPage="ECO_BudgetODCDetail"/> 
     </c:ECO_ModalDialog>    
 
     <apex:form >
@@ -122,7 +122,7 @@
                                         <br/>
 
                             <apex:commandButton value="Save" action="{!save}"/>
-                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/>
+                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;" rendered="{!BudgetHeader__c.Status__c != 'Approved'}"/>
                         </th></tr>
                         <tr><th>&nbsp;</th></tr>
                         <tr><th>&nbsp;</th></tr>

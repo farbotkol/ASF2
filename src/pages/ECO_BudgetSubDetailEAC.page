@@ -140,9 +140,9 @@
             </style>
             <apex:sectionHeader title="Sub & Vendor Details"/>  
             
-            <!--c:ECO_ModalDialog width="850" padding="20px 20px 20px 20px" name="modalDialog0">
-                <c:ECO_AddSubAndVendor budgetHeader="{!BudgetHeader__c.id}" />
-            </c:ECO_ModalDialog-->
+            <c:ECO_ModalDialog width="850" padding="20px 20px 20px 20px" name="modalDialog0">
+                <c:ECO_AddSubAndVendor budgetHeader="{!BudgetHeader__c.id}" refreshPage="ECO_BudgetSubDetailEAC"/>
+            </c:ECO_ModalDialog>
                 
             <apex:form >                
                 <table cellpadding="0" cellspacing="0">
@@ -159,8 +159,10 @@
                                             </apex:outputText>
                                         </th></tr>
                                         <tr><th>&nbsp;</th></tr>
-                                        <th><apex:commandButton value="Save" action="{!save}"/></th>
-                                        <!--th><apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/></th-->
+                                        <th>
+                                            <apex:commandButton value="Save" action="{!save}"/>
+                                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;" rendered="{!BudgetHeader__c.Status__c != 'Approved'}"/>
+                                        </th>
                                     </tr>
                                     <tr><th>&nbsp;</th></tr>
                                     <tr><th>&nbsp;</th></tr>

@@ -108,9 +108,9 @@
             </style>
             <apex:sectionHeader title="Contingency Details"/>  
             
-            <!--c:ECO_ModalDialog width="850" padding="20px 20px 20px 20px" name="modalDialog0">
-                <c:ECO_AddSubAndVendor budgetHeader="{!BudgetHeader__c.id}" />
-            </c:ECO_ModalDialog-->
+    <c:ECO_ModalDialog width="600" padding="20px 20px 20px 20px" name="modalDialog0">
+        <c:ECO_AddContingency budgetHeader="{!BudgetHeader__c.id}" refreshPage="ECO_BudgetContingencyEAC"/>
+    </c:ECO_ModalDialog>    
                 
             <apex:form >                
                 <table style="width:100%" cellpadding="0" cellspacing="0">
@@ -120,8 +120,10 @@
                             <table class="rowHeader" cellpadding="0" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th><apex:commandButton value="Save" action="{!save}"/></th>
-                                        <!--th><apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/></th-->
+                                        <th>
+                                            <apex:commandButton value="Save" action="{!save}"/>
+                                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;" rendered="{!BudgetHeader__c.Status__c != 'Approved'}"/>
+                                        </th>
                                     </tr>
                                     <tr><th>&nbsp;</th></tr>
                                     <tr><th>&nbsp;</th></tr>
