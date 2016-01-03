@@ -113,7 +113,7 @@
 
                             <apex:commandButton value="Save" action="{!save}"/>
                             <apex:commandButton value="Edit Rates" onclick="showRates()" rerender="norefresh"/>
-                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;" rendered="{!BudgetHeader__c.status__c != 'Approved'}"/>
+                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;" rendered="{!BudgetHeader__c.Status__c != 'Approved'}"/>
                         </th></tr>
                         <tr><th>Name</th></tr>
                         <tr><th>Project Role</th></tr>
@@ -151,7 +151,10 @@
                         <tr><td><apex:inputText value="{!budgetLabour.jobName}" /></td></tr>
                     </thead>
                     <tbody class="cost">
-                        <tr><td class="lightBlueHeading bold">{!budgetLabour.costRate} / {!budgetLabour.costRateField}</td></tr>
+                        <tr><td class="lightBlueHeading bold">
+                            {!budgetLabour.costRate}&nbsp;
+                            {!IF(budgetLabourWrapper.hasFieldTasks, '/ ' + budgetLabour.costRateField, '')}
+                        </td></tr>
                         <tr class="hiddenRate"><td class="tableInputs"><apex:inputText value="{!budgetLabour.raw}"/></td></tr>
                         
                         <tr class="hiddenRate"><td class="tableInputs">

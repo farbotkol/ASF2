@@ -205,13 +205,13 @@ public class ECO_DTO_BudgetLabourWrapper {
                     totals.EACApprovedQuantity = getSubtaskTotal(budgetTask, labour, 'EACApprovedQuantity__c', includeThis);
                     totals.EACForecastQuantity = getSubtaskTotal(budgetTask, labour, 'EACForecastQuantity__c', includeThis);
                     
-                    totals.EACEstimateToComplete = getSubtaskTotal(budgetTask, labour, 'FullyBurdenedCost__c', includeThis);
+                    totals.EACEstimateCost = getSubtaskTotal(budgetTask, labour, 'FullyBurdenedCost__c', includeThis);
 
                     totals.EACActualCost = getSubtaskTotal(budgetTask, labour, 'EACActualCost__c', includeThis);
                     totals.EACCurrentApprovedCost = getSubtaskTotal(budgetTask, labour, 'EACApprovedTotalCost__c', includeThis);
                     totals.EACCurrentForecastCost = getSubtaskTotal(budgetTask, labour, 'EACForecastTotalCost__c', includeThis);
                     totals.EACForecastRevenue = getSubtaskTotal(budgetTask, labour, 'OverrideTotalRevenue__c', includeThis) + getSubtaskTotal(budgetTask, labour, 'EACForecastRevenue__c', includeThis);
-                    totals.EACCostToComplete = totals.EACEstimateToComplete  + getSubtaskTotal(budgetTask, labour, 'EACForecastTotalCost__c', includeThis);
+                    totals.EACCostToComplete = totals.EACEstimateCost  + getSubtaskTotal(budgetTask, labour, 'EACForecastTotalCost__c', includeThis);
                     totals.Quantity = getSubtaskTotal(budgetTask, labour, 'Quantity__c', includeThis);  
                     
                     mapEACTotalsByLaborDetailAndTask.put('' + labour.oBudgetResource.Id + budgetTask.obudgetTask.Id, totals);
@@ -324,7 +324,7 @@ public class ECO_DTO_BudgetLabourWrapper {
 
 	public Decimal getSubtaskTotal(ECO_DTO_BudgetTask budgetTask, ECO_DTO_BudgetLabourDetail labour, String fieldName, boolean includeThis) {
 		Decimal result = 0;
-
+    includeThis = true;
 
 		if (includeThis || (budgetTask.children.size() == 0)) {
             result += labour.mAssignmentMap.get(budgetTask.obudgetTask.Id).get(fieldName) == Null ? 0.0 : (Decimal) labour.mAssignmentMap.get(budgetTask.obudgetTask.Id).get(fieldName);
@@ -417,7 +417,7 @@ public class ECO_DTO_BudgetLabourWrapper {
         public Decimal EACCurrentForecastCost {get {return setScaling(EACCurrentForecastCost);} set;}
         public Decimal EACForecastRevenue {get {return setScaling(EACForecastRevenue);} set;}
         
-        public Decimal EACEstimateToComplete {get {return setScaling(EACEstimateToComplete);} set;}
+        public Decimal EACEstimateCost {get {return setScaling(EACEstimateCost);} set;}
         public Decimal EACLaborCostToComplete { get{return setSCaling(EACLaborCostToComplete);} set;}
         public Decimal EACCostToComplete {get {return setScaling(EACCostToComplete);} set;}
 
@@ -432,7 +432,7 @@ public class ECO_DTO_BudgetLabourWrapper {
           	EACCurrentForecastCost = 0.0;
           	EACForecastRevenue = 0.0;
           	Quantity = 0.0;
-            EACEstimateToComplete = 0.0;
+            EACEstimateCost = 0.0;
             EACCostToComplete = 0.0;
             EACLaborCostToComplete = 0.0;
       	}
@@ -452,7 +452,7 @@ public class ECO_DTO_BudgetLabourWrapper {
             this.EACCurrentForecastCost += totalsToAdd.EACCurrentForecastCost;
             this.EACForecastRevenue += totalsToAdd.EACForecastRevenue;
             this.Quantity += totalsToAdd.Quantity;
-            this.EACEstimateToComplete += totalstoAdd.EACEstimateToComplete;
+            this.EACEstimateCost += totalstoAdd.EACEstimateCost;
             this.EACCostToComplete += totalstoAdd.EACCostToComplete;
             this.EACLaborCostToComplete += totalstoAdd.EACLaborCostToComplete;
         }

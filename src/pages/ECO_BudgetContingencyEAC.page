@@ -187,9 +187,9 @@
                                 <apex:variable value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[budgetLabour.oBudgetResource.Id + 'Total']}" var="totalByResource"/>
                                     <td width="20%">{!totalByResource.EACCurrentApprovedCost}</td>
                                     <td width="20%">{!totalByResource.EACCurrentForecastCost}</td>
-                                    <td width="20%">{!totalByResource.EACEstimateToComplete}</td>
+                                    <td width="20%">{!totalByResource.EACEstimateCost}</td>
                                     <td width="20%">{!IF(ISNULL(totalByResource.EACCurrentApprovedCost), 0, totalByResource.EACCurrentApprovedCost) + 
-                        IF(ISNULL(totalByResource.EACEstimateToComplete), 0, totalByResource.EACEstimateToComplete)}</td>
+                        IF(ISNULL(totalByResource.EACEstimateCost), 0, totalByResource.EACEstimateCost)}</td>
                                     <td width="20%">{!totalByResource.EACForecastRevenue}</td>
                                 </tr>
                             </table>
@@ -197,7 +197,7 @@
                     </apex:repeat>
                         <td class="blueHeading">
                             <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                                <apex:param value="{!budgetLabourWrapper.grandTotals.EACEstimateToComplete}" />
+                                <apex:param value="{!budgetLabourWrapper.grandTotals.EACEstimateCost}" />
                             </apex:outputText>
                         </td>
                         <td class="blueHeading">

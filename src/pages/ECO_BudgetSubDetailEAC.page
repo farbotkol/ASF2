@@ -254,12 +254,15 @@
                         <td class="lightBlueHeading">
                             <table class="resourceCol">
                                 <tr>
-                                    <td class="currency">{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[budgetLabour.oBudgetResource.Id + 'Total'].EACActualCost}</td>
-                                    <td class="currency">{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[budgetLabour.oBudgetResource.Id + 'Total'].EACCurrentApprovedCost}</td> 
-                                    <td class="currency">{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[budgetLabour.oBudgetResource.Id + 'Total'].EACCurrentForecastCost}</td>
-                                    <td class="currency">{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[budgetLabour.oBudgetResource.Id + 'Total'].EACEstimateToComplete}</td>
-                                    <td class="currency">{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[budgetLabour.oBudgetResource.Id + 'Total'].EACEstimateToComplete}</td>
-                                    <td class="currency">{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[budgetLabour.oBudgetResource.Id + 'Total'].EACForecastRevenue}</td>
+                                    <apex:variable value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[budgetLabour.oBudgetResource.Id + 'Total']}" var="totalByResource"/>
+                        
+                                    <td class="currency">{!totalByResource.EACActualCost}</td>
+                                    <td class="currency">{!totalByResource.EACCurrentApprovedCost}</td> 
+                                    <td class="currency">{!totalByResource.EACCurrentForecastCost}</td>
+                                    <td class="currency">{!totalByResource.EACCurrentForecastCost 
+                                                - totalByResource.EACActualCost  + totalByResource.EACEstimateCost}</td>
+                                    <td class="currency">{!totalByResource.EACEstimateCost + totalByResource.EACCurrentForecastCost}</td>
+                                    <td class="currency">{!totalByResource.EACForecastRevenue}</td>
                                 </tr>
                             </table>
                         </td>
