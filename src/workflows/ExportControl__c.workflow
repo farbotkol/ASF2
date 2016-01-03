@@ -82,6 +82,15 @@
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Eco_Set_Export_Control_Submitted_Date</fullName>
+        <field>SubmittedDate__c</field>
+        <formula>Today()</formula>
+        <name>Eco Set Export Control Submitted Date</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Formula</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Eco_Set_Owner_to_Export_Control_Team</fullName>
         <field>OwnerId</field>
         <lookupValue>EcoExportControlsTeam</lookupValue>
@@ -99,6 +108,10 @@
         </actions>
         <actions>
             <name>Eco_Assign_to_Export_Controls_Team</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
+            <name>Eco_Set_Export_Control_Submitted_Date</name>
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
