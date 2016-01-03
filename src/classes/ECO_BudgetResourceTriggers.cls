@@ -178,10 +178,19 @@ public without sharing class ECO_BudgetResourceTriggers {
 
 		List<BurdenReference__c> references = [select id, Home_Field__c, Schedule__c from BurdenReference__c];
 
-		Map<String, String> referenceMap = new Map<String, String>();
+		Map<String, Set<String>> referenceMap = new Map<String, Set<String>>();
 
 		for (BurdenReference__c reference : references) {
-			referenceMap.put(reference.Schedule__c, reference.Home_Field__c);
+			Set<String> newSet = referenceMap.get(reference.Schedule__c);
+
+			if (newSet == null) {
+				newSet = new Set<String>();
+				referenceMap.put(reference.Schedule__c, newSet);
+			}
+
+			newSet.add(reference.Home_Field__c);
+
+			System.debug('referenceMap - ' + reference.id + ' - ' + reference.Schedule__c + ' - ' + reference.Home_Field__c);
 		}
 
 		Set<Id> resourceIds = new Set<Id>();
@@ -192,25 +201,35 @@ public without sharing class ECO_BudgetResourceTriggers {
 			headerIds.add(br.BudgetHeader__c);
 		}
 
-		List<Contact> resources = [select id, User__r.ExpenditureType__c from Contact where id in :resourceIds];
+		List<Contact> resources = [select id, User__r.ExpenditureType__c, OrganizationString__r.OUID__c, OrganizationString__r.OrgID__c from Contact where id in :resourceIds];
 
 		Map<Id, String> expenditureMap = new Map<Id, String>();
 
-		for (Contact resource : resources) {
-			expenditureMap.put(resource.id, resource.User__r.ExpenditureType__c);
-		}
-
-		List<BudgetHeader__c> headers = [select id, Project__r.CarryingOutOrganization__r.OrgId__c from BudgetHeader__c where id in :headerIds];
-
 		Set<String> orgIds = new Set<String>();
 		Set<String> needed = new Set<String>();
+
+		Map<Id, String> contactOrgMap = new Map<Id, String>();
+		Map<Id, String> contactOUIdMap = new Map<Id, String>();
+
+		for (Contact resource : resources) {
+			expenditureMap.put(resource.id, resource.User__r.ExpenditureType__c);
+			orgIds.add(resource.OrganizationString__r.OrgID__c);
+			needed.add(resource.OrganizationString__r.OrgID__c);
+			contactOrgMap.put(resource.id, resource.OrganizationString__r.OrgID__c);
+			contactOUIdMap.put(resource.id, resource.OrganizationString__r.OUID__c);
+		}
+
+		List<BudgetHeader__c> headers = [select id, Project__r.CarryingOutOrganization__r.OrgId__c, Project__r.CarryingOutOrganization__r.OUID__c from BudgetHeader__c where id in :headerIds];
+
 		Map<Id, String> orgMap = new Map<Id, String>();
+		Map<Id, String> ouIdMap = new Map<Id, String>();
 		Map<String, String> parentMap = new Map<String, String>();
 
 		for (BudgetHeader__c header : headers) {
 			orgIds.add(header.Project__r.CarryingOutOrganization__r.OrgId__c);
 			needed.add(header.Project__r.CarryingOutOrganization__r.OrgId__c);
 			orgMap.put(header.id, header.Project__r.CarryingOutOrganization__r.OrgId__c);
+			ouIdMap.put(header.id, header.Project__r.CarryingOutOrganization__r.OUID__c);
 		}
 
 		List<Burden_Org_Hierarchy__c> hierarchy = [select organization_id__c, parent_organization_id__c from burden_org_hierarchy__c where organization_id__c in :needed];
@@ -219,6 +238,8 @@ public without sharing class ECO_BudgetResourceTriggers {
 			needed = new Set<String>();
 
 			for (Burden_Org_Hierarchy__c level : hierarchy) {
+				System.debug('here - ' + level.organization_id__c + ' - ' + level.parent_organization_id__c);
+
 				orgIds.add(level.organization_id__c);
 
 				if (level.parent_organization_id__c != null) {
@@ -232,6 +253,8 @@ public without sharing class ECO_BudgetResourceTriggers {
 
 			hierarchy = [select organization_id__c, parent_organization_id__c from burden_org_hierarchy__c where organization_id__c in :needed and organization_id__c not in :orgIds];
 		}
+
+		orgIds.addAll(needed);
 
 		List<BurdenSchedule__c> schedules = [select id, OracleRateScheduleName__c, CostCode__c, Multiplier__c, OrgId__c from BurdenSchedule__c where OrgId__c in :orgIds and ((EffectiveFromDate__c = null) or (EffectiveFromDate__c <= TODAY)) and ((EffectiveToDate__c = null) or (EffectiveToDate__c >= TODAY))];
 
@@ -251,19 +274,22 @@ public without sharing class ECO_BudgetResourceTriggers {
 			theList.add(schedule);
 		}
 
-		List<BurdenStructure__c> structures = [select id, CostPlusStructure__c, ExpenditureType__c, CostCode__c from BurdenStructure__c where CostCode__c in :costCodes];
+		List<BurdenStructure__c> structures = [select id, CostPlusStructure__c, ExpenditureType__c, CostCode__c from BurdenStructure__c where CostCode__c in :costCodes and CostPlusStructure__c != null];
 
 		Set<String> costPlusStructures = new Set<String>();
+
 		Map<String, List<BurdenStructure__c>> structureMap = new Map<String, List<BurdenStructure__c>>();
 
 		for (BurdenStructure__c structure : structures) {
 			costPlusStructures.add(structure.CostPlusStructure__c);
 
-			List<BurdenStructure__c> theList = structureMap.get(structure.CostCode__c);
+			String key = structure.CostCode__c + '~' + structure.ExpenditureType__c;
+
+			List<BurdenStructure__c> theList = structureMap.get(key);
 
 			if (theList == null) {
 				theList = new List<BurdenStructure__c>();
-				structureMap.put(structure.CostCode__c, theList);
+				structureMap.put(key, theList);
 			}
 
 			theList.add(structure);
@@ -271,18 +297,21 @@ public without sharing class ECO_BudgetResourceTriggers {
 
 		List<BurdenSchedule__c> schedules2 = [select id, OracleRateScheduleName__c, CostPlusStructure__c, OrgId__c from BurdenSchedule__c where CostPlusStructure__c in :costPlusStructures and OrgId__c in :orgIds];
 
+
 		Map<String, List<BurdenSchedule__c>> rateNameMap = new Map<String, List<BurdenSchedule__c>>();
 
 		for (BurdenSchedule__c schedule : schedules2) {
-			List<BurdenSchedule__c> theList = rateNameMap.get(schedule.CostPlusStructure__c);
+			String key = schedule.CostPlusStructure__c + '~' + schedule.OracleRateScheduleName__c + '~' + schedule.OrgId__c;
+
+			List<BurdenSchedule__c> theList = rateNameMap.get(key);
 
 			if (theList == null) {
 				theList = new List<BurdenSchedule__c>();
-				rateNameMap.put(schedule.CostPlusStructure__c, theList);
+				rateNameMap.put(key, theList);
 			}
 
 			theList.add(schedule);
-		}
+		}		
 
 		for (BudgetResource__c resource : brNew) {
 			System.debug('processing resource - ' + resource);
@@ -299,11 +328,25 @@ public without sharing class ECO_BudgetResourceTriggers {
 			Decimal OverrideFringeMultiplierField = null;
 			Decimal OverrideOverheadMultiplierField = null; 	
 
-			String orgId = orgMap.get(resource.BudgetHeader__c);
+			String headerOuID = ouIdMap.get(resource.BudgetHeader__c);
+			String contactOuID = contactOUIdMap.get(resource.Resource__c);
+
+			String orgId = null;
+
+			if (headerOuID == null)
+				throw new ECO_BurdenMultiplierException('Missing Header OU ID' + resource.BudgetHeader__c);
+
+			if (contactOuID == null)
+				throw new ECO_BurdenMultiplierException('Missing Contact OU ID' + resource.Resource__c);
+
+			if (headerOuID.equals(contactOuID)) {
+				orgId = orgMap.get(resource.BudgetHeader__c);
+			} else {
+				orgId = contactOrgMap.get(resource.Resource__c);
+				System.debug('*** cross-charging *** -- ' + headerOuID + ' - ' + contactOuID + ' - ' + orgId);
+			}
 
 			while ((OverrideFringeMultiplier == null) || (OverrideOverheadMultiplier == null) || (OverrideFringeMultiplierField == null) || (OverrideOverheadMultiplierField == null)) {
-				System.debug('orgId - ' + orgId);
-
 				if (orgId == null)
 					break;
 
@@ -311,6 +354,7 @@ public without sharing class ECO_BudgetResourceTriggers {
 
 				if (codeList == null) {
 					orgId = parentMap.get(orgId);
+					System.debug('no code list found - going to parent - ' + orgId);
 
 					continue;
 				}
@@ -318,18 +362,17 @@ public without sharing class ECO_BudgetResourceTriggers {
 				System.debug('codeList size - ' + codeList.size());
 
 				for (BurdenSchedule__c schedule : codeList) {
-					System.debug('schedule - ' + schedule);
-
-					System.debug('multiplier - ' + schedule.multiplier__c);
+					if ((OverrideFringeMultiplier != null) && (OverrideOverheadMultiplier != null) && (OverrideFringeMultiplierField != null) && (OverrideOverheadMultiplierField != null))
+						break;
 
 					String code = schedule.CostCode__c;
-
-					System.debug('costCode - ' + code);
 
 					if (code == null) 
 						continue;
 
-					List<BurdenStructure__c> burdenStructureList = structureMap.get(code);
+					String key2 = code + '~' + expenditureType;
+
+					List<BurdenStructure__c> burdenStructureList = structureMap.get(key2);
 
 					if (burdenStructureList == null)
 						continue;
@@ -337,69 +380,77 @@ public without sharing class ECO_BudgetResourceTriggers {
 					System.debug('burdenStructureList size  - ' + burdenStructureList.size());	
 
 					for (BurdenStructure__c structure : burdenStructureList) {
-						if (structure.ExpenditureType__c != expenditureType)
-							continue;
+						if ((OverrideFringeMultiplier != null) && (OverrideOverheadMultiplier != null) && (OverrideFringeMultiplierField != null) && (OverrideOverheadMultiplierField != null))
+							break;
 
-						System.debug('burdenStructure - ' + structure);
+						String key1 = structure.CostPlusStructure__c + '~' + schedule.OracleRateScheduleName__c + '~' + orgId;
 
-						System.debug('expenditureType matched - ' + expenditureType);
-
-						if (structure.CostPlusStructure__c == null)
-							continue;
-
-						List<BurdenSchedule__c> rateNames = rateNameMap.get(structure.CostPlusStructure__c);
+						List<BurdenSchedule__c> rateNames = rateNameMap.get(key1);
 
 						if (rateNames == null)
 							continue;
 
-						System.debug('rateNames size - ' + rateNames.size());	
+						System.debug('rateNames size - ' + rateNames.size());
 
 						for (BurdenSchedule__c schedule2 : rateNames) {
-							if (schedule2.OrgId__c != orgId)
-								continue;
+							if ((OverrideFringeMultiplier != null) && (OverrideOverheadMultiplier != null) && (OverrideFringeMultiplierField != null) && (OverrideOverheadMultiplierField != null))
+								break;
 
 							String rateName = schedule2.OracleRateScheduleName__c;
 
-							if (rateName != schedule.OracleRateScheduleName__c)
-								continue;
-
-							System.debug('rateName - ' + rateName);
-
-							String rateNameLookup = referenceMap.get(rateName);
-
-							System.debug('ratenamelookup - ' + rateNameLookup);
+							Set<String> rateNameLookup = referenceMap.get(rateName);
 
 							if (rateNameLookup == null)
 								continue;
 
-							if (rateNameLookup.equals('HOME_OFFICE')) {
+							Boolean foundOne = false;
+
+							if (rateNameLookup.contains('HOME_OFFICE')) {
 								if (code.containsIgnoreCase('fringe')) {
 									if (OverrideFringeMultiplier == null) {
 										OverrideFringeMultiplier = schedule.Multiplier__c;
 
 										System.debug('set home office/fringe to ' + schedule.Multiplier__c);
+										foundOne = true;
 									}
 								} else if (code.containsIgnoreCase('overhead')) {
 									if (OverrideOverheadMultiplier == null) {
 										OverrideOverheadMultiplier = schedule.Multiplier__c;
 
 										System.debug('set home office/overhead to ' + schedule.Multiplier__c);
+										foundOne = true;
 									}
 								}
-							} else if (rateNameLookup.equals('FIELD_OFFICE')) {
+							}
+
+							if (rateNameLookup.contains('FIELD_OFFICE')) {
 								if (code.containsIgnoreCase('fringe')) {
 									if (OverrideFringeMultiplierField == null) {
 										OverrideFringeMultiplierField = schedule.Multiplier__c;
 
 										System.debug('set field office/fringe to ' + schedule.Multiplier__c);
+										foundOne = true;
 									}
 								} else if (code.containsIgnoreCase('overhead')) {
 									if (OverrideOverheadMultiplierField == null) {
 										OverrideOverheadMultiplierField = schedule.Multiplier__c;
 
 										System.debug('set field office/overhead to ' + schedule.Multiplier__c);
+										foundOne = true;
 									}
 								}
+							}
+
+							if (foundOne) {
+								System.debug('orgId - ' + orgId);
+								System.debug('schedule - ' + schedule);
+								System.debug('multiplier - ' + schedule.multiplier__c);
+								System.debug('costCode - ' + code);
+								System.debug('expenditureType matched - ' + expenditureType);
+								System.debug('burdenStructure - ' + structure);
+								System.debug('rateNames size - ' + rateNames.size());	
+								System.debug('rateName - ' + rateName);
+								System.debug('ratenamelookup - ' + rateNameLookup);
 							}
 						}
 					}	
@@ -409,6 +460,10 @@ public without sharing class ECO_BudgetResourceTriggers {
 
 				orgId = parentMap.get(orgId);
 
+				if (orgId == null) {
+					break;
+				}
+
 				if (orgId.equals(oldOrgId)) {
 					System.debug('not right - the same parent and child - ' + orgId);
 
@@ -416,212 +471,10 @@ public without sharing class ECO_BudgetResourceTriggers {
 				}
 			}	
 
-			OverrideFringeMultiplier = OverrideFringeMultiplier == null ? null : 100 * OverrideFringeMultiplier;
-			OverrideOverheadMultiplier = OverrideOverheadMultiplier == null ? null : 100 * OverrideOverheadMultiplier;
-			OverrideFringeMultiplierField = OverrideFringeMultiplierField == null ? null : 100 * OverrideFringeMultiplierField;
-			OverrideOverheadMultiplierField = OverrideOverheadMultiplierField == null ? null : 100 * OverrideOverheadMultiplierField;
-			
-			resource.OverrideFringeMultiplier__c = OverrideFringeMultiplier;
-			resource.OverrideOverheadMultiplier__c = OverrideOverheadMultiplier;
-			resource.OverrideFringeMultiplierField__c = OverrideFringeMultiplierField;
-			resource.OverrideOverheadMultiplierField__c = OverrideOverheadMultiplierField;
-		}
-	}
-
-	public static void calculateMultiplierOld(List<BudgetResource__c> brNew) {
-		if (!run) {
-			return;
-		}
-
-		Set<Id> resourceIds = new Set<Id>();
-		Set<Id> headerIds = new Set<Id>();
-
-		for (BudgetResource__c br : brNew) {
-			resourceIds.add(br.Resource__c);
-			headerIds.add(br.BudgetHeader__c);
-		}
-
-		List<Contact> resources = [select id, User__r.ExpenditureType__c from Contact where id in :resourceIds];
-
-		Map<Id, String> expenditureMap = new Map<Id, String>();
-
-		for (Contact resource : resources) {
-			expenditureMap.put(resource.id, resource.User__r.ExpenditureType__c);
-		}
-
-		List<BudgetHeader__c> headers = [select id, Project__r.CarryingOutOrganization__r.OrgId__c from BudgetHeader__c where id in :headerIds];
-
-		Set<String> orgIds = new Set<String>();
-		Map<Id, String> orgMap = new Map<Id, String>();
-
-		for (BudgetHeader__c header : headers) {
-			orgIds.add(header.Project__r.CarryingOutOrganization__r.OrgId__c);
-			orgMap.put(header.id, header.Project__r.CarryingOutOrganization__r.OrgId__c);
-		}
-
-		List<BurdenSchedule__c> schedules = [select id, OracleRateScheduleName__c, CostCode__c, Multiplier__c, OrgId__c from BurdenSchedule__c where OrgId__c in :orgIds];
-
-		Set<String> costCodes = new Set<String>();
-		Map<String, List<BurdenSchedule__c>> costCodeMap = new Map<String, List<BurdenSchedule__c>>();
-
-		for (BurdenSchedule__c schedule : schedules) {
-			costCodes.add(schedule.CostCode__c);
-
-			List<BurdenSchedule__c> theList = costCodeMap.get(schedule.OrgId__c);
-
-			if (theList == null) {
-				theList = new List<BurdenSchedule__c>();
-				costCodeMap.put(schedule.OrgId__c, theList);
-			}
-
-			theList.add(schedule);
-		}
-
-		List<BurdenStructure__c> structures = [select id, CostPlusStructure__c, ExpenditureType__c, CostCode__c from BurdenStructure__c where CostCode__c in :costCodes];
-
-		Set<String> costPlusStructures = new Set<String>();
-		Map<String, List<BurdenStructure__c>> structureMap = new Map<String, List<BurdenStructure__c>>();
-
-		for (BurdenStructure__c structure : structures) {
-			costPlusStructures.add(structure.CostPlusStructure__c);
-
-			List<BurdenStructure__c> theList = structureMap.get(structure.CostCode__c);
-
-			if (theList == null) {
-				theList = new List<BurdenStructure__c>();
-				structureMap.put(structure.CostCode__c, theList);
-			}
-
-			theList.add(structure);
-		}
-
-		List<BurdenSchedule__c> schedules2 = [select id, OracleRateScheduleName__c, CostPlusStructure__c, OrgId__c from BurdenSchedule__c where CostPlusStructure__c in :costPlusStructures and (OracleRateScheduleName__c like '%Home Office%' or OracleRateScheduleName__c like '%Field Office%') and OrgId__c in :orgIds];
-
-		Map<String, List<BurdenSchedule__c>> rateNameMap = new Map<String, List<BurdenSchedule__c>>();
-
-		for (BurdenSchedule__c schedule : schedules2) {
-			List<BurdenSchedule__c> theList = rateNameMap.get(schedule.CostPlusStructure__c);
-
-			if (theList == null) {
-				theList = new List<BurdenSchedule__c>();
-				rateNameMap.put(schedule.CostPlusStructure__c, theList);
-			}
-
-			theList.add(schedule);
-		}
-
-		for (BudgetResource__c resource : brNew) {
-			System.debug('processing resource - ' + resource);
-
-			String expenditureType = expenditureMap.get(resource.Resource__c);
-
-			System.debug('expenditureType - ' + expenditureType);
-
-			if (expenditureType == null)
-				continue;
-
-			String orgId = orgMap.get(resource.BudgetHeader__c);
-
-			System.debug('orgId - ' + orgId);
-
-			if (orgId == null)
-				continue;
-
-			List<BurdenSchedule__c> codeList = costCodeMap.get(orgId);
-
-			if (codeList == null)
-				continue;
-
-			System.debug('codeList size - ' + codeList.size());
-
-			for (BurdenSchedule__c schedule : codeList) {
-				System.debug('schedule - ' + schedule);
-
-				System.debug('multiplier - ' + schedule.multiplier__c);
-
-				String code = schedule.CostCode__c;
-
-				System.debug('costCode - ' + code);
-
-				if (code == null)
-					continue;
-
-				List<BurdenStructure__c> burdenStructureList = structureMap.get(code);
-
-				if (burdenStructureList == null)
-					continue;
-
-				System.debug('burdenStructureList size  - ' + burdenStructureList.size());	
-
-				for (BurdenStructure__c structure : burdenStructureList) {
-					if (structure.ExpenditureType__c != expenditureType)
-						continue;
-
-					System.debug('burdenStructure - ' + structure);
-
-					System.debug('expenditureType matched - ' + expenditureType);
-
-					if (structure.CostPlusStructure__c == null)
-						continue;
-
-					List<BurdenSchedule__c> rateNames = rateNameMap.get(structure.CostPlusStructure__c);
-
-					if (rateNames == null)
-						continue;
-
-					System.debug('rateNames size - ' + rateNames.size());	
-
-					for (BurdenSchedule__c schedule2 : rateNames) {
-						if (schedule2.OrgId__c != orgId)
-							continue;
-
-						String rateName = schedule2.OracleRateScheduleName__c;
-
-						if (rateName != schedule.OracleRateScheduleName__c)
-							continue;
-
-						System.debug('rateName - ' + rateName);
-
-						if (rateName.containsIgnoreCase('Home Office')) {
-							if (code.containsIgnoreCase('fringe')) {
-								if (resource.OverrideFringeMultiplier__c == null) {
-									resource.OverrideFringeMultiplier__c = schedule.Multiplier__c;
-
-									System.debug('set home office/fringe to ' + schedule.Multiplier__c);
-								} else if (resource.OverrideFringeMultiplier__c != schedule.Multiplier__c) {
-									throw new ECO_BurdenMultiplierException('duplicate home office/fringe - ' + resource.OverrideFringeMultiplier__c);
-								}
-							} else if (code.containsIgnoreCase('overhead')) {
-								if (resource.OverrideOverheadMultiplier__c == null) {
-									resource.OverrideOverheadMultiplier__c = schedule.Multiplier__c;
-
-									System.debug('set home office/overhead to ' + schedule.Multiplier__c);
-								} else if (resource.OverrideOverheadMultiplier__c != schedule.Multiplier__c) {
-									throw new ECO_BurdenMultiplierException('duplicate home office/overhead - ' + resource.OverrideOverheadMultiplier__c);
-								}
-							}
-						} else if (rateName.containsIgnoreCase('Field Office')) {
-							if (code.containsIgnoreCase('fringe')) {
-								if (resource.OverrideFringeMultiplierField__c == null) {
-									resource.OverrideFringeMultiplierField__c = schedule.Multiplier__c;
-
-									System.debug('set field office/fringe to ' + schedule.Multiplier__c);
-								} else if (resource.OverrideFringeMultiplierField__c != schedule.Multiplier__c) {
-									throw new ECO_BurdenMultiplierException('duplicate field office/fringe - ' + resource.OverrideFringeMultiplierField__c);
-								}
-							} else if (code.containsIgnoreCase('overhead')) {
-								if (resource.OverrideOverheadMultiplierField__c == null) {
-									resource.OverrideOverheadMultiplierField__c = schedule.Multiplier__c;
-
-									System.debug('set field office/overhead to ' + schedule.Multiplier__c);
-								} else if (resource.OverrideOverheadMultiplierField__c != schedule.Multiplier__c) {
-									throw new ECO_BurdenMultiplierException('duplicate field office/overhead - ' + resource.OverrideOverheadMultiplierField__c);
-								}
-							}
-						}
-					}
-				}	
-			}	
+			resource.OverrideFringeMultiplier__c = (OverrideFringeMultiplier == null) ? null : 100.0 * OverrideFringeMultiplier;
+			resource.OverrideOverheadMultiplier__c = (OverrideOverheadMultiplier == null) ? null : 100.0 * OverrideOverheadMultiplier;
+			resource.OverrideFringeMultiplierField__c = (OverrideFringeMultiplierField == null) ? null : 100.0 * OverrideFringeMultiplierField;
+			resource.OverrideOverheadMultiplierField__c = (OverrideOverheadMultiplierField == null) ? null : 100.0 * OverrideOverheadMultiplierField;
 		}
 	}
 }
