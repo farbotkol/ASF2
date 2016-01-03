@@ -188,6 +188,7 @@ public class ECO_ChangeManagerDetailController {
             if(project.ProjectLevelFundingFlag__c)
             {
                 for(BudgetHeader__c bh:[select Id, AppliedTotalRevenue__c From BudgetHeader__c Where Project__c = :changeManager.Project__c and Id = :changeManager.BudgetIdsSelectedForExecution__c])
+                //for(BudgetHeader__c bh:[select Id, AppliedTotalRevenue__c From BudgetHeader__c Where Project__c = :changeManager.Project__c])
                 {
                    totalRevenue += bh.AppliedTotalRevenue__c;
                 }
@@ -206,15 +207,15 @@ public class ECO_ChangeManagerDetailController {
                 Map<Id, Decimal> budgetRevenueByTasksTotals = new Map<Id, Decimal>();
                 Set<Id> taskIds = new Set<Id>();
 
-                for(BudgetTask__c budgetTask:[Select TotalRevenue__c, ProjectTask__c From BudgetTask__c Where ProjectTask__r.pse__Project__c = :changeManager.Project__c and BudgetHeader__c = :changeManager.BudgetIdsSelectedForExecution__c])
+                for(BudgetTask__c budgetTask:[Select TotalRevenue__c, OverrideTotalRevenue__c, ProjectTask__c From BudgetTask__c Where ProjectTask__r.pse__Project__c = :changeManager.Project__c and BudgetHeader__c = :changeManager.BudgetIdsSelectedForExecution__c])
                 {
                     if(!budgetRevenueByTasksTotals.containsKey(budgetTask.ProjectTask__c))
                     {
                         taskIds.add(budgetTask.ProjectTask__c);
-                        budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetTask.TotalRevenue__c);  
+                        budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetTask.OverrideTotalRevenue__c);  
                     }
                     else
-                        budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetRevenueByTasksTotals.get(budgetTask.ProjectTask__c) + budgetTask.TotalRevenue__c);       
+                        budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetRevenueByTasksTotals.get(budgetTask.ProjectTask__c) + budgetTask.OverrideTotalRevenue__c);       
                 }
                 for(Funding__c funding:[select AllocatedAmount__c, ProjectTask__c from Funding__c where Project__c = :changeManager.Project__c])
                 {
@@ -236,7 +237,10 @@ public class ECO_ChangeManagerDetailController {
                         fundingTaskTotal += fundingByTasksTotals.get(task.Id);
 
                     if(budgetRevenueByTasksTotals.containsKey(task.Id))
-                        budgetTaskTotal += budgetRevenueByTasksTotals.get(task.Id);
+                    {
+                        if(budgetRevenueByTasksTotals.get(task.Id) != null)
+                            budgetTaskTotal += budgetRevenueByTasksTotals.get(task.Id);
+                    }
 
                     if(fundingTaskTotal != budgetTaskTotal)
                         returnValue += '<li>Task: ' + task.Name + ' - The selected budget total revenue for task does not match the total funding for the task.  Please fix this before submitting for execution.</li>';
@@ -287,19 +291,22 @@ public class ECO_ChangeManagerDetailController {
                     Map<Id, Decimal> budgetRevenueByTasksTotals = new Map<Id, Decimal>();
                     Set<Id> taskIds = new Set<Id>();
 
-                    for(BudgetTask__c budgetTask:[select ProjectTask__c, TotalRevenue__c from BudgetTask__c where BudgetHeader__c = :changeManager.BudgetHeader__c ])
+                    for(BudgetTask__c budgetTask:[select ProjectTask__c, OverrideTotalRevenue__c from BudgetTask__c where BudgetHeader__c = :changeManager.BudgetHeader__c ])
                     {
                         taskIds.add(budgetTask.ProjectTask__c);
-                        budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetTask.TotalRevenue__c);    
+                        budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetTask.OverrideTotalRevenue__c);    
                     }
 
-                    for(BudgetTask__c budgetTask:[Select TotalRevenue__c, ProjectTask__c From BudgetTask__c Where ProjectTask__r.pse__Project__c = :changeManager.Project__c and BudgetHeader__r.Status__c = 'Approved'])
+                    for(BudgetTask__c budgetTask:[Select OverrideTotalRevenue__c, ProjectTask__c From BudgetTask__c Where ProjectTask__r.pse__Project__c = :changeManager.Project__c and BudgetHeader__r.Status__c = 'Approved'])
                     {
                         taskIds.add(budgetTask.ProjectTask__c);
                         if(!budgetRevenueByTasksTotals.containsKey(budgetTask.ProjectTask__c))
-                            budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetTask.TotalRevenue__c);
+                            budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetTask.OverrideTotalRevenue__c);
                         else
-                            budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetRevenueByTasksTotals.get(budgetTask.ProjectTask__c) + budgetTask.TotalRevenue__c);    
+                        {
+                            if(budgetRevenueByTasksTotals.get(budgetTask.ProjectTask__c) != null)
+                                budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetRevenueByTasksTotals.get(budgetTask.ProjectTask__c) + budgetTask.OverrideTotalRevenue__c);    
+                        }
                     }
 
                     if(!changeManager.IntExtContractManagement__c)
@@ -334,7 +341,8 @@ public class ECO_ChangeManagerDetailController {
                             fundingTaskTotal += fundingByTasksTotals.get(task.Id);
 
                         if(budgetRevenueByTasksTotals.containsKey(task.Id))
-                            budgetTaskTotal += budgetRevenueByTasksTotals.get(task.Id);
+                            if(budgetRevenueByTasksTotals.get(task.Id) != null)
+                                budgetTaskTotal += budgetRevenueByTasksTotals.get(task.Id);
 
                         if(fundingTaskTotal != budgetTaskTotal)
                             returnValue += '<li>Task: ' + task.Name + ' - The selected budget total revenue for task does not match the total funding for the task.  Please add funding for this task and synching to oracle before synching this change order.</li>';
