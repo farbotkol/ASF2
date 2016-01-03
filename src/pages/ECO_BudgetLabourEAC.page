@@ -237,7 +237,7 @@
                             <br/>
 
                             <apex:commandButton value="Save" action="{!saveEAC}" onclick="return validateForm();"/>
-                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;" rendered="{!BudgetHeader__c.status__c != 'Approved'}"/>
+                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;" rendered="{!BudgetHeader__c.Status__c != 'Approved'}"/>
                         </th></tr>
                     </thead>
                     <tbody>
@@ -522,7 +522,7 @@
                             </td>
                             <!--td class="lightBlueHeading currency currentForecast" width="20%"-->
                             <td class="lightBlueHeading currentForecast" width="20%">
-                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!!budgetTask.isEditable}">
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.isEditable}">
                                     <apex:param value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastQuantity__c}" />
                                 </apex:outputText>
                                 <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.isVisible}">
@@ -634,13 +634,13 @@
                 </td>
                 <td class="blueHeading">
                     <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                        <apex:param value="{!budgetTask.totalEACForecastTotalCost - budgetTask.totalEACActualCost + budgetTask.totalCost}" />
+                        <apex:param value="{!budgetTask.totalEACForecastTotalCost - budgetTask.totalEACActualCost + budgetTask.totalLabourCost}" />
                     </apex:outputText>
                 </td>
                 <td class="blueHeading">
                     <apex:outputText value="{0, number, ###,###,###,##0.00}">
                         <apex:param value="{!IF(budgetTask.totalEACForecastTotalCost==null,0,budgetTask.totalEACForecastTotalCost) +
-                 							 IF(budgetTask.totalCost==null,0,budgetTask.totalCost)}" />
+                 							 IF(budgetTask.totalLabourCost==null,0,budgetTask.totalLabourCost)}" />
                     </apex:outputText>
                 </td>
                 <!--td class="blueHeading currency">{!budgetTask.totalEACActualCost}</td>
@@ -717,12 +717,12 @@
                         </td>
                         <td width="20%">
                             <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                                <apex:param value="{!totalByResource.EACCurrentForecastCost - totalByResource.EACActualCost + totalByResource.Quantity}" />
+                                <apex:param value="{!totalByResource.EACLaborCostToComplete}" />
                             </apex:outputText>
                         </td>
                         <td width="20%">
                             <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                                <apex:param value="{!totalByResource.EACCurrentForecastCost + totalByResource.Quantity}" />
+                                <apex:param value="{!totalByResource.EACLaborCostToComplete + totalByResource.EACActualCost}" />
                             </apex:outputText>
                         </td>
 						                        
@@ -762,12 +762,12 @@
                         </td>
                         <td width="20%">
                             <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                                <apex:param value="{!totalByResource.EACCurrentForecastCost - totalByResource.EACActualCost + totalByResource.Quantity}" />
+                                <apex:param value="{!totalByResource.EACLaborCostToComplete}" />
                             </apex:outputText>
                         </td>
                         <td width="20%">
                             <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                                <apex:param value="{!totalByResource.EACCurrentForecastCost + totalByResource.Quantity}" />
+                                <apex:param value="{!totalByResource.EACLaborCostToComplete + totalByResource.EACActualCost}" />
                             </apex:outputText>
                         </td>
                         <!--td class="currency" width="20%">{!totalByResource.EACActualCost}</td>
