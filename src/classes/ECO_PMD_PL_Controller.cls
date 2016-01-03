@@ -30,7 +30,7 @@ global with sharing class ECO_PMD_PL_Controller {
                     , HoursMonthToDate__c, HoursYearToDate__c, HoursITD__c, HoursETC__c, HoursForecast__c, HoursBudgetOriginal__c, HoursBudget__c, HoursForecastPrevME__c, HoursForecastDelta__c
                     , AvgLaborHourMonthToDate__c, AvgLaborHourYearToDate__c, AvgLaborHourITD__c, AvgLaborHourETC__c, AvgLaborHourForecast__c, AvgLaborHourBudgetOriginal__c, AvgLaborHourBudget__c, AvgLaborHourForecastPrevME__c, AvgLaborHourForecastDelta__c
                     , SCMMonthToDate__c, SCMYearToDate__c, SCMITD__c, SCMETC__c, SCMForecast__c, SCMBudgetOriginal__c, SCMBudget__c, SCMForecastPrevME__c, SCMForecastDelta__c
-                    , LostMarginMonthToDate__c, LostMarginYearToDate__c, LostMarginITD__c, LostMarginETC__c, LostMarginForecast__c, LostMarginBudget__c 
+                    , LostMarginMonthToDate__c, LostMarginYearToDate__c, LostMarginITD__c, LostMarginETC__c, LostMarginForecast__c 
                     , OriginalBudgetAsOfDate__c, CurrentBudgetAsOfDate__c, ProjectEndDatePrevME__c, ProjectEndDate__c 
                 FROM ProjectSnapshot__c
                 where Project__c = :projectId 
