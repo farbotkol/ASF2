@@ -19,6 +19,8 @@ trigger ECO_Project_TeamMember_AllEvents on ProjectTeamMember__c ( after update,
     
     if( trigger.isBefore && ( trigger.isUpdate || trigger.isInsert ) ){
         ECO_Project_TeamMember_Triggers.handleBeforeInsert(trigger.new);
+        ECO_Project_TeamMember_Triggers.setProjectFields(trigger.new);
+        
         if( trigger.isUpdate )
         {            
         	ECO_Service_RecordAccess.getProjectRecordAccess( trigger.new );

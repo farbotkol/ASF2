@@ -2,6 +2,67 @@ public class ECO_Project_TeamMember_Triggers {
 	
     public static Boolean run = true;
 
+    public static void setProjectFields(list<ProjectTeamMember__c> newTeamMembers){
+
+
+        if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('setProjectFields')) {
+            return;
+        }
+
+        map<id, pse__Proj__c> mapProj;
+        map<id, pse__Proj__c> mapProjToUpdate = new map<id, pse__Proj__c>();
+        list<ProjectTeamMember__c> lstPTMtoUpdate = new list<ProjectTeamMember__c>();
+        set<id> sProj = new set<id>();
+        Map<ID, ProjectRole__c> mapOfProjectRoles = new Map<ID, ProjectRole__c> ( [SELECT Active__c, Type__c, Id, Name FROM ProjectRole__c Where Active__c = true] ); 
+
+        for(ProjectTeamMember__c obj: newTeamMembers){
+            sProj.add(obj.Project__c);
+        }
+
+        mapProj = new map<id, pse__Proj__c>([select id, ProjectApprover__c, pse__Project_Manager__c, PnLManager__c from pse__Proj__c where id IN: sProj]);
+
+        for(ProjectTeamMember__c oPTM: newTeamMembers){
+
+
+            if(oPTM.Status__c == 'Approved' && 
+                oPTM.StartDate__c <= date.today() && 
+                (oPTM.EndDate__c == null || oPTM.EndDate__c >= date.today()) && 
+                oPTM.ProjectUpdated__c == false && 
+                (mapOfProjectRoles.get(oPTM.ProjectRole__c).name == 'Project Approver' || mapOfProjectRoles.get(oPTM.ProjectRole__c).name == 'Project Manager' || mapOfProjectRoles.get(oPTM.ProjectRole__c).name == 'Project Approver 2')){
+
+                system.debug('DEBUG***: PASSED CONDITION');
+
+                if(mapOfProjectRoles.get(oPTM.ProjectRole__c).name == 'Project Approver'){
+                    if(mapProj.get(oPTM.Project__c).ProjectApprover__c != oPTM.Contact__c){
+                        mapProj.get(oPTM.Project__c).ProjectApprover__c = oPTM.Contact__c;  
+                        mapProjToUpdate.put(mapProj.get(oPTM.Project__c).id, mapProj.get(oPTM.Project__c));             
+                    }
+
+
+                } else if(mapOfProjectRoles.get(oPTM.ProjectRole__c).name == 'Project Manager'){
+                    if(mapProj.get(oPTM.Project__c).pse__Project_Manager__c != oPTM.Contact__c){
+                        mapProj.get(oPTM.Project__c).pse__Project_Manager__c = oPTM.Contact__c; 
+                        mapProjToUpdate.put(mapProj.get(oPTM.Project__c).id, mapProj.get(oPTM.Project__c));             
+                    }
+
+
+                } else if(mapOfProjectRoles.get(oPTM.ProjectRole__c).name == 'Project Approver 2'){
+
+                    if(mapProj.get(oPTM.Project__c).PnLManager__c != oPTM.Contact__c){
+                        mapProj.get(oPTM.Project__c).PnLManager__c = oPTM.Contact__c;   
+                        mapProjToUpdate.put(mapProj.get(oPTM.Project__c).id, mapProj.get(oPTM.Project__c));         
+                    }
+
+                }
+            }
+        }
+
+        if(mapProjToUpdate.size() >0){
+            update mapProjToUpdate.values();
+        }        
+    }
+
+
     public static void permissionGanttView(list<ProjectTeamMember__c> newTeamMembers){
 
         if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('permissionGanttView')) {
