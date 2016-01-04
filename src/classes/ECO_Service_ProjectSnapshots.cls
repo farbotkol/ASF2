@@ -99,7 +99,9 @@ public class ECO_Service_ProjectSnapshots {
         public Decimal Fringe {get; set;}
         public Decimal Overhead {get; set;}
         public Decimal Hours {get; set;}
-
+        public Date originalBudgetAsOfDate {get; set;}
+		public Date approvedBudgetAsOfDate {get; set;}
+		
         public FinancialMetrics()
         {
             TotalRevenue = 0;
@@ -872,6 +874,7 @@ public class ECO_Service_ProjectSnapshots {
         if (originalBudgetFinancialMetrics != null) {
             snapshot.GrossRevenueBudgetOriginal__c = originalBudgetFinancialMetrics.TotalRevenue;
             snapshot.CostOrigBudget__c = originalBudgetFinancialMetrics.TotalCost;
+            snapshot.OriginalBudgetAsOfDate__c = originalBudgetFinancialMetrics.originalBudgetAsOfDate;
         }
         return snapshot;
     }
@@ -880,6 +883,7 @@ public class ECO_Service_ProjectSnapshots {
         if (approvedBudgetFinancialMetrics != null) {
             snapshot.GrossRevenueBudget__c = approvedBudgetFinancialMetrics.TotalRevenue;
             snapshot.CostBudget__c = approvedBudgetFinancialMetrics.TotalCost;
+            snapshot.CurrentBudgetAsOfDate__c = approvedBudgetFinancialMetrics.approvedBudgetAsOfDate;
         }
         return snapshot;
     }
@@ -1407,7 +1411,8 @@ public class ECO_Service_ProjectSnapshots {
             ' SUM(TotalCost__c) totalCost,'+ 
             ' SUM(TotalNonLabor__c) totalNonLabor,'+ 
             ' SUM(TotalLaborAmount__c) totalLabor,'+
-            ' SUM(TotalContingencyAmount__c) totalContingency'+
+            ' SUM(TotalContingencyAmount__c) totalContingency,'+
+            ' MAX(CreatedDate) originalBudgetAsOfDate'+
             ' FROM BudgetHeader__c'+
             ' WHERE OriginalBudget__c = true'+
             ' AND Project__c IN :projectIds'+
@@ -1423,7 +1428,9 @@ public class ECO_Service_ProjectSnapshots {
                 metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
                 metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));  
                 metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));  
-                
+                DateTime dt = (DateTime) ar.get('originalBudgetAsOfDate');
+                System.debug(System.LoggingLevel.WARN, 'originalBudgetAsOfDate='+ dt);
+                metrics.originalBudgetAsOfDate = Date.newInstance(dt.year(), dt.month(), dt.day());
                 metricsMap.put((Id)ar.get('Project__c'), metrics);
             }
         }
@@ -1440,7 +1447,8 @@ public class ECO_Service_ProjectSnapshots {
             ' SUM(TotalCost__c) totalCost,'+
             ' SUM(TotalNonLabor__c) totalNonLabor,'+
             ' SUM(TotalLaborAmount__c) totalLabor,'+
-            ' SUM(TotalContingencyAmount__c) totalContingency'+
+            ' SUM(TotalContingencyAmount__c) totalContingency,'+
+            ' MAX(CreatedDate) approvedBudgetAsOfDate'+
             ' FROM BudgetHeader__c'+
             ' WHERE Project__c IN :projectIds'+
             ' AND Status__c = \'Approved\''+
@@ -1455,8 +1463,10 @@ public class ECO_Service_ProjectSnapshots {
                 metrics.TotalCost = returnMapDecimalValue((Decimal)ar.get('totalCost'));
                 metrics.TotalNonLabor = returnMapDecimalValue((Decimal)ar.get('totalNonLabor'));
                 metrics.TotalLabor = returnMapDecimalValue((Decimal)ar.get('totalLabor'));  
-                metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));  
-               
+                metrics.TotalContingency = returnMapDecimalValue((Decimal)ar.get('totalContingency'));
+                DateTime dt = (DateTime) ar.get('approvedBudgetAsOfDate');
+                System.debug(System.LoggingLevel.WARN, 'approvedBudgetAsOfDate='+ dt);
+                metrics.approvedBudgetAsOfDate = Date.newInstance(dt.year(), dt.month(), dt.day());
                 metricsMap.put((Id)ar.get('Project__c'), metrics);
             }
         }
@@ -1670,6 +1680,11 @@ public class ECO_Service_ProjectSnapshots {
                 
                 if (funcBurdenedCostsLaborMetrics != null) {
                     metrics.Labor = funcBurdenedCostsLaborMetrics.Labor;
+                }
+                
+                if (funcBurdenedCostsMetrics != null && funcBurdenedCostsLaborMetrics != null) {
+                	metrics.TotalCost = metrics.CostsODCEXPS + metrics.CostsODCSUBS + metrics.TotalContingency +
+                		 metrics.Labor + metrics.Fringe + metrics.Overhead;
                 }
                 
                 if (funcBurdenedCostsHoursMetrics != null) {
