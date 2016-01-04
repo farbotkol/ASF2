@@ -48,7 +48,7 @@ public with sharing class ECO_ExpenditureItem_TriggerDispatcher
                 
                 Map<String, ExpenditureType__c> expTypeMap = new Map<String, ExpenditureType__c>();
                 List<ExpenditureType__c> expTypeList =
-                    [SELECT Name, ExpenditureCategory__c, PLReportCategory__c, ResourceType__c 
+                    [SELECT Name, ExpenditureCategory__c, PLReportCategory__c, ResourceType__c, CostReportCategory__c
                      FROM ExpenditureType__c WHERE Name IN: expTypeSet];
                 for (ExpenditureType__c et : expTypeList) {
                     expTypeMap.put(et.Name, et);
@@ -63,6 +63,7 @@ public with sharing class ECO_ExpenditureItem_TriggerDispatcher
                         expItem.ExpenditureResourceType__c = expType.ResourceType__c;
                         expItem.ExpenditureTypeCategory__c = expType.ExpenditureCategory__c;
                         expItem.PLReportCategory__c = expType.PLReportCategory__c;
+                        expItem.CostReportCategory__c = expType.CostReportCategory__c;
                         System.debug('___Adjusted expItem='+expItem);
                     }
                 }
