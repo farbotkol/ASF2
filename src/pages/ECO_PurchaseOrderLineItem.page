@@ -5,7 +5,7 @@
 			j$ = jQuery.noConflict();
 			
 			function setTaskField(taskId, taskName, projectTaskNumber){				
-				j$("[id*=currentPOLineItem_TaskName]").html(projectTaskNumber + " (" + taskName + ")"); 
+				j$("[id*=currentPOLineItem_TaskName]").val(projectTaskNumber + " (" + taskName + ")"); 
 				j$("[id*=currentPOLineItem_TaskId]").val(taskId); 
 
                 //setSelectedTask_JS();
@@ -258,8 +258,8 @@
                         </apex:outputPanel>
 						<apex:outputPanel >
                             <div class="requiredInput">
-                                <div class="requiredBlock">&nbsp;</div>	                             
-                                <apex:outputLabel value="{!currentPOLineItem_TaskName}" id="currentPOLineItem_TaskName" />							
+                    			<div class="requiredBlock"></div>
+                                <apex:inputText value="{!currentPOLineItem_TaskName}" id="currentPOLineItem_TaskName" disabled="true"/>							
                             </div>
 						</apex:outputPanel>						
 					</apex:pageBlockSectionItem>
