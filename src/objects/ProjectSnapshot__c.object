@@ -2126,6 +2126,19 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>LaborMultiplierETC__c</fullName>
+        <externalId>false</externalId>
+        <formula>LaborMultiplierForecast__c -  LaborMultiplierITD__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Labor Multiplier ETC</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Number</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>LaborMultiplierForecastDelta__c</fullName>
         <externalId>false</externalId>
         <formula>LaborMultiplierForecast__c - LaborMultiplierForecastPrevME__c</formula>
@@ -2249,26 +2262,16 @@
         <type>DateTime</type>
     </fields>
     <fields>
-        <fullName>LostMarginBudget__c</fullName>
-        <externalId>false</externalId>
-        <label>Lost Margin Budget</label>
-        <precision>18</precision>
-        <required>false</required>
-        <scale>2</scale>
-        <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
-    </fields>
-    <fields>
         <fullName>LostMarginDraft__c</fullName>
         <externalId>false</externalId>
+        <formula>(NMNSRDraft__c - NMNSRBudget__c) * NetServiceDraft__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Lost Margin Draft</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>LostMarginETC__c</fullName>
@@ -2310,7 +2313,7 @@
         <fullName>LostMarginForecast__c</fullName>
         <description>(( NMNSRForecast__c -  NMNSRBudget__c ) *  NetServiceForecast__c ) /100</description>
         <externalId>false</externalId>
-        <formula>(( NMNSRForecast__c -  NMNSRBudget__c ) *  NetServiceForecast__c ) /100</formula>
+        <formula>(( NMNSRForecast__c -  NMNSRBudget__c ) *  NetServiceForecast__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Lost Margin Forecast</label>
         <precision>18</precision>
@@ -2323,7 +2326,7 @@
         <fullName>LostMarginITD__c</fullName>
         <description>((NMNSRITD__c - NMNSRBudget__c) * NetServiceITD__c)/100</description>
         <externalId>false</externalId>
-        <formula>((NMNSRITD__c - NMNSRBudget__c) * NetServiceITD__c)/100</formula>
+        <formula>((NMNSRITD__c - NMNSRBudget__c) * NetServiceITD__c)</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Lost Margin ITD</label>
         <precision>18</precision>
@@ -2334,9 +2337,9 @@
     </fields>
     <fields>
         <fullName>LostMarginMonthToDate__c</fullName>
-        <description>((NMNSRMonthToDate__c -  NMNSRBudget__c) *  NetServiceMonthToDate__c ) / 100</description>
+        <description>((NMNSRMonthToDate__c -  NMNSRBudget__c) *  NetServiceMonthToDate__c )</description>
         <externalId>false</externalId>
-        <formula>((NMNSRMonthToDate__c -  NMNSRBudget__c) *  NetServiceMonthToDate__c ) / 100</formula>
+        <formula>((NMNSRMonthToDate__c -  NMNSRBudget__c) *  NetServiceMonthToDate__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Lost Margin Month To Date</label>
         <precision>18</precision>
@@ -2348,19 +2351,20 @@
     <fields>
         <fullName>LostMarginUnapproved__c</fullName>
         <externalId>false</externalId>
+        <formula>( NMNSRUnapproved__c - NMNSRBudget__c) * NetServiceUnapproved__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Lost Margin Unapproved</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
         <trackTrending>false</trackTrending>
-        <type>Number</type>
-        <unique>false</unique>
+        <type>Currency</type>
     </fields>
     <fields>
         <fullName>LostMarginYearToDate__c</fullName>
-        <description>((NMNSRYearToDate__c -  NMNSRBudget__c) *  NetServiceYearToDate__c ) / 100</description>
+        <description>((NMNSRYearToDate__c -  NMNSRBudget__c) *  NetServiceYearToDate__c )</description>
         <externalId>false</externalId>
-        <formula>((NMNSRYearToDate__c -  NMNSRBudget__c) *  NetServiceYearToDate__c ) / 100</formula>
+        <formula>((NMNSRYearToDate__c -  NMNSRBudget__c) *  NetServiceYearToDate__c )</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Lost Margin Year To Date</label>
         <precision>18</precision>
@@ -2399,6 +2403,18 @@
         <formula>NetMarginDraft__c / GrossRevenueDraft__c</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>NMGR Draft</label>
+        <precision>18</precision>
+        <required>false</required>
+        <scale>2</scale>
+        <trackTrending>false</trackTrending>
+        <type>Percent</type>
+    </fields>
+    <fields>
+        <fullName>NMGRETC__c</fullName>
+        <externalId>false</externalId>
+        <formula>NMGRForecast__c - NMGRITD__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>NMGR ETC</label>
         <precision>18</precision>
         <required>false</required>
         <scale>2</scale>
