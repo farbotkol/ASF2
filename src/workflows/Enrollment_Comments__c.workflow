@@ -106,7 +106,7 @@
     </alerts>
     <alerts>
         <fullName>Rejection_Notification_back_for_further_action_PM_AP1_2_3</fullName>
-        <description>Draft - Rejection Notification, back for further action; PM, AP1, 2, &amp; 3</description>
+        <description>xxxxDraft - Rejection Notification, back for further action; PM, AP1, 2, &amp; 3</description>
         <protected>false</protected>
         <recipients>
             <field>Approver_1_Email__c</field>
@@ -129,7 +129,7 @@
     </alerts>
     <alerts>
         <fullName>Rejection_Notification_back_for_further_action_PM_AP_1_2</fullName>
-        <description>Draft - Rejection Notification, back for further action; PM, AP 1 &amp; 2</description>
+        <description>xxxxDraft - Rejection Notification, back for further action; PM, AP 1 &amp; 2</description>
         <protected>false</protected>
         <recipients>
             <field>Approver_1_Email__c</field>

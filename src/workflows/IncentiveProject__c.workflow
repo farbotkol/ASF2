@@ -2,7 +2,7 @@
 <Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
     <alerts>
         <fullName>Notification_of_Approaching_IP_Scheduled_Finish_Date</fullName>
-        <description>Notification of Approaching IP Scheduled Finish Date</description>
+        <description>xxxxNotification of Approaching IP Scheduled Finish Date</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -24,7 +24,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_of_Previously_Ineligible_IP_become_Eligible_to_DTW_Admin</fullName>
-        <description>Send Notification of Previously Ineligible IP become Eligible to DTW Admin</description>
+        <description>xxxxSend Notification of Previously Ineligible IP become Eligible to DTW Admin</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -34,7 +34,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_DTW_Admin_of_new_ELIGIBLE_Incentive_Project</fullName>
-        <description>Send Notification to DTW Admin of new ELIGIBLE Incentive Project</description>
+        <description>xxxxSend Notification to DTW Admin of new ELIGIBLE Incentive Project</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -44,7 +44,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_Enrollment_Plan_PM_when_GM_EAC_Date_has_changed</fullName>
-        <description>Send Notification to the Enrollment Plan&apos;s PM and Approver 1 when GM% and or EAC as of Date has changed</description>
+        <description>xxxxSend Notification to the Enrollment Plan&apos;s PM and Approver 1 when GM% and or EAC as of Date has changed</description>
         <protected>false</protected>
         <recipients>
             <field>EnrollmentApprover1__c</field>
@@ -59,7 +59,7 @@
     </alerts>
     <alerts>
         <fullName>Send_notification_to_DTW_Admin_of_new_Ineligible_Incentive_Project</fullName>
-        <description>Send notification to DTW Admin of new INELIGIBLE Incentive Project</description>
+        <description>xxxxSend notification to DTW Admin of new INELIGIBLE Incentive Project</description>
         <protected>false</protected>
         <recipients>
             <field>DTWAdmin__c</field>

@@ -1,24 +1,20 @@
-<messaging:emailTemplate subject="Participant Notification for Time & Material DTW Incentive Projects" recipientType="User" relatedToType="ParticipantAcknowledgement__c">
+<messaging:emailTemplate subject="{!$Label.DTWELT7}" recipientType="User" relatedToType="ParticipantAcknowledgement__c">
 <messaging:htmlEmailBody >
     <apex:outputpanel >
-        <p>Thank you for your participation in the Deliver to Win incentive plan for project {!relatedTo.ParticipantID__r.EnrollmentPlan__r.ReplyTo__c}.  Your target DTW incentive for this project has changed.</p>
+        <p>{!$label.DTWECLTM1}{!relatedTo.ParticipantID__r.EnrollmentPlan__r.ReplyTo__c}. {!$label.DTWECLTM2}</p>
         
-        <p>Project Number: {!relatedTo.ProjectNumber__c} </p>
-        <p>Project Name: {!relatedTo.ProjectName__c}</p>
-        <p>Customer Name: {!relatedTo.ClientName__c}</p>
+        <p>{!$label.DTWProjectNumber} {!relatedTo.ProjectNumber__c} </p>
+        <p>{!$label.DTWProjectName} {!relatedTo.ProjectName__c}</p>
+        <p>{!$label.DTWCustomerName} {!relatedTo.ClientName__c}</p>
         
-        <p>Your new personalized enrollment letter is attached, which includes project specific metrics and an overview of the plan is available by clicking here.  
-        Please review this enrollment letter, and click the &nbsp;<apex:outputtext escape="false" value="{!relatedTo.AcknowledgementURL__c}" /> 
-        within 7 days to indicate your receipt and participation in the plan.</p>
+        <p>{!$label.DTWECLTM3} &nbsp;<apex:outputtext escape="false" value="{!relatedTo.AcknowledgementURL__c}" /> 
+        {!$label.DTWELT3}</p>
         
-        <p>Please review the &nbsp;<apex:outputtext escape="false" value="{!relatedTo.DTWTMPlanEmployeeGuide__c}" /> and complete the Overview and Participant modules of 
-        our DTW T&amp;M Training to learn more about the incentive plan, and how you can earn a cash reward.  
-        Training should take roughly 45 minutes to complete.  In addition to the web-based training, more information and other resources can be found on 
-        the &nbsp;<apex:outputtext escape="false" value="{!relatedTo.DTWWebpage__c}" /> webpage.</p>
+        <p>{!$label.DTWELT4} &nbsp;<apex:outputtext escape="false" value="{!relatedTo.DTWTMPlanEmployeeGuide__c}" /> {!$label.DTWELT5} &nbsp;<apex:outputtext escape="false" value="{!relatedTo.DTWWebpage__c}" /> {!$Label.DTWELT6}</p>
         
-        <p>Thank you,</p>
+        <p>{!$Label.DTWTHANKYOU}</p>
         
-        <p>DTW Administrator</p>
+        <p>{!$Label.DTWAdministrator}</p>
         <p>{!relatedTo.ParticipantID__r.EnrollmentPlan__r.ReplyTo__c}</p>   
     
     </apex:outputpanel>
@@ -26,21 +22,21 @@
 </messaging:htmlEmailBody>
     
     <messaging:plainTextEmailBody >
-        Thank you for your participation in the Deliver to Win incentive plan for project {!relatedTo.ParticipantID__r.EnrollmentPlan__r.ReplyTo__c}.  Your target DTW incentive for this project has changed.
+        {!$Label.DTWECLTM1} {!relatedTo.ParticipantID__r.EnrollmentPlan__r.ReplyTo__c}.  {!$Label.DTWECLTM2}
        
-        Project Number: {!relatedTo.ProjectNumber__c} 
+        {!$Label.DTWProjectNumber} {!relatedTo.ProjectNumber__c} 
         
-        Project Name: {!relatedTo.ProjectName__c} 
+        {!$Label.DTWProjectName} {!relatedTo.ProjectName__c} 
         
-        Customer Name: {!relatedTo.ClientName__c} 
+        {!$Label.DTWCustomerName} {!relatedTo.ClientName__c} 
         
-        Your new personalized enrollment letter is attached, which includes project specific metrics and an overview of the plan is available by clicking here. Please review this enrollment letter, and click the Participant Acknowledgement within 7 days to indicate your receipt and participation in the plan. 
+        {!$Label.DTWECLTM3}
         
-        Please review {!relatedTo.DTWTMPlanEmployeeGuideURL__c} and complete the Overview and Participant modules of our DTW T&amp;M Training to learn more about the incentive plan, and how you can earn a cash reward. Training should take roughly 45 minutes to complete. In addition to the web-based training, more information and other resources can be found at {!relatedTo.DTWWebpageURL__c}.         
+        {!$Label.DTWELT4} {!relatedTo.DTWTMPlanEmployeeGuideURL__c} {!$Label.DTWELT5} {!relatedTo.DTWWebpageURL__c}.         
         
-        Thank you, 
+        {!$Label.DTWTHANKYOU}
         
-        DTW Administrator  
+        {!$Label.DTWAdministrator} 
         
         {!relatedTo.ParticipantID__r.EnrollmentPlan__r.ReplyTo__c}   
     </messaging:plainTextEmailBody>

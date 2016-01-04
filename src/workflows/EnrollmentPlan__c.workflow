@@ -29,7 +29,7 @@
     </alerts>
     <alerts>
         <fullName>Notify_AP1_of_budget_change_significantly_impacting_baseline_FP_plan_only</fullName>
-        <description>16Notify AP1 of budget change significantly impacting baseline (FP plan only)</description>
+        <description>xxxx16Notify AP1 of budget change significantly impacting baseline (FP plan only)</description>
         <protected>false</protected>
         <recipients>
             <field>Approver1__c</field>
@@ -68,7 +68,7 @@
     </alerts>
     <alerts>
         <fullName>Notify_Approver_1_of_application_to_review</fullName>
-        <description>Notify Approver 1 of application to review</description>
+        <description>xxxxNotify Approver 1 of application to review</description>
         <protected>false</protected>
         <recipients>
             <field>Approver1__c</field>
@@ -80,7 +80,7 @@
     </alerts>
     <alerts>
         <fullName>Notify_Approver_1_of_change_in_proposed_baseline</fullName>
-        <description>6Notify Approver 1 of change in proposed baseline</description>
+        <description>xxxx6Notify Approver 1 of change in proposed baseline</description>
         <protected>false</protected>
         <recipients>
             <field>Approver1__c</field>
@@ -92,7 +92,7 @@
     </alerts>
     <alerts>
         <fullName>Notify_Approver_2_of_payment_form_to_approve</fullName>
-        <description>12Notify Approver 2 of payment form to approve:</description>
+        <description>xxxx12Notify Approver 2 of payment form to approve:</description>
         <protected>false</protected>
         <recipients>
             <field>Approver2__c</field>
@@ -104,7 +104,7 @@
     </alerts>
     <alerts>
         <fullName>Notify_Approver_3_of_application_to_review</fullName>
-        <description>9Notify Approver 3 of application to review</description>
+        <description>xxxx9Notify Approver 3 of application to review</description>
         <protected>false</protected>
         <recipients>
             <field>Approver3__c</field>
@@ -116,7 +116,7 @@
     </alerts>
     <alerts>
         <fullName>Notify_Approver_3_of_request_for_payment_requiring_his_her_approval</fullName>
-        <description>20Notify Approver 3 of request for payment requiring his/her approval</description>
+        <description>xxxx20Notify Approver 3 of request for payment requiring his/her approval</description>
         <protected>false</protected>
         <recipients>
             <field>Approver3__c</field>
@@ -166,7 +166,7 @@
     </alerts>
     <alerts>
         <fullName>Notify_PM_and_Approvers_when_Baseline_GM_Variance_Exceeds_Incentive_Plan_Thresho</fullName>
-        <description>Notify PM and Approvers when Baseline GM Variance Exceeds Incentive Plan Threshold</description>
+        <description>xxxxNotify PM and Approvers when Baseline GM Variance Exceeds Incentive Plan Threshold</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -222,7 +222,7 @@
     </alerts>
     <alerts>
         <fullName>Notify_of_Interim_Payment_Request</fullName>
-        <description>Notify of Interim Payment Request</description>
+        <description>xxxxNotify of Interim Payment Request</description>
         <protected>false</protected>
         <recipients>
             <recipient>CORP_DTW_Admin</recipient>
@@ -313,7 +313,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_Approver_1_when_assigned_to_EA</fullName>
-        <description>Send Notification to Approver 1 when assigned to EA</description>
+        <description>xxxxSend Notification to Approver 1 when assigned to EA</description>
         <protected>false</protected>
         <recipients>
             <field>Approver1__c</field>
@@ -324,7 +324,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_DTW_Admin_when_change_of_Approvers</fullName>
-        <description>Send Notification to DTW Admin when change of Approvers</description>
+        <description>xxxxSend Notification to DTW Admin when change of Approvers</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -334,7 +334,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_EA_Approvers_when_status_equals_Unenrolled</fullName>
-        <description>Send Notification to EA Approvers when status equals Unenrolled</description>
+        <description>xxxxSend Notification to EA Approvers when status equals Unenrolled</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -356,7 +356,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_EA_Approvers_when_status_set_to_On_Hold</fullName>
-        <description>Send Notification to EA Approvers when status set to On Hold</description>
+        <description>xxxxSend Notification to EA Approvers when status set to On Hold</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -378,7 +378,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_EA_PM_and_AP1_when_GM_and_or_EAC_as_of_Date_has_changed</fullName>
-        <description>Send Notification to EA PM and AP1 when GM% and or EAC as of Date has changed</description>
+        <description>xxxxSend Notification to EA PM and AP1 when GM% and or EAC as of Date has changed</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -392,7 +392,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_EA_PM_of_BL_or_Participant_Edits_if_Approver2_Approved</fullName>
-        <description>Send Notification to EA PM of BL or Participant Edits if Approver2 already approved</description>
+        <description>xxxxSend Notification to EA PM of BL or Participant Edits if Approver2 already approved</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -422,7 +422,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_PM_and_Approver1_for_EA_Approved_DPE_NSR_and_GM_Budget_Chan</fullName>
-        <description>Send Notification to PM and Approver1 for Incentive Project Approved DPE, NSR and GM Budget Changes</description>
+        <description>xxxSend Notification to PM and Approver1 for Incentive Project Approved DPE, NSR and GM Budget Changes</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -437,7 +437,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_PM_and_Approver1_for_Incentive_Project_Approved_DPE_NSR_and</fullName>
-        <description>Send Notification to PM and Approver1 for Incentive Project Approved DPE, NSR and GM Budget Changes</description>
+        <description>xxxxSend Notification to PM and Approver1 for Incentive Project Approved DPE, NSR and GM Budget Changes</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -451,7 +451,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_to_PM_and_Approvers_for_Baseline_Shift</fullName>
-        <description>Send Notification to PM and Approvers for Baseline Shift</description>
+        <description>xxxSend Notification to PM and Approvers for Baseline Shift</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
@@ -1634,6 +1634,16 @@ IF(TEXT(IncentivePlan__r.MaxPoolOperator2__c) = &quot;/&quot;, ROUND((IncentiveP
         <protected>false</protected>
     </fieldUpdates>
     <fieldUpdates>
+        <fullName>Set_Target_Changed_Notify_Parts_Field</fullName>
+        <description>Sets the checkbox that notifies participants that baseline has changed.</description>
+        <field>Target_Changed_Notify_Parts__c</field>
+        <literalValue>1</literalValue>
+        <name>Set Target Changed - Notify Parts Field</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+    </fieldUpdates>
+    <fieldUpdates>
         <fullName>Set_Target_Has_Changed_Flag</fullName>
         <field>TargetChanged__c</field>
         <literalValue>1</literalValue>
@@ -2641,7 +2651,7 @@ DPEAdjustment__c &lt;&gt; DPEBudget</description>
         </actions>
         <active>true</active>
         <description>Notify Approver 1 if upstream Approver changed Target.</description>
-        <formula>and(App_1_Processed__c  , 
+        <formula>and(App_1_Processed__c, App_2_Processed__c,
 
 ischanged(EnrollmentStatus__c), 
 or( 
@@ -2661,7 +2671,7 @@ TargetChanged__c)</formula>
         </actions>
         <active>true</active>
         <description>Notify Approver 2 if Upstream Approver Changes Target.</description>
-        <formula>and(App_2_Processed__c , 
+        <formula>and(App_2_Processed__c, App_3_Processed__c,
 
 ischanged(EnrollmentStatus__c), 
 or( 
@@ -2681,7 +2691,7 @@ TargetChanged__c)</formula>
         </actions>
         <active>true</active>
         <description>Notify Approver 3 if Upstream Approver changes Target.</description>
-        <formula>and(App_3_Processed__c,
+        <formula>and(App_3_Processed__c,CorpAdminProcessed__c, 
 ischanged(EnrollmentStatus__c), 
 or( 
 ispickval(EnrollmentStatus__c,&quot;Enrolled&quot;),contains(text(EnrollmentStatus__c),&quot;Pending&quot;)), 
@@ -2716,7 +2726,10 @@ TargetChanged__c)</formula>
         <active>true</active>
         <description>Notify Corp Admin of Target Change if Corp Admin has approved the record.</description>
         <formula>and(
-CorpAdminProcessed__c,ischanged(EnrollmentStatus__c), 
+CorpAdminProcessed__c,
+LastModifiedById=DTWAdminID__c,
+
+ischanged(EnrollmentStatus__c), 
 or( 
 ispickval(EnrollmentStatus__c,&quot;Enrolled&quot;),contains(text(EnrollmentStatus__c),&quot;Pending&quot;)), 
 TargetChanged__c)</formula>
@@ -3040,14 +3053,22 @@ OR(
     <rules>
         <fullName>Set Target Has Changed Flag</fullName>
         <actions>
+            <name>Set_Target_Changed_Notify_Parts_Field</name>
+            <type>FieldUpdate</type>
+        </actions>
+        <actions>
             <name>Set_Target_Has_Changed_Flag</name>
             <type>FieldUpdate</type>
         </actions>
         <active>true</active>
-        <description>Set the &apos;Target Has Changed&apos; checkbox if an Adjustment, DSO, or Scope Change field as changed.</description>
+        <description>Set the &apos;Target Has Changed&apos; checkbox and &apos;Target Changed - Notify Parts&apos; checkbox if an Adjustment, DSO, or Scope Change field as changed.</description>
         <formula>and(LastModifiedById&lt;&gt;Approver1ID__c, 
 or(
 ischanged(ContingencyAdjustment__c),
+
+ischanged(GrossMarginAmountAdjustment__c),
+
+ischanged(GrossMarginAmountScopeChange__c),
 
 ischanged(DPEAdjustment__c ),
 

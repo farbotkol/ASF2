@@ -53,7 +53,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_of_Enrollment_to_Participants_Fixed_Price</fullName>
-        <description>Send Notification of Enrollment to Participants-Fixed Price</description>
+        <description>xxxxSend Notification of Enrollment to Participants-Fixed Price</description>
         <protected>false</protected>
         <recipients>
             <field>EmployeeName__c</field>
@@ -64,7 +64,7 @@
     </alerts>
     <alerts>
         <fullName>Send_Notification_of_Enrollment_to_Participants_TM</fullName>
-        <description>Send Notification of Enrollment to Participants-Time and Materials</description>
+        <description>xxxxSend Notification of Enrollment to Participants-Time and Materials</description>
         <protected>false</protected>
         <recipients>
             <field>EmployeeName__c</field>
@@ -179,6 +179,11 @@
             <operation>equals</operation>
             <value>True</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>EnrollmentParticipant__c.TargetIncentivePoolAllocated__c</field>
+            <operation>greaterThan</operation>
+            <value>0</value>
+        </criteriaItems>
         <description>15Notify Participant that an enrolled project has closed and no award earned</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
@@ -218,6 +223,7 @@
             <operation>equals</operation>
             <value>Enrolled</value>
         </criteriaItems>
+        <description>DELETE</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>
     <rules>

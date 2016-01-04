@@ -31,6 +31,17 @@
         <template>DTW_Project_Incentives/Enrollment_Letter_FP</template>
     </alerts>
     <alerts>
+        <fullName>Notify_Participant_that_Baseline_Has_Changed</fullName>
+        <description>Notify Participant that Baseline Has Changed</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderAddress>dtwincentiveplan@aecom.com</senderAddress>
+        <senderType>OrgWideEmailAddress</senderType>
+        <template>DTW_Project_Incentives/Notify_Participants_when_Baseline_has_Changed</template>
+    </alerts>
+    <alerts>
         <fullName>Participant_declines_participation_in_plan</fullName>
         <description>1Participant declines participation in plan</description>
         <protected>false</protected>
@@ -401,6 +412,22 @@ ischanged(Acknowledged__c))</formula>
         </actions>
         <active>true</active>
         <formula>Geography__c &lt;&gt;  ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.GeographyDescription__c</formula>
+        <triggerType>onAllChanges</triggerType>
+    </rules>
+    <rules>
+        <fullName>Notify Participant that Baseline Has Changed</fullName>
+        <actions>
+            <name>Notify_Participant_that_Baseline_Has_Changed</name>
+            <type>Alert</type>
+        </actions>
+        <active>true</active>
+        <description>Send an email to Participant on CCR if Project Baseline has changed, the Participant is not new, and Participant&apos;s target has not changed.</description>
+        <formula>and(
+ischanged(ParticipantID__c),
+
+ParticipantID__r.EnrollmentPlan__r.Target_Changed_Notify_Parts__c,
+
+ispickval(NotificationFlag__c,&quot;None&quot;))</formula>
         <triggerType>onAllChanges</triggerType>
     </rules>
     <rules>

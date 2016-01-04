@@ -123,6 +123,18 @@
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>Approver_1_Name__c</fullName>
+        <externalId>false</externalId>
+        <formula>ParticipantID__r.EnrollmentPlan__r.Approver1Name__c</formula>
+        <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+        <label>Approver 1 Name</label>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Text</type>
+        <unique>false</unique>
+    </fields>
+    <fields>
         <fullName>ClientName__c</fullName>
         <externalId>false</externalId>
         <formula>ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.CustomerName__c</formula>
@@ -642,13 +654,18 @@
         <fullName>ReplyTo__c</fullName>
         <description>Translates the Incentive Project&apos;s Super Geography into the appropriate Reply To e-mail address, used in e-mail alerts</description>
         <externalId>false</externalId>
-        <formula>CASE(
-       ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.SuperGeography__c  , 
-                     &quot;Americas&quot;, &quot;americasdtwincentiveplan@aecom.com&quot;, 
-                     &quot;EMEA&quot;, &quot;emeadtwincentiveplan@aecom.com&quot;,
-                     &quot;EMEAI&quot;, &quot;emeadtwincentiveplan@aecom.com&quot;,
-                     &quot;APAC&quot;, &quot;apacdtwincentiveplan@aecom.com&quot;, &quot;&quot;
-     )</formula>
+        <formula>IF( 
+BEGINS(ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.SuperGeography__c,&quot;Americas&quot;), &quot;AmericasDTWIncentivePlan@aecom.com&quot;, 
+IF( 
+BEGINS(ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.SuperGeography__c,&quot;EMEA&quot;), &quot;EMEADTWIncentivePlan@aecom.com&quot;, 
+
+IF( 
+BEGINS(ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.SuperGeography__c,&quot;EMIA&quot;), &quot;EMIADTWIncentivePlan@aecom.com&quot;, 
+
+IF( 
+BEGINS(ParticipantID__r.EnrollmentPlan__r.IncentiveProject__r.SuperGeography__c,&quot;APAC&quot;), &quot;APACDTWIncentivePlan@aecom.com&quot;,&quot;&quot;) 
+) 
+))</formula>
         <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
         <label>Reply To</label>
         <required>false</required>
@@ -761,6 +778,7 @@
     <label>Participant Acknowledgement</label>
     <listViews>
         <fullName>All_Acknowledgements_CK</fullName>
+        <columns>Employee_Name__c</columns>
         <columns>NAME</columns>
         <columns>Status__c</columns>
         <columns>Geography__c</columns>
@@ -771,11 +789,9 @@
         <columns>OWNER.LAST_NAME</columns>
         <columns>EnrollmentAppName__c</columns>
         <columns>ProjectNameSnapshot__c</columns>
-        <columns>EnrollmentApplicationID__c</columns>
         <columns>ParticipantID__c</columns>
-        <columns>CREATEDBY_USER</columns>
-        <columns>CREATED_DATE</columns>
         <columns>NotificationFlag__c</columns>
+        <columns>CREATED_DATE</columns>
         <filterScope>Everything</filterScope>
         <label>All Acknowledgements - CK</label>
         <language>en_US</language>

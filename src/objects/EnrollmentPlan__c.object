@@ -42,7 +42,9 @@
     </actionOverrides>
     <actionOverrides>
         <actionName>View</actionName>
-        <type>Default</type>
+        <content>INC_EnrollmentApp</content>
+        <skipRecordTypeSelect>false</skipRecordTypeSelect>
+        <type>Visualforce</type>
     </actionOverrides>
     <compactLayoutAssignment>SYSTEM</compactLayoutAssignment>
     <customHelpPage>INC_HelpRedirect</customHelpPage>
@@ -2447,13 +2449,25 @@ IF(IncentiveProject__r.ActualNetMarginITD__c &gt; 0,
     <fields>
         <fullName>AgeDays__c</fullName>
         <externalId>false</externalId>
-        <formula>CASE(EnrollmentStatus__c,
-      &quot;Rejected&quot;, 
-      (DATEVALUE(LastModifiedDate) - IF( TEXT(LegacyFormCreateDate__c) = &quot;&quot;, DATEVALUE(CreatedDate), LegacyFormCreateDate__c)),
-      &quot;Enrolled&quot;, (FormEnrollmentDate__c -
-      IF( TEXT(LegacyFormCreateDate__c) = &quot;&quot;, DATEVALUE(CreatedDate), LegacyFormCreateDate__c)),
-      NULL
-)</formula>
+        <formula>if(not(isblank(FormEnrollmentDate__c)),
+if(TEXT(LegacyFormCreateDate__c) = &quot;&quot;,
+FormEnrollmentDate__c - DATEVALUE(CreatedDate),
+FormEnrollmentDate__c - LegacyFormCreateDate__c),
+
+if(ispickval(EnrollmentStatus__c,&quot;Rejected&quot;),
+if(TEXT(LegacyFormCreateDate__c) = &quot;&quot;,
+DATEVALUE (LastModifiedDate) - DATEVALUE(CreatedDate),
+DATEVALUE(LastModifiedDate) - LegacyFormCreateDate__c),
+
+if(or(begins(text(EnrollmentStatus__c),&quot;Pending&quot;),
+ispickval(EnrollmentStatus__c,&quot;Rejected for Correction&quot;)),
+if(TEXT(LegacyFormCreateDate__c) = &quot;&quot;,
+Today()-DATEVALUE(CreatedDate),
+Today() - LegacyFormCreateDate__c),
+
+if(TEXT(LegacyFormCreateDate__c) = &quot;&quot;,
+FormStatusDate__c - DATEVALUE(CreatedDate),
+FormStatusDate__c - LegacyFormCreateDate__c))))</formula>
         <inlineHelpText>Total days since the form was initiated</inlineHelpText>
         <label>Form Age</label>
         <precision>18</precision>
@@ -2841,7 +2855,7 @@ PAY: Payment Request Application, the final stage in an active app lifecycle</in
         <fullName>Application_Exceptions__c</fullName>
         <description>/resource/1429552689000/ExclamationMark</description>
         <externalId>false</externalId>
-        <formula>CASE(EnrollmentStatus__c, &quot;Enrolled&quot;, NULL, &quot;Archived&quot;, Null, &quot;Closed&quot;, Null,
+        <formula>CASE(EnrollmentStatus__c,&quot;Enrolled&quot;,Null, &quot;Archived&quot;, Null, &quot;Closed&quot;, Null,
 
 CASE(ApplicationType__c,&quot;OPT&quot;,NULL,&quot;Pay&quot;, NULL,
 IF(  AND( TEXT(ApplicationType__c) = &quot;CCR&quot;, ParentApplication__r.IncentivePlan__c  &lt;&gt; IncentivePlan__c), 
@@ -6994,6 +7008,20 @@ BEGINS(IncentiveProject__r.SuperGeography__c,&quot;APAC&quot;), &quot;APACDTWInc
         <unique>false</unique>
     </fields>
     <fields>
+        <fullName>RoutingMember__c</fullName>
+        <deleteConstraint>SetNull</deleteConstraint>
+        <description>Routing Member assigned to this enr</description>
+        <externalId>false</externalId>
+        <label>Routing Member</label>
+        <referenceTo>RoutingMember__c</referenceTo>
+        <relationshipLabel>Enrollment Applications</relationshipLabel>
+        <relationshipName>Enrollment_Applications</relationshipName>
+        <required>false</required>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Lookup</type>
+    </fields>
+    <fields>
         <fullName>SafetyforLifeScoreDisplay__c</fullName>
         <externalId>false</externalId>
         <formula>&quot;80%&quot;</formula>
@@ -7245,6 +7273,16 @@ IF
         <defaultValue>false</defaultValue>
         <externalId>false</externalId>
         <label>Target Changed</label>
+        <trackHistory>false</trackHistory>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
+        <fullName>Target_Changed_Notify_Parts__c</fullName>
+        <defaultValue>false</defaultValue>
+        <description>Back-end field used in email alert that notifies Participants if project baseline has changed.</description>
+        <externalId>false</externalId>
+        <label>Target Changed - Notify Parts</label>
         <trackHistory>false</trackHistory>
         <trackTrending>false</trackTrending>
         <type>Checkbox</type>
@@ -7663,7 +7701,6 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <columns>NumberofParticipants__c</columns>
         <columns>WorkflowOwner__c</columns>
         <columns>RECORDTYPE</columns>
-        <columns>ExceptionFlag__c</columns>
         <columns>ContractType__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
@@ -7672,6 +7709,30 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
             <value>CCR</value>
         </filters>
         <label>CCR Applications</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>CCR_ApplicationsRK</fullName>
+        <columns>CREATED_DATE</columns>
+        <columns>Application_Exceptions__c</columns>
+        <columns>AgeDays__c</columns>
+        <columns>IncentiveProject__c</columns>
+        <columns>EnrollmentApplicationNameUnique__c</columns>
+        <columns>Region__c</columns>
+        <columns>ApplicationType__c</columns>
+        <columns>ProjectID__c</columns>
+        <columns>CURRENCY_ISO_CODE</columns>
+        <columns>CustomerName__c</columns>
+        <columns>PlanType__c</columns>
+        <columns>SubmitStatus__c</columns>
+        <columns>EnrollmentStatus__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>ApplicationType__c</field>
+            <operation>equals</operation>
+            <value>CCR</value>
+        </filters>
+        <label>CCR ApplicationsRK</label>
         <language>en_US</language>
     </listViews>
     <listViews>
@@ -7685,6 +7746,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <columns>PlanType__c</columns>
         <columns>SubmitStatus__c</columns>
         <columns>EnrollmentStatus__c</columns>
+        <columns>AgeDays__c</columns>
         <columns>FormStatusAge__c</columns>
         <columns>NumberofParticipants__c</columns>
         <columns>RECORDTYPE</columns>
@@ -7694,7 +7756,7 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <filters>
             <field>EnrollmentStatus__c</field>
             <operation>equals</operation>
-            <value>Enrolled,Pending Change Request</value>
+            <value>Enrolled,Pending Change Request,Rejected</value>
         </filters>
         <label>Enrolled Applications</label>
         <language>en_US</language>
@@ -7703,9 +7765,12 @@ EstimatedPoolBaseline__c, &quot;Time &amp; Material&quot;, EstimatedPoolBaseline
         <fullName>Kull_DTW_Admin_Action_Required</fullName>
         <columns>Region__c</columns>
         <columns>ProjectID__c</columns>
+        <columns>ApplicationType__c</columns>
         <columns>NAME</columns>
         <columns>EnrollmentStatus__c</columns>
         <columns>WorkflowOwner__c</columns>
+        <columns>DTWAdmin__c</columns>
+        <columns>AgeDays__c</columns>
         <columns>FormStatusAge__c</columns>
         <columns>EstimatedIncentivePoolEAC__c</columns>
         <columns>EstimatedIncentivePoolITD__c</columns>
