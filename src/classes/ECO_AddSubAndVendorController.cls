@@ -1,6 +1,7 @@
 public with sharing class ECO_AddSubAndVendorController {
     
     public String budgetHeaderId {get; set;}
+    public String refresh {get; set;}
 
 	public BudgetHeader__c budgetHeader {get; set;}
 	public pse__Proj__c theProject {get; set;}
@@ -78,14 +79,14 @@ public with sharing class ECO_AddSubAndVendorController {
 
 		insert budgetResourcestoInsert;
 
-		PageReference pr = new PageReference('/apex/ECO_BudgetSubDetail?id=' + budgetHeader.id);
+		PageReference pr = new PageReference('/apex/' + refresh + '?id=' + budgetHeader.id);
 		pr.setRedirect(true);
 
 		return pr;
 	}
     
     public PageReference close() {
-        PageReference pr = new PageReference('/apex/ECO_BudgetSubDetail?id=' + budgetHeader.id);
+        PageReference pr = new PageReference('/apex/' + refresh + '?id=' + budgetHeader.id);
 		pr.setRedirect(true);
 
 		return pr;
@@ -135,7 +136,7 @@ public with sharing class ECO_AddSubAndVendorController {
         
         insert createBudgetResource(oVS);
         
-        PageReference pr = new PageReference('/apex/ECO_BudgetSubDetail?id=' + budgetHeader.id);
+        PageReference pr = new PageReference('/apex/' + refresh + '?id=' + budgetHeader.id);
 		pr.setRedirect(true);
 
 		return pr;
@@ -149,7 +150,7 @@ public with sharing class ECO_AddSubAndVendorController {
         
         insert createBudgetResource(oVS);
         
-        PageReference pr = new PageReference('/apex/ECO_BudgetSubDetail?id=' + budgetHeader.id);
+        PageReference pr = new PageReference('/apex/' + refresh + '?id=' + budgetHeader.id);
 		pr.setRedirect(true);
 
 		return pr;

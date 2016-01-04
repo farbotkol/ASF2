@@ -60,11 +60,10 @@
 <apex:form >
 <apex:sectionHeader title="Project Reviews" subtitle="{!pse__Proj__c.Name + "(" + pse__Proj__c.EcoSystemReferenceNumber__c + ")"}" /> <!-- need to add {!theProject.Name} -->
 
-        <div class="customHelpText">
-            <div class="customHelpBody">
-                Project reviews are design to assist the project manager to manage the project and minimise project risks. Project reviews provide a platform for the project manager to seek approval to proceed through distinct approval gates, provide regular updates to stakeholders on the financial health of the project and to seek advice and guidance to manage project issues.  
-            </div>
-         </div>           
+    <c:ECO_CollapsibleSection sectionTitle="General Guidance Information">  
+        Project reviews are design to assist the project manager to manage the project and minimise project risks. Project reviews provide a platform for the project manager to seek approval to proceed through distinct approval gates, provide regular updates to stakeholders on the financial health of the project and to seek advice and guidance to manage project issues. 
+    </c:ECO_CollapsibleSection>
+                   
  <apex:pageBlock title="Project Reviews">
 
     
@@ -168,7 +167,15 @@
                 </apex:outputText>
                 </td>
                 <td><apex:commandButton value="Select" onclick="disableAfterSubmit(this.id); recordTypeSelected('Project Performance Review'); return false;" id="btn5"/></td>
-            </tr>           
+            </tr>        
+            <tr>
+                <td><apex:outputText value="Technical Approach Review"/></td>
+                <td><apex:outputText >
+                             
+                </apex:outputText>
+                </td>
+                <td><apex:commandButton value="Select" onclick="disableAfterSubmit(this.id); recordTypeSelected('Technical Approach Review'); return false;" id="btn6"/></td>
+            </tr>  
             <!--<tr>
                 <td><apex:outputText value="Project Closeout"/></td>
                 <td><apex:outputText >
@@ -181,7 +188,7 @@
             <tr>
                 <td><apex:outputText value="Other"/></td>
                 <td><apex:outputText >Any other reviews or meetings identified by the PM, project team or client throughout the life of the project.</apex:outputText></td>
-                <td><apex:commandButton value="Select" onclick="disableAfterSubmit(this.id); recordTypeSelected('Other'); return false;" id="btn6"></apex:commandButton></td>
+                <td><apex:commandButton value="Select" onclick="disableAfterSubmit(this.id); recordTypeSelected('Other'); return false;" id="btn7"></apex:commandButton></td>
             </tr>       
                     
         </table></apex:outputPanel>

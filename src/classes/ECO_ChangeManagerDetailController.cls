@@ -62,7 +62,6 @@ public class ECO_ChangeManagerDetailController {
 
     public PageReference oracleSyncControl(){
 
-
         for(BudgetHeaderWrapper bhw: initialBudgetsForExecution){
             if(bhw.budgetHeader.id != budgetID){
                 bhw.isSelected = false;
@@ -179,8 +178,186 @@ public class ECO_ChangeManagerDetailController {
             pollingMessageQueueMsgBottom = 'Checking if project has been processed in <span id="pollingTimerBottom">10</span> seconds...';  
         }
     }
-    
+
     private String executionApprovalAgreementFundingBudgetValidations()
+    {
+        Decimal totalRevenue = 0;
+        Decimal totalFunding = 0;
+        if(changeManager.IsExecutionApprovalChange__c)
+        {
+            if(project.ProjectLevelFundingFlag__c)
+            {
+                for(BudgetHeader__c bh:[select Id, AppliedTotalRevenue__c From BudgetHeader__c Where Project__c = :changeManager.Project__c and Id = :changeManager.BudgetIdsSelectedForExecution__c])
+                //for(BudgetHeader__c bh:[select Id, AppliedTotalRevenue__c From BudgetHeader__c Where Project__c = :changeManager.Project__c])
+                {
+                   totalRevenue += bh.AppliedTotalRevenue__c;
+                }
+
+                for(Funding__c funding:[select Id, AllocatedAmount__c from Funding__c where Project__c = :changeManager.Project__c])
+                {
+                    totalFunding += funding.AllocatedAmount__c;
+                }
+
+                if(totalRevenue != totalFunding)
+                    return '<li>The selected total budget revenue and the total funding amount are not equal.  Please fix this before submitting for execution.</li>';
+            }
+            else
+            {
+                Map<Id, Decimal> fundingByTasksTotals = new Map<Id, Decimal>();
+                Map<Id, Decimal> budgetRevenueByTasksTotals = new Map<Id, Decimal>();
+                Set<Id> taskIds = new Set<Id>();
+
+                for(BudgetTask__c budgetTask:[Select TotalRevenue__c, OverrideTotalRevenue__c, ProjectTask__c From BudgetTask__c Where ProjectTask__r.pse__Project__c = :changeManager.Project__c and BudgetHeader__c = :changeManager.BudgetIdsSelectedForExecution__c])
+                {
+                    if(!budgetRevenueByTasksTotals.containsKey(budgetTask.ProjectTask__c))
+                    {
+                        taskIds.add(budgetTask.ProjectTask__c);
+                        budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetTask.OverrideTotalRevenue__c);  
+                    }
+                    else
+                        budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetRevenueByTasksTotals.get(budgetTask.ProjectTask__c) + budgetTask.OverrideTotalRevenue__c);       
+                }
+                for(Funding__c funding:[select AllocatedAmount__c, ProjectTask__c from Funding__c where Project__c = :changeManager.Project__c])
+                {
+                    if(!fundingByTasksTotals.containsKey(funding.ProjectTask__c))
+                    {
+                        taskIds.add(funding.ProjectTask__c);
+                        fundingByTasksTotals.put(funding.ProjectTask__c, funding.AllocatedAmount__c);
+                    }
+                    else
+                        fundingByTasksTotals.put(funding.ProjectTask__c, fundingByTasksTotals.get(funding.ProjectTask__c) + funding.AllocatedAmount__c);
+                }
+
+                Decimal fundingTaskTotal = 0;
+                Decimal budgetTaskTotal = 0;
+                String returnValue = '';
+                for(pse__Project_Task__c task:[select Id, Name from pse__Project_Task__c where Id in :taskIds])
+                {
+                    if(fundingByTasksTotals.containsKey(task.Id))
+                        fundingTaskTotal += fundingByTasksTotals.get(task.Id);
+
+                    if(budgetRevenueByTasksTotals.containsKey(task.Id))
+                    {
+                        if(budgetRevenueByTasksTotals.get(task.Id) != null)
+                            budgetTaskTotal += budgetRevenueByTasksTotals.get(task.Id);
+                    }
+
+                    if(fundingTaskTotal != budgetTaskTotal)
+                        returnValue += '<li>Task: ' + task.Name + ' - The selected budget total revenue for task does not match the total funding for the task.  Please fix this before submitting for execution.</li>';
+                    fundingTaskTotal = 0;
+                    budgetTaskTotal = 0;
+                }
+                if(returnValue != '')
+                    return returnValue;
+
+            }
+        }
+        else
+        {
+            if(changeManager.IntExtBudget__c && changeManager.IsExternalChange__c)
+            {
+                if(project.ProjectLevelFundingFlag__c)
+                {
+                    BudgetHeader__c budgetHeader = [select Id, AppliedTotalRevenue__c From BudgetHeader__c where Id = :changeManager.BudgetHeader__c limit 1];
+                    totalRevenue = budgetHeader.AppliedTotalRevenue__c;
+                    for(BudgetHeader__c bh:[select Id, AppliedTotalRevenue__c From BudgetHeader__c Where Project__c = :changeManager.Project__c and Status__c = 'Approved'])
+                    {
+                        totalRevenue += bh.AppliedTotalRevenue__c;
+                    }
+
+                    if(!changeManager.IntExtContractManagement__c)
+                    {
+                        for(Funding__c funding:[select Id, AllocatedAmount__c from Funding__c where Project__c = :changeManager.Project__c and ChangeManagerIsNew__c = false])
+                        {
+                            totalFunding += funding.AllocatedAmount__c;
+                        }
+                    }
+                    else
+                    {
+                        for(Funding__c funding:[select Id, AllocatedAmount__c from Funding__c where Project__c = :changeManager.Project__c])
+                        {
+                            totalFunding += funding.AllocatedAmount__c;
+                        } 
+                    }
+                    if(totalRevenue != totalFunding)
+                    {
+                        return '<li>' + 'The selected total budget revenue resulting from this change order and the total funding amount are not equal.  Please fix this before synching this project to Oracle by adding more funding to you agreement(s) and synch it to Oracle.</li>';
+                    }
+
+                }
+                else
+                {
+                    Map<Id, Decimal> fundingByTasksTotals = new Map<Id, Decimal>();
+                    Map<Id, Decimal> budgetRevenueByTasksTotals = new Map<Id, Decimal>();
+                    Set<Id> taskIds = new Set<Id>();
+
+                    for(BudgetTask__c budgetTask:[select ProjectTask__c, OverrideTotalRevenue__c from BudgetTask__c where BudgetHeader__c = :changeManager.BudgetHeader__c ])
+                    {
+                        taskIds.add(budgetTask.ProjectTask__c);
+                        budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetTask.OverrideTotalRevenue__c);    
+                    }
+
+                    for(BudgetTask__c budgetTask:[Select OverrideTotalRevenue__c, ProjectTask__c From BudgetTask__c Where ProjectTask__r.pse__Project__c = :changeManager.Project__c and BudgetHeader__r.Status__c = 'Approved'])
+                    {
+                        taskIds.add(budgetTask.ProjectTask__c);
+                        if(!budgetRevenueByTasksTotals.containsKey(budgetTask.ProjectTask__c))
+                            budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetTask.OverrideTotalRevenue__c);
+                        else
+                        {
+                            if(budgetRevenueByTasksTotals.get(budgetTask.ProjectTask__c) != null)
+                                budgetRevenueByTasksTotals.put(budgetTask.ProjectTask__c, budgetRevenueByTasksTotals.get(budgetTask.ProjectTask__c) + budgetTask.OverrideTotalRevenue__c);    
+                        }
+                    }
+
+                    if(!changeManager.IntExtContractManagement__c)
+                    {
+                        for(Funding__c funding:[select AllocatedAmount__c, ProjectTask__c from Funding__c where Project__c = :changeManager.Project__c and  ChangeManagerIsNew__c = false])
+                        {
+                            taskIds.add(funding.ProjectTask__c);
+                            if(!fundingByTasksTotals.containsKey(funding.ProjectTask__c))
+                                fundingByTasksTotals.put(funding.ProjectTask__c, funding.AllocatedAmount__c);    
+                            else
+                                fundingByTasksTotals.put(funding.ProjectTask__c, fundingByTasksTotals.get(funding.ProjectTask__c) + funding.AllocatedAmount__c);
+                        }
+                    }
+                    else
+                    {
+                        for(Funding__c funding:[select AllocatedAmount__c, ProjectTask__c from Funding__c where Project__c = :changeManager.Project__c])
+                        {
+                            taskIds.add(funding.ProjectTask__c);
+                            if(!fundingByTasksTotals.containsKey(funding.ProjectTask__c))
+                                fundingByTasksTotals.put(funding.ProjectTask__c, funding.AllocatedAmount__c);    
+                            else
+                                fundingByTasksTotals.put(funding.ProjectTask__c, fundingByTasksTotals.get(funding.ProjectTask__c) + funding.AllocatedAmount__c);
+                        }                        
+                    }
+
+                    Decimal fundingTaskTotal = 0;
+                    Decimal budgetTaskTotal = 0;
+                    String returnValue = '';
+                    for(pse__Project_Task__c task:[select Id, Name from pse__Project_Task__c where Id in :taskIds])
+                    {
+                        if(fundingByTasksTotals.containsKey(task.Id))
+                            fundingTaskTotal += fundingByTasksTotals.get(task.Id);
+
+                        if(budgetRevenueByTasksTotals.containsKey(task.Id))
+                            if(budgetRevenueByTasksTotals.get(task.Id) != null)
+                                budgetTaskTotal += budgetRevenueByTasksTotals.get(task.Id);
+
+                        if(fundingTaskTotal != budgetTaskTotal)
+                            returnValue += '<li>Task: ' + task.Name + ' - The selected budget total revenue for task does not match the total funding for the task.  Please add funding for this task and synching to oracle before synching this change order.</li>';
+                        fundingTaskTotal = 0;
+                        budgetTaskTotal = 0;
+                    }
+                    if(returnValue != '')
+                        return returnValue;
+                }
+            }
+        }
+        return '';
+    }
+    
+    /*private String executionApprovalAgreementFundingBudgetValidations()
     {
         Decimal totalRevenue = 0;
         Decimal totalFunding = 0;
@@ -352,7 +529,7 @@ public class ECO_ChangeManagerDetailController {
             }
         }
         return '';
-    }
+    }*/
 
     public PageReference authenticateCredentials()
     {
@@ -667,7 +844,7 @@ public class ECO_ChangeManagerDetailController {
                 
     public BudgetHeader__c getChangedBudget()
     {
-        list<BudgetHeader__c> budgets = [select Id, Name, BudgetName__c, TotalContingencyAmount__c, TotalCost__c, TotalRevenue__c, Status__c, Project__c, CreatedDate, CreatedById,
+        list<BudgetHeader__c> budgets = [select Id, Name, BudgetName__c, TotalContingencyAmount__c, AppliedTotalRevenue__c, TotalCost__c, TotalRevenue__c, Status__c, Project__c, CreatedDate, CreatedById,
                                         LastModifiedDate, LastModifiedById from BudgetHeader__c where Id = :changeManager.BudgetHeader__c];
         if(budgets.isEmpty())
             return null;
@@ -716,14 +893,19 @@ public class ECO_ChangeManagerDetailController {
         if(changeManager.BudgetIdsSelectedForExecution__c == null)
             changeManager.BudgetIdsSelectedForExecution__c = '';
             
-        for(BudgetHeader__c budget:[select Id, Name, BudgetName__c, TotalCost__c, TotalRevenue__c, LastModifiedById, LastModifiedDate from BudgetHeader__c where Project__c = :changeManager.Project__c])
+        for(BudgetHeader__c budget:[select Id, Name, BudgetName__c, TotalCost__c, TotalRevenue__c, AppliedTotalRevenue__c, LastModifiedById, LastModifiedDate from BudgetHeader__c where Project__c = :changeManager.Project__c])
         {
             if(changeManager.BudgetIdsSelectedForExecution__c == null || changeManager.BudgetIdsSelectedForExecution__c == '')
-                initialBudgetsForExecution.add(new BudgetHeaderWrapper(true, budget)); 
+            {
+                initialBudgetsForExecution.add(new BudgetHeaderWrapper(true, budget));
+                changeManager.BudgetIdsSelectedForExecution__c = budget.Id; 
+            }
             else
             {   
                 if(changeManager.BudgetIdsSelectedForExecution__c.contains(budget.Id))
+                {
                     initialBudgetsForExecution.add(new BudgetHeaderWrapper(true, budget));                
+                }
                 else
                     initialBudgetsForExecution.add(new BudgetHeaderWrapper(false, budget));
             }

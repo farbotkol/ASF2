@@ -86,15 +86,15 @@ public class ECO_DTO_BudgetHeaderWrapper {
     }
     
     public Decimal getBudgetTotalRevenue {
-        get{return calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'TotalRevenue__c');}
+        get{return calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED, 'AppliedTotalRevenue__c');}
     }
 
     public Decimal getForecastTotalRevenue {
-        get{return calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'TotalRevenue__c');}
+        get{return calculateTotal(ECO_DTO_BudgetHeader.STATUS_APPROVED + ',' + ECO_DTO_BudgetHeader.STATUS_FORECAST, 'AppliedTotalRevenue__c');}
     }
 
     public Decimal getWorkAtRiskTotalRevenue {
-        get{return calculateTotal(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'TotalRevenue__c');}
+        get{return calculateTotal(ECO_DTO_BudgetHeader.STATUS_WORKATRISK, 'AppliedTotalRevenue__c');}
     }
     
     public Decimal getBudgetTotalNetServiceRevenue {
@@ -268,7 +268,7 @@ public class ECO_DTO_BudgetHeaderWrapper {
                     totalDen = totalDen + budgetHeader.directPersonnelExpenses;
                 }
                 else if(property == 'averageLabourRatePerHour') {
-                    totalDen = totalDen + budgetHeader.oBudgetHeader.TotalLaborAmount__c;
+                    totalDen = totalDen + budgetHeader.oBudgetHeader.TotalLaborHours__c;
                 }                
             }
         }
@@ -298,7 +298,9 @@ public class ECO_DTO_BudgetHeaderWrapper {
                                                		Id, 
                                                		BudgetName__c, 
                                                		TotalCost__c, 
-                                               		TotalRevenue__c, 
+                                               		TotalRevenue__c,
+                                                    AppliedTotalRevenue__c, 
+                                                    TotalLaborHours__c,
                                                		TotalFeeAmount__c, 
                                                		TotalLaborAmount__c, 
                                                		TotalSubAmount__c, 

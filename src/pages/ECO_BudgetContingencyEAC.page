@@ -108,9 +108,9 @@
             </style>
             <apex:sectionHeader title="Contingency Details"/>  
             
-            <!--c:ECO_ModalDialog width="850" padding="20px 20px 20px 20px" name="modalDialog0">
-                <c:ECO_AddSubAndVendor budgetHeader="{!BudgetHeader__c.id}" />
-            </c:ECO_ModalDialog-->
+    <c:ECO_ModalDialog width="600" padding="20px 20px 20px 20px" name="modalDialog0">
+        <c:ECO_AddContingency budgetHeader="{!BudgetHeader__c.id}" refreshPage="ECO_BudgetContingencyEAC"/>
+    </c:ECO_ModalDialog>    
                 
             <apex:form >                
                 <table style="width:100%" cellpadding="0" cellspacing="0">
@@ -120,8 +120,10 @@
                             <table class="rowHeader" cellpadding="0" cellspacing="0">
                                 <thead>
                                     <tr>
-                                        <th><apex:commandButton value="Save" action="{!save}"/></th>
-                                        <!--th><apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/></th-->
+                                        <th>
+                                            <apex:commandButton value="Save" action="{!save}"/>
+                                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;" rendered="{!BudgetHeader__c.Status__c != 'Approved'}"/>
+                                        </th>
                                     </tr>
                                     <tr><th>&nbsp;</th></tr>
                                     <tr><th>&nbsp;</th></tr>
@@ -185,9 +187,9 @@
                                 <apex:variable value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask[budgetLabour.oBudgetResource.Id + 'Total']}" var="totalByResource"/>
                                     <td width="20%">{!totalByResource.EACCurrentApprovedCost}</td>
                                     <td width="20%">{!totalByResource.EACCurrentForecastCost}</td>
-                                    <td width="20%">{!totalByResource.EACEstimateToComplete}</td>
+                                    <td width="20%">{!totalByResource.EACEstimateCost}</td>
                                     <td width="20%">{!IF(ISNULL(totalByResource.EACCurrentApprovedCost), 0, totalByResource.EACCurrentApprovedCost) + 
-                        IF(ISNULL(totalByResource.EACEstimateToComplete), 0, totalByResource.EACEstimateToComplete)}</td>
+                        IF(ISNULL(totalByResource.EACEstimateCost), 0, totalByResource.EACEstimateCost)}</td>
                                     <td width="20%">{!totalByResource.EACForecastRevenue}</td>
                                 </tr>
                             </table>
@@ -195,7 +197,7 @@
                     </apex:repeat>
                         <td class="blueHeading">
                             <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                                <apex:param value="{!budgetLabourWrapper.grandTotals.EACEstimateToComplete}" />
+                                <apex:param value="{!budgetLabourWrapper.grandTotals.EACEstimateCost}" />
                             </apex:outputText>
                         </td>
                         <td class="blueHeading">
@@ -221,19 +223,19 @@
                                 <table width="100%">
                                     <tr>
                                         <td width="20%">
-                                            <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACApprovedTotalCost__c}" rendered="{!budgetTask.children.size == 0}" />
-                                            <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACCurrentApprovedCost}" rendered="{!budgetTask.children.size > 0}"/>
+                                            <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACApprovedTotalCost__c}" rendered="{!budgetTask.isEditable}" />
+                                            <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACCurrentApprovedCost}" rendered="{!budgetTask.isVisible}"/>
                                         </td>
                                         <td width="20%">
-                                            <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastTotalCost__c}" rendered="{!budgetTask.children.size == 0}" />
-                                            <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACCurrentForecastCost}" rendered="{!budgetTask.children.size > 0}"/>
+                                            <apex:outputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastTotalCost__c}" rendered="{!budgetTask.isEditable}" />
+                                            <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACCurrentForecastCost}" rendered="{!budgetTask.isVisible}"/>
                                         </td>
                                         <td width="20%">
-                                            <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c}" id="etc" rendered="{!budgetTask.children.size == 0}" OnKeyUp="etcChange(this);" />
-                                            <apex:outputText value="{!budgetLabourWrapper.mapTotalCostBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}" rendered="{!budgetTask.children.size > 0}"/>
+                                            <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c}" id="etc" rendered="{!budgetTask.isEditable}" OnKeyUp="etcChange(this);" />
+                                            <apex:outputText value="{!budgetLabourWrapper.mapTotalCostBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}" rendered="{!budgetTask.isVisible}"/>
                                         </td>
                                         <td width="20%">
-                                            <apex:outputPanel rendered="{!budgetTask.children.size == 0}" > 
+                                            <apex:outputPanel rendered="{!budgetTask.isEditable}" > 
                                                 <input type="text" 
                                                     value="{!IF(budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c == null, 0, budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c) + 
                                                              IF(budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACActualCost__c == null, 0, budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACActualCost__c)
@@ -243,12 +245,12 @@
                                             
                                             <apex:outputText value="{!budgetLabourWrapper.mapTotalCostBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id] + 
                                                                     budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACActualCost}"
-                                                             rendered="{!budgetTask.children.size > 0}"/>
+                                                             rendered="{!budgetTask.isVisible}"/>
                                             
                                         </td>
                                         <td width="20%">
-                                            <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalRevenue__c}" rendered="{!budgetTask.children.size == 0}" />
-                                            <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACForecastRevenue}" rendered="{!budgetTask.children.size > 0}"/>
+                                            <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalRevenue__c}" rendered="{!budgetTask.isEditable}" />
+                                            <apex:outputText value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACForecastRevenue}" rendered="{!budgetTask.isVisible}"/>
                                         </td>
                                     </tr>
                                 </table>

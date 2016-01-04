@@ -20,21 +20,34 @@
     </alerts>
     <alerts>
         <fullName>EcoCMExecutionApprovedReject</fullName>
-        <ccEmails>bjacobi@centerstance.com</ccEmails>
         <description>EcoCMExecutionRejectedRecalled</description>
         <protected>false</protected>
         <recipients>
             <type>owner</type>
+        </recipients>
+        <recipients>
+            <field>ProjectAccountantApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>ProjectApprover__c</field>
+            <type>userLookup</type>
         </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoCMExecutionApprovalApprovedRejected</template>
     </alerts>
     <alerts>
         <fullName>EcoCMOnHoldApprovalApprovedRej</fullName>
-        <ccEmails>bjacobi@centerstance.com</ccEmails>
-        <ccEmails>dandy.rodrigues@aecom.com</ccEmails>
         <description>EcoCMOnHoldApprovalApprovedRej</description>
         <protected>false</protected>
+        <recipients>
+            <field>ProjectAccountantApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
+        <recipients>
+            <field>ProjectApprover__c</field>
+            <type>userLookup</type>
+        </recipients>
         <senderType>CurrentUser</senderType>
         <template>EcoSystem_Templates/EcoCMOnHoldApprovalApprovedRej</template>
     </alerts>

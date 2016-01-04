@@ -975,19 +975,19 @@ global virtual class ECO_AgreementController {
     }
 
     // Return a list of data points for a chart
-    public List<Data> getData() {
+    /*public List<Data> getData() {
         return ECO_AgreementController.getChartData();
-    }
+    }*/
     
     // Make the chart data available via JavaScript remoting
-    @RemoteAction
+    /*@RemoteAction
     public static List<Data> getRemoteData() {
         return ECO_AgreementController.getChartData();
-    }
+    }*/
 
     // The actual chart data; needs to be static to be
     // called by a @RemoteAction method
-    public static List<Data> getChartData() {
+    /*public static List<Data> getChartData() {
         List<Data> data = new List<Data>();
         data.add(new Data('Jan', 30, 90, 55));
         data.add(new Data('Feb', 44, 15, 65));
@@ -1016,7 +1016,7 @@ global virtual class ECO_AgreementController {
             this.data2 = data2;
             this.data3 = data3;
         }
-    }
+    }*/
     
     private String populateAgreementNumber()
     {

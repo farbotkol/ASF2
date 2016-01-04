@@ -74,8 +74,8 @@ public class ECO_CloseoutOpportunityPhaseController {
         try{
             insert cm;
         }catch(EcoControllerException e){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to insert Change Manager: ' + e);
-            ApexPages.addMessage(oMsg);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to insert Change Manager: ' + e));
+
             return null; 
         } 
 
@@ -98,8 +98,7 @@ public class ECO_CloseoutOpportunityPhaseController {
         }
         catch(EcoControllerException e)
         {
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e);
-            ApexPages.addMessage(oMsg);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e));
             Database.rollback(oSavePoint);
             return null; 
         } 
@@ -154,8 +153,7 @@ public class ECO_CloseoutOpportunityPhaseController {
             }
             update oProject;
         }catch(EcoControllerException e){
-            ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e);
-            ApexPages.addMessage(oMsg);
+            ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update project. Please contact your administrator with the following error: ' + e));
             Database.rollback(oSavePoint);
             return null; 
         } 
@@ -174,8 +172,7 @@ public class ECO_CloseoutOpportunityPhaseController {
                 update oOpp;
             
             }catch(EcoControllerException e){
-                ApexPages.Message oMsg = new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update related opportunity. Please contact your administrator with the following error: ' + e);
-                ApexPages.addMessage(oMsg);
+                ApexPages.addMessage(new ApexPages.Message(ApexPages.Severity.ERROR,'An Error has occurred while attmpting to update related opportunity. Please contact your administrator with the following error: ' + e));
                 Database.rollback(oSavePoint);
                 return null; 
             } 

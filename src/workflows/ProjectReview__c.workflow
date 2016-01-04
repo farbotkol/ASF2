@@ -90,6 +90,10 @@
             <operation>notEqual</operation>
             <value>Monthly Project Review,Project Performance Review</value>
         </criteriaItems>
+        <criteriaItems>
+            <field>ProjectReview__c.CompletedDate__c</field>
+            <operation>notEqual</operation>
+        </criteriaItems>
         <description>Sets the project review status for monthly project and project performance review</description>
         <triggerType>onCreateOrTriggeringUpdate</triggerType>
     </rules>

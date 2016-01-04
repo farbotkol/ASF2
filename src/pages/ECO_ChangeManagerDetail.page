@@ -451,7 +451,7 @@
                         <apex:outputText value="Contributing Factor"/>
                         <apex:outputPanel >
                             <apex:inputField value="{!changeManager.ContributingFactor__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
-                            <apex:outputField value="{!changeManager.ContributingFactor__c}" rendered="{!changeManager.IsApproved__c && mode == ''}"/>
+                            <apex:outputField value="{!changeManager.ContributingFactor__c}" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
                         </apex:outputPanel>
                 </apex:pageBlockSectionItem>
 
@@ -460,8 +460,8 @@
                 <apex:pageBlockSectionItem >
                     <apex:outputText value="Contributing Factor Details"/>    
                     <apex:outputPanel >    
-                        <apex:inputField value="{!changeManager.ContributingFactorDetails__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
-                        <apex:outputField value="{!changeManager.ContributingFactorDetails__c}" rendered="{!changeManager.IsApproved__c && mode == ''}"/>
+                        <apex:inputField value="{!changeManager.ContribFactorDetails__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
+                        <apex:outputField value="{!changeManager.ContribFactorDetails__c}" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
                     </apex:outputPanel>
                 </apex:pageBlockSectionItem>
 
@@ -485,7 +485,7 @@
                         <apex:outputText value="Contributing Factor"/>
                         <apex:outputPanel >
                             <apex:inputField value="{!changeManager.ContributingFactor__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
-                            <apex:outputField value="{!changeManager.ContributingFactor__c}" rendered="{!changeManager.IsApproved__c && mode == ''}"/>
+                            <apex:outputField value="{!changeManager.ContributingFactor__c}" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
                         </apex:outputPanel>
                 </apex:pageBlockSectionItem>
 
@@ -494,8 +494,8 @@
                 <apex:pageBlockSectionItem >
                     <apex:outputText value="Contributing Factor Details"/>    
                     <apex:outputPanel >    
-                        <apex:inputField value="{!changeManager.ContributingFactorDetails__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
-                        <apex:outputField value="{!changeManager.ContributingFactorDetails__c}" rendered="{!changeManager.IsApproved__c && mode == ''}"/>
+                        <apex:inputField value="{!changeManager.ContribFactorDetails__c}" rendered="{!NOT(changeManager.IsApproved__c) && mode != ''}"/>
+                        <apex:outputField value="{!changeManager.ContribFactorDetails__c}" rendered="{!changeManager.IsApproved__c || mode == ''}"/>
                     </apex:outputPanel>
                 </apex:pageBlockSectionItem>
 
@@ -723,7 +723,7 @@
                 <apex:pageBlockTable value="{!ChangedBudget}" var="budget" rendered="{!ChangedBudget != null}">
                     <apex:column headervalue="Budget Name"><apex:outputlink value="{!URLFOR('/apex/ECO_BudgetHeaderSummary?Id=' + budget.Project__c, null)}"><apex:outputField value="{!budget.BudgetName__c}"/></apex:outputlink></apex:column>
                     <apex:column headervalue="Cost Charge"><apex:outputField value="{!budget.TotalCost__c}"/></apex:column>
-                    <apex:column headervalue="Revenue Charge"><apex:outputField value="{!budget.TotalRevenue__c}"/></apex:column>
+                    <apex:column headervalue="Revenue Charge"><apex:outputField value="{!budget.AppliedTotalRevenue__c}"/></apex:column>
                     <apex:column headervalue="Status"><apex:outputField value="{!budget.Status__c}"/></apex:column>                 
                     <apex:column headervalue="Last Modified By"><apex:outputField value="{!budget.LastModifiedById}"/></apex:column>
                     <apex:column headervalue="Last Modified Date"><apex:outputField value="{!budget.LastModifiedDate}"/></apex:column>
@@ -1154,7 +1154,7 @@
                 <apex:pageBlockTable value="{!ChangedBudget}" var="budget" rendered="{!ChangedBudget != null}">
                     <apex:column headervalue="Budget Name"><apex:outputlink value="{!URLFOR('/apex/ECO_BudgetHeaderSummary?Id=' + budget.Project__c, null)}"><apex:outputField value="{!budget.BudgetName__c}"/></apex:outputlink></apex:column>
                     <apex:column headervalue="Cost Charge"><apex:outputField value="{!budget.TotalCost__c}"/></apex:column>
-                    <apex:column headervalue="Revenue Charge"><apex:outputField value="{!budget.TotalRevenue__c}"/></apex:column>
+                    <apex:column headervalue="Revenue Charge"><apex:outputField value="{!budget.AppliedTotalRevenue__c}"/></apex:column>
                     <apex:column headervalue="Status"><apex:outputField value="{!budget.Status__c}"/></apex:column>                 
                     <apex:column headervalue="Last Modified By"><apex:outputField value="{!budget.LastModifiedById}"/></apex:column>
                     <apex:column headervalue="Last Modified Date"><apex:outputField value="{!budget.LastModifiedDate}"/></apex:column>
@@ -1265,7 +1265,7 @@
                         <!--<apex:outputText value="{!budgetwrapper.budgetHeader.BudgetName__c}"/>-->
                     </apex:column>
                     <apex:column headervalue="Cost Charge"><apex:outputField value="{!budgetwrapper.budgetHeader.TotalCost__c}"/></apex:column>
-                    <apex:column headervalue="Revenue Charge"><apex:outputField value="{!budgetwrapper.budgetHeader.TotalRevenue__c}"/></apex:column>
+                    <apex:column headervalue="Revenue Charge"><apex:outputField value="{!budgetwrapper.budgetHeader.AppliedTotalRevenue__c}"/></apex:column>
                     <apex:column headervalue="Last Modified By"><apex:outputField value="{!budgetwrapper.budgetHeader.LastModifiedById}"/></apex:column>
                     <apex:column headervalue="Last Modified Date"><apex:outputField value="{!budgetwrapper.budgetHeader.LastModifiedDate}"/></apex:column>
 

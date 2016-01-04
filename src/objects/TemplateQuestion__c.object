@@ -57,11 +57,6 @@
         <fullName>DOA_Register_Fields</fullName>
         <description>Field set is used in ECO_DOA_ApprovalRequestController to display set of fields together</description>
         <displayedFields>
-            <field>EnterpriseDOA__c</field>
-            <isFieldManaged>false</isFieldManaged>
-            <isRequired>false</isRequired>
-        </displayedFields>
-        <displayedFields>
             <field>DCSSubDOA__c</field>
             <isFieldManaged>false</isFieldManaged>
             <isRequired>false</isRequired>
@@ -476,6 +471,14 @@
         <type>Checkbox</type>
     </fields>
     <fields>
+        <fullName>IsRMQuestion__c</fullName>
+        <defaultValue>false</defaultValue>
+        <externalId>false</externalId>
+        <label>Is R&amp;M Question</label>
+        <trackTrending>false</trackTrending>
+        <type>Checkbox</type>
+    </fields>
+    <fields>
         <fullName>QuestionSet__c</fullName>
         <externalId>false</externalId>
         <label>Question Set</label>
@@ -594,10 +597,11 @@
         <columns>DCSSubDOA__c</columns>
         <columns>EnterpriseDOA__c</columns>
         <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsRMQuestion__c</columns>
         <columns>IsDoATrigger__c</columns>
+        <columns>IsNonProjectRelated__c</columns>
         <columns>QuestionSet__c</columns>
         <columns>IsActive__c</columns>
-        <columns>OBJECT_ID</columns>
         <columns>SectionPrefix__c</columns>
         <columns>Indented__c</columns>
         <columns>isDOAmaster__c</columns>
@@ -616,6 +620,42 @@
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>BudgetDOA</fullName>
+        <columns>NAME</columns>
+        <columns>RiskTitle__c</columns>
+        <columns>SortOrder__c</columns>
+        <columns>DCSSubDOA__c</columns>
+        <columns>Question__c</columns>
+        <columns>EnterpriseDOA__c</columns>
+        <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsRMQuestion__c</columns>
+        <columns>IsDoATrigger__c</columns>
+        <columns>IsNonProjectRelated__c</columns>
+        <columns>QuestionSet__c</columns>
+        <columns>IsActive__c</columns>
+        <columns>SectionPrefix__c</columns>
+        <columns>Indented__c</columns>
+        <columns>isDOAmaster__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>QuestionnaireTemplate__c</field>
+            <operation>equals</operation>
+            <value>Budget</value>
+        </filters>
+        <filters>
+            <field>IsActive__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>IsDoATrigger__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>4.Budget (DOA)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Contract</fullName>
         <columns>NAME</columns>
         <columns>RiskTitle__c</columns>
@@ -624,6 +664,7 @@
         <columns>DCSSubDOA__c</columns>
         <columns>EnterpriseDOA__c</columns>
         <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsRMQuestion__c</columns>
         <columns>IsDoATrigger__c</columns>
         <columns>QuestionSet__c</columns>
         <columns>IsActive__c</columns>
@@ -646,24 +687,63 @@
         <language>en_US</language>
     </listViews>
     <listViews>
-        <fullName>DoATriggers</fullName>
+        <fullName>ContractDOA</fullName>
         <columns>NAME</columns>
         <columns>RiskTitle__c</columns>
-        <columns>Question__c</columns>
+        <columns>SortOrder__c</columns>
         <columns>DCSSubDOA__c</columns>
+        <columns>Question__c</columns>
         <columns>EnterpriseDOA__c</columns>
         <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsRMQuestion__c</columns>
         <columns>IsDoATrigger__c</columns>
         <columns>QuestionSet__c</columns>
-        <columns>xxIsEnabled__c</columns>
+        <columns>IsActive__c</columns>
         <columns>OBJECT_ID</columns>
         <columns>SectionPrefix__c</columns>
-        <columns>SortOrder__c</columns>
         <columns>Indented__c</columns>
         <columns>isDOAmaster__c</columns>
         <filterScope>Everything</filterScope>
         <filters>
+            <field>QuestionnaireTemplate__c</field>
+            <operation>equals</operation>
+            <value>Contract</value>
+        </filters>
+        <filters>
+            <field>IsActive__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
             <field>IsDoATrigger__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>2.Contract (DOA)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>DoATriggers</fullName>
+        <columns>RiskTitle__c</columns>
+        <columns>NAME</columns>
+        <columns>Question__c</columns>
+        <columns>DCSSubDOA__c</columns>
+        <columns>EnterpriseDOA__c</columns>
+        <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsRMQuestion__c</columns>
+        <columns>IsDoATrigger__c</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>SortOrder__c</columns>
+        <columns>BusinessLinesAvailableTo__c</columns>
+        <columns>GeographiesAvailableTo__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>IsDoATrigger__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>IsActive__c</field>
             <operation>equals</operation>
             <value>1</value>
         </filters>
@@ -678,6 +758,7 @@
         <columns>EnterpriseDOA__c</columns>
         <columns>Question__c</columns>
         <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsRMQuestion__c</columns>
         <columns>IsDoATrigger__c</columns>
         <columns>QuestionSet__c</columns>
         <columns>OBJECT_ID</columns>
@@ -704,6 +785,7 @@
         <columns>EnterpriseDOA__c</columns>
         <columns>QuestionnaireTemplate__c</columns>
         <columns>IsDoATrigger__c</columns>
+        <columns>IsRMQuestion__c</columns>
         <columns>QuestionSet__c</columns>
         <columns>IsActive__c</columns>
         <columns>OBJECT_ID</columns>
@@ -725,6 +807,42 @@
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>ResourcesDOA</fullName>
+        <columns>NAME</columns>
+        <columns>RiskTitle__c</columns>
+        <columns>SortOrder__c</columns>
+        <columns>DCSSubDOA__c</columns>
+        <columns>Question__c</columns>
+        <columns>EnterpriseDOA__c</columns>
+        <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsDoATrigger__c</columns>
+        <columns>IsRMQuestion__c</columns>
+        <columns>QuestionSet__c</columns>
+        <columns>IsActive__c</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>SectionPrefix__c</columns>
+        <columns>Indented__c</columns>
+        <columns>isDOAmaster__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>QuestionnaireTemplate__c</field>
+            <operation>equals</operation>
+            <value>Resources</value>
+        </filters>
+        <filters>
+            <field>IsActive__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>IsDoATrigger__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>7.Resources (DOA)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>SHnE</fullName>
         <columns>NAME</columns>
         <columns>RiskTitle__c</columns>
@@ -733,6 +851,7 @@
         <columns>DCSSubDOA__c</columns>
         <columns>EnterpriseDOA__c</columns>
         <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsRMQuestion__c</columns>
         <columns>IsDoATrigger__c</columns>
         <columns>QuestionSet__c</columns>
         <columns>IsActive__c</columns>
@@ -755,6 +874,42 @@
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>SHnEDOA</fullName>
+        <columns>NAME</columns>
+        <columns>RiskTitle__c</columns>
+        <columns>SortOrder__c</columns>
+        <columns>DCSSubDOA__c</columns>
+        <columns>Question__c</columns>
+        <columns>EnterpriseDOA__c</columns>
+        <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsRMQuestion__c</columns>
+        <columns>IsDoATrigger__c</columns>
+        <columns>QuestionSet__c</columns>
+        <columns>IsActive__c</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>SectionPrefix__c</columns>
+        <columns>Indented__c</columns>
+        <columns>isDOAmaster__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>QuestionnaireTemplate__c</field>
+            <operation>equals</operation>
+            <value>SH&amp;E and Resilience</value>
+        </filters>
+        <filters>
+            <field>IsActive__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>IsDoATrigger__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>1.SH&amp;E (DOA)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Schedule</fullName>
         <columns>NAME</columns>
         <columns>RiskTitle__c</columns>
@@ -763,6 +918,7 @@
         <columns>DCSSubDOA__c</columns>
         <columns>EnterpriseDOA__c</columns>
         <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsRMQuestion__c</columns>
         <columns>IsDoATrigger__c</columns>
         <columns>QuestionSet__c</columns>
         <columns>IsActive__c</columns>
@@ -793,6 +949,7 @@
         <columns>DCSSubDOA__c</columns>
         <columns>EnterpriseDOA__c</columns>
         <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsRMQuestion__c</columns>
         <columns>IsDoATrigger__c</columns>
         <columns>QuestionSet__c</columns>
         <columns>IsActive__c</columns>
@@ -815,6 +972,42 @@
         <language>en_US</language>
     </listViews>
     <listViews>
+        <fullName>ScopeDOA</fullName>
+        <columns>NAME</columns>
+        <columns>RiskTitle__c</columns>
+        <columns>SortOrder__c</columns>
+        <columns>DCSSubDOA__c</columns>
+        <columns>Question__c</columns>
+        <columns>EnterpriseDOA__c</columns>
+        <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsRMQuestion__c</columns>
+        <columns>IsDoATrigger__c</columns>
+        <columns>QuestionSet__c</columns>
+        <columns>IsActive__c</columns>
+        <columns>OBJECT_ID</columns>
+        <columns>SectionPrefix__c</columns>
+        <columns>Indented__c</columns>
+        <columns>isDOAmaster__c</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>QuestionnaireTemplate__c</field>
+            <operation>equals</operation>
+            <value>Scope</value>
+        </filters>
+        <filters>
+            <field>IsActive__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>IsDoATrigger__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>3.Scope (DOA)</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
         <fullName>Stakeholders</fullName>
         <columns>NAME</columns>
         <columns>RiskTitle__c</columns>
@@ -823,10 +1016,10 @@
         <columns>DCSSubDOA__c</columns>
         <columns>EnterpriseDOA__c</columns>
         <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsRMQuestion__c</columns>
         <columns>IsDoATrigger__c</columns>
         <columns>QuestionSet__c</columns>
         <columns>IsActive__c</columns>
-        <columns>OBJECT_ID</columns>
         <columns>isDOAmaster__c</columns>
         <columns>BusinessLinesAvailableTo__c</columns>
         <columns>GeographiesAvailableTo__c</columns>
@@ -843,6 +1036,42 @@
             <value>1</value>
         </filters>
         <label>6.Stakeholders</label>
+        <language>en_US</language>
+    </listViews>
+    <listViews>
+        <fullName>StakeholdersDOA</fullName>
+        <columns>NAME</columns>
+        <columns>RiskTitle__c</columns>
+        <columns>SortOrder__c</columns>
+        <columns>DCSSubDOA__c</columns>
+        <columns>Question__c</columns>
+        <columns>EnterpriseDOA__c</columns>
+        <columns>QuestionnaireTemplate__c</columns>
+        <columns>IsRMQuestion__c</columns>
+        <columns>IsDoATrigger__c</columns>
+        <columns>QuestionSet__c</columns>
+        <columns>IsActive__c</columns>
+        <columns>isDOAmaster__c</columns>
+        <columns>BusinessLinesAvailableTo__c</columns>
+        <columns>GeographiesAvailableTo__c</columns>
+        <columns>CREATEDBY_USER.ALIAS</columns>
+        <filterScope>Everything</filterScope>
+        <filters>
+            <field>QuestionnaireTemplate__c</field>
+            <operation>equals</operation>
+            <value>Stakeholders</value>
+        </filters>
+        <filters>
+            <field>IsActive__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <filters>
+            <field>IsDoATrigger__c</field>
+            <operation>equals</operation>
+            <value>1</value>
+        </filters>
+        <label>6.Stakeholders (DOA)</label>
         <language>en_US</language>
     </listViews>
     <nameField>

@@ -47,16 +47,20 @@ public without sharing class ECO_BudgetTaskTriggers {
     		return;
     	}
 
-    	Id bhId = newBTasksList[0].BudgetHeader__c;
-    	// Get project currency
-        BudgetHeader__c budgetHeader = [Select Id, Project__r.CurrencyIsoCode From BudgetHeader__c Where Id = :bhId];
-
-
-        String projectCurrency = budgetHeader.Project__r.CurrencyIsoCode;
+        Set<Id> bhIds = new Set<Id>();
+        Map<Id, String> mapCurrencies = new Map<Id, String>();
 
         for (BudgetTask__c bt : newBTasksList) {
-        	bt.CurrencyIsoCode = projectCurrency;
-            
+            bhIds.add(bt.BudgetHeader__c);
+        }
+
+    	// Get project currency
+        for(BudgetHeader__c budgetHeader : [Select Id, Project__r.ProjectFunctionalCurrencyCode__c From BudgetHeader__c Where Id in :bhIds]) {
+            mapCurrencies.put(budgetHeader.Id, budgetHeader.Project__r.ProjectFunctionalCurrencyCode__c);
+        }
+
+        for (BudgetTask__c bt : newBTasksList) {
+        	bt.CurrencyIsoCode = mapCurrencies.get(bt.BudgetHeader__c);            
         }
     }
 	public static void calculateDepth (List<BudgetTask__c> newBTasksList) {

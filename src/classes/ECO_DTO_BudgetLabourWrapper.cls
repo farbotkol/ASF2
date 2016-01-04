@@ -92,6 +92,8 @@ public class ECO_DTO_BudgetLabourWrapper {
                                                             EACForecastTotalCost__c,
                                                           EACForecastRevenue__c,
                                                           OverrideTotalCost__c,
+                                                          FullyBurdenedCost__c,
+                                                          FullyBurdenedCostRate__c,
                                                           OverrideTotalRevenue__c,
                                                           CalculatedRevenue__c,
                                                           WorkTypeName__c
@@ -125,7 +127,7 @@ public class ECO_DTO_BudgetLabourWrapper {
     }
     
     public void reset(List<BudgetResource__c> budgetResources) {
-        BudgetHeader__c budgetHeader = [Select Id, Project__c, Project__r.ProjectFunctionalCurrencyCode__c From BudgetHeader__c Where Id = :budgetHeaderId];
+        BudgetHeader__c budgetHeader = [Select Id, Project__c, Project__r.ProjectFunctionalCurrencyCode__c, Project__r.BudgetStrategyRevenue__c, OverrideTotalRevenue__c From BudgetHeader__c Where Id = :budgetHeaderId];
         hasFieldTasks = false;
         projectCurrency = budgetHeader.Project__r.ProjectFunctionalCurrencyCode__c;
         dtoBudgetLabourDetails = new List<ECO_DTO_BudgetLabourDetail>();
@@ -143,20 +145,41 @@ public class ECO_DTO_BudgetLabourWrapper {
             hasFieldTasks = true;
           }
         }
-        
+
+        mapEACTotalsByLaborDetailAndTask = new Map<String, EACTotals>();
+
         createEmptyBudgetAssignments();
-        
+        calculateResourceTotalsForLaborPerson();
      //   system.debug('BudgetTaskService Complete');
         
         calculateTopLevelTasksTotalForLaborPerson();
         calculateTopLevelTasksTotalCostForSubPerson();
         calculateTopLevelTasksTotalRevenueForSubPerson();
-        calculateTopLevelTasksEACForLaborPerson();
         calculateTopLevelTasksTotalQuantityForODCResource();
         calculateTopLevelTasksTotalComputedCostForODCResource();
         calculateTopLevelTasksEACForLaborPerson();
 
         calculateRates();
+    }
+
+    public Decimal ifNull(Decimal val) {
+      return (val == null ? 0 : val);
+    }
+
+    public void calculateResourceTotalsForLaborPerson() {
+      system.debug('Begin calculateResourceTotalsForLaborPerson');
+        for(ECO_DTO_BudgetLabourDetail labour : dtoBudgetLabourDetails) {
+          EACTotals colTotals = new EACTotals();
+          mapEACTotalsByLaborDetailAndTask.put('' + labour.oBudgetResource.Id + 'Total', colTotals);
+          system.debug(' colTotals: ' + colTotals);
+          colTotals.EACLaborCostToComplete = 0;
+          for (BudgetAssignment__c ba : labour.mAssignmentMap.values()) {
+            system.debug('subtotal hours: ' + (ifNull(ba.EACForecastQuantity__c) - ifNull(ba.EACActualQuantity__c) + ifNull(ba.Quantity__c)) );
+            colTotals.EACLaborCostToComplete += ifNull(ba.FullyBurdenedCostRate__c)  * 
+                                  (ifNull(ba.EACForecastQuantity__c) - ifNull(ba.EACActualQuantity__c) + ifNull(ba.Quantity__c));
+          }
+          system.debug('total hours: ' + colTotals.EACLaborCostToComplete );
+        }
     }
 
     public void calculateRates() {
@@ -170,24 +193,26 @@ public class ECO_DTO_BudgetLabourWrapper {
     }
 
     public void calculateTopLevelTasksEACForLaborPerson() {
-      mapEACTotalsByLaborDetailAndTask = new Map<String, EACTotals>();
+     
       grandTotals = new EACTotals();
       
         for(ECO_DTO_BudgetLabourDetail labour : dtoBudgetLabourDetails) {
           for(ECO_DTO_BudgetTask budgetTask : dtoBudgetTasks) {
                 if(budgetTask.children.size() > 0 || budgetTask.indentLevel == 0) {
                     EACTotals totals = new EACTotals();
-                    totals.EACActualQuantity = getSubtaskTotal(budgetTask, labour, 'EACActualQuantity__c', false);
-                    totals.EACApprovedQuantity = getSubtaskTotal(budgetTask, labour, 'EACApprovedQuantity__c', false);
-                    totals.EACForecastQuantity = getSubtaskTotal(budgetTask, labour, 'EACForecastQuantity__c', false);
+                    Boolean includeThis = (budgetTask.indentLevel == 0) ;
+                    totals.EACActualQuantity = getSubtaskTotal(budgetTask, labour, 'EACActualQuantity__c', includeThis);
+                    totals.EACApprovedQuantity = getSubtaskTotal(budgetTask, labour, 'EACApprovedQuantity__c', includeThis);
+                    totals.EACForecastQuantity = getSubtaskTotal(budgetTask, labour, 'EACForecastQuantity__c', includeThis);
                     
-                    totals.EACActualCost = getSubtaskTotal(budgetTask, labour, 'EACActualCost__c', false);
-                    totals.EACCurrentApprovedCost = getSubtaskTotal(budgetTask, labour, 'EACApprovedTotalCost__c', false);
-                    totals.EACCurrentForecastCost = getSubtaskTotal(budgetTask, labour, 'EACForecastTotalCost__c', false);
-                    totals.EACForecastRevenue = getSubtaskTotal(budgetTask, labour, 'OverrideTotalRevenue__c', false) + getSubtaskTotal(budgetTask, labour, 'EACForecastRevenue__c', false);
-                    totals.EACCostToComplete = getSubtaskTotal(budgetTask, labour, 'OverrideTotalCost__c', false) + getSubtaskTotal(budgetTask, labour, 'EACForecastTotalCost__c', false);
-                    totals.Quantity = getSubtaskTotal(budgetTask, labour, 'Quantity__c', false);  
-					totals.EACEstimateToComplete = getSubtaskTotal(budgetTask, labour, 'OverrideTotalCost__c', false);
+                    totals.EACEstimateCost = getSubtaskTotal(budgetTask, labour, 'FullyBurdenedCost__c', includeThis);
+
+                    totals.EACActualCost = getSubtaskTotal(budgetTask, labour, 'EACActualCost__c', includeThis);
+                    totals.EACCurrentApprovedCost = getSubtaskTotal(budgetTask, labour, 'EACApprovedTotalCost__c', includeThis);
+                    totals.EACCurrentForecastCost = getSubtaskTotal(budgetTask, labour, 'EACForecastTotalCost__c', includeThis);
+                    totals.EACForecastRevenue = getSubtaskTotal(budgetTask, labour, 'OverrideTotalRevenue__c', includeThis) + getSubtaskTotal(budgetTask, labour, 'EACForecastRevenue__c', includeThis);
+                    totals.EACCostToComplete = totals.EACEstimateCost  + getSubtaskTotal(budgetTask, labour, 'EACForecastTotalCost__c', includeThis);
+                    totals.Quantity = getSubtaskTotal(budgetTask, labour, 'Quantity__c', includeThis);  
                     
                     mapEACTotalsByLaborDetailAndTask.put('' + labour.oBudgetResource.Id + budgetTask.obudgetTask.Id, totals);
 
@@ -299,7 +324,7 @@ public class ECO_DTO_BudgetLabourWrapper {
 
 	public Decimal getSubtaskTotal(ECO_DTO_BudgetTask budgetTask, ECO_DTO_BudgetLabourDetail labour, String fieldName, boolean includeThis) {
 		Decimal result = 0;
-
+    includeThis = true;
 
 		if (includeThis || (budgetTask.children.size() == 0)) {
             result += labour.mAssignmentMap.get(budgetTask.obudgetTask.Id).get(fieldName) == Null ? 0.0 : (Decimal) labour.mAssignmentMap.get(budgetTask.obudgetTask.Id).get(fieldName);
@@ -330,7 +355,7 @@ public class ECO_DTO_BudgetLabourWrapper {
                     budgetAssignment.EACActualCost__c = 0.0;
                     budgetAssignment.EACApprovedTotalCost__c = 0.0;
                     budgetAssignment.EACForecastTotalCost__c = 0.0;
-                    budgetAssignment.OverrideTotalRevenue__c = 0.0;
+                    budgetAssignment.OverrideTotalRevenue__c = null;
                     
                     dtoBudgetLabourDetail.mAssignmentMap.put(dtoBudgetTask.obudgetTask.Id, budgetAssignment);
                     dtoBudgetLabourDetail.mapForecastRevenue.put(dtoBudgetTask.obudgetTask.Id, 0);
@@ -362,10 +387,10 @@ public class ECO_DTO_BudgetLabourWrapper {
         this.EACActualRate = calcRate(colTotals.EACActualCost, colTotals.EACActualQuantity);
         this.EACApprovedRate = calcRate(colTotals.EACCurrentApprovedCost, colTotals.EACApprovedQuantity); 
         this.EACCurrentForecastRate = calcRate(colTotals.EACCurrentForecastCost, colTotals.EACForecastQuantity); 
-        this.ETCRate = calcRate(colTotals.EACCurrentForecastCost - colTotals.EACActualCost + colTotals.EACEstimateToComplete,
+        this.ETCRate = calcRate(colTotals.EACLaborCostToComplete,
                                 colTotals.EACForecastQuantity - colTotals.EACActualQuantity + colTotals.Quantity);
 
-        this.RevisedForecastRate = calcRate(colTotals.EACCurrentForecastCost + colTotals.EACEstimateToComplete,
+        this.RevisedForecastRate = calcRate(colTotals.EACLaborCostToComplete + colTotals.EACActualCost,
                                             colTotals.EACForecastQuantity + colTotals.Quantity); 
       }
 
@@ -392,7 +417,8 @@ public class ECO_DTO_BudgetLabourWrapper {
         public Decimal EACCurrentForecastCost {get {return setScaling(EACCurrentForecastCost);} set;}
         public Decimal EACForecastRevenue {get {return setScaling(EACForecastRevenue);} set;}
         
-        public Decimal EACEstimateToComplete {get {return setScaling(EACEstimateToComplete);} set;}
+        public Decimal EACEstimateCost {get {return setScaling(EACEstimateCost);} set;}
+        public Decimal EACLaborCostToComplete { get{return setSCaling(EACLaborCostToComplete);} set;}
         public Decimal EACCostToComplete {get {return setScaling(EACCostToComplete);} set;}
 
         public Decimal Quantity { get {return setScaling(Quantity);} set; }
@@ -406,8 +432,9 @@ public class ECO_DTO_BudgetLabourWrapper {
           	EACCurrentForecastCost = 0.0;
           	EACForecastRevenue = 0.0;
           	Quantity = 0.0;
-            EACEstimateToComplete = 0.0;
+            EACEstimateCost = 0.0;
             EACCostToComplete = 0.0;
+            EACLaborCostToComplete = 0.0;
       	}
 
         public Decimal setScaling(Decimal val) {
@@ -425,8 +452,9 @@ public class ECO_DTO_BudgetLabourWrapper {
             this.EACCurrentForecastCost += totalsToAdd.EACCurrentForecastCost;
             this.EACForecastRevenue += totalsToAdd.EACForecastRevenue;
             this.Quantity += totalsToAdd.Quantity;
-            this.EACEstimateToComplete += totalstoAdd.EACEstimateToComplete;
+            this.EACEstimateCost += totalstoAdd.EACEstimateCost;
             this.EACCostToComplete += totalstoAdd.EACCostToComplete;
+            this.EACLaborCostToComplete += totalstoAdd.EACLaborCostToComplete;
         }
     }
 }

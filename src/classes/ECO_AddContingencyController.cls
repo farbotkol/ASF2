@@ -1,5 +1,6 @@
 public with sharing class ECO_AddContingencyController {
 	public String budgetHeaderId {get; set;}
+	public String refresh {get; set;}
 
 	public String jobName {get; set;}
 
@@ -25,7 +26,7 @@ public with sharing class ECO_AddContingencyController {
 	
 	
 
-		PageReference pr = new PageReference('/apex/ECO_BudgetContingency?id=' + budgetHeaderId);
+		PageReference pr = new PageReference('/apex/' + refresh + '?id=' + budgetHeaderId);
 		pr.setRedirect(true);
 
 		return pr;

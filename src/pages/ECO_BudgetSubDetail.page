@@ -86,7 +86,7 @@
     <apex:sectionHeader subtitle="Sub & Vendor Details" title="All values shown in : {!budgetLabourWrapper.projectCurrency}"/>  
             
             <c:ECO_ModalDialog width="850" padding="20px 20px 20px 20px" name="modalDialog0">
-                <c:ECO_AddSubAndVendor budgetHeader="{!BudgetHeader__c.id}" />
+                <c:ECO_AddSubAndVendor budgetHeader="{!BudgetHeader__c.id}" refreshPage="ECO_BudgetSubDetail"/>
             </c:ECO_ModalDialog>
                 
             <apex:form >                
@@ -112,7 +112,7 @@
                                         <br/>
 
                                         <apex:commandButton value="Save" action="{!save}"/>
-                                        <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/>
+                                        <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;" rendered="{!BudgetHeader__c.Status__c != 'Approved'}"/>
                                         </th>
                                     </tr>
                                     <tr><th>&nbsp;</th></tr>
@@ -236,18 +236,18 @@
                                 <table width="100%">
                                     <tr>
                                         <td width="50%" styleClass="numAlign" >
-                                            <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c}" rendered="{!budgetTask.children.size == 0}" />
-                                            <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}" styleClass="numAlign">
+                                            <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c}" rendered="{!budgetTask.IsEditable}" />
+                                            <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.IsVisible}" styleClass="numAlign">
                                                 <apex:param value="{!budgetLabourWrapper.mapTotalCostBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}"/>
                                             </apex:outputText>
                                         </td>
                                         <td width="50%">
                                             <apex:outputPanel id="revenueColumn" styleClass="numAlign" >
-                                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalRevenue__c}" rendered="{!budgetTask.children.size == 0 && budgetLabour.marginType == 'Amount'}" />
-                                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size == 0 && budgetLabour.marginType == 'Percent'}">
+                                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalRevenue__c}" rendered="{!budgetTask.IsEditable && budgetLabour.marginType == 'Amount'}" />
+                                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.IsEditable && budgetLabour.marginType == 'Percent'}">
                                                     <apex:param value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].CalculatedRevenue__c}" />
                                                 </apex:outputText>
-	                                            <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
+	                                            <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.IsVisible}">
                                                     <apex:param value="{!budgetLabourWrapper.mapTotalRevenueBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}" />
                                                 </apex:outputText>
                                             </apex:outputPanel>

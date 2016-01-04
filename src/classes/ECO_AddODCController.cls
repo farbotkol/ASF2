@@ -1,5 +1,6 @@
 public with sharing class ECO_AddODCController {
 	public String budgetHeaderId {get; set;}
+	public String refresh {get; set;}
 
 	public String ready {
 		get {
@@ -96,7 +97,7 @@ public with sharing class ECO_AddODCController {
 
 		insert newBudgetColumn;
 
-		PageReference pr = new PageReference('/apex/ECO_BudgetODCDetail?id=' + budgetHeader.id);
+		PageReference pr = new PageReference('/apex/' + refresh + '?id=' + budgetHeader.id);
 		pr.setRedirect(true);
 
 		return pr;

@@ -166,7 +166,10 @@
                                                   	<li>Lowest Task</li>
                                                   </ul>" />
                     </apex:outputPanel>
-                    <apex:inputField value="{!theProject.BudgetStrategy__c}" required="true" />
+                    <apex:outputPanel layout="inline">
+                    <apex:inputField value="{!theProject.BudgetStrategy__c}" required="true" rendered="{!NOT(IsSynced)}"/>
+                    <apex:outputField value="{!theProject.BudgetStrategy__c}" rendered="{!(IsSynced)}"/>
+                    </apex:outputPanel>
 				</apex:pageBlockSectionItem>
                 <apex:pageBlockSectionItem >
 					<apex:outputPanel >
@@ -180,7 +183,10 @@
                                                   
                                                   In all cases, the Revenue Budget amount on the Budget Maintenance worksheet needs to equal the amount of the Agreement functional funding amount on the Clients and Agreement worksheet." />
                         </apex:outputPanel>
-					<apex:inputField value="{!theProject.BudgetStrategyRevenue__c}" required="true" />
+                     <apex:outputPanel layout="inline">   
+					<apex:inputField value="{!theProject.BudgetStrategyRevenue__c}" required="true" rendered="{!NOT(IsSynced)}"/>
+                    <apex:outputField value="{!theProject.BudgetStrategyRevenue__c}" rendered="{!(IsSynced)}"/>
+                    </apex:outputPanel>
 				</apex:pageBlockSectionItem>
 				<apex:pageBlockSectionItem >
 					<apex:outputPanel layout="inline">
@@ -447,7 +453,7 @@
                         <apex:inputField value="{!theProject.TotalEstSecondmentCost__c}"/>
                     </apex:pageBlockSectionItem>
 				</apex:pageBlockSection>
-				</apex:actionRegion >
+				</apex:actionRegion>
 				<!--apex:pageBlockSection title="Custom Multiplier" collapsible="false" columns="1">
 					Coming Soon!
 				</apex:pageBlockSection-->

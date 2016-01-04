@@ -87,7 +87,7 @@
     <apex:sectionHeader subtitle="Contingency Details" title="All values shown in : {!budgetLabourWrapper.projectCurrency}"/>  
 
     <c:ECO_ModalDialog width="600" padding="20px 20px 20px 20px" name="modalDialog0">
-        <c:ECO_AddContingency budgetHeader="{!BudgetHeader__c.id}" />
+        <c:ECO_AddContingency budgetHeader="{!BudgetHeader__c.id}" refreshPage="ECO_BudgetContingency"/>
     </c:ECO_ModalDialog>    
     
     <apex:form >
@@ -112,7 +112,7 @@
                                         <br/>
 
                             <apex:commandButton value="Save" action="{!save}"/>
-                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/>
+                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;" rendered="{!BudgetHeader__c.Status__c != 'Approved'}"/>
                         </th></tr>
                         <tr><th>&nbsp;</th></tr>
                         <tr><th>&nbsp;</th></tr>
@@ -236,14 +236,14 @@
                     <table width="100%">
                         <tr>
                             <td width="50%">
-                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c}" rendered="{!budgetTask.children.size == 0}" />
-                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
+                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalCost__c}" rendered="{!budgetTask.isEditable}" />
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.isVisible}">
                                     <apex:param value="{!budgetLabourWrapper.mapTotalCostBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}"/>
                                 </apex:outputText>
                             </td>
                             <td width="50%">
-                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalRevenue__c}" rendered="{!budgetTask.children.size == 0}" />
-                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
+                                <apex:inputText value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].OverrideTotalRevenue__c}" rendered="{!budgetTask.isEditable}" />
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.isVisible}">
                                     <apex:param value="{!budgetLabourWrapper.mapTotalRevenueBySubDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id]}"/>
                                 </apex:outputText>
                             </td>
@@ -311,13 +311,38 @@
             </td>
         </tr>
         <tr class="taskDetailHeader">
-            <td class="purpleHeading">Variance from Budget</td>
-            <td class="{!IF(totalPostMitigationCost<totalBudgetContingencies,'redHeading','lightPurpleHeading')}">
+            <td class="purpleHeading">Total Contingency in current Approved Budget</td>
+            <td class="lightPurpleHeading">
                 <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                        <apex:param value="{!totalPostMitigationCost - totalBudgetContingencies}" />
+                        <apex:param value="{!totalApprovedContingencyCosts}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr class="taskDetailHeader">
+            <td class="purpleHeading">Variance from Approved Budget (incl this change)</td>
+            <td class="redHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!totalPostMitigationCost - (totalApprovedContingencyCosts + totalRow.totalContingency)}" />
                 </apex:outputText>
            </td>
         </tr>
+        <tr class="taskDetailHeader">
+            <td class="purpleHeading">Total Contingency in current Forecast Budget</td>
+            <td class="lightPurpleHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!totalForecastContingencyCosts}" />
+                </apex:outputText>
+            </td>
+        </tr>
+        <tr class="taskDetailHeader">
+            <td class="purpleHeading">Variance from Forecast Budget (incl this change)</td>
+            <td class="redHeading">
+                <apex:outputText value="{0, number, ###,###,###,##0.00}">
+                        <apex:param value="{!totalPostMitigationCost - (totalForecastContingencyCosts + totalRow.totalContingency)}" />
+                </apex:outputText>
+           </td>
+        </tr>
+
     </table>
     </apex:form>
 

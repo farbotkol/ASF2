@@ -98,9 +98,9 @@
     <p>All values shown in {!BudgetHeader__c.Project__r.ProjectFunctionalCurrencyCode__c}</p>
 
 
-    <!--c:ECO_ModalDialog width="600" padding="20px 20px 20px 20px" name="modalDialog0">
-        <c:ECO_AddODC budgetHeader="{!BudgetHeader__c.id}" /> 
-    </c:ECO_ModalDialog-->    
+    <c:ECO_ModalDialog width="600" padding="20px 20px 20px 20px" name="modalDialog0">
+        <c:ECO_AddODC budgetHeader="{!BudgetHeader__c.id}" refreshPage="ECO_BudgetODCDetailEAC"/> 
+    </c:ECO_ModalDialog>    
 
     <apex:form >
         
@@ -119,7 +119,7 @@
                         <tr><th>&nbsp;</th></tr>
                         <tr><th>
                             <apex:commandButton value="Save" action="{!save}"/>
-                            <!--apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;"/-->
+                            <apex:commandButton value="Add Resource" onclick="openModal('modalDialog0');return false;" rendered="{!BudgetHeader__c.Status__c != 'Approved'}"/>
                         </th></tr>
                         <tr><th>&nbsp;</th></tr>
                         <tr><th>&nbsp;</th></tr>
@@ -261,7 +261,7 @@
         </apex:repeat>
             <td class="blueHeading">
                 <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                    <apex:param value="{!totalRow.totalComputedCost}" />
+                    <apex:param value="{!totalRow.totalODCCost}" />
                 </apex:outputText>
             </td>
             <td class="blueHeading">
@@ -288,16 +288,16 @@
                     <table cellpadding="0" cellspacing="0" width="100%">
                         <tr>
                             <td width="50%">
-                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size == 0}">
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.isEditable}">
                                         <apex:param value="{!budgetLabour.mAssignmentMap[budgetTask.obudgetTask.Id].EACForecastTotalCost__c}" />
                                 </apex:outputText>
-                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
+                                <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.isVisible}">
                                         <apex:param value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACCurrentForecastCost}" />
                                 </apex:outputText>
                             </td>
                              <td width="50%">
-                                 <apex:inputText value="{!budgetLabour.mapCostToComplete[budgetTask.obudgetTask.Id]}" rendered="{!budgetTask.children.size == 0}" />
-                                 <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.children.size > 0}">
+                                 <apex:inputText value="{!budgetLabour.mapCostToComplete[budgetTask.obudgetTask.Id]}" rendered="{!budgetTask.isEditable}" />
+                                 <apex:outputText value="{0, number, ###,###,###,##0.00}" rendered="{!budgetTask.isVisible}">
                                         <apex:param value="{!budgetLabourWrapper.mapEACTotalsByLaborDetailAndTask['' + budgetLabour.oBudgetResource.Id + budgetTask.oBudgetTask.Id].EACCostToComplete}" />
                                 </apex:outputText>
                             </td>
@@ -307,7 +307,7 @@
             </apex:repeat>
                 <td class="blueHeading">
                     <apex:outputText value="{0, number, ###,###,###,##0.00}">
-                        <apex:param value="{!budgetTask.totalComputedCost}" />
+                        <apex:param value="{!budgetTask.totalODCCost}" />
                     </apex:outputText>
                 </td>
                 <td class="blueHeading">

@@ -1,79 +1,49 @@
 public without sharing class ECO_CostDistributionLineTriggers {
-	
-	public static Boolean run = true;
-	
-	public static void rollUpCosts (List<CostDistLine__c> tOld, List<CostDistLine__c> tNew) {
-		if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('CDL_rollup')) {
-			return;
-		}
-		/*
-		Set<Id> projectTaskIds = new Set<Id>();
-		if (tOld != null) {
-			for (CostDistLine__c cdl : tOld) {
-				projectTaskIds.add(cdl.TaskNumber__c);
-			}
-		}
-		
-		if (tNew != null) {
-			for (CostDistLine__c cdl : tNew) {
-				projectTaskIds.add(cdl.TaskNumber__c);
-			}
-		}
-												
-		List<pse__Project_Task__c> projectTasksToUpdate = new List<pse__Project_Task__c>();
-		
-		for (AggregateResult ar : [SELECT TaskNumber__c
-										, SUM(ProjectFunctionalBurdenedCost__c) totalActualCostAmount
-									FROM CostDistLine__c
-									WHERE TaskNumber__c IN :projectTaskIds
-										AND TaskNumber__c != null
-									GROUP BY TaskNumber__c]) {
-										
-			system.debug('ar:  '+ar);
-			
-			pse__Project_Task__c ptToUpdate = new pse__Project_Task__c();
-			ptToUpdate.Id = (Id)ar.get('TaskNumber__c');
-			ptToUpdate.TotalActualCost__c = (Decimal)ar.get('totalActualCostAmount');
-			projectTasksToUpdate.add(ptToUpdate);
-		}
-		
-		if (!projectTasksToUpdate.isEmpty()) {
-			update projectTasksToUpdate;
-		}
-		*/
+    
+    public static Boolean run = true;
+    
+    public static void rollUpCosts (List<CostDistLine__c> tOld, List<CostDistLine__c> tNew) {
+        if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('CDL_rollup')) {
+            return;
+        }
+        
         set<string> costdistlineset = new set<string>();
         map<string,CostDistLine__c> costdistmap = new map<string,CostDistLine__c>();
-		map<string, Decimal> mFunctionalRawCost = new map<string, Decimal>();
-		map<string, Decimal> mFunctionalBurdenedCost = new map<string, Decimal>();
+        map<string, Decimal> mFunctionalRawCost = new map<string, Decimal>();
+        map<string, Decimal> mFunctionalBurdenedCost = new map<string, Decimal>();
         set<string> ExpenditureItemset   = new set<string>();
-		if(tNew != null){
-			for(CostDistLine__c oCDL : tNew){
+        if(tNew != null){
+            for(CostDistLine__c oCDL : tNew){
                
                 costdistlineset.add(ocdl.id);
-				string sSnapshotKey = ECO_Service_Snapshots.DateToSnapshotKey(oCDL.PADate__c, oCDL.ProjectNumber__c, oCDL.TaskNumber__c);
+                                  
+                string projectnumber = (id) oCDL.ProjectNumber__c;
+                string tasknumber = (id) oCDL.TaskNumber__c;
+                
+                string sSnapshotKey = ECO_Service_Snapshots.DateToSnapshotKey(oCDL.PADate__c,ProjectNumber, tasknumber );
                 ExpenditureItemset.add(oCDL.ExpenditureItem__c);
-				Decimal dFunctionalRawCost = ECO_Utils_String.NullCheck(mFunctionalRawCost.get(sSnapshotKey)) + ECO_Utils_String.NullCheck(oCDL.ProjectFunctionalRawCost__c);
-				mFunctionalRawCost.put(sSnapshotKey, dFunctionalRawCost);
+                Decimal dFunctionalRawCost = ECO_Utils_String.NullCheck(mFunctionalRawCost.get(sSnapshotKey)) + ECO_Utils_String.NullCheck(oCDL.ProjectFunctionalRawCost__c);
+                mFunctionalRawCost.put(sSnapshotKey, dFunctionalRawCost);
 
-				Decimal dFunctionalBurdenedCost = ECO_Utils_String.NullCheck(mFunctionalBurdenedCost.get(sSnapshotKey)) + ECO_Utils_String.NullCheck(oCDL.ProjectFunctionalBurdenedCost__c);
-				mFunctionalBurdenedCost.put(sSnapshotKey, dFunctionalBurdenedCost);
-			}
-		}
+                Decimal dFunctionalBurdenedCost = ECO_Utils_String.NullCheck(mFunctionalBurdenedCost.get(sSnapshotKey)) + ECO_Utils_String.NullCheck(oCDL.ProjectFunctionalBurdenedCost__c);
+                mFunctionalBurdenedCost.put(sSnapshotKey, dFunctionalBurdenedCost);
+            }
+        }
 
-		if(tOld != null){
-			for(CostDistLine__c oCDL : tOld){
+        if(tOld != null){
+            for(CostDistLine__c oCDL : tOld){
               costdistlineset.add(ocdl.id);
               string projectnumber = (id) oCDL.ProjectNumber__c;
                 string tasknumber = (id) oCDL.TaskNumber__c;
                 string sSnapshotKey = ECO_Service_Snapshots.DateToSnapshotKey(oCDL.PADate__c, ProjectNumber, tasknumber);
                 ExpenditureItemset.add(oCDL.ExpenditureItem__c);
-				Decimal dFunctionalRawCost = ECO_Utils_String.NullCheck(mFunctionalRawCost.get(sSnapshotKey)) - ECO_Utils_String.NullCheck(oCDL.ProjectFunctionalRawCost__c);
-				mFunctionalRawCost.put(sSnapshotKey, dFunctionalRawCost);
+                Decimal dFunctionalRawCost = ECO_Utils_String.NullCheck(mFunctionalRawCost.get(sSnapshotKey)) - ECO_Utils_String.NullCheck(oCDL.ProjectFunctionalRawCost__c);
+                mFunctionalRawCost.put(sSnapshotKey, dFunctionalRawCost);
 
-				Decimal dFunctionalBurdenedCost = ECO_Utils_String.NullCheck(mFunctionalBurdenedCost.get(sSnapshotKey)) - ECO_Utils_String.NullCheck(oCDL.ProjectFunctionalBurdenedCost__c);
-				mFunctionalBurdenedCost.put(sSnapshotKey, dFunctionalBurdenedCost);
-			}
-		}
+                Decimal dFunctionalBurdenedCost = ECO_Utils_String.NullCheck(mFunctionalBurdenedCost.get(sSnapshotKey)) - ECO_Utils_String.NullCheck(oCDL.ProjectFunctionalBurdenedCost__c);
+                mFunctionalBurdenedCost.put(sSnapshotKey, dFunctionalBurdenedCost);
+            }
+        }
         map<string,string> snapshotkeycategorymap = new map<string,string>();
         map<string,decimal> snapshotqtymap = new map<string,decimal>();
          map<string,Decimal> snapshotresourcetypemap = new map<string,decimal>();
@@ -81,14 +51,14 @@ public without sharing class ECO_CostDistributionLineTriggers {
         if(ExpenditureItemset.size()>0)
         {
             for(CostDistLine__c cd: [select id,ExpenditureItem__c,PADate__c,ProjectFunctionalRawCost__c,ProjectRawCost__c,ProjectNumber__c,TaskNumber__c,ExpenditureItem__r.ExpenditureResourceType__c,ExpenditureItem__r.PLReportCategory__c,ExpenditureItem__r.Quantity__c  from CostDistLine__c where ExpenditureItem__c IN :ExpenditureItemset ]){
-
+                
                 string sSnapshotKey = ECO_Service_Snapshots.DateToSnapshotKey(cd.PADate__c, cd.ProjectNumber__c, cd.TaskNumber__c);
                 if(costdistlineset.contains(cd.id))
                 {
                     if(cd.ExpenditureItem__r.PLReportCategory__c !=null)
                     {
                        
-                    costdistmap.put(sSnapshotKey,cd);
+                        costdistmap.put(sSnapshotKey ,cd);
                          string strkey = sSnapshotKey+cd.ExpenditureItem__r.PLReportCategory__c;
                         if(costproductcostmap.containskey(strkey ))
                         {
@@ -138,34 +108,28 @@ public without sharing class ECO_CostDistributionLineTriggers {
                              d = cd.ProjectFunctionalRawCost__c;
                          snapshotresourcetypemap.put(sSnapshotKey,d);
                      }
-               
+                     
                 }
                 snapshotqtymap.put(sSnapshotKey ,cd.ExpenditureItem__r.Quantity__c );
             }
         }
-		set<string> lSnapshotKeys = new set<string>();
+        set<string> lSnapshotKeys = new set<string>();
         system.debug('costproductcostmap----------'+costproductcostmap);
-       /* for(string s: costproductcostmap.keyset())
-        {
-            system.debug('key---------'+s);
-            system.debug('value---------'+costproductcostmap.get(s));
-
-        }
-        */
-		for(string s : mFunctionalRawCost.keySet()){
+       
+        for(string s : mFunctionalRawCost.keySet()){
           // system.debug('107------'+s);
-			lSnapshotKeys.add(s);
-		}
+            lSnapshotKeys.add(s);
+        }
 
-		for(string s : mFunctionalBurdenedCost.keySet()){
+        for(string s : mFunctionalBurdenedCost.keySet()){
        // system.debug('112------'+s);
-			lSnapshotKeys.add(s);
-		}
+            lSnapshotKeys.add(s);
+        }
 
-		list<EarnedValueSnapshot__c> lEarnedValueSnapshots = new list<EarnedValueSnapshot__c>([SELECT Id
-																								    , SnapshotKey__c
-																								    , ProjectFunctionalRawCost__c
-																								    , ProjectFunctionalBurdenedCost__c 
+        list<EarnedValueSnapshot__c> lEarnedValueSnapshots = new list<EarnedValueSnapshot__c>([SELECT Id
+                                                                                                    , SnapshotKey__c
+                                                                                                    , ProjectFunctionalRawCost__c
+                                                                                                    , ProjectFunctionalBurdenedCost__c 
                                                                                                     ,ProjectFunctionalRawCostPLFringe__c
                                                                                                     ,ProjectFunctionalRawCostPLLabor__c
                                                                                                     ,ProjectFunctionalRawCostPLODCEXPS__c
@@ -174,29 +138,29 @@ public without sharing class ECO_CostDistributionLineTriggers {
                                                                                                     ,ProjectHours__c
                                                                                                     ,ProjectFunctionalRawCostResourceNonLabor__c
                                                                                                     ,ProjectFunctionalRawCostResourceLabor__c
-																							  FROM EarnedValueSnapshot__c 
-																							  WHERE SnapshotKey__c in :lSnapshotKeys]);
+                                                                                              FROM EarnedValueSnapshot__c 
+                                                                                              WHERE SnapshotKey__c in :lSnapshotKeys]);
 
-		list<EarnedValueSnapshot__c> lEarnedValueSnapshotsToUpdate = new list<EarnedValueSnapshot__c>();
+        list<EarnedValueSnapshot__c> lEarnedValueSnapshotsToUpdate = new list<EarnedValueSnapshot__c>();
 
-		for(EarnedValueSnapshot__c oEarnedValueSnapshot : lEarnedValueSnapshots){
-			string sSnapshotKey = oEarnedValueSnapshot.SnapshotKey__c;
-			boolean bRecordToAdd = false;
+        for(EarnedValueSnapshot__c oEarnedValueSnapshot : lEarnedValueSnapshots){
+            string sSnapshotKey = oEarnedValueSnapshot.SnapshotKey__c;
+            boolean bRecordToAdd = false;
 
-			if(mFunctionalRawCost.containsKey(sSnapshotKey)){
-				oEarnedValueSnapshot.ProjectFunctionalRawCost__c = ECO_Utils_String.NullCheck(oEarnedValueSnapshot.ProjectFunctionalRawCost__c) + ECO_Utils_String.NullCheck(mFunctionalRawCost.get(sSnapshotKey));
+            if(mFunctionalRawCost.containsKey(sSnapshotKey)){
+                oEarnedValueSnapshot.ProjectFunctionalRawCost__c = ECO_Utils_String.NullCheck(oEarnedValueSnapshot.ProjectFunctionalRawCost__c) + ECO_Utils_String.NullCheck(mFunctionalRawCost.get(sSnapshotKey));
 
-				bRecordToAdd = true;
-			}
+                bRecordToAdd = true;
+            }
 
-			if(mFunctionalBurdenedCost.containsKey(sSnapshotKey)){
-				oEarnedValueSnapshot.ProjectFunctionalBurdenedCost__c = ECO_Utils_String.NullCheck(oEarnedValueSnapshot.ProjectFunctionalBurdenedCost__c) + ECO_Utils_String.NullCheck(mFunctionalBurdenedCost.get(sSnapshotKey));
+            if(mFunctionalBurdenedCost.containsKey(sSnapshotKey)){
+                oEarnedValueSnapshot.ProjectFunctionalBurdenedCost__c = ECO_Utils_String.NullCheck(oEarnedValueSnapshot.ProjectFunctionalBurdenedCost__c) + ECO_Utils_String.NullCheck(mFunctionalBurdenedCost.get(sSnapshotKey));
 
-				bRecordToAdd = true;
-			}
+                bRecordToAdd = true;
+            }
             if(costdistmap.containsKey(sSnapshotKey)){
                  string strkey = sSnapshotKey+costdistmap.get(sSnapshotKey).ExpenditureItem__r.PLReportCategory__c;
-                                
+                 
                   string odckey = sSnapshotKey+'ODC - Exps';
                     if(costproductcostmap.containskey(odckey))
                         oEarnedValueSnapshot.ProjectFunctionalRawCostPLODCEXPS__C = costproductcostmap.get(odckey);                      
@@ -220,20 +184,39 @@ public without sharing class ECO_CostDistributionLineTriggers {
             }
             
                     if(snapshotresourcetypemap.containskey(sSnapshotKey+'LAB'))
-                    oEarnedValueSnapshot.ProjectFunctionalRawCostResourceLabor__c = snapshotresourcetypemap.get(sSnapshotKey+'LAB');
+                    {
+                        oEarnedValueSnapshot.ProjectFunctionalRawCostResourceLabor__c = snapshotresourcetypemap.get(sSnapshotKey+'LAB');
+                        bRecordToAdd = true;  
+                    }
                     if(snapshotresourcetypemap.containskey(sSnapshotKey+'NonLAB'))
+                    {
                       oEarnedValueSnapshot.ProjectFunctionalRawCostResourcenonLabor__c = snapshotresourcetypemap.get(sSnapshotKey+'NonLAB');
-           
-			if(bRecordToAdd)
-				lEarnedValueSnapshotsToUpdate.add(oEarnedValueSnapshot);
-		}
+                      bRecordToAdd = true;  
+                   }
+                   
+                   // If null, set to zero
+                   if (oEarnedValueSnapshot.ProjectFunctionalRawCostResourceNonLabor__c == null) {
+                   		oEarnedValueSnapshot.ProjectFunctionalRawCostResourceNonLabor__c = 0;
+                   }
+                   // If null, set to zero
+                   if (oEarnedValueSnapshot.ProjectFunctionalRawCostResourceLabor__c == null) {
+                   		oEarnedValueSnapshot.ProjectFunctionalRawCostResourceLabor__c = 0;
+                   }
+                   
+                   oEarnedValueSnapshot.ProjectFunctionalRawCost__c = oEarnedValueSnapshot.ProjectFunctionalRawCostResourcenonLabor__c + 
+                   		oEarnedValueSnapshot.ProjectFunctionalRawCostResourceLabor__c;
+                      
+            if(bRecordToAdd)
+                lEarnedValueSnapshotsToUpdate.add(oEarnedValueSnapshot);
+        }
 
-		if (!lEarnedValueSnapshotsToUpdate.isEmpty()) {
+        if (!lEarnedValueSnapshotsToUpdate.isEmpty()) {
            system.debug('lEarnedValueSnapshotsToUpdate----'+lEarnedValueSnapshotsToUpdate[0].id);
-			update lEarnedValueSnapshotsToUpdate;
-		}
-	}
-	
+                      system.debug('lEarnedValueSnapshotsToUpdate----'+lEarnedValueSnapshotsToUpdate.size());
+            update lEarnedValueSnapshotsToUpdate;
+        }
+    }
+    
     public static void calculateFiscalMonths(list<CostDistLine__c> costDistLines) {
         if (!run || !ECO_TriggerSettings.getIsTriggerEnabled('CDL_calcFiscalMonths')) {
             return;

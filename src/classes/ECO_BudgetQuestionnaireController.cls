@@ -47,7 +47,10 @@ public with sharing class ECO_BudgetQuestionnaireController {
             theProject.DefaultUpliftODCs__c = value*100;
         }
     }
-		
+	public Boolean getIsSynced() {
+		return (theProject.OracleSyncStatus__c == 'T' || theProject.OracleSyncStatus__c == 'S'); 
+	}
+
 	public ECO_BudgetQuestionnaireController (ApexPages.StandardController con) {
 		theProject = ECO_Service_Projects.getProjectById(con.getId());
         
