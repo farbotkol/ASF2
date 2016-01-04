@@ -23,7 +23,6 @@ public without sharing class ECO_UserTriggers {
 												, BusinessLineName__c
 												, GeographyName__c
 												, Region__c
-												, OUID__c
 										FROM OrganizationString__c
 										WHERE OrganizationName__c IN :orgStringNames]) {
 			orgStringMap.put(os.OrganizationName__c, os);
@@ -43,7 +42,6 @@ public without sharing class ECO_UserTriggers {
 			u.ECO_Region__c =  thisOrgString.Region__c;
 			u.ECO_Geography__c =  thisOrgString.GeographyName__c;
 			u.ECO_BusinessLine__c =  thisOrgString.BusinessLineName__c;
-			u.ECO_OUID__c = thisOrgString.OUID__c;
 		}
 	}
 }

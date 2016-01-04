@@ -201,23 +201,7 @@ public without sharing class ECO_BudgetResourceTriggers {
 			headerIds.add(br.BudgetHeader__c);
 		}
 
-		List<Contact> resources = [select id, User__c, User__r.ExpenditureType__c, User__r.ECO_OUID__c, OrganizationString__r.OrgID__c from Contact where id in :resourceIds];
-
-		Set<Id> userIds = new Set<Id>();
-
-		for (Contact con : resources) {
-			if ((con.User__r.ECO_OUID__c == null) || (con.User__r.ECO_OUID__c.trim().equals(''))) {
-				userIds.add(con.User__c);
-			}
-		}
-
-		if (userIds.size() > 0) {
-			List<User> updateUsers = [select id, ECO_OrganizationName__c from User where id in :userIds];
-			
-			update updateUsers;
-
-			resources = [select id, User__c, User__r.ExpenditureType__c, User__r.ECO_OUID__c, OrganizationString__r.OrgID__c from Contact where id in :resourceIds];
-		}
+		List<Contact> resources = [select id, User__r.ExpenditureType__c, OrganizationString__r.OUID__c, OrganizationString__r.OrgID__c from Contact where id in :resourceIds];
 
 		Map<Id, String> expenditureMap = new Map<Id, String>();
 
@@ -232,7 +216,7 @@ public without sharing class ECO_BudgetResourceTriggers {
 			orgIds.add(resource.OrganizationString__r.OrgID__c);
 			needed.add(resource.OrganizationString__r.OrgID__c);
 			contactOrgMap.put(resource.id, resource.OrganizationString__r.OrgID__c);
-			contactOUIdMap.put(resource.id, resource.User__r.ECO_OUID__c);
+			contactOUIdMap.put(resource.id, resource.OrganizationString__r.OUID__c);
 		}
 
 		List<BudgetHeader__c> headers = [select id, Project__r.CarryingOutOrganization__r.OrgId__c, Project__r.CarryingOutOrganization__r.OUID__c from BudgetHeader__c where id in :headerIds];
